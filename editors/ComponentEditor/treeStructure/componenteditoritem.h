@@ -43,10 +43,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model       Pointer to the model that owns the items.
-	 *      @param [in] libHandler  Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the parent item.
+	 *    @param [in] model       Pointer to the model that owns the items.
+	 *    @param [in] libHandler  Pointer to the instance that manages the library.
+	 *    @param [in] component   Pointer to the component being edited.
+	 *    @param [in] parent      Pointer to the parent item.
 	 */
 	ComponentEditorItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
@@ -56,9 +56,9 @@ public:
 	/*!
 	 *  The constructor for root item.
 	 *
-	 *      @param [in] libHandler  Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the parent object.
+	 *    @param [in] libHandler  Pointer to the instance that manages the library.
+	 *    @param [in] component   Pointer to the component being edited.
+	 *    @param [in] parent      Pointer to the parent object.
 	 */
 	ComponentEditorItem(LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
@@ -76,47 +76,47 @@ public:
 	/*!
 	 *  Get the index of the child item under the parent.
 	 *
-	 *      @param [in] child   Pointer to the child that's row is wanted.
+	 *    @param [in] child   Pointer to the child that's row is wanted.
 	 *
-	 *      @return The index of the child item. Returns -1 if child is not found.
+	 *    @return The index of the child item. Returns -1 if child is not found.
 	 */
 	int getIndexOf(const ComponentEditorItem* child) const;
 
 	/*!
 	 *  Get number of children the item contains.
 	 *
-	 *      @return The number of child items this item contains.
+	 *    @return The number of child items this item contains.
 	 */
 	virtual int rowCount() const;
 
 	/*!
 	 *  Returns true if item contains child items.
 	 *
-	 *      @return True if child items exist.
+	 *    @return True if child items exist.
 	 */
 	bool hasChildren() const;
 
 	/*!
 	 *  Get pointer to the child in given index.
 	 *
-	 *      @param [in] index   The index identifying the child.
+	 *    @param [in] index   The index identifying the child.
 	 *
-	 *      @return Pointer to the indexed child. Null pointer is returned if index is invalid.
+	 *    @return Pointer to the indexed child. Null pointer is returned if index is invalid.
 	 */
 	QSharedPointer<ComponentEditorItem> child(const int index);
 
 	/*!
 	 *  Get pointer to the parent of this item.
 	 *
-	 *      @return Pointer to the parent item.
+	 *    @return Pointer to the parent item.
 	 */
 	ComponentEditorItem* parent();
 
 	/*!
 	 *  Move child from source index to target index under the same parent.
 	 *
-	 *      @param [in] sourceIndex     The index identifying which item to move.
-	 *      @param [in] targetIndex     The index identifying the target to move to. If under 0 then item is
+	 *    @param [in] sourceIndex     The index identifying which item to move.
+	 *    @param [in] targetIndex     The index identifying the target to move to. If under 0 then item is
 	 *                                  prepended to the list. If greater than number of children then item is
 	 *                                  appended to the list.
 	 */
@@ -125,49 +125,49 @@ public:
 	/*!
 	 *  Get the font to be used for text of this item.
 	 *
-	 *      @return QFont instance that defines the font to be used.
+	 *    @return QFont instance that defines the font to be used.
 	 */
 	virtual QFont getFont() const;
 
 	/*!
 	 *  Set the locked state of the editor and possible visualizer.
 	 *
-	 *      @param [in] locked  True to set the editor and visualizer in read only mode.
+	 *    @param [in] locked  True to set the editor and visualizer in read only mode.
 	 */
 	virtual void setLocked(bool locked);
 
 	/*!
 	 *  Add a new child to the item.
 	 *
-	 *      @param [in] index   The index to add the child into.
+	 *    @param [in] index   The index to add the child into.
 	 */
 	virtual void createChild(int index);
 
 	/*!
 	 *  Remove the child from the given index.
 	 *
-	 *      @param [in] index Identifies the child to remove.
+	 *    @param [in] index Identifies the child to remove.
 	 */
 	virtual void removeChild(int index);
 
 	/*!
 	 *  Get the tool tip for the item.
 	 *
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const = 0;
 
 	/*!
 	 *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const = 0;
 
 	/*!
 	 *  Check the validity of this item and sub items.
 	 *
-	 *      @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	 */
 	virtual bool isValid() const;
 
@@ -179,14 +179,14 @@ public:
 	/*!
 	 *  Get pointer to the editor of this item.
 	 *
-	 *      @return Pointer to the editor to use for this item.
+	 *    @return Pointer to the editor to use for this item.
 	 */
 	virtual ItemEditor* editor() = 0;
 
 	/*!
 	 *  Get pointer to the visualizer of this item.
 	 *
-	 *      @return Pointer to the visualizer to use for this item.
+	 *    @return Pointer to the visualizer to use for this item.
 	 */
 	virtual ItemVisualizer* visualizer();
 
@@ -208,7 +208,7 @@ public:
 	/*!
 	 *  Returns the possible actions for opening the item.
 	 *
-	 *      @return The actions to open the item.
+	 *    @return The actions to open the item.
 	 */
 	virtual QList<QAction* > actions();
 
@@ -218,7 +218,7 @@ public:
 	 * The default implementation returns a null pointer, reimplement this for
 	 * elements that contain a visualization element.
 	 *
-	 *      @return QGraphicsItem* Pointer to the graphics item.
+	 *    @return QGraphicsItem* Pointer to the graphics item.
 	 */
 	virtual QGraphicsItem* getGraphicsItem();
 
@@ -241,7 +241,7 @@ public:
 	/*!
 	 *  Tells if the item has a decoration icon or not.
 	 *
-	 *      @return True if the item has an icon, otherwise false (default).
+	 *    @return True if the item has an icon, otherwise false (default).
 	 */
 	virtual bool hasIcon() const;
 
@@ -253,21 +253,21 @@ public:
 	/*!
 	 *  Set the reference counter for this item.
 	 *
-	 *      @param [in] newReferenceCounter   The counter for references.
+	 *    @param [in] newReferenceCounter   The counter for references.
 	 */
 	void setReferenceCounter(QSharedPointer<ReferenceCounter> newReferenceCounter);
 
 	/*!
 	 *  Set the parameter finder for this item.
 	 *
-	 *      @param [in] parameterFinder     The parameter finder.
+	 *    @param [in] parameterFinder     The parameter finder.
 	 */
 	void setParameterFinder(QSharedPointer<ParameterFinder> parameterFinder);
 
 	/*!
 	 *  Set the expression formatter.
 	 *
-	 *      @param [in] expressionFormatter     The expression formatter.
+	 *    @param [in] expressionFormatter     The expression formatter.
 	 */
 	void setExpressionFormatter(QSharedPointer<ExpressionFormatter> expressionFormatter);
 
@@ -300,33 +300,33 @@ signals:
 	/*!
 	 *  Emitted when a child should be added to this item.
 	 *
-	 *      @param [in] item        Pointer to this item.
-	 *      @param [in] childIndex  The index the child should be added to.
+	 *    @param [in] item        Pointer to this item.
+	 *    @param [in] childIndex  The index the child should be added to.
 	 */
 	void createChild(ComponentEditorItem* item, int childIndex);
 
 	/*!
 	 *  Emitted when a child should be removed from the item.
 	 *
-	 *      @param [in] item        Pointer to this item.
-	 *      @param [in] childIndex  The index of the child that should be removed.
+	 *    @param [in] item        Pointer to this item.
+	 *    @param [in] childIndex  The index of the child that should be removed.
 	 */
 	void removeChild(ComponentEditorItem* item, int childIndex);
 
 	/*!
 	 *  Emitted when a child should be moved from one place to another.
 	 *
-	 *      @param [in] item            Pointer to this item.
-	 *      @param [in] sourceIndex     The index of the child item to move.
-	 *      @param [in] targetIndex     The index to move the child into.
+	 *    @param [in] item            Pointer to this item.
+	 *    @param [in] sourceIndex     The index of the child item to move.
+	 *    @param [in] targetIndex     The index to move the child into.
 	 */
 	void moveChild(ComponentEditorItem* item, int sourceIndex, int targetIndex);
 
 	/*!
 	 *  Opens the specific C source file of the given component.
 	 *
-	 *      @param [in] filename   The name of the file to open.
-	 *      @param [in] component  The component containing the file.
+	 *    @param [in] filename   The name of the file to open.
+	 *    @param [in] component  The component containing the file.
 	 */
 	void openCSource(QString const& filename, QSharedPointer<Component> component);
 
@@ -351,23 +351,23 @@ signals:
 	/*!
 	 *  Emitted when a tree item should be selected in component editor.
 	 *
-	 *      @param [in] item    Pointer to the item to select.
+	 *    @param [in] item    Pointer to the item to select.
 	 */
 	void selectItem(ComponentEditorItem* item);
 
 	/*!
 	 *  Open the reference tree of the selected parameter.
 	 *
-	 *      @param [in] id              The ID of the parameter.
-	 *      @param [in] parameterName   Name of the selected parameter.
+	 *    @param [in] id              The ID of the parameter.
+	 *    @param [in] parameterName   Name of the selected parameter.
 	 */
 	void openReferenceTree(QString const& id, QString const& parameterName) const;
 
 	/*!
 	 *  Change the vendor extensions of the vendor extensions editor.
 	 *
-	 *      @param [in] containingID    ID for the vendor extensions editor.
-	 *      @param [in] extensionItem   The item containing the selected vendor extensions.
+	 *    @param [in] containingID    ID for the vendor extensions editor.
+	 *    @param [in] extensionItem   The item containing the selected vendor extensions.
 	 */
 	void changeVendorExtensions(QString const& containingID, QSharedPointer<Extendable> extensionItem);
 
@@ -431,22 +431,22 @@ protected slots:
 	/*!
 	 *  Handler for ItemEditor's childAdded(int) signal.
 	 *
-	 *      @param [in] index   The index to add the child to.
+	 *    @param [in] index   The index to add the child to.
 	 */
 	virtual void onAddChild(int index);
 
 	/*!
 	 *  Handler for ItemEditor's childRemoved(int) signal.
 	 *
-	 *      @param [in] index   The index of the child to remove.
+	 *    @param [in] index   The index of the child to remove.
 	 */
 	virtual void onRemoveChild(int index);
 
 	/*!
 	 *  Handler for ItemEditor's childMoved(int, int) signal.
 	 *
-	 *      @param [in] source  The index of the child to move.
-	 *      @param [in] target  The position to move the child into.
+	 *    @param [in] source  The index of the child to move.
+	 *    @param [in] target  The position to move the child into.
 	 */
 	virtual void onMoveChild(int source, int target);
 

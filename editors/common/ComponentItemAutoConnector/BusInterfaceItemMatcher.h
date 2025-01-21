@@ -31,7 +31,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library     Access to the document library.
+     *    @param [in] library     Access to the document library.
      */
     BusInterfaceItemMatcher(LibraryInterface* library);
 
@@ -49,12 +49,12 @@ private:
     /*!
      *  Check if the selected items can be connected.
      *
-     *      @param [in] firstItem           The selected item from the first component.
-     *      @param [in] firstComponent      Component containing the first item.
-     *      @param [in] secondItem          The selected item from the second component.
-     *      @param [in] secondComponent     Component containing the second item.
+     *    @param [in] firstItem           The selected item from the first component.
+     *    @param [in] firstComponent      Component containing the first item.
+     *    @param [in] secondItem          The selected item from the second component.
+     *    @param [in] secondComponent     Component containing the second item.
      *
-     *      @return True, if the items can be connected, false otherwise.
+     *    @return True, if the items can be connected, false otherwise.
      */
     virtual bool itemsCanBeConnected(QString const& firstItem, QSharedPointer<Component> firstComponent,
         QString const& secondItem, QSharedPointer<Component> secondComponent) const;
@@ -62,9 +62,9 @@ private:
     /*!
      *  Get connectible bus interface modes for the selected interface mode.
      *
-     *      @param [in] busMode     The selected bus interface mode.
+     *    @param [in] busMode     The selected bus interface mode.
      *
-     *      @return List of connectible interface modes.
+     *    @return List of connectible interface modes.
      */
     virtual QVector<General::InterfaceMode> getCompatibleModes(General::InterfaceMode busMode) const;
 

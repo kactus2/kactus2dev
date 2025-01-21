@@ -84,9 +84,9 @@ public:
 
 	/*! The constructor.
 	 *
-	 *      @param [in] libHandler  The instance that manages the component library.
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] parent      Parent widget of the editor.
+	 *    @param [in] libHandler  The instance that manages the component library.
+	 *    @param [in] component   The component being edited.
+	 *    @param [in] parent      Parent widget of the editor.
 	 *
 	 */
 	ComponentEditor(LibraryInterface* libHandler, 
@@ -104,19 +104,19 @@ public:
 
 	/*! Get the VLNV that can be used to identify the component.
 	 *
-	 *      @return The VLNV of the component.
+	 *    @return The VLNV of the component.
 	*/
 	VLNV getIdentifyingVLNV() const final;
 
 	/*! Get the vlnv of the current component.
 	 *
-	 *      @return VLNV of the component being edited.
+	 *    @return VLNV of the component being edited.
 	*/
 	VLNV getDocumentVLNV() const final;
 
 	/*! Check if the editor is editing a hardware implementation or not.
 	 *
-	 *      @return True if the component is a hardware component.
+	 *    @return True if the component is a hardware component.
 	*/
 	bool isHWImplementation() const;
 
@@ -126,28 +126,28 @@ public:
 	/*!
 	 *  Applies the current settings into use.
 	 *
-	 *      @param [in] settings   The settings file.
+	 *    @param [in] settings   The settings file.
 	 */
 	void applySettings(QSettings& settings) override;
 
 	/*!
 	 *  Gets the names of all component editor items for HW component.
 	 *
-	 *      @return The names of the items.
+	 *    @return The names of the items.
 	 */
 	static QStringList getHwItemNames();
 
 	/*!
 	 *  Gets the names of all component editor items for SW component.
 	 *
-	 *      @return The names of the items.
+	 *    @return The names of the items.
 	 */
 	static QStringList getSwItemNames();
 
     /*!
      *  Open item editor for a component.
      *
-     *      @param [in] itemIdentifierChain     List of string identifying the item to be opened.
+     *    @param [in] itemIdentifierChain     List of string identifying the item to be opened.
      */
     void openItemEditor(QVector<QString> itemIdentifierChain);
 
@@ -159,9 +159,9 @@ public slots:
     /*!
      *  Validates the document against the IP-XACT standard.
      *
-     *      @param [in] errorList   Error message list for reporting standard violations.
+     *    @param [in] errorList   Error message list for reporting standard violations.
      *
-     *      @return True if the document is valid. False if there were any violations.
+     *    @return True if the document is valid. False if there were any violations.
      */
     virtual bool validate(QVector<QString>& errorList);
 
@@ -173,7 +173,7 @@ public slots:
 
 	/*! Set the protection state of the document.
 	 *
-	 *      @param [in] locked True for locked state, false for unlocked.
+	 *    @param [in] locked True for locked state, false for unlocked.
 	 *
 	*/
 	virtual void setProtection(bool locked);
@@ -187,7 +187,7 @@ private slots:
 
 	/*! This slot is called when an item is selected in the navigation tree.
 	 *
-	 *      @param [in] index The index identifying the item.
+	 *    @param [in] index The index identifying the item.
 	 *
 	*/
 	void onItemActivated(const QModelIndex& index);
@@ -197,7 +197,7 @@ private slots:
 	 * This function tells navigation view to select the index in the tree and then
 	 * calls ComponentEditor::onItemActivated() slot.
 	 * 
-	 *      @param [in] index Model index that identifies the item to select.
+	 *    @param [in] index Model index that identifies the item to select.
 	 *
 	*/
 	void onNavigationTreeSelection(const QModelIndex& index);
@@ -206,14 +206,14 @@ private slots:
 	 * 
 	 * This function tells navigation view to expand the index in the tree.
 	 * 
-	 *      @param [in] index Model index that identifies the item to expand.
+	 *    @param [in] index Model index that identifies the item to expand.
 	 *
 	*/
     void onExpand(const QModelIndex& index);
     
 	/*! \brief Display an error dialog to user with given text.
 	 *
-	 *      @param [in] message Contains the text to display in the error dialog.
+	 *    @param [in] message Contains the text to display in the error dialog.
 	*/
 	void onErrorDialog(const QString& message);
 
@@ -221,8 +221,8 @@ signals:
     /*!
      *  Opens the specific C source file of the given component.
      *
-     *      @param [in] filename   The name of the file to open.
-     *      @param [in] component  The component containing the file.
+     *    @param [in] filename   The name of the file to open.
+     *    @param [in] component  The component containing the file.
      */
     void openCSource(QString const& filename, QSharedPointer<Component> component);
 
@@ -232,23 +232,23 @@ private:
     /*!
      *  Creates the root item for the navigation model for the given component.
      *
-     *      @param [in] component   The component for which to create the root item.
+     *    @param [in] component   The component for which to create the root item.
      *
-     *      @return The root item for the navigation model for the component.
+     *    @return The root item for the navigation model for the component.
      */
     QSharedPointer<ComponentEditorRootItem> createNavigationRootForComponent();
 	    
 	/*!
      *  Creates child items for the navigation model for a SW component.
      *
-     *      @param [in] root   The root item in the navigation model.
+     *    @param [in] root   The root item in the navigation model.
      */
     void addSWItems(ComponentEditorRootItem* root);
 
 	/*!
 	 *  Creates child items for the navigation model for a HW component.
 	 *
-	 *      @param [in] root				The root item in the navigation model.
+	 *    @param [in] root				The root item in the navigation model.
 	 *		@param [in] expressionSupport	Collection of classes for handling expressions.
 	 * 
 	 */
@@ -257,47 +257,47 @@ private:
 	/*!
 	 *  Create the General item in the navigation tree.
 	 *
-	 *      @param [in] root	The root item in the navigation model.
+	 *    @param [in] root	The root item in the navigation model.
 	 *
-	 *      @return The created item.
+	 *    @return The created item.
 	 */
 	QSharedPointer<ComponentEditorGeneralItem> createGeneralItem(ComponentEditorRootItem* root);
 
 	/*!
 	 *  Create the Parameters item in the navigation tree.
 	 *
-	 *      @param [in] root	The root item in the navigation model.
+	 *    @param [in] root	The root item in the navigation model.
 	 *
-	 *      @return The created item.
+	 *    @return The created item.
 	 */
 	QSharedPointer<ComponentEditorParametersItem> createParametersItem(ComponentEditorRootItem* root);
 
 	/*!
 	 *  Create the Instantiations item in the navigation tree.
 	 *
-	 *      @param [in] root	The root item in the navigation model.
+	 *    @param [in] root	The root item in the navigation model.
 	 *
-	 *      @return The created item.
+	 *    @return The created item.
 	 */
 	QSharedPointer<InstantiationsItem> createInstantiationsItem(ComponentEditorRootItem* root);
 
 	/*!
 	 *  Create the Views item in the navigation tree.
 	 *
-	 *      @param [in] root	The root item in the navigation model.
+	 *    @param [in] root	The root item in the navigation model.
 	 *
-	 *      @return The created item.
+	 *    @return The created item.
 	 */
 	QSharedPointer<ComponentEditorViewsItem> createViewsItem(ComponentEditorRootItem* root);
 
 	/*!
 	 *  Create the Ports item in the navigation tree.
 	 *
-     *      @param [in] root				The root item in the navigation model.
-     *      @param [in] busInterface		The interface for accessing bus interface data.
+     *    @param [in] root				The root item in the navigation model.
+     *    @param [in] busInterface		The interface for accessing bus interface data.
      *		@param [in] expressionSupport	Collection of classes for handling expressions.
 	 *
-	 *      @return The created item.
+	 *    @return The created item.
 	 */
 	QSharedPointer<ComponentEditorPortsItem> createPortsItem(ComponentEditorRootItem* root, 
 		BusInterfaceInterface* busInterface, ExpressionSet const& expressionSupport);
@@ -305,11 +305,11 @@ private:
 	/*!
 	 *  Create the Bus Interfaces item in the navigation tree.
 	 *
-     *      @param [in] root				The root item in the navigation model.
-     *      @param [in] busInterface		The interface for accessing bus interface data.
-     *      @param [in] portMapInterface	The interface for accessing port map data.
+     *    @param [in] root				The root item in the navigation model.
+     *    @param [in] busInterface		The interface for accessing bus interface data.
+     *    @param [in] portMapInterface	The interface for accessing port map data.
 	 *
-	 *      @return The created item.
+	 *    @return The created item.
 	 */
 	QSharedPointer<ComponentEditorBusInterfacesItem> createBusInterfacesItem(ComponentEditorRootItem* root,
 		BusInterfaceInterface* busInterface, PortMapInterface* portMapInterface);
@@ -317,10 +317,10 @@ private:
 	/*!
 	 *  Create the Indirect Interfaces item in the navigation tree.
 	 *
-     *      @param [in] root				The root item in the navigation model.
-     *      @param [in] busInterface		The interface for accessing bus interface data.
+     *    @param [in] root				The root item in the navigation model.
+     *    @param [in] busInterface		The interface for accessing bus interface data.
 	 *
-	 *      @return The created item.
+	 *    @return The created item.
 	 */
 	QSharedPointer<ComponentEditorIndirectInterfacesItem> createIndirectInterfacesItem(
 		ComponentEditorRootItem* root, BusInterfaceInterface* busInterface);
@@ -331,10 +331,10 @@ private:
     /*!
      *  Update component files of a target component.
      *
-     *      @param [in] targetComponent     The component whose files are being updated.
-     *      @param [in] otherComponent      The other component.
-     *      @param [in] sourcePath          Source path.
-     *      @param [in] targetPath          Target path.
+     *    @param [in] targetComponent     The component whose files are being updated.
+     *    @param [in] otherComponent      The other component.
+     *    @param [in] sourcePath          Source path.
+     *    @param [in] targetPath          Target path.
      */
     void updateComponentFiles(QSharedPointer<Component> targetComponent, QSharedPointer<Component> otherComponent,
         QString const& sourcePath, QString const& targetPath) const;
@@ -342,18 +342,18 @@ private:
     /*!
      *  Get a list of the file names of a component.
      *
-     *      @param [in] component   The component whose file names are being looked.
+     *    @param [in] component   The component whose file names are being looked.
      *
-     *      @return A list of file names contained within a component.
+     *    @return A list of file names contained within a component.
      */
     QStringList getComponentFileNames(QSharedPointer<Component> component) const;
 
     /*!
      *  Change the name of a single file.
      *
-     *      @param [in] from        The original file name.
-     *      @param [in] to          The new file name.
-     *      @param [in] component   The component containing the file.
+     *    @param [in] from        The original file name.
+     *    @param [in] to          The new file name.
+     *    @param [in] component   The component containing the file.
      */
     void changeFileName(QString const& from, QString const& to, QSharedPointer<Component> component) const;
 

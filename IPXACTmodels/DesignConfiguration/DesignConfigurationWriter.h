@@ -32,8 +32,8 @@ namespace DesignConfigurationWriter
     /*!
      *  Writes the given design configuration into xml.
      *
-     *      @param [in] writer                  The xml writer to use.
-     *      @param [in] designConfiguration     The selected design configuration.
+     *    @param [in] writer                  The xml writer to use.
+     *    @param [in] designConfiguration     The selected design configuration.
      */
     IPXACTMODELS_EXPORT void writeDesignConfiguration(QXmlStreamWriter& writer,
         QSharedPointer<DesignConfiguration> designConfiguration);
@@ -43,8 +43,8 @@ namespace DesignConfigurationWriter
         /*!
          *  Write the document start elements.
          *
-         *      @param [in] writer                  The used xml writer.
-         *      @param [in] designConfiguration     The selected design configuration.
+         *    @param [in] writer                  The used xml writer.
+         *    @param [in] designConfiguration     The selected design configuration.
          */
         void writeDesignConfigurationStart(QXmlStreamWriter& writer,
             QSharedPointer<DesignConfiguration> designConfiguration);
@@ -52,16 +52,16 @@ namespace DesignConfigurationWriter
         /*!
          *  Write the VLNV of the design configuration's referenced design.
          *
-         *      @param [in] writer              The used xml writer.
-         *      @param [in] designReference     The VLNV of the referenced design.
+         *    @param [in] writer              The used xml writer.
+         *    @param [in] designReference     The VLNV of the referenced design.
          */
         void writeDesignReference(QXmlStreamWriter& writer, VLNV const& designReference);
 
         /*!
          *  Write generator chain configuration.
          *
-         *      @param [in] writer                  The used xml writer.
-         *      @param [in] designConfiguration     The selected design configuration.
+         *    @param [in] writer                  The used xml writer.
+         *    @param [in] designConfiguration     The selected design configuration.
          */
         void writeGeneratorChainConfiguration(QXmlStreamWriter& writer,
             QSharedPointer<DesignConfiguration> designConfiguration);
@@ -69,8 +69,8 @@ namespace DesignConfigurationWriter
         /*!
          *  Write the interconnection configurations.
          *
-         *      @param [in] writer                  The used xml writer.
-         *      @param [in] designConfiguration     The selected design configuration.
+         *    @param [in] writer                  The used xml writer.
+         *    @param [in] designConfiguration     The selected design configuration.
          */
         void writeInterConnectionConfiguration(QXmlStreamWriter& writer,
             QSharedPointer<DesignConfiguration> designConfiguration);
@@ -78,8 +78,8 @@ namespace DesignConfigurationWriter
         /*!
          *  Write the multiple abstractor instances.
          *
-         *      @param [in] writer                  The used xml writer.
-         *      @param [in] multipleAbstractors     A list of multipleAbastractors.
+         *    @param [in] writer                  The used xml writer.
+         *    @param [in] multipleAbstractors     A list of multipleAbastractors.
          */
         void writeMultipleAbstractorInstances(QXmlStreamWriter& writer,
             QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > multipleAbstractors,
@@ -88,8 +88,8 @@ namespace DesignConfigurationWriter
         /*!
          *  Write the interface references.
          *
-         *      @param [in] writer                  The used xml writer.
-         *      @param [in] interfaceReferences     A list of interface references.
+         *    @param [in] writer                  The used xml writer.
+         *    @param [in] interfaceReferences     A list of interface references.
          */
         void writeInterfaceReferences(QXmlStreamWriter& writer,
             QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences,
@@ -98,8 +98,8 @@ namespace DesignConfigurationWriter
         /*!
          *  Write the abstractor instances.
          *
-         *      @param [in] writer                  The used xml writer.
-         *      @param [in] abstractorInstances     A list of abstractor instances.
+         *    @param [in] writer                  The used xml writer.
+         *    @param [in] abstractorInstances     A list of abstractor instances.
          */
         void writeAbstractorInstances(QXmlStreamWriter& writer,
             QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > abstractorInstances,
@@ -108,8 +108,8 @@ namespace DesignConfigurationWriter
         /*!
          *  Write the view configurations.
          *
-         *      @param [in] writer                  The used xml writer.
-         *      @param [in] designConfiguration     The selected design configuration.
+         *    @param [in] writer                  The used xml writer.
+         *    @param [in] designConfiguration     The selected design configuration.
          */
         void writeViewConfigurations(QXmlStreamWriter& writer,
             QSharedPointer<DesignConfiguration> designConfiguration);

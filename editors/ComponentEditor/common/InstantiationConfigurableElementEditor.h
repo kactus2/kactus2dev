@@ -41,14 +41,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] elementFinder       The finder for the configurable element values.
-	 *      @param [in] parameterFinder     The finder for configurable elements and top parameters.
-	 *      @param [in] elementFormatter    Formats referencing expressions in configurable elements.
-	 *      @param [in] parameterFormatter  Formats referencing expressions in component instance.
-	 *      @param [in] elementParser       Solves expressions in configurable elements.
-	 *      @param [in] parameterParser     Solves expressions in default values (component instance).
-	 *      @param [in] completionModel     The completion model for selecting parameter references.
-	 *      @param [in] parent              The parent widget.
+	 *    @param [in] elementFinder       The finder for the configurable element values.
+	 *    @param [in] parameterFinder     The finder for configurable elements and top parameters.
+	 *    @param [in] elementFormatter    Formats referencing expressions in configurable elements.
+	 *    @param [in] parameterFormatter  Formats referencing expressions in component instance.
+	 *    @param [in] elementParser       Solves expressions in configurable elements.
+	 *    @param [in] parameterParser     Solves expressions in default values (component instance).
+	 *    @param [in] completionModel     The completion model for selecting parameter references.
+	 *    @param [in] parent              The parent widget.
 	 */
     InstantiationConfigurableElementEditor(
          QSharedPointer<ConfigurableElementFinder> elementFinder,
@@ -66,9 +66,9 @@ public:
     /*!
      *  Setup the configurable element values for the model.
      *
-     *      @param [in] containerName   Name of the item containing the parameters.
-     *      @param [in] parameters      List of the selected parameters.
-     *      @param [in] storedElements  List of the stored configurable element values.
+     *    @param [in] containerName   Name of the item containing the parameters.
+     *    @param [in] parameters      List of the selected parameters.
+     *    @param [in] storedElements  List of the stored configurable element values.
      */
     void setParameters(QString const& containerName, QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         Document::Revision docRevision,

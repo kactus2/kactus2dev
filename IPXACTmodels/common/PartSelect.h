@@ -34,8 +34,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] leftRange   The left value for the range.
-     *      @param [in] rightRange  The right value for the range.
+     *    @param [in] leftRange   The left value for the range.
+     *    @param [in] rightRange  The right value for the range.
      */
     PartSelect(QString const& leftRange = QString(), QString const& rightRange = QString());
 
@@ -52,7 +52,7 @@ public:
     /*!
      *  Create a copy of the PartSelect.
      *
-     *      @return A PartSelect identical to this.
+     *    @return A PartSelect identical to this.
      */
     PartSelect* clone() const;
 
@@ -64,14 +64,14 @@ public:
     /*!
      *  Get the left value of the range.
      *
-     *      @return The left value of the range.
+     *    @return The left value of the range.
      */
     QString getLeftRange() const;
 
     /*!
      *  Get the right value of the range.
      *
-     *      @return The right value of the range.
+     *    @return The right value of the range.
      */
     QString getRightRange() const;
 
@@ -80,28 +80,28 @@ public:
     /*!
      *  Set the left value for the range.
      *
-     *      @param [in] newLeftRange    The new value for the left value of the range.
+     *    @param [in] newLeftRange    The new value for the left value of the range.
      */
     void setLeftRange(QString const& newLeftRange);
 
     /*!
      *  Set the right value for the range.
      *
-     *      @param [in] newRightRange   The new value for the right value of the range.
+     *    @param [in] newRightRange   The new value for the right value of the range.
      */
     void setRightRange(QString const& newRightRange);
 
     /*!
      *  Get the list of indexes.
      *
-     *      @return Pointer to a list of indexes,
+     *    @return Pointer to a list of indexes,
      */
     QSharedPointer<QStringList> getIndices() const;
 
     /*!
      *  Set the list of indexes.
      *
-     *      @param [in] newIndices  A new list of indexes.
+     *    @param [in] newIndices  A new list of indexes.
      */
     void setIndices(QSharedPointer<QStringList> newIndices);
 

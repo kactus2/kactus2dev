@@ -29,8 +29,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] title   The group title.
-     *      @param [in] parent  The parent ribbon.
+     *    @param [in] title   The group title.
+     *    @param [in] parent  The parent ribbon.
      */
     RibbonGroup(QString const& title, Ribbon* parent);
 

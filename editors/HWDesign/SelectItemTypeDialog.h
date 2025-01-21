@@ -31,8 +31,8 @@ public:
     /*!
      *  Constructor.
      *     
-     *      @param [in] allowedItems  The item types from which the user can select from.
-     *      @param [in] parent        The parent widget.
+     *    @param [in] allowedItems  The item types from which the user can select from.
+     *    @param [in] parent        The parent widget.
      */
     SelectItemTypeDialog(unsigned int allowedItems, QWidget* parent);
 

@@ -58,14 +58,14 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] libHandler          The instance that manages the library.
-	 *      @param [in] component           The component being edited.
-     *      @param [in] busInterface        Interface for accessing bus interfaces.
-     *      @param [in] busName             Name of the edited bus interface.
-     *      @param [in] expressionParser    The used expression parser.
-     *      @param [in] finder              The used parameter finder.
-     *      @param [in] portMapInterface    Interface for accessing port maps.
-	 *      @param [in] parent              The owner of the editor.
+	 *    @param [in] libHandler          The instance that manages the library.
+	 *    @param [in] component           The component being edited.
+     *    @param [in] busInterface        Interface for accessing bus interfaces.
+     *    @param [in] busName             Name of the edited bus interface.
+     *    @param [in] expressionParser    The used expression parser.
+     *    @param [in] finder              The used parameter finder.
+     *    @param [in] portMapInterface    Interface for accessing port maps.
+	 *    @param [in] parent              The owner of the editor.
 	 */
     BusInterfacePortMapTab(LibraryInterface* libHandler,
         QSharedPointer<Component> component,
@@ -89,14 +89,14 @@ public:
 	/*!
      *  Set the abstraction type that defines the logical signals to use.
 	 *
-     *      @param [in] abstractionIndex    Index of the selected abstraction type.
+     *    @param [in] abstractionIndex    Index of the selected abstraction type.
 	 */
     virtual void setAbsType(int const& abstractionIndex);
 
     /*!
      *  Sets a subset of component ports to be visible in the physical port list.
      *
-     *      @param [in] ports   List of port names to show.
+     *    @param [in] ports   List of port names to show.
      */
     virtual void setPhysicalPorts(QStringList const& ports);
 
@@ -110,7 +110,7 @@ public slots:
     /*!
      *  Handle the change in the name of the edited bus interface.
      *
-     *      @param [in] newName     New name of the edited bus interface.
+     *    @param [in] newName     New name of the edited bus interface.
      */
     void changeBusName(std::string const& newName);
 
@@ -128,21 +128,21 @@ signals:
     /*!
      *  Emitted when a help page should be changed in the context help window.
      *
-     *      @param [in] url     URL of the help page.
+     *    @param [in] url     URL of the help page.
      */
     void helpUrlRequested(QString const& url);
 
     /*!
      *  Emitted when the selected parameter is referenced. Increases the number of references.
      *
-     *      @param [in] id  The ID of the referenced parameter.
+     *    @param [in] id  The ID of the referenced parameter.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Emitted when the selected parameter is referenced. Decreases the number of references.
      *
-     *      @param [in] id  The ID of the referenced parameter.
+     *    @param [in] id  The ID of the referenced parameter.
      */
     void decreaseReferences(QString id);
 
@@ -156,21 +156,21 @@ private slots:
     /*!
      *  Handles the filtering of a connected port.
      *
-     *      @param [in] portName    The name of the connected port.
+     *    @param [in] portName    The name of the connected port.
      */
     void onPortConnected(QString const& portName);
 
     /*!
      *  Handles the filtering of a disconnected port.
      *
-     *      @param [in] portName    The name of the disconnected port.
+     *    @param [in] portName    The name of the disconnected port.
      */
     void onPortDisconnected(QString const& portName);
 
     /*!
      *  Handles the filtering by the selected direction.
      *
-     *      @param [in] newDirection    The selected direction.
+     *    @param [in] newDirection    The selected direction.
      */
     void onDirectionFilterChanged(QString const& newDirection);
 

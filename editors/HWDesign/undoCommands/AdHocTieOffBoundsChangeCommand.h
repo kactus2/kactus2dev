@@ -34,12 +34,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] portItem            The selected port item.
-     *      @param [in] newLeftValue        New value for the left bound of the tie off.
-     *      @param [in] newRightValue       New value for the right bound of the tie off.
-     *      @param [in] tieOffConnection    Connection containing the tie off.
-     *      @param [in] designDiagram       Diagram containing the HW design.
-     *      @param [in] parent              The parent command.
+     *    @param [in] portItem            The selected port item.
+     *    @param [in] newLeftValue        New value for the left bound of the tie off.
+     *    @param [in] newRightValue       New value for the right bound of the tie off.
+     *    @param [in] tieOffConnection    Connection containing the tie off.
+     *    @param [in] designDiagram       Diagram containing the HW design.
+     *    @param [in] parent              The parent command.
      */
     AdHocTieOffBoundsChangeCommand(AdHocItem* portItem, QString const& newLeftValue, QString const& newRightValue,
         QSharedPointer<AdHocConnection> tieOffConnection, HWDesignDiagram* designDiagram,

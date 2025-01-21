@@ -50,36 +50,36 @@ namespace TransactionalTypes
     /*!
      *  Change the selected initiative value to string.
      *
-     *      @param [in] initiative  The selected initiative value.
+     *    @param [in] initiative  The selected initiative value.
      *
-     *      @return The selected initiative in string format.
+     *    @return The selected initiative in string format.
      */
     IPXACTMODELS_EXPORT QString initiativeToString(TransactionalTypes::Initiative const& initiative);
 
     /*!
      *  Change the selected string to initiative value.
      *
-     *      @param [in] str     The selected initiative string.
+     *    @param [in] str     The selected initiative string.
      *
-     *      @return The selected initiative in initiative format.
+     *    @return The selected initiative in initiative format.
      */
     IPXACTMODELS_EXPORT TransactionalTypes::Initiative strToInitiative(QString const& str);
 
 	/*!
 	 *  Checks if the file type belongs to the specified file types.
 	 *
-	 *      @param [in] fileType    The file type to check.
+	 *    @param [in] fileType    The file type to check.
      *
-     *      @return True if the file type is one of the specified ones, false otherwise.
+     *    @return True if the file type is one of the specified ones, false otherwise.
 	 */
     IPXACTMODELS_EXPORT bool isIpXactInitiativeType(QString const& initiativeType);
 
     /*!
      *  Convert the selected initiative to mirrored initiative.
      *
-     *      @param [in] initiative  The selected initiative.
+     *    @param [in] initiative  The selected initiative.
      *
-     *      @return The mirrored initiative.
+     *    @return The mirrored initiative.
      */
     IPXACTMODELS_EXPORT TransactionalTypes::Initiative convertToMirrored(QString const& initiative);
 
@@ -95,9 +95,9 @@ namespace TransactionalTypes
     /*!
      *  Checks if the kind type belongs to the specified kind types.
      *
-     *      @param [in] kindType    The kind type to check.
+     *    @param [in] kindType    The kind type to check.
      *
-     *      @return True if the kind type is one of the specified ones, false otherwise.
+     *    @return True if the kind type is one of the specified ones, false otherwise.
      */
     IPXACTMODELS_EXPORT bool isIpXactKindType(QString const& kindType);
 }

@@ -31,7 +31,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  The owner of this widget.
+	 *    @param [in] parent  The owner of this widget.
 	 */
 	DialerWidget(QWidget *parent);
 	
@@ -43,7 +43,7 @@ public:
 	/*!
      *  Set the root item used to create the suggestions for dialer.
 	 *
-	 *      @param [in] rootItem    The root item of the library.
+	 *    @param [in] rootItem    The root item of the library.
 	 */
 	void setRootItem(const LibraryItem* rootItem);
 

@@ -39,11 +39,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] size                      The initial rectangle size.
-     *      @param [in] libInterface              The library interface.
-     *      @param [in] component                 The actual component.
-     *      @param [in] instanceName              The name of the component instance.
-     *      @param [in] parent                    The parent graphics item.
+     *    @param [in] size                      The initial rectangle size.
+     *    @param [in] libInterface              The library interface.
+     *    @param [in] component                 The actual component.
+     *    @param [in] instanceName              The name of the component instance.
+     *    @param [in] parent                    The parent graphics item.
      */
 
 
@@ -85,21 +85,21 @@ public:
 	/*!
      *  Sets the instance name.
      *
-     *      @param [in] newName The instance name to set.
+     *    @param [in] newName The instance name to set.
      */
     void setName(QString const& newName);
 
     /*!
      *  Sets the display name for the component instance.
      *
-     *      @param [in] displayName The display name to set.
+     *    @param [in] displayName The display name to set.
 	 */
 	void setDisplayName(QString const& displayName);
 
     /*!
      *  Sets the description of the component instance.
      *
-     *      @param [in] description The description to set.
+     *    @param [in] description The description to set.
      */
 	void setDescription(const QString& description);
 
@@ -153,9 +153,9 @@ public:
     /*!
      *  Defines the connection point for associations in scene coordinates.
      *     
-     *      @param [in] otherEnd   The position of the other end connection point.
+     *    @param [in] otherEnd   The position of the other end connection point.
      *
-     *      @return The connection point of the item.
+     *    @return The connection point of the item.
      */
     virtual QPointF connectionPoint(QPointF const& otherEnd = QPointF()) const;
 
@@ -172,7 +172,7 @@ public:
     /*!
      *  Handle the movement of a connection end point item.
      *
-     *      @param [in] port    The selected connection end point item.
+     *    @param [in] port    The selected connection end point item.
      */
     virtual void onMovePort(ConnectionEndpoint* port) = 0;
 
@@ -213,7 +213,7 @@ protected:
     /*!
      *  Updates the name label with the given text.
      *
-     *      @param [in] text The text to display in the label.
+     *    @param [in] text The text to display in the label.
      */
     virtual void updateNameLabel();
 
@@ -221,28 +221,28 @@ protected:
     /*!
      *  Adds an interface item to component side determined by the item position.
      *
-     *      @param [in] port   The interface item to add.
+     *    @param [in] port   The interface item to add.
      */
     void addPortToSideByPosition(ConnectionEndpoint* port);
 
     /*!
      *  Adds an interface item to the component side with less ports.
      *
-     *      @param [in] port   The interface item to add.
+     *    @param [in] port   The interface item to add.
      */
     void addPortToSideWithLessPorts(ConnectionEndpoint* port);
 
     /*!
      *  Adds a bus interface on the left side of the component item.
      *
-     *      @param [in] port   The port to add.
+     *    @param [in] port   The port to add.
      */
     void addPortToLeft(ConnectionEndpoint* port);
 
     /*!
      *  Adds a bus interface on the right side of the component item.
      *
-     *      @param [in] port   The port to add.
+     *    @param [in] port   The port to add.
      */
     void addPortToRight(ConnectionEndpoint* port);
 
@@ -250,8 +250,8 @@ protected:
     /*!
      *  Check and resize the port labels to better match with the component width.
      *
-     *      @param [in] port       The port that is compared to the other stack.
-     *      @param [in] otherSide  The stack containing the ports of the other side.
+     *    @param [in] port       The port that is compared to the other stack.
+     *    @param [in] otherSide  The stack containing the ports of the other side.
      */
     void checkPortLabelSize(ConnectionEndpoint* port, QList<ConnectionEndpoint*> const& otherSide);
 

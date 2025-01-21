@@ -30,9 +30,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] port                The port to delete.
-     *      @param [in] containingDesign    Design containing the SW port.
-     *      @param [in] parent              The owner of this command.
+     *    @param [in] port                The port to delete.
+     *    @param [in] containingDesign    Design containing the SW port.
+     *    @param [in] parent              The owner of this command.
      */
     SWPortDeleteCommand(SWPortItem* port, QSharedPointer<Design> containingDesign, QUndoCommand* parent = 0);
 

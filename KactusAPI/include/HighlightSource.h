@@ -24,7 +24,7 @@ public:
     /*!
      *  Sets the given highlighter to be used by the source.
      *
-     *      @param [in] highlighter   The highlighter to use.          
+     *    @param [in] highlighter   The highlighter to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter) = 0;
 

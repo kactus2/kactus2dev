@@ -41,35 +41,35 @@ public slots:
 	/*!
 	 *  Select all hardware check boxes from the selected row.
 	 *
-	 *      @param [in] rowIndex   The selected row.
+	 *    @param [in] rowIndex   The selected row.
 	 */
 	void onHwHorizonSelectAll(int rowIndex);
 
 	/*!
 	 *  Select all hardware check boxes from the selected column.
 	 *
-	 *      @param [in] columnIndex   The selected column.
+	 *    @param [in] columnIndex   The selected column.
 	 */
 	void onHwVerticalSelectAll(int columnIndex);
 
 	/*!
 	 *  Select all software check boxes from the selected row.
 	 *
-	 *      @param [in] rowIndex   The selected row.
+	 *    @param [in] rowIndex   The selected row.
 	 */
 	void onSwHorizonSelectAll(int rowIndex);
 
 	/*!
 	 *  Select all software check boxes from the selected column.
 	 *
-	 *      @param [in] columnIndex   If software would have hierarchy, this selects it.
+	 *    @param [in] columnIndex   If software would have hierarchy, this selects it.
 	 */
     void onSwVerticalSelectAll();
 
 	/*!
 	 *  Change the workspace index.
 	 *
-	 *      @param [in] workspaceIndex   The index value of the new workspace.
+	 *    @param [in] workspaceIndex   The index value of the new workspace.
 	 */
 	void onWorkspaceChanged(int workspaceIndex);
 
@@ -78,14 +78,14 @@ private:
 	/*!
 	 *  Apply the hardware settings.
 	 *
-	 *      @param [in] workspaceIndex   The current workspace index.
+	 *    @param [in] workspaceIndex   The current workspace index.
 	 */
 	void applyHwSettings(int workspaceIndex) const;
 
     /*!
      *  Apply the software settings.
      *
-     *      @param [in] workspaceIndex   The current workspace index.
+     *    @param [in] workspaceIndex   The current workspace index.
      */
     void applySwSettings(int workspaceIndex) const;
 
@@ -107,17 +107,17 @@ private:
 	/*!
 	 *  Set the check box names to correct format.
 	 *
-	 *      @param [in/out] checkBoxNames   List of names to be changed.
+	 *    @param [in/out] checkBoxNames   List of names to be changed.
 	 */
 	void changeNameSeparators(QStringList& checkBoxNames);
 
     /*!
 	 *  Set the hardware table.
 	 *
-	 *      @param [in] table               The table.
-	 *      @param [in] horizontalHeaders   Horizontal headers for the table.
-	 *      @param [in] verticalHeaders     Vertical headers for the table.
-	 *      @param [in] workspaceIndex      Current workspace index.
+	 *    @param [in] table               The table.
+	 *    @param [in] horizontalHeaders   Horizontal headers for the table.
+	 *    @param [in] verticalHeaders     Vertical headers for the table.
+	 *    @param [in] workspaceIndex      Current workspace index.
 	 */
 	void setHwTable(QTableWidget* table, QStringList horizontalHeaders, QStringList verticalHeaders, 
 		int workspaceIndex);
@@ -125,10 +125,10 @@ private:
 	/*!
 	 *  Set the software table.
 	 *
-	 *      @param [in] table               The table.
-	 *      @param [in] horizontalHeaders   Horizontal headers for the table.
-	 *      @param [in] verticalHeaders     Vertical headers for the table.
-	 *      @param [in] workspaceIndex      Current workspace index.
+	 *    @param [in] table               The table.
+	 *    @param [in] horizontalHeaders   Horizontal headers for the table.
+	 *    @param [in] verticalHeaders     Vertical headers for the table.
+	 *    @param [in] workspaceIndex      Current workspace index.
 	 */
 	void setSwTable(QTableWidget* table, QStringList horizontalHeaders, QStringList verticalHeaders, 
 		int workspaceIndex);
@@ -136,7 +136,7 @@ private:
 	/*!
 	 *  Center the check box to a table cell.
 	 *
-	 *      @param [in] checkBox   Check box to be centered.
+	 *    @param [in] checkBox   Check box to be centered.
 	 */
 	QWidget* centeredCheckBox(QCheckBox* checkBox);
 	
@@ -148,7 +148,7 @@ private:
 	/*!
 	 *  Set the check boxes to their respective lists.
 	 *
-	 *      @param [in] checkBoxes   The current usable check box list.
+	 *    @param [in] checkBoxes   The current usable check box list.
 	 */
 	QList <QCheckBox*> setCheckBoxes();
 

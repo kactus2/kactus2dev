@@ -46,43 +46,43 @@ public:
     /*!
      *  Set the name for the connection item.
      *
-     *      @param [in] name    The new connection item name.
+     *    @param [in] name    The new connection item name.
      */
     void setName(QString const& name) final;
 
     /*!
      *  Get the name of the connection item.
      *
-     *      @return The name of the connection item.
+     *    @return The name of the connection item.
      */
     QString name() const final;
 
     /*!
      *  Set the description for the connection item.
      *
-     *      @param [in] description     The new description.
+     *    @param [in] description     The new description.
      */
     void setDescription(QString const& description) final;
 
     /*!
      *  Get the description for the connection item.
      *
-     *      @return The description of the connection item.
+     *    @return The description of the connection item.
      */
     QString description() const final;
 
     /*!
      *  Get the contained interconnection.
      *
-     *      @return The interconnection contained within this item.
+     *    @return The interconnection contained within this item.
      */
     QSharedPointer<T> getInterconnection();
 
     /*!
      *  Change the component reference of a contained interface.
      *
-     *      @param [in] oldName     The old component reference.
-     *      @param [in] newName     The new component reference.
+     *    @param [in] oldName     The old component reference.
+     *    @param [in] newName     The new component reference.
      */
     void changeConnectionComponentReference(QString const& oldName, QString const& newName) final;
 

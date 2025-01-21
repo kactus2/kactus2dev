@@ -40,8 +40,8 @@ public:
     /*!
      *   The constructor.
      *
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] parent                  The parent widget.
+     *    @param [in] expressionFormatter     Formatter for expressions.
+     *    @param [in] parent                  The parent widget.
      */
     ParameterReferenceTree(QSharedPointer<ExpressionFormatter> formatter, QWidget* parent = 0);
 
@@ -53,7 +53,7 @@ public:
     /*!
      *  Setup the parameter reference tree for the selected parameter.
      *
-     *      @param [in] parameterID     ID of the selected parameter.
+     *    @param [in] parameterID     ID of the selected parameter.
      */
     void openReferenceTree(QString const& parameterID);
 
@@ -62,15 +62,15 @@ protected:
     /*!
      *  Get the ID of the selected parameter.
      *
-     *      @return ID of the selected parameter.
+     *    @return ID of the selected parameter.
      */
     QString getTargetID() const;
 
     /*!
      *  Create the references for parameters.
      *
-     *      @param [in] parameters      List of parameters containing a reference.
-     *      @param [in] parentItem      The parent item for references.
+     *    @param [in] parameters      List of parameters containing a reference.
+     *    @param [in] parentItem      The parent item for references.
      */
     void createParameterReferences(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         QTreeWidgetItem* parentItem);
@@ -78,8 +78,8 @@ protected:
     /*!
      *  Create references for configurable element values.
      *
-     *      @param [in] elements    List of the configurable element values.
-     *      @param [in] parent      The parent tree item.
+     *    @param [in] elements    List of the configurable element values.
+     *    @param [in] parent      The parent tree item.
      */
     void createReferencesForConfigurableElementValues(
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > elements, QTreeWidgetItem* parent);
@@ -87,43 +87,43 @@ protected:
     /*!
      *  Create a tree widget item to the top of the tree.
      *
-     *      @param [in] itemName    The name of the upcoming item.
+     *    @param [in] itemName    The name of the upcoming item.
      *
-     *      @return A pointer to the new tree item.
+     *    @return A pointer to the new tree item.
      */
     QTreeWidgetItem* createTopItem(QString const& itemName);
 
     /*!
      *  Create a tree item between two items.
      *
-     *      @param [in] itemnName   The name of the upcoming item.
-     *      @param [in] parent      The parent of the upcoming item.
+     *    @param [in] itemnName   The name of the upcoming item.
+     *    @param [in] parent      The parent of the upcoming item.
      *
-     *      @return A pointer to the new tree item.
+     *    @return A pointer to the new tree item.
      */
     QTreeWidgetItem* createMiddleItem(QString const& itemnName, QTreeWidgetItem* parent);
 
     /*!
      *  Create tree items for a parameter that is referencing this parameter.
      *
-     *      @param [in] parameter   The referencing parameter.
-     *      @param [in] parent      The parent of the upcoming item.
+     *    @param [in] parameter   The referencing parameter.
+     *    @param [in] parent      The parent of the upcoming item.
      */
     void createItemsForParameter(QSharedPointer<Parameter> parameter, QTreeWidgetItem* parent);
 
     /*!
      *  Create a referencing tree item.
      *
-     *      @param [in] itemName        The name of the upcoming tree item.
-     *      @param [in] expression      The expression where the upcoming tree item references this parameter.
-     *      @param [in] parent          The parent of the upcoming item.
+     *    @param [in] itemName        The name of the upcoming tree item.
+     *    @param [in] expression      The expression where the upcoming tree item references this parameter.
+     *    @param [in] parent          The parent of the upcoming item.
      */
     void createItem(QString const& itemName, QString const& expression, QTreeWidgetItem* parent);
 
     /*!
      *  Colour the background of the selected item grey.
      *
-     *      @param [in] item    The selected item.
+     *    @param [in] item    The selected item.
      */
     void colourItemGrey(QTreeWidgetItem* item);
 

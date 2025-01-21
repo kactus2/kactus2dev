@@ -40,14 +40,14 @@ public:
 	/*!
 	 *  Copy constructor.
 	 *
-	 *      @param [in] other   The memory map to be copied.
+	 *    @param [in] other   The memory map to be copied.
 	 */
 	MemoryMap(const MemoryMap& other);
 
 	/*!
 	 *  Assignment operator.
 	 *
-	 *      @param [in] other   The memory map being assigned.
+	 *    @param [in] other   The memory map being assigned.
 	 */
 	MemoryMap& operator=(const MemoryMap& other);
 
@@ -59,44 +59,44 @@ public:
     /*!
      *  Get a pointer to the list containing the memory remaps of this memory map.
      *
-     *      @return Pointer to the list containing the memory remaps of this memory map.
+     *    @return Pointer to the list containing the memory remaps of this memory map.
      */
     QSharedPointer<QList<QSharedPointer<MemoryRemap> > > getMemoryRemaps() const;
 
     /*!
      *  Set the memory remaps.
      *
-     *      @param [in] newMemoryRemaps     Pointer to a list containing the new memory remaps.
+     *    @param [in] newMemoryRemaps     Pointer to a list containing the new memory remaps.
      */
     void setMemoryRemaps(QSharedPointer<QList<QSharedPointer<MemoryRemap> > > newMemoryRemaps);
 
     /*!
 	 *  Get the address unit bits value.
 	 *      
-     *      @param [in] defaultIfEmpty      Flag for returning the default AUB value (8 bits) if AUB is empty.
+     *    @param [in] defaultIfEmpty      Flag for returning the default AUB value (8 bits) if AUB is empty.
      * 
-     *      @return The address unit bit value.
+     *    @return The address unit bit value.
 	 */
     QString getAddressUnitBits(bool defaultIfEmpty = true) const;
 
 	/*!
 	 *  Set the address unit bits for this memory map.
 	 *
-	 *      @param [in] newAddressUnitBits  Value to be set.
+	 *    @param [in] newAddressUnitBits  Value to be set.
 	 */
     void setAddressUnitBits(QString const& newAddressUnitBits);
 
     /*!
      *  Get the shared value.
      *
-     *      @return The shared value.
+     *    @return The shared value.
      */
     QString getShared() const;
 
     /*!
      *  Set the shared value.
      *
-     *      @param [in] newSharedStatus     The new shared value.
+     *    @param [in] newSharedStatus     The new shared value.
      */
     void setShared(bool newSharedStatus);
 
@@ -115,7 +115,7 @@ public:
     /*!
      *	Set the memory map definition reference.
      *
-     *      @param [in] newDefinitionRef     The new definition reference.
+     *    @param [in] newDefinitionRef     The new definition reference.
      */
     void setMemoryMapDefinitionReference(QString const& newDefinitionRef);
 
@@ -130,7 +130,7 @@ public:
     /*!
      *	Set the type definitions reference for this memory remap
      *
-     *      @param [in] newTypeDefinitionsRef     The type definitions reference to set.
+     *    @param [in] newTypeDefinitionsRef     The type definitions reference to set.
      */
     void setTypeDefinitionsReference(QString const& newTypeDefinitionsRef);
 
@@ -139,7 +139,7 @@ private:
     /*!
      *  Copy the memory remaps.
      *
-     *      @param [in] other   The memory map being copied.
+     *    @param [in] other   The memory map being copied.
      */
     void copyMemoryRemaps(const MemoryMap& other);
 

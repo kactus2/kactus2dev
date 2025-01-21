@@ -34,12 +34,12 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component               The component being edited.
-     *      @param [in] instantiation	        The instantiation being edited.	
-     *      @param [in] libHandler              The available IP-XACT library.
-     *      @param [in] parameterFinder         Pointer to the parameter finder.
-     *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] parent                  The parent widget.
+     *    @param [in] component               The component being edited.
+     *    @param [in] instantiation	        The instantiation being edited.	
+     *    @param [in] libHandler              The available IP-XACT library.
+     *    @param [in] parameterFinder         Pointer to the parameter finder.
+     *    @param [in] expressionFormatter     Pointer to the expression formatter.
+     *    @param [in] parent                  The parent widget.
      */
 	DesignConfigurationInstantiationEditor(QSharedPointer<Component> component, 
         QSharedPointer<DesignConfigurationInstantiation> instantiation,
@@ -81,7 +81,7 @@ private:
     /*!
      *  Create configurable element editor.
      *
-     *      @param [in] parameterFinder     The component parameter finder.
+     *    @param [in] parameterFinder     The component parameter finder.
      */
     void createConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder);
 

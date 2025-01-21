@@ -30,7 +30,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  The owner of this view.
+	 *    @param [in] parent  The owner of this view.
 	 */
 	EditableListView(QWidget *parent);
 	
@@ -49,22 +49,22 @@ signals:
 	/*!
      *  A new item should be added to given index.
 	 *
-	 *      @param [in] index The position where new item should be added at.
+	 *    @param [in] index The position where new item should be added at.
      */
 	void addItem(QModelIndex const& index);
 
 	/*!
      *  An item should be removed from the model.
 	 * 
-	 *      @param [in] index Identifies the item that should be removed.
+	 *    @param [in] index Identifies the item that should be removed.
      */
 	void removeItem(QModelIndex const& index);
 
 	/*!
      *  Move item to another position.
 	 *
-	 *      @param [in] originalPos Identifies the item that should be moved.
-	 *      @param [in] newPos The new position the item should be moved to.
+	 *    @param [in] originalPos Identifies the item that should be moved.
+	 *    @param [in] newPos The new position the item should be moved to.
      */
 	void moveItem(QModelIndex const& originalPos, QModelIndex const& newPos);
 
@@ -73,57 +73,57 @@ protected:
     /*!
      *  Handler for paint events.
      *
-     *      @param [in] event   The paint event.
+     *    @param [in] event   The paint event.
      */
     virtual void paintEvent(QPaintEvent *event);
 
 	/*!
      *  Handler for mouse move events
      *
-     *      @param [in] event   The mouse movement event.
+     *    @param [in] event   The mouse movement event.
      */
 	virtual void mouseMoveEvent(QMouseEvent* event);
 
 	/*!
      *  Handler for mouse double click events
      *
-     *      @param [in] event   The double click event.
+     *    @param [in] event   The double click event.
      */
 	virtual void mouseDoubleClickEvent(QMouseEvent* event);
 
 	/*!
      *  Handler for mouse press events
      *
-     *      @param [in] event   The mouse press event.
+     *    @param [in] event   The mouse press event.
      */
 	virtual void mousePressEvent(QMouseEvent* event);
 
 	/*!
      *  Handler for mouse release events
      *
-     *      @param [in] event   The mouse release event.
+     *    @param [in] event   The mouse release event.
      */
 	virtual void mouseReleaseEvent(QMouseEvent* event);
 
 	/*!
      * Handler for context menu events
      *
-     *      @param [in] event   The context menu event.
+     *    @param [in] event   The context menu event.
      */
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
     /*!
      *  Handler for key press events.
      *
-     *      @param [in] event   The key press event.
+     *    @param [in] event   The key press event.
      */
     virtual void keyPressEvent(QKeyEvent *event);
     
     /*!
      *  Handler for changes in current selection.
      *
-     *      @param [in] current     The current model index.
-     *      @param [in] previous    The previous model index.
+     *    @param [in] current     The current model index.
+     *    @param [in] previous    The previous model index.
      */
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
 

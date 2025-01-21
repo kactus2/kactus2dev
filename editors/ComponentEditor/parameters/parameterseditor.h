@@ -37,13 +37,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] handler                 Pointer to the instance managing the library.
-     *      @param [in] parameterFinder         Pointer to the instance searching for parameters.
-     *      @param [in] expressionParser        Expression parser for configurable elements.
-	 *      @param [in] expressionFormatter     Pointer to the instance formatting the expressions.
-     *      @param [in] parameterInterface      Interface for accessing parameters.
-     *      @param [in] parent                  Pointer to the owner of this widget.
+	 *    @param [in] component               Pointer to the component being edited.
+	 *    @param [in] handler                 Pointer to the instance managing the library.
+     *    @param [in] parameterFinder         Pointer to the instance searching for parameters.
+     *    @param [in] expressionParser        Expression parser for configurable elements.
+	 *    @param [in] expressionFormatter     Pointer to the instance formatting the expressions.
+     *    @param [in] parameterInterface      Interface for accessing parameters.
+     *    @param [in] parent                  Pointer to the owner of this widget.
 	 */
     ParametersEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,

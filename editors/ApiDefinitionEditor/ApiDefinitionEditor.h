@@ -44,9 +44,9 @@ public:
 	/*!
      *  Constructor.
 	 *
-     *      @param [in] parent      The parent widget.
-	 *      @param [in] libHandler  The library interface.
-     *      @param [in] apiDef      The API definition.
+     *    @param [in] parent      The parent widget.
+	 *    @param [in] libHandler  The library interface.
+     *    @param [in] apiDef      The API definition.
 	 */
 	ApiDefinitionEditor(QWidget* parent, LibraryInterface* libHandler, QSharedPointer<ApiDefinition> apiDef);
 	
@@ -64,7 +64,7 @@ public:
     /*!
      *  Sets the protection state of the document.
      *
-     *      @param [in] locked True for locked state; false for unlocked.
+     *    @param [in] locked True for locked state; false for unlocked.
      */
     virtual void setProtection(bool locked);
 
@@ -82,9 +82,9 @@ public slots:
     /*!
      *  Validates the document against the IP-XACT standard.
      *
-     *      @param [out] errorList Error message list for reporting standard violations.
+     *    @param [out] errorList Error message list for reporting standard violations.
      *
-     *      @return True if the document is valid. False if there were any violations.
+     *    @return True if the document is valid. False if there were any violations.
      */
     virtual bool validate(QVector<QString>& errorList);
 

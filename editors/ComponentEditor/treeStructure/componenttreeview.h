@@ -51,9 +51,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] handler     Pointer to the instance that manages the library.
-     *      @param [in] compVLNV    The VLNV of the component being edited.
-     *      @param [in] parent      Pointer to the owner of this widget
+     *    @param [in] handler     Pointer to the instance that manages the library.
+     *    @param [in] compVLNV    The VLNV of the component being edited.
+     *    @param [in] parent      Pointer to the owner of this widget
      */
     ComponentTreeView(LibraryInterface* handler,
 		const VLNV& compVLNV,
@@ -67,14 +67,14 @@ public:
 	/*!
      *  Set the locked state(enables / disables the dragging).
      * 
-     *      @param [in] locked  The new locked status.
+     *    @param [in] locked  The new locked status.
      */
 	void setLocked(bool locked);
 
 	/*!
      *  Select the specified item and deselect all others.
 	 *
-	 *      @param [in] index   Identifies the item to select.
+	 *    @param [in] index   Identifies the item to select.
      */
 	void selectItem(const QModelIndex& index);
 
@@ -93,8 +93,8 @@ protected:
 	 *  This is reimplemented function that calls the base class implementation 
 	 *  and also emits activated() signal for the current model index.
 	 * 
-	 *      @param [in] current     ModelIndex of the new item
-	 *      @param [in] previous    ModelIndex of the previous item
+	 *    @param [in] current     ModelIndex of the new item
+	 *    @param [in] previous    ModelIndex of the previous item
      */
 	virtual void currentChanged(const QModelIndex & current, const QModelIndex & previous);
 
@@ -146,7 +146,7 @@ private:
     /*!
      *  Finds the clicked item.     
      *
-     *      @return The clicked item.
+     *    @return The clicked item.
      */
     ComponentEditorItem* getPressedItem();
 

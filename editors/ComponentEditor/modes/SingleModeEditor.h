@@ -42,11 +42,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component that contains the view.
-     *      @param [in] Mode                     The remap state being edited.
-	 *      @param [in] libHandler              The instance that manages the library.
-     *      @param [in] expressions             Changes the referenced ids to parameter names.
-	 *      @param [in] parent                  The owner of this editor.
+	 *    @param [in] component               The component that contains the view.
+     *    @param [in] Mode                     The remap state being edited.
+	 *    @param [in] libHandler              The instance that manages the library.
+     *    @param [in] expressions             Changes the referenced ids to parameter names.
+	 *    @param [in] parent                  The owner of this editor.
 	 */
     SingleModeEditor(QSharedPointer<Component> component,
         QSharedPointer<Mode> mode,
@@ -74,7 +74,7 @@ protected:
     /*!
      *  The show event for this editor.
      *
-     *      @param [in] event   The show event.
+     *    @param [in] event   The show event.
      */
     void showEvent(QShowEvent * event) final;
 

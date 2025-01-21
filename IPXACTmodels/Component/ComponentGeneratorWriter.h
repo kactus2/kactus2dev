@@ -30,9 +30,9 @@ namespace ComponentGeneratorWriter
     /*!
      *  Write a ComponentGenerator to an XML file.
      *
-     *      @param [in] writer                  The used xml writer.
-     *      @param [in] ComponentGenerator		The ComponentGenerator to be written.
-     *      @param [in] docRevision				The IP-XACT standard revision in use.
+     *    @param [in] writer                  The used xml writer.
+     *    @param [in] ComponentGenerator		The ComponentGenerator to be written.
+     *    @param [in] docRevision				The IP-XACT standard revision in use.
      */
 	IPXACTMODELS_EXPORT void writeComponentGenerator(QXmlStreamWriter& writer, 
 		QSharedPointer<ComponentGenerator> componentGenerator, Document::Revision docRevision);
@@ -43,33 +43,33 @@ namespace ComponentGeneratorWriter
 		/*!
 		 *  Writes the component generator attributes to XML.
 		 *
-		 *      @param [in] writer					The used xml writer.
-		 *      @param [in] componentGenerator		The component generator whose attributes to write.
+		 *    @param [in] writer					The used xml writer.
+		 *    @param [in] componentGenerator		The component generator whose attributes to write.
 		 */
 		void writeAttributes(QXmlStreamWriter& writer, QSharedPointer<ComponentGenerator> componentGenerator);
 
 		/*!
 		 *  Writes the component generator API type to XML.
 		 *
-		 *      @param [in] writer					The used xml writer.
-		 *      @param [in] componentGenerator		The component generator whose API type to write.
+		 *    @param [in] writer					The used xml writer.
+		 *    @param [in] componentGenerator		The component generator whose API type to write.
 		 */
 		void writeApiType(QXmlStreamWriter& writer, QSharedPointer<ComponentGenerator> componentGenerator, Document::Revision docRevision);
 		
 		/*!
 		 *	Writes the component generator API service to XML.
 		 *  
-         *      @param [in] writer					The used xml writer.
-         *      @param [in] componentGenerator		The component generator whose attributes to write.
-		 *      @param [in] docRevision				The IP-XACT standard revision in use.
+         *    @param [in] writer					The used xml writer.
+         *    @param [in] componentGenerator		The component generator whose attributes to write.
+		 *    @param [in] docRevision				The IP-XACT standard revision in use.
 		 */
 		void writeApiService(QXmlStreamWriter& writer, QSharedPointer<ComponentGenerator> componentGenerator, Document::Revision docRevision);
 
 		/*!
 		 *  Writes the component generator transport methods to XML.
 		 *
-		 *      @param [in] writer					The used xml writer.
-		 *      @param [in] componentGenerator		The component generator whose transport mehtods to write.
+		 *    @param [in] writer					The used xml writer.
+		 *    @param [in] componentGenerator		The component generator whose transport mehtods to write.
 		 */
 		void writeTransportMethods(QXmlStreamWriter& writer,
 			QSharedPointer<ComponentGenerator> componentGenerator);

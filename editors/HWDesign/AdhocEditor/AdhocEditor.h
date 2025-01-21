@@ -47,10 +47,10 @@ public:
     /*!
      *  Sets the ad-hoc ports visibility data source.
      *
-     *      @param [in] dataSource      The data source.
-     *      @param [in] design          The design containing the data source.
-     *      @param [in] editProvider    The edit provider to use for undo/redo.
-     *      @param [in] lockEditor      If true, the contents cannot be edited.
+     *    @param [in] dataSource      The data source.
+     *    @param [in] design          The design containing the data source.
+     *    @param [in] editProvider    The edit provider to use for undo/redo.
+     *    @param [in] lockEditor      If true, the contents cannot be edited.
      */
     void setVisibilityData(AdHocEnabled* dataSource, QSharedPointer<Design> design, 
         QSharedPointer<IEditProvider> editProvider, bool lockEditor);
@@ -63,9 +63,9 @@ public:
     /*!
      *  Set the ad hoc port data to display.
      *
-     *      @param [in] endPoint            The selected ad hoc port.
-     *      @param [in] containingDiagram   The design diagram containing the ad hoc port.
-     *      @param [in] editProvider        The provider for undo commands.
+     *    @param [in] endPoint            The selected ad hoc port.
+     *    @param [in] containingDiagram   The design diagram containing the ad hoc port.
+     *    @param [in] editProvider        The provider for undo commands.
      */
     void setPortData(AdHocItem* endPoint, HWDesignDiagram* containingDiagram, QSharedPointer<IEditProvider> editProvider);
 
@@ -84,14 +84,14 @@ signals:
     /*!
      *  Informs of new references made to the parameter with the selected ID.
      *
-     *      @param [in] parameterID     ID of the selected parameter.
+     *    @param [in] parameterID     ID of the selected parameter.
      */
     void increaseReferences(QString const& parameterID);
 
     /*!
      *  Informs of removing references from the parameter with the selected ID.
      *
-     *      @param [in] parameterID     ID of the selected parameter.
+     *    @param [in] parameterID     ID of the selected parameter.
      */
     void decreaseReferences(QString const& parameterID);
 

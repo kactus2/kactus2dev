@@ -28,8 +28,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] target     The target line edit. Must not be null.
-     *      @param [in] parentWnd  The parent window of the line edit.
+     *    @param [in] target     The target line edit. Must not be null.
+     *    @param [in] parentWnd  The parent window of the line edit.
      */
     LineContentAssistWidget(QLineEdit* target, QWidget* parentWnd);
 
@@ -45,14 +45,14 @@ public:
     /*!
      *  Sets the content matcher.
      *
-     *      @param [in] matcher The matcher to set.
+     *    @param [in] matcher The matcher to set.
      */
     void setContentMatcher(ILineContentMatcher* matcher);
 
     /*!
      *  Tries to handle the given key press fully, committing the selection if possible.
      *
-     *      @return True, if the key was handle fully and the editor should not handle it.
+     *    @return True, if the key was handle fully and the editor should not handle it.
      *              False, if the editor still needs to handle the key.
      *
      *      @remarks Assumes that the given key event has not yet been handled by the editor.
@@ -79,7 +79,7 @@ public:
     /*!
      *  Sets the maximum number of items to be visible at once.
      *
-     *      @param [in] count The maximum number of visible items at once.
+     *    @param [in] count The maximum number of visible items at once.
      */
     void setMaxVisibleItems(int count);
 
@@ -91,7 +91,7 @@ public:
     /*!
      *  Set a new width for the assist.
      *
-     *      @param [in] newWidth    The new assist width.
+     *    @param [in] newWidth    The new assist width.
      */
     void setWidthForAssist(int newWidth);
 
@@ -99,14 +99,14 @@ protected:
     /*!
      *  Handles the mouse press event.
      *
-     *      @param [in] event The mouse press event.
+     *    @param [in] event The mouse press event.
      */
     void mousePressEvent(QMouseEvent* event);
 
     /*!
      *  Handles the mouse double click event.
      *
-     *      @param [in] event The mouse double click event.
+     *    @param [in] event The mouse double click event.
      */
     void mouseDoubleClickEvent(QMouseEvent* event);
 
@@ -115,8 +115,8 @@ private:
     /*!
      *  Handles the wrapping of item selection.
      *
-     *      @param [in] event   The key event.
-     *      @param [in] key     The pressed key.
+     *    @param [in] event   The key event.
+     *    @param [in] key     The pressed key.
      */
     bool handleKeyboardItemSelection(QKeyEvent* event, int key);
 
@@ -129,9 +129,9 @@ private:
     /*!
      *  Returns true if the content assist can currently commit with the given key.
      *
-     *      @param [in] key The commit key.
+     *    @param [in] key The commit key.
      *
-     *      @return True, if the content assist can currently commit.
+     *    @return True, if the content assist can currently commit.
      */
     bool canCommitWith(QKeyEvent* e) const;
 

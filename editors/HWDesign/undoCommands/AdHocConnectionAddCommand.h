@@ -28,10 +28,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] diagram     The diagram containing the item.
-     *      @param [in] conn        The adhoc connection to add.
-     *      @param [in] design      The design containing the adhoc connection.
-     *      @param [in] parent      The parent command.
+     *    @param [in] diagram     The diagram containing the item.
+     *    @param [in] conn        The adhoc connection to add.
+     *    @param [in] design      The design containing the adhoc connection.
+     *    @param [in] parent      The parent command.
      */
     AdHocConnectionAddCommand(DesignDiagram* diagram, AdHocConnectionItem* conn, QSharedPointer<Design> design,
         QUndoCommand* parent = 0);

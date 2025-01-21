@@ -36,7 +36,7 @@ public:
     /*!
      *  Copy constructor.
      *
-     *      @param [in] other   Target to copy.
+     *    @param [in] other   Target to copy.
      */
     AbstractorInstance(const AbstractorInstance& other);
 
@@ -48,84 +48,84 @@ public:
     /*!
      *  Get the VLNV reference to the abstractor.
      *
-     *      @return The configurable VLNV of the abstractor.
+     *    @return The configurable VLNV of the abstractor.
      */
     QSharedPointer<ConfigurableVLNVReference> getAbstractorRef() const;
 
     /*!
      *  Get the description.
      *
-     *      @return The description.
+     *    @return The description.
      */
     QString getShortDescription() const;
 
     /*!
 	 *  Get the description.
 	 *
-     *      @return The description.
+     *    @return The description.
 	 */
 	QString getDescription() const;
 
     /*!
 	 *  Get the display name.
 	 *
-     *      @return The display name of the abstractor instance.
+     *    @return The display name of the abstractor instance.
 	 */
 	QString getDisplayName() const;
 
     /*!
 	 *  Get the instance name.
 	 *
-     *      @return The name of this instance.
+     *    @return The name of this instance.
 	 */
 	QString getInstanceName() const;
 
     /*!
 	 *  Get the name of the view associated with this instance.
 	 *
-     *      @return The selected view name of the instance.
+     *    @return The selected view name of the instance.
 	 */
 	QString getViewName() const;
 
     /*!
      *  Set the abstractor reference.
      *
-     *      @param [in] abstractorRef   A VLNV tag of the abstractor reference.
+     *    @param [in] abstractorRef   A VLNV tag of the abstractor reference.
      */
     void setAbstractorRef(QSharedPointer<ConfigurableVLNVReference> abstractorRef);
 
     /*!
      *  Set the short description.
      *
-     *      @param [in] shortDescription     The new short description.
+     *    @param [in] shortDescription     The new short description.
      */
     void setShortDescription(const QString& shortDescription);
 
     /*!
 	 *  Set the description.
 	 *
-	 *      @param [in] description     The new description.
+	 *    @param [in] description     The new description.
 	 */
 	void setDescription(const QString& description);
 
     /*!
 	 *  Set the display name.
 	 *
-	 *      @param [in] displayName     The new display name.
+	 *    @param [in] displayName     The new display name.
 	 */
 	void setDisplayName(const QString& displayName);
 
     /*!
 	 *  Set the name for the instance.
 	 *
-	 *      @param [in] instanceName    The new instance name.
+	 *    @param [in] instanceName    The new instance name.
 	 */
 	void setInstanceName(const QString& instanceName);
 
     /*!
 	 *  Set the name of the selected view.
 	 *
-	 *      @param [in] viewName    The name of the selected view.
+	 *    @param [in] viewName    The name of the selected view.
 	 */
 	void setViewName(const QString& viewName);
 

@@ -33,8 +33,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] lh         The library interface.
-     *      @param [in] parent     The parent widget.
+     *    @param [in] lh         The library interface.
+     *    @param [in] parent     The parent widget.
      */
     ExportSWDialog(LibraryInterface* lh, QWidget* parent);
 

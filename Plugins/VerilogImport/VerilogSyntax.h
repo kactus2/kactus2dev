@@ -94,30 +94,30 @@ namespace VerilogSyntax
     /*!
      *  Culls multi line comments and stray single line comments out of the input text.
      *
-     *      @param [in] inspect   The input text to parse.
+     *    @param [in] inspect   The input text to parse.
      *
-     *      @return   The input without comments.
+     *    @return   The input without comments.
      */
     QString cullStrayComments(QString const& input);
     
     /*!
      *  Finds the position and length of the first Verilog module declaration in the input.
      *
-     *      @param [in] input   The input text to parse.
+     *    @param [in] input   The input text to parse.
      *
-     *      @return   The position and length of the module declaration.
+     *    @return   The position and length of the module declaration.
      */
     QPair<int,int> findModuleDeclaration(QString const& input);
 
     /*!
      *  Finds the module implementation in Verilog code.
      *
-	 *      @param [in] code		            The code that will be inspected.
-	 *      @param [out] implementation	        The module implementation.
-     *      @param [out] postModule		        Anything that exists after the module.
-     *      @param [out] error                  If fails, this will contain an error message.
+	 *    @param [in] code		            The code that will be inspected.
+	 *    @param [out] implementation	        The module implementation.
+     *    @param [out] postModule		        Anything that exists after the module.
+     *    @param [out] error                  If fails, this will contain an error message.
 	 *
-	 *      @return True, if a single implementation could be found, else false.
+	 *    @return True, if a single implementation could be found, else false.
      */
 	bool selectImplementation(QString const& fileContent, QString& implementation,
         QString& postModule, QString& error);
@@ -125,12 +125,12 @@ namespace VerilogSyntax
     /*!
      *  Finds position of the module implementation in Verilog code.
      *
-	 *      @param [in] code		            The code that will be inspected.
-	 *      @param [out] implementationStart    The position where the implementation begins, if successful.
-     *      @param [out] implementationEnd      The position where the implementation ends, if successful.
-     *      @param [out] error                  If fails, this will contain an error message.
+	 *    @param [in] code		            The code that will be inspected.
+	 *    @param [out] implementationStart    The position where the implementation begins, if successful.
+     *    @param [out] implementationEnd      The position where the implementation ends, if successful.
+     *    @param [out] error                  If fails, this will contain an error message.
 	 *
-	 *      @return True, if a single implementation could be found, else false.
+	 *    @return True, if a single implementation could be found, else false.
      */
     bool findImplementation(QString const& code, int& implementationStart, int& implementationEnd, QString& error);
 }

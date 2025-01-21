@@ -46,7 +46,7 @@ public:
     /*!
      *  Writes the assignments to the given output.
      *
-     *      @param [in] output   The output to write to.
+     *    @param [in] output   The output to write to.
      */
     virtual void write(QTextStream& output) const override;    
     
@@ -55,21 +55,21 @@ private:
     /*!
     *  Creates an assignment for a port.
     *
-    *      @return The Verilog description of the port connection assignment.
+    *    @return The Verilog description of the port connection assignment.
     */
     QString assignmentForPort() const;
 
     /*!
     *  Creates the logical side of the port assignment.
     *
-    *      @return The logical side for the port connection.
+    *    @return The logical side for the port connection.
     */
     QString createLogicalAssignment(bool assignToPort) const;
 
     /*!
     *  Creates the physical side of the port assignment.
     *
-    *      @return The physical side for the port connection.
+    *    @return The physical side for the port connection.
     */
     QString createPhysicalAssignment() const;
 

@@ -32,28 +32,28 @@ namespace SettingsUpdater
         /*!
          *  Compares version numbers.
          *
-         *      @param [in] version     The version to compare.
-         *      @param [in] comparison  The version to compare against.
+         *    @param [in] version     The version to compare.
+         *    @param [in] comparison  The version to compare against.
          *
-         *      @return True, if the first version is older than the comparison.
+         *    @return True, if the first version is older than the comparison.
          */
         bool isVersionOlderThan(QString const& version, QString const& comparison);
         
         /*!
         *  Open the configuration file for reading.
         *
-        *      @param [in] parent   The parent widget.
+        *    @param [in] parent   The parent widget.
         *
-        *      @return The open configuration file.
+        *    @return The open configuration file.
         */
         QFile* openConfigurationFile(MessageMediator* mediator);
 
         /*!
          *  Parses a QVariant from the given text stream.
          *
-         *      @param [in] lineStream  The source text stream.
+         *    @param [in] lineStream  The source text stream.
          *
-         *      @return The parsed QVariant.
+         *    @return The parsed QVariant.
          */
         QVariant parseVariant(QTextStream& lineStream);
     }

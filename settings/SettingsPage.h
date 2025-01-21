@@ -26,7 +26,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in/out] settings The settings store.
+     *    @param [in/out] settings The settings store.
      */
     SettingsPage(QSettings& settings);
 
@@ -42,7 +42,7 @@ public:
     /*!
      *  Called when the page is to be changed and this page would be hidden.
      *
-     *      @return False, if the page change should be rejected. Otherwise true.
+     *    @return False, if the page change should be rejected. Otherwise true.
      */
     virtual bool onPageChange();
 

@@ -51,11 +51,11 @@ public:
 
 	/*! The Constructor.
 	 *
-	 *      @param [in] type    The type of the VLNV document (design, component...).
-	 *      @param [in] vendor  The name of the vendor.
-	 *      @param [in] library The name of the library.
-	 *      @param [in] name    The name of the item.
-	 *      @param [in] version The version number of the item.
+	 *    @param [in] type    The type of the VLNV document (design, component...).
+	 *    @param [in] vendor  The name of the vendor.
+	 *    @param [in] library The name of the library.
+	 *    @param [in] name    The name of the item.
+	 *    @param [in] version The version number of the item.
 	 */
 	VLNV(QString const& type, QString const& vendor, QString const& library,
 		QString const& name, QString const& version);
@@ -64,27 +64,27 @@ public:
 	 *
 	 * This constructor uses enum IPXactType to define the type of the document.
      *
-	 *      @param [in] type    IPXactType type parameter defining document type
-	 *      @param [in] vendor  The name of the vendor.
-	 *      @param [in] library The name of the library.
-	 *      @param [in] name    The name of the item.
-	 *      @param [in] version The version number of the item.
+	 *    @param [in] type    IPXactType type parameter defining document type
+	 *    @param [in] vendor  The name of the vendor.
+	 *    @param [in] library The name of the library.
+	 *    @param [in] name    The name of the item.
+	 *    @param [in] version The version number of the item.
 	 */
 	VLNV(IPXactType const& type, QString const& vendor, QString const& library,
 			QString const& name, QString const& version);
 
 	/*! The constructor.
 	 *
-	 *      @param [in] type The document type for the vlnv.
-	 *      @param [in] parseStr The string which is parsed to find the different vlnv fields.
-	 *      @param [in] separator The character used to separate the different vlnv fields in the string.
+	 *    @param [in] type The document type for the vlnv.
+	 *    @param [in] parseStr The string which is parsed to find the different vlnv fields.
+	 *    @param [in] separator The character used to separate the different vlnv fields in the string.
 	 *
 	*/
 	VLNV(IPXactType const& type, QString const& parseStr, QString const& separator = QLatin1String(":"));
 
 	/*! Copy constructor
 	 *
-	 *      @param [in] other The VLNV to be copied.
+	 *    @param [in] other The VLNV to be copied.
 	 */
 	VLNV(VLNV const& other) = default;
 
@@ -93,74 +93,74 @@ public:
 
     /*! Get the vendor of the VLNV.
 	 *
-	 *      @return The name of the vendor.
+	 *    @return The name of the vendor.
 	 */
 	QString getVendor() const;
 
 	/*! Set the vendor for the vlnv.
 	 *
-	 *      @param [in] vendor The vendor name to set.
+	 *    @param [in] vendor The vendor name to set.
 	*/
 	void setVendor(QString const& vendor);
 
 	/*! Get the library of the VLNV.
 	 *
-	 *      @return The name of the library
+	 *    @return The name of the library
 	 */
 	QString getLibrary() const;
 
 	/*! Set the library for the vlnv.
 	 *
-	 *      @param [in] library The library name
+	 *    @param [in] library The library name
 	*/
 	void setLibrary(QString const& library);
 
 	/*! Get the name of the IP item in VLNV.
 	 *
-	 *      @return The name of the IP item in VLNV.
+	 *    @return The name of the IP item in VLNV.
 	 */
 	QString getName() const;
 
 	/*! Set the name for the VLNV.
 	 *
-	 *      @param [in] name The new name.
+	 *    @param [in] name The new name.
 	*/
 	void setName(QString const& name);
 
 	/*! Get the version of the VLNV.
 	 *
-	 *      @return the The version of the VLNV.
+	 *    @return the The version of the VLNV.
 	 */
 	QString getVersion() const;
 
 	/*! Set the version of the VLNV.
 	 *
-	 *      @param [in] version The new version.
+	 *    @param [in] version The new version.
 	*/
 	void setVersion(QString const& version);
 
 	/*! Get the type of the document the VLNV belongs to.
 	 *
-	 *      @return IPXactType which tells the document type.
+	 *    @return IPXactType which tells the document type.
 	 */
 	IPXactType getType() const;
 
 	/*! Set the document type for the vlnv.
 	 *
-	 *      @param [in] type Specifies the type to set.
+	 *    @param [in] type Specifies the type to set.
 	*/
 	void setType(IPXactType type);
     
 	/*! Get the type the VLNV belongs to in a QString.
 	 *
-	 *      @return The XML document element type.
+	 *    @return The XML document element type.
 	 */
 	QString getTypestr() const;
 
     /*!
      *  Checks if the VLNV is empty.
      *
-     *      @returns True if all VLNV fields are empty, otherwise false.
+     *    @returns True if all VLNV fields are empty, otherwise false.
      */
     bool isEmpty() const;
 
@@ -171,24 +171,24 @@ public:
 
 	/*! Checks if the vlnv is valid or not.
 	 *
-	 *      @return True, if the VLNV tag is valid, otherwise false.
+	 *    @return True, if the VLNV tag is valid, otherwise false.
 	*/
 	bool isValid() const;
 
 	/*! Check if the vlnv is valid.
 	 *
-	 *      @param [in] errorList The list to add the possible error messages to.
-	 *      @param [in] parentIdentifier String from parent to help to identify the location of the error.
+	 *    @param [in] errorList The list to add the possible error messages to.
+	 *    @param [in] parentIdentifier String from parent to help to identify the location of the error.
 	 *
-	 *      @return bool True if the state is valid and writing is possible.
+	 *    @return bool True if the state is valid and writing is possible.
 	*/
 	bool isValid(QVector<QString>& errors, QString const& parentIdentifier) const;
     
 	/*! Create a QString that contains the vlnv.
 	 *
-	 *      @param [in] separator The separator that is placed between each vlnv field
+	 *    @param [in] separator The separator that is placed between each vlnv field
 	 *
-	 *      @return QString contains the vlnv in one string.
+	 *    @return QString contains the vlnv in one string.
 	*/
 	QString toString(QString const& separator = QLatin1String(":")) const;
 
@@ -197,48 +197,48 @@ public:
 
 	/*! The < operator for comparison of the VLNV info
 	 *
-	 *      @param [in] other the instance to compare
+	 *    @param [in] other the instance to compare
      *
-	 *      @return boolean value of the comparison
+	 *    @return boolean value of the comparison
 	 */
 	bool operator<(const VLNV &other) const;
 
 	/*! The > operator for comparison of the VLNV info
 	 *
-	 *      @param [in] other the instance to compare
+	 *    @param [in] other the instance to compare
      *
-	 *      @return the boolean value of the comparison
+	 *    @return the boolean value of the comparison
 	 */
 	bool operator>(const VLNV &other) const;
 
 	/*! The == comparison operator
 	 *
-	 *      @param [in] other The other VLNV instance to be compared
+	 *    @param [in] other The other VLNV instance to be compared
      *
-	 *      @return boolean value of the comparison operation
+	 *    @return boolean value of the comparison operation
 	 */
 	bool operator==(const VLNV &other) const;
 
 	/*! The != operator
 	 *
-	 *      @param [in] other the instance to compare
+	 *    @param [in] other the instance to compare
      *
-	 *      @return boolean value of the comparison operation
+	 *    @return boolean value of the comparison operation
 	 */
 	bool operator!=(const VLNV &other) const;
 
 	/*! Static function. Convert QString formatted type to enum Type
 	 *
-	 *      @param [in] type QString that holds the type to get
-	 *      @return IPXactType that corresponds to the given string
+	 *    @param [in] type QString that holds the type to get
+	 *    @return IPXactType that corresponds to the given string
 	 */
 	static VLNV::IPXactType string2Type(QString const& type);
 
     /*! Static function. Converts type to QString.
 	 *
-	 *      @param [in] type QString that holds the type to get
+	 *    @param [in] type QString that holds the type to get
      *
-	 *      @return IPXactType that corresponds to the given string
+	 *    @return IPXactType that corresponds to the given string
 	 */
     static QString IPXactType2String(IPXactType const& type);
    

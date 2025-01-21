@@ -27,7 +27,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     EnumCollectionEditor(QWidget* parent);
 
@@ -39,9 +39,9 @@ public:
     /*!
      *  Adds a new enumerable item to the editor.
      *
-     *      @param [in] text                The name of the item.
-     *      @param [in] isExclusivePort     Flag for exclusive ports.
-     *      @param [in] selected            If true, the item is initially selected.
+     *    @param [in] text                The name of the item.
+     *    @param [in] isExclusivePort     Flag for exclusive ports.
+     *    @param [in] selected            If true, the item is initially selected.
      */
     void addItem(QString const& text, bool isExclusivePort, bool selected);
 
@@ -55,7 +55,7 @@ public:
     /*!
      *  Change the state of all the enumerations.
      *
-     *      @param [in] newState    New state for the enumerations.
+     *    @param [in] newState    New state for the enumerations.
      */
     void changeStatesOfAllItems(bool newState);
 
@@ -64,7 +64,7 @@ signals:
     /*!
      *  Inform of a change in the combined state of the enumerations.
      *
-     *      @param [in] newState    Combined state of the enumerations.
+     *    @param [in] newState    Combined state of the enumerations.
      */
     void itemStateChanged(Qt::CheckState newState);
 
@@ -80,14 +80,14 @@ private slots:
     /*!
      *  Handle the state change in enumeration check box.
      *
-     *      @param [in] newState    New state of the enumeration check box.
+     *    @param [in] newState    New state of the enumeration check box.
      */
     void onItemClicked(bool newState);
 
     /*!
      *  Handle the state change in an exclusive enumeration check box.
      *
-     *      @param [in] newState    New state of the exclusive enumeration check box.
+     *    @param [in] newState    New state of the exclusive enumeration check box.
      */
     void onExclusiveItemClicked(bool newState);
 
@@ -99,17 +99,17 @@ private:
     /*!
      *  Create an enumeration check box.
      *
-     *      @param [in] text        The name of the item.
-     *      @param [in] selected    If true, the item is initially selected.
+     *    @param [in] text        The name of the item.
+     *    @param [in] selected    If true, the item is initially selected.
      *
-     *      @return The created enumeration check box.
+     *    @return The created enumeration check box.
      */
     QCheckBox* createCheckBox(QString const& text, bool isSelected);
 
     /*!
      *  Handle the change in the state of the check all check box.
      *
-     *      @param [in] newState    New state of the item initiating this change.
+     *    @param [in] newState    New state of the item initiating this change.
      */
     void handleCheckAllStateChangeFromItemClick(bool newState);
 

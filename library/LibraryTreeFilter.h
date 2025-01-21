@@ -27,8 +27,8 @@ public:
 
     /*! The constructor
      *
-     *      @param [in]  handler    The instance that manages the library.
-     *      @param [in]  parent     The owner of this widget.
+     *    @param [in]  handler    The instance that manages the library.
+     *    @param [in]  parent     The owner of this widget.
      *
     */
     LibraryTreeFilter(LibraryInterface* handler, QObject *parent = 0);
@@ -46,10 +46,10 @@ protected:
 
 	/*! Checks if the row should be shown in the view or not.
 	 *
-	 *      @param [in]  sourceRow      Specifies the row number of the item
-	 *      @param [in]  sourceParent   Specifies the parent of the item.
+	 *    @param [in]  sourceRow      Specifies the row number of the item
+	 *    @param [in]  sourceParent   Specifies the parent of the item.
 	 *
-	 *      @return True if item is shown, otherwise false.
+	 *    @return True if item is shown, otherwise false.
 	*/
 	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const override final;
 
@@ -58,9 +58,9 @@ private:
 	/*!
 	 *  Checks if the VLNV should be shown in the view or not based on filters.
 	 *
-	 *      @param [in] vlnv		The VLNV to check.
+	 *    @param [in] vlnv		The VLNV to check.
 	 *
-	 *      @return True, if the VLNV should be shown, otherwise false.
+	 *    @return True, if the VLNV should be shown, otherwise false.
 	 */
 	bool checkType(VLNV const& vlnv) const;
 

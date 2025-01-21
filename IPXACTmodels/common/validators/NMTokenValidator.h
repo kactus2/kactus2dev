@@ -28,7 +28,7 @@ public:
     /*!
      *  Constructor for the validator.
      *
-     *      @param [in] parent   Parent of the validator.
+     *    @param [in] parent   Parent of the validator.
      */
     explicit NMTokenValidator(QObject* parent);
 

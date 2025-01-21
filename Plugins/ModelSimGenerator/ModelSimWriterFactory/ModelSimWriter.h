@@ -27,7 +27,7 @@ struct ModelSimWriter
     /*!
      *  Writes the content to the given output.
      *
-     *      @param [in] output   The output to write to.
+     *    @param [in] output   The output to write to.
      */
     void write(QTextStream& output, QString const& outputDirectory) const;
     

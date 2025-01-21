@@ -28,8 +28,8 @@ namespace  PowerDomainReader
     /*!
      *  Creates a new PowerDomain from a given PowerDomain node.
      *
-     *      @param [in] PowerDomainNode    XML description of the PowerDomain.
-     *      @param [in] docRevision    The applied IP-XACT standard revision.
+     *    @param [in] PowerDomainNode    XML description of the PowerDomain.
+     *    @param [in] docRevision    The applied IP-XACT standard revision.
      */
     IPXACTMODELS_EXPORT QSharedPointer<PowerDomain> createFrom(QDomNode const& PowerDomainNode);
 

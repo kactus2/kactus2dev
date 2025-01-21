@@ -52,16 +52,16 @@ public:
     /*!
      *  Gets the name for the given style type.
      *
-     *      @param [in] type   The type whose name to find.
+     *    @param [in] type   The type whose name to find.
      *
-     *      @return The name for the type.
+     *    @return The name for the type.
      */
     static QString getStyleName(StyleType type);
 
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent text document.
+     *    @param [in] parent The parent text document.
      */
     explicit LanguageHighlighter(QTextDocument* parent);
 
@@ -73,8 +73,8 @@ public:
     /*!
      *  Sets the highlight style as a global style for all MCAPI highlighters.
      *
-     *      @param [in] type       The style to set.
-     *      @param [in] styleDesc  The style description.
+     *    @param [in] type       The style to set.
+     *    @param [in] styleDesc  The style description.
      *
      *      @remarks The styles must be taken into use by calling applyStyles().
      */
@@ -83,16 +83,16 @@ public:
     /*!
      *  Add a highlighting rule.
      *
-     *      @param [in] pattern     Pattern to highlight.
-     *      @param [in] style       Style to apply to pattern.
+     *    @param [in] pattern     Pattern to highlight.
+     *    @param [in] style       Style to apply to pattern.
      */
     void addRule(QRegularExpression const& pattern, LanguageHighlighter::StyleType style);
 
     /*!
      * Add highlighting rule for multiline comments. Formatting style for the comment is set with addRule().
      *
-     *     @param [in] startPattern     Pattern for start of multiline comment.
-     *     @param [in] endPattern       Pattern for end of multiline comment.
+     *    @param [in] startPattern     Pattern for start of multiline comment.
+     *    @param [in] endPattern       Pattern for end of multiline comment.
      */
      void addMultilineCommentRule(QRegularExpression const& startPattern,
         QRegularExpression const& endPattern);

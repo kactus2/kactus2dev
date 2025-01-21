@@ -31,7 +31,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent The owner of this widget.
+	 *    @param [in] parent The owner of this widget.
 	 */
 	HierarchyGroup(QWidget *parent);
 	
@@ -47,21 +47,21 @@ public:
     /*!
      *  Sets new hierarchy options.
      *
-     *      @param [in] options   The options to set.
+     *    @param [in] options   The options to set.
      */
     void setHierarchy(Utils::HierarchyOptions options);
 
     /*!
      *  Gets the selected hierarchy options.
      *
-     *      @return Selected hierarchy options.
+     *    @return Selected hierarchy options.
      */
     Utils::HierarchyOptions getHierarchy() const;
 
 	/*!
 	 *  Select/clear all filters.
 	 *
-	 *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+	 *    @param [in] select     If true, all filters are set, otherwise all filters are cleared.
 	 */
 	void selectAll(bool select) override final;
 

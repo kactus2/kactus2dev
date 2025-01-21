@@ -46,7 +46,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent      The parent item.
+     *    @param [in] parent      The parent item.
      */
     explicit StickyNote(QGraphicsItem* parent = 0);
 
@@ -67,7 +67,7 @@ public:
     /*!
      *  Gets the vendor extension visualized by the note.
      *
-     *      @return The vendor extension visualized by the note.
+     *    @return The vendor extension visualized by the note.
      */
     QSharedPointer<VendorExtension> getVendorExtension() const;
 
@@ -77,23 +77,23 @@ public:
     /*!
      *  Adds a new association to the item.
      *
-     *      @param [in] association   The association to add.     
+     *    @param [in] association   The association to add.     
      */
     virtual void addAssociation(Association* association);
 
     /*!
      *  Removes an association from the item.
      *
-     *      @param [in] association   The association to remove.     
+     *    @param [in] association   The association to remove.     
      */
     virtual void removeAssociation(Association* association);    
 
     /*!
      *  Defines the connection point for associations in scene coordinates.
      *     
-     *      @param [in] otherEnd   The position of the other end connection point.
+     *    @param [in] otherEnd   The position of the other end connection point.
      *
-     *      @return The connection point of the item.
+     *    @return The connection point of the item.
      */
     virtual QPointF connectionPoint(QPointF const& otherEnd = QPointF()) const;
 
@@ -104,21 +104,21 @@ public:
      *  Set the vendor extension for the sticky note to use for storing the data. 
      *  Existing values for position, content, associations and timestamp will be read to the note .
      *
-     *      @param [in] extension   The vendor extension to set.
+     *    @param [in] extension   The vendor extension to set.
      */
     void setVendorExtension(QSharedPointer<Kactus2Group> extension);
 
     /*!
      *  Sets the note text.
      *
-     *      @param [in] text   The text to set.
+     *    @param [in] text   The text to set.
      */
     void setText(QString const& text);
 
     /*!
      *  Sets the note timestamp.
      *
-     *      @param [in] timestamp   The timestamp to set.
+     *    @param [in] timestamp   The timestamp to set.
      */
     void setTimestamp(QString const& timestamp);
 
@@ -131,7 +131,7 @@ signals:
     /*!
      *  Emitted when the note has been modified.
      *
-     *      @param [in] undoCommand   The undo command to undo/redo the modification.
+     *    @param [in] undoCommand   The undo command to undo/redo the modification.
      */
     void modified(QUndoCommand* undoCommand);
 
@@ -146,17 +146,17 @@ protected:
     /*!
      *  Checks if the item's position has changed as a result of a mouse drag.
      *
-     *      @return True, if the position has changed, otherwise false.
+     *    @return True, if the position has changed, otherwise false.
      */
     bool positionChanged();
 
     /*!
      *  Handler for item state changes.
      *
-     *      @param [in] change      The parameter of the item changing.
-     *      @param [in] value       The new value of the parameter.
+     *    @param [in] change      The parameter of the item changing.
+     *    @param [in] value       The new value of the parameter.
      *
-     *      @return The set new value.
+     *    @return The set new value.
      */
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
@@ -182,16 +182,16 @@ private:
     /*!
      *  Checks if clicking a given position hits the association button.
      *
-     *      @param [in] clickPosition   The position of the click.
+     *    @param [in] clickPosition   The position of the click.
      *
-     *      @return True, if the click hits the association button, otherwise false.
+     *    @return True, if the click hits the association button, otherwise false.
      */
     bool hitsAssociationButton(QPointF const& clickPosition) const;   
     
     /*!
      *  Gets the timestamp for current time and date as formatted string.
      *
-     *      @return Current time and date.
+     *    @return Current time and date.
      */
     QString getFormattedTimestamp();
 

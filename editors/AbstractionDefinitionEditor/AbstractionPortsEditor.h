@@ -44,14 +44,14 @@ public:
     /*!
      *  The constructor.
      *     
-     *      @param [in] parametersModel The parameter completer model to use.
-     *      @param [in] parameterFinder The parameter finder to use.
-     *      @param [in] libraryAccess   Interface to the library.
-     *      @param [in] portInterface   Interface for accessing port abstractions.
-     *      @param [in] stdRevision     The revision of the standard used by the abstraction definition.
-     *      @param [in] portsModel      Model for this editor.
-     *      @param [in] type            The type of ports the editor is targeted for: wire or transactional.
-     *      @param [in] parent          The owner of the editor.
+     *    @param [in] parametersModel The parameter completer model to use.
+     *    @param [in] parameterFinder The parameter finder to use.
+     *    @param [in] libraryAccess   Interface to the library.
+     *    @param [in] portInterface   Interface for accessing port abstractions.
+     *    @param [in] stdRevision     The revision of the standard used by the abstraction definition.
+     *    @param [in] portsModel      Model for this editor.
+     *    @param [in] type            The type of ports the editor is targeted for: wire or transactional.
+     *    @param [in] parent          The owner of the editor.
      */
     AbstractionPortsEditor(QAbstractItemModel* parametersModel, QSharedPointer<ParameterFinder> parameterFinder,
         LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
@@ -71,14 +71,14 @@ public:
     /*!
      *  Set the bus definition referenced by the abstraction definition.
      *
-     *      @param [in] busDefinition   The referenced bus definition.
+     *    @param [in] busDefinition   The referenced bus definition.
      */
     void setBusDef(QSharedPointer<BusDefinition> busDefinition);
 
     /*!
      *	Setup the editor according to document standard revision.
      *  
-     *      @param [in] revision	The standard revision the abstraction definition is using.
+     *    @param [in] revision	The standard revision the abstraction definition is using.
      */
     void setStdRevision(Document::Revision revision);
 
@@ -102,22 +102,22 @@ signals:
     /*!
      *  Inform that a port abstraction has been removed.
      *
-     *      @param [in] portName    Name of the removed port abstraction.
-     *      @param [in] mode        Mode of the removed port abstraction.
+     *    @param [in] portName    Name of the removed port abstraction.
+     *    @param [in] mode        Mode of the removed port abstraction.
      */
     void portRemoved(QString const& portName, General::InterfaceMode const mode);
 
     /*!
      *  Increase the amount of references to a parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the amount of references to a parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void decreaseReferences(QString id);
 
@@ -157,7 +157,7 @@ private:
     /*!
      *  Get a list of the selected indexes.
      *
-     *      @return List of the selected indexes.
+     *    @return List of the selected indexes.
      */
     QModelIndexList getSelectedIndexes();
 

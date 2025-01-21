@@ -28,9 +28,9 @@ namespace NameGroupWriter
     /*!
      *  Write the name group.
      *
-     *      @param [in] writer      The used xml writer.
-     *      @param [in] nameGroup   The selected name group.
-     *      @param [in] revision    The IP-XACT standard to comply to.
+     *    @param [in] writer      The used xml writer.
+     *    @param [in] nameGroup   The selected name group.
+     *    @param [in] revision    The IP-XACT standard to comply to.
      */
     void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup,
         Document::Revision revision = Document::Revision::Std14);

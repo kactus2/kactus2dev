@@ -86,29 +86,29 @@ public:
     /*!
      *  Returns the supported import file types.
      *
-     *      @return The file types the import plugin supports.
+     *    @return The file types the import plugin supports.
      */
     virtual QStringList getSupportedFileTypes() const;
 
     /*!
      *  Gets any compatibility warnings for the plugin.
      *
-     *      @return The warning text.
+     *    @return The warning text.
      */
     virtual QString getCompatibilityWarnings() const;
 
     /*!
      *  Parses the given input and creates parameters from Verilog defines.
      *
-     *      @param [in] input               The input text to parse.
-     *      @param [in] targetComponent     The component to apply all imported changes to.
+     *    @param [in] input               The input text to parse.
+     *    @param [in] targetComponent     The component to apply all imported changes to.
      */
     virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
 
     /*!
      *  Sets the given highlighter to be used by the plugin.
      *
-     *      @param [in] highlighter   The highlighter to use.
+     *    @param [in] highlighter   The highlighter to use.
      */
     virtual void setHighlighter(Highlighter* highlighter);
 
@@ -121,26 +121,26 @@ private:
     /*!
      *  Checks if the given input has a valid package declaration.
      *
-     *      @param [in] input   The input to search for package declaration.
+     *    @param [in] input   The input to search for package declaration.
      *
-     *      @return True, if a valid module was found, otherwise false.
+     *    @return True, if a valid module was found, otherwise false.
      */
     bool hasPackageDeclaration(QString const& input);
 
     /*!
      *  Finds constant declarations from the inspected string with provided rule.
      *
-     *      @param [in] declarationRule   The rule for finding a constant.
-     *      @param [in] inspect           The input text containing the declarations.
+     *    @param [in] declarationRule   The rule for finding a constant.
+     *    @param [in] inspect           The input text containing the declarations.
      *
-     *      @return   The resulting list of declarations.
+     *    @return   The resulting list of declarations.
      */
     QStringList findDeclarations(QRegularExpression const& declarationRule, QString const& inspect);
 
     /*!
      *  Highlights the given definition.
      *
-     *      @param [in] definition   The defintion to highlight.
+     *    @param [in] definition   The defintion to highlight.
      */
 
     void highlightDefinition(QString const& definition);
@@ -149,18 +149,18 @@ private:
      *  Creates a parameter from the given definition and adds it to the component.
      *  Existing parameter with the same name will be updated and no new parameter is added.
      *
-     *      @param [in] definition          The definition to create the parameter from.
-     *      @param [in] targetComponent     The component to add the parameter to.
+     *    @param [in] definition          The definition to create the parameter from.
+     *    @param [in] targetComponent     The component to add the parameter to.
      */
     void createModelParameterFromDefinition(QString const& definition, QSharedPointer<Component> targetComponent);
 
     /*!
      *  Finds a parameter in the given component by the given name.
      *
-     *      @param [in] targetComponent     The component the search in.
-     *      @param [in] name                The name of the parameter to find.
+     *    @param [in] targetComponent     The component the search in.
+     *    @param [in] name                The name of the parameter to find.
      *
-     *      @return The parameter with the given name or null if no parameter matches the name.
+     *    @return The parameter with the given name or null if no parameter matches the name.
      */
     QSharedPointer<ModelParameter> findModelParameterByName(QSharedPointer<Component> targetComponent,
         QString const& name) const;

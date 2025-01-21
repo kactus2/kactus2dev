@@ -34,8 +34,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] library     The library of available IP-XACT documents.
-	 *      @param [in] parent      The parent of this delegate.
+     *    @param [in] library     The library of available IP-XACT documents.
+	 *    @param [in] parent      The parent of this delegate.
 	 */
 	CatalogFileDelegate(LibraryInterface* library, QObject *parent);
 	
@@ -52,20 +52,20 @@ public:
     /*!
      *  Paint the memory maps.
      *
-     *      @param [in] painter     The used painter.
-     *      @param [in] option      Available style options.
-     *      @param [in] index       The current index.
+     *    @param [in] painter     The used painter.
+     *    @param [in] option      Available style options.
+     *    @param [in] index       The current index.
      */
     virtual void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
     
     /*!
      *  Creates an editor for the given index.
      *
-     *      @param [in] parent      The parent widget for the editor.
-     *      @param [in] option      Format options for the editor.
-     *      @param [in] index       The index whose content to edit in the editor.
+     *    @param [in] parent      The parent widget for the editor.
+     *    @param [in] option      Format options for the editor.
+     *    @param [in] index       The index whose content to edit in the editor.
      *
-     *      @return Editor for the index.
+     *    @return Editor for the index.
      */
     virtual QWidget* createEditor(QWidget* parent,  QStyleOptionViewItem const& option, 
         QModelIndex const& index) const;
@@ -79,7 +79,7 @@ private:
     /*!
      *  Updates the suggested items in the editor for the given index.
      *
-     *      @param [in] index   The index whose content to suggest.
+     *    @param [in] index   The index whose content to suggest.
      */
     void updateSuggestedItems(QModelIndex const& index) const;
 

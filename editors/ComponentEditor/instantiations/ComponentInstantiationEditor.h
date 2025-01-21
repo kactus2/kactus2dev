@@ -47,14 +47,14 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component               The component that contains the view.
-	 *      @param [in] view                    The view being edited.
-     *      @param [in] parameterFinder         Parameter finder for view parameter expressions.
-     *      @param [in] parameterFinder         Finder used to identify parameters.
-     *      @param [in] expressionParser        Parser used to calculate expressions.
-     *      @param [in] expressionFormatter     Formatter for view parameter expressions.
-     *      @param [in] instantiationInterface  Interface for accessing component instantiations.
-	 *      @param [in] parent                  The owner of this widget.
+	 *    @param [in] component               The component that contains the view.
+	 *    @param [in] view                    The view being edited.
+     *    @param [in] parameterFinder         Parameter finder for view parameter expressions.
+     *    @param [in] parameterFinder         Finder used to identify parameters.
+     *    @param [in] expressionParser        Parser used to calculate expressions.
+     *    @param [in] expressionFormatter     Formatter for view parameter expressions.
+     *    @param [in] instantiationInterface  Interface for accessing component instantiations.
+	 *    @param [in] parent                  The owner of this widget.
 	 */
 	ComponentInstantiationEditor(QSharedPointer<Component> component,
         LibraryInterface* library,

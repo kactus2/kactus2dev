@@ -71,10 +71,10 @@ namespace MemoryDesignerConstants
     /*!
      *  Check if the bounding rectangle of an item overlaps the bounding rectangle of another item.
      *
-     *      @param [in] firstRectangle      The bounding rectangle of the selected item.
-     *      @param [in] firstLineWidth      Line width of the selected item.
-     *      @param [in] secondRectangle     The bounding rectangle of the comparison item.
-     *      @param [in] secondLineWidth     Line width of the comparison item.
+     *    @param [in] firstRectangle      The bounding rectangle of the selected item.
+     *    @param [in] firstLineWidth      Line width of the selected item.
+     *    @param [in] secondRectangle     The bounding rectangle of the comparison item.
+     *    @param [in] secondLineWidth     Line width of the comparison item.
      */
     bool itemOverlapsAnotherItem(QRectF const& firstRectangle, int firstLineWidth, QRectF const& secondRectangle,
         int secondLineWidth);
@@ -82,57 +82,57 @@ namespace MemoryDesignerConstants
     /*!
      *  Get the amount of numbers required for the given ranges.
      *
-     *      @param [in] rangeStart  The selected address range start.
-     *      @param [in] rangeEnd    The selected address range end.
+     *    @param [in] rangeStart  The selected address range start.
+     *    @param [in] rangeEnd    The selected address range end.
      *
-     *      @return The amount of numbers used to display the address ranges.
+     *    @return The amount of numbers used to display the address ranges.
      */
     int getAmountOfNumbersInRange(QString const& rangeStart, QString const& rangeEnd);
 
     /*!
      *  Change the selected value into a value with zeros appended to the beginning.
      *
-     *      @param [in] value               The selected value.
-     *      @param [in] amountOfNumbers     Amount of numbers used to display the value.
+     *    @param [in] value               The selected value.
+     *    @param [in] amountOfNumbers     Amount of numbers used to display the value.
      *
-     *      @return The value with zeros appended to display the value.
+     *    @return The value with zeros appended to display the value.
      */
     QString getValueWithZerosAdded(QString const& value, int amountOfNumbers);
 
     /*!
      *  Get the area size required for the selected address range.
      *
-     *      @param [in] addressRange    The selected address range.
+     *    @param [in] addressRange    The selected address range.
      *
-     *      @return The area size for the selected address range.
+     *    @return The area size for the selected address range.
      */
     qreal getAreaSizeForRange(quint64 addressRange);
 
     /*!
      *  Get the required rows for the selected address range.
      *
-     *      @param [in] addressRange    The selected address range.
+     *    @param [in] addressRange    The selected address range.
      *
-     *      @return The required rows for the selected address range.
+     *    @return The required rows for the selected address range.
      */
     int getRequiredRowsForRange(quint64 addressRange);
 
     /*!
      *  Get the required area size for the selected area.
      *
-     *      @param [in] usedArea    The selected area.
+     *    @param [in] usedArea    The selected area.
      *
-     *      @return The required area size for the selected area.
+     *    @return The required area size for the selected area.
      */
     qreal getRequiredAreaForUsedArea(qreal usedArea);
 
     /*!
      *  Get the memory map item node of the connection.
      *
-     *      @param [in] startInterface  Interface node containing the first interface of the connection path.
-     *      @param [in] endInterface    Interface node containing the last interface of the connection path.
+     *    @param [in] startInterface  Interface node containing the first interface of the connection path.
+     *    @param [in] endInterface    Interface node containing the last interface of the connection path.
      *
-     *      @return The memory map item node of the connection.
+     *    @return The memory map item node of the connection.
      */
     QSharedPointer<MemoryItem> getMapItem(QSharedPointer<ConnectivityInterface const> startInterface,
         QSharedPointer<ConnectivityInterface const> endInterface);

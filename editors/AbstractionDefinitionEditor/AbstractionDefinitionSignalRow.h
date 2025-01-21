@@ -46,129 +46,129 @@ public:
     /*!
      *  Comparison of two SignalRows.
      *
-     *      @param [in] other   The SignalRow to compare this to.
+     *    @param [in] other   The SignalRow to compare this to.
      *
-     *      @return True, if the SignalRows are equal, otherwise false.
+     *    @return True, if the SignalRows are equal, otherwise false.
      */
     bool operator==(AbstractionDefinitionSignalRow const& other) const;
     
     /*!
      *  Comparison of two SignalRows.
      *
-     *      @param [in] other   The SignalRow to compare this to.
+     *    @param [in] other   The SignalRow to compare this to.
      *
-     *      @return True, if the SignalRows are not equal, otherwise false.
+     *    @return True, if the SignalRows are not equal, otherwise false.
      */
     bool operator!=(AbstractionDefinitionSignalRow const& other) const;
     
     /*!
      *  Less than comparison of two SignalRows for table ordering.
      *
-     *      @param [in] other   The SignalRow to compare this to.
+     *    @param [in] other   The SignalRow to compare this to.
      *
-     *      @return True, if this precedes other, otherwise false.
+     *    @return True, if this precedes other, otherwise false.
      */
     bool operator<(AbstractionDefinitionSignalRow const& other) const;
     
     /*!
      *  Get the current system group of the selected signal.
      *
-     *      @param [in] signal  The selected signal.
+     *    @param [in] signal  The selected signal.
      *
-     *      @return The system group of the selected signal.
+     *    @return The system group of the selected signal.
      */
     QString getSystemGroup() const;
     
     /*!
      *  Check if the compared signal is of the same type.
      *
-     *      @param [in] comparisonSignal    The selected comparison signal.
+     *    @param [in] comparisonSignal    The selected comparison signal.
      *
-     *      @return True, if the signals are of the same type, false otherwise.
+     *    @return True, if the signals are of the same type, false otherwise.
      */
     bool comparedSignalIsSameType(AbstractionDefinitionSignalRow const& comparisonSignal) const;
 
     /*!
      *  Get the current interface mode.
      *
-     *      @return The current interface mode.
+     *    @return The current interface mode.
      */
     General::InterfaceMode getMode() const;
 
     /*!
      *  Set the interface mode.
      *
-     *      @param [in] newMode     The new interface mode.
+     *    @param [in] newMode     The new interface mode.
      */
     void setMode(General::InterfaceMode const& newMode);
 
     /*!
      *  Get the port abstraction.
      *
-     *      @return The port abstraction.
+     *    @return The port abstraction.
      */
     QSharedPointer<PortAbstraction> getPortAbstraction() const;
 
     /*!
      *  Set the port abstraction.
      *
-     *      @param [in] newAbstraction  The new port abstraction.
+     *    @param [in] newAbstraction  The new port abstraction.
      */
     void setPortAbstraction(QSharedPointer<PortAbstraction> newAbstraction);
 
     /*!
      *  Get the wire port.
      *
-     *      @return The wire port.
+     *    @return The wire port.
      */
     QSharedPointer<WirePort> getWire() const;
 
     /*!
      *  Set the wire port.
      *
-     *      @param[in] newWire  The new wire port.
+     *    @param[in] newWire  The new wire port.
      */
     void setWire(QSharedPointer<WirePort> newWire);
 
     /*!
      *  Get the transactional port.
      *
-     *      @return The transactional port.
+     *    @return The transactional port.
      */
     QSharedPointer<TransactionalPort> getTransactional() const;
 
     /*!
      *  Set the transactional port.
      *
-     *      @param [in] newTRansactional    The new transactional port.
+     *    @param [in] newTRansactional    The new transactional port.
      */
     void setTransactional(QSharedPointer<TransactionalPort> newTransactional);
 
     /*!
      *  Check if the extend data is locked.
      *
-     *      @return True, if the extend data is locked, false otherwise.
+     *    @return True, if the extend data is locked, false otherwise.
      */
     bool isExtendDataLocked() const;
 
     /*!
      *  Set the lock flag for extend data.
      *
-     *      @param [in] newLockStatus   New extend lock flag.
+     *    @param [in] newLockStatus   New extend lock flag.
      */
     void lockExtendData(bool newLockStatus);
 
     /*!
      *  Check if the port data is locked.
      *
-     *      @return True, if the port data is locked, false otherwise.
+     *    @return True, if the port data is locked, false otherwise.
      */
     bool isPortDataLocked() const;
 
     /*!
      *  Set the lock flag for port data.
      *
-     *      @param [in] newLockStatus   New port data lock flag.
+     *    @param [in] newLockStatus   New port data lock flag.
      */
     void lockPortData(bool newLockStatus);
 

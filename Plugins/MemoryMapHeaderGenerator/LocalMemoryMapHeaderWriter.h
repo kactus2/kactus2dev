@@ -36,9 +36,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] utility         The interface which offers core utilities for plugins.
-     *      @param [in] localComponent  The selected component.
-     *      @param [in] parentObject    The parent object of this writer.
+     *    @param [in] utility         The interface which offers core utilities for plugins.
+     *    @param [in] localComponent  The selected component.
+     *    @param [in] parentObject    The parent object of this writer.
      */
     LocalMemoryMapHeaderWriter(IPluginUtility* utility, QSharedPointer<Component> localComponent,
         QObject* parentObject);
@@ -51,7 +51,7 @@ public:
     /*!
      *  Write the memory map header file.
      *
-     *      @param [in] saveOptions     The save options for the memory map header.
+     *    @param [in] saveOptions     The save options for the memory map header.
      */
     virtual void writeMemoryMapHeader(QList<LocalHeaderSaveModel::SaveFileOptions*> saveOptions);
 
@@ -60,7 +60,7 @@ protected:
     /*!
      *  Display the created memory map header.
      *
-     *      @param [in] filePath    The file path to the memory map header.
+     *    @param [in] filePath    The file path to the memory map header.
      */
     virtual void displayMemoryMapHeader(QString const& filePath) const;
 

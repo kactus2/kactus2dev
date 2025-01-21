@@ -41,8 +41,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] handler     The instance that manages the library.
-	 *      @param [in] parent      The owner of this widget.
+	 *    @param [in] handler     The instance that manages the library.
+	 *    @param [in] parent      The owner of this widget.
 	 */
 	ConfigurationEditor(LibraryInterface* handler, QWidget *parent);
 
@@ -58,7 +58,7 @@ public:
 	/*!
      *  Set the configuration to be displayed.
 	 *
-	 *      @param [in] designWidget    The design widget used to edit the design.
+	 *    @param [in] designWidget    The design widget used to edit the design.
 	 */
     void setConfiguration(DesignWidget* designWidget);
 
@@ -92,7 +92,7 @@ private slots:
 	/*!
      *  Called when user changes the current configuration.
 	 *
-	 *      @param [in] newConfigName   The name of the new configuration to display.
+	 *    @param [in] newConfigName   The name of the new configuration to display.
 	 */
 	void onConfigurationChanged(QString const& newConfigName);
 
@@ -101,23 +101,23 @@ private:
     /*!
      *  Finds the view names possible for the current design.
      *
-     *      @return The possible view names.
+     *    @return The possible view names.
      */
     QStringList findPossibleViews();
  
     /*!
      *  Creates a new design configuration and saves it in the library.
      *
-     *      @param [in] dialog   The dialog containing the configuration details.
+     *    @param [in] dialog   The dialog containing the configuration details.
      */
     void createAndSaveConfiguration(CreateConfigurationDialog const& dialog);
 
     /*!
      *  Creates a reference to the configuration in the top component.
      *
-     *      @param [in] configurationVLNV       The VLNV of the configuration.
-     *      @param [in] viewName                The name of the view referencing the configuration.
-     *      @param [in] designImplementation    The implementation type of the design.
+     *    @param [in] configurationVLNV       The VLNV of the configuration.
+     *    @param [in] viewName                The name of the view referencing the configuration.
+     *    @param [in] designImplementation    The implementation type of the design.
      */
     void createTopLevelReferenceToConfiguration(VLNV const& configurationVLNV, QString const& viewName, 
         const KactusAttribute::Implementation designImplementation);
@@ -136,21 +136,21 @@ private:
     /*!
      *  Remove design and design configuration instantiation references from the selected view.
      *
-     *      @param [in] viewName    The name of the selected view.
+     *    @param [in] viewName    The name of the selected view.
      */
     void removeViewHierarchicalInstantiationRefs(QString const& viewName) const;
 
     /*!
      *  Remove a view from component.
      *
-     *      @param [in] viewName    The name of the view being removed.
+     *    @param [in] viewName    The name of the view being removed.
      */
     void removeViewFromComponent(QString const& viewName) const;
 
     /*!
      *  Remove a system view from component.
      *
-     *      @param [in] viewName    The name of the system view being removed.
+     *    @param [in] viewName    The name of the system view being removed.
      */
     void removeSystemViewFromComponent(QString const& viewName) const;
 

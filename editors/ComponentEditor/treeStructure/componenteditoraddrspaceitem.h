@@ -39,17 +39,17 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addrSpace               The address space being edited.
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-     *      @param [in] referenceCounter        The instance for counting references to parameters.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-	 *      @param [in] expressionParser        The expression parser to use.
-     *      @param [in] addressSpaceValidator   Validator for address spaces.
-     *      @param [in] blockInterface          Interface for accessing address blocks.
-	 *      @param [in] parent                  The parent item.
+	 *    @param [in] addrSpace               The address space being edited.
+	 *    @param [in] model                   The model that owns the items.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] component               The component being edited.
+     *    @param [in] referenceCounter        The instance for counting references to parameters.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+	 *    @param [in] expressionParser        The expression parser to use.
+     *    @param [in] addressSpaceValidator   Validator for address spaces.
+     *    @param [in] blockInterface          Interface for accessing address blocks.
+	 *    @param [in] parent                  The parent item.
 	 */
 	ComponentEditorAddrSpaceItem(QSharedPointer<AddressSpace> addrSpace,
 		ComponentEditorTreeModel* model,
@@ -75,49 +75,49 @@ public:
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const;
 
 	/*!
      *  Check the validity of this item and sub items.
 	 *
-	 *      @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	 */
 	virtual bool isValid() const;
 
 	/*!
      *  Get pointer to the editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*!
      *  Add a new child to the item.
 	 * 
-	 *      @param [in] index The index to add the child into.
+	 *    @param [in] index The index to add the child into.
 	 */
 	virtual void createChild(int index);
 
 	/*!
 	 *  Remove the child from the given index.
 	 *
-	 *      @param [in] index Identifies the child to remove.
+	 *    @param [in] index Identifies the child to remove.
 	 */
     void removeChild(int index) final;
 
 	/*!
      *  Get the visualizer graphics item for the memory map.
 	 *
-	 *      @return QGraphicsItem* The graphics item.
+	 *    @return QGraphicsItem* The graphics item.
 	 */
 	virtual QGraphicsItem* getGraphicsItem();
 
@@ -134,7 +134,7 @@ public:
 	/*!
      *  Get pointer to the visualizer of this item.
 	 * 
-	 *      @return The visualizer to use for this item.
+	 *    @return The visualizer to use for this item.
 	 */
 	virtual ItemVisualizer* visualizer();
 
@@ -163,7 +163,7 @@ signals:
     /*!
      *  Assign new address unit bits to editor.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bits.
+     *    @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 

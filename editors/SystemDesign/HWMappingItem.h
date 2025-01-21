@@ -32,13 +32,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] libInterface                The library interface.
-     *      @param [in] component                   The contained component.
-     *      @param [in] instanceName                The instance name.
-     *      @param [in] displayName                 The instance display name.
-     *      @param [in] description                 The instance description.
-     *      @param [in] uuid                        The instance id.
-     *      @param [in] configurableElementValues   The configurable element values.
+     *    @param [in] libInterface                The library interface.
+     *    @param [in] component                   The contained component.
+     *    @param [in] instanceName                The instance name.
+     *    @param [in] displayName                 The instance display name.
+     *    @param [in] description                 The instance description.
+     *    @param [in] uuid                        The instance id.
+     *    @param [in] configurableElementValues   The configurable element values.
      */
 	HWMappingItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
 		QSharedPointer<ComponentInstance> instance);
@@ -69,29 +69,29 @@ public:
     /*!
      *  Adds an item to the system column.
      *
-     *      @param [in] item  The item to add.
-     *      @param [in] load  If true, the item is being loaded from a design.
+     *    @param [in] item  The item to add.
+     *    @param [in] load  If true, the item is being loaded from a design.
      */
     void addItem(QGraphicsItem* item, bool load = false);
 
     /*!
      *  Removes an item from the system column.
      *
-     *      @param [in] item the item to remove.
+     *    @param [in] item the item to remove.
      */
     void removeItem(QGraphicsItem* item);
 
     /*!
      *  Called when an item is moved within the column.
      *
-     *      @param [in] item       The item that has been moved.
+     *    @param [in] item       The item that has been moved.
      */
     void onMoveItem(QGraphicsItem* item);
 
     /*!
      *  Called when an item is released from being moved by mouse.
      *
-     *      @param [in] item The item that has been released.
+     *    @param [in] item The item that has been released.
      */
     void onReleaseItem(QGraphicsItem* item);
 
@@ -113,7 +113,7 @@ public:
     /*!
      *  Returns true if the stack is allowed to contain the given item.
      *
-     *      @param [in] item The item to test for.
+     *    @param [in] item The item to test for.
      */
     bool isItemAllowed(QGraphicsItem* item) const;
 

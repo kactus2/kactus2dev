@@ -32,7 +32,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  Pointer to the owner of this widget.
+     *    @param [in] parent  Pointer to the owner of this widget.
      */
     RenodeMemoriesEditor(QWidget *parent = 0);
 
@@ -44,7 +44,7 @@ public:
     /*!
      *  Setup the selected CPUs.
      *
-     *      @param [in] memories    List of the available memory items.
+     *    @param [in] memories    List of the available memory items.
      */
     void setupMemories(QVector<QSharedPointer<RenodeStructs::cpuMemories> > memories);
 

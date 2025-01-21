@@ -32,9 +32,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] diagram             The diagram containing the AdHocConnection item.
-     *      @param [in] adHocConnection     The AdHocConnection to remove.
-     *      @param [in] parent              The parent command.
+     *    @param [in] diagram             The diagram containing the AdHocConnection item.
+     *    @param [in] adHocConnection     The AdHocConnection to remove.
+     *    @param [in] parent              The parent command.
      */
     AdHocConnectionDeleteCommand(DesignDiagram* diagram, AdHocConnectionItem* AdHocConnection,
         QUndoCommand* parent = 0);

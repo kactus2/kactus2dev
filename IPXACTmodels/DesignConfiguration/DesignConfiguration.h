@@ -44,7 +44,7 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] vlnv    VLNV to be set for the design configuration.
+	 *    @param [in] vlnv    VLNV to be set for the design configuration.
 	 */
 	DesignConfiguration(VLNV const& vlnv, Revision revision);
 
@@ -71,49 +71,49 @@ public:
     /*!
 	 *  Set the vlnv.
 	 *
-	 *      @param [in] vlnv    Reference to the vlnv to be set.
+	 *    @param [in] vlnv    Reference to the vlnv to be set.
 	 */
 	void setVlnv(const VLNV& vlnv) final;
 
     /*!
      *  Get the design reference.
      *
-     *      @return VLNV element representing the design.
+     *    @return VLNV element representing the design.
      */
     VLNV getDesignRef() const;
 
     /*!
      *  Get the list of generator chain configurations.
      *
-     *      @return The list containing pointers to the generator chain configurations.
+     *    @return The list containing pointers to the generator chain configurations.
      */
     QSharedPointer<QList<QSharedPointer<ConfigurableVLNVReference> > > getGeneratorChainConfs();
 
     /*!
      *  Get the list of interconnection configurations.
      *
-     *      @return A list containing pointers to the interconnection configurations.
+     *    @return A list containing pointers to the interconnection configurations.
      */
     QSharedPointer<QList<QSharedPointer<InterconnectionConfiguration> > > getInterconnectionConfs();
 
     /*!
      *  Get the list of view configurations.
      *
-     *      @return A list containing pointers to the view configurations.
+     *    @return A list containing pointers to the view configurations.
      */
     QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > getViewConfigurations();
 
     /*!
      *  Set the design reference.
      *
-     *      @param [in] designRef   A VLNV tag that identifies the design.
+     *    @param [in] designRef   A VLNV tag that identifies the design.
      */
     void setDesignRef(const VLNV& designRef);
 
     /*!
      *  Set the generator chain configurations.
      *
-     *      @param [in] generatorChainConfs     A list containing pointers to the generator chain configurations.
+     *    @param [in] generatorChainConfs     A list containing pointers to the generator chain configurations.
      */
     void setGeneratorChainConfs(
         QSharedPointer<QList<QSharedPointer<ConfigurableVLNVReference> > > generatorChainConfs);
@@ -121,7 +121,7 @@ public:
     /*!
      *  Set the interconnection configurations.
      *
-     *      @param [in] interconnectionConfs    A list containing pointers to the interconnection configurations.
+     *    @param [in] interconnectionConfs    A list containing pointers to the interconnection configurations.
      */
     void setInterconnectionConfs(
         QSharedPointer<QList<QSharedPointer<InterconnectionConfiguration> > > interconnectionConfs);
@@ -129,100 +129,100 @@ public:
     /*!
      *  Set the view configurations.
      *
-     *      @param [in] newViewConfigurations   A list containing pointers to the view configurations.
+     *    @param [in] newViewConfigurations   A list containing pointers to the view configurations.
      */
     void setViewConfigurations(QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > newViewConfigurations);
 
     /*!
      *  Get the list of the files needed by this design configuration.
      *
-     *      @return Empty QStringlist (contains VLNV dependencies).
+     *    @return Empty QStringlist (contains VLNV dependencies).
      */
     virtual QStringList getDependentFiles() const;
 
     /*!
      *  Get the list of VLNVs needed by this design configuration.
      *
-     *      @return A list of pointers to VLNVs that are needed in this design configuration.
+     *    @return A list of pointers to VLNVs that are needed in this design configuration.
      */
     virtual QList<VLNV> getDependentVLNVs() const;
 
     /*!
 	 *  Add a new view configuration to the design configuration.
 	 *
-	 *      @param [in] instanceName    The name of the component instance that's view is set.
-	 *      @param [in] viewName        The name of the component's view that is set as active.
+	 *    @param [in] instanceName    The name of the component instance that's view is set.
+	 *    @param [in] viewName        The name of the component's view that is set as active.
 	 */
 	virtual void addViewConfiguration(QString const& instanceName, QString const& viewName);
 
     /*!
 	 *  Remove the view configuration.
 	 *
-	 *      @param [in] instanceName    The instance name of the view configuration to be removed.
+	 *    @param [in] instanceName    The instance name of the view configuration to be removed.
 	 */
 	virtual void removeViewConfiguration(QString const& instanceName);
 
     /*!
 	 *  Get the active view configuration for the given component instance.
 	 *
-	 *      @param [in] instanceName   Identifies the component instance.
+	 *    @param [in] instanceName   Identifies the component instance.
      *
-     *      @return The active view configuration.
+     *    @return The active view configuration.
 	 */
 	QSharedPointer<ViewConfiguration> getViewConfiguration(QString const& instanceName) const;
 
     /*!
 	 *  Get the active view name for the given component instance.
 	 *
-	 *      @param [in] instanceName   Identifies the component instance.
+	 *    @param [in] instanceName   Identifies the component instance.
      *
-     *      @return The name of the active view.
+     *    @return The name of the active view.
 	 */
 	QString getActiveView(QString const& instanceName) const;
 
     /*!
 	 *  Check if an active view has been defined for the given instance.
 	 *
-	 *      @param [in] instanceName    The name of the component instance that's active view is searched for.
+	 *    @param [in] instanceName    The name of the component instance that's active view is searched for.
      *
-     *      @return True if an active view is found, false otherwise.
+     *    @return True if an active view is found, false otherwise.
 	 */
 	bool hasActiveView(QString const& instanceName) const;
 
     /*!
 	 *  Set the implementation type of the design configuration.
 	 *
-	 *      @param [in] implementation  The implementation type.
+	 *    @param [in] implementation  The implementation type.
 	 */
 	void setDesignConfigImplementation(KactusAttribute::Implementation implementation);
 
 	/*!
 	 *  Get the implementation type.
 	 *
-     *      @return The implementation type.
+     *    @return The implementation type.
 	 */
 	KactusAttribute::Implementation getDesignConfigImplementation() const;
     
     /*!
      *  Finds and creates instance extensions.
      *
-     *      @param [in] instanceUUID    The id of the instance whose extension is being searched.
+     *    @param [in] instanceUUID    The id of the instance whose extension is being searched.
      *
-     *      @return The instance extension.
+     *    @return The instance extension.
      */
     QSharedPointer<VendorExtension> findOrCreateInstanceExtension(QString const& instanceUUID);
 
     /*!
      *  Gets the override view configuration.
      *
-     *      @return Pairs of instance id and their overridden views.
+     *    @return Pairs of instance id and their overridden views.
      */
     QMap<QString, QString> getKactus2ViewOverrides() const;
 
     /*!
      *  Sets the override view configuration.
      *
-     *      @param [in] kactus2ViewOverrides    The new view overrides.
+     *    @param [in] kactus2ViewOverrides    The new view overrides.
      */
     void setKactus2ViewOverrides(QMap<QString, QString> kactus2ViewOverrides);
 

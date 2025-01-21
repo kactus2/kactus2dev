@@ -30,7 +30,7 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] parent The owner of this widget.
+	 *    @param [in] parent The owner of this widget.
 	 */
 	ImplementationGroup(QWidget *parent);
 	
@@ -46,21 +46,21 @@ public:
     /*!
      *  Sets new implementation options.
      *
-     *      @param [in] options   The options to set.
+     *    @param [in] options   The options to set.
      */
     void setImplementation(Utils::ImplementationOptions options);
 
     /*!
      *  Gets the selected implementation options.
      *
-     *      @return Selected implementation options.
+     *    @return Selected implementation options.
      */
     Utils::ImplementationOptions getImplementation() const;
 
 	/*!
 	 *  Select/clear all filters.
 	 *
-	 *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+	 *    @param [in] select     If true, all filters are set, otherwise all filters are cleared.
 	 */
     void selectAll(bool select) override final;
 

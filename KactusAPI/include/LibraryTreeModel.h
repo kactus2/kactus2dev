@@ -37,8 +37,8 @@ public:
 
 	/*! The constructor
 	*
-	*      @param [in] handler          The instance that manages the library.
-	*      @param [in] parent           The owner of this class
+	*    @param [in] handler          The instance that manages the library.
+	*    @param [in] parent           The owner of this class
 	*
 	*/
     LibraryTreeModel(LibraryInterface* handler, QObject* parent = 0);
@@ -48,84 +48,84 @@ public:
 
 	/*! Get the data for the headers of this model.
 	*
-	*      @param [in] section          Specifies the column of the header.
-	*      @param [in] orientation      The orientation of the header, only Qt::Horizontal supported.
-	*      @param [in] role             Specifies the role of the data.
+	*    @param [in] section          Specifies the column of the header.
+	*    @param [in] orientation      The orientation of the header, only Qt::Horizontal supported.
+	*    @param [in] role             Specifies the role of the data.
 	*
-	*      @return QVariant containing the data.
+	*    @return QVariant containing the data.
 	*/
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
 	/*! Get the number of columns in this model
 	*
-	*      @param [in] parent Model index identifying the item that's column count is  wanted.
+	*    @param [in] parent Model index identifying the item that's column count is  wanted.
 	*
-	*      @return Number of columns.
+	*    @return Number of columns.
 	*/
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*! Get the number of rows an item has.
 	*
-	*      @param [in] parent Model index identifying the item that's row count is wanted
+	*    @param [in] parent Model index identifying the item that's row count is wanted
 	*
-	*      @return Number of rows the item has.
+	*    @return Number of rows the item has.
 	*/
 	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*! Get the model index of the specified object.
 	*
-	*      @param [in] row      Row number of the object.
-	*      @param [in] column   Column number of the object.
-	*      @param [in] parent   Model index of the parent of the object.
+	*    @param [in] row      Row number of the object.
+	*    @param [in] column   Column number of the object.
+	*    @param [in] parent   Model index of the parent of the object.
 	*
-	*      @return QModelIndex that identifies the object.
+	*    @return QModelIndex that identifies the object.
 	*/
 	virtual QModelIndex index(int row, int column, QModelIndex const& parent = QModelIndex()) const;
 
 	/*! Get the model index of the parent of the object
 	*
-	*      @param [in] child Model index that identifies the child of the object.
+	*    @param [in] child Model index that identifies the child of the object.
 	*
-	*      @return QModelIndex that identifies the parent of the given object.
+	*    @return QModelIndex that identifies the parent of the given object.
 	*/
 	virtual QModelIndex parent(QModelIndex const& child) const;
 
 	/*! Get the data associated with given object.
 	*
-	*      @param [in] index    Model index that identifies the object that's data is wanted.
-	*      @param [in] role     Specifies the type of data wanted.
+	*    @param [in] index    Model index that identifies the object that's data is wanted.
+	*    @param [in] role     Specifies the type of data wanted.
 	*
-	*      @return QVariant Containing the requested data.
+	*    @return QVariant Containing the requested data.
 	*/
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
 	/*! Does the specified item have child items or not.
 	*
-	*      @param [in] parent Model index identifying the object that's children are asked.
+	*    @param [in] parent Model index identifying the object that's children are asked.
 	*
-	*      @return True if object has child objects.
+	*    @return True if object has child objects.
 	*/
 	virtual bool hasChildren(QModelIndex const& parent = QModelIndex()) const;
 
 	/*! Get the flags that identify possible methods for given object.
 	*
-	*      @param [in] index Model index identifying the object that's flags are requested.
+	*    @param [in] index Model index identifying the object that's flags are requested.
 	*
-	*      @return Qt::ItemFlags that specify how the object can be handled.
+	*    @return Qt::ItemFlags that specify how the object can be handled.
 	*/
 	Qt::ItemFlags flags(QModelIndex const& index) const;
 
 	/*! Get the root item of the tree.
 	*
-	*      @return The root item
+	*    @return The root item
 	*/
 	LibraryItem* getRoot() const;
 
 	/*! Create a model index for a library item
 	*
-	*      @param [in] item The LibraryItem that's model index is wanted
+	*    @param [in] item The LibraryItem that's model index is wanted
 	*
-	*      @return QModelIndex that identifies the libraryItem.
+	*    @return QModelIndex that identifies the libraryItem.
 	*/
 	QModelIndex index(LibraryItem* item);
 
@@ -227,7 +227,7 @@ public slots:
      *
      * Function updates the hierarchical model so that changes made to the document are visible.
      *
-     *      @param [in] vlnv Identifies the document that changed.
+     *    @param [in] vlnv Identifies the document that changed.
     */
     void onDocumentUpdated(VLNV const& vlnv);
 
@@ -241,16 +241,16 @@ private:
 
 	/*! Removes an item from the treeModel
 	*
-	*      @param [in] toRemove     The LibraryItem that is the highest-level item to remove.
+	*    @param [in] toRemove     The LibraryItem that is the highest-level item to remove.
 	*/
 	void removeLibraryItem(LibraryItem* toRemove);
     
     /*!
      *  Validates the given item and possible sub-items.
      *
-     *      @param [in] item   The item to validate.
+     *    @param [in] item   The item to validate.
      *
-     *      @return True, if the item is valid, otherwise false.
+     *    @return True, if the item is valid, otherwise false.
      */
     bool validate(LibraryItem* item);
 

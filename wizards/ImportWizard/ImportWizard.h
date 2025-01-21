@@ -33,9 +33,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component  The component for which the wizard is run.
-     *      @param [in] handler	   The library handle.
-     *      @param [in] parent     The parent widget.
+     *    @param [in] component  The component for which the wizard is run.
+     *    @param [in] handler	   The library handle.
+     *    @param [in] parent     The parent widget.
      */
     ImportWizard(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent);
 
@@ -54,7 +54,7 @@ private slots:
     /*!
      *  Called when a new component has been imported.
      *
-     *      @param [in] component   The newly imported component.
+     *    @param [in] component   The newly imported component.
      */
     virtual void onComponentChanged(QSharedPointer<Component> component);
 

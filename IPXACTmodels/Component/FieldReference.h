@@ -76,15 +76,15 @@ public:
      *	Sets a reference by type. If the reference is of type bank or register file,
      *  it will be added to the respective reference list.
      *  
-     *      @param [in] reference     The reference to set.
-     *      @param [in] refType       The reference type.
+     *    @param [in] reference     The reference to set.
+     *    @param [in] refType       The reference type.
      */
     void setReference(QSharedPointer<IndexedReference> reference, FieldReference::Type refType);
 
     /*!
      *	Get the reference of a specific type.
      *  
-     *      @param [in] refType     The reference type.
+     *    @param [in] refType     The reference type.
      *	    
      * 	    @return The reference, or nullptr if invalid refType or the reference is a multiple reference.
      */
@@ -96,7 +96,7 @@ public:
      *	Get a list of references of a specific type. Can be called for all types, but can have multiple references
      *  only for types bank and register file.
      *  
-     *      @param [in] refType     The type of reference to get.
+     *    @param [in] refType     The type of reference to get.
      *	    
      * 	    @return A list of references of a specific type.
      */

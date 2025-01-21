@@ -41,12 +41,12 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] fileName            The file that is being edited.
-     *      @param [in] fileInterface       Interface for files.
-     *      @param [in] componentPath       The path to the component containing the file.
-     *      @param [in] parameterFinder     The used parameter finder.
-     *      @param [in] expressionParser    Parser for calculating expressions.
-     *      @param [in] parent              The owner of this widget.
+	 *    @param [in] fileName            The file that is being edited.
+     *    @param [in] fileInterface       Interface for files.
+     *    @param [in] componentPath       The path to the component containing the file.
+     *    @param [in] parameterFinder     The used parameter finder.
+     *    @param [in] expressionParser    Parser for calculating expressions.
+     *    @param [in] parent              The owner of this widget.
 	 */
     FileBuildCommand(std::string fileName,
         FileInterface* fileInterface,
@@ -68,7 +68,7 @@ public:
     /*!
      *  Handle the name change of the containing file.
      *
-     *      @param [in] newName     The new name of the file.
+     *    @param [in] newName     The new name of the file.
      */
     void fileRenamed(std::string const& newName);
 
@@ -82,14 +82,14 @@ signals:
     /*!
      *  Increase the number of references made to the selected parameter.
      *
-     *      @param [in] id  ID of the selected parameter.
+     *    @param [in] id  ID of the selected parameter.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the number of references made to the selected parameter.
      *
-     *      @param [in] id  ID of the selected parameter.
+     *    @param [in] id  ID of the selected parameter.
      */
     void decreaseReferences(QString id);
 

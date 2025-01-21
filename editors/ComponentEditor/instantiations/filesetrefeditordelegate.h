@@ -31,8 +31,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent              The pointer to the owner of this delegate.
-	 *      @param [in] fileSetInterface    Interface for accessing file sets.
+	 *    @param [in] parent              The pointer to the owner of this delegate.
+	 *    @param [in] fileSetInterface    Interface for accessing file sets.
 	 */
     FileSetRefEditorDelegate(QObject *parent, FileSetInterface* fileSetInterface);
 
@@ -42,11 +42,11 @@ public:
 	/*!
      *  Create a new editor for the given item.
 	 *
-	 *      @param [in] parent  Owner for the editor.
-	 *      @param [in] option  Contains options for the editor.
-	 *      @param [in] index   Model index identifying the item.
+	 *    @param [in] parent  Owner for the editor.
+	 *    @param [in] option  Contains options for the editor.
+	 *    @param [in] index   Model index identifying the item.
 	 *
-	 *      @return Pointer to the editor to be used to edit the item.
+	 *    @return Pointer to the editor to be used to edit the item.
 	 */
 	virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index)
         const;

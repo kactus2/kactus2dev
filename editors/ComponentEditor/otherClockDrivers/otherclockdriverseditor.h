@@ -38,10 +38,10 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] component       The component being edited.
-	 *      @param [in] handler         The instance managing the library.
-     *      @param [in] clockValidator  Validator used for other clock drivers.
-	 *      @param [in] parent          The owner of this widget.
+	 *    @param [in] component       The component being edited.
+	 *    @param [in] handler         The instance managing the library.
+     *    @param [in] clockValidator  Validator used for other clock drivers.
+	 *    @param [in] parent          The owner of this widget.
 	 *
 	 */
 	OtherClockDriversEditor(QSharedPointer<Component> component, LibraryInterface* handler,

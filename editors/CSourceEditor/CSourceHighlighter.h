@@ -36,7 +36,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent text document.
+     *    @param [in] parent The parent text document.
      */
     CSourceHighlighter(QTextDocument* parent);
 
@@ -48,7 +48,7 @@ public:
     /*!
      *  Registers data types and functions from the given API definition for syntax highlight.
      *
-     *      @param [in] apiDef The API definition.
+     *    @param [in] apiDef The API definition.
      */
     void registerAPI(QSharedPointer<ApiDefinition const> apiDef);
 

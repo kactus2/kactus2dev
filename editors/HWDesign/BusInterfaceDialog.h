@@ -31,7 +31,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent          The parent widget.
+     *    @param [in] parent          The parent widget.
      */
     BusInterfaceDialog(QWidget* parent = 0);
 
@@ -43,7 +43,7 @@ public:
     /*!
      *  Adds a mode to the possible alternatives.
      *
-     *      @param [in] mode The interface mode to add.
+     *    @param [in] mode The interface mode to add.
      */
     void addMode(General::InterfaceMode mode);
 

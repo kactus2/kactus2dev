@@ -28,8 +28,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] indexedRow  Index of the type for which this editor belongs to.
-	 *      @param [in] parent      Pointer to the owner of this editor.
+     *    @param [in] indexedRow  Index of the type for which this editor belongs to.
+	 *    @param [in] parent      Pointer to the owner of this editor.
 	 */
     PortTypeDefinitionEditor(QModelIndex const& indexedRow, QWidget* parent);
 	
@@ -43,7 +43,7 @@ signals:
     /*!
      *  Informs of the closing of this editor.
      *
-     *      @param [in] indexedRow  Index of the containing type.
+     *    @param [in] indexedRow  Index of the containing type.
      */
     void closingEditor(QModelIndex const& indexedRow);
 

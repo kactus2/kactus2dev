@@ -34,8 +34,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] library             The library interface.
-     *      @param [in] expressionParser    The expression parser to use.
+     *    @param [in] library             The library interface.
+     *    @param [in] expressionParser    The expression parser to use.
 	 */
     BusDefinitionValidator(LibraryInterface* library, QSharedPointer<ExpressionParser> expressionParser);
 
@@ -45,17 +45,17 @@ public:
     /*!
      *  Validates the given BusDefinition.
      *
-     *      @param [in] BusDefinition           The BusDefinition to validate.
+     *    @param [in] BusDefinition           The BusDefinition to validate.
      *
-     *      @return True, if the BusDefinition is valid IP-XACT, otherwise false.
+     *    @return True, if the BusDefinition is valid IP-XACT, otherwise false.
      */
     virtual bool validate(QSharedPointer<const BusDefinition> busDefinition) const;
 
     /*!
      *  Finds possible errors in a BusDefinition and creates a list of them.
      *
-     *      @param [out] errors         List of found errors.
-     *      @param [in] BusDefinition   The BusDefinition whose errors to find.
+     *    @param [out] errors         List of found errors.
+     *    @param [in] BusDefinition   The BusDefinition whose errors to find.
      */
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<const BusDefinition> busDefinition) const;
 
@@ -68,9 +68,9 @@ private:
     /*!
      *  Check if the extend value of the selected bus definition is valid.
      *
-     *      @param [in] busDefinition   The selected bus definition.
+     *    @param [in] busDefinition   The selected bus definition.
      *
-     *      @return True, if the extend value is valid, false otherwise.
+     *    @return True, if the extend value is valid, false otherwise.
      */
     bool extendIsValid(QSharedPointer<const BusDefinition> busDefinition) const;
 

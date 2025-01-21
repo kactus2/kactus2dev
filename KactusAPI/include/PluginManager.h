@@ -33,7 +33,7 @@ public:
     /*!
      *  Adds the given plugin to the available plugins.
      *
-     *      @param [in] plugin   The plugin to add
+     *    @param [in] plugin   The plugin to add
      */
     void addPlugin(IPlugin* plugin);
 
@@ -50,23 +50,23 @@ public:
     /*!
      *  Loads the plugins from given paths.
      *
-     *      @param [in] pluginPaths   The paths containing the plugins.
+     *    @param [in] pluginPaths   The paths containing the plugins.
      */
     void setPluginPaths(QStringList const& pluginPaths);
     
     /*!
      *  Find all plugins in the given paths.
      *
-     *      @param [in] pluginPaths   Paths to directories to search for plugins.
+     *    @param [in] pluginPaths   Paths to directories to search for plugins.
      *
-     *      @return All plugins found in the given directories.
+     *    @return All plugins found in the given directories.
      */
     static QList<IPlugin*> findPluginsInPaths(QStringList const& pluginPaths);
    
     /*!
      *  Get the singleton instance of the PluginManager.
      *
-     *      @return The PluginManager instance.
+     *    @return The PluginManager instance.
      */
     static PluginManager& getInstance();
 

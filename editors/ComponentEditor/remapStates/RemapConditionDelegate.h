@@ -33,12 +33,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] portNameList            The list of available port names.
-     *      @param [in] completionModel         Model containing the completions used in expression editor.
-     *      @param [in] finder                  The parameter finder to use for expression editors.
-     *      @param [in] expressionParser        The expression parser used for calculating expressions.
-     *      @param [in] expressionFormatter     The expression formatter for changing ids to parameter names.
-     *      @param [in] parent                  The parent of the object.
+     *    @param [in] portNameList            The list of available port names.
+     *    @param [in] completionModel         Model containing the completions used in expression editor.
+     *    @param [in] finder                  The parameter finder to use for expression editors.
+     *    @param [in] expressionParser        The expression parser used for calculating expressions.
+     *    @param [in] expressionFormatter     The expression formatter for changing ids to parameter names.
+     *    @param [in] parent                  The parent of the object.
      */
     RemapConditionDelegate(QStringList const& portNameList, QAbstractItemModel* completionModel, 
         QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionParser> expressionParser, 
@@ -50,27 +50,27 @@ public:
 
 	/*! Create a new editor for the given item
 	 *
-	 *      @param [in] parent   Owner for the editor.
-	 *      @param [in] option   Contains options for the editor.
-	 *      @param [in] index    Model index identifying the item.
+	 *    @param [in] parent   Owner for the editor.
+	 *    @param [in] option   Contains options for the editor.
+	 *    @param [in] index    Model index identifying the item.
 	 *
-	 *      @return Pointer to the editor to be used to edit the item.
+	 *    @return Pointer to the editor to be used to edit the item.
 	*/
 	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
         QModelIndex const& index) const;
 
 	/*! Set the data for the editor.
 	 *
-	 *      @param [in] editor  Pointer to the editor where the data is to be set.
-	 *      @param [in] index   Model index identifying the item that's data is to be set.
+	 *    @param [in] editor  Pointer to the editor where the data is to be set.
+	 *    @param [in] index   Model index identifying the item that's data is to be set.
 	*/
 	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
 
 	/*! Save the data from the editor to the model.
 	 *
-	 *     @param [in] editor   Pointer to the editor that contains the data to store.
-	 *     @param [in] model    Model that contains the data structure where data is to be saved to.
-	 *     @param [in] index    Model index identifying the item that's data is to be saved.
+	 *    @param [in] editor   Pointer to the editor that contains the data to store.
+	 *    @param [in] model    Model that contains the data structure where data is to be saved to.
+	 *    @param [in] index    Model index identifying the item that's data is to be saved.
 	 *
 	*/
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
@@ -78,9 +78,9 @@ public:
     /*!
      *  Updates the editor geometry.
      *
-     *      @param [in] editor  The editor being updated.
-     *      @param [in] option  The options used to update the editor.
-     *      @param [in] index   The model index being edited.
+     *    @param [in] editor  The editor being updated.
+     *    @param [in] option  The options used to update the editor.
+     *    @param [in] index   The model index being edited.
      */
     virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
         const QModelIndex &index) const;
@@ -88,7 +88,7 @@ public:
     /*!
      *  Set the component ports.
      *
-     *      @param [in] componentPorts  All the ports of the component.
+     *    @param [in] componentPorts  All the ports of the component.
      */
     void setComponentPorts(QStringList const& componentPorts);
 
@@ -97,7 +97,7 @@ public slots:
     /*!
      *  Set the currently available port names.
      *
-     *      @param [in] newPorts    The currently available port names.
+     *    @param [in] newPorts    The currently available port names.
      */
     void setNewPortNames(QStringList const& newPorts);
 
@@ -111,9 +111,9 @@ protected:
     /*!
      *  Checks if the cells in given column accept expression as an input value.
      *
-     *      @param [in] column   The column to check.
+     *    @param [in] column   The column to check.
      *
-     *      @return True, if the cells accept expressions, otherwise false.
+     *    @return True, if the cells accept expressions, otherwise false.
      */
     virtual bool columnAcceptsExpression(int column) const;
 
@@ -131,24 +131,24 @@ private:
     /*!
      *  Setup the data for the condition value editor.
      *
-     *      @param [in] editor  The selected editor.
-     *      @param [in] index   Index of the editor containing port.
+     *    @param [in] editor  The selected editor.
+     *    @param [in] index   Index of the editor containing port.
      */
     void setValueAndArrayEditor(QWidget* editor, QModelIndex const& index) const;
 
     /*!
      *  Check if the value should be an array.
      *
-     *      @param [in] index   The index of the current value.
+     *    @param [in] index   The index of the current value.
      *
-     *      @return True, if the value is an array, otherwise false.
+     *    @return True, if the value is an array, otherwise false.
      */
     bool valueIsArray(QModelIndex const& index) const;
 
     /*!
      *  Get the width of the remap port.
      *
-     *      @param [in] index   The index of the current remap port.
+     *    @param [in] index   The index of the current remap port.
      */
     int getPortWidth(QModelIndex const& index) const;
 
@@ -156,9 +156,9 @@ private:
      *  Repositions the editor if there is not enough space under the default position. The editor is then resized
      *  to use the available space.
      *
-     *      @param [in] editor  The editor to reposition.
-     *      @param [in] option  The style options for the editor.
-     *      @param [in] index   The current index.
+     *    @param [in] editor  The editor to reposition.
+     *    @param [in] option  The style options for the editor.
+     *    @param [in] index   The current index.
      */
     void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index)
         const;

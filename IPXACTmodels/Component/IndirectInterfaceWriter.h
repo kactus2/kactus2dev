@@ -30,9 +30,9 @@ namespace  IndirectInterfaceWriter
     /*!
      *  Write the name group of the indirect interface.
      *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] indirectInterface   The indirect interface being written.
-     *      @param [in] docRevision         The applied IP-XACT standard revision.
+     *    @param [in] writer              The used XML writer.
+     *    @param [in] indirectInterface   The indirect interface being written.
+     *    @param [in] docRevision         The applied IP-XACT standard revision.
      */
     IPXACTMODELS_EXPORT void writeIndirectInterface(QXmlStreamWriter& writer, QSharedPointer<IndirectInterface> indirectInterface,
         Document::Revision docRevision) ;
@@ -42,17 +42,17 @@ namespace  IndirectInterfaceWriter
         /*!
          *  Write the indirect address and data fields of the indirect interface.
          *
-         *      @param [in] writer              The used XML writer.
-         *      @param [in] indirectInterface   The indirect interface being written.
+         *    @param [in] writer              The used XML writer.
+         *    @param [in] indirectInterface   The indirect interface being written.
          */
         void writeIndirectFields(QXmlStreamWriter& writer, QSharedPointer<IndirectInterface> indirectInterface);
 
         /*!
          *  Write the transparent bridges of the indirect interface.
          *
-         *      @param [in] writer              The used XML writer.
-         *      @param [in] indirectInterface   The indirect interface being written.
-         *      @param [in] docRevision         The applied IP-XACT standard revision.
+         *    @param [in] writer              The used XML writer.
+         *    @param [in] indirectInterface   The indirect interface being written.
+         *    @param [in] docRevision         The applied IP-XACT standard revision.
          */
         void writeTransparentBridges(QXmlStreamWriter& writer,
             QSharedPointer<IndirectInterface> indirectInterface, Document::Revision docRevision);

@@ -37,9 +37,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name            Name of the instantiation.
-     *      @param [in] displayName     Display name of the instantiation.
-     *      @param [in] description     Description of the instantiation.
+     *    @param [in] name            Name of the instantiation.
+     *    @param [in] displayName     Display name of the instantiation.
+     *    @param [in] description     Description of the instantiation.
      */
     ComponentInstantiation(QString const& name = QString(), QString const& displayName = QString(),
         QString const& description = QString());
@@ -62,147 +62,147 @@ public:
     /*!
      *  Check if the instantiation is virtual.
      *
-     *      @return True, if the instantiation is virtual, false otherwise.
+     *    @return True, if the instantiation is virtual, false otherwise.
      */
     bool isVirtual() const;
 
     /*!
      *  Set the virtuality status of the instantiation.
      *
-     *      @param [in] virtualStatus   The virtuality status of the instantiation.
+     *    @param [in] virtualStatus   The virtuality status of the instantiation.
      */
     void setVirtual(bool virtualStatus);
 
     /*!
      *  Get the used HDL.
      *
-     *      @return The used HDL.
+     *    @return The used HDL.
      */
     QString getLanguage() const;
 
     /*!
      *  Set the used HDL.
      *
-     *      @param [in] newLanguage     The used HDL.
+     *    @param [in] newLanguage     The used HDL.
      */
     void setLanguage(QString const& newLanguage);
    
     /*!
      *  Check if the language is strict.
      *
-     *      @return True, if the language is strict, false otherwise.
+     *    @return True, if the language is strict, false otherwise.
      */
     bool isLanguageStrict() const;
 
     /*!
      *  Set the language strictness.
      *
-     *      @param [in] virtualStatus   The language strictness.
+     *    @param [in] virtualStatus   The language strictness.
      */
     void setLanguageStrictness(bool strictness);
 
     /*!
      *  Get the name of the library in which the model should be compiled.
      *
-     *      @return The name of the library.
+     *    @return The name of the library.
      */
     QString getLibraryName() const;
 
     /*!
      *  Set the name of the library in which the model should be compiled.
      *
-     *      @param [in] newLanguage     The new name of the library.
+     *    @param [in] newLanguage     The new name of the library.
      */
     void setLibraryName(QString const& newLibraryName);
 
     /*!
      *  Get the name of the VHDL package containing the interface of the model.
      *
-     *      @return The name of the VHDL package.
+     *    @return The name of the VHDL package.
      */
     QString getPackageName() const;
 
     /*!
      *  Set the name of the VHDL package containing the interface of the model.
      *
-     *      @param [in] newPackageName  The name of the VHDL package.
+     *    @param [in] newPackageName  The name of the VHDL package.
      */
     void setPackageName(QString const& newPackageName);
 
     /*!
      *  Get the module name or the VHDL entity name.
      *
-     *      @return The module or VHDL entity name.
+     *    @return The module or VHDL entity name.
      */
     QString getModuleName() const;
 
     /*!
      *  Set the module name or the VHDL entity name.
      *
-     *      @param [in] newModuleName   The module or VHDL entity name.
+     *    @param [in] newModuleName   The module or VHDL entity name.
      */
     void setModuleName(QString const& newModuleName);
 
     /*!
      *  Get the name of the VHDL architecture.
      *
-     *      @return The name of the VHDL architecture.
+     *    @return The name of the VHDL architecture.
      */
     QString getArchitectureName() const;
 
     /*!
      *  Set the name of the VHDL architecture.
      *
-     *      @param [in] newArchitectureName     The name of the VHDL architecture.
+     *    @param [in] newArchitectureName     The name of the VHDL architecture.
      */
     void setArchitectureName(QString const& newArchitectureName);
 
     /*!
      *  Get the name of configuration.
      *
-     *      @return The name of the configuration.
+     *    @return The name of the configuration.
      */
     QString getConfigurationName() const;
 
     /*!
      *  Set the name of configuration.
      *
-     *      @param [in] newConfigurationName    The name of the configuration.
+     *    @param [in] newConfigurationName    The name of the configuration.
      */
     void setConfigurationName(QString const& newConfigurationName);
 
     /*!
      *  Get the module parameters.
      *
-     *      @return Pointer to a list containing module parameters.
+     *    @return Pointer to a list containing module parameters.
      */
     QSharedPointer<QList<QSharedPointer<ModuleParameter> > > getModuleParameters() const;
 
     /*!
      *  Set the module parameters.
      *
-     *      @param [in] newModuleParameters     The new module parameters.
+     *    @param [in] newModuleParameters     The new module parameters.
      */
     void setModuleParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > newModuleParameters);
 
     /*!
      *  Get the default file builders.
      *
-     *      @return A pointer to a list containing the default file builders.
+     *    @return A pointer to a list containing the default file builders.
      */
     QSharedPointer<QList<QSharedPointer<FileBuilder> > > getDefaultFileBuilders() const;
 
     /*!
      *  Set the default file builders.
      *
-     *      @param [in] newDefaultFileBuilders  The new file builders.
+     *    @param [in] newDefaultFileBuilders  The new file builders.
      */
     void setDefaultFileBuilders(QSharedPointer<QList<QSharedPointer<FileBuilder> > > newDefaultFileBuilders);
 
     /*!
      *  Get the file set references.
      *
-     *      @return Pointer to a list containing referenced file sets.
+     *    @return Pointer to a list containing referenced file sets.
      */
     QSharedPointer<QList<QSharedPointer<FileSetRef> > > getFileSetReferences() const;
 
@@ -216,21 +216,21 @@ public:
     /*!
      *  Set the file set references.
      *
-     *      @param [in] newFileSetReferences    The new file set references.
+     *    @param [in] newFileSetReferences    The new file set references.
      */
     void setFileSetReferences(QSharedPointer<QList<QSharedPointer<FileSetRef> > > newFileSetReferences);
 
     /*!
      *  Get the parameters.
      *
-     *      @return A pointer to a list containing parameters.
+     *    @return A pointer to a list containing parameters.
      */
     QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
     /*!
      *  Set the parameters.
      *
-     *      @param [in] newParameters   The new parameters.
+     *    @param [in] newParameters   The new parameters.
      */
     void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
 

@@ -50,7 +50,7 @@ public:
 
 	/*! The constructor.
 	 *
-	 *      @param parent Pointer to the owner of this graphics item.
+	 *    @param parent Pointer to the owner of this graphics item.
 	 *
 	*/
 	explicit VisualizerItem(QGraphicsItem* parent = nullptr);
@@ -66,13 +66,13 @@ public:
 
 	/*! Get the displayed name of the object. 
      *
-	 *      @return The name of the object.
+	 *    @return The name of the object.
 	*/
 	virtual QString name() const;
 
 	/*! Set the width for the item.
 	 *
-	 *      @param width The new width of the item.
+	 *    @param width The new width of the item.
 	 *
 	*/
 	virtual void setWidth(qreal width);
@@ -81,14 +81,14 @@ public:
 	 *
 	 * The width is dependent on the parents width.
 	 *
-	 *      @return The width of the item and it's sub-items.
+	 *    @return The width of the item and it's sub-items.
 	*/
 	virtual qreal itemTotalWidth() const;
     
     /*!
      *  Checks if the item is to be used in the visualization.
      *
-     *      @return True, if the item should be used, otherwise false.
+     *    @return True, if the item should be used, otherwise false.
      */
     virtual bool isPresent() const;
  
@@ -104,21 +104,21 @@ protected:
 
 	/*! Set the display name of the item.
 	 *
-	 *      @param name The name to display.
+	 *    @param name The name to display.
 	 *
 	*/
 	void setName(QString const& name);
 
 	/*! Set text to the top left corner.
 	 *
-	 *      @param text The text to display in the corner.
+	 *    @param text The text to display in the corner.
 	 *
 	*/
 	virtual void setTopLabelText(QString const& text);
 
 	/*! Set text to the bottom left corner.
 	 *
-	 *      @param text The text to display in the corner.
+	 *    @param text The text to display in the corner.
 	 *
 	*/
 	virtual void setBottomLabelText(QString const& text);
@@ -126,35 +126,35 @@ protected:
     /*!
      * Set how the text labels are positioned within the item.
      *
-     *     @param [in] labelLayout  The positioning style to set.     
+     *    @param [in] labelLayout  The positioning style to set.     
      */
     void setLayoutType(VisualizerItem::LabelLayout labelLayout);
 
     /*!
      * Set the text labels contents to be shortened, if the label cannot fit within the item.
      *
-     *     @param [in] enableClip  If true, text is shortened, otherwise not.
+     *    @param [in] enableClip  If true, text is shortened, otherwise not.
      */
      void setClipText(bool enableClip);
 
 
 	/*! Get the minimum rectangle of the item.
 	 *
-	 *      @return The minimum size needed by this item.
+	 *    @return The minimum size needed by this item.
 	*/
 	virtual QRectF minimumRect() const;
 
     /*!
      *  Sets the default coloring brush for the item.
      *
-     *      @param [in] brush   The brush to set.
+     *    @param [in] brush   The brush to set.
      */
     virtual void setDefaultBrush(QBrush brush);
 
     /*!
      *  Gets the default coloring brush for the item.
      *
-     *      @return [in] brush   The default brush.
+     *    @return [in] brush   The default brush.
      */
     QBrush defaultBrush() const;
 
@@ -179,10 +179,10 @@ private:
 
     /*! If text is longer than maxChars, cuts the length to maxChars is and appends "...".
      *
-	 *      @param text The text to clip.
-     *      @param maxChars Maximum number of characters to show.
+	 *    @param text The text to clip.
+     *    @param maxChars Maximum number of characters to show.
      *
-	 *      @return The string with maximum length of maxChars.
+	 *    @return The string with maximum length of maxChars.
 	*/
     QString clipText(QString const& text, int maxChars) const;
 

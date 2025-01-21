@@ -32,9 +32,9 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] nameColumn      Name column index of.
-     *      @param [in] busInterface    Interface for accessing bus interfaces.
-	 *      @param [in] parent          The parent widget.
+     *    @param [in] nameColumn      Name column index of.
+     *    @param [in] busInterface    Interface for accessing bus interfaces.
+	 *    @param [in] parent          The parent widget.
 	 */
     PortsView(int nameColumn, BusInterfaceInterface* busInterface, QWidget *parent);
 
@@ -52,15 +52,15 @@ signals:
     /*!
      *  Change the vendor extensions of the vendor extensions editor.
      *
-     *      @param [in] itemIndex   Index of the selected port.
+     *    @param [in] itemIndex   Index of the selected port.
      */
     void changeExtensionsEditorItem(QModelIndex const& itemIndex);
 
     /*!
      *  Create ports from the signals of the selected abstraction definition.
      *
-     *      @param [in] busName             Name of the bus interface containing the abstraction definition.
-     *      @param [in] abstractionVLNV     VLNV string of the selected abstraction definition.
+     *    @param [in] busName             Name of the bus interface containing the abstraction definition.
+     *    @param [in] abstractionVLNV     VLNV string of the selected abstraction definition.
      */
     void createPortsFromAbstraction(std::string const& busName, QString const& abstractionVLNV);
 
@@ -95,8 +95,8 @@ protected:
     /*!
      *  Handler for index change events.
      *
-     *      @param [in] current     The current index.
-     *      @param [in] previous    The previous index.
+     *    @param [in] current     The current index.
+     *    @param [in] previous    The previous index.
      */
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
 

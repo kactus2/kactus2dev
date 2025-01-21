@@ -40,19 +40,19 @@ namespace AccessTypes
      *
      *  If The str does not match any of the enum values the default value specified as parameter will be returned.
      *
-     *      @param [in] str             QString containing the string to be converted.
-     *      @param [in] defaultValue    The value that will be returned if no match is found.
+     *    @param [in] str             QString containing the string to be converted.
+     *    @param [in] defaultValue    The value that will be returned if no match is found.
      *
-     *      @return Access that matches the str or default value.
+     *    @return Access that matches the str or default value.
      */
     IPXACTMODELS_EXPORT AccessTypes::Access str2Access(QString str, AccessTypes::Access defaultValue);
 
     /*!
      *  Convert the Access value to QString.
      *
-     *      @param [in] access  The Access value to be converted into QString.
+     *    @param [in] access  The Access value to be converted into QString.
      *
-     *      @return QString that matches the enum value.
+     *    @return QString that matches the enum value.
      */
     IPXACTMODELS_EXPORT QString access2Str(const AccessTypes::Access access);
 }

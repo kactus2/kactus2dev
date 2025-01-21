@@ -34,28 +34,28 @@ public:
     /*!
      *  Gets the left value of the range.
      *
-     *      @return The left value of the Vector.
+     *    @return The left value of the Vector.
      */
     QString getLeft() const;
 
     /*!
      *  Gets the right value of the range.
      *
-     *      @return The right value of the Vector.
+     *    @return The right value of the Vector.
      */
     QString getRight() const;
 
     /*!
      *  Sets the left value for the range.
      *
-     *      @param [in] newLeft     The value to be set as left.
+     *    @param [in] newLeft     The value to be set as left.
      */
     void setLeft(QString const& newLeft);
 
     /*!
      *  Sets the right value for the range.
      *
-     *      @param [in] newright    The value to be set as right.
+     *    @param [in] newright    The value to be set as right.
      */
     void setRight(QString const& newright);
 

@@ -30,9 +30,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] busIf   The bus interface being edited.
-     *      @param [in] ports   The ports selected to the wizard.
-     *      @param [in] parent  The parent wizard.
+     *    @param [in] busIf   The bus interface being edited.
+     *    @param [in] ports   The ports selected to the wizard.
+     *    @param [in] parent  The parent wizard.
      */
     BusInterfaceWizardConclusionPage(QSharedPointer<BusInterface> busIf, QStringList ports,
         BusInterfaceWizard* parent);

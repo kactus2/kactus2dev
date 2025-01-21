@@ -43,23 +43,23 @@ public:
     /*!
      *  Parses the document revision from XML.
      *
-     *      @param [in] document    The XML description of the document.
+     *    @param [in] document    The XML description of the document.
      */
     static Document::Revision getXMLDocumentRevision(QDomNode const& document);
 
     /*!
      *  Parses the document name group data.
      *
-     *      @param [in] documentNode    The XML description of the document.
-     *      @param [in] document        The document to insert the parsed data.
+     *    @param [in] documentNode    The XML description of the document.
+     *    @param [in] document        The document to insert the parsed data.
      */
     static void parseDocumentNameGroup(QDomNode const& documentNode, QSharedPointer<Document> document);
 
     /*!
      *  Parses the comments preceding the document from XML.
      *
-     *      @param [in] documentNode    The XML description of the document.
-     *      @param [in] document        The document to insert the parsed comments.
+     *    @param [in] documentNode    The XML description of the document.
+     *    @param [in] document        The document to insert the parsed comments.
      */
     static void parseTopComments(QDomNode const& documentNode, QSharedPointer<Document> document);
 
@@ -70,41 +70,41 @@ public:
     /*!
      *  Parses the VLNV from XML to a document.
      *
-     *      @param [in] documentNode    The XML description of the document.
-     *      @param [in] document        The document in which the parsed VLNV is inserted.
-     *      @param [in] type            The type of the VLNV.
+     *    @param [in] documentNode    The XML description of the document.
+     *    @param [in] document        The document in which the parsed VLNV is inserted.
+     *    @param [in] type            The type of the VLNV.
      */
     static void parseVLNVElements(QDomNode const& documentNode, QSharedPointer<Document> document, VLNV::IPXactType type);
 
     /*!
      *  Parses the description from XML to a document.
      *
-     *      @param [in] documentNode    The XML description of the document.
-     *      @param [in] document        The document in which the parsed description is inserted.
+     *    @param [in] documentNode    The XML description of the document.
+     *    @param [in] document        The document in which the parsed description is inserted.
      */
     static void parseDescription(QDomNode const& documentNode, QSharedPointer<Document> document);
 
     /*!
      *  Parses the parameters from XLM to a document.
      *
-     *      @param [in] documentNode    The XML description of the document.
-     *      @param [in] document        The document in which the parsed parameters are inserted.
+     *    @param [in] documentNode    The XML description of the document.
+     *    @param [in] document        The document in which the parsed parameters are inserted.
      */
     static void parseParameters(QDomNode const& documentNode, QSharedPointer<Document> document);
 
     /*!
      *  Parses the assertions from XML to a document.
      *
-     *      @param [in] documentNode    The XML description of the document.
-     *      @param [in] document        The document in which the parsed assertions are inserted.
+     *    @param [in] documentNode    The XML description of the document.
+     *    @param [in] document        The document in which the parsed assertions are inserted.
      */
     static void parseAssertions(QDomNode const& documentNode, QSharedPointer<Document> document);
     
     /*!
      *  Parses Kactus2 specific vendor extensions before other vendor extensions from XML.
      *
-     *      @param [in] documentNode    The XML description of the document.
-     *      @param [in] document        The document in which the parsed extensions are stored.
+     *    @param [in] documentNode    The XML description of the document.
+     *    @param [in] document        The document in which the parsed extensions are stored.
      */
      static void parseKactusAndVendorExtensions(QDomNode const& documentNode,
         QSharedPointer<Document> document);
@@ -112,16 +112,16 @@ public:
     /*!
      *  Parses Kactus2 attributes for classifying IP from XML.
      *
-     *      @param [in] attributesNode      The XML description of the attributes.
-     *      @param [in] document            The document in which the parsed attributes are stored.
+     *    @param [in] attributesNode      The XML description of the attributes.
+     *    @param [in] document            The document in which the parsed attributes are stored.
      */
      static void parseKactusAttributes(QDomNode const& attributesNode, QSharedPointer<Document> document);
 
     /*!
      *  Parses document tags from XML.
      *
-     *      @param [in] tagsGroupNode   XML description of the tags.
-     *      @param [in] document        The containing component.
+     *    @param [in] tagsGroupNode   XML description of the tags.
+     *    @param [in] document        The containing component.
      */
      static void parseTags(QDomNode const& tagsGroupNode, QSharedPointer<Document> document);
 

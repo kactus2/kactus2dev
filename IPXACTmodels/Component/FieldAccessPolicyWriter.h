@@ -24,8 +24,8 @@ namespace FieldAccessPolicyWriter
     /*!
      *	Write a given field access policy to XML.
      *  
-     *      @param [in] writer                The XML writer to use.
-     *      @param [in] fieldAccessPolicy     The field access policy to write.
+     *    @param [in] writer                The XML writer to use.
+     *    @param [in] fieldAccessPolicy     The field access policy to write.
      */
     IPXACTMODELS_EXPORT void writeFieldAccessPolicy(QXmlStreamWriter& writer, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy);
 

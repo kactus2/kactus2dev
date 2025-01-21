@@ -33,7 +33,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     Ribbon(QWidget* parent = 0);
 
@@ -49,7 +49,7 @@ public:
     /*!
      *  Adds a group to the ribbon.
      *
-     *      @param [in] title The title for the group.
+     *    @param [in] title The title for the group.
      */
     QAction* addGroup(RibbonGroup* group);
 

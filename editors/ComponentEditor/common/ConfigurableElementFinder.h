@@ -46,64 +46,64 @@ public:
     /*!
      *  Get the parameter with the given id.
      *
-     *      @param [in] parameterId     The id of the parameter being searched for.
+     *    @param [in] parameterId     The id of the parameter being searched for.
      *
-     *      @return The parameter with the selected ID.
+     *    @return The parameter with the selected ID.
      */
     QSharedPointer<Parameter> getParameterWithID(QStringView parameterId) const final;
 
     /*!
      *  Checks if a parameter with the given id exists.
      *
-     *      @param [in] id      The id to search for.
+     *    @param [in] id      The id to search for.
      *
-     *      @return True, if the parameter with the given id exists, otherwise false.
+     *    @return True, if the parameter with the given id exists, otherwise false.
      */
     bool hasId(QStringView id) const final;
 
     /*!
      *  Finds the name of the parameter with the given id.
      *
-     *      @param [in] id      The id to search for.
+     *    @param [in] id      The id to search for.
      *
-     *      @return The name of the parameter.
+     *    @return The name of the parameter.
      */
     QString nameForId(QStringView id) const final;
 
     /*!
      *  Finds the value of the parameter with the given id.
      *
-     *      @param [in] id      The id of the parameter to search for.
+     *    @param [in] id      The id of the parameter to search for.
      *
-     *      @return The value of the parameter.
+     *    @return The value of the parameter.
      */
     QString valueForId(QStringView id) const final;
 
     /*!
      *  Gets all of the ids of parameters in the list.
      *
-     *      @return A list containing all of the ids.
+     *    @return A list containing all of the ids.
      */
     QStringList getAllParameterIds() const final;
 
     /*!
      *  Gets the number of parameters in the list.
      *
-     *      @return The number of parameters in the list.
+     *    @return The number of parameters in the list.
      */
     int getNumberOfParameters() const final;
 
     /*!
      *  Set the configurable element list.
      *
-     *      @param [in] newElementList  List containing the configurable elements.
+     *    @param [in] newElementList  List containing the configurable elements.
      */
     void setConfigurableElementList(QList<QSharedPointer<EditorConfigurableElement> > newElementList);
 
     /*!
      *  Registers a parameter model that can modify parameters for the finder.
      *
-     *      @param [in] model   The model to register.
+     *    @param [in] model   The model to register.
      */
     void registerParameterModel(QAbstractItemModel const* model) final;
 
@@ -112,9 +112,9 @@ private:
     /*!
      *  Get the configurable element referenced the selected parameter ID.
      *
-     *      @param [in] id  ID of the selected parameter reference.
+     *    @param [in] id  ID of the selected parameter reference.
      *
-     *      @return Configurable element containing the selected parameter reference.
+     *    @return Configurable element containing the selected parameter reference.
      */
     QSharedPointer<EditorConfigurableElement> getElementForID(QStringView id) const;
 

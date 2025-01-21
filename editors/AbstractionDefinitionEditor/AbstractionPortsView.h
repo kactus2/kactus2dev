@@ -32,7 +32,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  The owner of this widget.
+	 *    @param [in] parent  The owner of this widget.
      */
     AbstractionPortsView(QWidget* parent);
 	
@@ -44,7 +44,7 @@ public:
 	/*!
      *  Get list of currently selected indexes.
 	 *
-	 *      @return The model indexes of the selected items.
+	 *    @return The model indexes of the selected items.
      */
 	QModelIndexList selected() const;
 

@@ -30,8 +30,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] tagLabel    The tag label being edited.
-     *      @param [in] parent      The parent widget.
+     *    @param [in] tagLabel    The tag label being edited.
+     *    @param [in] parent      The parent widget.
      */
     TagEditor(TagLabel* tagLabel, QWidget* parent = nullptr);
 
@@ -49,7 +49,7 @@ protected:
     /*!
      *  Check if color selection button should be shown.
      *
-     *      @return True, if button should be shown, otherwise false.
+     *    @return True, if button should be shown, otherwise false.
      */
     bool showColorButton() const noexcept final;
 
@@ -61,7 +61,7 @@ protected:
     /*!
      *  Setup the tag editors.
      *
-     *      @param [in] nameEditor  The name editor for the tag.
+     *    @param [in] nameEditor  The name editor for the tag.
      */
     virtual void setupEditors(QWidget* nameEditor);
 
@@ -77,7 +77,7 @@ private:
     /*!
      *  Get the current name from the name editor.
      *
-     *      @return The current name of the name editor.
+     *    @return The current name of the name editor.
      */
     virtual QString getNewName() const override final;
 

@@ -48,36 +48,36 @@ public:
     /*!
      *  Validates the given FileSet.
      *
-     *      @param [in] FileSet           The FileSet to validate.
+     *    @param [in] FileSet           The FileSet to validate.
      *
-     *      @return True, if the FileSet is valid IP-XACT, otherwise false.
+     *    @return True, if the FileSet is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<FileSet> FileSet) const;
     
     /*!
      *  Check if the name is valid.
      *
-     *      @param [in] name    The name to be evaluated.
+     *    @param [in] name    The name to be evaluated.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QString const& name) const;
 
     /*!
      *  Check if a file builder has a valid replace default flags value.
      *
-     *      @param [in] builder     The selected file builder.
+     *    @param [in] builder     The selected file builder.
      *
-     *      @return True, if the replace default flags valie is valid, false otherwise.
+     *    @return True, if the replace default flags valie is valid, false otherwise.
      */
     bool fileBuilderHasValidReplaceDefaultFlags(QSharedPointer<FileBuilder> builder) const;
 
     /*!
      *  Finds possible errors in a FileSet and creates a list of them.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] FileSet   The FileSet whose errors to find.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] FileSet   The FileSet whose errors to find.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<FileSet> FileSet,
 		QString const& context) const;

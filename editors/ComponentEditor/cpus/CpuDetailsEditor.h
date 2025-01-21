@@ -41,10 +41,10 @@ public:
 	/*!
      *  The constructor
      *
-     *      @param [in] component	The containing component.
-     *      @param [in] cpu			The cpu whose properties to edit.
-     *      @param [in] finder		The parameter finder to use.
-	 *      @param [in] parent      The owner of this editor.
+     *    @param [in] component	The containing component.
+     *    @param [in] cpu			The cpu whose properties to edit.
+     *    @param [in] finder		The parameter finder to use.
+	 *    @param [in] parent      The owner of this editor.
      */
     CpuDetailsEditor(QSharedPointer<Component> component, 
 		QSharedPointer<Cpu> cpu, 
@@ -79,14 +79,14 @@ signals:
     /*!
      *  Increase the amount of references made to the given parameter.
      *
-     *      @param [in] id  The id of the given parameter.
+     *    @param [in] id  The id of the given parameter.
      */
     void increaseReferences(QString const& id) const;
 
     /*!
      *  Decrease the amount of references made to the given parameter.
      *
-     *      @param [in] id  The id the given parameter.
+     *    @param [in] id  The id the given parameter.
      */
     void decreaseReferences(QString const& id) const;
 

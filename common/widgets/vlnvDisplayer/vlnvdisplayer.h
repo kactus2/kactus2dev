@@ -31,9 +31,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent      Pointer to the owner of this widget.
-	 *      @param [in] vlnv        Reference to the vlnv to be displayed
-     *      @param [in] compact     A compact VLNV display takes less space.
+	 *    @param [in] parent      Pointer to the owner of this widget.
+	 *    @param [in] vlnv        Reference to the vlnv to be displayed
+     *    @param [in] compact     A compact VLNV display takes less space.
 	 */
     VLNVDisplayer(QWidget *parent, VLNV const& vlnv, bool compact = false);
 
@@ -45,14 +45,14 @@ public:
 	/*!
      *  Set the vlnv to be displayed in the widget.
 	 *
-	 *      @param [in] vlnv    Reference to the VLNV to be displayed
+	 *    @param [in] vlnv    Reference to the VLNV to be displayed
 	 */
     void setVLNV(const VLNV& vlnv);
 
 	/*!
      *  Also display path along with the vlnv in the widget.
 	 *
-	 *      @param [in] path    The path to display
+	 *    @param [in] path    The path to display
 	 */
 	void setPath(const QString& path);
 

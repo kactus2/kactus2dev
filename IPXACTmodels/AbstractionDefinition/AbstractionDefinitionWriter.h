@@ -35,8 +35,8 @@ namespace AbstractionDefinitionWriter
     /*!
      *  Writes the given abstraction definition into XML.
      *
-     *      @param [in] writer                  The XML writer to use.
-     *      @param [in] abstractionDefinition   The abstraction definition to write.
+     *    @param [in] writer                  The XML writer to use.
+     *    @param [in] abstractionDefinition   The abstraction definition to write.
      */
     IPXACTMODELS_EXPORT void writeAbstractionDefinition(QXmlStreamWriter& writer, 
         QSharedPointer<AbstractionDefinition> abstractionDefinition);
@@ -46,32 +46,32 @@ namespace AbstractionDefinitionWriter
         /*!
          *  Writes the bus type (VLNV) detailed in the given abstraction definition into XML.
          *
-         *      @param [in] writer                  The XML writer to use.
-         *      @param [in] abstractionDefinition   The abstraction definition whose bus type to write.
+         *    @param [in] writer                  The XML writer to use.
+         *    @param [in] abstractionDefinition   The abstraction definition whose bus type to write.
          */
         void writeBusType(QXmlStreamWriter& writer, QSharedPointer<AbstractionDefinition> abstractionDefinition);
        
         /*!
          *  Writes the abstraction definition (VLNV) extended in the given abstraction definition into XML.
          *
-         *      @param [in] writer                  The XML writer to use.
-         *      @param [in] abstractionDefinition   The abstraction definition whose extended VLVN to write.
+         *    @param [in] writer                  The XML writer to use.
+         *    @param [in] abstractionDefinition   The abstraction definition whose extended VLVN to write.
          */
         void writeExtends(QXmlStreamWriter& writer, QSharedPointer<AbstractionDefinition> busDefinition);
         
         /*!
          *  Writes the port definitions in the given abstraction definition into XML.
          *
-         *      @param [in] writer                  The XML writer to use.
-         *      @param [in] abstractionDefinition   The abstraction definition whose ports to write.
+         *    @param [in] writer                  The XML writer to use.
+         *    @param [in] abstractionDefinition   The abstraction definition whose ports to write.
          */
         void writePorts(QXmlStreamWriter& writer, QSharedPointer<AbstractionDefinition> abstractionDefinition);
 
         /*!
          *  Writes a port definitions into XML.
          *
-         *      @param [in] writer          The XML writer to use.
-         *      @param [in] logicalPort     The port to write.
+         *    @param [in] writer          The XML writer to use.
+         *    @param [in] logicalPort     The port to write.
          */
         void writePort(QXmlStreamWriter& writer, QSharedPointer<PortAbstraction> logicalPort, 
             Document::Revision revision);
@@ -79,8 +79,8 @@ namespace AbstractionDefinitionWriter
         /*!
          *  Writes the wire definition in a port definitions into XML.
          *
-         *      @param [in] writer          The XML writer to use.
-         *      @param [in] logicalPort     The port whose wire definition to write.
+         *    @param [in] writer          The XML writer to use.
+         *    @param [in] logicalPort     The port whose wire definition to write.
          */
         void writeWire(QXmlStreamWriter& writer, QSharedPointer<PortAbstraction> logicalPort,
             Document::Revision revision);
@@ -88,8 +88,8 @@ namespace AbstractionDefinitionWriter
         /*!
          *  Writes the transactional definition in a port definitions into XML.
          *
-         *      @param [in] writer          The XML writer to use.
-         *      @param [in] logicalPort     The port whose transactional definition to write.
+         *    @param [in] writer          The XML writer to use.
+         *    @param [in] logicalPort     The port whose transactional definition to write.
          */
         void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<PortAbstraction> logicalPort,
             Document::Revision revision);

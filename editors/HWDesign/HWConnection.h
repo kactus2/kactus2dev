@@ -37,11 +37,11 @@ public:
     /*!
      *  Constructor which creates an open-ended diagram interconnection.
      *
-     *      @param [in] p1              The first end point.
-     *      @param [in] dir1            Direction of the first end point.
-     *      @param [in] p2              The second end point.
-     *      @param [in] dir2            Direction of the second end point.
-     *      @param [in] parent          Owner of the connection item.
+     *    @param [in] p1              The first end point.
+     *    @param [in] dir1            Direction of the first end point.
+     *    @param [in] p2              The second end point.
+     *    @param [in] dir2            Direction of the second end point.
+     *    @param [in] parent          Owner of the connection item.
      */
     HWConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
          DesignDiagram* parent);
@@ -49,11 +49,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint1           The first end point.
-     *      @param [in] endpoint2           The second end point.
-     *      @param [in] interconnection     The contained interconnection.
-     *      @param [in] route               Route for the connection item.
-     *      @param [in] parent              Owner of the connection item.
+     *    @param [in] endpoint1           The first end point.
+     *    @param [in] endpoint2           The second end point.
+     *    @param [in] interconnection     The contained interconnection.
+     *    @param [in] route               Route for the connection item.
+     *    @param [in] parent              Owner of the connection item.
      */
     HWConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
         QSharedPointer<Interconnection> interconnection, QSharedPointer<ConnectionRoute> route,
@@ -67,7 +67,7 @@ public:
     /*!
      *  Get the type of this connection.
      *
-     *      @return HW connection.
+     *    @return HW connection.
      */
     int type() const final { return Type; }
 

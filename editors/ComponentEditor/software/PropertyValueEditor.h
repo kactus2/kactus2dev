@@ -32,7 +32,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     PropertyValueEditor(QWidget* parent);
 
@@ -44,7 +44,7 @@ public:
     /*!
      *  Sets the allowed properties.
      *
-     *      @param [in] properties The list of allowed properties.
+     *    @param [in] properties The list of allowed properties.
      */
     void setAllowedProperties(QList< QSharedPointer<ComProperty> > const& properties);
 
@@ -60,7 +60,7 @@ public slots:
     /*!
      *  Sets the data for editing.
      *
-     *      @param [in] propertyValue The property values.
+     *    @param [in] propertyValue The property values.
      */
     void setData(QMap<QString, QString> const& propertyValues);
 

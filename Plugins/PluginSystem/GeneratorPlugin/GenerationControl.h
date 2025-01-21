@@ -61,7 +61,7 @@ public:
     /*!
      *  Checks if the generation configuration is valid.
      *
-     *      @param [out] warning   The stated reason for not accepting.
+     *    @param [out] warning   The stated reason for not accepting.
      */
     bool validSelections(QString &warning);
     
@@ -98,18 +98,18 @@ public:
     /*!
      *  Finds the possible views for generation.
      *
-     *      @param [in] input   The relevant IP-XACT documents.
+     *    @param [in] input   The relevant IP-XACT documents.
      *
-     *      @return List of possible view names for which to run the generation.
+     *    @return List of possible view names for which to run the generation.
      */
     static QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(GenerationTuple input);
 
     /*!
      *  Reconfigure the selected file.
      *
-     *      @param [in] fileIndex   Index of the selected file.
+     *    @param [in] fileIndex   Index of the selected file.
      *
-     *      @return The reconfigured file output.
+     *    @return The reconfigured file output.
      */
     QSharedPointer<GenerationOutput> setupRenamedSelection(int const& fileIndex);
 
@@ -118,9 +118,9 @@ protected:
     /*!
      *  Finds the possible views for generation.
      *
-     *      @param [in,out] targetComponent     The component for which the generator is run.
+     *    @param [in,out] targetComponent     The component for which the generator is run.
      *
-     *      @return List of possible view names for which to run the generation.
+     *    @return List of possible view names for which to run the generation.
      */
     QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<const Component> targetComponent) const;
 
@@ -134,16 +134,16 @@ private:
     /*!
      *  Re-initialize the generation documents.
      *
-     *      @param [in] generationOutputs   Current documents.
+     *    @param [in] generationOutputs   Current documents.
      */
     void reInitializeDocuments(QSharedPointer<QList<QSharedPointer<GenerationOutput> > > generationOutputs);
 
     /*!
      *  Get the existing generation output matching the selected generation output.
      *
-     *      @param [in] output  The selected generation output.
+     *    @param [in] output  The selected generation output.
      *
-     *      @return The matching generation output.
+     *    @return The matching generation output.
      */
     QSharedPointer<GenerationOutput> getMatchingMetaDesignOutput(QSharedPointer<GenerationOutput> output) const;
 
@@ -155,16 +155,16 @@ private:
     /*!
      *  Gets the relative path from the top component xml file to the given absolute path.
      *
-     *      @param [in] filePath                The absolute path to the target file.
+     *    @param [in] filePath                The absolute path to the target file.
      *
-     *      @return Relative path from the top component xml file to the target file.
+     *    @return Relative path from the top component xml file to the target file.
      */
     QString relativePathFromXmlToFile(QString const& filePath) const;
 
     /*!
      *  Inserts description to a generated file.
      *
-	 *      @param [in] file		            The file which needs to be described.
+	 *    @param [in] file		            The file which needs to be described.
      */
     void insertFileDescription(QSharedPointer<File> file);
 

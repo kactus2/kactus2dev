@@ -106,23 +106,23 @@ public:
     /*!
      *  Returns the supported import file types.
      *
-     *      @return The file types the import parser supports.
+     *    @return The file types the import parser supports.
      */
     virtual QStringList getSupportedFileTypes() const;
 
     /*!
      *  Gets any compatibility warnings for the plugin.
      *
-     *      @return The warning text.
+     *    @return The warning text.
      */
     virtual QString getCompatibilityWarnings() const;
 
     /*!
      *   Parses a vhdl input, sets up an rtl view and creates generics and ports.
      *
-     *      @param [in] input                   The input text to parse.
-     *      @param [in] componentDeclaration    Declaration of the selected entity.
-     *      @param [in] targetComponent         The component to apply all imported changes to.
+     *    @param [in] input                   The input text to parse.
+     *    @param [in] componentDeclaration    Declaration of the selected entity.
+     *    @param [in] targetComponent         The component to apply all imported changes to.
      */
     virtual void import(QString const& input, QString const& componentDeclaration,
         QSharedPointer<Component> targetComponent) override final;
@@ -130,32 +130,32 @@ public:
     /*!
      *  Sets the given highlighter to be used by the import.
      *
-     *      @param [in] highlighter   The highlighter to use.          
+     *    @param [in] highlighter   The highlighter to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
         
     /*!
      *  Sets the given visualizer to be used by the import.
      *
-     *      @param [in] visualizer   The visualizer to use.          
+     *    @param [in] visualizer   The visualizer to use.          
      */
     virtual void setModelParameterVisualizer(ModelParameterVisualizer* visualizer);
 
     /*!
      *  Get component declarations from the selected input file.
      *
-     *      @param [in] input   The selected input file.
+     *    @param [in] input   The selected input file.
      *
-     *      @return List of component declarations found in the selected input.
+     *    @return List of component declarations found in the selected input.
      */
     virtual QStringList getFileComponents(QString const& input) const override final;
 
     /*!
      *  Get the name of the selected component declaration.
      *
-     *      @param [in] componentDeclaration    The selected component declaration.
+     *    @param [in] componentDeclaration    The selected component declaration.
      *
-     *      @return Name of the selected component declaration.
+     *    @return Name of the selected component declaration.
      */
     virtual QString getComponentName(QString const& componentDeclaration) const override final;
 
@@ -171,24 +171,24 @@ private:
     /*!
      *   Checks if given vhdl file has a valid entity declaration.
      *
-     *      @param [in] fileString The vhdl file as string.
+     *    @param [in] fileString The vhdl file as string.
 	 *
-	 *      @return True if the file has a valid entity, otherwise false.
+	 *    @return True if the file has a valid entity, otherwise false.
      */
     bool hasValidEntity(QString const& fileContent) const;
 
     /*!
      *  Highlights the entity section in the input.
      *
-     *      @param [in] fileContent   The input file content to highlight entity in.
+     *    @param [in] fileContent   The input file content to highlight entity in.
      */
     void highlightEntity(QString const& fileContent) const;
     
     /*!
      *  Parses the model name and architecture name from the input and sets it in the rtl view.
      *
-     *      @param [in] input                       The input text to parse the model name from.
-     *      @param [in/out] targetInstantiation     The instantiation to set the names in.
+     *    @param [in] input                       The input text to parse the model name from.
+     *    @param [in/out] targetInstantiation     The instantiation to set the names in.
      */
     void parseModelNameAndArchitecture(QString const& input, QString const& componentDeclaration,
         QSharedPointer<ComponentInstantiation> targetInstantiation) const;
@@ -196,14 +196,14 @@ private:
     /*!
      *  Highlights the architecture from which the model name was created.
      *
-     *      @param [in] architectureExp   Regular expression for capturing architecture.
+     *    @param [in] architectureExp   Regular expression for capturing architecture.
      */
     void highlightArchitecture(QRegularExpressionMatch const& architectureExp) const;
 
     /*!
      *  Highlights the configuration from which the model name was created.
      *
-     *      @param [in] configurationExp   Regular expression for capturing configuration.
+     *    @param [in] configurationExp   Regular expression for capturing configuration.
      */
     void highlightConfiguration(QRegularExpressionMatch const& configurationExp) const;
 
@@ -215,7 +215,7 @@ private:
     /*!
      *  Finds a flat (rtl) view from the target component or creates one, if none are found.
      *
-     *      @return Flat view to set up with model name and environmental identifiers.
+     *    @return Flat view to set up with model name and environmental identifiers.
      */
     QSharedPointer<View> findOrCreateFlatView() const;
 

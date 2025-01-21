@@ -31,7 +31,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] typeName        The type name for the wire type definition.
+     *    @param [in] typeName        The type name for the wire type definition.
      */
     explicit WireTypeDef(const QString& typeName = QString());
 
@@ -63,72 +63,72 @@ public:
     /*!
      *  Check if a wire type definition has been determined for a given view.
      *
-     *      @param [in] viewName    The name of the view to search.
+     *    @param [in] viewName    The name of the view to search.
      *
-     *      @return True, if the view is found within a view name reference.
+     *    @return True, if the view is found within a view name reference.
      */
     bool hasView(QString const& viewName) const;
 
     /*!
      *  Get the type name.
      *
-     *      @return The type name.
+     *    @return The type name.
      */
     QString getTypeName() const;
 
     /*!
      *  Set the type name.
      *
-     *      @param [in] newTypeName     The new type name.
+     *    @param [in] newTypeName     The new type name.
      */
     void setTypeName(QString const& newTypeName);
 
     /*!
      *  Check if the number of bits in the type declaration is fixed.
      *
-     *      @return True, if the number of bits is fixed, false otherwise.
+     *    @return True, if the number of bits is fixed, false otherwise.
      */
     bool isConstrained() const;
 
     /*!
      *  Set the number of bits in the type declaration to be fixed / not fixed.
      *
-     *      @param [in] constrainedStatus   The new status.
+     *    @param [in] constrainedStatus   The new status.
      */
     void setConstrained(bool constrainedStatus);
 
     /*!
      *  Get the type definitions.
      *
-     *      @return A list of type definitions.
+     *    @return A list of type definitions.
      */
     QSharedPointer<QStringList> getTypeDefinitions() const;
 
     /*!
      *  Set the type definitions.
      *
-     *      @param [in] newTypeDefinitions  A list of new type definitions.
+     *    @param [in] newTypeDefinitions  A list of new type definitions.
      */
     void setTypeDefinitions(QSharedPointer<QStringList> newTypeDefinitions);
 
     /*!
      *  Get the view references.
      *
-     *      @return A list of view references.
+     *    @return A list of view references.
      */
     QSharedPointer<QStringList> getViewRefs() const;
 
     /*!
      *  Set the view references.
      *
-     *      @param [in] newViewRefs     A new list of view references.
+     *    @param [in] newViewRefs     A new list of view references.
      */
     void setViewRefs(QSharedPointer<QStringList> newViewRefs);
 
     /*!
      *  Checks if all the fields are empty.
      *
-     *      @return True, if all the type definition fields are empty, otherwise false. 
+     *    @return True, if all the type definition fields are empty, otherwise false. 
      */
     bool isEmpty() const;
 
@@ -137,14 +137,14 @@ private:
     /*!
      *  Copy the type definitions.
      *
-     *      @param [in] newTypeDefinitions  List of new type definitions.
+     *    @param [in] newTypeDefinitions  List of new type definitions.
      */
     void copyTypeDefinitions(QStringList const& newTypeDefinitions);
 
     /*!
      *  Copy the view references.
      *
-     *      @param [in] newViewReferences   List of new view references.
+     *    @param [in] newViewReferences   List of new view references.
      */
     void copyViewNameReferences(QStringList const& newViewReferences);
 

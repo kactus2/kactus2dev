@@ -31,7 +31,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] designInstantiation     The design instantiation whose parameters are being searched for.
+     *    @param [in] designInstantiation     The design instantiation whose parameters are being searched for.
      */
     DesignParameterFinder(QSharedPointer<DesignInstantiation> designInstantiation);
 
@@ -48,9 +48,9 @@ public:
     /*!
      *  Finds the value of the parameter with the given id.
      *
-     *      @param [in] id      The id of the parameter to search for.
+     *    @param [in] id      The id of the parameter to search for.
      *
-     *      @return The value of the parameter.
+     *    @return The value of the parameter.
      */
     QString valueForId(QStringView id) const final;
 

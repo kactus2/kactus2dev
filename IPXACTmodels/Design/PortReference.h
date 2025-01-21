@@ -35,8 +35,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] portRef         The name of the referenced port.
-     *      @param [in] componentRef    The name of the referenced component.
+     *    @param [in] portRef         The name of the referenced port.
+     *    @param [in] componentRef    The name of the referenced component.
      */
     PortReference(QString const& portRef, QString const& componentRef = QString());
 
@@ -58,14 +58,14 @@ public:
     /*!
      *  Gets the name of the referenced port.     
      *
-     *      @return The referenced port.
+     *    @return The referenced port.
      */
     QString getPortRef() const;
 
     /*!
      *  Gets the name of the referenced component instance.     
      *
-     *      @return The name of the referenced component instance.
+     *    @return The name of the referenced component instance.
      *
      *      @remark Only for internal port references.
      */
@@ -74,28 +74,28 @@ public:
     /*!
      *  Set port reference.
      *
-     *      @param [in] newPortRef  The new port reference.
+     *    @param [in] newPortRef  The new port reference.
      */
     void setPortRef(QString const& newPortRef);
 
     /*!
      *  Set the component reference.
      *
-     *      @param [in] newComponentRef     The new component reference.
+     *    @param [in] newComponentRef     The new component reference.
      */
     void setComponentRef(QString const& newComponentRef);
 
     /*!
      *  Get the presence.
      *
-     *      @return The presence.
+     *    @return The presence.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new presence.
+     *    @param [in] newIsPresent    The new presence.
      */
     void setIsPresent(QString const& newIsPresent);
 
@@ -104,14 +104,14 @@ public:
     /*!
      *  Get the part select.
      *
-     *      @return The part select.
+     *    @return The part select.
      */
     QSharedPointer<PartSelect> getPartSelect() const;
 
     /*!
      *  Set the part select.
      *
-     *      @param [in] newPartSelect   The new part select.
+     *    @param [in] newPartSelect   The new part select.
      */
     void setPartSelect(QSharedPointer<PartSelect> newPartSelect);
 

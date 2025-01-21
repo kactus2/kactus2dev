@@ -25,7 +25,7 @@ public:
     /*!
      * The constructor.
      *
-     *     @param [in] parent  The parent widget.
+     *    @param [in] parent  The parent widget.
      */
     explicit ScriptViewEditor(QWidget* parent = nullptr);
 
@@ -36,19 +36,19 @@ public slots:
 
     /*! Print the given text in the editor.
      *
-     *      @param [in] input  The text to print.
+     *    @param [in] input  The text to print.
      */
     void printInput(QString const& input);
 
     /*! Print the given text in the editor.
      *
-     *      @param [in] input  The text to print.
+     *    @param [in] input  The text to print.
      */
     void print(QString const& input);
 
     /*! Print the given error text in the editor.
      *
-     *      @param [in] input  The error text to print.
+     *    @param [in] input  The error text to print.
      */
     void printError(QString const& input);
 
@@ -57,8 +57,8 @@ private:
     /*!
      * Print the given input with given color.
      *
-     *     @param [in] input        The input text to print.
-     *     @param [in] textColor    The color of the text to use.
+     *    @param [in] input        The input text to print.
+     *    @param [in] textColor    The color of the text to use.
      */
      void printWithColor(QString const& input, QColor const& textColor);
 

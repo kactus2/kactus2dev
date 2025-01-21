@@ -29,10 +29,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] completionModel     Model containing the completions used in expression editor.
-     *      @param [in] finder              The parameter finder to search for the parameters.
-     *      @param [in] selectedChoice      The currently active choice.
-     *      @param [in] parent              The parent object.
+     *    @param [in] completionModel     Model containing the completions used in expression editor.
+     *    @param [in] finder              The parameter finder to search for the parameters.
+     *    @param [in] selectedChoice      The currently active choice.
+     *    @param [in] parent              The parent object.
      */
     ArrayDelegate(QAbstractItemModel* completionModel,
         QSharedPointer<ParameterFinder> finder,
@@ -52,32 +52,32 @@ protected:
     /*!
      *  Checks if the cells in given column accept expression as an input value.
      *
-     *      @param [in] column   The column to check.
+     *    @param [in] column   The column to check.
      *
-     *      @return True, if the cells accept expressions, otherwise false.
+     *    @return True, if the cells accept expressions, otherwise false.
      */
     virtual bool columnAcceptsExpression(int column) const;
 
     /*!
      *  Gets the name of the currently selected choice.
      *
-     *      @param [in] index   The index of the currently selected row.
+     *    @param [in] index   The index of the currently selected row.
      *
-     *      @return The name of the selected choice.
+     *    @return The name of the selected choice.
      */
     virtual QString choiceNameOnRow(QModelIndex const& index) const;
 
     /*!
      *  Gets the column number for the value column.
      *
-     *      @return The number of the column for value.
+     *    @return The number of the column for value.
      */
     virtual int valueColumn() const;
 
     /*!
      *  Gets the currently selected choice.
      *
-     *      @param [in] index   The index of the currently selected row.
+     *    @param [in] index   The index of the currently selected row.
      */
     virtual QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
 

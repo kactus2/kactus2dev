@@ -25,15 +25,15 @@ struct MakeDocument : public GenerationOutput
     /*!
      *  Writes the content. 
      *
-     *      @param [in] outputDirectory         The possible output directory.
+     *    @param [in] outputDirectory         The possible output directory.
      */
 	virtual void write(QString const& /*outputDirectory*/) override final {}
     
     /*!
      *  Finds position for body text highlight in document, if any exists.
      *
-	 *      @param [out] begin                  The position where the highlight begins, if successful.
-     *      @param [out] end                    The position where the highlight ends, if successful.
+	 *    @param [out] begin                  The position where the highlight begins, if successful.
+     *    @param [out] end                    The position where the highlight ends, if successful.
      */
     virtual void getBodyHighlight(int& /*begin*/, int& /*end*/) const override final {}
 };
@@ -60,7 +60,7 @@ public:
     /*!
      *  Checks if the generation configuration is valid.
      *
-     *      @param [out] warning   The stated reason for not accepting.
+     *    @param [out] warning   The stated reason for not accepting.
      */
     bool validSelections(QString &warning);
 	

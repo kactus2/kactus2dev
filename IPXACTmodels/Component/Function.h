@@ -45,8 +45,8 @@ public:
 		/*!
 		 *  The constructor.
 		 *
-		 *      @param [in] sourceName  The name of the source file.
-		 *      @param [in] fileType    The file type.
+		 *    @param [in] sourceName  The name of the source file.
+		 *    @param [in] fileType    The file type.
 		 */
 		IPXACTMODELS_EXPORT SourceFile(QString const& sourceName = QString(), QString const& fileType = QString());
 
@@ -56,28 +56,28 @@ public:
         /*!
          *  Gets the source name.
          *
-         *      @return The name of the source.
+         *    @return The name of the source.
          */
 		IPXACTMODELS_EXPORT QString getSourceName() const;
 
         /*!
          *  Set the source name.
          *
-         *      @param [in] newSourceName   The new name for the source.
+         *    @param [in] newSourceName   The new name for the source.
          */
 		IPXACTMODELS_EXPORT void setSourceName(QString const& newSourceName);
 
         /*!
          *  Get the file type of the source.
          *
-         *      @return The source file type.
+         *    @return The source file type.
          */
 		IPXACTMODELS_EXPORT FileType getFileType() const;
 
         /*!
          *  Set the file type for the source.
          *
-         *      @param [in] newFileType     The new source file type.
+         *    @param [in] newFileType     The new source file type.
          */
 		IPXACTMODELS_EXPORT void setFileType(FileType const& newFileType);
 	};
@@ -85,7 +85,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] fileReference   The referenced file.
+     *    @param [in] fileReference   The referenced file.
      */
     Function(QString const& fileReference = QString());
 
@@ -103,112 +103,112 @@ public:
 	/*! 
      *  Get the value of the replicate-attribute.
 	 *
-	 *      @return True for a replicated function, false otherwise.
+	 *    @return True for a replicated function, false otherwise.
 	 */
 	bool getReplicate() const;
     
 	/*! 
      *  Set the replicate value.
 	 *
-	 *      @param [in] replicate   The new replicate value.
+	 *    @param [in] replicate   The new replicate value.
 	 */
 	void setReplicate(bool replicate);
     
 	/*! 
      *  Get entry point of the function.
 	 *
-	 *      @return     The entry point.
+	 *    @return     The entry point.
 	 */
 	QString getEntryPoint() const;
     
 	/*!
      *  Set the entry point for the function.
 	 *
-	 *      @param [in] entryPoint  The new entry point.
+	 *    @param [in] entryPoint  The new entry point.
 	 */
 	void setEntryPoint(QString const& entryPoint);
     
 	/*!
      *  Get the file reference.
 	 *
-	 *      @return The file reference.
+	 *    @return The file reference.
 	 */
 	QString getFileRef() const;
     
 	/*! 
      *  Set the file reference.
 	 *
-	 *      @param [in] fileRef     The reference to the new file.
+	 *    @param [in] fileRef     The reference to the new file.
 	 */
 	void setFileRef(QString const& fileRef);
     
 	/*!
      *  Get the return type of the function.
 	 *
-	 *      @return The return type.
+	 *    @return The return type.
 	 */
 	QString getReturnType() const;
     
 	/*!
      *  Set the return type of the function.
 	 *
-	 *      @param [in] returnType  The new return type. Only void and int are appected.
+	 *    @param [in] returnType  The new return type. Only void and int are appected.
 	 */
 	void setReturnType(QString const& returnType);
 
 	/*! 
      *  Get the list of function arguments.
 	 *
-	 *      @return Pointer to a list containing the arguments.
+	 *    @return Pointer to a list containing the arguments.
 	 */
     QSharedPointer<QList<QSharedPointer<NameValuePair> > > getArguments() const;
     
 	/*!
      *  Set arguments for the function.
 	 *
-	 *      @param [in] arguments   Pointer to a list containing the new arguments.
+	 *    @param [in] arguments   Pointer to a list containing the new arguments.
 	 */
 	void setArguments(QSharedPointer<QList<QSharedPointer<NameValuePair> > > arguments);
 
 	/*!
      *  Get the disabled value
 	 *
-	 *      @return The expression for the disabled value.
+	 *    @return The expression for the disabled value.
 	 */
 	QString getDisabled() const;
 
 	/*! 
      *  Set the disabled value
 	 *
-	 *      @param [in] disabled    The new disabled value.
+	 *    @param [in] disabled    The new disabled value.
 	 */
 	void setDisabled(QString const& newDisabled);
     
 	/*!
      *  Get the attributes of the disabled-element.
 	 *
-	 *      @return QMap containing the attributes for disabled value.
+	 *    @return QMap containing the attributes for disabled value.
 	 */
 	QMap<QString, QString> getDisabledAttributes() const;
 
 	/*! 
      *  Set the attributes for the disabled-element.
 	 *
-	 *      @param [in] disabledAttributes  The new attributes for the disabled value.
+	 *    @param [in] disabledAttributes  The new attributes for the disabled value.
 	 */
 	void setDisabledAttributes(QMap<QString, QString>& disabledAttributes);
 
 	/*!
      *  Get list of the source files for the function.
 	 *
-	 *      @return Pointer to a list containing the source files.
+	 *    @return Pointer to a list containing the source files.
 	 */
     QSharedPointer<QList<QSharedPointer<SourceFile> > > getSourceFiles() const;
 
 	/*! 
      *  Set the source files for the function.
 	 *
-	 *      @param [in] sourceFiles     Pointer to a list containing the new source files.
+	 *    @param [in] sourceFiles     Pointer to a list containing the new source files.
 	 */
     void setSourceFiles(QSharedPointer<QList<QSharedPointer<SourceFile> > > newSourceFiles);
 
@@ -217,14 +217,14 @@ private:
     /*!
      *  Copy the arguments of a function.
      *
-     *      @param [in] other   The function being copied.
+     *    @param [in] other   The function being copied.
      */
     void copyArguments(const Function& other);
 
     /*!
      *  Copy the source files of a function.
      *
-     *      @param [in] other   The function being copied.
+     *    @param [in] other   The function being copied.
      */
     void copySourceFiles(const Function& other);
 

@@ -32,10 +32,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name            The name of the interconnection.
-     *      @param [in] startInterface  The start interface.
-     *      @param [in] displayName     The display name.
-     *      @param [in] description     The description.
+     *    @param [in] name            The name of the interconnection.
+     *    @param [in] startInterface  The start interface.
+     *    @param [in] displayName     The display name.
+     *    @param [in] description     The description.
      */
     Interconnection(QString const name, QSharedPointer<ActiveInterface> startInterface,
         QString const& displayName = QString(), QString const& description = QString ());
@@ -63,74 +63,74 @@ public:
     /*!
      *  Checks if the interconnection is treated as an off-page connection.
      *
-     *      @return True if off-page connection, otherwise false.
+     *    @return True if off-page connection, otherwise false.
      */
     bool isOffPage() const;
 
     /*!
      *  Set/unset the connection to off-page connection.
      *
-     *      @param [in] offPage   True if set to off-page, otherwise false.
+     *    @param [in] offPage   True if set to off-page, otherwise false.
      */
     void setOffPage(bool offpage);
 
     /*!
      *  Get the start interface.
      *
-     *      @return Pointer to the start interface.
+     *    @return Pointer to the start interface.
      */
     QSharedPointer<ActiveInterface> getStartInterface() const;
 
     /*!
      *  Set the start interface.
      *
-     *      @param [in] newStartInterface   The new start interface.
+     *    @param [in] newStartInterface   The new start interface.
      */
     void setStartInterface(QSharedPointer<ActiveInterface> newStartInterface);
 
     /*!
      *  Get the active interfaces.
      *
-     *      @return A pointer to a list containing the active interfaces.
+     *    @return A pointer to a list containing the active interfaces.
      */
     QSharedPointer<QList<QSharedPointer<ActiveInterface> > > getActiveInterfaces() const;
 
     /*!
      *  Get the hier interfaces.
      *
-     *      @return A pointer to a list containing the hier interfaces.
+     *    @return A pointer to a list containing the hier interfaces.
      */
     QSharedPointer<QList<QSharedPointer<HierInterface> > > getHierInterfaces() const;
 
     /*!
      *  Get the presence.
      *
-     *      @return The presence.
+     *    @return The presence.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new presence.
+     *    @param [in] newIsPresent    The new presence.
      */
     void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Check if an interface references a given component and a bus interface.
      *
-     *      @param [in] instanceName        Name of the component.
-     *      @param [in] busInterfaceName    Name of the bus interface.
+     *    @param [in] instanceName        Name of the component.
+     *    @param [in] busInterfaceName    Name of the bus interface.
      *
-     *      @return True, if an interface references the given component and bus interface, otherwise false.
+     *    @return True, if an interface references the given component and bus interface, otherwise false.
      */
     bool hasInterfaceReferencingComponent(QString const& instanceName, QString const& busInterfaceName) const;
 
     /*!
      *  Change the component reference of contained interfaces.
      *
-     *      @param [in] oldName     The old component reference.
-     *      @param [in] newName     The new component reference.
+     *    @param [in] oldName     The old component reference.
+     *    @param [in] newName     The new component reference.
      */
     void changeInterfaceComponentReferences(QString const& oldComponent, QString const& newComponent);
 

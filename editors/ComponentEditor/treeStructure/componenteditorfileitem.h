@@ -36,17 +36,17 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] file                The file being edited.
-     *      @param [in] availableFiles      The list of available files.
-     *      @param [in] fileInterface       Interface for accessing files.
-	 *      @param [in] model               The model that owns the items.
-	 *      @param [in] libHandler          The instance that manages the library.
-	 *      @param [in] component           The component being edited.
-     *      @param [in] validator           The validator for checking file validity.
-     *      @param [in] parameterFinder     The used parameter finder.
-     *      @param [in] expressionParser    Parser for calculating expressions.
-     *      @param [in] referenceCounter    The counter for parameter references.
-	 *      @param [in] parent              The parent item.
+	 *    @param [in] file                The file being edited.
+     *    @param [in] availableFiles      The list of available files.
+     *    @param [in] fileInterface       Interface for accessing files.
+	 *    @param [in] model               The model that owns the items.
+	 *    @param [in] libHandler          The instance that manages the library.
+	 *    @param [in] component           The component being edited.
+     *    @param [in] validator           The validator for checking file validity.
+     *    @param [in] parameterFinder     The used parameter finder.
+     *    @param [in] expressionParser    Parser for calculating expressions.
+     *    @param [in] referenceCounter    The counter for parameter references.
+	 *    @param [in] parent              The parent item.
 	 */
     ComponentEditorFileItem(QSharedPointer<File> file,
         QSharedPointer<QList<QSharedPointer<File> > > availableFiles,
@@ -68,42 +68,42 @@ public:
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const;
 
 	/*!
      *  Check the validity of this item and sub items.
 	 *
-	 *      @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	 */
 	virtual bool isValid() const;
 
 	/*!
      *  Get The editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*!
      *  Tells if the item can be opened or not.
 	 * 
-	 *      @return Files can always be opened and this function returns true.
+	 *    @return Files can always be opened and this function returns true.
 	 */
 	virtual bool canBeOpened() const;
 
     /*!
      *  Returns the possible actions for opening the item.
      *
-     *      @return The actions to open the item.
+     *    @return The actions to open the item.
      */
     virtual QList<QAction*> actions() const;
 
@@ -112,8 +112,8 @@ signals:
     /*!
      *  Handle the name change of a file.
      *
-     *      @param [in] oldName     Old name of the selected file.
-     *      @param [in] newName     The new name for the selected file.
+     *    @param [in] oldName     Old name of the selected file.
+     *    @param [in] newName     The new name for the selected file.
      */
     void fileRenamed(std::string const& oldName, std::string const& newName);
 
@@ -150,37 +150,37 @@ private:
     /*!
      *  Starts the selected application and runs the file with it.
      *
-     *      @param [in] applicationPath   Absolute path to the application executable.     
+     *    @param [in] applicationPath   Absolute path to the application executable.     
      */
     void runInApplication(QString const& applicationPath);
 
     /*!
      *  Checks if the item should be opened in Katus2 CSource editor.
      *
-     *      @return True if the item should be opened, false otherwise.
+     *    @return True if the item should be opened, false otherwise.
      */
     virtual bool useKactusCSourceEditor() const;
 
     /*!
      *  Checks if an executable has been set for the file type.
      *
-     *      @return True, if valid executable has been set, otherwise false.
+     *    @return True, if valid executable has been set, otherwise false.
      */
     bool runExecutableSet() const;
 
     /*!
      *  Gets the absolute path to the executable set for the file type.
      *
-     *      @return The path to executable.
+     *    @return The path to executable.
      */
     QString executablePath() const;
 
     /*!
      *  Finds all the environmental variables in a text and replaces them with the variable value.
      *
-	 *      @param [in] text    The text to search through.
+	 *    @param [in] text    The text to search through.
      *
-     *      @return A text where variables have been replaced with their values.
+     *    @return A text where variables have been replaced with their values.
      */
 	QString resolveEnvironmentVariables(QString const& text) const;
 

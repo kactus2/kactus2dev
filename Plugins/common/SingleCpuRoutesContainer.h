@@ -25,7 +25,7 @@ public:
     /*!
      *  The constructor.
      * 
-     *      @param [in] CPU     The CPU.
+     *    @param [in] CPU     The CPU.
      */
     SingleCpuRoutesContainer(QSharedPointer<Cpu> cpu);
 
@@ -42,14 +42,14 @@ public:
     /*!
      *  Get the containing CPU.
      *
-     *      @return The containing CPU.
+     *    @return The containing CPU.
      */
     QSharedPointer<Cpu> getCpu() const;
 
     /*!
      *  Set the containing CPU.
      *
-     *      @param [in] newCpu  The new CPU.
+     *    @param [in] newCpu  The new CPU.
      */
     void setCpu(QSharedPointer<Cpu> newCpu);
 

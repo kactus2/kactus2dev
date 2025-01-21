@@ -43,12 +43,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] resetInterface      Interface for resets.
-     *      @param [in] resetTypes          List of reset types within the containing component.
-     *      @param [in] expressionParser    The expression parser.
-     *      @param [in] parameterFinder     Component parameter finder.
-     *      @param [in] containingField     Field containing the resets.
-	 *      @param [in] parent              Pointer to the parent of this editor.
+     *    @param [in] resetInterface      Interface for resets.
+     *    @param [in] resetTypes          List of reset types within the containing component.
+     *    @param [in] expressionParser    The expression parser.
+     *    @param [in] parameterFinder     Component parameter finder.
+     *    @param [in] containingField     Field containing the resets.
+	 *    @param [in] parent              Pointer to the parent of this editor.
 	 */
     ResetsEditor(ResetInterface* resetInterface, QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes,
         QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
@@ -74,14 +74,14 @@ signals:
     /*!
      *  Increase the number of references made to the selected parameter.
      *
-     *      @param [in] id  ID of the selected parameter.
+     *    @param [in] id  ID of the selected parameter.
      */
     void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the number of references made to the selected parameter.
      *
-     *      @param [in] id  ID of the selected parameter.
+     *    @param [in] id  ID of the selected parameter.
      */
     void decreaseReferences(QString const& id);
 

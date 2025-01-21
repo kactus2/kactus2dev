@@ -30,7 +30,7 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] parent  The owner of this widget.
+	 *    @param [in] parent  The owner of this widget.
 	 */
 	PortMappingTableView(QWidget *parent);
 	
@@ -42,7 +42,7 @@ public:
 	/*!
      *  Get names of the currently selected ports.
 	 * 
-	 *      @return QStringList containing the names of the ports that are selected.
+	 *    @return QStringList containing the names of the ports that are selected.
 	 */
     QStringList getSelectedPorts();
 
@@ -65,28 +65,28 @@ protected:
 	/*!
      *  Handler for drag enter events.
 	 *
-	 *      @param [in] event   The event object.
+	 *    @param [in] event   The event object.
 	 */
 	virtual void dragEnterEvent(QDragEnterEvent* event);
 
 	/*!
      *  Handler for drag move events on drag & drop.
 	 *
-	 *      @param [in] e   The event object.
+	 *    @param [in] e   The event object.
 	 */
 	virtual void dragMoveEvent(QDragMoveEvent* e);
 
 	/*!
      *  Handler for mouse move events.
 	 *
-	 *      @param [in] event   The event object.
+	 *    @param [in] event   The event object.
 	 */
 	virtual void mouseMoveEvent(QMouseEvent* event);
 	
 	/*!
      *  Handler for mouse press events.
 	 *
-	 *      @param [in] event   The event object.
+	 *    @param [in] event   The event object.
 	 */
 	virtual void mousePressEvent(QMouseEvent* event);
 

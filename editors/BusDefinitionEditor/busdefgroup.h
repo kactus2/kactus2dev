@@ -47,10 +47,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] libraryHandler          Interface to the library.
-     *      @param [in] expressionFormatter     The expression formatter to use.
-     *      @param [in] parameterFinder         The parameter finder to use.
-     *      @param [in] parent                  The owner of this widget.
+     *    @param [in] libraryHandler          Interface to the library.
+     *    @param [in] expressionFormatter     The expression formatter to use.
+     *    @param [in] parameterFinder         The parameter finder to use.
+     *    @param [in] parent                  The owner of this widget.
      */
     BusDefGroup(LibraryInterface* libraryHandler, QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ParameterFinder> parameterFinder, QWidget *parent);
@@ -63,7 +63,7 @@ public:
     /*!
      *  Set the bus definition that is being edited.
      *
-     *      @param [in] busDef The bus definition
+     *    @param [in] busDef The bus definition
      */
     void setBusDef(QSharedPointer<BusDefinition> busDef);
 
@@ -77,22 +77,22 @@ signals:
     /*!
      *  Increase the amount of references to the parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the amount of references to the parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void decreaseReferences(QString id);
 
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameterList       The selected parameters.
-     *      @param [in] parameterInterface  Interface for accessing parameters.
+     *    @param [in] parameterList       The selected parameters.
+     *    @param [in] parameterInterface  Interface for accessing parameters.
      */
     void recalculateReferencesToParameters(QStringList const& parameterList,
         AbstractParameterInterface* parameterInterface);
@@ -100,8 +100,8 @@ signals:
     /*!
      *  Open the reference tree of the parameter with the id.
      *
-     *      @param [in] id              The id of the parameter.
-     *      @param [in] parameterName   Name of the selected parameter.
+     *    @param [in] id              The id of the parameter.
+     *    @param [in] parameterName   Name of the selected parameter.
      */
     void openReferenceTree(QString const& id, QString const& parameterName);
 
@@ -160,16 +160,16 @@ private:
     /*!
      *  Get the extended bus definition for the selected bus definition.
      *
-     *      @param [in] busDefinition   The selected bus definition.
+     *    @param [in] busDefinition   The selected bus definition.
      *
-     *      @return The extended bus definition.
+     *    @return The extended bus definition.
      */
     QSharedPointer<const BusDefinition> getExtendedBus(QSharedPointer<const BusDefinition> busDefinition) const;
     
     /*!
      *  Lock editors according to the selected extended bus definition.
      *
-     *      @param [in] extendedBus     The selected extended bus definition.
+     *    @param [in] extendedBus     The selected extended bus definition.
      */
     void extendBusDefinition(QSharedPointer<const BusDefinition> extendedBus);
 

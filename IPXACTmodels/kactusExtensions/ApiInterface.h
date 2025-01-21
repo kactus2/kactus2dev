@@ -44,9 +44,9 @@ IPXACTMODELS_EXPORT DependencyDirection str2DependencyDirection(QString const& s
 /*!
  *  Converts the enumeration value to an equivalent string.
  *
- *      @param [in] dir The dependency direction enum value.
+ *    @param [in] dir The dependency direction enum value.
  *
- *      @return The equivalent string.
+ *    @return The equivalent string.
  */
 IPXACTMODELS_EXPORT QString dependencyDirection2Str(DependencyDirection dir);
 
@@ -71,7 +71,7 @@ public:
     /*!
      *  Constructor which reads the API interface from an XML node.
      *
-     *      @param [in] node The source XML node.
+     *    @param [in] node The source XML node.
      */
     ApiInterface(QDomNode& node);
 
@@ -83,14 +83,14 @@ public:
     /*!
      *  Clones the api interface.
      *
-     *      @return A cloned api interface.
+     *    @return A cloned api interface.
      */
     ApiInterface* clone() const final;
 
     /*!
      *  Gets the api interface type.
      *
-     *      @return The type of the api interface.
+     *    @return The type of the api interface.
      */
     QString type() const final;
 
@@ -102,8 +102,8 @@ public:
     /*!
      *  Returns true if the contents of the API interface are valid.
      *
-     *      @param [out] errorList  Error list which is appended with errors if found while validating.
-     *      @param [in]  parentId   The identifier of the containing component.
+     *    @param [out] errorList  Error list which is appended with errors if found while validating.
+     *    @param [in]  parentId   The identifier of the containing component.
      */
     bool isValid(QStringList& errorList, QString const& parentId) const;
 
@@ -115,21 +115,21 @@ public:
     /*!
      *  Sets the API type.
      *
-     *      @param [in] vlnv The API definition VLNV.
+     *    @param [in] vlnv The API definition VLNV.
      */
     void setApiType(VLNV const& vlnv);
 
     /*!
      *  Sets the dependency direction.
      *
-     *      @param [in] dir The dependency direction.
+     *    @param [in] dir The dependency direction.
      */
     void setDependencyDirection(DependencyDirection dir);
 
     /*!
      *  Sets the default position in the parent component's graphical representation.
      *
-     *      @param [in] pos The position to set.
+     *    @param [in] pos The position to set.
      */
     void setDefaultPos(QPointF const& pos);
 

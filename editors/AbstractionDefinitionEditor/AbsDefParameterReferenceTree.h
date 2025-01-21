@@ -26,9 +26,9 @@ public:
     /*!
      *	The constructor.
      *  
-     *      @param [in] absDef                  The abstraction definition.
-     *      @param [in] referenceCounter        The reference counter to use.
-     *      @param [in] expressionFormatter     The expression formatter to use.
+     *    @param [in] absDef                  The abstraction definition.
+     *    @param [in] referenceCounter        The reference counter to use.
+     *    @param [in] expressionFormatter     The expression formatter to use.
      */
     AbsDefParameterReferenceTree(QSharedPointer<AbstractionDefinition> absDef,
         QSharedPointer<AbsDefParameterReferenceCounter> referenceCounter,
@@ -42,7 +42,7 @@ public:
     /*!
      *	Set a new abstraction definition.
      *  
-     *      @param [in] absDef     The abstraction definition to set.
+     *    @param [in] absDef     The abstraction definition to set.
      */
     void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
 

@@ -41,37 +41,37 @@ public:
 
 	/*! Set the VLNV for the file.
 	*
-	*      @param [in] vlnv     The vlnv to set.
+	*    @param [in] vlnv     The vlnv to set.
 	*/
 	void setVlnv(const VLNV& vlnv);
     	
     /*! Get the VLNV for the file.
 	 *
-	 *      @return The vlnv referenced in the file.
+	 *    @return The vlnv referenced in the file.
 	 */
     VLNV getVlnv() const;
     	
     /*! Set the name (path) for the file.
 	 *
-	 *       @param [in] name   The name to set.
+	 *    @param [in] name   The name to set.
 	 */
     void setName(QString const& name);
     	
     /*! Get the name (path) for the file.
 	 *
-	 *      @return The path to the xml file.
+	 *    @return The path to the xml file.
 	 */
     QString getName() const;
     	
     /*! Set the description for the file.
 	 *
-	 *       @param [in] description   The description to set.
+	 *    @param [in] description   The description to set.
 	 */
     void setDescription(QString const& description);
     	
     /*! Get the description for the file.
 	 *
-	 *       @return   The description for the file.
+	 *    @return   The description for the file.
 	 */
     QString getDescription() const;
 

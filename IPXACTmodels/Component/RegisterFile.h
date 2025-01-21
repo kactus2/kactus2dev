@@ -33,9 +33,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name            The register file name.
-     *      @param [in] addressOffset   The address offset.
-     *      @param [in] range           The range of the register file.
+     *    @param [in] name            The register file name.
+     *    @param [in] addressOffset   The address offset.
+     *    @param [in] range           The range of the register file.
      */
     RegisterFile(QString const& name = QString(), QString const& addressOffset = QString(),
         QString const& range = QString());
@@ -52,21 +52,21 @@ public:
 	/*!
      *  Clone the register file and return pointer to the copy.
 	 *
-	 *      @return Pointer to the cloned register file.
+	 *    @return Pointer to the cloned register file.
 	 */
     virtual QSharedPointer<RegisterBase> clone();
 
 	/*!
      *  Get the range of the registerFile.
 	 *
-	 *      @return The range of the registerFile.
+	 *    @return The range of the registerFile.
 	 */
     QString getRange() const;
 
 	/*!
      *  Set the range of the registerFile.
 	 *
-	 *      @param [in] newRange    The new range.
+	 *    @param [in] newRange    The new range.
 	 */
     void setRange(QString const& newRange);
 
@@ -74,14 +74,14 @@ public:
 	/*!
      *  Get the registerData elements of the reigsterFile.
 	 *
-	 *      @return Pointer to a list containing the register data.
+	 *    @return Pointer to a list containing the register data.
 	 */
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > getRegisterData() const;
 
 	/*!
      *  Set the registerData for the registerFile.
 	 *
-	 *      @param [in] newRegisterData     Pointer to a list containing the register data.
+	 *    @param [in] newRegisterData     Pointer to a list containing the register data.
 	 */
     void setRegisterData(QSharedPointer<QList<QSharedPointer<RegisterBase> > > newRegisterData);
 
@@ -95,7 +95,7 @@ public:
     /*!
      *	Set the register file definition reference.
      *
-     *      @param [in] registerFileDefinitionRef     The new register file definition reference.
+     *    @param [in] registerFileDefinitionRef     The new register file definition reference.
      */
     void setRegisterFileDefinitionReference(QString const& newRegisterFileDefinitionRef);
 
@@ -109,7 +109,7 @@ public:
     /*!
      *	Set the type definitions reference.
      *
-     *      @param [in] typeDefinitionsRef     The new type definitions reference to set.
+     *    @param [in] typeDefinitionsRef     The new type definitions reference to set.
      */
     void setTypeDefinitionsReference(QString const& newTypeDefinitionsRef);
 
@@ -118,7 +118,7 @@ private:
     /*!
      *  Copy the register data.
      *
-     *      @param [in] other   The register file being copied.
+     *    @param [in] other   The register file being copied.
      */
     void copyRegisterData(const RegisterFile& other);
 

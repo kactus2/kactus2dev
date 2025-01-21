@@ -36,8 +36,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] libInterface    The library interface.
-     *      @param [in] parent          The parent widget.
+     *    @param [in] libInterface    The library interface.
+     *    @param [in] parent          The parent widget.
      */
     NewSystemPage(LibraryInterface* libInterface, QWidget* parent);
 
@@ -53,7 +53,7 @@ public:
     /*!
      *  Pre-validates the contents of the page. This is used for enabling/disabling the OK button.
      *
-     *      @return True, if the contents are valid and OK button should be enabled.
+     *    @return True, if the contents are valid and OK button should be enabled.
      *              False, if the contents are invalid and OK button should be disabled.
      *
      *      @remarks Must not show any message boxes.
@@ -63,7 +63,7 @@ public:
     /*!
      *  Validates the contents of the page thoroughly.
      *
-     *      @return True, if the contents are valid. False, if they are invalid.
+     *    @return True, if the contents are valid. False, if they are invalid.
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
@@ -77,7 +77,7 @@ public:
     /*!
      *  Called when the page is to be changed and this page would be hidden.
      *
-     *      @return False, if the page change should be rejected. Otherwise true.
+     *    @return False, if the page change should be rejected. Otherwise true.
      */
     bool onPageChange() final;
 
@@ -102,16 +102,16 @@ private:
     /*!
      *  Initializes the top component selection listing for HW mapping.
      *
-     *      @param [in] libInterface   The library interface.
+     *    @param [in] libInterface   The library interface.
      */
     void initializeHWComponentSelectionWidget(LibraryInterface* libInterface);
 
     /*!
      *  Creates an item for selection widget for the given library item finding child items recursively.
      *
-     *      @param [in] libraryItem   The library item to create the item for.
+     *    @param [in] libraryItem   The library item to create the item for.
      *
-     *      @return The item for selection widget.
+     *    @return The item for selection widget.
      */
     QTreeWidgetItem* createChildRecursively(LibraryItem const* libraryItem) const;
 

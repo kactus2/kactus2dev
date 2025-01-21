@@ -32,9 +32,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] reg                 The register that this graph item visualizes.
-     *      @param [in] expressionParser    Parser for expressions in register fields.
-	 *      @param [in] parent              The parent of this graph item.
+	 *    @param [in] reg                 The register that this graph item visualizes.
+     *    @param [in] expressionParser    Parser for expressions in register fields.
+	 *    @param [in] parent              The parent of this graph item.
 	 */
 	RegisterGraphItem(QSharedPointer<Register> reg, QSharedPointer<ExpressionParser> expressionParser,
         QGraphicsItem* parent);
@@ -58,42 +58,42 @@ public:
 	/*!
      *  Get the offset of the item. 
 	 *
-	 *      @return The offset of the item from the parent item's base address.
+	 *    @return The offset of the item from the parent item's base address.
 	 */
 	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
-	 *      @return The last address.
+	 *    @return The last address.
 	 */
 	virtual quint64 getLastAddress() const override final;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
-	 *      @return The bit width of the item.
+	 *    @return The bit width of the item.
 	 */
 	virtual int getBitWidth() const override final;
 
 	/*!
      *  Get number of bits the addressable unit contains.
 	 *
-	 *      @return The size of least addressable unit.
+	 *    @return The size of least addressable unit.
 	 */
 	virtual unsigned int getAddressUnitSize() const override final;
 
     /*!
      *  Set the width for the item.
 	 *
-	 *       @param [in] width The new width of the item.
+	 *    @param [in] width The new width of the item.
 	 */
     virtual void setWidth(qreal width) override final;
 
     /*!
      *  Checks if the item is to be used in the visualization.
      *
-     *      @return True, if the item should be used, otherwise false.
+     *    @return True, if the item should be used, otherwise false.
      */
     virtual bool isPresent() const override final;
 
@@ -121,21 +121,21 @@ private:
     /*!
      *  Gets the register size in AUB units.
      *
-     *      @return The size of the register in AUBs.
+     *    @return The size of the register in AUBs.
      */
     quint64 getSizeInAUB() const;
 
     /*!
      *  Gets the MSB of the register.
      *
-     *      @return The MSB of the register.
+     *    @return The MSB of the register.
      */
     unsigned int getRegisterMSB() const;
 
     /*!
      * Finds the highest bit reserved by the register i.e. MSB or highest bit found in fields.
      *
-     *     @return The highest bit index in the register.
+     *    @return The highest bit index in the register.
      */
     unsigned int findHighestReservedBit() const;
 
@@ -143,18 +143,18 @@ private:
     /*!
      *  Checks if there is empty memory space between the given child and the last known used bit index.
      *
-     *      @param [in] current             The currently iterated child.
-     *      @param [in] lastBitIndexInUse   The last known used bit index.
+     *    @param [in] current             The currently iterated child.
+     *    @param [in] lastBitIndexInUse   The last known used bit index.
      *
-     *      @return True, if there is empty space, otherwise false.
+     *    @return True, if there is empty space, otherwise false.
      */
     bool emptySpaceBeforeChild(MemoryVisualizationItem const* current, quint64 lastBitIndexInUse) const;
 
     /*!
      *  Creates a new child for representing a free memory slot.
      *
-     *      @param [in] startAddress    The offset of the free memory slot.
-     *      @param [in] lastAddress     The last address of the free memory slot.
+     *    @param [in] startAddress    The offset of the free memory slot.
+     *    @param [in] lastAddress     The last address of the free memory slot.
      */
     QMultiMap<quint64, MemoryVisualizationItem*>::iterator addMemoryGap(quint64 startAddress, quint64 endAddress);
 

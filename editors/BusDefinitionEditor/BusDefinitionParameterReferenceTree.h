@@ -26,10 +26,10 @@ public:
     /*!
      *   The constructor.
      *
-     *      @param [in] busDef                  The bus definition whose references to display.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] referenceCounter        Calculator for parameter references.
-     *      @param [in] parent                  The parent widget.
+     *    @param [in] busDef                  The bus definition whose references to display.
+     *    @param [in] expressionFormatter     Formatter for expressions.
+     *    @param [in] referenceCounter        Calculator for parameter references.
+     *    @param [in] parent                  The parent widget.
      */
     BusDefinitionParameterReferenceTree(QSharedPointer<BusDefinition> busDef, QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ParameterReferenceCounter> referenceCounter, QWidget* parent = nullptr);

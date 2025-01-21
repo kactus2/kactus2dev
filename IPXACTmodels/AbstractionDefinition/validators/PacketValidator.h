@@ -39,18 +39,18 @@ public:
     /*!
      *  Validates the given Packet.
      *
-     *      @param [in] packet  The packet to validate.
+     *    @param [in] packet  The packet to validate.
      *
-     *      @return True, if the Packet is valid IP-XACT, otherwise false.
+     *    @return True, if the Packet is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<Packet> packet) const;
 
     /*!
      *  Finds possible errors in a Packet and creates a list of them.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] packet      The AbstractionDefinition whose errors to find.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] packet      The AbstractionDefinition whose errors to find.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsIn(QStringList& errors, QSharedPointer<Packet> packet, QString const& context) const;
 
@@ -59,7 +59,7 @@ private:
     /*!
      *	Checks if packet field is valid.
      *  
-     *      @param [in] packetField     The packet field to check.
+     *    @param [in] packetField     The packet field to check.
      *		
      * 		@return True, if field is valid, otherwise false.
      */
@@ -68,16 +68,16 @@ private:
     /*!
      *	Finds possible errors in a packet field and creates a list of them.
      *  
-     *      @param [in] errors	        List of found errors.
-     *      @param [in] context	        Context to help locate the error.
-     *      @param [in] packetField	    The packet field to check.
+     *    @param [in] errors	        List of found errors.
+     *    @param [in] context	        Context to help locate the error.
+     *    @param [in] packetField	    The packet field to check.
      */
     void findErrorsInPacketField(QStringList& errors, QString const& context, QSharedPointer<PacketField> packetField) const;
 
     /*!
      *	Checks the validity of a packet or packet field name.
      *  
-     *      @param [in] name	The name to check.
+     *    @param [in] name	The name to check.
      *		
      * 		@return True, if name is valid, otherwise false.
      */
@@ -86,8 +86,8 @@ private:
     /*!
      *	Parses the field width expression.
      *  
-     *      @param [in] width	        The width value to parse.
-     *      @param [in] widthIsValid	Indicates if the parsed width is valid.
+     *    @param [in] width	        The width value to parse.
+     *    @param [in] widthIsValid	Indicates if the parsed width is valid.
      *		
      * 		@return Resolved width expression in bits.
      */
@@ -96,8 +96,8 @@ private:
     /*!
      *	Checks if the packet field contains a valid value.
      *  
-     *      @param [in] packetField	    The packet field to check.
-     *      @param [in] fieldWidth	    The width of the field in bits.
+     *    @param [in] packetField	    The packet field to check.
+     *    @param [in] fieldWidth	    The width of the field in bits.
      *		
      * 		@return True, if the value is valid, otherwise false.
      */
@@ -106,10 +106,10 @@ private:
     /*!
      *	Finds possible errors in a packet field value.
      *  
-     *      @param [in] errors	                List of found errors.
-     *      @param [in] context	                Context to help locate the error.
-     *      @param [in] packetField	            The packet field to check.
-     *      @param [in] resolvedFieldWidth      The width of the packet field in bits.
+     *    @param [in] errors	                List of found errors.
+     *    @param [in] context	                Context to help locate the error.
+     *    @param [in] packetField	            The packet field to check.
+     *    @param [in] resolvedFieldWidth      The width of the packet field in bits.
      */
     void findErrorsInPacketFieldValue(QStringList& errors, QString const& context,
         QSharedPointer<PacketField> packetField, QString const& resolvedFieldWidth) const;
@@ -117,7 +117,7 @@ private:
     /*!
      *	Parses a constant field value.
      *  
-     *      @param [in] token	Description
+     *    @param [in] token	Description
      *		
      * 		@return The resolved value expression in binary.
      */
@@ -126,9 +126,9 @@ private:
     /*!
      *  Get the base for a given number.
      *
-     *      @param [in] constantNumber  The selected number.
+     *    @param [in] constantNumber  The selected number.
      *
-     *      @return The base for the selected number. Either 2, 8, 10 or 16.
+     *    @return The base for the selected number. Either 2, 8, 10 or 16.
      */
     int baseOf(QString const& constantNumber) const;
 

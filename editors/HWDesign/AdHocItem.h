@@ -35,10 +35,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] port                    The selected port.
-     *      @param [in] containingComponent     Component containing the port.
-     *      @param [in] parent                  The owner of this item.
-     *      @param [in] dir                     The direction of the item.
+     *    @param [in] port                    The selected port.
+     *    @param [in] containingComponent     Component containing the port.
+     *    @param [in] parent                  The owner of this item.
+     *    @param [in] dir                     The direction of the item.
      */
     AdHocItem(QSharedPointer<Port> port, QSharedPointer<Component> containingComponent, QGraphicsItem* parent = 0,
         QVector2D const& dir = QVector2D(0.0f, -1.0f));
@@ -55,7 +55,7 @@ public:
     /*!
      *  Check if the ad hoc port is valid or not.
      *
-     *      @return True, if the port is valid, otherwise false.
+     *    @return True, if the port is valid, otherwise false.
      */
     bool adhocPortIsValid() const;
 
@@ -66,44 +66,44 @@ public:
     /*!
      *  Returns the name of the ad-hoc port.
      *
-     *      @return The name of the ad hoc port.
+     *    @return The name of the ad hoc port.
      */
     QString name() const override;
 
 	/*!
      *  Returns the description of the port.
      *
-     *      @return The description of the port.
+     *    @return The description of the port.
      */
 	QString description() const override;
 
 	/*!
      *  Sets the description of the port.
      *
-     *      @param [in] description The description to set.
+     *    @param [in] description The description to set.
      */
 	void setDescription(QString const& description) override;
 
     /*!
      *  Called when a connection between this and another end point is done.
      *
-     *      @param [in] other The other end point of the connection.
+     *    @param [in] other The other end point of the connection.
      *
-     *      @return False if there was an error in the connection. Otherwise true.
+     *    @return False if there was an error in the connection. Otherwise true.
      */
     bool onConnect(ConnectionEndpoint const* other) override;
 
     /*!
      *  Check if the port is exclusive, i.e. can only have one connection.
      *
-     *      @return False. Ad hoc ports are always non-exclusive.
+     *    @return False. Ad hoc ports are always non-exclusive.
      */
     bool isExclusive() const final;
 
     /*! 
      *  Returns the IP-XACT bus interface model of the port.
      *
-     *      @return Ad hoc interfaces do not have a bus interface, returns an empty pointer.
+     *    @return Ad hoc interfaces do not have a bus interface, returns an empty pointer.
      */
     QSharedPointer<BusInterface> getBusInterface() const override;
 
@@ -113,7 +113,7 @@ public:
      *      @remarks The function returns a null pointer if the end point is a bus interface.
      *               Use isBus() function to check for ad-hoc support (isBus() == false).
      *
-     *      @return The ad hoc port of the item.
+     *    @return The ad hoc port of the item.
      */
     QSharedPointer<Port> getPort() const override;
 
@@ -122,7 +122,7 @@ public:
     /*!
      *  Check if the end point is an ad hoc port.
      *
-     *      @return True, if the end point is an ad hoc port, false otherwise.
+     *    @return True, if the end point is an ad hoc port, false otherwise.
      */
     bool isAdHoc() const noexcept override;
 
@@ -134,9 +134,9 @@ public:
     /*!
      *  Create or change the current tie off label.
      *
-     *      @param [in] tieOffExpression    The expression containing the tie off.
-     *      @param [in] tieOffValue         The formatted tie off value.
-     *      @param [in] tieOffIsSupported   Flag for determining whether the tie off is supported or not.
+     *    @param [in] tieOffExpression    The expression containing the tie off.
+     *    @param [in] tieOffValue         The formatted tie off value.
+     *    @param [in] tieOffIsSupported   Flag for determining whether the tie off is supported or not.
      */
     void changeTieOffLabel(QString const& tieOffExpression, QString const& tieOffValue, bool tieOffIsSupported);
 
@@ -148,9 +148,9 @@ public:
     /*!
      *  Check if a connection to the selected connection end point is valid.
      *
-     *      @param [in] other   The selected connection end point.
+     *    @param [in] other   The selected connection end point.
      *
-     *      @return True, if the connection can be created, false otherwise.
+     *    @return True, if the connection can be created, false otherwise.
      */
     bool isConnectionValid(ConnectionEndpoint const* other) const override;
 
@@ -159,14 +159,14 @@ protected:
     /*!
      *  Get the shape of the item.
      *
-     *      @return Polygon containing the shape of the item.
+     *    @return Polygon containing the shape of the item.
      */
     QPolygonF getPortShape() const;
 
     /*!
      *  Get the tie off label of the item.
      *
-     *      @return The label item containing the current tie off.
+     *    @return The label item containing the current tie off.
      */
     GraphicsItemLabel* getTieOffLabel();
 
@@ -178,7 +178,7 @@ protected:
     /*!
      *  Event handling for mouse press.
      *
-     *      @param [in] event   The mouse press event.
+     *    @param [in] event   The mouse press event.
      */
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
@@ -187,14 +187,14 @@ private:
     /*!
      *  Get the shape of an in port.
      *
-     *      @return Polygon containing the shape of an in port.
+     *    @return Polygon containing the shape of an in port.
      */
     static QPolygonF getInPortShape();
 
     /*!
      *  Get the shape of an out port.
      *
-     *      @return Polygon containing the shape of an out port.
+     *    @return Polygon containing the shape of an out port.
      */
     static QPolygonF getOutPortShape();
 
@@ -211,7 +211,7 @@ private:
     /*!
      *  Check whether the label should be drawn on the left side of the interface.
      *
-     *      @return True, if the label should be drawn to the left side.
+     *    @return True, if the label should be drawn to the left side.
      */
     virtual bool labelShouldBeDrawnLeft() const = 0;
 

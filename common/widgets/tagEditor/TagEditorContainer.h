@@ -26,7 +26,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent   The parent widget.
+     *    @param [in] parent   The parent widget.
      */
     TagEditorContainer(QWidget* parent);
 
@@ -44,9 +44,9 @@ private:
     /*!
      *  Construct a tag editor for the selected tag label.
      *
-     *      @param [in] editedLabel     The selected tag label.
+     *    @param [in] editedLabel     The selected tag label.
      *
-     *      @return The created tag editor.
+     *    @return The created tag editor.
      */
     virtual TagDisplay* constructTagEditor(TagLabel* editedLabel) final;
 };

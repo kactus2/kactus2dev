@@ -33,7 +33,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent object.
+     *    @param [in] parent The parent object.
      */
 	ApiFunctionModel(QObject *parent = 0);
 
@@ -45,45 +45,45 @@ public:
     /*!
      *  Restores the model from an API definition.
      *
-     *      @param [in] apiDef The source API definition.
+     *    @param [in] apiDef The source API definition.
      */
     void restore(ApiDefinition const& apiDef);
 
     /*!
      *  Saves the changes to an API definition.
      *
-     *      @param [in,out] apiDef The destination API definition.
+     *    @param [in,out] apiDef The destination API definition.
      */
     void save(ApiDefinition& apiDef);
 
     /*!
      *  Returns the API function at the given index.
      *
-     *      @param [in] index The index.
+     *    @param [in] index The index.
      */
     QSharedPointer<ApiFunction> getFunction(QModelIndex const& index);
 
 	/*!
      *  Returns the number of rows in this model.
 	 *
-	 *      @param [in] parent ModelIndex of the item that's rowCount is requested.
+	 *    @param [in] parent ModelIndex of the item that's rowCount is requested.
 	 */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
 	/*!
      *  Returns the data stored for the specified item.
 	 *
-	 *      @param [in] index  ModelIndex of the wanted item.
-	 *      @param [in] role   Specifies what kind of data is requested.
+	 *    @param [in] index  ModelIndex of the wanted item.
+	 *    @param [in] role   Specifies what kind of data is requested.
 	 */
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
 	/*!
      *  Returns the data for the header of the list.
 	 *
-	 *      @param [in] section      Specifies the column for which the header is requested.
-	 *      @param [in] orientation  The orientation of the header, only Qt::Horizontal is supported.
-	 *      @param [in] role         Specifies what kind of header data is requested.
+	 *    @param [in] section      Specifies the column for which the header is requested.
+	 *    @param [in] orientation  The orientation of the header, only Qt::Horizontal is supported.
+	 *    @param [in] role         Specifies what kind of header data is requested.
 	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, 
 		                        int role = Qt::DisplayRole) const;
@@ -91,28 +91,28 @@ public:
 	/*!
      *  Saves the data to the model for specified item
 	 *
-	 *      @param [in] index  The model index of the item that's data is to be saved.
-	 *      @param [in] value  The data that is to be saved.
-	 *      @param [in] role   The role specifies what kind of data should be saved.
+	 *    @param [in] index  The model index of the item that's data is to be saved.
+	 *    @param [in] value  The data that is to be saved.
+	 *    @param [in] role   The role specifies what kind of data should be saved.
 	 *
-	 *      @return True if saving happened successfully.
+	 *    @return True if saving happened successfully.
 	 */
 	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
 	/*!
      *  Returns the item flags that defines the possible operations for the item.
 	 *
-	 *      @param [in] index Model index that identifies the item.
+	 *    @param [in] index Model index that identifies the item.
 	 *
-	 *      @return Qt::ItemFlags specify the possible operations for the item.
+	 *    @return Qt::ItemFlags specify the possible operations for the item.
 	 */
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
 	/*!
      *  Replace an item text in the list.
 	 * 
-	 *      @param [in] index    ModelIndex of the item that is to be replaced.
-	 *      @param [in] newText  The new text for the given item.
+	 *    @param [in] index    ModelIndex of the item that is to be replaced.
+	 *    @param [in] newText  The new text for the given item.
 	 */
 	virtual void replace(QModelIndex& index, const QString newText);
 
@@ -121,22 +121,22 @@ public slots:
 	/*!
      *  Removes the specified item from the model.
 	 *
-     *      @param [in] index The model index of the item to remove.
+     *    @param [in] index The model index of the item to remove.
      */
 	virtual void remove(const QModelIndex& index);
 
 	/*!
      *  A new item should be added to given index.
 	 *
-	 *      @param [in] index The position where new item should be added at.
+	 *    @param [in] index The position where new item should be added at.
 	 */
 	virtual void addItem(const QModelIndex& index);
 
 	/*!
      *  Move item to another position.
 	 *
-	 *      @param [in] originalPos  Identifies the item that should be moved.
-	 *      @param [in] newPos       The new position the item should be moved to.
+	 *    @param [in] originalPos  Identifies the item that should be moved.
+	 *    @param [in] newPos       The new position the item should be moved to.
 	 */
 	virtual void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
 

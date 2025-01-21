@@ -29,7 +29,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  The owner of this filter.
+     *    @param [in] parent  The owner of this filter.
      */
     MissingConfigurableElementsFilter(QObject* parent);
 
@@ -43,10 +43,10 @@ protected:
     /*!
      *  Validate the given row on a parent and check if the item should be shown.
      *
-     *      @param [in] source_row      The row number of the child on the parent.
-     *      @param [in] source_parent   Model index that identifies the parent object.
+     *    @param [in] source_row      The row number of the child on the parent.
+     *    @param [in] source_parent   Model index that identifies the parent object.
      *
-     *      @return True, if the object should be displayed, false otherwise.
+     *    @return True, if the object should be displayed, false otherwise.
      */
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const final;
 

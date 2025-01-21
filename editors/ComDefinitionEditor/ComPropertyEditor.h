@@ -30,7 +30,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     ComPropertyEditor(QWidget* parent);
 
@@ -42,7 +42,7 @@ public:
     /*!
      *  Sets the properties for editing.
      *
-     *      @param [in] properties The properties.
+     *    @param [in] properties The properties.
      */
     void setProperties(QList< QSharedPointer<ComProperty> > const& properties);
 

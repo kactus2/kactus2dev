@@ -34,11 +34,11 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] model               The model that owns the items.
-	 *      @param [in] libHandler          The instance that manages the library.
-	 *      @param [in] component           The component being edited.
-     *      @param [in] expressions			Parser for expressions in cpus.
-     *      @param [in] parent              The parent item.
+	 *    @param [in] model               The model that owns the items.
+	 *    @param [in] libHandler          The instance that manages the library.
+	 *    @param [in] component           The component being edited.
+     *    @param [in] expressions			Parser for expressions in cpus.
+     *    @param [in] parent              The parent item.
      */
     ComponentEditorCpusItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
         QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
@@ -56,38 +56,38 @@ public:
 	*
 	* The font is bold, if cpus exist, otherwise not bold.
 	*
-	*      @return QFont instance that defines the font to be used.
+	*    @return QFont instance that defines the font to be used.
 	*/
 	QFont getFont() const final;
 
 	/*! Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	*/
 	QString getTooltip() const final;
 
 	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return The text to display.
+	 *    @return The text to display.
 	*/
 	QString text() const final;
 
 	/*! Get The editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	*/
 	ItemEditor* editor() final;
 
 	/*! Check the validity of this item and sub items.
 	 *
-	 *      @return True if item is in valid state.
+	 *    @return True if item is in valid state.
 	*/
 	bool isValid() const final;
 
 	/*!
      *  Add a new child to the item.
 	 *
-	 *      @param [in] index   The index to add the child into.
+	 *    @param [in] index   The index to add the child into.
 	 */
 	void createChild(int index) final;
 

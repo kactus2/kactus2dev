@@ -28,8 +28,8 @@ public:
     /*!
      *  Writes the given protocol description into XML.
      *
-     *      @param [in] writer      The XML writer to use.
-     *      @param [in] protocol    The protocol to write.
+     *    @param [in] writer      The XML writer to use.
+     *    @param [in] protocol    The protocol to write.
      */
     static void writeQualifier(QXmlStreamWriter& writer, QSharedPointer<Qualifier> qualifier);
 

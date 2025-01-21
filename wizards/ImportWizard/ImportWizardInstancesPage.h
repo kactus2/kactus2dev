@@ -29,9 +29,9 @@ public:
     /*!
      *  The Constructor.
      *
-     *      @param [in] workingComponent    Pointer to the component to import to.
-     *      @param [in] libraryAccess       The library handle.
-     *      @param [in] parent              The parent wizard.
+     *    @param [in] workingComponent    Pointer to the component to import to.
+     *    @param [in] libraryAccess       The library handle.
+     *    @param [in] parent              The parent wizard.
      */
     ImportWizardInstancesPage(QSharedPointer<Component> workingComponent, LibraryInterface* libraryAccess,
         QWidget* parent);

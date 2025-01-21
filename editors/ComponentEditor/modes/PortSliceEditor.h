@@ -37,11 +37,11 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] handler     The instance managing the library.
-     *      @param [in] validator   The validator for PortSlice.
-     *      @param [in] expressions	The collection of objects for expression handling.
-	 *      @param [in] parent      The parent of this editor.
+	 *    @param [in] component   The component being edited.
+	 *    @param [in] handler     The instance managing the library.
+     *    @param [in] validator   The validator for PortSlice.
+     *    @param [in] expressions	The collection of objects for expression handling.
+	 *    @param [in] parent      The parent of this editor.
 	*/
 	PortSliceEditor(QSharedPointer<Component> component, 
         QSharedPointer<Mode> mode,
@@ -70,14 +70,14 @@ signals:
 	/*!
 	 *  Increase the amount of references to a parameter with a matching id.
 	 *
-	 *      @param [in] id      Id of the parameter, whose references are being increased.
+	 *    @param [in] id      Id of the parameter, whose references are being increased.
 	 */
 	void increaseReferences(QString const& id);
 
 	/*!
 	 *  Decrease the amount of references to a parameter with a matching id.
 	 *
-	 *      @param [in] id      Id of the parameter, whose references are being increased.
+	 *    @param [in] id      Id of the parameter, whose references are being increased.
 	 */
 	void decreaseReferences(QString const& id);
 

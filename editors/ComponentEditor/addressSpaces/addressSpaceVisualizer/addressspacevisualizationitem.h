@@ -38,9 +38,9 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] addrSpace           The address space being visualized.
-   	 *      @param [in] expressionParser    The expression parser to use.
-	 *      @param [in] parent              The parent graphics item.
+	 *    @param [in] addrSpace           The address space being visualized.
+   	 *    @param [in] expressionParser    The expression parser to use.
+	 *    @param [in] parent              The parent graphics item.
 	 */
 	AddressSpaceVisualizationItem(QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser,
@@ -56,49 +56,49 @@ public:
 	/*!
      *  Get the bit width of the address space.
 	 * 
-	 *      @return The bit width of the address space.
+	 *    @return The bit width of the address space.
 	 */
 	virtual int getBitWidth() const;
 
 	/*!
      *  Set the coordinate that is the bottom y-coordinate for the item.
 	 *
-	 *      @param [in] yCoordinate The y-coordinate of the bottom.
+	 *    @param [in] yCoordinate The y-coordinate of the bottom.
 	 */
 	virtual void setBottomCoordinate(qreal yCoordinate);
 
 	/*!
      *  Set the height for the item.
 	 *
-	 *      @param [in] height The height to set.
+	 *    @param [in] height The height to set.
 	 */
 	virtual void setHeight(qreal height);
 
 	/*!
      *  Sets the first non-overlapping address to display.
 	 *
-	 *      @param [in] The first address to set.
+	 *    @param [in] The first address to set.
 	 */
     virtual void setOverlappingTop(quint64 const& address);
 
 	/*!
      *  Get the first non-overlapping address of the item.
 	 *
-	 *      @return The first non-overlapping address or -1 if completely overlapped.
+	 *    @return The first non-overlapping address or -1 if completely overlapped.
 	 */
     virtual quint64 getOverlappingTop();
 
 	/*!
      *  Sets the last non-overlapping address to display.
 	 *
-	 *      @param [in] The last address to set.
+	 *    @param [in] The last address to set.
 	 */
     virtual void setOverlappingBottom(quint64 const& address);
 
     /*!
      *  Get the last non-overlapping address of the item.
      *
-     *      @return The last non-overlapping address or -1 if completely overlapped.
+     *    @return The last non-overlapping address or -1 if completely overlapped.
      */
     virtual quint64 getOverlappingBottom();
 
@@ -108,7 +108,7 @@ public:
     /*!
      *  Tells if the item is completely overlapped by other items.
      *
-     *      @return True, if the item's memory is completely under other memory blocks, otherwise false.
+     *    @return True, if the item's memory is completely under other memory blocks, otherwise false.
      */
     virtual bool isCompletelyOverlapped() const;
 

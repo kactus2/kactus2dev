@@ -32,7 +32,7 @@ public:
     /*!
      *  The constructor
 	 *
-	 *      @param [in] parent  Pointer to the owner of this widget.
+	 *    @param [in] parent  Pointer to the owner of this widget.
 	 */
 	ActiveViewEditor(QWidget *parent);
 
@@ -42,7 +42,7 @@ public:
 	/*!
      *  Set the configuration to be displayed.
 	 *
-	 *      @param [in] designWidget    Pointer to the design widget used to edit the design.
+	 *    @param [in] designWidget    Pointer to the design widget used to edit the design.
 	 */
     void setDesign(DesignWidget* designWidget);
 
@@ -54,7 +54,7 @@ public:
 	/*!
      *  Lock/unlock the editor so user can/can't edit the active views.
 	 *
-	 *      @param [in] locked  If true then editor is set to locked.
+	 *    @param [in] locked  If true then editor is set to locked.
 	 */
 	void setLocked(bool locked);
 

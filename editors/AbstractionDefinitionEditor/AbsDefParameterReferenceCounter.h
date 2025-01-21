@@ -30,8 +30,8 @@ public:
     /*!
      *	The constructor.
      *  
-     *      @param [in] parameterFinder     The parameter finder to use.
-     *      @param [in] absDef              The abstraction definition whose parameter usage is calculated.
+     *    @param [in] parameterFinder     The parameter finder to use.
+     *    @param [in] absDef              The abstraction definition whose parameter usage is calculated.
      */
     AbsDefParameterReferenceCounter(QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<AbstractionDefinition> absDef);
     
@@ -43,14 +43,14 @@ public:
     /*!
      *	Set a new abstraction definition.
      *  
-     *      @param [in] absDef     The new abstraction definition.
+     *    @param [in] absDef     The new abstraction definition.
      */
     void setAbstractionDefinition(QSharedPointer<AbstractionDefinition> absDef);
 
     /*!
      *	Count references to abs def parameters in wire ports.
      *  
-     *      @param [in] parameterID     The parameter ID to look for.
+     *    @param [in] parameterID     The parameter ID to look for.
      *	    
      * 	    @return The parameter usage count in wire ports.
      */
@@ -59,7 +59,7 @@ public:
     /*!
      *	Count references to abs def parameters in transactional ports.
      *
-     *      @param [in] parameterID     The parameter ID to look for.
+     *    @param [in] parameterID     The parameter ID to look for.
      *
      * 	    @return The parameter usage count in transactional ports.
      */
@@ -68,8 +68,8 @@ public:
     /*!
      *	Count references to abs def parameters in a single wire port.
      *  
-     *      @param [in] parameterID     The parameter ID to look for.
-     *      @param [in] wirePort        The wire port to look into.
+     *    @param [in] parameterID     The parameter ID to look for.
+     *    @param [in] wirePort        The wire port to look into.
      *	    
      * 	    @return The parameter usage count in the wire port.
      */
@@ -78,8 +78,8 @@ public:
     /*!
      *	Count references to abs def parameters in a single transactional port.
      *
-     *      @param [in] parameterID     The parameter ID to look for.
-     *      @param [in] transactional   The transactional port to look into.
+     *    @param [in] parameterID     The parameter ID to look for.
+     *    @param [in] transactional   The transactional port to look into.
      *
      * 	    @return The parameter usage count in the transactional port.
      */
@@ -90,8 +90,8 @@ public slots:
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameterList       The selected parameters.
-     *      @param [in] parameterInterface  Interface for accessing parameters.
+     *    @param [in] parameterList       The selected parameters.
+     *    @param [in] parameterInterface  Interface for accessing parameters.
      */
     virtual void recalculateReferencesToParameters(QStringList const& parameterList,
         AbstractParameterInterface* parameterInterface) override;

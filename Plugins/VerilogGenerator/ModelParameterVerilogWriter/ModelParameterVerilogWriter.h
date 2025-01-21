@@ -32,7 +32,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] ModuleParameter  The model parameter represented by this object.
+	 *    @param [in] ModuleParameter  The model parameter represented by this object.
 	 */
 	ModuleParameterVerilogWriter(QSharedPointer<Parameter> parameter);
 	
@@ -41,7 +41,7 @@ public:
 
 	/*! Write the contents of the model parameter into text stream.
 	 *
-	 *      @param [in] output   The text stream to write the model parameter into.
+	 *    @param [in] output   The text stream to write the model parameter into.
 	*/
 	virtual void write(QTextStream& output) const;
 
@@ -56,28 +56,28 @@ private:
     /*!
      *  Checks if the writer should write nothing.
      *
-     *      @return True, if the writer has nothing to write, otherwise false.
+     *    @return True, if the writer has nothing to write, otherwise false.
      */
     bool nothingToWrite() const;
 
     /*!
      *  Creates a Verilog parameter declaration from the model parameter.
      *
-     *      @return A Verilog parameter declaration.
+     *    @return A Verilog parameter declaration.
      */
     QString createDeclaration() const;
     
     /*!
      *  Returns the array bounds for the model parameter.
      *     
-     *      @return The array bounds.
+     *    @return The array bounds.
      */
     QString arrayBounds() const;
 
     /*!
      *  Returns the formatted model parameter value.
      *     
-     *      @return The formatted model parameter value.
+     *    @return The formatted model parameter value.
      */
     QString formattedValue() const;
    

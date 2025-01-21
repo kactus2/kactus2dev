@@ -35,7 +35,7 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] parent The owner of this widget.
+	 *    @param [in] parent The owner of this widget.
 	 */
 	FilterWidget(QWidget *parent);
 	
@@ -51,21 +51,21 @@ public:
     /*!
      *  Setup the filters.
      *
-     *      @param [in] options     New filter options.
+     *    @param [in] options     New filter options.
      */
     void setFilters(Utils::FilterOptions options);
 
     /*!
      *  Get the filters.
      *
-     *      @return The current filter options.
+     *    @return The current filter options.
      */
     Utils::FilterOptions getFilters() const;
 
     /*!
      *  Select/clear all filters.
      *
-     *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+     *    @param [in] select     If true, all filters are set, otherwise all filters are cleared.
      */
 	void selectAll(bool select);
 

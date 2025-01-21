@@ -34,10 +34,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] stack       The graphics item stack to which to add the item.
-     *      @param [in] item        The graphics item to add.
-     *      @param [in] diagram     Diagram containing the scene of the item.
-     *      @param [in] parent      The parent command.
+     *    @param [in] stack       The graphics item stack to which to add the item.
+     *    @param [in] item        The graphics item to add.
+     *    @param [in] diagram     Diagram containing the scene of the item.
+     *    @param [in] parent      The parent command.
      */
     SystemComponentAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, DesignDiagram* diagram,
         QUndoCommand* parent = 0);

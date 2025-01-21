@@ -27,9 +27,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] association     The association to add.
-     *      @param [in] scene           The scene to add the association to.
-     *      @param [in] parent          The parent command.
+     *    @param [in] association     The association to add.
+     *    @param [in] scene           The scene to add the association to.
+     *    @param [in] parent          The parent command.
      */
     AssociationAddCommand(Association* association, QGraphicsScene* scene, QUndoCommand* parent = 0);
 

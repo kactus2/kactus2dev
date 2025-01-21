@@ -31,7 +31,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent     The parent widget.
+     *    @param [in] parent     The parent widget.
      */
     NewPluginsDialog(QWidget* parent);
 
@@ -47,14 +47,14 @@ public:
     /*!
      *  Adds a plugin to the plugin list.
      *
-     *      @param [in] plugin The plugin to add.
+     *    @param [in] plugin The plugin to add.
      */
     void addPlugin(IPlugin* plugin);
 
     /*!
      *  Adds plugins to the plugin list.
      *
-     *      @param [in] plugins The plugins to add.
+     *    @param [in] plugins The plugins to add.
      */
     void addPlugins(QList<IPlugin*> plugins);
 

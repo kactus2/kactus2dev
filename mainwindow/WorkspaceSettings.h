@@ -30,8 +30,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] mainWindow	The mainwindow of the application.
-     *      @param [in] docks		The DockWidgetHandler which holds the visibility and filter settings.
+     *    @param [in] mainWindow	The mainwindow of the application.
+     *    @param [in] docks		The DockWidgetHandler which holds the visibility and filter settings.
 	 * 
 	 */
 	WorkspaceSettings(QMainWindow* mainWindow, DockWidgetHandler* docks);
@@ -62,21 +62,21 @@ public:
 	/*!
 	 *  Saves the settings for the given workspace.
 	 *
-	 *      @param [in] workspaceName The name of the workspace.
+	 *    @param [in] workspaceName The name of the workspace.
 	 */
 	void saveWorkspace(QString const& workspaceName) const;
 
 	/*!
 	 *  Loads the settings for the given workspace and sets it as active workspace.
 	 *
-	 *      @param [in] workspaceName The name of the workspace.
+	 *    @param [in] workspaceName The name of the workspace.
 	 */
 	void loadWorkspace(QString const& workspaceName);
 
 	/*!
 	 *  Creates a new workspace.
 	 *
-	 *      @param [in] workspaceName   The name of the new workspace.
+	 *    @param [in] workspaceName   The name of the new workspace.
 	 */
 	void createNewWorkspace(QString const& workspaceName) const;
 
@@ -112,7 +112,7 @@ private:
 	/*!
 	 *  Copy the component editor settings from the current workspace.
 	 *
-	 *      @param [in] workspaceName   The name of the new workspace.
+	 *    @param [in] workspaceName   The name of the new workspace.
 	 */
 	void copyComponentEditorSettings(QString const& workspaceName) const;
 

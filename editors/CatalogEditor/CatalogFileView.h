@@ -33,9 +33,9 @@ public:
 
 	/*! The constructor
 	* 
-	*      @param [in] handler  The instance that manages the library.
-	*      @param [in] filter   The class that does the filtering for the view.
-	*      @param [in] parent   The owner of this widget.
+	*    @param [in] handler  The instance that manages the library.
+	*    @param [in] filter   The class that does the filtering for the view.
+	*    @param [in] parent   The owner of this widget.
 	*
 	*/
 	CatalogFileView(QWidget* parent = 0);
@@ -59,15 +59,15 @@ protected:
     /*!
      *  Draws a row and a separator line under it.
      *
-     *      @param [in] painter   The painter used for the drawing.
-     *      @param [in] option    Options for the drawing.
-     *      @param [in] index     Index of the item to draw.
+     *    @param [in] painter   The painter used for the drawing.
+     *    @param [in] option    Options for the drawing.
+     *    @param [in] index     Index of the item to draw.
      */
     virtual void drawRow(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
 
     /*! Handler for the context menu events.
     *
-    *      @param [in] event The contextMenuEvent to be handled.
+    *    @param [in] event The contextMenuEvent to be handled.
     */
     virtual void contextMenuEvent(QContextMenuEvent* event);
 
@@ -108,9 +108,9 @@ private:
     /*!
      *  Sorts the given indexes and removes all but one index for each row.
      *
-     *      @param [in] indexes   the index to sort and minimize.
+     *    @param [in] indexes   the index to sort and minimize.
      *
-     *      @return Indexes in sorted order with only one index per row.
+     *    @return Indexes in sorted order with only one index per row.
      */
     QModelIndexList sortAndMinimize(QModelIndexList const& indexes);
 

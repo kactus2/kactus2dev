@@ -44,10 +44,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] name                    Name of the end point.
-     *      @param [in] containingComponent     Component containing the end point item.
-     *      @param [in] parent                  The parent graphics item.
-     *      @param [in] dir                     The initial direction for the endpoint.
+     *    @param [in] name                    Name of the end point.
+     *    @param [in] containingComponent     Component containing the end point item.
+     *    @param [in] parent                  The parent graphics item.
+     *    @param [in] dir                     The initial direction for the endpoint.
      */
     HWConnectionEndpoint(QString const& name, QSharedPointer<Component> containingComponent,
         QGraphicsItem* parent = nullptr, QVector2D const& dir = QVector2D(0.0f, -1.0f));
@@ -71,7 +71,7 @@ public:
     /*!
      *  Get the component containing this end point item.
      *
-     *      @return The component containing this end point item.
+     *    @return The component containing this end point item.
      */
     virtual QSharedPointer<Component> getOwnerComponent() const;
 
@@ -83,28 +83,28 @@ public:
     /*!
      *  Set a new name for the connection end point.
      *
-     *      @param [in] name    The selected name.
+     *    @param [in] name    The selected name.
      */
     void setName(QString const& name) override;
 
     /*!
      *  Get the off page connector item.
      *
-     *      @return the off page connector item.
+     *    @return the off page connector item.
      */
     virtual ConnectionEndpoint* getOffPageConnector() const;
 
     /*!
      *  Check if the scene is locked.
      *
-     *      @return True, if the scene is locked, false otherwise.
+     *    @return True, if the scene is locked, false otherwise.
      */
     bool sceneIsLocked() const;
 
     /*!
      *  Get the component item containing this end point item.
      *
-     *      @return The component item containing this end point item.
+     *    @return The component item containing this end point item.
      */
     ComponentItem* encompassingComp() const override;
 
@@ -113,14 +113,14 @@ protected:
     /*!
      *  Get the label containing the name of this end point.
      *
-     *      @return The name label.
+     *    @return The name label.
      */
     GraphicsItemLabel* getNameLabel() const;
 
     /*!
      *  Handles the mouse move events.
      *
-     *      @param [in] event   The mouse move event.
+     *    @param [in] event   The mouse move event.
      */
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 

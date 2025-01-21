@@ -31,7 +31,7 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] parent The owner of this widget.
+	 *    @param [in] parent The owner of this widget.
 	 */
 	TypeGroup(QWidget *parent);
 	
@@ -47,14 +47,14 @@ public:
     /*!
      *  Sets new type options.
      *
-     *      @param [in] options   The options to set.
+     *    @param [in] options   The options to set.
      */
     void setTypes(Utils::TypeOptions options);
 
     /*!
      *  Gets the selected type options.
      *
-     *      @return Selected type options.
+     *    @return Selected type options.
      */
     Utils::TypeOptions getTypes() const;
 

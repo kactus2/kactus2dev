@@ -34,8 +34,8 @@ namespace CatalogWriter
     /*!
      *  Writes the given catalog into XML.
      *
-     *      @param [in] writer    The XML writer to use.
-     *      @param [in] catalog   The catalog to write.
+     *    @param [in] writer    The XML writer to use.
+     *    @param [in] catalog   The catalog to write.
      */
     IPXACTMODELS_EXPORT void writeCatalog(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 

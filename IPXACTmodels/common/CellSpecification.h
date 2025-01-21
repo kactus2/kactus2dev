@@ -52,42 +52,42 @@ public:
     /*!
      *  Sets the cell strength.
      *
-     *      @param [in] strength   The strength to set.
+     *    @param [in] strength   The strength to set.
      */
     void setCellStrength(CellStrengthType strength);
         
     /*!
      *  Gets the cell strength.
      *
-     *      @return The cell strength.
+     *    @return The cell strength.
      */
     CellStrengthType getCellStrength() const;
             
     /*!
      *  Sets the cell function.
      *
-     *      @param [in] function   The function to set.
+     *    @param [in] function   The function to set.
      */
     void setCellFunction(QString const& function);
             
     /*!
      *  Gets the cell function.
      *
-     *      @return The cell function.
+     *    @return The cell function.
      */
     QString getCellFunction() const;
                 
     /*!
      *  Sets the cell class.
      *
-     *      @param [in] cellClass   The class to set.
+     *    @param [in] cellClass   The class to set.
      */
     void setCellClass(CellClassType cellClass);
                 
     /*!
      *  Gets the cell class.
      *
-     *      @return The cell class.
+     *    @return The cell class.
      */
     CellClassType getCellClass() const;
 

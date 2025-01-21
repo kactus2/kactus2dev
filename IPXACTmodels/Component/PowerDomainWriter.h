@@ -27,8 +27,8 @@ namespace PowerDomainWriter
     /*!
      *  Write a channel to an XML file.
      *
-     *      @param [in] writer      The used xml writer.
-     *      @param [in] domain		The power domain to be written.
+     *    @param [in] writer      The used xml writer.
+     *    @param [in] domain		The power domain to be written.
      */
     IPXACTMODELS_EXPORT void write(QXmlStreamWriter& writer, QSharedPointer<PowerDomain> domain);
 

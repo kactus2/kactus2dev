@@ -21,11 +21,11 @@ struct TreeItem
     /*!
      *  The constructor.
      *
-     *      @param [in] name    The name of the item.
-     *      @param [in] type    The type of the item.
-     *      @param [in] parent  The parent of the item.
+     *    @param [in] name    The name of the item.
+     *    @param [in] type    The type of the item.
+     *    @param [in] parent  The parent of the item.
      *
-     *      @return 
+     *    @return 
      */
     TreeItem(QString const& name, QString const& type) :
         name(name), type(type), parent(nullptr) {};
@@ -42,7 +42,7 @@ struct TreeItem
     /*!
      *  Adds a child to the item.
      *
-     *      @param [in] child   The child to add.
+     *    @param [in] child   The child to add.
      */
     void addChild(TreeItem* child)
     {

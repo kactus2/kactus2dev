@@ -39,11 +39,11 @@ public:
     /*!
      *  Constructor which creates an open-ended diagram interconnection.
      *
-     *      @param [in] p1              The start point of the connection.
-     *      @param [in] dir1            Direction of the start point.
-     *      @param [in] p2              The end point of the connection.
-     *      @param [in] dir2            Direction of the end point.
-     *      @param [in] parent          The design diagram containing the connection.
+     *    @param [in] p1              The start point of the connection.
+     *    @param [in] dir1            Direction of the start point.
+     *    @param [in] p2              The end point of the connection.
+     *    @param [in] dir2            Direction of the end point.
+     *    @param [in] parent          The design diagram containing the connection.
      */
     ApiGraphicsConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
                           DesignDiagram* parent);
@@ -51,12 +51,12 @@ public:
     /*!
      *  The constructor containing the API interconnection.
      *
-     *      @param [in] endpoint1           The start point of the connection.
-     *      @param [in] endpoint2           The end point of the connection.
-     *      @param [in] apiInterconnection  The API interconnection being connected.
-     *      @param [in] route               The route of the connection.
-     *      @param [in] autoConnect         If true, automatically connects the two end points.
-     *      @param [in] parent              The design diagram containing the connection.
+     *    @param [in] endpoint1           The start point of the connection.
+     *    @param [in] endpoint2           The end point of the connection.
+     *    @param [in] apiInterconnection  The API interconnection being connected.
+     *    @param [in] route               The route of the connection.
+     *    @param [in] autoConnect         If true, automatically connects the two end points.
+     *    @param [in] parent              The design diagram containing the connection.
      */
     ApiGraphicsConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
                           QSharedPointer<ApiInterconnection> apiInterconnection,
@@ -70,7 +70,7 @@ public:
     /*!
      *  Get the type of the graphics item.
      *
-     *      @return GFX_TYPE_SW_API_CONNECTION.
+     *    @return GFX_TYPE_SW_API_CONNECTION.
      */
     int type() const final { return Type; }
     

@@ -24,9 +24,9 @@ public:
 	/*!
 	 * The constructor
 	 *
-	 *     @param [in] text                 The text to display in the label.
-	 *     @param [in] parent               The owner of this label.
-	 *     @param [in] showExtensionIcon    If true, an extension icon is shown next to the label.
+	 *    @param [in] text                 The text to display in the label.
+	 *    @param [in] parent               The owner of this label.
+	 *    @param [in] showExtensionIcon    If true, an extension icon is shown next to the label.
 	 */
 	 SummaryLabel(const QString& text, QWidget *parent, bool showExtensionIcon = false);
 	

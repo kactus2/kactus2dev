@@ -29,8 +29,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] settingsModel   Model for renode peripheral template settings.
-     *      @param [in] parent          Pointer to the owner of this widget.
+     *    @param [in] settingsModel   Model for renode peripheral template settings.
+     *    @param [in] parent          Pointer to the owner of this widget.
      */
     RenodeSettingsWidget(RenodeSettingsModel* settingsModel, QWidget *parent = 0);
 
@@ -53,7 +53,7 @@ private slots:
     /*!
      *  Handle the change in the peripheral template configuration path.
      *	
-     *      @param [in] newPath     New path for peripheral template configuration file.
+     *    @param [in] newPath     New path for peripheral template configuration file.
      */
     void onPathChanged(QString const& newPath);
 

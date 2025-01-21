@@ -24,8 +24,8 @@ namespace ChoiceWriter
     /*
      *  Writes a single choice to XML. 
      *  
-     *      @param [in] writer    The XML writer.
-     *      @param [in] choice    The choice to be written.
+     *    @param [in] writer    The XML writer.
+     *    @param [in] choice    The choice to be written.
      */
     void writeChoice(QXmlStreamWriter& writer, QSharedPointer<Choice> choice);
 
@@ -34,8 +34,8 @@ namespace ChoiceWriter
         /*
          *  Writes a single choice enumeration to XML.
          *
-         *      @param [in] writer    The XML writer.
-         *      @param [in] choice    The enumeration to be written.
+         *    @param [in] writer    The XML writer.
+         *    @param [in] choice    The enumeration to be written.
          */
         void writeEnumeration(QXmlStreamWriter& writer, QSharedPointer<Enumeration> enumeration);
     }

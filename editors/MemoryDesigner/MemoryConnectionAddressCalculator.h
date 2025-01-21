@@ -86,10 +86,10 @@ namespace MemoryConnectionAddressCalculator
     /*!
      *  Get the starting base address of the memory connection.
      *
-     *      @param [in] startInterface  Start interface of the memory connection path.
-     *      @param [in] endInterface    End interface of the memory connection path.
+     *    @param [in] startInterface  Start interface of the memory connection path.
+     *    @param [in] endInterface    End interface of the memory connection path.
      *
-     *      @return Starting base address of the memory connection.
+     *    @return Starting base address of the memory connection.
      */
     quint64 getStartingBaseAddress(QSharedPointer<ConnectivityInterface const> startInterface,
         QSharedPointer<ConnectivityInterface const> endInterface);
@@ -106,13 +106,13 @@ namespace MemoryConnectionAddressCalculator
     /*!
      *  Calculate the remapped base address for the memory connection.
      *
-     *      @param [in] memoryMapBaseAddress                Base address of the memory map item.
-     *      @param [in] baseAddressNumber                   Base address of the memory connection.
-     *      @param [in] spaceChainConnectionBaseAddress     Base address modifier caused by the bridged interfaces.
-     *      @param [in] mirroredSlaveAddressChange          Address change caused by the mirrored slave interfaces.
-     *      @param [in] hasRemapRange                       Flag for remapped connection range.
+     *    @param [in] memoryMapBaseAddress                Base address of the memory map item.
+     *    @param [in] baseAddressNumber                   Base address of the memory connection.
+     *    @param [in] spaceChainConnectionBaseAddress     Base address modifier caused by the bridged interfaces.
+     *    @param [in] mirroredSlaveAddressChange          Address change caused by the mirrored slave interfaces.
+     *    @param [in] hasRemapRange                       Flag for remapped connection range.
      *
-     *      @return The remapped base address of the memory connection.
+     *    @return The remapped base address of the memory connection.
      */
     quint64 getRemappedBaseAddress(quint64 memoryMapBaseAddress, quint64 baseAddressNumber,
         quint64 spaceChainConnectionBaseAddress, quint64 mirroredSlaveAddressChange, bool hasRemapRange);

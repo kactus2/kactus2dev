@@ -27,7 +27,7 @@ public:
     /*!
      *  Writes the content to the given output.
      *
-     *      @param [in] output   The output to write to.
+     *    @param [in] output   The output to write to.
      */
     virtual void write(QTextStream& output) const = 0;
 

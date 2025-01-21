@@ -30,7 +30,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] expressionParser    The parser to use for solving expressions.
+	 *    @param [in] expressionParser    The parser to use for solving expressions.
 	 */
     EnumeratedValueValidator(QSharedPointer<ExpressionParser> expressionParser);
 
@@ -40,36 +40,36 @@ public:
     /*!
      *  Validates the given enumerated value.
      *
-     *      @param [in] enumeratedValue     The enumerated value to validate.
+     *    @param [in] enumeratedValue     The enumerated value to validate.
      *
-     *      @return True, if the enumerated value is valid IP-XACT, otherwise false.
+     *    @return True, if the enumerated value is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<EnumeratedValue> enumeratedValue) const;
 
     /*!
      *  Check if the enumerated value contains a valid name.
      *
-     *      @param [in] enumeratedValue     The selected enumerated value.
+     *    @param [in] enumeratedValue     The selected enumerated value.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QSharedPointer<EnumeratedValue> enumeratedValue) const;
 
     /*!
      *  Check if the enumerated value contains a valid value.
      *
-     *      @param [in] enumeratedValue     The selected enumerated value.
+     *    @param [in] enumeratedValue     The selected enumerated value.
      *
-     *      @return True, if the value is valid, otherwise false.
+     *    @return True, if the value is valid, otherwise false.
      */
     bool hasValidValue(QSharedPointer<EnumeratedValue> enumeratedValue) const;
 
     /*!
      *  Locate errors within an enumerated value.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] enumeratedValue     The selected enumerated value.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] enumeratedValue     The selected enumerated value.
+     *    @param [in] context             Context to help locate the error.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<EnumeratedValue> enumeratedValue,
         QString const& context) const;
@@ -83,9 +83,9 @@ private:
     /*!
      *  Find errors within a name.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] enumeratedValue     The selected enumerated value.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] enumeratedValue     The selected enumerated value.
+     *    @param [in] context             Context to help locate the error.
      */
     void findErrorsInName(QVector<QString>& errors, QSharedPointer<EnumeratedValue> enumeratedValue,
         QString const& context) const;
@@ -93,9 +93,9 @@ private:
     /*!
      *  Find errors within a value.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] enumeratedValue     The selected enumerated value.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] enumeratedValue     The selected enumerated value.
+     *    @param [in] context             Context to help locate the error.
      */
     void findErrorsInValue(QVector<QString>& errors, QSharedPointer<EnumeratedValue> enumeratedValue,
         QString const& context) const;

@@ -32,9 +32,9 @@ namespace ModeReader
     /*!
      *  Creates a new mode from a given view node.
      *
-     *      @param [in] modeNode  XML description of the mode.
+     *    @param [in] modeNode  XML description of the mode.
      *
-     *      @return The created mode.
+     *    @return The created mode.
      */
     IPXACTMODELS_EXPORT QSharedPointer<Mode> createModeFrom(QDomNode const& modeNode);
 
@@ -44,8 +44,8 @@ namespace ModeReader
         /*!
          *   Parses the mode condition.
          *
-         *      @param [in] modeNode   XML description of the nodet.
-         *      @param [in] newMode    The selected mode item.
+         *    @param [in] modeNode   XML description of the nodet.
+         *    @param [in] newMode    The selected mode item.
          *
          */
         void parseCondition(QDomNode const& modeNode, QSharedPointer<Mode> newMode);
@@ -53,16 +53,16 @@ namespace ModeReader
         /*!
          *  Read the remap ports.
          *
-         *      @param [in] ModeNode  XML description of the mode.
-         *      @param [in] newMode   The selected mode item.
+         *    @param [in] ModeNode  XML description of the mode.
+         *    @param [in] newMode   The selected mode item.
          */
         void parsePortSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode);
        
         /*!
          *  Read the field slices.
          *
-         *      @param [in] modeNode  XML description of the mode.
-         *      @param [in] newMode   The selected mode item.
+         *    @param [in] modeNode  XML description of the mode.
+         *    @param [in] newMode   The selected mode item.
          */
         void parseFieldSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode);
 
@@ -70,8 +70,8 @@ namespace ModeReader
         /*!
          *   Parses range.
          *
-         *      @param [in] element    XML description of the IP-XACT element.
-         *      @param [in] range      The range to read to.
+         *    @param [in] element    XML description of the IP-XACT element.
+         *    @param [in] range      The range to read to.
          *
          */
         void parseRange(QDomElement const& element, QSharedPointer<Range> range);

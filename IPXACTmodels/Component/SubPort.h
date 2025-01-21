@@ -32,56 +32,56 @@ public:
     /*!
      *  Set for input, inout or output ports in an interface.
      *
-     *      @param [in] isIO Wheter the port is an input, inout or output.
+     *    @param [in] isIO Wheter the port is an input, inout or output.
      */
     void setIsIO(bool isIO) noexcept { isIO_ = isIO; }
 
     /*!
      *  Check if the port is an input, output or inout.
      *
-     *      @return True, if the port is input, output or inout, otherwise false.
+     *    @return True, if the port is input, output or inout, otherwise false.
      */
     [[nodiscard]] bool isIO() const noexcept { return isIO_; }
 
     /*!
      *  Check if the sub-port has a wire definition.
      *
-     *      @return True, if the sub-port has a wire, otherwise false.
+     *    @return True, if the sub-port has a wire, otherwise false.
      */
     [[nodiscard]] bool isWire() const noexcept { return wire_.isNull() == false; }
 
     /*!
      *  Set the wire port in the sub-port.
      *
-     *      @param [in] wire The wire to set.
+     *    @param [in] wire The wire to set.
      */
     void setWire(QSharedPointer<Wire> wire);
 
     /*!
      *  Get the wire port in the sub-port.
      *
-     *      @return The wire port, if available, otherwise nullptr.
+     *    @return The wire port, if available, otherwise nullptr.
      */
     [[nodiscard]] QSharedPointer<Wire> getWire() const  { return wire_; }
 
     /*!
      *  Check if the sub-port has a structured definition.
      *
-     *      @return True, if the sub-port has a structured, otherwise false.
+     *    @return True, if the sub-port has a structured, otherwise false.
      */
     [[nodiscard]] bool isStructured() const noexcept { return structured_.isNull() == false; }
 
     /*!
      *  Set the structured port in the sub-port.
      *
-     *      @param [in] structured  The structured port to set.
+     *    @param [in] structured  The structured port to set.
      */
     void setStructured(QSharedPointer<Structured> structured);
 
     /*!
      *  Get the structured port in the sub-port.
      *
-     *      @return The structured port, if available, otherwise nullptr.
+     *    @return The structured port, if available, otherwise nullptr.
      */
     [[nodiscard]] QSharedPointer<Structured> getStructured() const { return structured_; }
 

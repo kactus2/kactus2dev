@@ -31,8 +31,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] engine  The help engine.
-     *      @param [in] parent  The parent widget.
+     *    @param [in] engine  The help engine.
+     *    @param [in] parent  The parent widget.
      */
     HelpWindow(QHelpEngine* engine, QWidget* parent = 0);
 

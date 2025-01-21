@@ -32,12 +32,12 @@ public:
     /*!
      *  Constructor which sets all the values as given.
      *
-     *      @param [in] name         The name to set.
-     *      @param [in] displayName  The display name to set.
-     *      @param [in] description  The description to set.
-     *      @param [in] ref1         The first interface reference.
-     *      @param [in] ref2         The second interface reference.
-     *      @param [in] imported     If true, the connection is an imported one.
+     *    @param [in] name         The name to set.
+     *    @param [in] displayName  The display name to set.
+     *    @param [in] description  The description to set.
+     *    @param [in] ref1         The first interface reference.
+     *    @param [in] ref2         The second interface reference.
+     *    @param [in] imported     If true, the connection is an imported one.
      */
     ApiInterconnection(QString const& name, QString const& displayName, QString const& description,
                   QSharedPointer<HierInterface> ref1, QSharedPointer<HierInterface> ref2,
@@ -51,7 +51,7 @@ public:
     /*!
      *  QDomNode constructor.
      *
-     *      @param [in] node    The node containing the api interconnection.
+     *    @param [in] node    The node containing the api interconnection.
      */
     ApiInterconnection(QDomNode& node);
 
@@ -68,35 +68,35 @@ public:
     /*!
      *  Gets the type of the extension.
      *
-     *      @return The type of the extension.
+     *    @return The type of the extension.
      */
     virtual QString type() const;
 
     /*!
      *  Writes the contents to an XML stream.
      *
-     *      @param [in] writer  The selected XML stream.
+     *    @param [in] writer  The selected XML stream.
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Set an interface. First active interface is set as the start interface.
      *
-     *      @param [in] interfaceReference  The selected interface.
+     *    @param [in] interfaceReference  The selected interface.
      */
     void setInterface(QSharedPointer<HierInterface> interfaceReference);
 
     /*!
      *  Sets the flag whether the connection is an imported one and should be auto-synced.
      *
-     *      @param [in] imported    If true, the connection is set as imported.
+     *    @param [in] imported    If true, the connection is set as imported.
      */
     void setImported(bool imported);
 
     /*!
      *  Get the end interface.
      *
-     *      @return The end interface.
+     *    @return The end interface.
      */
     QSharedPointer<HierInterface> getEndInterface() const;
 
@@ -115,7 +115,7 @@ private:
     /*!
      *  Write the end interface.
      *
-     *      @param [in] writer  The writer used to write.
+     *    @param [in] writer  The writer used to write.
      */
     void writeEndInterface(QXmlStreamWriter& writer) const;
 

@@ -27,7 +27,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  The owner of this filter.
+     *    @param [in] parent  The owner of this filter.
      */
     ComponentInstanceConfigurableElementsFilter(QObject* parent);
 
@@ -41,10 +41,10 @@ protected:
     /*!
      *  Validate the given row on a parent and check if the item should be shown.
      *
-     *      @param [in] source_row      The row number of the child on the parent.
-     *      @param [in] source_parent   Model index that identifies the parent object.
+     *    @param [in] source_row      The row number of the child on the parent.
+     *    @param [in] source_parent   Model index that identifies the parent object.
      *
-     *      @return True, if the object should be displayed, false otherwise.
+     *    @return True, if the object should be displayed, false otherwise.
      */
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 
@@ -53,7 +53,7 @@ public slots:
     /*!
      *  Set the immediate values to be shown or hidden.
      *
-     *      @param [in] show    Flag for displaying the immediate values.
+     *    @param [in] show    Flag for displaying the immediate values.
      */
     void setShowImmediateValues(bool show);
 
@@ -71,9 +71,9 @@ private:
     /*!
      *  Check if the selected index contains editable children.
      *
-     *      @param [in] index   The selected model index.
+     *    @param [in] index   The selected model index.
      *
-     *      @return True, if the selected index contains editable children, false otherwise.
+     *    @return True, if the selected index contains editable children, false otherwise.
      */
     bool indexContainsEditableChildren(QModelIndex const& index) const;
 

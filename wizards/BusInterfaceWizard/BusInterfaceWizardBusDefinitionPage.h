@@ -43,10 +43,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component       The component whose bus interface is being edited.
-     *      @param [in] busIf           The bus interface being edited.
-     *      @param [in] lh              The component library handler.
-     *      @param [in] parent          The parent wizard.
+     *    @param [in] component       The component whose bus interface is being edited.
+     *    @param [in] busIf           The bus interface being edited.
+     *    @param [in] lh              The component library handler.
+     *    @param [in] parent          The parent wizard.
      */
     BusInterfaceWizardBusDefinitionEditorPage(QSharedPointer<Component> component,
         QSharedPointer<BusInterface> busIf, LibraryInterface* lh, bool editable,

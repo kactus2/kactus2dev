@@ -29,8 +29,8 @@ public:
 
 	/*! The constructor.
 	 *
-	 *      @param [in] title   The title to be set for the QGroupBox
-	 *      @param [in] parent  The owner of this widget.
+	 *    @param [in] title   The title to be set for the QGroupBox
+	 *    @param [in] parent  The owner of this widget.
 	 */
 	ListManager(QString const& title = tr("List"), QWidget *parent = 0);
 
@@ -41,25 +41,25 @@ public:
 	 *
 	 * This function must be called after creating the list manager and before using it.
 	 * 
-	 *      @param [in] items QStringList that contains the items to add to the widget.
+	 *    @param [in] items QStringList that contains the items to add to the widget.
 	 */
 	virtual void initialize(const QStringList& items = QStringList());
 
 	/*! Get the string items currently stored in the model.
 	 *
-	 *       @return QStringList that is contained in this widget.
+	 *    @return QStringList that is contained in this widget.
 	 */
 	QStringList items() const;
 
 	/*! Set the items to be stored in this widget.
 	 *
-	 *      @param [in] items QStringList containing the strings to add.
+	 *    @param [in] items QStringList containing the strings to add.
 	 */
 	void setItems(const QStringList& items);
 
 	/*! Get the number of items stored in the list.
 	 *
-	 *      @return Number of items in the list.
+	 *    @return Number of items in the list.
 	 */
 	int size() const;
 

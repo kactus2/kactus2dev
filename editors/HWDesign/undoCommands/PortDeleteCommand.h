@@ -29,7 +29,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] port The port to delete.
+     *    @param [in] port The port to delete.
      */
     PortDeleteCommand(DesignDiagram* diagram, HWConnectionEndpoint* port, QUndoCommand* parent = 0);
 

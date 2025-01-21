@@ -34,8 +34,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name            Name of the alternate register.
-     *      @param [in] alternateGroup  Name of the first alternate group.
+     *    @param [in] name            Name of the alternate register.
+     *    @param [in] alternateGroup  Name of the first alternate group.
      */
     AlternateRegister(QString const& name = QString(), QString const& alternateGroup = QString());
 
@@ -51,20 +51,20 @@ public:
 	/*!
      *  Clone the alternate register and return pointer to the copy.
 	 * 
-	 *      @return Pointer to the cloned alternate register.
+	 *    @return Pointer to the cloned alternate register.
 	 */
     virtual QSharedPointer<RegisterBase> clone();
 	/*!
      *  Get the list of the alternate groups.
 	 *
-	 *      @return A QList containing the names of the groups.
+	 *    @return A QList containing the names of the groups.
 	 */
     QSharedPointer<QStringList> getAlternateGroups() const;
 
 	/*!
      *  Set the alternateGroups for this alternateRegister.
 	 *
-	 *      @param [in] newAlternateGroups  A QList containing names of the new groups.
+	 *    @param [in] newAlternateGroups  A QList containing names of the new groups.
 	 */
     void setAlternateGroups(QSharedPointer<QStringList> newAlternateGroups);
 
@@ -78,7 +78,7 @@ public:
     /*!
      *	Set the mode references of the alternate register.
      *  
-     *      @param [in] newModeReferences     The mode references to set.
+     *    @param [in] newModeReferences     The mode references to set.
      */
     void setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeReferences);
 
@@ -87,7 +87,7 @@ private:
     /*!
      *  Copy the alternate groups.
      *
-     *      @param [in] other   The alternate register being copied.
+     *    @param [in] other   The alternate register being copied.
      */
     void copyAlternateGroups(const AlternateRegister& other);
 

@@ -25,8 +25,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] name        Corresponds name of XML element.
-     *      @param [in] value       Corresponds the value of XML element.
+     *    @param [in] name        Corresponds name of XML element.
+     *    @param [in] value       Corresponds the value of XML element.
 	 */
     Kactus2Value(QString name, QString value);
 
@@ -38,35 +38,35 @@ public:
     /*!
      *  Clones the vendor extension.
      *
-     *      @return The clone copy of the vendor extension.
+     *    @return The clone copy of the vendor extension.
      */
     virtual Kactus2Value* clone() const;
 
     /*!
      *  Returns a type identifier for the vendor extension.
      *
-     *      @return A type identifier of the vendor extension.
+     *    @return A type identifier of the vendor extension.
      */
     virtual QString type() const;
 
     /*!
      *  Writes the vendor extension to XML.
      *
-     *      @param [in] writer   The writer used for writing the XML.
+     *    @param [in] writer   The writer used for writing the XML.
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Gets the value of the vendor extension.
      *
-     *      @return The stored value.
+     *    @return The stored value.
      */
     QString value() const;
 
     /*!
      *  Sets the value of the vendor extension.
      *
-     *      @param [in] newValue   The value to set.
+     *    @param [in] newValue   The value to set.
      */
     void setValue(QString const& newValue);
 

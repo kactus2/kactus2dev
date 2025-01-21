@@ -39,8 +39,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *       @param [in] expressionParser  The expression parser to use for local memory maps.
-	 *       @param [in] parent            The owner of the scene.
+     *    @param [in] expressionParser  The expression parser to use for local memory maps.
+	 *    @param [in] parent            The owner of the scene.
 	 */
 	MemoryAlignScene(QSharedPointer<ExpressionParser> expressionParser,
 		QObject *parent);
@@ -74,7 +74,7 @@ public:
 	/*!
      *  Get the last address contained in the item.
 	 *
-	 *      @return The last address.
+	 *    @return The last address.
 	 */
     quint64 addressSpaceLastAddress() const;
 
@@ -90,14 +90,14 @@ protected:
     /*!
      *  Get the width of the visualized memory.
      *
-     *      @return The width of the memory.
+     *    @return The width of the memory.
      */
     virtual QString getWidth() const = 0;
 
     /*!
      *  Get the range of the visualized memory.
      *
-     *      @return The range of the memory.
+     *    @return The range of the memory.
      */
     virtual QString getRange() const = 0;
 
@@ -121,9 +121,9 @@ private:
     /*!
      *   Update the offsets and overlapping blocks of the segments/address blocks.
      *
-     *      @param [in/out] itemMap             Map of segments/blocks to update.
-     *      @param [in]     exceedingItemMap    Map of segments/blocks outside address space.
-     *      @param [in]     align               Alignment of text on items.
+     *    @param [in/out] itemMap             Map of segments/blocks to update.
+     *    @param [in]     exceedingItemMap    Map of segments/blocks outside address space.
+     *    @param [in]     align               Alignment of text on items.
      */
 	void updateMaps(QMultiMap<quint64, AddressSpaceVisualizationItem*>& itemMap, 
         QMultiMap<quint64, AddressSpaceVisualizationItem*> const& exceedingItemMap, 
@@ -132,7 +132,7 @@ private:
     /*!
      *   Positions segments and address blocks outside address space.
      *
-     *      @param [in] yStart             Minimum y-coordinate for items.
+     *    @param [in] yStart             Minimum y-coordinate for items.
      */
     virtual void rePositionExceeding(qreal const yStart);
 
@@ -140,11 +140,11 @@ private:
      *   Checks if currentItem overlaps previous top-most item. Adds conflicted blocks
      *   if memories overlap and hides completely overlapped memory blocks.
      *
-     *      @param [in]     currentItem     Item to check.
-     *      @param [in/out] topItem         Top-most item so far.
-     *      @param [in/out] prevConflict    Previous conflicting memory block.
-     *      @param [in]     align           Alignment of text on items.
-     *      @param [in/out] map             Map to which add conflicting blocks.
+     *    @param [in]     currentItem     Item to check.
+     *    @param [in/out] topItem         Top-most item so far.
+     *    @param [in/out] prevConflict    Previous conflicting memory block.
+     *    @param [in]     align           Alignment of text on items.
+     *    @param [in/out] map             Map to which add conflicting blocks.
      */
     virtual void resolveConflicts(AddressSpaceVisualizationItem* currentItem, 
         AddressSpaceVisualizationItem*& topItem, 

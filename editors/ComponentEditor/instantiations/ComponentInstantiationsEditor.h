@@ -36,11 +36,11 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance managing the library.
-     *      @param [in] parameterFinder         Finder used to identify parameters.
-     *      @param [in] instantiationInterface  Interface for accessing component instantiations.
-	 *      @param [in] parent                  The parent of this editor.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] handler                 The instance managing the library.
+     *    @param [in] parameterFinder         Finder used to identify parameters.
+     *    @param [in] instantiationInterface  Interface for accessing component instantiations.
+	 *    @param [in] parent                  The parent of this editor.
 	 */
     ComponentInstantiationsEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,

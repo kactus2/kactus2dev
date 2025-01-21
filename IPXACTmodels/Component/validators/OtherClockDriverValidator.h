@@ -31,7 +31,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] expressionParser        The parser to use for solving expressions.
+	 *    @param [in] expressionParser        The parser to use for solving expressions.
 	 */
     OtherClockDriverValidator(QSharedPointer<ExpressionParser> expressionParser);
 
@@ -41,45 +41,45 @@ public:
     /*!
      *  Validates the given other clock driver.
      *
-     *      @param [in] otherClockDriver    The selected other clock driver.
+     *    @param [in] otherClockDriver    The selected other clock driver.
      *
-     *      @return True, if the other clock driver is valid IP-XACT, otherwise false.
+     *    @return True, if the other clock driver is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<OtherClockDriver> otherClockDriver) const;
 
     /*!
      *  Check if the name is valid.
      *
-     *      @param [in] name    The selected name.
+     *    @param [in] name    The selected name.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QString const& name) const;
 
     /*!
      *  Check if a clock value is valid.
      *
-     *      @param [in] clockUnit   The selected clock unit.
+     *    @param [in] clockUnit   The selected clock unit.
      *
-     *      @return True, if the clock value is valid, otherwise false.
+     *    @return True, if the clock value is valid, otherwise false.
      */
     bool hasValidClockValue(QSharedPointer<ClockUnit> clockUnit) const;
 
     /*!
      *  Check if the clock pulse value is valid.
      *
-     *      @param [in] otherClockDriver    The selected other clock driver.
+     *    @param [in] otherClockDriver    The selected other clock driver.
      *
-     *      @return True, if the pulse value is valid, otherwise false.
+     *    @return True, if the pulse value is valid, otherwise false.
      */
     bool hasValidClockPulseValue(QSharedPointer<OtherClockDriver> otherClockDriver) const;
 
     /*!
      *  Locate errors within an other clock driver.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] otherClockDriver    The selected other clock driver.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] otherClockDriver    The selected other clock driver.
+     *    @param [in] context             Context to help locate the error.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<OtherClockDriver> otherClockDriver,
         QString const& context) const;
@@ -93,9 +93,9 @@ private:
     /*!
      *  Find errors within name.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] otherClockDriver    The selected other clock driver.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] otherClockDriver    The selected other clock driver.
+     *    @param [in] context             Context to help locate the error.
      */
     void findErrorsInName(QVector<QString>& errors, QSharedPointer<OtherClockDriver> otherClockDriver,
         QString const& context) const;
@@ -103,9 +103,9 @@ private:
     /*!
      *  Find errors within clock units.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] otherClockDriver    The selected other clock driver.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] otherClockDriver    The selected other clock driver.
+     *    @param [in] context             Context to help locate the error.
      */
     void findErrorsInClockUnits(QVector<QString>& errors, QSharedPointer<OtherClockDriver> otherClockDriver,
         QString const& context) const;
@@ -113,9 +113,9 @@ private:
     /*!
      *  Find errors within clock pulse value.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] otherClockDriver    The selected other clock driver.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] otherClockDriver    The selected other clock driver.
+     *    @param [in] context             Context to help locate the error.
      */
     void findErrorsInClockPulseValue(QVector<QString>& errors, QSharedPointer<OtherClockDriver> otherClockDriver,
         QString const& context) const;

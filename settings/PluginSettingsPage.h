@@ -32,7 +32,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in/out] settings   The settings store.
+     *    @param [in/out] settings   The settings store.
      */
     PluginSettingsPage(QSettings& settings);
 
@@ -49,7 +49,7 @@ public:
     /*!
      *  Validates the contents of the page thoroughly.
      *
-     *      @return True, if the contents are valid. False, if they are invalid.
+     *    @return True, if the contents are valid. False, if they are invalid.
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
@@ -90,17 +90,17 @@ private:
     /*!
      *  Creates a new category item to the tree.
      *
-     *      @param [in] text  Category title text.
-     *      @param [in] icon  Icon for the category.
+     *    @param [in] text  Category title text.
+     *    @param [in] icon  Icon for the category.
      */
     QTreeWidgetItem* createCategoryItem(QString const& text, QIcon const& icon);
 
     /*!
      *  Creates a new plugin item to the tree.
      *
-     *      @param [in] plugin   Target plugin for the item.
+     *    @param [in] plugin   Target plugin for the item.
      *
-     *      @return The created tree item.
+     *    @return The created tree item.
      */
     QTreeWidgetItem* createPluginItem(IPlugin* plugin);
 

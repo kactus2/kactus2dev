@@ -57,7 +57,7 @@ public:
     /*!
      *  Returns the child with the given name or null if not found.
      *
-     *      @param [in] name The name of the child to search for.
+     *    @param [in] name The name of the child to search for.
      */
     VLNVDataNode* findChild(QString const& name) const;
 
@@ -70,30 +70,30 @@ public:
     /*!
      * Get the number of children the node has.
      *
-     *     @return The number of children.
+     *    @return The number of children.
      */
      int getChildCount() const;
 
     /*!
      *  Sets the VLNV for the node.
      *
-     *      @param [in] vlnv The vlnv to set.
+     *    @param [in] vlnv The vlnv to set.
      */
     void setVLNV(VLNV const& vlnv);
 
     /*!
      *  Adds a child to the node.
      *
-     *      @param [in] name The name of the child.
+     *    @param [in] name The name of the child.
      *
-     *      @return The created child node.
+     *    @return The created child node.
      */
     VLNVDataNode* addChild(QString const& name);
 
     /*!
      *  Removes the child with the given name.
      *
-     *      @param [in] name The name of the child.
+     *    @param [in] name The name of the child.
      */
     void removeChild(QString const& name);
 
@@ -138,8 +138,8 @@ public:
     /*! 
      *  Updates the tree based on the filters and the given library interface.
      *
-     *      @param [in] lh     The library interface.
-     *      @param [in] type   The allowed document types.
+     *    @param [in] lh     The library interface.
+     *    @param [in] type   The allowed document types.
      */
     void parse(LibraryInterface* lh, QList<VLNV::IPXactType> const& types);
 
@@ -151,39 +151,39 @@ public:
     /*!
      *  Sets the firmness filter on/off.
      *
-     *      @param [in] on        If true, the filter is turned on; otherwise it is turned off.
-     *      @param [in] firmness  The allowed firmness.
+     *    @param [in] on        If true, the filter is turned on; otherwise it is turned off.
+     *    @param [in] firmness  The allowed firmness.
      */
     void setFirmnessFilter(bool on, KactusAttribute::Firmness firmness = KactusAttribute::TEMPLATE);
 
     /*!
      *  Sets the product hierarchy filter on/off.
      *
-     *      @param [in] on           If true, the filter is turned on; otherwise it is turned off.
-     *      @param [in] productHier  The allowed product hierarchy.
+     *    @param [in] on           If true, the filter is turned on; otherwise it is turned off.
+     *    @param [in] productHier  The allowed product hierarchy.
      */
     void setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier = KactusAttribute::IP);
 
     /*!
      *  Sets the implementation filter on/off.
      *
-     *      @param [in] on              If true, the filter is turned on; otherwise it is turned off.
-     *      @param [in] implementation  The allowed implementation.
+     *    @param [in] on              If true, the filter is turned on; otherwise it is turned off.
+     *    @param [in] implementation  The allowed implementation.
      */
     void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::HW);
 
     /*!
      *  Sets the IP-XACT revision filter on/off.
      *
-     *      @param [in] on              If true, the filter is turned on; otherwise it is turned off.
-     *      @param [in] revision        The allowed IP-XACT standard revision.
+     *    @param [in] on              If true, the filter is turned on; otherwise it is turned off.
+     *    @param [in] revision        The allowed IP-XACT standard revision.
      */
     void setRevisionFilter(bool on, Document::Revision revision = Document::Revision::Std22);
 
     /*!
      *  Adds an extension to be filtered out from the content search results.
      *
-     *      @param [in] extension The extension to filter out.
+     *    @param [in] extension The extension to filter out.
      */
     void addExtensionFilter(QString const& extension);
 
@@ -193,8 +193,8 @@ private:
      *  Parses the library subtree indicated by the given library item and adds matching names
      *  to the given data node.
      *
-     *      @param [in] libItem  The library item containing the subtree.
-     *      @param [in] node     The target data node.
+     *    @param [in] libItem  The library item containing the subtree.
+     *    @param [in] node     The target data node.
      */
     void parseSubtree(LibraryInterface* lh, LibraryItem const* libItem, VLNVDataNode& node,
                       QList<VLNV::IPXactType> const& types);

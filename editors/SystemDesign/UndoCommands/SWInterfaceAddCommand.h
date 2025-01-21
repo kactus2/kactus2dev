@@ -34,10 +34,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] stack               The graphics item stack to which to paste the item.
-     *      @param [in] item                The SW interface item to paste.
-     *      @param [in] containingDesign    The design containing the interface.
-     *      @param [in] parent              The parent command.
+     *    @param [in] stack               The graphics item stack to which to paste the item.
+     *    @param [in] item                The SW interface item to paste.
+     *    @param [in] containingDesign    The design containing the interface.
+     *    @param [in] parent              The parent command.
      */
     SWInterfaceAddCommand(IGraphicsItemStack* stack, SWInterfaceItem* item,
         QSharedPointer<Design> containingDesign, QUndoCommand* parent = 0);

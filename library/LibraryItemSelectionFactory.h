@@ -14,8 +14,8 @@ namespace LibraryItemSelectionFactory
     /*!
      *  Construct the items for the selection dialog.
      *
-     *      @param [in] dialog    The selection dialog.
-     *      @param [in] vlvns     List of selectable VLNVs.
+     *    @param [in] dialog    The selection dialog.
+     *    @param [in] vlvns     List of selectable VLNVs.
      */
    void constructItemsForSelectionDialog(LibraryInterface* library, ObjectSelectionDialog* dialog,
                                          QList<VLNV> const& vlvns);

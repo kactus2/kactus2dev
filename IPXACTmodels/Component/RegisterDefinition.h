@@ -36,7 +36,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name    Name of the register definition.
+	 *    @param [in] name    Name of the register definition.
 	 */
     RegisterDefinition(QString const& name, QString const& addressOffset );
 
@@ -54,14 +54,14 @@ public:
     /*!
      *  Get the volatile value.
      *
-     *      @return The volatile value in string format. Empty string means an unspecified volatility.
+     *    @return The volatile value in string format. Empty string means an unspecified volatility.
      */
     QString getVolatile() const;
 
     /*!
      *  Set the volatileValue.
      *
-     *      @param [in] newVolatile     The new volatile value.
+     *    @param [in] newVolatile     The new volatile value.
      */
     void setVolatile(bool newVolatile);
 
@@ -73,28 +73,28 @@ public:
 	/*!
      *  Get the access.
 	 *
-	 *      @return Access value.
+	 *    @return Access value.
 	 */
     AccessTypes::Access getAccess() const;
 
     /*!
      *  Set the access.
      *
-     *      @param [in] access  The new access value.
+     *    @param [in] access  The new access value.
      */
     void setAccess(AccessTypes::Access newAccessValue);
 
 	/*!
      *  Get the list of contained fields.
      *
-     *      @return Pointer to a list containing the fields.
+     *    @return Pointer to a list containing the fields.
      */
     QSharedPointer<QList<QSharedPointer<Field> > > getFields() const;
 
     /*!
      *  Set the new fields for the register.
      *
-     *      @param [in] fields  Pointer to a list containing the fields.
+     *    @param [in] fields  Pointer to a list containing the fields.
      */
     void setFields(QSharedPointer<QList<QSharedPointer<Field> > > newFields);
 
@@ -103,7 +103,7 @@ private:
     /*!
      *  Copy the fields.
      *
-     *      @param [in] other   The register definition being copied.
+     *    @param [in] other   The register definition being copied.
      */
     void copyFields(const RegisterDefinition& other);
 

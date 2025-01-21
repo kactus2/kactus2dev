@@ -25,8 +25,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] text    Text for the label.
-     *      @param [in] parent  Parent item of the label.
+     *    @param [in] text    Text for the label.
+     *    @param [in] parent  Parent item of the label.
      */
     GraphicsItemLabel(QString const& text, QGraphicsItem* parent = 0);
 
@@ -38,14 +38,14 @@ public:
     /*!
      *  Set a new text string for the label.
      *
-     *      @param [in] newText     The selected text string.
+     *    @param [in] newText     The selected text string.
      */
     void setText(QString const& newText);
 
     /*!
      *  Get the current text string of the label.
      *
-     *      @return The current text string of the label.
+     *    @return The current text string of the label.
      */
     QString getText() const;
 
@@ -59,7 +59,7 @@ protected:
     /*!
      *  Handle hover move event.
      *
-     *      @param [in] event     the event being processed.
+     *    @param [in] event     the event being processed.
      *      
      *      @remarks    The function is reimplemented in order to fix the bug.
      *                  The bug was lock on certain type of cursor after hovering 

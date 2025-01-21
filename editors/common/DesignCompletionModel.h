@@ -29,9 +29,9 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] topComponentFinder      Finder for top component parameters.
-	 *      @param [in] parameterFinder         Finder for all available parameters.
-	 *      @param [in] parent                  The parent object.
+	 *    @param [in] topComponentFinder      Finder for top component parameters.
+	 *    @param [in] parameterFinder         Finder for all available parameters.
+	 *    @param [in] parent                  The parent object.
 	 */
 	DesignCompletionModel(QSharedPointer<ParameterFinder> topComponentFinder, 
         QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
@@ -42,10 +42,10 @@ public:
     /*!
      *  Finds the data in the model for the given index.
      *
-     *      @param [in] index   The index whose data to find.
-     *      @param [in] role    The role describing which aspect of the data to find.
+     *    @param [in] index   The index whose data to find.
+     *    @param [in] role    The role describing which aspect of the data to find.
      *
-     *      @return The data in the given index.
+     *    @return The data in the given index.
      */
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 

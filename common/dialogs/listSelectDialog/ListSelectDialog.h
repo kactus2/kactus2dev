@@ -35,14 +35,14 @@ public:
     /*!
      *  Sets the description text for the list.
      *
-     *      @param [in] desc The description text.
+     *    @param [in] desc The description text.
      */
     void setDescription(QString const& desc);
 
     /*!
      *  Adds a new item to the list.
      *
-     *      @param [in] item The item to add.
+     *    @param [in] item The item to add.
      */
     void addItem(QListWidgetItem* item);
 

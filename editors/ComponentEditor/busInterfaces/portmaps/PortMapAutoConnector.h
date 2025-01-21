@@ -44,8 +44,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] portMapInterface    Interface for accessing port maps.
-     *      @param [in] parent              The owner of this object.
+     *    @param [in] portMapInterface    Interface for accessing port maps.
+     *    @param [in] parent              The owner of this object.
      */
     PortMapAutoConnector(PortMapInterface* portMapInterface,
         QObject* parent);
@@ -65,14 +65,14 @@ public slots:
     /*!
      *  Handler for selective automatic connection.
      *
-     *      @param [in] logicalSignals  The selected logical signals to be connected.
+     *    @param [in] logicalSignals  The selected logical signals to be connected.
      */
     void onAutoConnectLogicalSignals(QStringList const& logicalSignals);
 
     /*!
      *  Sets a prefix for matching physical names to logical ports.
      *
-     *      @param [in] prefix   The prefix to set.
+     *    @param [in] prefix   The prefix to set.
      */
     void setPrefix(QString const& prefix);
 
@@ -81,7 +81,7 @@ signals:
     /*!
      *  Inform of a new port map.
      *
-     *      @param [in] physicalPorts   List of the best matching physical ports.
+     *    @param [in] physicalPorts   List of the best matching physical ports.
      */
     void portMapsAutoConnected(QVector<QString> physicalPorts);
 
@@ -104,17 +104,17 @@ private:
     /*!
      *  Connect the selected logical signals.
      *
-     *      @param [in] logicalPorts    List of the selected logical signals.
+     *    @param [in] logicalPorts    List of the selected logical signals.
      */
     void connectSelectedLogicalPorts(QStringList const& logicalPorts);
 
     /*!
      *  Get the possible physical ports for the selected logical port.
      *
-     *      @param [in] logicalPort         The selected logical port.
-     *      @param [in] logicalInterface    Interface for accessing logical ports.
+     *    @param [in] logicalPort         The selected logical port.
+     *    @param [in] logicalInterface    Interface for accessing logical ports.
      *
-     *      @return The possible physical ports combined with weights.
+     *    @return The possible physical ports combined with weights.
      */
     QMultiMap<double, QString> getWeightedPhysicalPorts(std::string const& logicalPort,
         PortAbstractionInterface* logicalInterface) const;
@@ -123,11 +123,11 @@ private:
      *  Get the best matching physical port. If another logical signal has the same port with a better value, it
      *  is ignored.
      *
-     *      @param [in] logicalPort         The selected logical port.
-     *      @param [in] logicalIndex        Index of the logical port.
-     *      @param [in] possiblePairings    A list of the possible logical-physical pairings.
+     *    @param [in] logicalPort         The selected logical port.
+     *    @param [in] logicalIndex        Index of the logical port.
+     *    @param [in] possiblePairings    A list of the possible logical-physical pairings.
      *
-     *      @return Name of the best matching physical port.
+     *    @return Name of the best matching physical port.
      */
     QString getBestMatchingPhysicalPort(int logicalIndex,
         QList<PossiblePortMaps> const& possiblePairings) const;
@@ -135,38 +135,38 @@ private:
     /*!
      *  Get a list of possible weighted ports by the direction of the given logical direction.
      *
-     *      @param [in] direction     Direction of the selected logical port.
+     *    @param [in] direction     Direction of the selected logical port.
      *
-     *      @return A list of weighted physical ports with a suitable direction to the logical port.
+     *    @return A list of weighted physical ports with a suitable direction to the logical port.
      */
     QMap<QString, double> getPortsByDirection(DirectionTypes::Direction logicalDirection) const;
 
     /*!
      *  Get a list of physical ports weighted by the width of the logical port.
      *
-     *      @param [in] logicalWidth    The width of the selected logical port.
-     *      @param [in] portList        Names of the available weighted physical ports.
+     *    @param [in] logicalWidth    The width of the selected logical port.
+     *    @param [in] portList        Names of the available weighted physical ports.
      *
-     *      @return A list of physical ports weighted by suitability to logical width.
+     *    @return A list of physical ports weighted by suitability to logical width.
      */
     QMap<QString, double> getPortsByLogicalWidth(double logicalWidth, QMap<QString, double> portList) const;
 
     /*!
      *  Get a list of physical ports weighted by the name of the logical port.
      *
-     *      @param [in] logicalName     The name of the logical port.
-     *      @param [in] portList        A list of available weighted physical ports.
+     *    @param [in] logicalName     The name of the logical port.
+     *    @param [in] portList        A list of available weighted physical ports.
      *
-     *      @return A list of physical ports weighted by the name of the logical port.
+     *    @return A list of physical ports weighted by the name of the logical port.
      */
     QMap<QString, double> weightPortsByLogicalName(QString const& logicalName, QMap<QString, double> portList) const;
 
     /*!
      *  Reorder the ports according to their weights.
      *
-     *      @param [in] portList    A list of weighter physical ports.
+     *    @param [in] portList    A list of weighter physical ports.
      *
-     *      @return A list of port names reordered according to the weights.
+     *    @return A list of port names reordered according to the weights.
      */
     QStringList reorderPortsToWeight(QMap<QString, double> portList) const;
 

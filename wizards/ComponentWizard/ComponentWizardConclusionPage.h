@@ -33,10 +33,10 @@ public:
     /*!
     *  Constructor.
     *
-    *      @param [in] component                The initial component to create.
-    *      @param [in] lh                       The library interface.
-    *      @param [in] expressionFormatter      The expression formatter.
-    *      @param [in] parent                   The parent wizard.
+    *    @param [in] component                The initial component to create.
+    *    @param [in] lh                       The library interface.
+    *    @param [in] expressionFormatter      The expression formatter.
+    *    @param [in] parent                   The parent wizard.
     */
     ComponentWizardConclusionPage(QSharedPointer<Component> component,
         LibraryInterface* lh,
@@ -86,10 +86,10 @@ private:
     /*!
      *  Creates a summary of changes in given element.
      *
-     *      @param [in] element     The name of the element to summarize.
-     *      @param [in] diffs       List of changes to the component.
+     *    @param [in] element     The name of the element to summarize.
+     *    @param [in] diffs       List of changes to the component.
      *
-     *      @return Summary of changes of the given element.
+     *    @return Summary of changes of the given element.
      */
     DiffSummary creteSummaryFor(QString const& element, QList<QSharedPointer<IPXactDiff> > const& diffs) const;
 

@@ -33,8 +33,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] expressionParser            Parser for expressions.
-     *      @param [in] expressionFormatter         Formatter for expressions.
+     *    @param [in] expressionParser            Parser for expressions.
+     *    @param [in] expressionFormatter         Formatter for expressions.
      */
     TransparentBridgeInterface(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter);
@@ -47,132 +47,132 @@ public:
     /*!
      *  Setup the transparent bridges.
      *
-     *      @param [in] newBridges  The new transparent bridges.
+     *    @param [in] newBridges  The new transparent bridges.
      */
     void setBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > newBridges);
 
     /*!
      *  Get index of the transparent bridge containing the selected master bus interface reference.
      *
-     *      @param [in] masterReference     The selected master bus interface reference.
+     *    @param [in] masterReference     The selected master bus interface reference.
      *
-     *      @return Index of the selected transparent bridge.
+     *    @return Index of the selected transparent bridge.
      */
     int getItemIndex(std::string const& masterReference) const;
 
     /*!
      *  Get master bus interface reference of the indexed transparent bridge.
      *
-     *      @param [in] itemIndex   Index of the selected transparent bridge.
+     *    @param [in] itemIndex   Index of the selected transparent bridge.
      *
-     *      @return Master bus interface reference of the selected transparent bridge.
+     *    @return Master bus interface reference of the selected transparent bridge.
      */
     std::string getIndexedMasterReference(int const& itemIndex) const;
 
     /*!
      *  Get the number of available transparent bridges.
      *
-     *      @return Number of available transparent bridges.
+     *    @return Number of available transparent bridges.
      */
     virtual int itemCount() const override final;
 
     /*!
      *  Get the master bus interface references of the available transparent bridges.
      *
-     *      @return Master bus interface references of the available ports abstractions.
+     *    @return Master bus interface references of the available ports abstractions.
      */
     virtual std::vector<std::string> getItemNames() const override final;
 
     /*!
      *  Set a new master bus interface reference for the selected transparent bridge.
      *
-     *      @param [in] currentMaster   Master bus interface reference of the selected transparent bridge.
-     *      @param [in] newMaster       New master bus interface reference for the selected transparent bridge.
+     *    @param [in] currentMaster   Master bus interface reference of the selected transparent bridge.
+     *    @param [in] newMaster       New master bus interface reference for the selected transparent bridge.
      *
-     *      @return True, if successful, false otherwise.
+     *    @return True, if successful, false otherwise.
      */
     bool setMasterReference(std::string const& currentMaster, std::string const& newMaster);
 
     /*!
      *  Validates the contained transparent bridges.
      *
-     *      @return True, if all the transparent bridges are valid, false otherwise.
+     *    @return True, if all the transparent bridges are valid, false otherwise.
      */
     virtual bool validateItems() const override final;
 
     /*!
      *  Get the calculated is present value of the selected transparent bridge.
      *
-     *      @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
-     *      @param [in] baseNumber          Base for displaying the value.
+     *    @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
+     *    @param [in] baseNumber          Base for displaying the value.
      *
-     *      @return Calculated is present value of the selected transparent bridge.
+     *    @return Calculated is present value of the selected transparent bridge.
      */
     std::string getIsPresentValue(std::string const& masterReference, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted is present expression of the selected transparent bridge.
      *
-     *      @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
+     *    @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
      *
-     *      @return Formatted is present expression of the selected transparent bridge.
+     *    @return Formatted is present expression of the selected transparent bridge.
      */
     std::string getIsPresentFormattedExpression(std::string const& masterReference) const;
 
     /*!
      *  Get the is present expression of the selected transparent bridge.
      *
-     *      @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
+     *    @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
      *
-     *      @return Is present expression of the selected transparent bridge.
+     *    @return Is present expression of the selected transparent bridge.
      */
     std::string getIsPresentExpression(std::string const& masterReference) const;
 
     /*!
      *  Set the is present expression for the selected transparent bridge.
      *
-     *      @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
-     *      @param [in] newIsPresent        New is present expression.
+     *    @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
+     *    @param [in] newIsPresent        New is present expression.
      *
-     *      @return True, if successful, false otherwise.
+     *    @return True, if successful, false otherwise.
      */
     bool setIsPresent(std::string const& masterReference, std::string const& newIsPresent);
     
     /*!
      *  Add a new transparent bridge.
      *
-     *      @param [in] bridgeIndex     Index of the new transparent bridge.
-     *      @param [in] bridgeName      Master bus interface reference of the new transparent bridge.
+     *    @param [in] bridgeIndex     Index of the new transparent bridge.
+     *    @param [in] bridgeName      Master bus interface reference of the new transparent bridge.
      *
-     *      @return True, if successful, false otherwise.
+     *    @return True, if successful, false otherwise.
      */
     bool addBridge(int const& bridgeIndex, std::string const& bridgeName = "") const;
 
     /*!
      *  Remove the selected transparent bridge.
      *
-     *      @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
+     *    @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
      *
-     *      @return True, if successful, false otherwise.
+     *    @return True, if successful, false otherwise.
      */
     bool removeTransparentBridge(std::string const& masterReference);
 
     /*!
      *  Get all the references made to the selected ID in the selected transparent bridge.
      *
-     *      @param [in] itemName    Master bus interface reference of the selected transparent bridge.
-     *      @param [in] valueID     The selected ID.
+     *    @param [in] itemName    Master bus interface reference of the selected transparent bridge.
+     *    @param [in] valueID     The selected ID.
      *
-     *      @return Number of references made to the selected ID.
+     *    @return Number of references made to the selected ID.
      */
     virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const;
 
     /*!
      *  Get all the expressions from the selected transparent bridge.
      *
-     *      @param [in] masterReference     Master reference of the selected transparent bridge.
+     *    @param [in] masterReference     Master reference of the selected transparent bridge.
      *
-     *      @return List of expressions in the selected transparent bridge.
+     *    @return List of expressions in the selected transparent bridge.
      */
     std::vector<std::string> getAllExpressions(std::string const& masterReference) const;
 
@@ -185,9 +185,9 @@ private:
     /*!
      *  Get the selected transparent bridge.
      *
-     *      @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
+     *    @param [in] masterReference     Master bus interface reference of the selected transparent bridge.
      *
-     *      @return The selected transparent bridge.
+     *    @return The selected transparent bridge.
      */
     QSharedPointer<TransparentBridge> getTransparentBridge(std::string const& masterReference) const;
 

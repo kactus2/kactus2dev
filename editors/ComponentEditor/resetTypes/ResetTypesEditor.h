@@ -36,10 +36,10 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] handler     The instance managing the library.
-     *      @param [in] validator   The validator for components.
-	 *      @param [in] parent      The parent of this editor.
+	 *    @param [in] component   The component being edited.
+	 *    @param [in] handler     The instance managing the library.
+     *    @param [in] validator   The validator for components.
+	 *    @param [in] parent      The parent of this editor.
      */
 	ResetTypesEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
         QSharedPointer<ComponentValidator> validator, QWidget* parent = 0);

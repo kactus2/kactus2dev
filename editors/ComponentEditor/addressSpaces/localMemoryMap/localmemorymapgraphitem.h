@@ -29,9 +29,9 @@ public:
 
     /*! The constructor
      *
-     *      @param [in] addrSpace       The address space that contains the local memory map.
-     *      @param [in] localMemoryMap  The local memory map.
-     *      @param [in] parent          The owner of the graphics item.
+     *    @param [in] addrSpace       The address space that contains the local memory map.
+     *    @param [in] localMemoryMap  The local memory map.
+     *    @param [in] parent          The owner of the graphics item.
      *
     */
     LocalMemoryMapGraphItem(QSharedPointer<AddressSpace> addrSpace,
@@ -51,7 +51,7 @@ public:
     /*!
      *  Get number of bits the addressable unit contains.
      *
-     *      @return The size of least addressable unit.
+     *    @return The size of least addressable unit.
      */
     virtual unsigned int getAddressUnitSize() const override final;
  

@@ -35,13 +35,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                       The model that owns the items.
-	 *      @param [in] libHandler                  The instance that manages the library.
-	 *      @param [in] component                   The component being edited.
-     *      @param [in] validator                   The validator for design instantiation.
-     *      @param [in] componentParameterFinder    Finder for component parameters.
-     *      @param [in] referenceCounter            Handles the usage count of parameters.
-	 *      @param [in] parent                      The parent item.
+	 *    @param [in] model                       The model that owns the items.
+	 *    @param [in] libHandler                  The instance that manages the library.
+	 *    @param [in] component                   The component being edited.
+     *    @param [in] validator                   The validator for design instantiation.
+     *    @param [in] componentParameterFinder    Finder for component parameters.
+     *    @param [in] referenceCounter            Handles the usage count of parameters.
+	 *    @param [in] parent                      The parent item.
 	 */
 	DesignInstantiationsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
         QSharedPointer<Component> component, QSharedPointer<InstantiationsValidator> validator,
@@ -56,28 +56,28 @@ public:
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const;
 
 	/*!
      *  Get The editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*!
      *  Add a new child to the item.
 	 * 
-	 *      @param [in] index   The index to add the child into.
+	 *    @param [in] index   The index to add the child into.
 	 */
 	virtual void createChild(int index);
 

@@ -44,10 +44,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] utility                 Utility for plugins.
-     *      @param [in] configurationObject     JSON object containing the editor configuration.
-     *      @param [in] templateConfigurer      Configurer for peripheral templates.
-     *      @param [in] parent                  Pointer to the owner of this widget.
+     *    @param [in] utility                 Utility for plugins.
+     *    @param [in] configurationObject     JSON object containing the editor configuration.
+     *    @param [in] templateConfigurer      Configurer for peripheral templates.
+     *    @param [in] parent                  Pointer to the owner of this widget.
      */
     RenodeCpuEditor(IPluginUtility* utility,
         QJsonObject const& configurationObject,
@@ -62,23 +62,23 @@ public:
     /*!
      *  Setup the selected CPUs.
      *
-     *      @param [in] library     Interface for accessing the library.
-     *      @param [in] component   Top component of the selected design.
-     *      @param [in] activeView  Active view of the design.
+     *    @param [in] library     Interface for accessing the library.
+     *    @param [in] component   Top component of the selected design.
+     *    @param [in] activeView  Active view of the design.
      */
     virtual void setupCPUDetails(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView) override final;
 
     /*!
      *  Get the selected CPUs.
      *
-     *      @return List of the selected CPUs.
+     *    @return List of the selected CPUs.
      */
     virtual QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs() const override final;
 
     /*!
      *  Get the name of the currently active CPU.
      *
-     *      @return Name of the currently active CPU.
+     *    @return Name of the currently active CPU.
      */
     QString getSelectedCpuName();
 
@@ -91,7 +91,7 @@ public slots:
 	/*!
 	 *  Setup the selected folder path.
 	 *	
-	 *      @param [in] newFolderPath   The new folder path.
+	 *    @param [in] newFolderPath   The new folder path.
 	 */
 	virtual void setupFolderPath(QString const& newFolderPath) override final;
 
@@ -100,7 +100,7 @@ signals:
     /*!
      *  Inform of a change in CPU.
      *
-     *      @param [in] newCpuName  Name of the new CPU.
+     *    @param [in] newCpuName  Name of the new CPU.
      */
     void cpuChanged(QString const& newCpuName);
 
@@ -109,28 +109,28 @@ private slots:
     /*!
      *  Handle the change in CPU selection.
      *
-     *      @param [in] newCPU  Name of the new CPU.
+     *    @param [in] newCPU  Name of the new CPU.
      */
     void onHandleCpuChange(QString const& newCPU);
 
     /*!
      *  Handle the changes in the CPU class.
      *
-     *      @param [in] newClass    The new class.
+     *    @param [in] newClass    The new class.
      */
     void onHandleClassChange(QString const& newClass);
 
     /*!
      *  Handle the change in cpu type.
      *
-     *      @param [in] newType     The new type.
+     *    @param [in] newType     The new type.
      */
     void onHandleTypeChange(QString const& newType);
 
     /*!
      *  Handle the change in time provider.
      *
-     *      @param [in] newTimeProvider     The new time provider.
+     *    @param [in] newTimeProvider     The new time provider.
      */
     void onHandleTimeProviderChange(QString const& newTimeProvider);
 
@@ -159,9 +159,9 @@ private:
     /*!
      *  Get the CPU container for the selected CPU.
      *
-     *      @param [in] cpuText     Identifier of the selected CPU.
+     *    @param [in] cpuText     Identifier of the selected CPU.
      *
-     *      @return CPU container for the selected CPU.
+     *    @return CPU container for the selected CPU.
      */
     QSharedPointer<RenodeCpuRoutesContainer> getContainerForCpu(QString const& cpuText) const;
 

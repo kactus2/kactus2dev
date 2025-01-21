@@ -28,7 +28,7 @@ public:
     /*!
      *	Check and mark validity of child/sibling items. Checks for name uniqueness.
      *  
-     *      @param [in] children     The items to be validated.
+     *    @param [in] children     The items to be validated.
      *	    
      * 	    @return True, if all child items are valid amongst themselves, false otherwise.
      */
@@ -37,7 +37,7 @@ public:
     /*!
      *	Set the validator to be used when validating child/sibling items.
      *  
-     *      @param [in] childValidator     The validator to set.
+     *    @param [in] childValidator     The validator to set.
      */
     void setChildValidator(QSharedPointer<HierarchicalValidator> childValidator);
 
@@ -45,7 +45,7 @@ public:
      *	Checks if the item is valid amongst its siblings. The item validity can be set by the parent validator
      *  on a higher level in the hierarchy and is stored in the childItemValidities map.
      *  
-     *      @param [in] currentChildItem     The item to check.
+     *    @param [in] currentChildItem     The item to check.
      *	    
      * 	    @return True, if the item is valid, otherwise false.
      */
@@ -54,8 +54,8 @@ public:
     /*!
      *	Set the validitiy of an item. Called by a higher level validator.
      *  
-     *      @param [in] childItem     The item whose validity to set.
-     *      @param [in] isValid       The validity status to set.
+     *    @param [in] childItem     The item whose validity to set.
+     *    @param [in] isValid       The validity status to set.
      */
     void setChildItemValidity(QSharedPointer<NameGroup> childItem, bool isValid);
 

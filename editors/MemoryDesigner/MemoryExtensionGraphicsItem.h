@@ -25,12 +25,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] positionX           X position of the extension.
-     *      @param [in] positionY           Y position of the extension.
-     *      @param [in] extensionWidth      Width of the extension.
-     *      @param [in] extensionHeight     Height of the extension.
-     *      @param [in] containingInstance  Component instance containing this memory item.
-     *      @param [in] parentItem          Parent item.
+     *    @param [in] positionX           X position of the extension.
+     *    @param [in] positionY           Y position of the extension.
+     *    @param [in] extensionWidth      Width of the extension.
+     *    @param [in] extensionHeight     Height of the extension.
+     *    @param [in] containingInstance  Component instance containing this memory item.
+     *    @param [in] parentItem          Parent item.
      */
     MemoryExtensionGraphicsItem(qreal positionX, qreal positionY, qreal extensionWidth, qreal extensionHeight,
         QSharedPointer<ConnectivityComponent const> containingInstance, QGraphicsItem* parentItem);

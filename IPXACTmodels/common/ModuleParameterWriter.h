@@ -27,9 +27,9 @@ namespace ModuleParameterWriter
     /*!
      *  Writes the given module parameter into xml.
      *
-     *      @param [in] writer      The xml writer to use.
-     *      @param [in] parameter   The module parameter to write.
-     *      @param [in] docRevision The document std revision.
+     *    @param [in] writer      The xml writer to use.
+     *    @param [in] parameter   The module parameter to write.
+     *    @param [in] docRevision The document std revision.
      */
     void writeModuleParameter(QXmlStreamWriter& writer, QSharedPointer<ModuleParameter> moduleParameter, 
         Document::Revision docRevision = Document::Revision::Std14);

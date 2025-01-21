@@ -47,14 +47,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] selectedRegister        The register being edited.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance that manages the library.
-	 *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionParser        The expression parser to use.
-     *      @param [in] registerInterface       Interface for registers.
-     *      @param [in] containingRegisterData  Register data containing the edited register.
-	 *      @param [in] parent                  The parent of this editor.
+	 *    @param [in] selectedRegister        The register being edited.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] handler                 The instance that manages the library.
+	 *    @param [in] parameterFinder         The parameter finder.
+     *    @param [in] expressionParser        The expression parser to use.
+     *    @param [in] registerInterface       Interface for registers.
+     *    @param [in] containingRegisterData  Register data containing the edited register.
+	 *    @param [in] parent                  The parent of this editor.
 	 */
     SingleRegisterEditor(QSharedPointer<Register> selectedRegister,
         QSharedPointer<Component> component,
@@ -91,8 +91,8 @@ signals:
     /*
      *  Informs of field name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void fieldNameChanged(QString const& oldName, QString const& newName);
 
@@ -102,8 +102,8 @@ public slots:
     /*
      *  Handles register name change from address block editor.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void onRegisterNameChanged(QString const& oldName, QString const& newName);
 
@@ -117,7 +117,7 @@ protected:
 	/*!
 	 *  After a show event, fetches the help file for the editor.
 	 *
-	 *      @param [in] event   The show event.
+	 *    @param [in] event   The show event.
 	 */
 	virtual void showEvent(QShowEvent* event);
 
@@ -146,14 +146,14 @@ private slots:
     /*!
      *  Save the selected volatile value to the register.
      *
-     *      @param [in] newVolatileValue    The new volatile value.
+     *    @param [in] newVolatileValue    The new volatile value.
      */
     void onVolatileSelected(QString const& newVolatileValue);
 
     /*!
      *  Save the selected access value to the register.
      *
-     *      @param [in] newAccessValue  The new access value.
+     *    @param [in] newAccessValue  The new access value.
      */
     void onAccessSelected(QString const& newAccessValue);
 
@@ -172,16 +172,16 @@ private:
     /*!
      *  Calculate the value for the expression.
      *
-     *      @param [in] expression  The expression to be calculated.
+     *    @param [in] expression  The expression to be calculated.
      *
-     *      @return The calculated value of the expression.
+     *    @return The calculated value of the expression.
      */
     QString formattedValueFor(QString const& expression) const;
 
     /*!
      *  Change the signal blocking status of the expression editors.
      *
-     *      @param [in] blockStatus     The new status of signal blocking.
+     *    @param [in] blockStatus     The new status of signal blocking.
      */
     void changeExpressionEditorsSignalBlockStatus(bool blockStatus) const;
 

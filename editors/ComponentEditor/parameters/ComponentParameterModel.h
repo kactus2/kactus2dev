@@ -31,8 +31,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] parameterFinder     The parameter finder.
-	 *      @param [in] parent              The owner of this model.
+     *    @param [in] parameterFinder     The parameter finder.
+	 *    @param [in] parent              The owner of this model.
 	 */
 	ComponentParameterModel(QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 
@@ -42,46 +42,46 @@ public:
     /*!
      *  Finds the number of rows in the model.
      *
-     *      @param [in] parent   The parent index whose row count to find.
+     *    @param [in] parent   The parent index whose row count to find.
      *
-     *      @return The number of rows in the model.
+     *    @return The number of rows in the model.
      */
     virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
     /*!
      *  Finds the number of columns in the model.
      *
-     *      @param [in] parent   The parent index whose column count to find.
+     *    @param [in] parent   The parent index whose column count to find.
      *
-     *      @return The number of columns in the model.
+     *    @return The number of columns in the model.
      */
     virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
     /*!
      *  Finds the flags for the given index.
      *
-     *      @param [in] index   The index whose flags to find.
+     *    @param [in] index   The index whose flags to find.
      *
-     *      @return Flags describing allowed actions for the index.
+     *    @return Flags describing allowed actions for the index.
      */
     virtual Qt::ItemFlags flags(QModelIndex const& index) const;
 
     /*!
      *  Finds the parent index for the given child.
      *
-     *      @param [in] child   The index whose parent index to find.
+     *    @param [in] child   The index whose parent index to find.
      *
-     *      @return The index for the parent.
+     *    @return The index for the parent.
      */
     virtual QModelIndex parent(QModelIndex const& child) const;
 
     /*!
      *  Finds the data in the model for the given index.
      *
-     *      @param [in] index   The index whose data to find.
-     *      @param [in] role    The role describing which aspect of the data to find.
+     *    @param [in] index   The index whose data to find.
+     *    @param [in] role    The role describing which aspect of the data to find.
      *
-     *      @return The data in the given index.
+     *    @return The data in the given index.
      */
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
@@ -97,37 +97,37 @@ protected:
     /*!
      *  Check if the column index is valid for containing expressions.
      *
-     *      @param [in] index   The index being evaluated.
+     *    @param [in] index   The index being evaluated.
      *
-     *      @return     True, if column can have expressions, false otherwise.
+     *    @return     True, if column can have expressions, false otherwise.
      */
     virtual bool isValidExpressionColumn(QModelIndex const& index) const;
 
     /*!
      *  Gets the expression for the given index or the plain value if expression is not available.
      *
-     *      @param [in] index   The index whose expression to get.
+     *    @param [in] index   The index whose expression to get.
      *
-     *      @return The expression for the index if available, otherwise the value for the given index.
+     *    @return The expression for the index if available, otherwise the value for the given index.
      */
     virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
     
     /*!
      *  Validates the data in a parameter corresponding to a given column.
      *
-     *      @param [in] index   The index whose data to validate
+     *    @param [in] index   The index whose data to validate
      *
-     *      @return True, if the data in the parameter is valid, otherwise false.
+     *    @return True, if the data in the parameter is valid, otherwise false.
      */
     virtual bool validateIndex(QModelIndex const& index) const;
 
     /*!
      *  Get all the references to the selected parameter from the selected row.
      *
-     *      @param [in] row         The selected row.
-     *      @param [in] valueID     The id of the referenced parameter.
+     *    @param [in] row         The selected row.
+     *    @param [in] valueID     The id of the referenced parameter.
      *
-     *      @return The amount of references to the selected parameter.
+     *    @return The amount of references to the selected parameter.
      */
     virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const;
 

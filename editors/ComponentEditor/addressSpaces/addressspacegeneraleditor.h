@@ -36,12 +36,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addrSpace           The address space being edited.
-	 *      @param [in] busInterfaceNames   A list of master interface names bound to this address space.
-	 *      @param [in] parameterFinder     The finder for parameters available in expressions.
-	 *      @param [in] expressionParser    The expression parser.
-	 *      @param [in] docRevision         The standard revision in use.
-	 *      @param [in] parent              The owner of the editor.
+	 *    @param [in] addrSpace           The address space being edited.
+	 *    @param [in] busInterfaceNames   A list of master interface names bound to this address space.
+	 *    @param [in] parameterFinder     The finder for parameters available in expressions.
+	 *    @param [in] expressionParser    The expression parser.
+	 *    @param [in] docRevision         The standard revision in use.
+	 *    @param [in] parent              The owner of the editor.
 	 */
 	AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace,
         QStringList busInterfaceNames,
@@ -60,14 +60,14 @@ public:
 	/*!
      *  Check if the editor is in valid state and can be saved.
 	 *
-	 *      @return True if everything is ok.
+	 *    @return True if everything is ok.
 	 */
 	bool isValid() const;
 
 	/*!
 	 *  Read the settings from the address space model to the editor fields.
 	 *
-	 *      @param [in] masterInterfaceNames    A list of master interface names bound to this address space.
+	 *    @param [in] masterInterfaceNames    A list of master interface names bound to this address space.
 	 */
 	void refresh(QStringList masterInterfaceNames);
 
@@ -81,40 +81,40 @@ signals:
 
 	/*! Emitted when user changes the size of an addressable unit.
 	 *
-	 *       @param units The new addressable unit size.
+	 *    @param units The new addressable unit size.
 	*/
 	void addressableUnitsChanged(int units);
 
 	/*! Emitted when user changes the width of a row in address space.
 	 *
-	 *       @param width The new width of a row.
+	 *    @param width The new width of a row.
 	*/
 	void widthChanged(int width);
 
 	/*! Emitted when user changes the range of an address space.
 	 *
-	 *       @param range The new range as number of addressable units.
+	 *    @param range The new range as number of addressable units.
 	*/
 	void rangeChanged(QString const& range);
     
     /*!
      *  Increase the amount of references to a parameter with a matching id.
      *
-     *      @param [in] id      Id of the parameter, whose references are being increased.
+     *    @param [in] id      Id of the parameter, whose references are being increased.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the amount of references to a parameter with a matching id.
      *
-     *      @param [in] id      Id of the parameter, whose references are being increased.
+     *    @param [in] id      Id of the parameter, whose references are being increased.
      */
     void decreaseReferences(QString id);
 
     /*!
      *  Assign new address unit bits for address blocks.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bits.
+     *    @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const&);
 
@@ -142,9 +142,9 @@ private:
     /*!
      *  Formats a given expression to human-readable format.
      *
-     *      @param [in] expression   The expression to format.
+     *    @param [in] expression   The expression to format.
      *
-     *      @return The formatted expression.
+     *    @return The formatted expression.
      */
     QString format(QString const& expression) const;
 

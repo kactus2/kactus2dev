@@ -33,41 +33,41 @@ public:
     /*!
      *  Returns the file types supported by the plugin.
      *
-     *      @return The file types the import plugin supports.
+     *    @return The file types the import plugin supports.
      */
     virtual QStringList getSupportedFileTypes() const = 0;
 
     /*!
      *  Returns a compatibility warning concerning the import plugin usage. Can be empty.
      *
-     *      @return The warning text.
+     *    @return The warning text.
      */
     virtual QString getCompatibilityWarnings() const = 0;
 
     /*!
      *  Get component declarations from the selected input file.
      *
-     *      @param [in] input   The selected input file.
+     *    @param [in] input   The selected input file.
      *
-     *      @return List of component declarations found in the selected input.
+     *    @return List of component declarations found in the selected input.
      */
     virtual QStringList getFileComponents(QString const& input) const = 0;
 
     /*!
      *  Get the name of the selected component declaration.
      *
-     *      @param [in] componentDeclaration    The selected component declaration.
+     *    @param [in] componentDeclaration    The selected component declaration.
      *
-     *      @return Name of the selected component declaration.
+     *    @return Name of the selected component declaration.
      */
     virtual QString getComponentName(QString const& componentDeclaration) const = 0;
 
     /*!
      *  Runs the import by parsing the given input and applying the parsed elements to the given component.
      *
-     *      @param [in] input                   The input text to parse.
-     *      @param [in] componentDeclaration    Declaration of the selected component.
-     *      @param [in] targetComponent         The component to apply all imported changes to.
+     *    @param [in] input                   The input text to parse.
+     *    @param [in] componentDeclaration    Declaration of the selected component.
+     *    @param [in] targetComponent         The component to apply all imported changes to.
      */
     virtual void import(QString const& input, QString const& componentDeclaration,
         QSharedPointer<Component> targetComponent) = 0;

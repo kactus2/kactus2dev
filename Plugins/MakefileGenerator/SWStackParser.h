@@ -51,7 +51,7 @@ public:
     /*!
      *  Parses all software components from the design for the data needed in makefiles.
      *
-	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
+	 *    @param [in] sysViewName  Name of the system view pointing to used design configuration.
      */
     void parse(QString const& sysViewName);
 
@@ -60,20 +60,20 @@ private:
     /*!
      *  Checks if softInstance is the topmost instance in its stack.
      *
-     *      @param [in] softInstance   The software instance to be checked.
-     *      @param [in] softComponent   The software component of the instance.
+     *    @param [in] softInstance   The software instance to be checked.
+     *    @param [in] softComponent   The software component of the instance.
      *
-     *      @return True, if the softInstance is the topmost instance in its stack. Otherwise false.
+     *    @return True, if the softInstance is the topmost instance in its stack. Otherwise false.
      */
      bool isTopOfStack(QSharedPointer<ComponentInstance> softInstance, QSharedPointer<Component> softComponent);
 
     /*!
      *  Recursively parses source files for the whole stack for the given software instance.
 	 *
-     *      @param [in] softComponent   The component of softInstance.
-     *      @param [in] softInstance   The software instance which active view is to be parsed.
-	 *      @param [in] makeData   The make data associated with the makefile as whole.
-	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
+     *    @param [in] softComponent   The component of softInstance.
+     *    @param [in] softInstance   The software instance which active view is to be parsed.
+	 *    @param [in] makeData   The make data associated with the makefile as whole.
+	 *    @param [in] sysViewName  Name of the system view pointing to used design configuration.
      */
      void parseStackObjects(QSharedPointer<Component> softComponent, QSharedPointer<ComponentInstance> softInstance,
          QSharedPointer<MakeFileData> makeData, QString const& systemViewName);
@@ -81,10 +81,10 @@ private:
     /*!
      *  Tries to find a software instance by name and the component associated with it.
      *
-     *      @param [in] instanceName   Name of the searched software instance.
-     *      @param [out] targetInstance   The found software instance.
+     *    @param [in] instanceName   Name of the searched software instance.
+     *    @param [out] targetInstance   The found software instance.
      *
-     *      @return The component of the found instance.
+     *    @return The component of the found instance.
      */
      QSharedPointer<Component> searchSWComponent(QString instanceName, QSharedPointer<ComponentInstance>& targetInstance);
 

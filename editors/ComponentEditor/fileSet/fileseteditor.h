@@ -45,14 +45,14 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] handler                 Pointer to the instance that manages the library.
-	 *      @param [in] component               Pointer to the component model that is being edited.
-     *      @param [in] fileSet                 The edited fileset.
-     *      @param [in] parameterFinder         Finder used to identify parameters.
-     *      @param [in] expressionParser        Parser used to calculate expressions.
-     *      @param [in] expressionFormatter     Formatter used to format expressions.
-     *      @param [in] fileSetInterface        Interface for accessing file sets.
-	 *      @param [in] parent                  Pointer to the owner of this widget.
+	 *    @param [in] handler                 Pointer to the instance that manages the library.
+	 *    @param [in] component               Pointer to the component model that is being edited.
+     *    @param [in] fileSet                 The edited fileset.
+     *    @param [in] parameterFinder         Finder used to identify parameters.
+     *    @param [in] expressionParser        Parser used to calculate expressions.
+     *    @param [in] expressionFormatter     Formatter used to format expressions.
+     *    @param [in] fileSetInterface        Interface for accessing file sets.
+	 *    @param [in] parent                  Pointer to the owner of this widget.
 	 */
     FileSetEditor(LibraryInterface* handler,
         QSharedPointer<Component> component,
@@ -79,8 +79,8 @@ signals:
     /*!
      *  Handle the name change of a file.
      *
-     *      @param [in] oldName     Old name of the selected file.
-     *      @param [in] newName     The new name for the selected file.
+     *    @param [in] oldName     Old name of the selected file.
+     *    @param [in] newName     The new name for the selected file.
      */
     void fileRenamed(std::string const& oldName, std::string const& newName);
 

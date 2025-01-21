@@ -36,10 +36,10 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] handler     The instance managing the library.
-     *      @param [in] validator   The validator for Modes.
-	 *      @param [in] parent      The parent of this editor.
+	 *    @param [in] component   The component being edited.
+	 *    @param [in] handler     The instance managing the library.
+     *    @param [in] validator   The validator for Modes.
+	 *    @param [in] parent      The parent of this editor.
 	*/
 	ModesEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
 		QWidget* parent = 0);

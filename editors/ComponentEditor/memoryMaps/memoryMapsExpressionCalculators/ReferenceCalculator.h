@@ -28,7 +28,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parameterFinder     Pointer to the instance for finding component parameters.
+     *    @param [in] parameterFinder     Pointer to the instance for finding component parameters.
      */
     ReferenceCalculator(QSharedPointer<ParameterFinder> parameterFinder);
 
@@ -40,9 +40,9 @@ public:
     /*!
      *  Calculates the parameters used in a given list of expressions.
      *
-     *      @param [in] listOfPossibleReferences    A list of expressions with possible references.
+     *    @param [in] listOfPossibleReferences    A list of expressions with possible references.
      *
-     *      @return A map containing pairs of referenced ids and the number of references made to them.
+     *    @return A map containing pairs of referenced ids and the number of references made to them.
      */
     QMap<QString, int> getReferencedParameters(QStringList listOfPossibleReferences) const;
 

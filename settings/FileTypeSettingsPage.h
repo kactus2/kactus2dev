@@ -32,7 +32,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in/out] settings The settings store.
+     *    @param [in/out] settings The settings store.
      */
     FileTypeSettingsPage(QSettings& settings);
 

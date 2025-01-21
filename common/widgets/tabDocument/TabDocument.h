@@ -86,11 +86,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent        The parent widget.
-     *      @param [in] libHandler    The instance that handles the library.
-     *      @param [in] flags         The document support flags.
-     *      @param [in] minZoomLevel  The minimum zoom level.
-	 *      @param [in] maxZoomLevel  The maximum zoom level.
+     *    @param [in] parent        The parent widget.
+     *    @param [in] libHandler    The instance that handles the library.
+     *    @param [in] flags         The document support flags.
+     *    @param [in] minZoomLevel  The minimum zoom level.
+	 *    @param [in] maxZoomLevel  The maximum zoom level.
 	 */
 	TabDocument(QWidget* parent, LibraryInterface* libHandler = nullptr, unsigned int flags = 0,
 		        int minZoomLevel = 100, int maxZoomLevel = 100);
@@ -115,8 +115,8 @@ public:
     /*!
      *  Changes the state of a visibility control.
      *
-     *      @param [in] name   The name of the visibility control.
-     *      @param [in] state  The new state for the visibility control.
+     *    @param [in] name   The name of the visibility control.
+     *    @param [in] state  The new state for the visibility control.
      */
     virtual void setVisibilityControlState(QString const& name, bool state);
 
@@ -133,14 +133,14 @@ public:
     /*!
      *  Sets the zoom level.
      *
-     *      @param [in] level The zoom level in percents.
+     *    @param [in] level The zoom level in percents.
      */
     virtual void setZoomLevel(int level);
 
     /*!
      *  Sets the draw mode of the document.
      *
-     *      @param [in] mode The draw mode.
+     *    @param [in] mode The draw mode.
      *
      *      @remarks Proper implementation is required if the document is a diagram.
      */
@@ -149,7 +149,7 @@ public:
     /*!
      *  Sets the protection state of the document.
      *
-     *      @param [in] locked True for locked state; false for unlocked.
+     *    @param [in] locked True for locked state; false for unlocked.
      */
     virtual void setProtection(bool locked);
 
@@ -215,7 +215,7 @@ public:
     /*!
      *  Adds a related VLNV.
      *
-     *      @param [in] vlnv The VLNV to add.
+     *    @param [in] vlnv The VLNV to add.
      *
      *      @remarks The occurrences of each unique VLNV are calculated internally.
      */
@@ -224,7 +224,7 @@ public:
     /*!
      *  Removes a related VLNV.
      *
-     *      @param [in] vlnv The VLNV to remove.
+     *    @param [in] vlnv The VLNV to remove.
      */
     void removeRelatedVLNV(VLNV const& vlnv);    
 
@@ -243,7 +243,7 @@ public:
     /*!
      *  Returns the edit provider.
      *
-     *      @return Base class implementation returns null.
+     *    @return Base class implementation returns null.
      *
      *      @remarks Edit support should be queried with getFlags().
      */
@@ -274,7 +274,7 @@ public:
     /*!
      *  Validates that the file being edited in the tab exists.
      *
-     *      @return True if libHandler is present and the file exists, otherwise false.
+     *    @return True if libHandler is present and the file exists, otherwise false.
      */
     bool fileExists();
 
@@ -288,9 +288,9 @@ public slots:
     /*!
      *  Validates the document against the IP-XACT standard.
      *
-     *      @param [out] errorList Error message list for reporting standard violations.
+     *    @param [out] errorList Error message list for reporting standard violations.
      *
-     *      @return True if the document is valid. False if there were any violations.
+     *    @return True if the document is valid. False if there were any violations.
      */
     virtual bool validate(QVector<QString>& errorList);
 
@@ -311,7 +311,7 @@ public slots:
     /*!
      *  Sets the document modified/unmodified.
      *
-     *      @param [in] modified True if the document should be set modified; otherwise false.
+     *    @param [in] modified True if the document should be set modified; otherwise false.
      */
     void setModified(bool modified = true);
 
@@ -366,8 +366,8 @@ signals:
     /*!
      *  Change the vendor extensions of the vendor extensions editor.
      *
-     *      @param [in] containingID    ID for the vendor extensions editor.
-     *      @param [in] extensionItem   The item containing the selected vendor extensions.
+     *    @param [in] containingID    ID for the vendor extensions editor.
+     *    @param [in] extensionItem   The item containing the selected vendor extensions.
      */
     void changeVendorExtensions(QString const& containingID, QSharedPointer<Extendable> extensionItem);
 
@@ -375,22 +375,22 @@ protected:
     /*!
      *  Sets the name of the document.
      *
-     *      @param [in] name The name of the document.
+     *    @param [in] name The name of the document.
      */
     void setDocumentName(QString const& name);
 
     /*!
      *  Sets the type of the document. If not empty, the name of the tab will be shown as: DocName [DocType]
      *
-     *      @param [in] type The type of the document.
+     *    @param [in] type The type of the document.
      */
     void setDocumentType(DocumentType const& type);
 
     /*!
      *  Adds a new visibility control to the document.
      *
-     *      @param [in] name   The name of the new visibility control.
-     *      @param [in] state  The initial state of the visibility control.
+     *    @param [in] name   The name of the new visibility control.
+     *    @param [in] state  The initial state of the visibility control.
      */
     void addVisibilityControl(QString const& name, bool state);
 
@@ -431,7 +431,7 @@ private:
     /*!
      *  Sets the tab title of this document.
      *
-     *      @param [in] title The title text.
+     *    @param [in] title The title text.
      */
     void setTabTitle(QString const& title);
     

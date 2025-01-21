@@ -25,11 +25,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent   The owner of this vhdl object.
-	 *      @param [in] name   Name of this vhdl object.
-	 *      @param [in] type   Type of this vhdl object.
-	 *      @param [in] defaultValue   The default value for the object.
-	 *      @param [in] description   The Description for this vhdl object.
+	 *    @param [in] parent   The owner of this vhdl object.
+	 *    @param [in] name   Name of this vhdl object.
+	 *    @param [in] type   Type of this vhdl object.
+	 *    @param [in] defaultValue   The default value for the object.
+	 *    @param [in] description   The Description for this vhdl object.
 	 */
 	VhdlTypedObject(const QString& name = QString(),
 		const QString& type = QString(),
@@ -64,7 +64,7 @@ public:
 	/*!
 	 *  Set the type for the vhdl object.
 	 *
-	 *      @param [in] type   The type for the object.
+	 *    @param [in] type   The type for the object.
 	 */
 	virtual void setType(const QString& type);
 
@@ -78,7 +78,7 @@ public:
 	/*!
 	 *  Set the default value for the object.
 	 *
-	 *      @param [in] defaultValue   The default value to be set for the object.
+	 *    @param [in] defaultValue   The default value to be set for the object.
 	 */
 	virtual void setDefaultValue(const QString& defaultValue);
 

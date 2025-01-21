@@ -36,7 +36,7 @@ private slots:
     /*!
      * Expand the tree until first branch i.e. index with more than one children is found.
      *
-     *     @param [in] index  The starting index for expanding.
+     *    @param [in] index  The starting index for expanding.
      */
     void expandUntilFirstBranch(QModelIndex const& index);
 };

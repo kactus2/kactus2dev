@@ -44,42 +44,42 @@ public:
 	/*!
      *  Get the value of the port reference.
 	 *
-	 *      @return The port reference.
+	 *    @return The port reference.
 	 */
 	QString getPortNameRef() const;
 
 	/*!
      *  Set the portNameRef for this remapPort.
 	 *
-	 *      @param [in] newPortNameRef  The new port reference.
+	 *    @param [in] newPortNameRef  The new port reference.
 	 */
 	void setPortNameRef(QString const& newPortNameRef);
     
 	/*!
      *  Get index of a port.
 	 *
-	 *      @return The port index.
+	 *    @return The port index.
 	 */
     QString getPortIndex() const;
 
 	/*!
      *  Set the port index.
 	 *
-	 *      @param [in] newPortIndex    The new port index.
+	 *    @param [in] newPortIndex    The new port index.
 	 */
     void setPortIndex(QString const& newPortIndex);
 
 	/*!
      *  Get the value of the remapPort element.
 	 *
-	 *      @return The value of the remap port.
+	 *    @return The value of the remap port.
 	 */
 	QString getValue() const;
 
 	/*! 
      *  Set the value for the remapPort element.
 	 *
-	 *      @param [in] value   The new value.
+	 *    @param [in] value   The new value.
 	 */
 	void setValue(QString const& newValue);
 

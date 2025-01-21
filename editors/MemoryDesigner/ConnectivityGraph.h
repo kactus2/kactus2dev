@@ -36,23 +36,23 @@ public:
     /*!
      *  Gets all interfaces (=vertices) in the graph.
      *
-     *      @return All interfaces.
+     *    @return All interfaces.
      */
     QVector<QSharedPointer<ConnectivityInterface> >& getInterfaces() const;
 
     /*!
      *  Gets all the instances in the graph.
      *
-     *      @return All instances.
+     *    @return All instances.
      */
     QVector<QSharedPointer<ConnectivityComponent> >& getInstances() const;
     
     /*!
      *  Finds all connections for the given interface.
      *
-     *      @param [in] startPoint   The interface to find connections for.
+     *    @param [in] startPoint   The interface to find connections for.
      *
-     *      @return All connections to/from the given interface.
+     *    @return All connections to/from the given interface.
      */
     QVector<QSharedPointer<ConnectivityConnection const> > getConnectionsFor(
         QSharedPointer<ConnectivityInterface const> startPoint) const;
@@ -60,10 +60,10 @@ public:
     /*!
      *  Finds the interface with the given name in the given instance.
      *
-     *      @param [in] instanceName    The name of the instance containing the interface.
-     *      @param [in] interfaceName   The name of the interface to find.
+     *    @param [in] instanceName    The name of the instance containing the interface.
+     *    @param [in] interfaceName   The name of the interface to find.
      *
-     *      @return The found interface matching the given name and instance.
+     *    @return The found interface matching the given name and instance.
      */
     QSharedPointer<ConnectivityInterface const> getInterface(QString const& interfaceName,
         QString const& instanceName);
@@ -71,7 +71,7 @@ public:
     /*!
      *  Get all connections in the graph.
      *
-     *      @return All connections in the graph.
+     *    @return All connections in the graph.
      */
     QVector<QSharedPointer<ConnectivityConnection> >& getConnections() const;
 

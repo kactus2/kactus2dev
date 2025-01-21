@@ -49,15 +49,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] revision            Currently active IP-XACT revision.
-     *      @param [in] absDef              The abstraction definition.
-     *      @param [in] expressionFormatter The expression formatter to use.
-     *      @param [in] expressionParser    The expression parser to use.
-     *      @param [in] parameterFinder     The parameter finder to use.
-     *      @param [in] libraryHandler      Allows access to the library.
-     *      @param [in] portInterface       Interface for accssing port abstractions.
-     *      @param [in] extendInterface     Interface for accssing extend port abstractions.
-	 *      @param [in] parent              The owner of the editor.
+     *    @param [in] revision            Currently active IP-XACT revision.
+     *    @param [in] absDef              The abstraction definition.
+     *    @param [in] expressionFormatter The expression formatter to use.
+     *    @param [in] expressionParser    The expression parser to use.
+     *    @param [in] parameterFinder     The parameter finder to use.
+     *    @param [in] libraryHandler      Allows access to the library.
+     *    @param [in] portInterface       Interface for accssing port abstractions.
+     *    @param [in] extendInterface     Interface for accssing extend port abstractions.
+	 *    @param [in] parent              The owner of the editor.
 	 */
     AbsDefGroup(Document::Revision revision, QSharedPointer<AbstractionDefinition> absDef,
         QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser, 
@@ -81,7 +81,7 @@ public:
 	/*!
      *  Set the abstraction definition for the editor.
 	 *
-	 *      @param [in] absDef  The Abstraction definition to edit.
+	 *    @param [in] absDef  The Abstraction definition to edit.
      */
 	void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
     
@@ -106,30 +106,30 @@ signals:
     /*!
      *  Inform that a port abstraction has been removed.
      *
-     *      @param [in] portName    Name of the removed port abstraction.
-     *      @param [in] mode        Mode of the removed port abstraction.
+     *    @param [in] portName    Name of the removed port abstraction.
+     *    @param [in] mode        Mode of the removed port abstraction.
      */
     void portRemoved(QString const& portName, General::InterfaceMode const mode);
 
     /*!
      *  Increase the amount of references to the parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the amount of references to the parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void decreaseReferences(QString id);
 
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameterList       The selected parameters.
-     *      @param [in] parameterInterface  Interface for accessing parameters.
+     *    @param [in] parameterList       The selected parameters.
+     *    @param [in] parameterInterface  Interface for accessing parameters.
      */
     void recalculateReferencesToParameters(QStringList const& parameterList,
         AbstractParameterInterface* parameterInterface);
@@ -137,8 +137,8 @@ signals:
     /*!
      *  Open the reference tree of the parameter with the id.
      *
-     *      @param [in] id              The id of the parameter.
-     *      @param [in] parameterName   Name of the selected parameter.
+     *    @param [in] id              The id of the parameter.
+     *    @param [in] parameterName   Name of the selected parameter.
      */
     void openReferenceTree(QString const& id, QString const& parameterName);
 
@@ -154,7 +154,7 @@ private:
     /*!
      *  Check if the abstraction definition contains transactional ports.
      *
-     *      @return True, if the abstraction definition contains any transactional ports.
+     *    @return True, if the abstraction definition contains any transactional ports.
      */
     bool abstractionContainsTransactionalPorts() const;
 
@@ -166,7 +166,7 @@ private:
     /*!
      *  Get the extended abstraction definition.
      *
-     *       @return The extended abstraction definition.
+     *    @return The extended abstraction definition.
      */
     QSharedPointer<const AbstractionDefinition> getExtendedAbstraction() const;
 
@@ -178,7 +178,7 @@ private:
     /*!
      *  Extend the contained signals.
      *
-     *       @param [in] extendAbstraction  The extended abstraction definition.
+     *    @param [in] extendAbstraction  The extended abstraction definition.
      */
     void extendSignals(QSharedPointer<const AbstractionDefinition> extendAbstraction);
 

@@ -39,7 +39,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     ApiFunctionEditor(QWidget* parent);
 
@@ -56,14 +56,14 @@ public:
     /*!
      *  Sets the linked COM definition.
      *
-     *      @param [in] comDefinition The COM definition to set.
+     *    @param [in] comDefinition The COM definition to set.
      */
     void setComDefinition(QSharedPointer<ComDefinition const> comDefinition);
 
     /*!
      *  Updates the data types suggestions list.
      *
-     *      @param [in] dataTypes The list of custom data types.
+     *    @param [in] dataTypes The list of custom data types.
      */
     void updateDataTypes(QStringList const& dataTypes);
 

@@ -48,7 +48,7 @@ public:
     /*!
      *  Constructor which reads the file dependency from an XML node.
      *
-     *      @param [in] node The source XML node.
+     *    @param [in] node The source XML node.
      */
     FileDependency(QDomNode const& node);
     
@@ -60,21 +60,21 @@ public:
     /*!
      *  Clone the file dependency.
      *
-     *      @return The cloned file dependency.
+     *    @return The cloned file dependency.
      */
     virtual FileDependency* clone() const;
 
     /*!
      *  Get the type of this extension.
      *
-     *      @return The type of this extension.
+     *    @return The type of this extension.
      */
     virtual QString type() const;
 
     /*!
      *  Writes the contents of the file dependency to an XML stream.
      *
-     *      @param [in] write The XML stream writer.
+     *    @param [in] write The XML stream writer.
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
@@ -86,35 +86,35 @@ public:
     /*!
      *  Sets the 'from' file.
      *
-     *      @param [in] filename The name of the file.
+     *    @param [in] filename The name of the file.
      */
     void setFile1(QString const& filename);
 
     /*!
      *  Sets the 'to' file.
      *
-     *      @param [in] filename The name of the file.
+     *    @param [in] filename The name of the file.
      */
     void setFile2(QString const& filename);
 
     /*!
      *  Sets the description.
      *
-     *      @param [in] desc The description to set.
+     *    @param [in] desc The description to set.
      */
     void setDescription(QString const& desc);
 
     /*!
      *  Sets the dependency locked/unlocked.
      *
-     *      @param [in] locked If true, the dependency is set locked; false for unlocked.
+     *    @param [in] locked If true, the dependency is set locked; false for unlocked.
      */
     void setLocked(bool locked);
 
     /*!
      *  Sets the dependency bidirectional.
      *
-     *      @param [in] bidiretional If true, the dependency is set as bidirectional (two-way);
+     *    @param [in] bidiretional If true, the dependency is set as bidirectional (two-way);
      *                               false for one-way dependency.
      */
     void setBidirectional(bool bidirectional);
@@ -122,7 +122,7 @@ public:
     /*!
      *  Sets the dependency manual.
      *
-     *      @param [in] manual If true, the dependency is treated as a manual dependency;
+     *    @param [in] manual If true, the dependency is treated as a manual dependency;
      *                         otherwise it is treated as an automatic (generated) one.
      */
     void setManual(bool manual);
@@ -130,7 +130,7 @@ public:
     /*!
      *  Sets the status of the dependency.
      *
-     *      @param [in] status The status to set.
+     *    @param [in] status The status to set.
      */
     void setStatus(Status status);
 

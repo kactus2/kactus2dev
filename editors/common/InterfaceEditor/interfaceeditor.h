@@ -47,8 +47,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent      The owner of this widget.
-     *      @param [in] handler     The library handler.
+	 *    @param [in] parent      The owner of this widget.
+     *    @param [in] handler     The library handler.
 	 */
 	InterfaceEditor(QWidget *parent, LibraryInterface* handler);
 	
@@ -58,10 +58,10 @@ public:
 	/*!
      *  Set the interface for the editor.
 	 *
-	 *      @param [in] interface           The interface to edit.
-     *      @param [in] containingDesign    The design containing the end point.
-     *      @param [in] configuration       Design configuration of the design.
-     *      @param [in] activeTopView       The currently active top component view.
+	 *    @param [in] interface           The interface to edit.
+     *    @param [in] containingDesign    The design containing the end point.
+     *    @param [in] configuration       Design configuration of the design.
+     *    @param [in] activeTopView       The currently active top component view.
 	 */
 	void setInterface(ConnectionEndpoint* interface, QSharedPointer<Design> containingDesign,
         QSharedPointer<DesignConfiguration> configuration, QString const& activeTopView,
@@ -85,14 +85,14 @@ private slots:
 	/*!
      *  Handler for change in interface name.
 	 *
-	 *      @param [in] newName     The new name of the interface.
+	 *    @param [in] newName     The new name of the interface.
 	 */
 	void onInterfaceNameChanged(QString const& newName);
 
 	/*!
      *  Handler for change in interface mode.
 	 *
-	 *      @param [in] newMode     The new mode of the interface.
+	 *    @param [in] newMode     The new mode of the interface.
 	 */
 	void onInterfaceModeChanged(QString const& newMode);
 
@@ -126,25 +126,25 @@ private:
     /*!
      *  Sets the name and description of the interface to the given editors.
      *
-     *      @param [in] nameEditor          The name editor to use.
-     *      @param [in] descriptionEditor   The description editor to use.
+     *    @param [in] nameEditor          The name editor to use.
+     *    @param [in] descriptionEditor   The description editor to use.
      */
     void setNameAndDescription(QLineEdit* nameEditor, QPlainTextEdit* descriptionEditor);
 
     /*!
      *  Get a list of active interfaces referencing the selected interface.
      *
-     *      @return A list of active interfaces referencing the selected interface.
+     *    @return A list of active interfaces referencing the selected interface.
      */
     QList<QSharedPointer<ActiveInterface> > getActiveInterfaces() const;
 
     /*!
      *  Check if the selected active interface contains a reference to the selected end point.
      *
-     *      @param [in] currentInterface    The selected active interface.
-     *      @param [in] endPoint            The selected end point.
+     *    @param [in] currentInterface    The selected active interface.
+     *    @param [in] endPoint            The selected end point.
      *
-     *      @return True, if the active interface contains a reference to the end point, otherwise false.
+     *    @return True, if the active interface contains a reference to the end point, otherwise false.
      */
     bool activeInterfaceReferencesBusInterface(QSharedPointer<ActiveInterface> currentInterface) const;
 

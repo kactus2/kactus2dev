@@ -30,8 +30,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] tagLabel    The tag label being edited.
-     *      @param [in] parent      The parent widget.
+     *    @param [in] tagLabel    The tag label being edited.
+     *    @param [in] parent      The parent widget.
      */
     TagSelector(TagLabel* tagLabel, QWidget* parent = 0);
 
@@ -45,7 +45,7 @@ protected:
     /*!
      *  Setup the tag editors.
      *
-     *      @param [in] nameEditor  The name editor for the tag.
+     *    @param [in] nameEditor  The name editor for the tag.
      */
     virtual void setupEditors(QWidget* nameEditor);
 
@@ -57,7 +57,7 @@ private:
     /*!
      *  Get the current name from the name editor.
      *
-     *      @return The current name of the name editor.
+     *    @return The current name of the name editor.
      */
     virtual QString getNewName() const override final;
 

@@ -44,13 +44,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parameterFinder             The parameter finder.
-	 *      @param [in] elementFinder               Configurable elements finder.
-	 *      @param [in] elementExpressionFormatter  Expression formatter for configurable element values.
-	 *      @param [in] defaultValueFormatter       Expression formatter for default values.
-	 *      @param [in] elementExpressionParser     Parser for configurable element values.
-	 *      @param [in] defaultValueParser          Parser for default values.
-	 *      @param [in] parent                      The parent object.
+	 *    @param [in] parameterFinder             The parameter finder.
+	 *    @param [in] elementFinder               Configurable elements finder.
+	 *    @param [in] elementExpressionFormatter  Expression formatter for configurable element values.
+	 *    @param [in] defaultValueFormatter       Expression formatter for default values.
+	 *    @param [in] elementExpressionParser     Parser for configurable element values.
+	 *    @param [in] defaultValueParser          Parser for default values.
+	 *    @param [in] parent                      The parent object.
 	 */
 	ComponentInstanceConfigurableElementsModel(QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ConfigurableElementFinder> elementFinder,
@@ -67,9 +67,9 @@ public:
 	/*!
 	 *  Set the parameters for configurable element values.
 	 *
-	 *      @param [in] component           Pointer to the component referenced by the component instance.
-     *      @param [in] instance            Pointer to the component instance being edited.
-     *      @param [in] viewConfiguration   Pointer to the active view of the instanced component.
+	 *    @param [in] component           Pointer to the component referenced by the component instance.
+     *    @param [in] instance            Pointer to the component instance being edited.
+     *    @param [in] viewConfiguration   Pointer to the active view of the instanced component.
 	 */
     void setParameters(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
         QSharedPointer<ViewConfiguration> viewConfiguration);
@@ -79,7 +79,7 @@ signals:
     /*!
      *  Signal for connecting the root item models to the flag for displaying immediate values.
      *
-     *      @param [in] show    Flag for displaying the immediate values.
+     *    @param [in] show    Flag for displaying the immediate values.
      */
     void showImmediateValuesInModels(bool show);
 
@@ -97,10 +97,10 @@ private:
     /*!
      *  Get the list of contained module parameters.
      *
-     *      @param [in] component           The component containing the module parameters.
-     *      @param [in] viewConfiguration   View configuration assigned to the component instance.
+     *    @param [in] component           The component containing the module parameters.
+     *    @param [in] viewConfiguration   View configuration assigned to the component instance.
      *
-     *      @return Module parameters contained within the selected view configuration.
+     *    @return Module parameters contained within the selected view configuration.
      */
     QSharedPointer<QList<QSharedPointer<Parameter> > > getModuleParameters(
         QSharedPointer<Component> component, QSharedPointer<ViewConfiguration> viewConfiguration);

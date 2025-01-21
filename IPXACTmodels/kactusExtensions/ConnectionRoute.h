@@ -39,70 +39,70 @@ public:
     /*!
      *  Clones the vendor extension.
      *
-     *      @return The clone copy of the vendor extension.
+     *    @return The clone copy of the vendor extension.
      */
     virtual VendorExtension* clone() const;
     
     /*!
      *  Returns a type identifier for the vendor extension.
      *
-     *      @return A type identifier of the vendor extension.
+     *    @return A type identifier of the vendor extension.
      */
     virtual QString type() const;
     
     /*!
      *  Writes the vendor extension to XML.
      *
-     *      @param [in] writer   The writer used for writing the XML.
+     *    @param [in] writer   The writer used for writing the XML.
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Sets the connection name.
      *
-     *      @param [in] name   The name of the connection.
+     *    @param [in] name   The name of the connection.
      */
     void setName(QString const& name);
 
     /*!
      *  Gets the name of the connection the route is stored for.
      *
-     *      @return The name of the route represented by the item.
+     *    @return The name of the route represented by the item.
      */
     QString  name() const;
 
     /*!
      *  Sets the connection to offpage mode or normal mode.
      *
-     *      @param [in] offpage   Offpage mode to set.
+     *    @param [in] offpage   Offpage mode to set.
      */
     void setOffpage(bool offpage);
 
     /*!
      *  Checks if the connection is set for offpage mode.
      *
-     *      @return True, if the connection is in offpage mode, otherwise false.
+     *    @return True, if the connection is in offpage mode, otherwise false.
      */
     bool isOffpage() const;
 
     /*!
      *  Adds a route point in the connection.
      *
-     *      @param [in] point   The point to add.
+     *    @param [in] point   The point to add.
      */
     void addPoint(QPointF const& point);
 
     /*!
      *  Sets the route points for the connection.
      *
-     *      @param [in] route   The route points to set.
+     *    @param [in] route   The route points to set.
      */
     void setRoute(QList<QPointF> const& route);
 
     /*!
      *  Gets the route points for the connection.
      *
-     *      @return The route points.
+     *    @return The route points.
      */
     QList<QPointF> getRoute() const;
 

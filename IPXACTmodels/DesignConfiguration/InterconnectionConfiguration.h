@@ -45,42 +45,42 @@ public:
     /*!
      *  Get the isPresent value.
      *
-     *      @return The isPresent value.
+     *    @return The isPresent value.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the isPresent value.
      *
-     *      @param [in] newIsPresent    The new value for the isPresent.
+     *    @param [in] newIsPresent    The new value for the isPresent.
      */
     void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Get the referenced interconnection.
      *
-     *      @return The name of the referenced interconnection.
+     *    @return The name of the referenced interconnection.
      */
     QString getInterconnectionReference() const;
 
     /*!
      *  Set the referenced interconnection.
      *
-     *      @param [in] newInterconnecionReference  The name of the referenced interconnection.
+     *    @param [in] newInterconnecionReference  The name of the referenced interconnection.
      */
     void setInterconnectionReference(QString const& newInterconnecionReference);
 
     /*!
      *  Get a list of multipleAbstractorInstances.
      *
-     *      @return A list of multipleAbstractorInstances.
+     *    @return A list of multipleAbstractorInstances.
      */
     QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > getAbstractorInstances() const;
 
     /*!
      *  Set the multipleAbstractorInstances.
      *
-     *      @param [in] newAbstractorInstances  A new list of multipleAbstractorInstances.
+     *    @param [in] newAbstractorInstances  A new list of multipleAbstractorInstances.
      */
     void setAbstractorInstances(
         QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > newAbstractorInstances);
@@ -88,7 +88,7 @@ public:
     /*!
      *  Get the VLNVs used in this element.
      *
-     *      @return A list of the used VLNV elements.
+     *    @return A list of the used VLNV elements.
      */
     QList<VLNV> getDependantVLNVs() const;
 

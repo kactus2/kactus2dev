@@ -28,9 +28,9 @@ namespace ApiDefinitionReader
     /*!
      *  Creates a Api definition from XML description.
      *
-     *      @param [in] document   The XML document to create the Api definition from.
+     *    @param [in] document   The XML document to create the Api definition from.
      *
-     *      @return The created Api definition.
+     *    @return The created Api definition.
      */
     IPXACTMODELS_EXPORT QSharedPointer<ApiDefinition> createApiDefinitionFrom(QDomNode const& document);
 
@@ -41,14 +41,14 @@ namespace ApiDefinitionReader
         /*!
          *  Parses all found data types from the given XML node.
          *
-         *      @param [in] node The source XML node.
+         *    @param [in] node The source XML node.
          */
         void parseDataTypes(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition);
 
         /*!
          *  Parses all found API functions from the given XML node.
          *
-         *      @param [in] node The source XML node.
+         *    @param [in] node The source XML node.
          */
         void parseFunctions(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition);
     }

@@ -38,12 +38,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] fields              Pointer to the available fields.
-	 *      @param [in] component           Pointer to the component being edited.
-	 *      @param [in] handler             Pointer to the instance that manages the library.
-	 *      @param [in] parameterFinder     Pointer to the parameter finder.
-     *      @param [in] fieldInterface      Interface for fields.
-	 *      @param [in] parent              Pointer to the parent of this editor.
+     *    @param [in] fields              Pointer to the available fields.
+	 *    @param [in] component           Pointer to the component being edited.
+	 *    @param [in] handler             Pointer to the instance that manages the library.
+	 *    @param [in] parameterFinder     Pointer to the parameter finder.
+     *    @param [in] fieldInterface      Interface for fields.
+	 *    @param [in] parent              Pointer to the parent of this editor.
 	 */
     RegisterEditor(QSharedPointer<QList<QSharedPointer<Field> > > fields,
         QSharedPointer<Component> component,
@@ -67,8 +67,8 @@ signals:
     /*
      *  Informs of field name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void fieldNameChanged(QString const& oldName, QString const& newName);
 
@@ -87,42 +87,42 @@ signals:
     /*!
      *  Sends an error message forward.
      *
-     *      @param [in] message     The error message.
+     *    @param [in] message     The error message.
      */
     void errorMessage(QString const& message) const;
 
     /*!
      *  Sends a notification forward.
      *
-     *      @param [in] message     The notification.
+     *    @param [in] message     The notification.
      */
     void noticeMessage(QString const& message) const;
 
     /*!
      *  Increase the amount of references made to the given parameter.
      *
-     *      @param [in] id  The id of the given parameter.
+     *    @param [in] id  The id of the given parameter.
      */
     void increaseReferences(QString const& id) const;
 
     /*!
      *  Decrease the amount of references made to the given parameter.
      *
-     *      @param [in] id  The id of the given parameter.
+     *    @param [in] id  The id of the given parameter.
      */
     void decreaseReferences(QString const& id) const;
 
     /*!
      *  Informs that a new item has been created.
      *
-     *      @param [in] index   The index of the new item.
+     *    @param [in] index   The index of the new item.
      */
     void childAdded(int index);
 
     /*!
      *  Informs that an item has been removed.
      *
-     *      @param [in] index   The index of the removed item.
+     *    @param [in] index   The index of the removed item.
      */
     void childRemoved(int index);
 

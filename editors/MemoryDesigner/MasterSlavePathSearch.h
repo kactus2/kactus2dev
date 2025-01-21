@@ -36,10 +36,10 @@ public:
     /*!
      *  Finds all paths from master interfaces to slave interfaces.
      *
-     *      @param [in] graph                   The connectivity graph to find the paths from.
-     *      @param [in] allowOverlappingPaths   Flag for allowing overlapping paths in the path search.
+     *    @param [in] graph                   The connectivity graph to find the paths from.
+     *    @param [in] allowOverlappingPaths   Flag for allowing overlapping paths in the path search.
      *
-     *      @return All paths from master interfaces.
+     *    @return All paths from master interfaces.
      */
     QVector<QVector<QSharedPointer<ConnectivityInterface const> > > findMasterSlavePaths(
         QSharedPointer<const ConnectivityGraph> graph, bool allowOverlappingPaths) const;
@@ -49,9 +49,9 @@ private:
     /*!
      *  Finds the bottom-most master interfaces for the starting points of the paths.
      *
-     *      @param [in] graph   The connectivity graph to find the interfaces from.
+     *    @param [in] graph   The connectivity graph to find the interfaces from.
      *
-     *      @return The master interfaces for path start points.
+     *    @return The master interfaces for path start points.
      */
     QVector<QSharedPointer<ConnectivityInterface> > findInitialMasterInterfaces(
         QSharedPointer<const ConnectivityGraph> graph) const;
@@ -59,45 +59,45 @@ private:
     /*!
      *  Check if the selected interface is a starting interface.
      *	
-     *      @param [in] vertex  The selected interface.
+     *    @param [in] vertex  The selected interface.
      *
-     *      @return True, if the interface is a starting interface, false otherwise.
+     *    @return True, if the interface is a starting interface, false otherwise.
      */
     bool isStartInterface(QSharedPointer<const ConnectivityInterface> vertex) const;
 
     /*!
      *  Check if the selected interface is connected to a memory item.
      *
-     *      @param [in] vertex  The selected interface.
+     *    @param [in] vertex  The selected interface.
      *
-     *      @return True, if the interface is a starting interface, false otherwise.
+     *    @return True, if the interface is a starting interface, false otherwise.
      */
     bool isConnectedToMemory(QSharedPointer<const ConnectivityInterface> vertex) const;
 
     /*!
      *  Check if the selected interface is connected to a subspace map.
      *	
-     *      @param [in] vertex  The selected interface.
+     *    @param [in] vertex  The selected interface.
      *
-     *      @return True, if the interface is connected to a subspace map, false otherwise.
+     *    @return True, if the interface is connected to a subspace map, false otherwise.
      */
     bool isConnectedToSubspaceMap(QSharedPointer<const ConnectivityInterface> vertex) const;
 
     /*!
      *  Finds all the paths branching from the given start vertex.
      *
-     *      @param [in] startVertex     The vertex to start the search from.
-     *      @param [in] graph           The connectivity graph to find the paths from.
+     *    @param [in] startVertex     The vertex to start the search from.
+     *    @param [in] graph           The connectivity graph to find the paths from.
      */
     QVector<MasterSlavePathSearch::Path> findPaths(QSharedPointer<ConnectivityInterface > startVertex,
         QSharedPointer<const ConnectivityGraph> graph) const;
     /*!
      *  Find the interface connected to the selected interface.
      *
-     *      @param [in] startInterface  The selected interface.
-     *      @param [in] edge            The connection between the two interfaces.
+     *    @param [in] startInterface  The selected interface.
+     *    @param [in] edge            The connection between the two interfaces.
      *
-     *      @return The interface connected to the selected interface.
+     *    @return The interface connected to the selected interface.
      */
     QSharedPointer<ConnectivityInterface> findConnectedInterface(
         QSharedPointer<ConnectivityInterface const> startInterface,
@@ -106,10 +106,10 @@ private:
     /*!
      *  Check if the selected interfaces can be connected.
      *
-     *      @param [in] startVertex     The starting interface.
-     *      @param [in] endVertex       The end interface.
+     *    @param [in] startVertex     The starting interface.
+     *    @param [in] endVertex       The end interface.
      *
-     *      @return True, if the interfaces can be connected, false otherwise.
+     *    @return True, if the interfaces can be connected, false otherwise.
      */
     bool canConnectInterfaces(QSharedPointer<ConnectivityInterface const> startVertex,
         QSharedPointer<ConnectivityInterface const> endVertex) const;
@@ -117,29 +117,29 @@ private:
     /*!
      *  Finds the path to the given vertex from the BFS tree root.
      *
-     *      @param [in] endVertex   The final (leaf) vertex of the path.
+     *    @param [in] endVertex   The final (leaf) vertex of the path.
      *
-     *      @return The path from BFS tree root to the end vertex.
+     *    @return The path from BFS tree root to the end vertex.
      */
     MasterSlavePathSearch::Path findPathFromRoot(QSharedPointer<ConnectivityInterface const> endVertex) const;
 
     /*!
      *  Finds the valid, longest paths in the given set of paths.
      *
-     *      @param [in] paths                   The paths to search.
-     *      @param [in] allowOverlappingPaths   Flag for allowing overlapping paths in the path search.
+     *    @param [in] paths                   The paths to search.
+     *    @param [in] allowOverlappingPaths   Flag for allowing overlapping paths in the path search.
      *
-     *      @return The valid paths found in the set.
+     *    @return The valid paths found in the set.
      */
     QVector<MasterSlavePathSearch::Path> findValidPathsIn(QVector<MasterSlavePathSearch::Path> const& paths, bool allowOverlappingPaths) const;
 
     /*!
      *  Check if the selected path should be kept in the master paths.
      *
-     *      @param [in] currentPath     The selected path.
-     *      @param [in] availablePaths  All the available paths.
+     *    @param [in] currentPath     The selected path.
+     *    @param [in] availablePaths  All the available paths.
      *
-     *      @return True, if the path is a master path, otherwise false.
+     *    @return True, if the path is a master path, otherwise false.
      */
     bool pathIsFullPath(MasterSlavePathSearch::Path const& currentPath,
         QVector<MasterSlavePathSearch::Path> const& availablePaths) const;
@@ -147,11 +147,11 @@ private:
     /*!
      *  Check if a path contains another path.
      *
-     *      @param [in] pathOne     The first selected path.
-     *      @param [in] pathTwo     The second selected path.
-     *      @param [in] areaSize    Size of the smaller path.
+     *    @param [in] pathOne     The first selected path.
+     *    @param [in] pathTwo     The second selected path.
+     *    @param [in] areaSize    Size of the smaller path.
      *
-     *      @return True, if another of the selected paths contains the other, false otherwise.
+     *    @return True, if another of the selected paths contains the other, false otherwise.
      */
     bool pathContainsAnotherPath(QVector<QSharedPointer<ConnectivityInterface const> > const& pathOne,
         QVector<QSharedPointer<ConnectivityInterface const> > const& pathTwo, int areaSize) const;
@@ -159,9 +159,9 @@ private:
     /*!
      *  Check if the path ends in a memory map.
      *
-     *      @param [in] path    The selected path.
+     *    @param [in] path    The selected path.
      *
-     *      @return True, if the selected path ends in a memory map, false otherwise.
+     *    @return True, if the selected path ends in a memory map, false otherwise.
      */
     bool pathEndsInMemoryMap(QVector<QSharedPointer<ConnectivityInterface const> > const& path) const;
 

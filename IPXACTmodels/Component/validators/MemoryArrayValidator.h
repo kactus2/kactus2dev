@@ -27,7 +27,7 @@ public:
     /*!
      *	The constructor.
      *  
-     *      @param [in] expressionParser     The expression parser to use.
+     *    @param [in] expressionParser     The expression parser to use.
      */
     MemoryArrayValidator(QSharedPointer<ExpressionParser> expressionParser);
 
@@ -39,7 +39,7 @@ public:
     /*!
      *	Validates the given memory array.
      *
-     *      @param [in] memoryArray     The memory array to validate.
+     *    @param [in] memoryArray     The memory array to validate.
      *
      * 	    @return True, if memory array is valid, otherwise false.
      */
@@ -48,7 +48,7 @@ public:
     /*!
      *	Checks if a given memory array has dimensions defined.
      *
-     *      @param [in] memoryArray     The memory array to check.
+     *    @param [in] memoryArray     The memory array to check.
      *
      * 	    @return True, if at least one dimension is defined for the array.
      */
@@ -57,9 +57,9 @@ public:
     /*!
      *	Finds errors within a memory array.
      *
-     *      @param [in] errorList       A list of found errors.
-     *      @param [in] memoryArray     The memory array to check.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errorList       A list of found errors.
+     *    @param [in] memoryArray     The memory array to check.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsIn(QStringList& errorList, QSharedPointer<MemoryArray> memoryArray,
         QString const& context) const;
@@ -70,7 +70,7 @@ private:
     /*!
      *	Validate the (bit)stride of the array.
      *  
-     *      @param [in] memoryArray     The memory array to check.
+     *    @param [in] memoryArray     The memory array to check.
      *	    
      * 	    @return True, if the stride can be evaluated or is empty, false otherwise.
      */
@@ -79,8 +79,8 @@ private:
     /*!
      *	Validates a given value as an unsigned, nonzero long int.
      *  
-     *      @param [in] value       The value to check.
-     *      @param [in] canBeEmpty  Flag that indicates if the value given can be empty or not.
+     *    @param [in] value       The value to check.
+     *    @param [in] canBeEmpty  Flag that indicates if the value given can be empty or not.
      *	    
      * 	    @return True, if the given value is valid, false otherwise.
      */

@@ -30,15 +30,15 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] name            The initial name.
-     *      @param [in] displayName     The initial displayName.
-     *      @param [in] description     The initial description.
+	 *    @param [in] name            The initial name.
+     *    @param [in] displayName     The initial displayName.
+     *    @param [in] description     The initial description.
 	*/
 	NameGroup(QString const& name, QString const& displayName = QString(), QString const& description = QString());
 
 	/*! The copy constructor
 	 *
-	 *      @param [in] other    Reference to the NameGroup to copy.
+	 *    @param [in] other    Reference to the NameGroup to copy.
 	*/
 	NameGroup(const NameGroup& other) = default;
 
@@ -47,65 +47,65 @@ public:
 
 	/*! The assignment operator
 	 *
-	 *      @param [in] other   Reference to the NameGroup to assign.
+	 *    @param [in] other   Reference to the NameGroup to assign.
 	 *
-	 *      @return Reference to this NameGroup.
+	 *    @return Reference to this NameGroup.
 	*/
 	NameGroup& operator=(const NameGroup& other);
 
     /*!
      *  Gets the name element in the name group.
      *
-     *      @return The name element.
+     *    @return The name element.
      */
     QString name() const;
 
     /*!
      *  Sets the name element in the group.
      *
-     *      @param [in] name   The name to set.     
+     *    @param [in] name   The name to set.     
      */
     void setName(QString const& name);
 
     /*!
      *  Gets the displayName element in the name group.
      *
-     *      @return The displayName element.
+     *    @return The displayName element.
      */
     QString displayName() const;
 
     /*!
      *  Sets the displayName element in the group.
      *
-     *      @param [in] displayName   The display name to set.     
+     *    @param [in] displayName   The display name to set.     
      */
     void setDisplayName(QString const& displayName);
 
     /*!
      *  Gets the short description element in the name group.
      *
-     *      @return The short description element.
+     *    @return The short description element.
      */
     QString shortDescription() const;
 
     /*!
      *  Sets the short description element in the group.
      *
-     *      @param [in] description   The description to set.
+     *    @param [in] description   The description to set.
      */
     void setShortDescription(QString const& description);
 
     /*!
      *  Gets the description element in the name group.
      *
-     *      @return The description element.
+     *    @return The description element.
      */
     QString description() const;
 
     /*!
      *  Sets the description element in the group.
      *
-     *      @param [in] description   The description to set.     
+     *    @param [in] description   The description to set.     
      */
     void setDescription(QString const& description);
 

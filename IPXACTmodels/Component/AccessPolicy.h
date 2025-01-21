@@ -42,7 +42,7 @@ public:
     /*!
      *	Set the mode references of the field access policy.
      *  
-     *      @param [in] modeRefs     The mode references to set.
+     *    @param [in] modeRefs     The mode references to set.
      */
     void setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs);
 
@@ -56,7 +56,7 @@ public:
     /*!
      *	Set the access value.
      *  
-     *      @param [in] newAccess     The new access value.
+     *    @param [in] newAccess     The new access value.
      */
     void setAccess(AccessTypes::Access newAccess);
 

@@ -27,9 +27,9 @@ namespace QualifierReader
     /*!
      *  Parses a qualifier.
      *
-     *      @param [in] qualifierNode       XML description of the IP-XACT element.
-     *      @param [in] qualifier           The qualifier to read to.
-     *      @param [in] revision            The standard revision of the XML document being read.
+     *    @param [in] qualifierNode       XML description of the IP-XACT element.
+     *    @param [in] qualifier           The qualifier to read to.
+     *    @param [in] revision            The standard revision of the XML document being read.
 
      */
     void parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier,

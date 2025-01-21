@@ -46,12 +46,12 @@ private:
     /*!
      *  Check if the selected items can be connected.
      *
-     *      @param [in] firstItem           The selected item from the first component.
-     *      @param [in] firstComponent      Component containing the first item.
-     *      @param [in] secondItem          The selected item from the second component.
-     *      @param [in] secondComponent     Component containing the second item.
+     *    @param [in] firstItem           The selected item from the first component.
+     *    @param [in] firstComponent      Component containing the first item.
+     *    @param [in] secondItem          The selected item from the second component.
+     *    @param [in] secondComponent     Component containing the second item.
      *
-     *      @return True, if the items can be connected, false otherwise.
+     *    @return True, if the items can be connected, false otherwise.
      */
     virtual bool itemsCanBeConnected(QString const& firstItem, QSharedPointer<Component> firstComponent,
         QString const& secondItem, QSharedPointer<Component> secondComponent) const;
@@ -59,9 +59,9 @@ private:
     /*!
      *  Get connectible port directions for the selected port direction.
      *
-     *      @param [in] portDirection   The selected port direction.
+     *    @param [in] portDirection   The selected port direction.
      *
-     *      @return List of connectible port directions.
+     *    @return List of connectible port directions.
      */
     virtual QVector<DirectionTypes::Direction> getConnectableDirections(DirectionTypes::Direction portDirection)
         const;

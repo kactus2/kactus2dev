@@ -33,11 +33,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] segmentItem         The memory item containing address segment data.
-     *      @param [in] isEmptySegment      Boolean value to inform of an empty segment.
-     *      @param [in] identifierChain     Chain of strings identifying this item.
-     *      @param [in] containingInstance  Name of the containing component instance.
-     *      @param [in] spaceItem           The address space item containing the address segment.
+     *    @param [in] segmentItem         The memory item containing address segment data.
+     *    @param [in] isEmptySegment      Boolean value to inform of an empty segment.
+     *    @param [in] identifierChain     Chain of strings identifying this item.
+     *    @param [in] containingInstance  Name of the containing component instance.
+     *    @param [in] spaceItem           The address space item containing the address segment.
      */
     AddressSegmentGraphicsItem(QSharedPointer<MemoryItem const> segmentItem, bool isEmptySegment,
         QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> containingInstance,
@@ -61,7 +61,7 @@ private:
     /*!
      *  Get the width of the address segment item.
      *
-     *      @param [in] addressSpaceItem   [Description].
+     *    @param [in] addressSpaceItem   [Description].
      */
     qreal getSegmentItemWidth(AddressSpaceGraphicsItem* addressSpaceItem) const;
 

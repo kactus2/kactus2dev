@@ -34,10 +34,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] interface           The interface to delete.
-     *      @param [in] containingDesign    Design containing the SW interface.
-     *      @param [in] component           The component containing the design.
-     *      @param [in] parent              The owner of this command.
+     *    @param [in] interface           The interface to delete.
+     *    @param [in] containingDesign    Design containing the SW interface.
+     *    @param [in] component           The component containing the design.
+     *    @param [in] parent              The owner of this command.
      */
     SWInterfaceDeleteCommand(SWInterfaceItem* interface, QSharedPointer<Design> containingDesign,
         QSharedPointer<Component> component, QUndoCommand* parent = 0);

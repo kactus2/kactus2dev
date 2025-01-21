@@ -68,21 +68,21 @@ public:
     /*!
      *  Get the type of this connection.
      *
-     *      @return HW connection.
+     *    @return HW connection.
      */
     virtual int type() const = 0;
 
     /*!
      *  Sets the routing mode.
      *
-     *      @param [in] mode The routing mode.
+     *    @param [in] mode The routing mode.
      */
     void setRoutingMode(RoutingMode mode);
 
     /*!
      *  Sets the line width.
      *
-     *      @param [in] width The line width in pixels.
+     *    @param [in] width The line width in pixels.
      */
     void setLineWidth(int width);
 
@@ -99,7 +99,7 @@ public:
      *  is disconnected from the old endpoint and connected to the new given endpoint, updating the
      *  route too.
      *
-     *      @param [in] endpoint1 The first endpoint to set.
+     *    @param [in] endpoint1 The first endpoint to set.
      */
     void setEndpoint1(ConnectionEndpoint* endpoint1);
 
@@ -108,7 +108,7 @@ public:
      *  is disconnected from the old endpoint and connected to the new given endpoint, updating the
      *  route too.
      *
-     *      @param [in] endpoint2 The second endpoint to set.
+     *    @param [in] endpoint2 The second endpoint to set.
      */
     void setEndpoint2(ConnectionEndpoint* endpoint2);
 
@@ -132,7 +132,7 @@ public:
     /*!
      *  Sets the routing of the connection.
      *
-     *      @param [in] path The route to set.
+     *    @param [in] path The route to set.
      */
     void setRoute(QList<QPointF> path);
 
@@ -164,30 +164,30 @@ public:
     /*!
      *  Ends the position update of the connection and creates an undo command.
      *
-     *      @param [in] parent The parent command.
+     *    @param [in] parent The parent command.
      *
-     *      @return The created (child) command.
+     *    @return The created (child) command.
      */
     QUndoCommand* endUpdatePosition(QUndoCommand* parent);
 
     /*!
      *  Set the name for the connection.
 	 *
-	 *      @param [in] name The name to set for the connection.
+	 *    @param [in] name The name to set for the connection.
 	 */
 	virtual void setName(QString const& name);
 
     /*!
      *  Sets the description for the connection.
 	 *
-     *      @param [in] description The description to set.
+     *    @param [in] description The description to set.
 	 */
 	virtual void setDescription(QString const& /*description*/) {};
 
     /*!
      *  Sets the imported state.
      *
-     *      @param [in] imported If true, the connection is an imported one.
+     *    @param [in] imported If true, the connection is an imported one.
      */
     void setImported(bool imported);
 
@@ -229,7 +229,7 @@ public:
     /*!
      *  Get the route of the connection.
      *
-     *      @return The connection route.
+     *    @return The connection route.
      */
     QSharedPointer<ConnectionRoute> getRouteExtension() const;
 
@@ -241,7 +241,7 @@ public:
     /*!
      *	Set hovering flag indicating if the mouse is being hovered above the connection item.
      *  
-     *      @param [in] hovered     Flag indicating if currently hovering.
+     *    @param [in] hovered     Flag indicating if currently hovering.
      */
     void setHovered(bool hovered);
 
@@ -260,17 +260,17 @@ public:
     /*!
      *  Defines the connection point for associations in scene coordinates.
      *     
-     *      @param [in] otherEnd   The position of the other end connection point.
+     *    @param [in] otherEnd   The position of the other end connection point.
      *
-     *      @return The connection point of the item.
+     *    @return The connection point of the item.
      */
     virtual QPointF connectionPoint(QPointF const& otherEnd) const;
 
     /*!
      *  Change the component reference of a contained interface.
      *
-     *      @param [in] oldName     The old component reference.
-     *      @param [in] newName     The new component reference.
+     *    @param [in] oldName     The old component reference.
+     *    @param [in] newName     The new component reference.
      */
     virtual void changeConnectionComponentReference(QString const& oldName, QString const& newName);
 
@@ -293,14 +293,14 @@ protected:
     /*!
      *	Called when the mouse starts to hover above the connection item.
      *  
-     *      @param [in] hoverEvent     The hover event.
+     *    @param [in] hoverEvent     The hover event.
      */
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* hoverEvent);
     
     /*!
      *	Called when the mouse stops hovering above the connection item.
      *
-     *      @param [in] hoverEvent     The hover event.
+     *    @param [in] hoverEvent     The hover event.
      */
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* hoverEvent);
 
@@ -347,50 +347,50 @@ private:
     /*!
      *  Draws specific helper graphics for overlapping graphics items.
      *
-     *      @param [in] painter The painter.
+     *    @param [in] painter The painter.
      */
     void drawOverlapGraphics(QPainter* painter);
 
     /*!
      *  Draws overlapping graphics with another connection.
      *
-     *      @param [in] painter     The painter to use.
-     *      @param [in] connection  The connection who overlaps with this.
+     *    @param [in] painter     The painter to use.
+     *    @param [in] connection  The connection who overlaps with this.
      */
     void drawOverlapWithConnection(QPainter* painter, GraphicsConnection* connection);
 
     /*!
      *  Draws an undercrossing with another connection.
      *
-     *      @param [in] painter                 The painter to use.
-     *      @param [in] path                    The segment of the connection intersecting with other connection.
-     *      @param [in] crossingPoint           The point where the connections intersect.
-     *      @param [in] crossConnectionWidth    The withd of the intersecting connection.
+     *    @param [in] painter                 The painter to use.
+     *    @param [in] path                    The segment of the connection intersecting with other connection.
+     *    @param [in] crossingPoint           The point where the connections intersect.
+     *    @param [in] crossConnectionWidth    The withd of the intersecting connection.
      */
     void drawUndercrossing(QPainter* painter, QLineF const& path, QPointF const& crossingPoint, int crossConnectionWidth);
 
     /*!
      *  Draws a junction point on the connection.
      *
-     *      @param [in] painter             The painter to use.
-     *      @param [in] intersectionPoint   The point where the connections intersect.
+     *    @param [in] painter             The painter to use.
+     *    @param [in] intersectionPoint   The point where the connections intersect.
      */
     void drawJunctionPoint(QPainter* painter, QPointF const& intersectionPoint);
 
     /*!
      *  Draws overlapping with a component item.
      *
-     *      @param [in] painter     The painter to use.
-     *      @param [in] item        The component item overlapping the connection.     
+     *    @param [in] painter     The painter to use.
+     *    @param [in] item        The component item overlapping the connection.     
      */
     void drawOverlapWithComponent(QPainter* painter, QGraphicsItem* item);
 
     /*!
      *  Draws a "gap" to a line with the currently selected pen.
      *
-     *      @param [in] painter The painter.
-     *      @param [in] line    The line to which to draw the gap.
-     *      @param [in] pt      The intersection point where to draw the gap.
+     *    @param [in] painter The painter.
+     *    @param [in] line    The line to which to draw the gap.
+     *    @param [in] pt      The intersection point where to draw the gap.
      */
     void drawLineGap(QPainter* painter, QLineF const& line, QPointF const& pt);
 
@@ -419,8 +419,8 @@ private:
     /*!
      *  Creates segment bounds from the existing connections.
      *
-     *      @param [out] verBounds    The list of vertical segment bounds.
-     *      @param [out] horizontalBounds  The list of horizontal bounds.
+     *    @param [out] verBounds    The list of vertical segment bounds.
+     *    @param [out] horizontalBounds  The list of horizontal bounds.
      */
     void createSegmentBounds(QList<SegmentBound>& verBounds, QList<SegmentBound>& horizontalBounds);
        
@@ -442,105 +442,105 @@ private:
     /*!
      *  Retrieves the minimum and maximum X coordinates for the horizontal segment identified by index i.
      *
-     *      @param [in]  i      The segment index.
+     *    @param [in]  i      The segment index.
      *
-     *      @return The <min, max> limits for the segment.
+     *    @return The <min, max> limits for the segment.
      */
     QPair<qreal, qreal> getSegmentLimitsX(int i) const;
 
     /*!
      *  Retrieves the minimum and maximum Y coordinates for the vertical segment identified by index i.
      *
-     *      @param [in]  i      The segment index.
+     *    @param [in]  i      The segment index.
      *
-     *      @return The <min, max> limits for the segment.
+     *    @return The <min, max> limits for the segment.
      */
     QPair<qreal, qreal> getSegmentLimitsY(int i) const;
 
     /*!
      *  Searches for a vertical segment overlap.
      *
-     *      @param [in] verBounds  The collection of vertical segment bounds to test against.
-     *      @param [in] bounds     The vertical segment being tested for overlap.
+     *    @param [in] verBounds  The collection of vertical segment bounds to test against.
+     *    @param [in] bounds     The vertical segment being tested for overlap.
      *
-     *      @return The index of the first found overlapping bound in the collection, or -1 if not found.
+     *    @return The index of the first found overlapping bound in the collection, or -1 if not found.
      */
     int findVerticalSegmentOverlap(QList<SegmentBound> const& verBounds, SegmentBound const& bounds);
     
     /*!
      *  Fixes vertical segment overlap issues for the vertical segment identified by index i.
      *
-     *      @param [in] verBounds  The collection of vertical segment bounds to test against.
-     *      @param [in] i          The index of the segment to fix.
+     *    @param [in] verBounds  The collection of vertical segment bounds to test against.
+     *    @param [in] i          The index of the segment to fix.
      *
-     *      @return True if modifications were made; false if nothing was changed.
+     *    @return True if modifications were made; false if nothing was changed.
      */
     bool fixVerticalSegmentClearance(QList<SegmentBound> const& verBounds, int i);
 
     /*!
      *  Searches for a horizontal segment overlap.
      *
-     *      @param [in] horBounds  The collection of horizontal segment bounds to test against.
-     *      @param [in] bounds     The horizontal segment being tested for overlap.
+     *    @param [in] horBounds  The collection of horizontal segment bounds to test against.
+     *    @param [in] bounds     The horizontal segment being tested for overlap.
      *
-     *      @return The index of the first found overlapping bound in the collection, or -1 if not found.
+     *    @return The index of the first found overlapping bound in the collection, or -1 if not found.
      */
     int findHorizontalSegmentOverlap(QList<SegmentBound> const& horBounds, SegmentBound const& bounds);
     
     /*!
      *  Fixes horizontal segment overlap issues for the horizontal segment identified by index i.
      *
-     *      @param [in] horBounds  The collection of horizontal segment bounds to test against.
-     *      @param [in] i          The index of the segment to fix.
+     *    @param [in] horBounds  The collection of horizontal segment bounds to test against.
+     *    @param [in] i          The index of the segment to fix.
      *
-     *      @return True if modifications were made; false if nothing was changed.
+     *    @return True if modifications were made; false if nothing was changed.
      */
     bool fixHorizontalSegmentClearance(QList<SegmentBound> const& horBounds, int i);
 
     /*!
      *  Tests for horizontal overlap between two segment bounds.
      *
-     *      @param [in] bound1 The first segment bound.
-     *      @param [in] bound2 The second segment bound.
+     *    @param [in] bound1 The first segment bound.
+     *    @param [in] bound2 The second segment bound.
      *
-     *      @return True if the bounds overlap by X coordinate.
+     *    @return True if the bounds overlap by X coordinate.
      */
     bool testSegmentOverlapX(SegmentBound const& bound1, SegmentBound const& bound2) const;
 
     /*!
      *  Tests for vertical overlap between two segment bounds.
      *
-     *      @param [in] bound1 The first segment bound.
-     *      @param [in] bound2 The second segment bound.
+     *    @param [in] bound1 The first segment bound.
+     *    @param [in] bound2 The second segment bound.
      *
-     *      @return True if the bounds overlap by Y coordinate.
+     *    @return True if the bounds overlap by Y coordinate.
      */
     bool testSegmentOverlapY(SegmentBound const& bound1, SegmentBound const& bound2) const;
 
     /*!
      *  Updates the endpoint direction to given direction.
      *
-     *      @param [in] endpoint   The endpoint to update.
-     *      @param [in] dir        The direction to change to.
+     *    @param [in] endpoint   The endpoint to update.
+     *    @param [in] dir        The direction to change to.
      */
     void updateEndpointDirection(ConnectionEndpoint* endpoint, QVector2D dir);
 
     /*!
      *  Finds the point closest to the given point from a set of points.
      *
-     *      @param [in] sourcePoints    The points to search through.
-     *      @param [in] destination     The point get closest to.
+     *    @param [in] sourcePoints    The points to search through.
+     *    @param [in] destination     The point get closest to.
      *
-     *      @return The point closest to destination.
+     *    @return The point closest to destination.
      */
     QPointF findClosestPoint(QList<QPointF> const& sourcePoints, QPointF const& destination) const;
 
     /*!
      *  Creates lines connecting the given points.
      *
-     *      @param [in] points   The line endpoints.
+     *    @param [in] points   The line endpoints.
      *
-     *      @return The lines connecting the given points.
+     *    @return The lines connecting the given points.
      */
     QList<QLineF> pointsToLines(QList<QPointF> const& points) const;
 

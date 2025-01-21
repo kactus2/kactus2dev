@@ -33,10 +33,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] busInterface    Interface for accessing bus interfaces.
-     *      @param [in] busName         Name of the edited bus interface.
-	 *      @param [in] title           The title for the group box
-	 *      @param [in] parent          The owner of this editor.
+	 *    @param [in] busInterface    Interface for accessing bus interfaces.
+     *    @param [in] busName         Name of the edited bus interface.
+	 *    @param [in] title           The title for the group box
+	 *    @param [in] parent          The owner of this editor.
      */
     ModeEditorBase(BusInterfaceInterface* busInterface, std::string const& busName, QString const& title,
         QWidget* parent);
@@ -54,7 +54,7 @@ public:
 	/*!
      *  Check for the validity of the mode specific items.
      *
-     *      @return True if item is valid.
+     *    @return True if item is valid.
      */
 	virtual bool isValid() const = 0;
 
@@ -66,7 +66,7 @@ public:
 	/*!
      *  Get the interface mode of the editor.
 	 * 
-	 *      @return General::InterfaceMode Specifies the interface mode.
+	 *    @return General::InterfaceMode Specifies the interface mode.
      */
 	virtual General::InterfaceMode getInterfaceMode() const = 0;
 
@@ -78,7 +78,7 @@ public:
     /*!
      *  Change the name of the edited bus interface.
      *
-     *      @param [in] newName     New name of the bus interface.
+     *    @param [in] newName     New name of the bus interface.
      */
     void changeName(std::string const& newName);
 

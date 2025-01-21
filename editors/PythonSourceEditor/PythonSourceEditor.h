@@ -42,9 +42,9 @@ public:
     /*!
      * The constructor.
      *
-     *     @param [in] parent  The parent widget.
+     *    @param [in] parent  The parent widget.
      *
-     *     @return 
+     *    @return 
      */
      explicit PythonSourceEditor(QWidget* parent = nullptr);
 
@@ -103,24 +103,24 @@ private:
     /*!
      * Update the tab label and path in tooltip.
      *
-     *     @param [in] filePath  Path to the edited file.
-     *     @param [in] modified  True, if file content is modified, otherwise false.
+     *    @param [in] filePath  Path to the edited file.
+     *    @param [in] modified  True, if file content is modified, otherwise false.
      */
      void updateTabLabel(QString const& filePath, bool modified);
 
      /*!
       * Create a new editor and add it in the tabs.
       *
-      *     @param [in] label  The label on the tab for the editor.
+      *    @param [in] label  The label on the tab for the editor.
       *
-      *     @return The created editor.
+      *    @return The created editor.
       */
       ScriptInputEditor* createEditor(QString const& label);
 
     /*!
      * Apply formatting settings to a single editor.
      *
-     *     @param [in] editor  The editor to apply to.
+     *    @param [in] editor  The editor to apply to.
      */
     void applySettings(ScriptInputEditor* editor) const;
 
@@ -128,7 +128,7 @@ private:
     /*!
      * Setup the Python interpreter.
      *
-     *     @return True, if the setup was successful and interpreter stated, otherwise false. 
+     *    @return True, if the setup was successful and interpreter stated, otherwise false. 
      */
      bool setupInterpreter();
 
@@ -138,7 +138,7 @@ private:
     /*
      * Setup the toolbar and actions.
      *
-     *     @param[in] enableRun     Enable flag for script run actions.
+     *    @param[in] enableRun     Enable flag for script run actions.
      */
     void setupToolbar(bool enableRun);
 

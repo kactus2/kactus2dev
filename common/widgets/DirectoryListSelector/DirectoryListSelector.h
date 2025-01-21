@@ -33,9 +33,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] basePath    The path to base directory.
-     *      @param [in] initialDirs The current list of directories.
-     *      @param [in] parent      The parent widget.
+     *    @param [in] basePath    The path to base directory.
+     *    @param [in] initialDirs The current list of directories.
+     *    @param [in] parent      The parent widget.
      */
     DirectoryListSelector(QString const& basePath = QString(), 
         QStringList const& initialDirs = QStringList(), 
@@ -49,28 +49,28 @@ public:
     /*!
      *  Sets a directory non-removable.
      *
-     *      @param [in] directory   The directory to set.
+     *    @param [in] directory   The directory to set.
      */
     void setPersistentDirectory(QString const& directory);
 
     /*!
      *  Sets a directory removable.
      *
-     *      @param [in] directory   The directory to set.
+     *    @param [in] directory   The directory to set.
      */
     void removePersistentDirectory(QString const& directory);
 
     /*!
      *  Gets the list of non-removable directories.
      *     
-     *      @return List of non-removable directories.
+     *    @return List of non-removable directories.
      */
     QStringList getPersistentDirectories() const;
 
     /*!
      *  Retrieves the list of directories.
      *
-     *      @return The list of directories.
+     *    @return The list of directories.
      */
     QStringList getDirectories() const;
 

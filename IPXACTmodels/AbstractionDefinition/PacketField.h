@@ -43,49 +43,49 @@ public:
     /*!
      *	Sets the packet field width.
      *  
-     *      @param [in] width	The packet field width in bits.
+     *    @param [in] width	The packet field width in bits.
      */
     void setWidth(QString const& width);
 
     /*!
      *  Get the packet field value.
      *
-     *      @return The packet field value.
+     *    @return The packet field value.
      */
     QString getValue() const;
 
     /*!
      *  Set the packet field value.
      *
-     *      @param [in] value   The new packet field value.
+     *    @param [in] value   The new packet field value.
      */
     void setValue(QString const& value);
 
     /*!
      *  Get the packet field endianness.
      *
-     *      @return The packet field endianness.
+     *    @return The packet field endianness.
      */
     QString getEndianness() const;
     
     /*!
      *  Set the packet field endianness.
      *
-     *      @param [in] endianness  The new packet field endianness.
+     *    @param [in] endianness  The new packet field endianness.
      */
     void setEndianness(QString const& endianness);
     
     /*!
      *  Get the packet field qualifier.
      *
-     *      @return The packet field qualifier.
+     *    @return The packet field qualifier.
      */
     QSharedPointer<Qualifier> getQualifier() const;
     
     /*!
      *  Set the packet field qualifier.
      *
-     *      @param [in] qualifier   The new packet field qualifier.
+     *    @param [in] qualifier   The new packet field qualifier.
      */
     void setQualifier(QSharedPointer<Qualifier> const& qualifier);
 

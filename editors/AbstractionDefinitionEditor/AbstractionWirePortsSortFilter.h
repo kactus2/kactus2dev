@@ -25,7 +25,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] parent      Pointer to the owner of this model.
+     *    @param [in] parent      Pointer to the owner of this model.
 	 */
     AbstractionWirePortsSortFilter(PortAbstractionInterface* portInterface, QObject *parent);
 
@@ -43,10 +43,10 @@ protected:
     /*!
      *  Check if the filter accepts the selected row.
      *
-     *      @param [in] source_row      The selected row.
-     *      @param [in] source_parent   Parent index of the selected row.
+     *    @param [in] source_row      The selected row.
+     *    @param [in] source_parent   Parent index of the selected row.
      *
-     *      @return True, if the row is accepted, false otherwise.
+     *    @return True, if the row is accepted, false otherwise.
      */
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override final;
 

@@ -37,7 +37,7 @@ public:
     /*!
      *  Sets the system identified with the given VLNV as the currently edited one.
      *
-     *      @return False if there were errors opening the system; otherwise true.
+     *    @return False if there were errors opening the system; otherwise true.
      */
     bool setDesign(VLNV const& vlnv, QString const& viewName);
     
@@ -54,7 +54,7 @@ public:
     /*!
      *  Get the vlnv that can be used to identify the document.
      *
-     *      @return The VLNV that identifies the document.
+     *    @return The VLNV that identifies the document.
      */
     virtual VLNV getIdentifyingVLNV() const;
 
@@ -82,57 +82,57 @@ private:
     /*!
      *  Delete the selected system columns items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedSystemColumns(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected SW component items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedSWComponentItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected SW port items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedSWPortItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected SW interface items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedSWInterfaceItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected COM connection items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedComConnectionItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected API connection items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedApiConnectionItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected graphics connection items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedGraphicsConnectionItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the connected end point.
      *
-     *      @param [in] endPoint        The selected end point.
-     *      @param [in] parentCommand   The parent command.
+     *    @param [in] endPoint        The selected end point.
+     *    @param [in] parentCommand   The parent command.
      */
     void deleteConnectedEndPoint(SWConnectionEndpoint* endPoint, QSharedPointer<QUndoCommand> parentCommand);
 

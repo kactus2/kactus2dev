@@ -35,8 +35,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] view    The view being edited.
-	 *      @param [in] parent  The owner of this widget.
+	 *    @param [in] view    The view being edited.
+	 *    @param [in] parent  The owner of this widget.
 	 */
 	EnvIdentifierEditor(QSharedPointer<View> view, QWidget *parent);
 	
@@ -51,7 +51,7 @@ public:
 	/*!
      *  Check for the validity of the edited parameters.
 	 *
-	 *      @return True if all parameters are in valid state.
+	 *    @return True if all parameters are in valid state.
 	 */
 	virtual bool isValid() const;
 

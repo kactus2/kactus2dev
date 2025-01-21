@@ -35,10 +35,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component   The component for which the wizard is run.
-     *      @param [in] basePath    The base path where the component XML will be located.
-     *      @param [in] handler	    Pointer to the instance which manages the library.
-     *      @param [in] parent      The parent widget.
+     *    @param [in] component   The component for which the wizard is run.
+     *    @param [in] basePath    The base path where the component XML will be located.
+     *    @param [in] handler	    Pointer to the instance which manages the library.
+     *    @param [in] parent      The parent widget.
      */
     ComponentWizard(QSharedPointer<Component> component,
         QString const& basePath,
@@ -60,7 +60,7 @@ protected:
     /*!
      *  Called when back has been selected on a wizard page.
      *
-     *      @param [in] id  The id of the page.
+     *    @param [in] id  The id of the page.
      */
     virtual void cleanupPage(int id);
 
@@ -69,7 +69,7 @@ private slots:
     /*!
      *  Called when a new component has been imported.
      *
-     *      @param [in] component   The newly imported component.
+     *    @param [in] component   The newly imported component.
      */
     virtual void onComponentChanged(QSharedPointer<Component> component);
 
@@ -81,9 +81,9 @@ private:
     /*!
      *  Create an interface for accessing file sets.
      *
-     *      @param [in] parser  Expression parser.
+     *    @param [in] parser  Expression parser.
      *
-     *      @return Interface for accessing file sets.
+     *    @return Interface for accessing file sets.
      */
     FileSetInterface* createFileSetInterface(QSharedPointer<ExpressionParser> parser);
 

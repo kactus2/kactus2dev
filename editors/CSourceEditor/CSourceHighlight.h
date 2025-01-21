@@ -34,21 +34,21 @@ protected:
     /*!
      *  Get the language specific keywords.
      *
-     *      @return The language keywords.
+     *    @return The language keywords.
      */   
     virtual QStringList keywords() const;
             
     /*!
      *  Get the language specific preprocessor directives.
      *
-     *      @return The preprocessor directives.
+     *    @return The preprocessor directives.
      */
     virtual QStringList preprocessorDirectives() const;
 
     /*!
      *  Apply other language specific rules to highlighting.
      *
-     *      @param [in] highlighter   The highlighter to apply the rules to.
+     *    @param [in] highlighter   The highlighter to apply the rules to.
      */
     virtual void applyLanguageSpecificRules(LanguageHighlighter* highlighter) const; 
 

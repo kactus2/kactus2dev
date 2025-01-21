@@ -30,7 +30,7 @@ public:
     /*!
      *  Creates a new Choice from a given Choice node.
      *
-     *      @param [in] choiceNode    XML description of the choice.
+     *    @param [in] choiceNode    XML description of the choice.
      */
     QSharedPointer<Choice> createChoiceFrom(QDomNode const& choiceNode) const;
 

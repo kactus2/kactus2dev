@@ -38,7 +38,7 @@ public:
 	/*!
 	 *  The default constructor.
 	 *
-	 *      @param [in] name	Name of the mode.
+	 *    @param [in] name	Name of the mode.
 	 */
 	Mode(QString const& name = QString());
 	
@@ -54,21 +54,21 @@ public:
 	/*!
 	 * Get the condition expression.
 	 *
-	 *      @return The condition expression.
+	 *    @return The condition expression.
 	 */
 	QString getCondition() const;
 
 	/*!
 	 *  Sets the condition expression.
 	 *
-	 *      @param [in] conditionExpression The expression to set.
+	 *    @param [in] conditionExpression The expression to set.
 	 */
 	void setCondition(QString const& conditionExpression);
 
 	/*!
 	 *  Get the port slices.
 	 *
-	 *      @return The port slices.
+	 *    @return The port slices.
 	 */
 	PortSlice::List getPortSlices() const;
 

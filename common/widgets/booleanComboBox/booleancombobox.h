@@ -26,7 +26,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this widget.
+	 *    @param [in] parent  Pointer to the owner of this widget.
 	 */
 	BooleanComboBox(QWidget *parent);
 
@@ -36,14 +36,14 @@ public:
 	/*!
      *  Get the value currently selected in the combo box.
 	 *
-	 *      @return Boolean value that matches the currently selected item.
+	 *    @return Boolean value that matches the currently selected item.
 	 */
     QString getCurrentValue() const;
 
 	/*!
      *  Set the current value to be selected.
 	 *
-	 *      @param [in] value   The value to be selected.
+	 *    @param [in] value   The value to be selected.
 	 */
     void setCurrentValue(QString const& value);
 

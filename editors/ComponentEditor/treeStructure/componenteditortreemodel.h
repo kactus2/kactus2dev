@@ -35,8 +35,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] libHandler  Pointer to the instance that manages the library.
-	 *      @param [in] parent      Pointer to the instance that owns this model.
+	 *    @param [in] libHandler  Pointer to the instance that manages the library.
+	 *    @param [in] parent      Pointer to the instance that owns this model.
 	 */
 	ComponentEditorTreeModel(QObject* parent);
 
@@ -46,91 +46,91 @@ public:
 	/*!
 	 *  Set the root item.
 	 *
-	 *      @param [in] root    Pointer to the root item.
+	 *    @param [in] root    Pointer to the root item.
 	 */
 	void setRootItem(QSharedPointer<ComponentEditorRootItem> root);
 
 	/*!
 	 *  Get the number of rows an item contains.
 	 *
-	 *      @param [in] parent  Identifies the parent that's row count is requested.
+	 *    @param [in] parent  Identifies the parent that's row count is requested.
 	 *
-	 *      @return Number of rows the item has.
+	 *    @return Number of rows the item has.
 	 */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
 	/*!
 	 *  Does the specified item have any child items.
 	 *
-	 *      @param [in] parent  Model index of the item.
+	 *    @param [in] parent  Model index of the item.
 	 *
-	 *      @return True if the item has any child items.
+	 *    @return True if the item has any child items.
 	 */
 	virtual bool hasChildren(const QModelIndex& parent = QModelIndex()) const;
 
 	/*!
 	 *  Get the number of columns the item has to be displayed.
 	 *
-	 *      @param [in] parent  Identifies the parent that's column count is requested.
+	 *    @param [in] parent  Identifies the parent that's column count is requested.
 	 *
-	 *      @return The number of columns to be displayed.
+	 *    @return The number of columns to be displayed.
 	 */
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
 	/*!
 	 *  Get the data for specified item.
 	 *
-	 *      @param [in] index   Specifies the item that's data is requested.
-	 *      @param [in] role    The role that defines what kind of data is requested.
+	 *    @param [in] index   Specifies the item that's data is requested.
+	 *    @param [in] role    The role that defines what kind of data is requested.
 	 *
-	 *       @return QVariant Contains the data for the item.
+	 *    @return QVariant Contains the data for the item.
 	 */
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
 	/*!
 	 *  Get the item flags that defines the possible operations for the item.
 	 *
-	 *      @param [in] index   Model index that identifies the item.
+	 *    @param [in] index   Model index that identifies the item.
 	 *
-	 *      @return Qt::ItemFlags specify the possible operations for the item.
+	 *    @return Qt::ItemFlags specify the possible operations for the item.
 	 */
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
 	/*!
 	 *  Get index that identifies the given item.
 	 *
-	 *      @param [in] row     The row of the item.
-	 *      @param [in] column  The column of the item.
-	 *      @param [in] parent  The parent index of the item.
+	 *    @param [in] row     The row of the item.
+	 *    @param [in] column  The column of the item.
+	 *    @param [in] parent  The parent index of the item.
 	 *
-	 *      @return QModelIndex The model index that identifies the item.
+	 *    @return QModelIndex The model index that identifies the item.
 	 */
 	virtual QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
 
 	/*!
 	 *  Get the index that identifies the given item.
 	 *
-	 *      @param [in] item    Pointer to the item that's index is wanted.
+	 *    @param [in] item    Pointer to the item that's index is wanted.
 	 *
-	 *      @return QModelIndex The model index that identifies the item.
+	 *    @return QModelIndex The model index that identifies the item.
 	 */
 	virtual QModelIndex index(ComponentEditorItem* item) const;
 
 	/*!
 	 *  Get the index of the parent of given index.
 	 *
-	 *      @param [in] index   The index that identifies the item that's parent is wanted.
+	 *    @param [in] index   The index that identifies the item that's parent is wanted.
 	 *
-	 *      @return QModelIndex The model index that identifies the parent.
+	 *    @return QModelIndex The model index that identifies the parent.
 	 */
 	virtual QModelIndex parent(const QModelIndex& index) const;
 
 	/*!
 	 *  Get the model index of the selected item.
 	 *
-	 *      @param [in] itemIdentifierChain     List of strings identifying the selected item.
+	 *    @param [in] itemIdentifierChain     List of strings identifying the selected item.
 	 *
-	 *      @return The model index of the selected item.
+	 *    @return The model index of the selected item.
 	 */
 	QModelIndex getIndexOfItem(QVector<QString> itemIdentifierChain) const;
 
@@ -141,39 +141,39 @@ public slots:
 	/*!
 	 *  Handler for component editor item's content changed signal.
 	 *
-	 *      @param [in] item    Pointer to the item that changed.
+	 *    @param [in] item    Pointer to the item that changed.
 	 */
 	void onContentChanged(ComponentEditorItem* item);
 
 	/*!
 	 *  Add a new item to the tree under parent item.
 	 *
-	 *      @param [in] parentItem  Pointer to the item to add the child into.
-	 *      @param [in] childIndex  The index to add the child to.
+	 *    @param [in] parentItem  Pointer to the item to add the child into.
+	 *    @param [in] childIndex  The index to add the child to.
 	 */
 	void addItem(ComponentEditorItem* parentItem, int childIndex);
 
 	/*!
 	 *  Remove a child from parent item.
 	 *
-	 *      @param [in] parentItem  Pointer to the item to remove the child from.
-	 *      @param [in] childIndex  The index of the child to remove.
+	 *    @param [in] parentItem  Pointer to the item to remove the child from.
+	 *    @param [in] childIndex  The index of the child to remove.
 	 */
 	void removeItem(ComponentEditorItem* parentItem, int childIndex);
 
 	/*!
 	 *  Move a child from one position to another.
 	 *
-	 *      @param [in] parentItem      Pointer to the item that owns the child.
-	 *      @param [in] childSource     The index of the child to move.
-	 *      @param [in] childtarget     The index to move the child into.
+	 *    @param [in] parentItem      Pointer to the item that owns the child.
+	 *    @param [in] childSource     The index of the child to move.
+	 *    @param [in] childtarget     The index to move the child into.
 	 */
 	void moveItem(ComponentEditorItem* parentItem, int childSource, int childtarget);
 
 	/*!
 	 *  Set the locked state of the editors and visualizers.
 	 *
-	 *      @param [in] locked  True to set the editor's to view only mode.
+	 *    @param [in] locked  True to set the editor's to view only mode.
 	 */
 	void setLocked(bool locked);
 
@@ -185,8 +185,8 @@ signals:
 	/*!
 	 *  Opens the specific C source file of the given component.
 	 *
-	 *      @param [in] filename   The name of the file to open.
-	 *      @param [in] component  The component containing the file.
+	 *    @param [in] filename   The name of the file to open.
+	 *    @param [in] component  The component containing the file.
 	 */
 	void openCSource(QString const& filename, QSharedPointer<Component> component);
 
@@ -225,14 +225,14 @@ private slots:
 	/*!
 	 *  Open bus interface editor for named bus interface.
 	 *
-	 *      @param [in] interfaceName   The name of the bus interface to open.
+	 *    @param [in] interfaceName   The name of the bus interface to open.
 	 */
 	void onSelectBusInterface(const QString& interfaceName);
 
 	/*!
 	 *  Select the given item to be displayed.
 	 *
-	 *      @param [in] item    Pointer to the item which should be displayed.
+	 *    @param [in] item    Pointer to the item which should be displayed.
 	 */
 	void onSelectItem(ComponentEditorItem* item);
 
@@ -245,10 +245,10 @@ private:
 	/*!
 	 *  Find the model index using the name of the item.
 	 *
-	 *      @param [in] identifier      Identifies the selected item.
-	 *      @param [in] parentIndex     Parent index of the selected item.
+	 *    @param [in] identifier      Identifies the selected item.
+	 *    @param [in] parentIndex     Parent index of the selected item.
 	 *
-	 *      @return The model index of the selected item.
+	 *    @return The model index of the selected item.
 	 */
 	QModelIndex findIndexByItemIdentifier(QString const& identifier, QModelIndex parentIndex = QModelIndex())
 		const;

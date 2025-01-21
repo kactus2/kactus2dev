@@ -38,9 +38,9 @@ public:
     /*!
      *  Get the expressions from a given field.
      *
-     *      @param [in] field   The given field.
+     *    @param [in] field   The given field.
      *
-     *      @return A list containing all the expressions used in a field.
+     *    @return A list containing all the expressions used in a field.
      */
     QStringList getExpressions(QSharedPointer<Field> field) const;
 

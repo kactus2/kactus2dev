@@ -30,8 +30,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] busInterface    Interface for accessing bus interfaces.
-     *      @param [in] parent          Pointer to the owner of the combo box.
+     *    @param [in] busInterface    Interface for accessing bus interfaces.
+     *    @param [in] parent          Pointer to the owner of the combo box.
 	 */
 	BusReferenceComboBox(BusInterfaceInterface* busInterface, QWidget *parent);
 	
@@ -43,8 +43,8 @@ public:
     /*!
      *  Setup the combo box.
      *
-     *      @param [in] currentValue    Currently selected bus interface.
-     *      @param [in] busMode         Filtering bus mode for available bus interfaces.
+     *    @param [in] currentValue    Currently selected bus interface.
+     *    @param [in] busMode         Filtering bus mode for available bus interfaces.
      */
     void setupSelection(QString const& currentValue = "",
         General::InterfaceMode busMode = General::INTERFACE_MODE_COUNT);

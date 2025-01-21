@@ -31,10 +31,10 @@ namespace BusInterfaceUtilities
     /*!
      *  Checks if the selected bus definitions match.
      *
-     *      @param [in] firstDefinition         The first bus definition.
-     *      @param [in] secondDefinitionVLNV    VLNV of the second bus definition.
+     *    @param [in] firstDefinition         The first bus definition.
+     *    @param [in] secondDefinitionVLNV    VLNV of the second bus definition.
      *
-     *      @return True, if the bus definitions match, false otherwise.
+     *    @return True, if the bus definitions match, false otherwise.
      */
     KACTUS2_API bool hasMatchingBusDefinitions(QSharedPointer<const BusDefinition> firstDefinition,
         VLNV const& secondDefinitionVLNV, LibraryInterface* library);
@@ -42,11 +42,11 @@ namespace BusInterfaceUtilities
     /*!
      *  Check if the selected bus definition VLNVs can be connected.
      *
-     *      @param [in] firstDefinitionVLNV     The first VLNV.
-     *      @param [in] secondDefinitionVLNV    The second VLNV.
-     *      @param [in] library                 Access to the library.
+     *    @param [in] firstDefinitionVLNV     The first VLNV.
+     *    @param [in] secondDefinitionVLNV    The second VLNV.
+     *    @param [in] library                 Access to the library.
      *
-     *      @return True, if the selected bus definition VLNVs can be connected, false otherwise.
+     *    @return True, if the selected bus definition VLNVs can be connected, false otherwise.
      */
     KACTUS2_API bool busDefinitionVLNVsMatch(VLNV const& firstDefinitionVLNV, VLNV const& secondDefinitionVLNV,
         LibraryInterface* library);
@@ -54,9 +54,9 @@ namespace BusInterfaceUtilities
     /*!
      *  Get the path for the icon of the bus interface mode.
      *
-     *      @param [in] busMode     The selected bus interface mode.
+     *    @param [in] busMode     The selected bus interface mode.
      *
-     *      @return Path for the bus interface mode icon.
+     *    @return Path for the bus interface mode icon.
      */
     KACTUS2_API QString getIconPath(General::InterfaceMode busMode);
 }

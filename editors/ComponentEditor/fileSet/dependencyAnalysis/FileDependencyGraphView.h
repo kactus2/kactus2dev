@@ -56,7 +56,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     FileDependencyGraphView(QWidget* parent);
 
@@ -68,7 +68,7 @@ public:
     /*!
      *  Sets the item model.
      *
-     *      @param [in] model The model to set.
+     *    @param [in] model The model to set.
      */
     virtual void setModel(QAbstractItemModel* model);
 
@@ -85,7 +85,7 @@ public:
     /*!
      *  Sets the dependencies editable/read-only.
      *
-     *      @param [in] editable If true, the dependencies are editable. If false, they are read-only.
+     *    @param [in] editable If true, the dependencies are editable. If false, they are read-only.
      */
     void setDependenciesEditable(bool editable);
 
@@ -119,7 +119,7 @@ public slots:
     /*!
      *  Sets the graph column scroll index.
      *
-     *      @param [in] index The index to set.
+     *    @param [in] index The index to set.
      */
     void setGraphColumnScrollIndex(int index);
 
@@ -157,16 +157,16 @@ protected:
     /*!
      *  Handles resize of the graph view.
      *
-     *      @param [in] event The resize event.
+     *    @param [in] event The resize event.
      */
     virtual void resizeEvent(QResizeEvent *event);
 
     /*!
      *  Handles auto-expand when rows are inserted.
      *
-     *      @param [in] parent The parent model index.
-     *      @param [in] start  The start index of the inserted rows.
-     *      @param [in] end    The end index of the inserted rows.
+     *    @param [in] parent The parent model index.
+     *    @param [in] start  The start index of the inserted rows.
+     *    @param [in] end    The end index of the inserted rows.
      */
     virtual void rowsInserted(QModelIndex const& parent, int start, int end);
 
@@ -283,63 +283,63 @@ private:
     /*!
      *  Draws the dependency graph into the dependencies column.
      *
-     *      @param [in] painter  The drawing context.
-     *      @param [in] rect     The currently visible drawing area.
+     *    @param [in] painter  The drawing context.
+     *    @param [in] rect     The currently visible drawing area.
      */
     void drawDependencyGraph(QPainter& painter, QRect const& rect);
 
     /*!
      *  Retrieves the final drawing coordinates and the items for the given dependency.
      *
-     *      @param [in]  dep    The dependency.
-     *      @param [out] fromY  The resulted from y coordinate.
-     *      @param [out] toY    The resulted to y coordinate.
+     *    @param [in]  dep    The dependency.
+     *    @param [out] fromY  The resulted from y coordinate.
+     *    @param [out] toY    The resulted to y coordinate.
      */
     bool getCoordinates(GraphDependency const& dep, int& fromY, int& toY) const;
 
     /*!
      *  Draws the temporary manual dependency arrow when the user is creating a manual connection.
      *
-     *      @param [in] painter The drawing context.
+     *    @param [in] painter The drawing context.
      */
     void drawManualCreationArrow(QPainter& painter);
 
     /*!
      *  Draws a dependency arrow.
      *
-     *      @param [in] painter        The painter context.
-     *      @param [in] x              The x coordinate for the arrow.
-     *      @param [in] fromY          The "from" y coordinate.
-     *      @param [in] toY            The "to" y coordinate.
-     *      @param [in] color          The arrow color.
-     *      @param [in] bidirectional  If true, arrow heads will be drawn to both ends.
+     *    @param [in] painter        The painter context.
+     *    @param [in] x              The x coordinate for the arrow.
+     *    @param [in] fromY          The "from" y coordinate.
+     *    @param [in] toY            The "to" y coordinate.
+     *    @param [in] color          The arrow color.
+     *    @param [in] bidirectional  If true, arrow heads will be drawn to both ends.
      */
     void drawArrow(QPainter& painter, int x, int fromY, int toY, QColor const& color, bool bidirectional = false);
     
     /*!
      *  Draws an arrow head pointing down.
      *
-     *      @param [in] painter     The painter to use for drawing.
-     *      @param [in] x           The x coordinate of the arrow head.
-     *      @param [in] y           The y coordinate of the arrow head.
+     *    @param [in] painter     The painter to use for drawing.
+     *    @param [in] x           The x coordinate of the arrow head.
+     *    @param [in] y           The y coordinate of the arrow head.
      */
     void drawArrowHeadDown(QPainter& painter, int x, int y);
         /*!
      *  Draws an arrow head pointing up.
      *
-     *      @param [in] painter     The painter to use for drawing.
-     *      @param [in] x           The x coordinate of the arrow head.
-     *      @param [in] y           The y coordinate of the arrow head.
+     *    @param [in] painter     The painter to use for drawing.
+     *    @param [in] x           The x coordinate of the arrow head.
+     *    @param [in] y           The y coordinate of the arrow head.
      */
     void drawArrowHeadUp(QPainter& painter, int x, int y);
 
     /*!
      *  Retrieves the center y coordinate for the row specified by the given model index.
      *
-     *      @param [in] index  The model index of the row.
-     *      @param [in] y      The retrieved y coordinate.
+     *    @param [in] index  The model index of the row.
+     *    @param [in] y      The retrieved y coordinate.
      *
-     *      @return True, if the row is visible. False if hidden.
+     *    @return True, if the row is visible. False if hidden.
      */
     bool getVisualRowY(QModelIndex const& index, int& y) const;
 
@@ -351,41 +351,41 @@ private:
     /*!
      *  Searches for a dependency at the given mouse coordinate.
      *
-     *      @param [in] pt The mouse coordinate point to test for.
+     *    @param [in] pt The mouse coordinate point to test for.
      *
-     *      @return If found, the dependency at the given coordinate. Otherwise null.
+     *    @return If found, the dependency at the given coordinate. Otherwise null.
      */
     FileDependency* findDependencyAt(QPoint const& point) const;
 
     /*!
      *  Checks the dependency against the filters.
      *
-     *      @param [in] dependency The dependency to check.
+     *    @param [in] dependency The dependency to check.
      *
-     *      @return False, if the dependency should not be shown. Otherwise true.
+     *    @return False, if the dependency should not be shown. Otherwise true.
      */
     bool filterDependency(FileDependency const* dependency) const;
 
     /*!
      *  Repaints the given dependency.
      *
-     *      @param [in] dependency The dependency to repaint.
+     *    @param [in] dependency The dependency to repaint.
      */
     void repaintDependency(FileDependency const* dependency);
 
     /*!
      *  Repaints a region containing a dependency arrow.
      *
-     *      @param [in] x       The x coordinate of the arrow.
-     *      @param [in] fromY   The starting y coordinate of the arrow.
-     *      @param [in] toY     The ending y coordinate of the arrow.
+     *    @param [in] x       The x coordinate of the arrow.
+     *    @param [in] fromY   The starting y coordinate of the arrow.
+     *    @param [in] toY     The ending y coordinate of the arrow.
      */
     void repaintArrowRegion(int x, int fromY, int toY);
 
     /*!
      *  Creates a context menu for the currently selected dependency.
      *
-     *      @param [in] position    The global position for the context menu.
+     *    @param [in] position    The global position for the context menu.
      */
     void createContextMenu(const QPoint& position);
 
@@ -393,7 +393,7 @@ private:
     /*!
      *  Changes the selected dependency and repaints the previous and current selection.
      *
-     *      @param [in] newSelection   The dependency to select.
+     *    @param [in] newSelection   The dependency to select.
      */
     void changeDependencySelection(FileDependency* newSelection);
 
@@ -415,7 +415,7 @@ private:
     /*!
      *  Creates a new dependency using the start and end item.
      *
-     *      @return The created dependency.
+     *    @return The created dependency.
      */
     FileDependency* createManualDependency();
 

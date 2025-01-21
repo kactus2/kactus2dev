@@ -28,10 +28,10 @@ namespace ParameterReader
     /*!
      *  Creates a parameter from XML description.
      *
-     *      @param [in] parameterNode   The XML description of the parameter.
-     *      @param [in] revision        The standard revision of the XML document being read.
+     *    @param [in] parameterNode   The XML description of the parameter.
+     *    @param [in] revision        The standard revision of the XML document being read.
      *
-     *      @return The created parameter.
+     *    @return The created parameter.
      */
     IPXACTMODELS_EXPORT QSharedPointer<Parameter> createParameterFrom(QDomNode const& parameterNode,
         Document::Revision revision = Document::Revision::Std14);
@@ -42,17 +42,17 @@ namespace ParameterReader
         /*!
          *  Reads the attributes from XML to a parameter.
          *
-         *      @param [in] parameterNode   The XML description of the parameter.
-         *      @param [in/out] parameter   The parameter to insert the attributes into.
+         *    @param [in] parameterNode   The XML description of the parameter.
+         *    @param [in/out] parameter   The parameter to insert the attributes into.
          */
         void parseAttributes(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter);
 
         /*!
          *  Reads the vectors from XML to a parameter.
          *
-         *      @param [in] parameterNode   The XML description of the parameter.
-         *      @param [in/out] parameter   The parameter to insert the vectors into.
-         *      @param [in] revision        The standard revision of the XML document being read.
+         *    @param [in] parameterNode   The XML description of the parameter.
+         *    @param [in/out] parameter   The parameter to insert the vectors into.
+         *    @param [in] revision        The standard revision of the XML document being read.
          */
         void parseVectors(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter,
             Document::Revision revision = Document::Revision::Std14);
@@ -60,9 +60,9 @@ namespace ParameterReader
         /*!
          *  Reads the arrays from XML to a parameter.
          *
-         *      @param [in] parameterNode   The XML description of the parameter.
-         *      @param [in/out] parameter   The parameter to insert the arrays into.
-         *      @param [in] revision        The standard revision of the XML document being read.
+         *    @param [in] parameterNode   The XML description of the parameter.
+         *    @param [in/out] parameter   The parameter to insert the arrays into.
+         *    @param [in] revision        The standard revision of the XML document being read.
          */
         void parseArrays(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter,
             Document::Revision revision = Document::Revision::Std14);
@@ -70,8 +70,8 @@ namespace ParameterReader
         /*!
          *  Reads the parameter value from XML to a parameter.
          *
-         *      @param [in] parameterNode   The XML description of the parameter.
-         *      @param [in/out] parameter   The parameter to insert the value into.
+         *    @param [in] parameterNode   The XML description of the parameter.
+         *    @param [in/out] parameter   The parameter to insert the value into.
          */
         void parseValue(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter);
     }

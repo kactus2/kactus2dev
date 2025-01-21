@@ -35,9 +35,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *       @param [in] addrSpace          The address space being visualized.
-     *       @param [in] expressionParser   The expression parser to use.
-	 *       @param [in] parent             The owner of the visualizer.
+     *    @param [in] addrSpace          The address space being visualized.
+     *    @param [in] expressionParser   The expression parser to use.
+	 *    @param [in] parent             The owner of the visualizer.
 	 */
 	AddressSpaceVisualizer(QSharedPointer<AddressSpace> addrSpace,
         QSharedPointer<ExpressionParser> expressionParser,
@@ -52,14 +52,14 @@ public:
 	/*!
      *  The minimum size hint for the visualizer.
 	 *
-	 *      @return The minimum size hint.
+	 *    @return The minimum size hint.
 	 */
 	virtual QSize minimumSizeHint() const;
 
 	/*!
      *  The size hint for the visualizer.
 	 *
-	 *      @return The size hint.
+	 *    @return The size hint.
 	 */
 	virtual QSize sizeHint() const;
 

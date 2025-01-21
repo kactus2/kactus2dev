@@ -39,18 +39,18 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] memoryRemap             The memory remap being edited.
-     *      @param [in] parentMemoryMap         The parent memory map of the memory remap.
-     *      @param [in] model                   The model that owns the items.
-     *      @param [in] libHandler              The instance that manages the library.
-     *      @param [in] component               The component being edited.
-     *      @param [in] referenceCounter        The instance for counting references to parameters.
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The expression parser to use.
-     *      @param [in] memoryMapValidator      Validator for memory maps.
-     *      @param [in] mapInterface            Interface for accessing memory maps.
-     *      @param [in] parent                  The parent item.
+     *    @param [in] memoryRemap             The memory remap being edited.
+     *    @param [in] parentMemoryMap         The parent memory map of the memory remap.
+     *    @param [in] model                   The model that owns the items.
+     *    @param [in] libHandler              The instance that manages the library.
+     *    @param [in] component               The component being edited.
+     *    @param [in] referenceCounter        The instance for counting references to parameters.
+     *    @param [in] parameterFinder         The parameter finder.
+     *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] expressionParser        The expression parser to use.
+     *    @param [in] memoryMapValidator      Validator for memory maps.
+     *    @param [in] mapInterface            Interface for accessing memory maps.
+     *    @param [in] parent                  The parent item.
      */
     MemoryRemapItem(QSharedPointer<MemoryMapBase> memoryRemap,
         QSharedPointer<MemoryMap> parentMemoryMap,
@@ -79,35 +79,35 @@ public:
 	/*!
 	 *  Get the tool tip for this item.
 	 *
-     *      @return The text for the tool tip to print to user.
+     *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*!
 	 *  Get the text to be displayed to user in the tree for this item.
 	 *
-     *      @return The text to display.
+     *    @return The text to display.
 	 */
 	virtual QString text() const;
 
 	/*!
 	 *  Check the validity of this item and sub items.
 	 *
-     *      @return True, if the item is in a valid state, false otherwise.
+     *    @return True, if the item is in a valid state, false otherwise.
 	 */
 	virtual bool isValid() const;
 
 	/*!
 	 *  Get the The editor of this item.
 	 *
-     *      @return The editor to use for this item.
+     *    @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*!
 	 *  Add a new child to the item.
 	 *
-	 *      @param [in] index   The index of the new child.
+	 *    @param [in] index   The index of the new child.
 	 */
 	virtual void createChild(int index) override final;
 
@@ -116,21 +116,21 @@ public:
 	/*!
 	 *  Get The visualizer of this item.
 	 *
-     *      @return The visualizer to user for this item.
+     *    @return The visualizer to user for this item.
 	 */
 	virtual ItemVisualizer* visualizer();
 
 	/*!
 	 *  Set the visualizer for this item.
 	 *
-	 *      @param [in] visualizer  The visualizer.
+	 *    @param [in] visualizer  The visualizer.
 	 */
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*!
 	 *  Get the visualizer graphics item for the memory remap.
 	 *
-     *      @return The graphics item.
+     *    @return The graphics item.
 	 */
 	virtual QGraphicsItem* getGraphicsItem();
 
@@ -169,7 +169,7 @@ signals:
     /*!
      *  Change the used address unit bits in the editor.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bits.
+     *    @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
@@ -180,33 +180,33 @@ signals:
     /*
      *  Informs of address block name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void addressBlockNameChanged(QString const& oldName, QString const& newName);
     
     /*
      *  Informs of subspace map name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void subspaceMapNameChanged(QString const& oldName, QString const& newName);
 
     /*
      *  Informs of memory map name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void memoryMapNameChanged(QString const& oldName, QString const& newName);
 
     /*
      *  Informs of memory remap name change.
      *
-     *      @param [in] parentName  Name of the containing memory map.
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] parentName  Name of the containing memory map.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void memoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
 

@@ -26,8 +26,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] leftAlignment   The higher alignment of the port.
-     *      @param [in] right           The lower alignment of the port.
+     *    @param [in] leftAlignment   The higher alignment of the port.
+     *    @param [in] right           The lower alignment of the port.
      */
     PortAlignment(int leftAlignment = 0, int rightAlignment = 0);
 
@@ -42,42 +42,42 @@ public:
     /*!
      *  Get the higher (left) alignment of the port.
      *
-     *      @return The higher (left) alignment of the port.
+     *    @return The higher (left) alignment of the port.
      */
     int getLeftAlignment() const;
 
     /*!
      *  Set the higher (left) alignment of the port.
      *
-     *      @param [in] newLeftAlignment    The new higher (left) alignment.
+     *    @param [in] newLeftAlignment    The new higher (left) alignment.
      */
     void setLeftAlignment(int newLeftAlignment);
 
     /*!
      *  Get the lower (right) alignment of the port.
      *
-     *      @return The lower (right) alignment of the port.
+     *    @return The lower (right) alignment of the port.
      */
     int getRightAlignment() const;
 
     /*!
      *  Set the lower (right) alignment of the port.
      *
-     *      @param [in] newRightAlignment   The new lower (right) alignment.
+     *    @param [in] newRightAlignment   The new lower (right) alignment.
      */
     void setRightAlignment(int newRightAlignment);
 
     /*!
      *  Check if the port alignment is valid.
      *
-     *      @return True, if the alignment is valid, false otherwise.
+     *    @return True, if the alignment is valid, false otherwise.
      */
     bool isValid() const;
 
     /*!
      *  Set the validity of the port alignment.
      *
-     *      @param [in] validity    The new validity of the port alignment.
+     *    @param [in] validity    The new validity of the port alignment.
      */
     void setAlignmentValidity(bool validity);
 

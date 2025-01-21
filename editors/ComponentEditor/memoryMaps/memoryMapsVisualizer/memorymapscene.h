@@ -32,7 +32,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of the graphics scene.
+	 *    @param [in] parent  Pointer to the owner of the graphics scene.
 	 */
 	explicit MemoryMapScene(QObject *parent);
 	
@@ -48,21 +48,21 @@ public:
 	/*!
      *  Add a new memory map graph item to the scene.
 	 *
-	 *      @param [in] memGraphItem    Pointer to the item.
+	 *    @param [in] memGraphItem    Pointer to the item.
 	 */
 	void addMemGraphItem(MemoryMapGraphItem* memGraphItem);
 
 	/*!
      *  Remove a memory map graph item from the scene.
 	 *
-	 *      @param [in] memGraphItem    Pointer to the item to remove.
+	 *    @param [in] memGraphItem    Pointer to the item to remove.
 	 */
 	void removeMemGraphItem(MemoryMapGraphItem* memGraphItem);
 
 	/*!
      *  Set the scene width.
 	 *
-     *      @param [in] width   Width to set.
+     *    @param [in] width   Width to set.
 	 */
     void setWidth(int width);
 

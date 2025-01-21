@@ -33,22 +33,22 @@ public slots:
     /*!
      *  Increase the reference count of the parameter matching the id.
      *
-     *      @param [in] id      The id of the parameter which is being referenced.
+     *    @param [in] id      The id of the parameter which is being referenced.
      */
     virtual void increaseReferenceCount(QString const& id) = 0;
 
     /*!
      *  Decrease the reference count of the parameter matching the id.
      *
-     *      @param [in] id      The id of the parameter which was referenced.
+     *    @param [in] id      The id of the parameter which was referenced.
      */
     virtual void decreaseReferenceCount(QString const& id) = 0;
 
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameterList       The selected parameters.
-     *      @param [in] parameterInterface  Interface for accessing parameters.
+     *    @param [in] parameterList       The selected parameters.
+     *    @param [in] parameterInterface  Interface for accessing parameters.
      */
     virtual void recalculateReferencesToParameters(QVector<QString> const& parameterList,
         AbstractParameterInterface* parameterInterface) = 0;

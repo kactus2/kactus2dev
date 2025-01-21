@@ -36,8 +36,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library     The used library interface.
-     *      @param [in] parser      The used expression parser.
+     *    @param [in] library     The used library interface.
+     *    @param [in] parser      The used expression parser.
      */
     SystemViewConfigurationValidator(LibraryInterface* library, QSharedPointer<ExpressionParser> parser);
 
@@ -47,9 +47,9 @@ public:
     /*!
      *  Check if the view reference is valid.
      *
-     *      @param [in] configuration   The selected view configuration.
+     *    @param [in] configuration   The selected view configuration.
      *
-     *      @return True, if the view reference is valid, otherwise false.
+     *    @return True, if the view reference is valid, otherwise false.
      */
     virtual bool hasValidViewReference(QSharedPointer<ViewConfiguration> configuration);
 
@@ -62,7 +62,7 @@ private:
     /*!
      *  Change the currently available views.
      *
-     *      @param [in] configuration   The selected view configuration.
+     *    @param [in] configuration   The selected view configuration.
      */
     void changeAvailableSystemViews(QSharedPointer<ViewConfiguration> configuration);
 

@@ -29,12 +29,12 @@ public:
     /*!
      *  <Description>.
      *
-     *      @param [in] noteItem        The updated note.
-     *      @param [in] newText         The new text on the note.
-     *      @param [in] oldText         The previous text on the note.
-     *      @param [in] newTimestamp    The edit timestamp.
-     *      @param [in] oldTimestamp    The previous edit timestamp.
-     *      @param [in] parent          The parent command.
+     *    @param [in] noteItem        The updated note.
+     *    @param [in] newText         The new text on the note.
+     *    @param [in] oldText         The previous text on the note.
+     *    @param [in] newTimestamp    The edit timestamp.
+     *    @param [in] oldTimestamp    The previous edit timestamp.
+     *    @param [in] parent          The parent command.
      */
     StickyNoteEditCommand(StickyNote* noteItem, QString const& newText, QString const& oldText, 
         QString const& newTimestamp, QString const& oldTimestamp, QUndoCommand* parent = 0);

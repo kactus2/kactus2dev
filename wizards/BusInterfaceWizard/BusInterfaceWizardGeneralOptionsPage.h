@@ -40,15 +40,15 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component               The component whose bus interface is being edited.
-     *      @param [in] busIf                   The bus interface being edited.
-     *      @param [in] lh                      The component library handler.
-     *      @param [in] absDefEditable          The editability of abstract definition.
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] busValidator            Validator for bus interfaces.
-     *      @param [in] busInterface            Interface for accessing bus interfaces.
-     *      @param [in] parent                  The parent wizard.
+     *    @param [in] component               The component whose bus interface is being edited.
+     *    @param [in] busIf                   The bus interface being edited.
+     *    @param [in] lh                      The component library handler.
+     *    @param [in] absDefEditable          The editability of abstract definition.
+     *    @param [in] parameterFinder         The parameter finder.
+     *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] busValidator            Validator for bus interfaces.
+     *    @param [in] busInterface            Interface for accessing bus interfaces.
+     *    @param [in] parent                  The parent wizard.
      */
     BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
         QSharedPointer<BusInterface> busIf,
@@ -78,7 +78,7 @@ public:
     /*!
      * Checks if all the required fields on the page are valid.
      *
-     *      @return True, if all fields are valid, otherwise false.
+     *    @return True, if all fields are valid, otherwise false.
      */
     virtual bool isComplete() const;    
 
@@ -87,21 +87,21 @@ signals:
     /*!
      *  Increase the number of references made to a specific parameter.
      *
-     *      @param [in] id  The id of the parameter whose reference count is to be increased.
+     *    @param [in] id  The id of the parameter whose reference count is to be increased.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the number of references made to a specific parameter.
      *
-     *      @param [in] id  The id of the parameter whose reference count is to be decreased.
+     *    @param [in] id  The id of the parameter whose reference count is to be decreased.
      */
     void decreaseReferences(QString id);
 
     /*!
      *  Inform of a change in the name of the bus interface.
      *	
-     *      @param [in] busName     The new name of the bus interface.
+     *    @param [in] busName     The new name of the bus interface.
      */
     void busNameChanged(std::string const& busName);
 
@@ -113,7 +113,7 @@ private:
     /*!
      *  Checks if all the mandatory fields are filled in.
      *
-     *      @return True, if mandatory fields are filled, otherwise false.
+     *    @return True, if mandatory fields are filled, otherwise false.
      */
     bool mandatoryFieldsAreFilledIn() const;
 
@@ -125,7 +125,7 @@ private:
     /*!
      *  Check if a valid reference to an existing abstraction definition is found.
      *
-     *      @return True, if a valid abstraction definition is found, false otherwise.
+     *    @return True, if a valid abstraction definition is found, false otherwise.
      */
     bool abstractionReferenceIsFound() const;
 

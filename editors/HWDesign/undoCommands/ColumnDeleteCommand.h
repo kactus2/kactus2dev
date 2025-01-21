@@ -30,10 +30,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] diagram     The diagram containing the column item.
-     *      @param [in] layout      The column layout to use.
-     *      @param [in] column      The column to remove.
-     *      @param [in] parent      The parent command.
+     *    @param [in] diagram     The diagram containing the column item.
+     *    @param [in] layout      The column layout to use.
+     *    @param [in] column      The column to remove.
+     *    @param [in] parent      The parent command.
      */
     ColumnDeleteCommand(DesignDiagram* diagram, GraphicsColumnLayout* layout, GraphicsColumn* column, 
                         QUndoCommand* parent = 0);

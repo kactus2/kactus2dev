@@ -32,7 +32,7 @@ public:
     /*!
      *	Set the available mode references.
      *  
-     *      @param [in] modeReferences     The mode references to set.
+     *    @param [in] modeReferences     The mode references to set.
      */
     void setModeReferences(std::vector<std::pair<unsigned int, std::string> > const& modeReferences);
 
@@ -46,7 +46,7 @@ public:
     /*!
      *	Get the mode reference value for a selected mode reference.
      *
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference value to get.
+     *    @param [in] modeReferenceIndex  The index of the mode reference whose reference value to get.
      *
      * 	    @return The mode reference value.
      */
@@ -55,7 +55,7 @@ public:
     /*!
      *	Get the mode reference priority for a selected mode reference.
      *
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose priority to get.
+     *    @param [in] modeReferenceIndex  The index of the mode reference whose priority to get.
      *
      * 	    @return The mode reference priority.
      */
@@ -64,8 +64,8 @@ public:
     /*!
      *	Set the mode reference value for a selected mode reference.
      *
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference value to set.
-     *      @param [in] newValue            The new reference to set.
+     *    @param [in] modeReferenceIndex  The index of the mode reference whose reference value to set.
+     *    @param [in] newValue            The new reference to set.
      *
      * 	    @return True, if the operation was successful, otherwise false.
      */
@@ -74,8 +74,8 @@ public:
     /*!
      *	Set the mode reference priority for a selected mode reference.
      *
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference priority to set.
-     *      @param [in] newPriority         The new priority value to set.
+     *    @param [in] modeReferenceIndex  The index of the mode reference whose reference priority to set.
+     *    @param [in] newPriority         The new priority value to set.
      *
      * 	    @return True, if the operation was successful, otherwise false.
      */
@@ -91,7 +91,7 @@ public:
     /*!
      *	Remove a selected mode reference.
      *
-     *      @param [in] modeReferenceIndex      The index of the mode reference to be removed.
+     *    @param [in] modeReferenceIndex      The index of the mode reference to be removed.
      *
      * 	    @return True, if the operation was successful, otherwise false.
      */
@@ -100,7 +100,7 @@ public:
     /*!
      *	Validate the reference value of given mode reference.
      *  
-     *      @param [in] modeReferenceIndex     The index of the mode reference to validate.
+     *    @param [in] modeReferenceIndex     The index of the mode reference to validate.
      *	    
      * 	    @return True, if the mode reference value is valid, otherwise false.
      */
@@ -109,7 +109,7 @@ public:
     /*!
      *	Validate the priority value of given mode reference.
      *
-     *      @param [in] modeReferenceIndex     The index of the mode reference to validate.
+     *    @param [in] modeReferenceIndex     The index of the mode reference to validate.
      *
      * 	    @return True, if the mode reference priority is valid, otherwise false.
      */
@@ -125,7 +125,7 @@ public:
     /*!
      *	Set to indicate that the current element is a memory remap.
      *  
-     *      @param [in] isRemap     Flag to set, if element is remap.
+     *    @param [in] isRemap     Flag to set, if element is remap.
      */
     void setContainingElementIsRemap(bool isRemap);
 
@@ -133,7 +133,7 @@ public:
      *	Set mode references in the containing element, eg. mode references of all remaps within a memory map.
      *  Should set all mode references except for the mode refs of access policy/remap currently being edited.
      *  
-     *      @param [in] modeRefs     The mode references to set.
+     *    @param [in] modeRefs     The mode references to set.
      */
     void setContainingElementModeReferences(std::vector<std::pair<unsigned int, std::string> > const& modeReferences);
 
@@ -147,7 +147,7 @@ public:
     /*!
      *	Set the available component modes.
      *  
-     *      @param [in] newModes     The modes to set.
+     *    @param [in] newModes     The modes to set.
      */
     void setComponentModes(QSharedPointer<QList<QSharedPointer<Mode> > > newModes);
 
@@ -170,7 +170,7 @@ private:
     /*!
      *	Get the mode references that are currently in use, except for the mode reference being validated.
      *  
-     *      @param [in] modeReferenceIndex     The index of the mode references to validate.
+     *    @param [in] modeReferenceIndex     The index of the mode references to validate.
      *	    
      * 	    @return The mode references currently in use by other elements.
      */

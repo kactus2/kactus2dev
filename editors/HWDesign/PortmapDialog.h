@@ -41,11 +41,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] library     The library interface.
-     *      @param [in] component   The parent component of the bus interface.
-     *      @param [in] busIf       The bus interface whose port map will be edited.
-     *      @param [in] otherBusIf  The bus interface in the other end of the connection.
-     *      @param [in] parent      The owner of this dialog.
+     *    @param [in] library     The library interface.
+     *    @param [in] component   The parent component of the bus interface.
+     *    @param [in] busIf       The bus interface whose port map will be edited.
+     *    @param [in] otherBusIf  The bus interface in the other end of the connection.
+     *    @param [in] parent      The owner of this dialog.
      */
     PortmapDialog(LibraryInterface* library, QSharedPointer<Component> component,
                   QSharedPointer<BusInterface> busIf, QSharedPointer<BusInterface> otherBusIf, QWidget* parent = 0);

@@ -41,13 +41,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance that manages the library.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] portValidator           Validator used for ports.
-     *      @param [in] busInterface            Interface for accessing bus interfaces.
-	 *      @param [in] parent                  The owner of this widget.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] handler                 The instance that manages the library.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] portValidator           Validator used for ports.
+     *    @param [in] busInterface            Interface for accessing bus interfaces.
+	 *    @param [in] parent                  The owner of this widget.
 	 */
 	PortsEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
@@ -65,7 +65,7 @@ public:
 	/*!
      *  Check for the validity of the edited ports.
      *
-     *      @return True if all ports are in valid state.
+     *    @return True if all ports are in valid state.
      */
 	bool isValid() const;
 
@@ -77,7 +77,7 @@ public:
     /*!
      *  Sets the edited component.
      *
-     *      @param [in] component   The component whose ports to edit.
+     *    @param [in] component   The component whose ports to edit.
      */
     void setComponent(QSharedPointer<Component> component);
 
@@ -100,7 +100,7 @@ private slots:
     /*!
      *  Change the vendor extensions of the vendor extensions editor.
      *
-     *      @param [in] itemIndex   Index of the selected port.
+     *    @param [in] itemIndex   Index of the selected port.
      */
     void changeExtensionsEditorItem(QModelIndex const& itemIndex);
 

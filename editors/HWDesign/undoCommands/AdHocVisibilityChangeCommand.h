@@ -28,10 +28,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] dataSource    The ad-hoc enabled data source.
-     *      @param [in] portName      The name of the port.
-     *      @param [in] newVisiblity  The new ad-hoc visibility of the port.
-     *      @param [in] parent        The parent undo command.
+     *    @param [in] dataSource    The ad-hoc enabled data source.
+     *    @param [in] portName      The name of the port.
+     *    @param [in] newVisiblity  The new ad-hoc visibility of the port.
+     *    @param [in] parent        The parent undo command.
      */
     AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName, bool newVisibility,
         QUndoCommand* parent = 0);
@@ -59,14 +59,14 @@ private:
     /*!
      *  Create a delete command for a connected connection.
      *
-     *      @param [in] connection  The selected connection.
+     *    @param [in] connection  The selected connection.
      */
     void createConnectionDeleteCommand(GraphicsConnection* connection);
 
     /*!
      *  Change the visibility status of the selected port item.
      *
-     *      @param [in] currentVisibility   The new visibility of the port item.
+     *    @param [in] currentVisibility   The new visibility of the port item.
      */
     void changePortItemVisibility(bool currentVisibility);
 

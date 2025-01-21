@@ -49,14 +49,14 @@ public:
 	/*!
      *  Get the value of the port reference.
 	 *
-	 *      @return The port reference.
+	 *    @return The port reference.
 	 */
 	QString getPortRef() const;
 
 	/*!
      *  Set the portNameRef for this PortSlice.
 	 *
-	 *      @param [in] newPortNameRef  The new port reference.
+	 *    @param [in] newPortNameRef  The new port reference.
 	 */
 	void setPortRef(QString const& newPortNameRef);
     
@@ -68,28 +68,28 @@ public:
     /*!
      *  Get the left value of the range.
      *
-     *      @return The left value of the range.
+     *    @return The left value of the range.
      */
     QString getLeftRange() const;
 
     /*!
      *  Get the right value of the range.
      *
-     *      @return The right value of the range.
+     *    @return The right value of the range.
      */
     QString getRightRange() const;
 
     /*!
      *  Set the left value for the range.
      *
-     *      @param [in] newLeftRange    The new value for the left value of the range.
+     *    @param [in] newLeftRange    The new value for the left value of the range.
      */
     void setLeftRange(QString const& newLeftRange);
 
     /*!
      *  Set the right value for the range.
      *
-     *      @param [in] newRightRange   The new value for the right value of the range.
+     *    @param [in] newRightRange   The new value for the right value of the range.
      */
     void setRightRange(QString const& newRightRange);
 

@@ -30,8 +30,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] expressionFormatter     Formatter for expressions.
+     *    @param [in] expressionParser        Parser for expressions.
+     *    @param [in] expressionFormatter     Formatter for expressions.
      */
     ParameterizableInterface(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter);
@@ -44,10 +44,10 @@ public:
     /*!
      *  Calculate all the references to the selected ID in the selected item.
      *
-     *      @param [in] itemName    Name of the selected item.
-     *      @param [in] valueID     The selected ID.
+     *    @param [in] itemName    Name of the selected item.
+     *    @param [in] valueID     The selected ID.
      *
-     *      @return Number of references to the selected ID in the selected item.
+     *    @return Number of references to the selected ID in the selected item.
      */
     virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const = 0;
 
@@ -60,28 +60,28 @@ protected:
     /*!
      *  Get the formatted value for the given expression.
      *
-     *      @param [in] expression  The selected expression.
+     *    @param [in] expression  The selected expression.
      *
-     *      @return The formatted expression.
+     *    @return The formatted expression.
      */
     QString formattedValueFor(QString const& expression) const;
 
     /*!
      *  Parse the selected expression to decimal.
      *
-     *      @param [in] expression  The selected expression.
+     *    @param [in] expression  The selected expression.
      *
-     *      @return The value of the expression in decimal form.
+     *    @return The value of the expression in decimal form.
      */
     QString parseExpressionToDecimal(QString const& expression, bool* expressionIsValid = nullptr) const;
 
     /*!
      *  Parse the selected expression to the selected base number.
      *
-     *      @param [in] expression  The selected expression.
-     *      @param [in] baseNumber  The selected base number.
+     *    @param [in] expression  The selected expression.
+     *    @param [in] baseNumber  The selected base number.
      *
-     *      @return The value of the expression in the base number form.
+     *    @return The value of the expression in the base number form.
      */
     QString parseExpressionToBaseNumber(QString const& expression, unsigned int baseNumber, bool* expressionIsValid = nullptr) const;
 

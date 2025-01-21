@@ -35,10 +35,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] model       Pointer to the model that owns the items.
-	 *      @param [in] libHandler  Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the parent item.
+	 *    @param [in] model       Pointer to the model that owns the items.
+	 *    @param [in] libHandler  Pointer to the instance that manages the library.
+	 *    @param [in] component   Pointer to the component being edited.
+	 *    @param [in] parent      Pointer to the parent item.
 	 */
 	ParameterizableItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
         QSharedPointer<Component> component, ComponentEditorItem* parent);
@@ -46,9 +46,9 @@ public:
 	/*!
      *  The constructor for root item.
 	 *
-	 *      @param [in] libHandler  Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the parent object.
+	 *    @param [in] libHandler  Pointer to the instance that manages the library.
+	 *    @param [in] component   Pointer to the component being edited.
+	 *    @param [in] parent      Pointer to the parent object.
 	 */
 	ParameterizableItem(LibraryInterface* libHandler, QSharedPointer<Component> component,
         ComponentEditorTreeModel* parent);

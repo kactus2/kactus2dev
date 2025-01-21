@@ -42,13 +42,13 @@ public:
     /*!
      *  The constructor..
      *
-     *      @param [in] indirectInterface   The indirect interface to edit.
-     *      @param [in] validator           Validator for the indirect interface.
-     *      @param [in] component           The component containing the indirect interface.
-     *      @param [in] library             The available IP-XACT library.
-     *      @param [in] finder              Finder for available parameters for the indirect interface.
-     *      @param [in] formatter           Formatter for expressions.
-     *      @param [in] parent              The parent widget.
+     *    @param [in] indirectInterface   The indirect interface to edit.
+     *    @param [in] validator           Validator for the indirect interface.
+     *    @param [in] component           The component containing the indirect interface.
+     *    @param [in] library             The available IP-XACT library.
+     *    @param [in] finder              Finder for available parameters for the indirect interface.
+     *    @param [in] formatter           Formatter for expressions.
+     *    @param [in] parent              The parent widget.
      */
     SingleIndirectInterfaceEditor(QSharedPointer<IndirectInterface> indirectInterface,
         QSharedPointer<IndirectInterfaceValidator> validator,
@@ -106,14 +106,14 @@ private slots:
     /*!
      *  Handle the selection of memory map.
      *
-     *      @param [in] checked     Flag for enabling memory map.
+     *    @param [in] checked     Flag for enabling memory map.
      */
     void onMemoryMapSelected(bool checked);
 
     /*!
      *  Handle the selection of transparent bridges.
      *
-     *      @param [in] checked     Flag for enabling transparent bridges.
+     *    @param [in] checked     Flag for enabling transparent bridges.
      */
     void onTransparentBridgeSelected(bool checked);
 private:
@@ -134,7 +134,7 @@ private:
     /*!
      *  Finds all the available field references.
      *
-     *      @return The available field references in the current component.
+     *    @return The available field references in the current component.
      */
     QStringList findAvailableReferences() const;
 

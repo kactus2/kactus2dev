@@ -27,7 +27,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] position   The initial position of represented by the extension.
+	 *    @param [in] position   The initial position of represented by the extension.
 	 */
     Kactus2Position(QPointF position);
 
@@ -45,21 +45,21 @@ public:
     /*!
      *  Clones the vendor extension.
      *
-     *      @return The clone copy of the vendor extension.
+     *    @return The clone copy of the vendor extension.
      */
     virtual Kactus2Position* clone() const;
 
     /*!
      *  Returns a type identifier for the vendor extension.
      *
-     *      @return A type identifier of the vendor extension.
+     *    @return A type identifier of the vendor extension.
      */
     virtual QString type() const;
 
     /*!
      *  Writes the vendor extension to XML.
      *
-     *      @param [in] writer   The writer used for writing the XML.
+     *    @param [in] writer   The writer used for writing the XML.
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
@@ -68,14 +68,14 @@ public:
     /*!
      *  Gets the position.
      *
-     *      @return The position represented by the extension.
+     *    @return The position represented by the extension.
      */
     QPointF position() const;
 
     /*!
      *  Sets the position.
      *
-     *      @param [in] pos   The position to set.
+     *    @param [in] pos   The position to set.
      */
     void setPosition(QPointF const& pos);
 

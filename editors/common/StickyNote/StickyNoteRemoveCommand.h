@@ -33,8 +33,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item        The item to remove.
-     *      @param [in] parent      The parent command.
+     *    @param [in] item        The item to remove.
+     *    @param [in] parent      The parent command.
      */
     StickyNoteRemoveCommand(StickyNote* noteItem, QGraphicsScene* diagram, QUndoCommand* parent = 0);
 

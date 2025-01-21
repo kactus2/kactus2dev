@@ -36,18 +36,18 @@ namespace PresenceTypes
     * if The str does not match any of the enum values the default value
     * specifies as parameter will be returned
     *
-    *      @param [in] str QString containing the string to be converted
-    *      @param [in] defaultValue The value that will be returned if no match is found
+    *    @param [in] str QString containing the string to be converted
+    *    @param [in] defaultValue The value that will be returned if no match is found
     *
-    *      @return General::Presence that matches the str or default value.
+    *    @return General::Presence that matches the str or default value.
     */
     IPXACTMODELS_EXPORT Presence str2Presence(QString str, Presence defaultValue);
 
     /*! Convert the enum presence to QString.
     *
-    *      @param [in] presence The enum value to be converted
+    *    @param [in] presence The enum value to be converted
     *
-    *      @return QString matching the enum value.
+    *    @return QString matching the enum value.
     */
     IPXACTMODELS_EXPORT QString presence2Str(Presence presence);
 }

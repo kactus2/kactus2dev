@@ -30,12 +30,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] elementID               ID of the parameter referenced by the configurable element.
-     *      @param [in] itemRow                 Row of the item.
-     *      @param [in] parentName              Name of the parent item.
-     *      @param [in] configurableElements    List of the configurable element values containing the element
+     *    @param [in] elementID               ID of the parameter referenced by the configurable element.
+     *    @param [in] itemRow                 Row of the item.
+     *    @param [in] parentName              Name of the parent item.
+     *    @param [in] configurableElements    List of the configurable element values containing the element
      *                                          removed in this command.
-     *      @param [in] parent                  The parent undo command.
+     *    @param [in] parent                  The parent undo command.
      */
     ConfigurableElementRemoveCommand(QString const& elementID, int itemRow, QString const& parentName,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > configurableElements,
@@ -65,9 +65,9 @@ signals:
     /*!
      *  Informs that the selected configurable element value has been added to the associated table.
      *
-     *      @param [in] elementID       ID of the selected configurable element.
-     *      @param [in] elementValue    Value of the selected configurable element.
-     *      @param [in] elementRow      Row of the configurable element in the associated table.
+     *    @param [in] elementID       ID of the selected configurable element.
+     *    @param [in] elementValue    Value of the selected configurable element.
+     *    @param [in] elementRow      Row of the configurable element in the associated table.
      */
     void addConfigurableElement(QString const& elementID, QString const& elementValue, 
         int elementRow);
@@ -75,23 +75,23 @@ signals:
     /*!
      *  Informs that the selected configurable element value has been removed from the associated table.
      *
-     *      @param [in] elementID   ID of the parameter referenced by the selected configurable element.
-     *      @param [in] parentName  Name of the parent item containing the configurable element item.
-     *      @param [in] elementRow  Row of the removed configurable element value.
+     *    @param [in] elementID   ID of the parameter referenced by the selected configurable element.
+     *    @param [in] parentName  Name of the parent item containing the configurable element item.
+     *    @param [in] elementRow  Row of the removed configurable element value.
      */
     void removeConfigurableElement(QString const& elementID, int elementRow);
 
     /*!
      *  Increase the amount of references in the new value.
      *
-     *      @param [in] newValue    The new value for the configurable element.
+     *    @param [in] newValue    The new value for the configurable element.
      */
     void increaseReferencesInNewValue(QString const& newValue);
 
     /*!
      *  Decrease the amount of references in the old value.
      *
-     *      @param [in] oldValue    The old value for the configurable element.
+     *    @param [in] oldValue    The old value for the configurable element.
      */
     void decreaseReferencesInOldValue(QString const& oldValue);
 
@@ -100,9 +100,9 @@ private:
     /*!
      *  Locate the configurable element value with the referenced parameter ID.
      *
-     *      @param [in] elementID   ID of the parameter referenced by the selected configurable element value.
+     *    @param [in] elementID   ID of the parameter referenced by the selected configurable element value.
      *
-     *      @return The configurable element value containing a reference to the selected parameter ID.
+     *    @return The configurable element value containing a reference to the selected parameter ID.
      */
     QSharedPointer<ConfigurableElementValue> getRemovedConfigurableElement(QString const& elementID);
 

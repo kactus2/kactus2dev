@@ -28,8 +28,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] portMapInterface    Interface for accessing port maps.
-     *      @param [in] parent              The parent widget.
+     *    @param [in] portMapInterface    Interface for accessing port maps.
+     *    @param [in] parent              The parent widget.
      */
     PortMapView(PortMapInterface* portMapInterface, QWidget* parent);
 
@@ -43,14 +43,14 @@ protected:
     /*!
      *  Handler for context menu events.
      *
-     *      @param [in] event   The context menu event.
+     *    @param [in] event   The context menu event.
      */
     virtual void contextMenuEvent(QContextMenuEvent* event) override final;
 
     /*!
      *  Handler for drag enter events
 	 *
-	 *      @param [in] event The event object.
+	 *    @param [in] event The event object.
      */
 	virtual void dragEnterEvent(QDragEnterEvent* event) override final;
 
@@ -59,7 +59,7 @@ signals:
     /*!
      *  Automatically create port maps for the selected logical signals.
      *
-     *      @param [in] logicalSignals  The selected logical signals.
+     *    @param [in] logicalSignals  The selected logical signals.
      */
     void autoConnecteLogicalSignals(QStringList const& logicalSignals);
 

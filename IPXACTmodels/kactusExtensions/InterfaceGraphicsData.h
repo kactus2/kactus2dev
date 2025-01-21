@@ -35,9 +35,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name        Name of the interface.
-     *      @param [in] position    Position of the interface.
-     *      @param [in] direction   Direction of the interface.
+     *    @param [in] name        Name of the interface.
+     *    @param [in] position    Position of the interface.
+     *    @param [in] direction   Direction of the interface.
      */
     InterfaceGraphicsData(QString const& name, QPointF position = QPointF(), QVector2D direction = QVector2D());
 
@@ -49,7 +49,7 @@ public:
     /*!
      *  Constructor which reads the interface graphics data from an XML node.
      *
-     *      @param [in] node    The source XML node.
+     *    @param [in] node    The source XML node.
      */
     InterfaceGraphicsData(QDomNode& node);
 
@@ -61,7 +61,7 @@ public:
     /*!
      *  Clones the interface graphics data.
      *
-     *      @return Cloned interface graphics data.
+     *    @return Cloned interface graphics data.
      */
     virtual InterfaceGraphicsData* clone() const;
     
@@ -73,7 +73,7 @@ public:
     /*!
      *  Gets the interface graphics data type.
      *
-     *      @return The type of the interface graphics data.
+     *    @return The type of the interface graphics data.
      */
     virtual QString type() const;
 
@@ -85,56 +85,56 @@ public:
     /*!
      *  Set a name.
      *
-     *      @param [in] newName     The new name.
+     *    @param [in] newName     The new name.
      */
     void setName(QString const& newName);
 
     /*!
      *  Get the name.
      *
-     *      @return The name of the interface.
+     *    @return The name of the interface.
      */
     QString getName() const;
 
     /*!
      *  Set the position for the interface.
      *
-     *      @param [in] newPosition     The new position.
+     *    @param [in] newPosition     The new position.
      */
     void setPosition(QPointF const& newPosition);
 
     /*!
      *  Get the position.
      *
-     *      @return The position of the interface.
+     *    @return The position of the interface.
      */
     QPointF getPosition() const;
 
     /*!
      *  Check if the interface has been given a position.
      *
-     *      @return True, if the interface has a position, false otherwise.
+     *    @return True, if the interface has a position, false otherwise.
      */
     bool hasPosition() const;
 
     /*!
      *  Set a direction for the interface.
      *
-     *      @param [in] newDirection    The new interface direction.
+     *    @param [in] newDirection    The new interface direction.
      */
     void setDirection(QVector2D const& newDirection);
 
     /*!
      *  Get the direction of the interface.
      *
-     *      @return The direction of the interface.
+     *    @return The direction of the interface.
      */
     QVector2D getDirection() const;
 
     /*!
      *  Check if the interface has been given a direction.
      *
-     *      @return True, if the interface has been given a direction, otherwise false.
+     *    @return True, if the interface has been given a direction, otherwise false.
      */
     bool hasDirection() const;
 

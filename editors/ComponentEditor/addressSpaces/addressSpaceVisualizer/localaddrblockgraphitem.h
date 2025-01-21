@@ -31,10 +31,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] block               The address block being visualized.
-	 *      @param [in] addressSpaceWidth   The width of the address space.
-	 *      @param [in] expressionParser    The used expression parser.
-	 *      @param [in] parent              The parent graph item.
+	 *    @param [in] block               The address block being visualized.
+	 *    @param [in] addressSpaceWidth   The width of the address space.
+	 *    @param [in] expressionParser    The used expression parser.
+	 *    @param [in] parent              The parent graph item.
 	 */
 	LocalAddrBlockGraphItem(QSharedPointer<AddressBlock> block,
         QString const& addressSpaceWidth,
@@ -56,14 +56,14 @@ public:
 	/*!
      *  Get the offset of the item. 
 	 *
-	 *      @return int The offset of the item.
+	 *    @return int The offset of the item.
 	 */
 	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
-	 *      @return The last address.
+	 *    @return The last address.
 	 */
 	virtual quint64 getLastAddress() const override final;
 

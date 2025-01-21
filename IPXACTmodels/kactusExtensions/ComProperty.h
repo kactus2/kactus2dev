@@ -48,29 +48,29 @@ public:
     /*!
      *  Copy the com property.
      *
-     *      @return The copied com property.
+     *    @return The copied com property.
      */
     virtual ComProperty* clone() const;
 
     /*!
      *  Get the type of the com property extension.
      *
-     *      @return The type of this extension.
+     *    @return The type of this extension.
      */
     virtual QString type() const;
 
     /*!
      *  Writes the contents of the property to an XML stream.
      *
-     *      @param [in] write The XML stream writer.
+     *    @param [in] write The XML stream writer.
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Returns true if the property contents are valid.
      *
-     *      @param [out] errorList  The list of errors found in the contents.
-     *      @param [in]  parentId   The identifier of the containing COM definition.
+     *    @param [out] errorList  The list of errors found in the contents.
+     *    @param [in]  parentId   The identifier of the containing COM definition.
      */
     void findErrors(QVector<QString>& errorList, QString const& parentId) const;
 
@@ -87,28 +87,28 @@ public:
     /*!
      *  Sets the property required/optional.
      *
-     *      @param [in] required If true, the property is a required one; otherwise it is optional.
+     *    @param [in] required If true, the property is a required one; otherwise it is optional.
      */
     void setRequired(bool required);
 
     /*!
      *  Sets the property type.
      *
-     *      @param [in] type The property type as a string.
+     *    @param [in] type The property type as a string.
      */
     void setType(QString const& type);
 
     /*!
      *  Sets the default value for the property.
      *
-     *      @param [in] defaultValue The default value to set.
+     *    @param [in] defaultValue The default value to set.
      */
     void setDefaultValue(QString const& defaultValue);
 
     /*!
      *  Sets the description of the property.
      *
-     *      @param [in] description The description to set.
+     *    @param [in] description The description to set.
      */
     void setDescription(QString const& description);
 

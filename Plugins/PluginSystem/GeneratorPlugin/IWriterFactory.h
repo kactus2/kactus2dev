@@ -28,10 +28,10 @@ public:
     /*!
      *  Creates writers for the given formatted HDL component.
      *
-     *      @param [in] outputPath			The path to the output file.
-     *      @param [in] component           The component which is needs writing.
+     *    @param [in] outputPath			The path to the output file.
+     *    @param [in] component           The component which is needs writing.
      *
-     *      @return The objects that bundles the writers. Will be null, if could not be created.
+     *    @return The objects that bundles the writers. Will be null, if could not be created.
      */
     virtual QSharedPointer<GenerationOutput> prepareComponent(QString const& outputPath,
         QSharedPointer<MetaComponent> component) = 0;
@@ -39,9 +39,9 @@ public:
     /*!
      *  Creates writers for the given meta designs.
      *
-     *      @param [in] designs             The designs that will yield documents.
+     *    @param [in] designs             The designs that will yield documents.
      *
-     *      @return The objects that bundles the writers. Will be null, if could not be created.
+     *    @return The objects that bundles the writers. Will be null, if could not be created.
      */
     virtual QList<QSharedPointer<GenerationOutput> > prepareDesign(QList<QSharedPointer<MetaDesign> >& designs) = 0;
     

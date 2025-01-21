@@ -37,14 +37,14 @@ public:
     /*!
      *  Sets the description text for the table view.
      *
-     *      @param [in] desc The description text.
+     *    @param [in] desc The description text.
      */
     void setDescription(QString const& desc);
 
     /*!
      *  Sets the model used for the table view.
      *
-     *      @param [in] model The model to set.
+     *    @param [in] model The model to set.
      */
     void setModel(QAbstractTableModel* model);
 

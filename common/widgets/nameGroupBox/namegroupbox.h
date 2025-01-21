@@ -31,7 +31,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this widget.
+	 *    @param [in] parent  Pointer to the owner of this widget.
 	 */
 	NameGroupBox(QWidget* parent = 0, const QString& title = QString("Names"));
 
@@ -41,21 +41,21 @@ public:
 	/*!
      *  Get the value of the name-field.
 	 *
-	 *      @return QString containing the name.
+	 *    @return QString containing the name.
 	 */
 	QString name() const;
 
 	/*!
      *  Get the value of the displayName-field.
 	 *
-	 *      @return QString containing the displayName.
+	 *    @return QString containing the displayName.
 	 */
 	QString displayName() const;
 
 	/*!
      *  Get the value of the description-field.
 	 *
-	 *      @return QString containing the description.
+	 *    @return QString containing the description.
 	 */
 	QString description() const;
 
@@ -65,7 +65,7 @@ public:
      *  This function checks that name-field is not empty and does not contain string with embedded whitespace 
      *  characters.
 	 *
-	 *      @return True if everything is ok.
+	 *    @return True if everything is ok.
 	 */
 	bool isValid() const;
 
@@ -74,21 +74,21 @@ public slots:
 	/*!
      *  Set the value for the name-field.
      *
-     *      @param [in] name    QString containing the name.
+     *    @param [in] name    QString containing the name.
 	 */
 	void setName(const QString& name);
 
 	/*!
      *  Set the value for the displayName-field.
 	 *
-	 *      @param [in] displayName     QString containing the displayName.
+	 *    @param [in] displayName     QString containing the displayName.
 	 */
 	void setDisplayName(const QString& displayName);
 
 	/*!
      *  Set the value for the description-field.
      *
-     *      @param [in] description     QString containing the description.
+     *    @param [in] description     QString containing the description.
 	 */
 	void setDescription(const QString& description);
 

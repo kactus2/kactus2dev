@@ -44,12 +44,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance which manages the library.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] busInterface            Interface for accessing bus interfaces.
-	 *      @param [in] parent                  The owner of this widget.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] handler                 The instance which manages the library.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] busInterface            Interface for accessing bus interfaces.
+	 *    @param [in] parent                  The owner of this widget.
 	 */
 	ImportEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
@@ -72,7 +72,7 @@ public:
 	/*!
 	 *  Checks the validity of model parameter and port editors.
 	 *
-	 *      @return False if contents of either editor is not valid.
+	 *    @return False if contents of either editor is not valid.
 	 */
 	bool checkEditorValidity() const;
 
@@ -87,14 +87,14 @@ signals:
     /*!
      *  Increase the number of references to the selected parameter.
      *
-     *      @param [in] id      The selected parameter.
+     *    @param [in] id      The selected parameter.
      */
     void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the number of references to the selected parameter.
      *
-     *      @param [in] id      The selected parameter.
+     *    @param [in] id      The selected parameter.
      */
     void decreaseReferences(QString const& id);
 
@@ -117,7 +117,7 @@ private slots:
     /*!
      *  Handle the change in the imported component.
      *
-     *      @param [in] index   Index of the new component.
+     *    @param [in] index   Index of the new component.
      */
     void onChangeSelectedComponent(int index);
 
@@ -132,16 +132,16 @@ private:
     /*!
      *  Finds the file extensions for given file types.
      *
-     *      @param [in] possibleFileTypes   The file types whose extensions to find.
+     *    @param [in] possibleFileTypes   The file types whose extensions to find.
      *
-     *      @return The file extensions for the file types.
+     *    @return The file extensions for the file types.
      */
     QStringList fileExtensionsForTypes(QStringList possibleFileTypes) const;
 
     /*!
      *  Gets the absolute path to the selected source file.
      *
-     *      @return The absolute path to the selected source file.
+     *    @return The absolute path to the selected source file.
      */
     QString selectedFileAbsolutePath() const;
 
@@ -156,16 +156,16 @@ private:
     /*!
      *  Get the filters for file browsing.
      *
-     *      @return List of filters combined with white space.
+     *    @return List of filters combined with white space.
      */
     QString getFileBrowsingFilters() const;
 
     /*!
      *  Check if a file exists in the file selector.
      *
-     *      @param [in] filePath    Path of the selected file.
+     *    @param [in] filePath    Path of the selected file.
      *
-     *      @return True, if the file exists in the file selector, false otherwise.
+     *    @return True, if the file exists in the file selector, false otherwise.
      */
     bool fileExistsInFileSelector(QString const& filePath) const;
 

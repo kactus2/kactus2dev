@@ -68,10 +68,10 @@ public:
     /*!
      *  Adds a file item.
      *
-     *      @param [in] type       The item type.
-     *      @param [in] component  The component being edited.
-     *      @param [in] path       The file path.
-     *      @param [in] fileRefs   The file references.
+     *    @param [in] type       The item type.
+     *    @param [in] component  The component being edited.
+     *    @param [in] path       The file path.
+     *    @param [in] fileRefs   The file references.
      */
     FileDependencyItem* addFile(QSharedPointer<Component> component, QString const& path,
                                 QList<QSharedPointer<File> > const& fileRefs);
@@ -79,31 +79,31 @@ public:
     /*!
      *  Adds a folder item.
      *
-     *      @param [in] component  The component being edited.
-     *      @param [in] path       The folder path. Enclose external locations with with '$' e.g. $path$.
+     *    @param [in] component  The component being edited.
+     *    @param [in] path       The folder path. Enclose external locations with with '$' e.g. $path$.
      *
-     *      @return The created item.
+     *    @return The created item.
      */
     FileDependencyItem* addFolder(QSharedPointer<Component> component, QString const& path);
 
     /*!
      *  Inserts an item.
      *
-     *      @param [in] item The item to insert.
+     *    @param [in] item The item to insert.
      */
     void insertItem(FileDependencyItem* item);
 
     /*!
      *  Removes an item.
      *
-     *      @param [in] item The item to remove.
+     *    @param [in] item The item to remove.
      */
     void removeItem(FileDependencyItem* item);
 
     /*!
      *  Sets the status of the item.
      *
-     *      @param [in] status The new status to set.
+     *    @param [in] status The new status to set.
      */
     void setStatus(FileDependencyStatus status);
 
@@ -117,14 +117,14 @@ public:
     /*!
      *  Sets the latest hash to the metadata.
      *
-     *      @param [in] hash The hash to set.
+     *    @param [in] hash The hash to set.
      */
     void setLastHash(QString const& hash);
 
     /*!
      *  Assigns the file into the given file sets.
      *
-     *      @param [in] fileSets          The file sets where the file is assigned.
+     *    @param [in] fileSets          The file sets where the file is assigned.
      */
     void setFileSets(QList<QSharedPointer<FileSet> > fileSets);
 
@@ -136,14 +136,14 @@ public:
     /*!
      *  Returns the child at the given index.
      *
-     *      @param [in] index The index of the child to retrieve.
+     *    @param [in] index The index of the child to retrieve.
      */
     FileDependencyItem* getChild(int index);
 
     /*!
      *  Returns the child at the given index.
      *
-     *      @param [in] index The index of the child to retrieve.
+     *    @param [in] index The index of the child to retrieve.
      */
     FileDependencyItem const* getChild(int index) const;
 
@@ -175,7 +175,7 @@ public:
     /*!
      *  Gets the names of all the contained file sets.
      *
-     *      @return The names of the contained file sets.
+     *    @return The names of the contained file sets.
      */
     QStringList getFileSetNames() const;
 
@@ -217,10 +217,10 @@ private:
     /*!
      *  Constructor which creates a file item.
      *
-     *      @param [in] component  The component being edited.
-     *      @param [in] path       The path of the file.
-     *      @param [in] fileRefs   The file references.
-     *      @param [in] parent     The parent item.
+     *    @param [in] component  The component being edited.
+     *    @param [in] path       The path of the file.
+     *    @param [in] fileRefs   The file references.
+     *    @param [in] parent     The parent item.
      */
     FileDependencyItem( QSharedPointer<Component> component, QString const& path,
         QList<QSharedPointer<File> > const& fileRefs, FileDependencyItem* parent);
@@ -228,9 +228,9 @@ private:
     /*!
      *  Constructor which creates a folder item.
      *     
-     *      @param [in] component  The component being edited.
-     *      @param [in] path       The path of the file/folder.
-     *      @param [in] parent     The parent item.
+     *    @param [in] component  The component being edited.
+     *    @param [in] path       The path of the file/folder.
+     *    @param [in] parent     The parent item.
      */
     FileDependencyItem(QSharedPointer<Component> component, QString const& path, FileDependencyItem* parent);
     

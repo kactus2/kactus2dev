@@ -31,8 +31,8 @@ public:
     /*!
      *  Write a OtherClockDriver to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] OtherClockDriver		The OtherClockDriver to be written.
+     *    @param [in] writer  The used xml writer.
+     *    @param [in] OtherClockDriver		The OtherClockDriver to be written.
      */
     void writeOtherClockDriver(QXmlStreamWriter& writer, QSharedPointer<OtherClockDriver> otherClockDriver) const;
 
@@ -41,17 +41,17 @@ private:
     /*!
      *  Write the other clock driver attributes.
      *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] otherClockDriver    The new other clock driver.
+     *    @param [in] writer              The used XML writer.
+     *    @param [in] otherClockDriver    The new other clock driver.
      */
     void writeClockDriverAttributes(QXmlStreamWriter& writer, QSharedPointer<OtherClockDriver> otherClockDriver) const;
 
     /*!
      *  Write a clock unit.
      *
-     *      @param [in] writer          The used XML writer.
-     *      @param [in] clockUnit       The new other clock driver.
-     *      @param [in] elementName     The name of the element being written.
+     *    @param [in] writer          The used XML writer.
+     *    @param [in] clockUnit       The new other clock driver.
+     *    @param [in] elementName     The name of the element being written.
      */
     void writeClockUnit(QXmlStreamWriter& writer, QSharedPointer<ClockUnit> clockUnit, QString const& elementName)
         const;

@@ -27,35 +27,35 @@ public:
     /*!
      *  Create a copy of the Driver.
      *
-     *      @return A Driver identical to this.
+     *    @return A Driver identical to this.
      */
 	Driver* clone() const;
 
     /*!
      *  Get the applied range for the driver.
      *
-     *      @return The range the driver applies to.
+     *    @return The range the driver applies to.
      */
     Range getRange() const;
 
     /*!
      *  Set the range the driver applies to
      *
-     *      @param [in] range The range to set.
+     *    @param [in] range The range to set.
      */
     void setRange(Range const& range);
 
 	/*!
 	 *  Get the default value of the driver.
 	 *
-	 *      @return The default value.
+	 *    @return The default value.
 	 */
 	QString getDefaultValue() const;
 
 	/*!
 	 *  Set the default value in the driver.
 	 *
-	 *      @param [in] value The default value to set.
+	 *    @param [in] value The default value to set.
 	 */
 	void setDefaultValue(QString const& value);
 

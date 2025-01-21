@@ -26,11 +26,11 @@ public:
 
 	/*! The constructor
 	 * 
-	 *      @param [in] swView      The software view to edit.
-	 *      @param [in] model       The model that owns the items.
-	 *      @param [in] libHandler  The instance that manages the library.
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] parent      The parent item.
+	 *    @param [in] swView      The software view to edit.
+	 *    @param [in] model       The model that owns the items.
+	 *    @param [in] libHandler  The instance that manages the library.
+	 *    @param [in] component   The component being edited.
+	 *    @param [in] parent      The parent item.
 	 */
 	ComponentEditorSWViewItem(QSharedPointer<SWView> swView, ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler, QSharedPointer<Component> component,
@@ -41,25 +41,25 @@ public:
 
 	/*! Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
 	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	*/
 	virtual QString text() const;
 
 	/*! Check the validity of this item and sub items.
 	 *
-	 *      @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	*/
 	virtual bool isValid() const;
 
 	/*! Get pointer to the editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
@@ -72,7 +72,7 @@ public:
     /*!
      *  Returns the possible actions for opening the item.
      *
-     *      @return The actions to open the item.
+     *    @return The actions to open the item.
      */
     virtual QList<QAction*> actions() const;
 

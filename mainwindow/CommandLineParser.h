@@ -35,24 +35,24 @@ public:
      *  Reads the given arguments. 
      *  The arguments can then be checked before processing with argumentsValid() and helpOrVersionOptionSet().
      *
-     *      @param [in] arguments   The arguments to read.
+     *    @param [in] arguments   The arguments to read.
      */
     void readArguments(QStringList const& arguments);
 
     /*!
      *  Checks if the command-line option is set.
      *
-     *      @return True, if command-line option is set, otherwise false.
+     *    @return True, if command-line option is set, otherwise false.
      */
     bool commandlineMode() const;
 
     /*!
      *  Processes the given command line arguments and executes accordingly.
      *
-     *      @param [in] arguments       The command line arguments to process.
-     *      @param [in] messageChannel  Interface for output and error messages.     
+     *    @param [in] arguments       The command line arguments to process.
+     *    @param [in] messageChannel  Interface for output and error messages.     
      *
-     *      @return 0 for a successful run, any other value for errors.
+     *    @return 0 for a successful run, any other value for errors.
      */
     int process(QStringList const& arguments, MessageMediator* messageChannel);
    
@@ -61,7 +61,7 @@ private:
     /*!
      *  Get the usage help text.
      *
-     *      @return The usage help text.
+     *    @return The usage help text.
      */
     QString helpText();
 

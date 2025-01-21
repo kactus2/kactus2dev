@@ -46,21 +46,21 @@ public:
     /*!
      *	Set the mode-specific field slices to use while parsing expressions.
      *
-     *      @param [in] fieldSlices             The field slices to set.
+     *    @param [in] fieldSlices             The field slices to set.
      */
     void setFieldSlices(FieldSlice::List fieldSlices);
 
     /*!
      *	Set the mode-specific port slices to use while parsing expressions.
      *
-     *      @param [in] portSlices             The port slices to set.
+     *    @param [in] portSlices             The port slices to set.
      */
     void setPortSlices(PortSlice::List portSlices);
 
     /*!
      *	Set the available modes to use while parsing expressions.
      *
-     *      @param [in] modes                   The modes to set.
+     *    @param [in] modes                   The modes to set.
      */
     void setModes(Mode::List modes);
 
@@ -69,37 +69,37 @@ protected:
     /*!
      *  Checks if the given expression is a symbol e.g. reference.
      *
-     *      @param [in] expression   The expression to check.
+     *    @param [in] expression   The expression to check.
      *
-     *      @return True, if the expression is a symbol, otherwise false.
+     *    @return True, if the expression is a symbol, otherwise false.
      */
     bool isSymbol(QStringView expression) const final;
 
     /*!
      *  Finds the value for given symbol.
      *
-     *      @param [in] symbol  The symbol whose value to find.
+     *    @param [in] symbol  The symbol whose value to find.
      *
-     *      @return The found symbol value.
+     *    @return The found symbol value.
      */
     QString findSymbolValue(QStringView symbol) const override;
 
     /*!
      *  Checks if the given token is a unary operator.
      *
-     *      @param [in] expression   The token to check.
+     *    @param [in] expression   The token to check.
      *
-     *      @return True, if the token is a unary operator, otherwise false.
+     *    @return True, if the token is a unary operator, otherwise false.
      */
     bool isUnaryOperator(QStringView token) const final;
 
     /*!
      *  Solves a binary operation.
      *
-     *      @param [in] operation    The operation to solve.
-     *      @param [in] term         The term for the operation.
+     *    @param [in] operation    The operation to solve.
+     *    @param [in] term         The term for the operation.
      *
-     *      @return The result of the operation.
+     *    @return The result of the operation.
      */
     QString solveUnary(QStringView operation, QString const& term) const final;
 
@@ -108,9 +108,9 @@ private:
     /*!
      *  Check if the given expression is a valid reference within a mode.
      *
-     *      @param [in] expression  The expression to check.
+     *    @param [in] expression  The expression to check.
      *
-     *      @return True, if the expression is a valid reference, otherwise false.
+     *    @return True, if the expression is a valid reference, otherwise false.
      */
     bool isModeReference(QStringView expression) const;
 
@@ -118,10 +118,10 @@ private:
     /*!
      *  Solve condition to a value.
      *
-     *      @param [in] reference       The reference to solve.
-     *      @param [in] availableItems  The available items to reference.
+     *    @param [in] reference       The reference to solve.
+     *    @param [in] availableItems  The available items to reference.
      *
-     *      @return 1, if the reference is to a valid item, otherwise x.
+     *    @return 1, if the reference is to a valid item, otherwise x.
      */
     template <typename T> 
     QString solveCondition(QStringView reference, QSharedPointer<QList<QSharedPointer<T> > > availableItems) const

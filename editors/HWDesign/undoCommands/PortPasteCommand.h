@@ -28,10 +28,10 @@ public:
      *
 	 *      Creates the child commands for adding physical ports to the component model. 
 	 *
-     *      @param [in] destComponent   The component to which to copy a port.
-	 *      @param [in] port            The port to paste.
-     *      @param [in] diagram         Diagram containing the scene of the port.
-     *      @param [in] parent          The parent command.
+     *    @param [in] destComponent   The component to which to copy a port.
+	 *    @param [in] port            The port to paste.
+     *    @param [in] diagram         Diagram containing the scene of the port.
+     *    @param [in] parent          The parent command.
      */
     PortPasteCommand(HWComponentItem* destComponent, ActiveBusInterfaceItem* port, DesignDiagram* diagram,
         QUndoCommand* parent = 0);

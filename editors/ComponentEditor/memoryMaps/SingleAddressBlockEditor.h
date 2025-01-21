@@ -49,16 +49,16 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] blockInterface          Interface for address blocks.
-	 *      @param [in] addressBlock            The address block being edited.
-     *      @param [in] containingMap           Memory map item containing the edited address block.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance managing the library.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The expression parser.
-     *      @param [in] addressBlockValidator   Validator used for address blocks.
-	 *      @param [in] parent                  The parent of this editor.
+     *    @param [in] blockInterface          Interface for address blocks.
+	 *    @param [in] addressBlock            The address block being edited.
+     *    @param [in] containingMap           Memory map item containing the edited address block.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] handler                 The instance managing the library.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] expressionParser        The expression parser.
+     *    @param [in] addressBlockValidator   Validator used for address blocks.
+	 *    @param [in] parent                  The parent of this editor.
 	 */
     SingleAddressBlockEditor(AddressBlockInterface* blockInterface,
         QSharedPointer<AddressBlock> addressBlock,
@@ -92,8 +92,8 @@ public slots:
     /*
      *  Handles addressblock name change from memory map editor.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void onAddressBlockNameChanged(QString const& oldName, QString const& newName);
 
@@ -107,15 +107,15 @@ signals:
     /*!
      *  Change the value for address unit bits in the model.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bits value.
+     *    @param [in] newAddressUnitBits  The new address unit bits value.
      */
     void addressUnitBitsChanged(int newAddressUnitBits);
 
     /*
      *  Informs of register name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void registerNameChanged(QString const& oldName, QString const& newName);
 
@@ -130,7 +130,7 @@ protected:
     /*!
 	 *  Shows the widget and informs of the required help document.
 	 *
-	 *      @param [in] event   The show event.
+	 *    @param [in] event   The show event.
 	 */
 	virtual void showEvent(QShowEvent* event) override final;
 
@@ -157,21 +157,21 @@ private slots:
     /*!
      *  Sets the value in the usage editor.
      *
-     *      @param [in] newUsage    The selected usage.
+     *    @param [in] newUsage    The selected usage.
      */
     void onUsageSelected(QString const& newUsage);
 
     /*!
      *  Sets the value in the access editor.
      *
-     *      @param [in] newAccess   The selected access.
+     *    @param [in] newAccess   The selected access.
      */
     void onAccessSelected(QString const& newAccess);
 
     /*!
      *  Sets the value in the volatile editor.
      *
-     *      @param [in] newVolatileValue    The selected volatile status.
+     *    @param [in] newVolatileValue    The selected volatile status.
      */
     void onVolatileSelected(QString const& newVolatileValue);
 
@@ -190,16 +190,16 @@ private:
     /*!
      *  Change the status of signal blocking in all the expression editors.
      *
-     *      @param [in] blockStatus     The new signal blocking status.
+     *    @param [in] blockStatus     The new signal blocking status.
      */
     void changeExpressionEditorSignalBlockStatus(bool blockStatus);
 
     /*!
      *  Calculates the value of an expression.
      *
-     *      @param [in] expression  The expression, whose value is to be calculated.
+     *    @param [in] expression  The expression, whose value is to be calculated.
      *
-     *      @return The calculated value of the given expression.
+     *    @return The calculated value of the given expression.
      */
     QString formattedValueFor(QString const& expression) const;
 

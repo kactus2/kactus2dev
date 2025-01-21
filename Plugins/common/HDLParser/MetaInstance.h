@@ -31,11 +31,11 @@ public:
 	/*!
 	 *  The constructor.
      *
-     *      @param [in] componentInstance   The instance under inspection.
-     *      @param [in] library             The library which is expected to contain the parsed documents.
-     *      @param [in] messages            For message output.
-     *      @param [in] component           The instantiated component.
-     *      @param [in] activeView          The active view for the component. May be null.
+     *    @param [in] componentInstance   The instance under inspection.
+     *    @param [in] library             The library which is expected to contain the parsed documents.
+     *    @param [in] messages            For message output.
+     *    @param [in] component           The instantiated component.
+     *    @param [in] activeView          The active view for the component. May be null.
 	 */
     MetaInstance(
         QSharedPointer<ComponentInstance> componentInstance,
@@ -82,24 +82,24 @@ private:
     /*!
      *  Culls and parses the ports of the component.
      *
-     *      @param [in] parser          Used to parse expressions.
+     *    @param [in] parser          Used to parse expressions.
      */
     void parsePorts(IPXactSystemVerilogParser const& parser);
     
     /*!
      *  Creates assignments for port maps.
      *
-     *      @param [in] parser          Used to parse expressions.
+     *    @param [in] parser          Used to parse expressions.
      */
     void parsePortAssignments(IPXactSystemVerilogParser const& parser);
 
     /*!
      *  Finds the mapped logical port bounds for a port map.
      *
-     *      @param [in] parser          Used for parsing the bounds.
-     *      @param [in] portMap         The port map for the which to find the logical bounds.
+     *    @param [in] parser          Used for parsing the bounds.
+     *    @param [in] portMap         The port map for the which to find the logical bounds.
      *
-     *      @return The logical port bounds for the port map in an instance.
+     *    @return The logical port bounds for the port map in an instance.
      */
 	QPair<QString, QString> logicalPortBoundsInMapping(IPXactSystemVerilogParser const& parser,
         QSharedPointer<PortMap> portMap) const;
@@ -107,10 +107,10 @@ private:
     /*!
      *  Finds the mapped physical port bounds for a port map.
      *
-     *      @param [in] parser          Used for parsing the bounds.
-     *      @param [in] portMap         The port map for the which to find the physical bounds.
+     *    @param [in] parser          Used for parsing the bounds.
+     *    @param [in] portMap         The port map for the which to find the physical bounds.
      *
-     *      @return The physical port bounds for the port map in an instance.
+     *    @return The physical port bounds for the port map in an instance.
      */
     QPair<QString, QString> physicalPortBoundsInMapping(IPXactSystemVerilogParser const& parser,
         QSharedPointer<PortMap> portMap) const;

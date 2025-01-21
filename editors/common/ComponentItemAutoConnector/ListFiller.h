@@ -26,9 +26,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] firstItem   The first component item to be connected.
-     *      @param [in] secondItem  The second component item to be connected.
-     *      @param [in] parent      The parent of this widget.
+     *    @param [in] firstItem   The first component item to be connected.
+     *    @param [in] secondItem  The second component item to be connected.
+     *    @param [in] parent      The parent of this widget.
      */
     ListFiller() = default;
 
@@ -40,8 +40,8 @@ public:
     /*!
      *  Populate the selected model with items from the selected component.
      *
-     *      @param [in] selectedList            The selected item model.
-     *      @param [in] containingComponent     The selected component.
+     *    @param [in] selectedList            The selected item model.
+     *    @param [in] containingComponent     The selected component.
      */
     virtual void initializeList(QStandardItemModel* selectedList, QSharedPointer<Component> containingComponent)
         const = 0;

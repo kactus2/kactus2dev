@@ -29,9 +29,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] conn      The SW connection.
-     *      @param [in] oldRoute  The old route of the connection.
-     *      @param [in] parent    The parent command.
+     *    @param [in] conn      The SW connection.
+     *    @param [in] oldRoute  The old route of the connection.
+     *    @param [in] parent    The parent command.
      */
     SWConnectionMoveCommand(GraphicsConnection* conn, QList<QPointF> const& oldRoute, QUndoCommand* parent = 0);
 
@@ -78,21 +78,21 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] port        The port to move.
-     *      @param [in] oldPos      The port's old position.
-     *      @param [in] diagram     Diagram containing the scene of the port.
-     *      @param [in] parent      The parent command.
+     *    @param [in] port        The port to move.
+     *    @param [in] oldPos      The port's old position.
+     *    @param [in] diagram     Diagram containing the scene of the port.
+     *    @param [in] parent      The parent command.
      */
     SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     /*!
      *  Constructor.
      *
-     *      @param [in] port        The port to move.
-     *      @param [in] oldPos      The port's old position.
-     *      @param [in] newPos      The port's new position.
-     *      @param [in] diagram     Diagram containing the scene of the port.
-     *      @param [in] parent      The parent command.
+     *    @param [in] port        The port to move.
+     *    @param [in] oldPos      The port's old position.
+     *    @param [in] newPos      The port's new position.
+     *    @param [in] diagram     Diagram containing the scene of the port.
+     *    @param [in] parent      The parent command.
      */
     SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QPointF const& newPos, DesignDiagram* diagram,
         QUndoCommand* parent = 0);

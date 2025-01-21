@@ -34,15 +34,15 @@ struct ModelSimDocument : public GenerationOutput
     /*!
      *  Writes the content. 
      *
-     *      @param [in] outputDirectory         The possible output directory.
+     *    @param [in] outputDirectory         The possible output directory.
      */
 	void write(QString const& outputDirectory);
     
     /*!
      *  Finds position for body text highlight in document, if any exists.
      *
-	 *      @param [out] begin                  The position where the highlight begins, if successful.
-     *      @param [out] end                    The position where the highlight ends, if successful.
+	 *    @param [out] begin                  The position where the highlight begins, if successful.
+     *    @param [out] end                    The position where the highlight ends, if successful.
      */
     void getBodyHighlight(int& begin, int& end) const;
     

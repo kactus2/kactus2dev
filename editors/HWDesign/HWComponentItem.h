@@ -44,10 +44,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] libInterface    The library in use.
-     *      @param [in] instance        The component instance represented by the item.
-     *      @param [in] component       The component represented by the instance.
-     *      @param [in] parent          The parent object.
+     *    @param [in] libInterface    The library in use.
+     *    @param [in] instance        The component instance represented by the item.
+     *    @param [in] component       The component represented by the instance.
+     *    @param [in] parent          The parent object.
      */
     HWComponentItem(LibraryInterface* libInterface, QSharedPointer<ComponentInstance> instance,
         QSharedPointer<Component> component, QGraphicsItem* parent = nullptr);
@@ -65,8 +65,8 @@ public:
     /*!
      *  Called when a port's ad-hoc visibility has been changed.
      *
-     *      @param [in] portName  The name of the port.
-     *      @param [in] visible   The new ad-hoc visibility.
+     *    @param [in] portName  The name of the port.
+     *    @param [in] visible   The new ad-hoc visibility.
      */
     virtual void onAdHocVisibilityChanged(QString const& portName, bool visible);
 
@@ -91,23 +91,23 @@ public:
      *  Adds a new, empty bus interface to the component. This function creates automatically an empty
      *  bus interface to the component.
      *
-     *      @param [in] pos The position hint for the port.
+     *    @param [in] pos The position hint for the port.
      *
-     *      @return The newly created port.
+     *    @return The newly created port.
      */
     ActiveBusInterfaceItem* addPort(QPointF const& pos);
 
     /*!
      *  Adds an already created bus interface to the component.
      *
-     *      @param [in] port The interface to add. Must not be used in any other component.
+     *    @param [in] port The interface to add. Must not be used in any other component.
      */
     void addPort(HWConnectionEndpoint* port);
 
     /*!
      *  Removes the given port from the component.
      *
-     *      @param [in] port The port to remove.
+     *    @param [in] port The port to remove.
      */
     void removePort(HWConnectionEndpoint* port);
 
@@ -124,7 +124,7 @@ public:
 
     /*! Called when a port is being moved.
      *
-     *      @param [in] port The port that is being moved.
+     *    @param [in] port The port that is being moved.
      */
     virtual void onMovePort(ConnectionEndpoint* port);
 
@@ -151,16 +151,16 @@ public:
     /*!
      *  Checks if the item is a draft component.
      *
-     *      @return True, if the component is a draft component, otherwise false.
+     *    @return True, if the component is a draft component, otherwise false.
      */
     bool isDraft() const;
 
     /*!
      *  Create an ad hoc port item with the given name.
      *
-     *      @param [in] portName    The name of the ad hoc port item.
+     *    @param [in] portName    The name of the ad hoc port item.
      *
-     *      @return The created ad hoc port item.
+     *    @return The created ad hoc port item.
      */
     virtual AdHocItem* createAdhocItem(QString const& portName);
 
@@ -199,14 +199,14 @@ private:
     /*!
      *  Show the selected ad hoc port item.
      *
-     *      @param [in] portItem    The selected port item.
+     *    @param [in] portItem    The selected port item.
      */
     virtual void showAdhocPort(AdHocItem* portItem);
 
     /*!
      *  Hide the selected ad hoc port item.
      *
-     *      @param [in] portItem    The selected port item.
+     *    @param [in] portItem    The selected port item.
      */
     virtual void hideAdhocPort(AdHocItem* portItem);
 

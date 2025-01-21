@@ -32,7 +32,7 @@ public:
     /*!
      * Checks if the output setting can be accepted.    
      *
-     *     @return  True, if acceptable, otherwise false. 
+     *    @return  True, if acceptable, otherwise false. 
      */
     bool canAccept() const;
 
@@ -47,7 +47,7 @@ signals:
     /*!
      *  Informs of filename change.
      *
-     *      @param [in] fileIndex   Index of the changed file.
+     *    @param [in] fileIndex   Index of the changed file.
      */
     void fileNameChanged(int const& fileIndex);
 

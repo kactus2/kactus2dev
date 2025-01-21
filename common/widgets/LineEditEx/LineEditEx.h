@@ -29,7 +29,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     LineEditEx(QWidget* parent = 0);
 
@@ -47,14 +47,14 @@ public:
      *  Sets the notification message template which is used when the user inputs a
      *  string that is included in the disallowed inputs. Example: "View '%1' is already in use."
      *
-     *      @param [in] template The template string. Must contain %1 to allow argumentation.
+     *    @param [in] template The template string. Must contain %1 to allow argumentation.
      */
     void setMessageTemplate(QString const& messageTemplate);
 
     /*!
      *  Sets the notification message icon.
      *
-     *      @param [in] icon The icon to set.
+     *    @param [in] icon The icon to set.
      */
     void setMessageIcon(QPixmap const& icon);
 
@@ -71,7 +71,7 @@ private slots:
     /*!
      *  Validates the given current text and either shows or hides the notification icon.
      *
-     *      @param [in] text The text to validate.
+     *    @param [in] text The text to validate.
      */
     void validateText(QString const& text);
 

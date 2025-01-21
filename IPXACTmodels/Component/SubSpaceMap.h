@@ -27,21 +27,21 @@ public:
     /*!
      *  Constructor for sub space maps.
      *
-     *      @param [in] name    Name of the memory map base.
+     *    @param [in] name    Name of the memory map base.
      */
     SubSpaceMap(QString const& name = QString(), QString const& baseAddress = QString());
 
     /*!
      *  Copy constructor.
      *
-     *      @param [in] other   The subspace map to be copied.
+     *    @param [in] other   The subspace map to be copied.
      */
     SubSpaceMap(const SubSpaceMap& other);
 
     /*!
      *  Assignment operator.
      *
-     *      @param [in] other   The subspace map to be assigned.
+     *    @param [in] other   The subspace map to be assigned.
      */
     SubSpaceMap &operator=(const SubSpaceMap& other);
 
@@ -53,35 +53,35 @@ public:
     /*!
      *  Clone this subspace map item and return pointer to the copy.
 	 * 
-	 *      @return Pointer to the cloned subspace map item.
+	 *    @return Pointer to the cloned subspace map item.
 	 */
 	virtual QSharedPointer<MemoryBlockBase> clone() const;
 
     /*!
      *  Get the master interface reference.
      *
-     *      @return The master reference.
+     *    @return The master reference.
      */
     QString getInitiatorReference() const;
 
     /*!
      *  Set the reference to the initiator interface.
      *
-     *      @param [in] newInitiatorReference  The new initiator interface reference.
+     *    @param [in] newInitiatorReference  The new initiator interface reference.
      */
     void setInitiatorReference(QString const& newInitiatorReference);
 
     /*!
      *  Get the segment reference.
      *
-     *      @return The segment reference.
+     *    @return The segment reference.
      */
     QString getSegmentReference() const;
 
     /*!
      *  Set the segment reference.
      *
-     *      @param [in] newSegmentReference     The new segment reference.
+     *    @param [in] newSegmentReference     The new segment reference.
      */
     void setSegmentReference(QString const& newSegmentReference);
 

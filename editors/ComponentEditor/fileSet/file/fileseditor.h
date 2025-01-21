@@ -36,12 +36,12 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] availableFiles  List of editable files.
-     *      @param [ni] fileInterface   Interface for accessing files.
-	 *      @param [in] component       Pointer to the component being edited.
-	 *      @param [in] handler         Pointer to the instance that manages the library.
-	 *      @param [in] parent          Pointer to the owner of this editor.
-	 *      @param [in] title           The title for the group box.
+     *    @param [in] availableFiles  List of editable files.
+     *    @param [ni] fileInterface   Interface for accessing files.
+	 *    @param [in] component       Pointer to the component being edited.
+	 *    @param [in] handler         Pointer to the instance that manages the library.
+	 *    @param [in] parent          Pointer to the owner of this editor.
+	 *    @param [in] title           The title for the group box.
 	 */
     FilesEditor(QSharedPointer<QList<QSharedPointer<File> > > availableFiles,
         FileInterface* fileInterface,
@@ -79,8 +79,8 @@ signals:
     /*!
      *  Inform of a name change in a file.
      *
-     *      @param [in] oldName     Old name of the file.
-     *      @param [in] newName     The new name of the file.
+     *    @param [in] oldName     Old name of the file.
+     *    @param [in] newName     The new name of the file.
      */
     void fileRenamed(std::string const& oldName, std::string const& newName);
 

@@ -35,7 +35,7 @@ public:
     /*!
      *  Pre-validates the contents of the page. This is used for enabling/disabling the OK button.
      *
-     *      @return True, if the contents are valid and OK button should be enabled.
+     *    @return True, if the contents are valid and OK button should be enabled.
      *              False, if the contents are invalid and OK button should be disabled.
      *
      *      @remarks Must not show any message boxes.
@@ -45,7 +45,7 @@ public:
     /*!
      *  Validates the contents of the page thoroughly.
      *
-     *      @return True, if the contents are valid. False, if they are invalid.
+     *    @return True, if the contents are valid. False, if they are invalid.
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
@@ -59,7 +59,7 @@ public:
     /*!
      *  Called when the page is to be changed and this page would be hidden.
      *
-     *      @return False, if the page change should be rejected. Otherwise true.
+     *    @return False, if the page change should be rejected. Otherwise true.
      */
     virtual bool onPageChange();
 

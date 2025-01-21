@@ -31,7 +31,7 @@ public:
 	/*!
 	 *  The default constructor.
 	 *
-	 *      @param [in] name            Name of the region.
+	 *    @param [in] name            Name of the region.
 	 */
 	Region(QString const& name = QString(), QString const& addressOffset = QString(), QString const& range = QString());
 	
@@ -47,28 +47,28 @@ public:
 	/*!
      *  Get the address offset of the region.
 	 *
-	 *      @return The address offset.
+	 *    @return The address offset.
 	 */
 	QString getAddressOffset() const;
 
     /*!
      *  Set the address offset for the region.
 	 *
-	 *      @param [in] addressOffset   The offset within the containing memory.
+	 *    @param [in] addressOffset   The offset within the containing memory.
 	 */
 	void setOffset(QString const& addressOffset);
 
 	/*!
      *  Get the range of the region.
 	 *
-	 *      @return  The number of addressable units the region has.
+	 *    @return  The number of addressable units the region has.
 	 */
 	QString getRange() const;
     
 	/*!
      *  Set the range for the region.
 	 *
-	 *      @param [in] range   The number of addressable units the region contains.
+	 *    @param [in] range   The number of addressable units the region contains.
 	 */
 	void setRange(QString const& range);
 

@@ -51,12 +51,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] mapInterface        Interface for memory maps.
-	 *      @param [in] component           The component being edited.
-	 *      @param [in] parameterFinder     The parameter finder.
-     *      @param [in] expressionParser    The used expression parser.
-	 *      @param [in] handler             The instance managing the library.
-	 *      @param [in] parent              The owner of this editor.
+     *    @param [in] mapInterface        Interface for memory maps.
+	 *    @param [in] component           The component being edited.
+	 *    @param [in] parameterFinder     The parameter finder.
+     *    @param [in] expressionParser    The used expression parser.
+	 *    @param [in] handler             The instance managing the library.
+	 *    @param [in] parent              The owner of this editor.
 	 */
 	MemoryMapsEditor(MemoryMapInterface* mapInterface,
         QSharedPointer<Component> component,
@@ -76,7 +76,7 @@ public:
 	/*!
      *  The size hint for the editor.
 	 *
-	 *      @return QSize contains the size hint.
+	 *    @return QSize contains the size hint.
 	 */
 	virtual QSize sizeHint() const;
 
@@ -88,40 +88,40 @@ signals:
     /*!
      *  Emitted when address unit bits are changed.
      *
-     *      @param [in] memoryMapIndex   The index of the changed memory map.
+     *    @param [in] memoryMapIndex   The index of the changed memory map.
      */
     void changeInAddressUnitBitsOnRow(int memoryMapIndex);
 
     /*!
      *  Inform of the added memory remap.
      *
-     *      @param [in] memoryRemapIndex        The index of the new memory remap.
-     *      @param [in] parentMemoryMapName     Name of the owner of the new memory remap.
+     *    @param [in] memoryRemapIndex        The index of the new memory remap.
+     *    @param [in] parentMemoryMapName     Name of the owner of the new memory remap.
      */
     void memoryRemapAdded(int memoryRemapIndex, QString const& parentMemoryMapName);
 
     /*!
      *  Inform of the removed memory remap.
      *
-     *      @param [in] memoryRemapIndex        The index of the removed memory remap.
-     *      @param [in] parentMemoryMapName     Name of the owner of the removed memory remap.
+     *    @param [in] memoryRemapIndex        The index of the removed memory remap.
+     *    @param [in] parentMemoryMapName     Name of the owner of the removed memory remap.
      */
     void memoryRemapRemoved(int memoryRemapIndex, QString const& parentMemoryMapName);
     
     /*
      *  Informs of memory map name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void memoryMapNameChanged(QString const& oldName, QString const& newName);
 
     /*
      *  Informs of memory remap name change.
      *
-     *      @param [in] parentName  Name of the containing memory map.
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] parentName  Name of the containing memory map.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void memoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
 
@@ -146,7 +146,7 @@ private:
     /*!
      *  Gets the names of the components remap states.
      *
-     *      @return A list containing all the names of the remap states.
+     *    @return A list containing all the names of the remap states.
      */
     QStringList getRemapStateNames() const;
 

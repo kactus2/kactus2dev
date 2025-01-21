@@ -40,9 +40,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] desc                            The column description.
-     *      @param [in] layout                          The parent column layout.
-     *      @param [in] itemsCanTransferToOtherColumns  Possibility of item transfer between columns.
+     *    @param [in] desc                            The column description.
+     *    @param [in] layout                          The parent column layout.
+     *    @param [in] itemsCanTransferToOtherColumns  Possibility of item transfer between columns.
      */
     GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout,
         bool itemsCanTransferToOtherColumns = true);
@@ -55,7 +55,7 @@ public:
     /*!
      *  Sets the name of the system column.
      *
-     *      @param [in] name The name of the column.
+     *    @param [in] name The name of the column.
      */
     void setName(QString const& name);
     
@@ -77,14 +77,14 @@ public:
     /*!
      *  Sets the column width.
      *
-     *      @param [in] width The new width to set.
+     *    @param [in] width The new width to set.
      */
     void setWidth(unsigned int width);
 
     /*!
      *  Sets the y coordinate offset.
      *
-     *      @param [in] y The y coordinate offset.
+     *    @param [in] y The y coordinate offset.
      */
     void setOffsetY(qreal y);
 
@@ -110,29 +110,29 @@ public:
     /*!
      *  Adds an item to the system column.
      *
-     *      @param [in] item  The item to add.
-     *      @param [in] load  If true, the item is being loaded from a design.
+     *    @param [in] item  The item to add.
+     *    @param [in] load  If true, the item is being loaded from a design.
      */
     virtual void addItem(QGraphicsItem* item, bool load = false);
 
     /*!
      *  Removes an item from the system column.
      *
-     *      @param [in] item the item to remove.
+     *    @param [in] item the item to remove.
      */
     virtual void removeItem(QGraphicsItem* item);
 
     /*!
      *  Called when an item is moved within the column.
      *
-     *      @param [in] item       The item that has been moved.
+     *    @param [in] item       The item that has been moved.
      */
     virtual void onMoveItem(QGraphicsItem* item);
     
     /*!
      *  Called when an item is released from being moved by mouse.
      *
-     *      @param [in] item The item that has been released.
+     *    @param [in] item The item that has been released.
      */
     virtual void onReleaseItem(QGraphicsItem* item);
 
@@ -154,7 +154,7 @@ public:
     /*!
      *  Returns true if the stack is allowed to contain the given item.
      *
-     *      @param [in] item The item to test for.
+     *    @param [in] item The item to test for.
      */
     virtual bool isItemAllowed(QGraphicsItem* item) const;
     
@@ -187,8 +187,8 @@ protected:
     /*!
      *  Returns true if the given item is allowed to reside in the column based on the allowed items.
      *
-     *      @param [in] item          The item.
-     *      @param [in] allowedItems  The allowed items flags.
+     *    @param [in] item          The item.
+     *    @param [in] allowedItems  The allowed items flags.
      */
     virtual bool isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) const = 0;
 
@@ -200,14 +200,14 @@ protected:
     /*!
      *  Creates an undo command for the column move.
      *
-     *      @return The created undo command.
+     *    @return The created undo command.
      */
     virtual QSharedPointer<QUndoCommand> createMoveUndoCommand();
 
     /*!
      *  Changes the item layout.
      *
-     *      @param [in] itemLayout The item layout to set.
+     *    @param [in] itemLayout The item layout to set.
      */
     void setItemLayout(QSharedPointer< IVGraphicsLayout<QGraphicsItem> > itemLayout);
 
@@ -219,8 +219,8 @@ private:
     /*!
      *  Switches the given item to another column.
      *
-     *      @param [in] item    The item to move.
-     *      @param [in] column  The destination column.
+     *    @param [in] item    The item to move.
+     *    @param [in] column  The destination column.
      */
     void switchItemToColumn(QGraphicsItem* item, GraphicsColumn* column);
 

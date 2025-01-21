@@ -57,8 +57,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library   The used IP-XACT library instance.
-     *      @param [in] parent    The parent widget.
+     *    @param [in] library   The used IP-XACT library instance.
+     *    @param [in] parent    The parent widget.
      */
     MainWindow(LibraryHandler* library, MessageMediator* messageChannel, QWidget *parent = 0);
     
@@ -76,23 +76,23 @@ public slots:
     /*!
      *  Opens the source file of the given component.
      *
-     *      @param [in] compItem The component item.
+     *    @param [in] compItem The component item.
      */
     void openCSource(ComponentItem* compItem);
 
     /*!
      *  Opens the specific C source file of the given component.
      *
-     *      @param [in] filename   The name of the file to open.
-     *      @param [in] component  The component containing the file.
+     *    @param [in] filename   The name of the file to open.
+     *    @param [in] component  The component containing the file.
      */
     void openCSource(QString const& filename, QSharedPointer<Component> component);
 
     /*!
      *  Opens a HW design.
      *
-     *      @param [in] vlnv           The VLNV of the top-level component.
-     *      @param [in] viewName       The name of the view to open.
+     *    @param [in] vlnv           The VLNV of the top-level component.
+     *    @param [in] viewName       The name of the view to open.
      */
     void openHWDesign(VLNV const& vlnv = VLNV(), QString const& viewName = QString());
 
@@ -105,31 +105,31 @@ public slots:
     /*!
      *  Opens the memory design of the HW design specified by the component VLNV and view name.
      *  
-     *      @param [in] vlnv            The VLNV of the top-level component.
-     *      @param [in] viewName        Name of the view to open.
+     *    @param [in] vlnv            The VLNV of the top-level component.
+     *    @param [in] viewName        Name of the view to open.
      */
     void openMemoryDesign(const VLNV& vlnv, const QString& viewName = QString());    
 
     /*!
      *  Opens a SW design.
      *
-     *      @param [in] vlnv           The VLNV of the top-level component.
-     *      @param [in] viewName       The name of the view to open.
+     *    @param [in] vlnv           The VLNV of the top-level component.
+     *    @param [in] viewName       The name of the view to open.
      */
 	void openSWDesign(const VLNV& vlnv = VLNV(), QString const& viewName = QString());
 
     /*!
      *  Opens a system design.
      *
-     *      @param [in] vlnv           The VLNV of the system component whose system design to open.
-     *      @param [in] viewName       The name of the view to open.
+     *    @param [in] vlnv           The VLNV of the system component whose system design to open.
+     *    @param [in] viewName       The name of the view to open.
      */
     void openSystemDesign(VLNV const &vlnv, QString const& viewName = QString());
 
     /*!
      *  Open bus to be edited.
 	 *
-	 *      @param [in] busDefVLNV      Identifies the bus definition.
+	 *    @param [in] busDefVLNV      Identifies the bus definition.
 	 */
 	void openBus(const VLNV& busDefVLNV);
 
@@ -137,28 +137,28 @@ public slots:
     /*!
      *  Open catalog editor to edit catalog details.
 	 *
-	 *      @param [in] vlnv           Identifies the catalog to edit.
+	 *    @param [in] vlnv           Identifies the catalog to edit.
 	 */
 	void openCatalog(const VLNV& vlnv);
 
 	/*!
      *  Open component editor to edit a component details.
 	 *
-	 *      @param [in] vlnv           Identifies the component to edit.
+	 *    @param [in] vlnv           Identifies the component to edit.
 	 */
 	void openComponent(const VLNV& vlnv);
 
     /*!
      *  Opens a COM definition for editing.
      *
-     *      @param [in] vlnv           The VLNV of the COM definition to open.
+     *    @param [in] vlnv           The VLNV of the COM definition to open.
      */
     void openComDefinition(VLNV const& vlnv);
 
     /*!
      *  Opens an API definition for editing.
      *
-     *      @param [in] vlnv           The VLNV of the API definition to open.
+     *    @param [in] vlnv           The VLNV of the API definition to open.
      */
     void openApiDefinition(VLNV const& vlnv);
 
@@ -178,21 +178,21 @@ public slots:
 	/*!
      *  Called when user selects a component on the draw board.
 	 *
-	 *      @param [in] component   Pointer to the DiagramComponent instance that is selected.
+	 *    @param [in] component   Pointer to the DiagramComponent instance that is selected.
 	 */
 	void onComponentSelected(ComponentItem* component);
 
 	/*!
      *  Called when user selects an interface on the draw board.
 	 *
-	 *      @param [in] interface   Pointer to the interface instance that is selected.
+	 *    @param [in] interface   Pointer to the interface instance that is selected.
 	 */
 	void onInterfaceSelected(ConnectionEndpoint* interface);
 
 	/*!
      *  Called when user selects a connection on the draw board.
 	 *
-	 *      @param [in] connection  Pointer to the connection that was selected.
+	 *    @param [in] connection  Pointer to the connection that was selected.
 	 */
 	void onConnectionSelected(GraphicsConnection* connection);
 
@@ -214,7 +214,7 @@ public slots:
     /*!
      *  Runs the plugin generator specified by the given action.
      *
-     *      @param [in] action The action corresponding to the plugin.
+     *    @param [in] action The action corresponding to the plugin.
      */
     void runGeneratorPlugin(QAction* action);
 
@@ -249,12 +249,12 @@ public slots:
     /*!
      *  Creates a new component to the library.
      *
-     *      @param [in] prodHier    The product hierarchy attribute.
-     *      @param [in] firmness	The firmness attribute.
-     *      @param [in] tags        Document tags.
-     *      @param [in] vlnv        The component's VLNV.
-     *      @param [in] revision    The IP-XACT standard revision to comply to.
-     *      @param [in] directory   The directory where to save the component.
+     *    @param [in] prodHier    The product hierarchy attribute.
+     *    @param [in] firmness	The firmness attribute.
+     *    @param [in] tags        Document tags.
+     *    @param [in] vlnv        The component's VLNV.
+     *    @param [in] revision    The IP-XACT standard revision to comply to.
+     *    @param [in] directory   The directory where to save the component.
      *
      *      @remarks The component editor is opened automatically after successful creation.
      */
@@ -264,9 +264,9 @@ public slots:
     /*!
      *  Creates a SW component to the library.
      *
-     *      @param [in] vlnv        The component's VLNV.
-     *      @param [in] revision    The IP-XACT standard revision to comply to.
-     *      @param [in] directory   The directory where to save the component.
+     *    @param [in] vlnv        The component's VLNV.
+     *    @param [in] revision    The IP-XACT standard revision to comply to.
+     *    @param [in] directory   The directory where to save the component.
      *
      *      @remarks The component editor is opened automatically after successful creation.
      */
@@ -275,12 +275,12 @@ public slots:
     /*!
      *  Creates a new design.
      *
-     *      @param [in] prodHier    The product hierarchy attribute.
-     *      @param [in] firmness	The firmness attribute.
-     *      @param [in] tags        Document tags.
-     *      @param [in] vlnv        The component's VLNV.
-     *      @param [in] revision    The IP-XACT standard revision to comply to.
-     *      @param [in] directory   The directory where to save the component.
+     *    @param [in] prodHier    The product hierarchy attribute.
+     *    @param [in] firmness	The firmness attribute.
+     *    @param [in] tags        Document tags.
+     *    @param [in] vlnv        The component's VLNV.
+     *    @param [in] revision    The IP-XACT standard revision to comply to.
+     *    @param [in] directory   The directory where to save the component.
      *
      *      @remarks The HW design editor is opened automatically after successful creation.
      */
@@ -290,7 +290,7 @@ public slots:
     /*!
      *  Creates a new design for an existing component.
      *
-     *      @param [in] vlnv        The component's VLNV.
+     *    @param [in] vlnv        The component's VLNV.
      *
      *      @remarks The HW design editor is opened automatically after successful creation.
      */
@@ -301,18 +301,18 @@ public slots:
     /*!
      *  Creates a new Catalog
      *
-     *      @param [in] catalogVLNV The VLNV for the catalog.
-     *      @param [in] revision    The IP-XACT standard revision to comply to.
-     *      @param [in] directory   The directory where to save the catalog.
+     *    @param [in] catalogVLNV The VLNV for the catalog.
+     *    @param [in] revision    The IP-XACT standard revision to comply to.
+     *    @param [in] directory   The directory where to save the catalog.
      */
     void createCatalog(VLNV const& catalogVLNV, Document::Revision revision, QString const& directory);
 
     /*!
      *  Creates a new hierarchical SW component with an SW design.
      *
-     *      @param [in] vlnv        The component's VLNV.
-     *      @param [in] revision    The IP-XACT standard revision to comply to.
-     *      @param [in] directory   The directory where to save the component.
+     *    @param [in] vlnv        The component's VLNV.
+     *    @param [in] revision    The IP-XACT standard revision to comply to.
+     *    @param [in] directory   The directory where to save the component.
      *
      *      @remarks The SW design editor is opened automatically after successful creation.
      */
@@ -321,7 +321,7 @@ public slots:
     /*!
      *  Creates a SW design for an existing component.
      *
-     *      @param [in] vlnv        The component's VLNV.
+     *    @param [in] vlnv        The component's VLNV.
      *
      *      @remarks The SW design editor is opened automatically after successful creation.
      */
@@ -330,11 +330,11 @@ public slots:
     /*!
      *  Creates a new system design.
      *
-     *      @param [in] compVLNV   The VLNV of an existing component.
-     *      @param [in] viewName   The name of the view to which the system design will be based on.
-     *      @param [in] sysVLNV    The VLNV of the system to be created.
-     *      @param [in] revision   The IP-XACT standard revision to comply to.
-     *      @param [in] directory  The directory where to save the system.
+     *    @param [in] compVLNV   The VLNV of an existing component.
+     *    @param [in] viewName   The name of the view to which the system design will be based on.
+     *    @param [in] sysVLNV    The VLNV of the system to be created.
+     *    @param [in] revision   The IP-XACT standard revision to comply to.
+     *    @param [in] directory  The directory where to save the system.
      */
     void createSystem(VLNV const& compVLNV, QString const& viewName, VLNV const& sysVLNV,
         Document::Revision , QString const& directory);
@@ -344,26 +344,26 @@ public slots:
     /*!
      *  Creates a new bus definition and abstraction definition
 	 *
-     *      @param [in] vlnv        The vlnv for the bus definition
-     *      @param [in] revision    The IP-XACT standard revision to comply to.
-	 *      @param [in] directory   The directory where to save the bus definition and abstraction definition.
+     *    @param [in] vlnv        The vlnv for the bus definition
+     *    @param [in] revision    The IP-XACT standard revision to comply to.
+	 *    @param [in] directory   The directory where to save the bus definition and abstraction definition.
 	 */
 	void createBus(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
 	/*!
      *  Creates a new abstraction definition for given bus definition.
 	 *
-	 *      @param [in] busDefVLNV      Identifies the bus definition.
-	 *      @param [in] directory       The directory where to save the abstraction definition.
+	 *    @param [in] busDefVLNV      Identifies the bus definition.
+	 *    @param [in] directory       The directory where to save the abstraction definition.
 	 */
 	void createAbsDef(const VLNV& busDefVLNV, const QString& directory);
 
     /*!
      *  Creates a new COM definition.
      *
-     *      @param [in] vlnv        VLNV for the COM definition.
-     *      @param [in] revision    The IP-XACT standard revision to comply to.
-     *      @param [in] directory   The directory where to save the design.
+     *    @param [in] vlnv        VLNV for the COM definition.
+     *    @param [in] revision    The IP-XACT standard revision to comply to.
+     *    @param [in] directory   The directory where to save the design.
      *
      *      @remarks The COM definition editor is opened automatically after successful creation.
      */
@@ -372,9 +372,9 @@ public slots:
     /*!
      *  Creates a new API definition.
      *
-     *      @param [in] vlnv        VLNV for the API definition.
-     *      @param [in] revision    The IP-XACT standard revision to comply to.
-     *      @param [in] directory   The directory where to save the design.
+     *    @param [in] vlnv        VLNV for the API definition.
+     *    @param [in] revision    The IP-XACT standard revision to comply to.
+     *    @param [in] directory   The directory where to save the design.
      *
      *      @remarks The API definition editor is opened automatically after successful creation.
      */
@@ -463,14 +463,14 @@ private slots:
     /*!
      *  Set the filtering of chained address space memory connections within a memory design.
      *
-     *      @param [in] filterChains    Value for the filter.
+     *    @param [in] filterChains    Value for the filter.
      */
     void onFilterAddressSpaceChains(bool filterChains);
 
     /*!
      *  Set the condensing of memory graphics items within a memory design.
      *
-     *      @param [in] condenseMemoryItems     Value for condensing the memory graphics items.
+     *    @param [in] condenseMemoryItems     Value for condensing the memory graphics items.
      */
     void onCondenseMemoryItems(bool condenseMemoryItems);
 
@@ -487,58 +487,58 @@ private slots:
     /*!
      *  Set the filtering of address space segments within a memory design.
      *
-     *      @param [in] filterSegments  Value for the filter.
+     *    @param [in] filterSegments  Value for the filter.
      */
     void onFilterSegments(bool filterSegments);
 
     /*!
      *  Set the filtering of address blocks within a memory design.
      *
-     *      @param [in] filterBlocks    Value for the filter.
+     *    @param [in] filterBlocks    Value for the filter.
      */
     void onFilterAddressBlocks(bool filterBlocks);
 
     /*!
      *  Set the filtering of registers within a memory design.
      *
-     *      @param [in] filterRegisters     Value for the filter.
+     *    @param [in] filterRegisters     Value for the filter.
      */
     void onFilterRegisters(bool filterRegisters);
 
     /*!
      *  Set the filtering of fields within a memory design.
      *
-     *      @param [in] filterFields    Value for the filter.
+     *    @param [in] filterFields    Value for the filter.
      */
     void onFilterFields(bool filterFields);
 
     /*!
      *  Set the filtering of the unconnected memory items within a memory design.
      *
-     *      @param [in] filterUnconnected   Value for the filter.
+     *    @param [in] filterUnconnected   Value for the filter.
      */
     void onFilterUnconnectedMemoryItems(bool filterUnconnected);
 
     /*!
      *  Set the filtering of the memory overlap items within a memory design.
      *
-     *      @param [in] filterOverlap   Value for the filter.
+     *    @param [in] filterOverlap   Value for the filter.
      */
     void onFilterMemoryOverlapItems(bool filterOverlap);
 
     /*!
      *  Open the document containing the selected component and select the identified component item editor.
      *
-     *      @param [in] componentVLNV       VLNV of the selected component.
-     *      @param [in] identifierChain     List of string identifying the selected component item.
+     *    @param [in] componentVLNV       VLNV of the selected component.
+     *    @param [in] identifierChain     List of string identifying the selected component item.
      */
     void onOpenComponentItem(const VLNV& componentVLNV, QVector<QString> identifierChain);
 
     /*!
      *  Adjust the visibility of the selected dock widget.
      *
-     *      @param [in] type    Type of the selected dock widget.
-     *      @param [in] show    New value for the visibility of the dock widget.
+     *    @param [in] type    Type of the selected dock widget.
+     *    @param [in] show    New value for the visibility of the dock widget.
      */
     void onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show);
 
@@ -562,10 +562,10 @@ private:
     /*!
      *  Checks if the given list of VLVNs contain invalid references.
      *
-     *      @param [in] hierRefs            The list of VLNVs to check
-     *      @param [in] referencingVlnv     The referencing VLNV.
+     *    @param [in] hierRefs            The list of VLNVs to check
+     *    @param [in] referencingVlnv     The referencing VLNV.
      *
-     *      @return True, if at least one invalid reference is found, otherwise false.
+     *    @return True, if at least one invalid reference is found, otherwise false.
      */
     bool hasInvalidReferences(QList<VLNV> hierRefs, VLNV const& referencingVlnv);
 
@@ -582,7 +582,7 @@ private:
     /*!
      *  Restores the settings for the given workspace.
      *
-     *      @param [in] workspaceName The name of the workspace.
+     *    @param [in] workspaceName The name of the workspace.
      */
     void loadWorkspace(QString const& workspaceName);
 
@@ -629,11 +629,11 @@ private:
 	/*!
      *  Check if a document with the given vlnv is already open.
 	 *
-	 *      @param [in] vlnv    The vlnv that identifies the document.
+	 *    @param [in] vlnv    The vlnv that identifies the document.
 	 * 
 	 *      @remark If a document with given vlnv is open then the document is shown.
 	 * 
-	 *      @return True if the document was already open.
+	 *    @return True if the document was already open.
 	 */
 	bool isOpen(const VLNV& vlnv, TabDocument::DocumentType const& type) const;
 
@@ -645,7 +645,7 @@ private:
     /*!
      *  Updates the visibility control menu according to the open document.
      *
-     *      @param [in] document   The currently open document.
+     *    @param [in] document   The currently open document.
      */
     void updateVisibilityControlMenu(TabDocument* document);
 
@@ -662,8 +662,8 @@ private:
     /*!
      *  Runs the component editor for the given component.
      *
-     *      @param [in] component   The component to run the wizard for.
-     *      @param [in] directory   The directory containing the component xml file.
+     *    @param [in] component   The component to run the wizard for.
+     *    @param [in] directory   The directory containing the component xml file.
      */
     void runComponentWizard(QSharedPointer<Component> component, QString const& directory);
     

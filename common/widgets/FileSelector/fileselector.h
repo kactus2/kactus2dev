@@ -31,8 +31,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component   Pointer to the component whose files are selected.
-	 *      @param [in] parent      Pointer to the owner of the combo box.
+	 *    @param [in] component   Pointer to the component whose files are selected.
+	 *    @param [in] parent      Pointer to the owner of the combo box.
 	 */
 	FileSelector(QSharedPointer<Component> component, QWidget *parent);
 	
@@ -42,7 +42,7 @@ public:
 	/*!
      *  Add a file suffix to be used as filter when selecting files to display.
 	 *
-	 *      @param [in] suffix  The file suffix to use as filter.
+	 *    @param [in] suffix  The file suffix to use as filter.
 	 */
 	void addFilter(const QString& suffix);
 
@@ -59,7 +59,7 @@ public slots:
 	/*!
      *  Set the specified file as selected.
 	 *
-	 *      @param [in] filePath    The file path of the file to select.
+	 *    @param [in] filePath    The file path of the file to select.
 	 */
 	void selectFile(const QString& filePath);
 
@@ -78,7 +78,7 @@ private:
     /*!
      *  Get the file names.
      *
-     *      @param [in] component   The component to search the files from.
+     *    @param [in] component   The component to search the files from.
      */
     QStringList getFileNames(QSharedPointer<Component> component);
 

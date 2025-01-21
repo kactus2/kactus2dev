@@ -35,8 +35,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library     Interface to the library.
-     *      @param [in] parent      The owner of this widget.
+     *    @param [in] library     Interface to the library.
+     *    @param [in] parent      The owner of this widget.
      */
     DocumentNameGroupEditor(QWidget *parent = nullptr);
 
@@ -52,15 +52,15 @@ public:
     /*!
      *  Sets the document name group information of a document.
      *
-     *      @param [in] document        The document whose information is set.
-     *      @param [in] documentPath    The path to the document.
+     *    @param [in] document        The document whose information is set.
+     *    @param [in] documentPath    The path to the document.
      */
     void setDocumentNameGroup(QSharedPointer<Document> document, QString const& documentPath);
 
     /*!
      *	Set a placeholder text for description editor.
      *  
-     *      @param [in] placeholder	    The placeholder text to set.
+     *    @param [in] placeholder	    The placeholder text to set.
      */
     void setPlaceholderDescription(QString const& placeholder);
 

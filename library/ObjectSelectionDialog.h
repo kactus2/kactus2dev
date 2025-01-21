@@ -41,12 +41,12 @@ public:
     /*!
 	 *  The Constructor.
 	 *
-     *      @param [in] okButtonText    QString containing the text for the ok button.
-     *      @param [in] iconPath        Path to the icon used by the selection dialog.
-     *      @param [in] okIconPath      Path to the icon used by the ok button.
-     *      @param [in] windowTitle     Window title of the selection dialog.
-	 *      @param [in] parent          The parent widget.
-	 *      @param [in] f               Widget flags for the dialog.
+     *    @param [in] okButtonText    QString containing the text for the ok button.
+     *    @param [in] iconPath        Path to the icon used by the selection dialog.
+     *    @param [in] okIconPath      Path to the icon used by the ok button.
+     *    @param [in] windowTitle     Window title of the selection dialog.
+	 *    @param [in] parent          The parent widget.
+	 *    @param [in] f               Widget flags for the dialog.
 	 */
     ObjectSelectionDialog(QString const& okButtonText, QString const& iconPath, QString const& okIconPath,
         QString const& windowTitle, QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
@@ -59,23 +59,23 @@ public:
     /*!
      *  Create a list widget item for the dialog.
      *
-     *      @param [in] path    Location path of the item file.
-     *      @param [in] vlnv    VLNV of the item.
-     *      @param [in] locked  Value for separating exportable items.
+     *    @param [in] path    Location path of the item file.
+     *    @param [in] vlnv    VLNV of the item.
+     *    @param [in] locked  Value for separating exportable items.
      */
     void createItem(const QString& path, const VLNV& vlnv = VLNV(), bool locked = false);
 
 	/*!
      *  Get the size hint of this dialog.
 	 *
-     *      @return QSize contains the desired size for this dialog.
+     *    @return QSize contains the desired size for this dialog.
      */
 	virtual QSize sizeHint() const;
 
     /*!
      *  Get the items to be exported.
      *
-     *      @return A list of items to be exported.
+     *    @return A list of items to be exported.
      */
     QVector<ObjectSelectionListItem*> getSelectedItems() const;
 
@@ -84,14 +84,14 @@ private slots:
     /*!
      *  Handles the selection of all the items in the list.
      *
-     *      @param [in] checkAllState   The new state of the items.
+     *    @param [in] checkAllState   The new state of the items.
      */
     void onCheckAllChanged(int checkAllState);
 
     /*!
      *  [Description].
      *
-     *      @param [in] currentItem   [Description].
+     *    @param [in] currentItem   [Description].
      */
     void onItemClicked(QListWidgetItem* currentItem);
 
@@ -115,24 +115,24 @@ protected:
     /*!
      *  Construct the intro labels for the dialog.
      *
-     *      @param [in] introName   Name of the introduction.
-     *      @param [in] introText   Text explaining the use of this selection dialog.
+     *    @param [in] introName   Name of the introduction.
+     *    @param [in] introText   Text explaining the use of this selection dialog.
      *
-     *      @return QWidget containing the information of the selection dialog.
+     *    @return QWidget containing the information of the selection dialog.
      */
     QWidget* setupIntroWidget(QString const& introName, QString const& introText) const;
 
     /*!
      *  Setup the layout for the buttons used in the selection dialog.
      *
-     *      @return The layout containing the dialog buttons.
+     *    @return The layout containing the dialog buttons.
      */
     QHBoxLayout* setupButtonLayout();
 
     /*!
      *  Get the list widget containing the selectable items.
      *
-     *      @return The list widget containing the selectable items.
+     *    @return The list widget containing the selectable items.
      */
     QListWidget* getItemList();
     
@@ -150,19 +150,19 @@ private:
     /*!
      *  Get the icon used by the selected item VLNV.
      *
-     *      @param [in] itemVLNV    VLNV of the selected item.
+     *    @param [in] itemVLNV    VLNV of the selected item.
      *
-     *      @return Icon corresponding to the selected VLNV.
+     *    @return Icon corresponding to the selected VLNV.
      */
     QIcon getUsedIcon(const VLNV& itemVLNV) const;
 
     /*!
      *  Check if an item exists in the list.
      *
-     *      @param [in] itemPath    Path of the selected item.
-     *      @param [in] itemVLNV    VLNV of the selected item.
+     *    @param [in] itemPath    Path of the selected item.
+     *    @param [in] itemVLNV    VLNV of the selected item.
      *
-     *      @return True, if the item exists in the list, false otherwise.
+     *    @return True, if the item exists in the list, false otherwise.
      */
     bool itemExistsInList(QString const& itemPath, VLNV const& itemVLNV) const;
 

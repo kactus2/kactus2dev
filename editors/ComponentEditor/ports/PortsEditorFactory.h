@@ -69,36 +69,36 @@ public:
     /*!
      *  Construct a ports model.
      *
-     *      @param [in] parent              The owner of the constructed model.
+     *    @param [in] parent              The owner of the constructed model.
      *
-     *      @return The created ports model.
+     *    @return The created ports model.
      */
     virtual PortsModel* createModel(QObject* parent = 0) const = 0;
 
     /*!
      *  Construct a filter.
      *
-     *      @param [in] parent              Owner of the filter.
+     *    @param [in] parent              Owner of the filter.
      *
-     *      @return The created ports filter.
+     *    @return The created ports filter.
      */
     virtual PortsFilter* createFilter(QObject* parent) const = 0;
 
     /*!
      *  Construct a view.
      *
-     *      @param [in] parent          Owner of the view.
+     *    @param [in] parent          Owner of the view.
      *
-     *      @return The created view.
+     *    @return The created view.
      */
     virtual PortsView* createView(QWidget* parent) const = 0;
 
     /*!
      *  Construct a delegate.
      *
-	 *      @param [in] parent              The owner of the delegate.
+	 *    @param [in] parent              The owner of the delegate.
      *
-     *      @return The created delegate.
+     *    @return The created delegate.
      */
     virtual PortsDelegate* createDelegate(QObject* parent) const = 0;
 

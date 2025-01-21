@@ -30,8 +30,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] name    Name to display for the gap item.
-	 *      @param [in] parent  The parent graphics item.
+     *    @param [in] name    Name to display for the gap item.
+	 *    @param [in] parent  The parent graphics item.
 	 */
 	FieldGapItem(QString const& name, QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent);
 
@@ -50,14 +50,14 @@ public:
 	/*!
      *  Get the bit width of the item.
 	 * 
-	 *      @return The bit width of the item.
+	 *    @return The bit width of the item.
 	 */
 	virtual int getBitWidth() const override final;
 
 	/*!
      *  Get the width of the item.
 	 *
-	 *      @return The width of the gap item.
+	 *    @return The width of the gap item.
 	 */
 	virtual qreal itemTotalWidth() const override final;
 

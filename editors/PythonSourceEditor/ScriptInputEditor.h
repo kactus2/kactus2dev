@@ -27,7 +27,7 @@ public:
     /*!
      * The constructor.
      *
-     *     @param [in] parent  The parent widget.
+     *    @param [in] parent  The parent widget.
      */
     explicit ScriptInputEditor(QWidget* parent = nullptr);
 
@@ -37,29 +37,29 @@ public:
     /*!
      * Get the required width of the side area.
      *
-     *     @return The width of the side area in pixels.
+     *    @return The width of the side area in pixels.
      */
     int sideAreaWidth() const;
 
     /*!
      * Handler for side area paint event.
      *
-     *     @param [in]  The paint event.
+     *    @param [in]  The paint event.
      */
     void sideAreaPaintEvent(QPaintEvent* event);
 
     /*!
      * Get the text on selected lines.
      *
-     *     @return The text on the currently selected lines.
+     *    @return The text on the currently selected lines.
      */
      QString getSelectedLines() const;
 
      /*!
       * Set the style for automatic indentation.
       *
-      *     @param [in] useTabs     Whether to use tabs or spaces.
-      *     @param [in] width       Number of spaces to use.
+      *    @param [in] useTabs     Whether to use tabs or spaces.
+      *    @param [in] width       Number of spaces to use.
       */
       void setIndentStyle(bool useTabs, unsigned int width);
 
@@ -79,15 +79,15 @@ private slots:
     /*!
      * Update the side area width when the number of lines (blocks) change.
      *
-     *     @param [in] newBlockCount  The number of blocks in the text.
+     *    @param [in] newBlockCount  The number of blocks in the text.
      */
      void updateSideAreaWidth(int newBlockCount);
 
       /*!
        * Handler for side area update event.
        *
-       *     @param [in] rect     The area being updated.
-       *     @param [in] dy       The change of y coordinate in the update.
+       *    @param [in] rect     The area being updated.
+       *    @param [in] dy       The change of y coordinate in the update.
        */
       void updateSideArea(const QRect &rect, int dy);
 

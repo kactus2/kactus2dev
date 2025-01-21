@@ -33,9 +33,9 @@ public:
 	/*!
 	 *  The default constructor.
 	 *
-	 *      @param [in] name            Name of the segment.
-	 *      @param [in] addressOffset   Address offset of the segment.
-	 *      @param [in] range           Range of the segment.
+	 *    @param [in] name            Name of the segment.
+	 *    @param [in] addressOffset   Address offset of the segment.
+	 *    @param [in] range           Range of the segment.
 	 */
 	Segment(QString const& name = QString(), QString const& addressOffset = QString(),
         QString const& range = QString());
@@ -52,42 +52,42 @@ public:
     /*!
      *  Gets the presence.
      *
-     *      @return The presence value.
+     *    @return The presence value.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new presence value.
+     *    @param [in] newIsPresent    The new presence value.
      */
     void setIsPresent(QString const& newIsPresent);
     
 	/*!
      *  Get the attributes of the address offset.
 	 *
-	 *      @return Reference to the QMap containing the attributes as name-value pairs.
+	 *    @return Reference to the QMap containing the attributes as name-value pairs.
 	 */
 	QMap<QString, QString> getOffsetAttributes() const;
     
 	/*!
      *  Set the attributes of the address offset.
 	 *
-	 *      @param [in] offsetAttributes    QMap containing the attributes as name-value pairs.
+	 *    @param [in] offsetAttributes    QMap containing the attributes as name-value pairs.
 	 */
 	void setOffsetAttributes( QMap<QString, QString> offsetAttributes );
 
 	/*!
      *  Get the attributes of the range.
 	 *
-	 *      @return Reference to the QMap containing the attributes as name-value pairs.
+	 *    @return Reference to the QMap containing the attributes as name-value pairs.
 	 */
 	QMap<QString, QString> getRangeAttributes() const;
 
 	/*!
      *  Set the attributes of the range.
 	 *
-	 *      @param [in] rangeAttributes     QMap containing the attributes as name-value pairs.
+	 *    @param [in] rangeAttributes     QMap containing the attributes as name-value pairs.
 	 */
 	void setRangeAttributes( QMap<QString, QString> rangeAttributes );
 

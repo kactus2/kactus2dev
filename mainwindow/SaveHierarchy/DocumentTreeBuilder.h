@@ -29,7 +29,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] library   The current IP-XACT library.
+	 *    @param [in] library   The current IP-XACT library.
 	 */
 	DocumentTreeBuilder(LibraryInterface* library);
 
@@ -39,9 +39,9 @@ public:
     /*!
      *  Creates an object tree starting at the given document.
      *
-     *      @param [in] root   The VLNV of the root document.
+     *    @param [in] root   The VLNV of the root document.
      *
-     *      @return The object tree representing the document tree.
+     *    @return The object tree representing the document tree.
      */
     QObject* createFrom(VLNV const& root) const;
 
@@ -54,27 +54,27 @@ private:
     /*!
      *  Creates an object tree starting at the given component.
      *
-     *      @param [in] root   The VLNV of the component document.
+     *    @param [in] root   The VLNV of the component document.
      *
-     *      @return The object tree representing the document tree starting at the component.
+     *    @return The object tree representing the document tree starting at the component.
      */
     QObject* createFromComponent(VLNV const &root) const;
         
     /*!
      *  Creates an object tree starting at the given design configuration.
      *
-     *      @param [in] designConfiguration     The VLNV of the design configuration document.
+     *    @param [in] designConfiguration     The VLNV of the design configuration document.
      *
-     *      @return The object tree representing the document tree starting at the design configuration.
+     *    @return The object tree representing the document tree starting at the design configuration.
      */
     QObject* createFromDesignConfiguration(VLNV const& designConfiguration) const;
         
     /*!
      *  Creates an object tree starting at the given design.
      *
-     *      @param [in] designRef       The VLNV of the design document.
+     *    @param [in] designRef       The VLNV of the design document.
      *
-     *      @return The object tree representing the document tree starting at the design.
+     *    @return The object tree representing the document tree starting at the design.
      */
     QObject* createFromDesign(VLNV const& designRef) const;
 

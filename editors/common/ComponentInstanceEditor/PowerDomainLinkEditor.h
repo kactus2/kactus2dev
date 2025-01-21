@@ -37,7 +37,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent      The parent widget.
+	 *    @param [in] parent      The parent widget.
 	 */
     explicit PowerDomainLinkEditor(QWidget* parent);
 	

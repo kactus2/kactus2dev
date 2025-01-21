@@ -37,24 +37,24 @@ public:
 	/*!
 	 *	Set the field slices of the selected mode condition parser.
 	 *  
-	 *      @param [in] expressionParser     The mode condition parser to set the field slices to.
-	 *      @param [in] fieldSlices          The field slices to set.
+	 *    @param [in] expressionParser     The mode condition parser to set the field slices to.
+	 *    @param [in] fieldSlices          The field slices to set.
 	 */
 	virtual void setFieldSlices(QSharedPointer<ExpressionParser> expressionParser, FieldSlice::List fieldSlices) = 0;
 	
 	/*!
 	 *	Set the port slices of the selected mode condition parser.
 	 *
-	 *      @param [in] expressionParser     The mode condition parser to set the port slices to.
-	 *      @param [in] portSlices           The port slices to set.
+	 *    @param [in] expressionParser     The mode condition parser to set the port slices to.
+	 *    @param [in] portSlices           The port slices to set.
 	 */
     virtual void setPortSlices(QSharedPointer<ExpressionParser> expressionParser, PortSlice::List portSlices) = 0;
 
     /*!
      *	Set the available modes to the selected mode condition parser.
      *  
-     *      @param [in] expressionParser     The mode condition parser to update.
-     *      @param [in] modes                The modes to set.
+     *    @param [in] expressionParser     The mode condition parser to update.
+     *    @param [in] modes                The modes to set.
      */
     virtual void setModes(QSharedPointer<ExpressionParser> expressionParser, Mode::List modes) = 0;
 };
@@ -78,24 +78,24 @@ public:
     /*!
      *	Set the mode-specific field slices to use while parsing expressions.
      *  
-     *      @param [in] expressionParser        The parser whose field slices to set.
-     *      @param [in] fieldSlices             The field slices to set.
+     *    @param [in] expressionParser        The parser whose field slices to set.
+     *    @param [in] fieldSlices             The field slices to set.
      */
     void setFieldSlices(QSharedPointer<ExpressionParser> expressionParser, FieldSlice::List fieldSlices) final;
 
     /*!
      *	Set the mode-specific port slices to use while parsing expressions.
      *
-     *      @param [in] expressionParser        The parser whose port slices to set.
-     *      @param [in] portSlices              The port slices to set.
+     *    @param [in] expressionParser        The parser whose port slices to set.
+     *    @param [in] portSlices              The port slices to set.
      */
     void setPortSlices(QSharedPointer<ExpressionParser> expressionParser, PortSlice::List portSlices) final;
 
     /*!
      *	Set the available modes to use while parsing expressions.
      *
-     *      @param [in] expressionParser        The parser whose modes to set.
-     *      @param [in] modes                   The modes to set.
+     *    @param [in] expressionParser        The parser whose modes to set.
+     *    @param [in] modes                   The modes to set.
      */
     void setModes(QSharedPointer<ExpressionParser> expressionParser, Mode::List modes) final;
 

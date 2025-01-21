@@ -28,7 +28,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] busRef  The name of the referenced bus interface.
+     *    @param [in] busRef  The name of the referenced bus interface.
      */
     explicit HierInterface(QString const& busRef = QString());
 
@@ -50,7 +50,7 @@ public:
     /*!
      *  Comparison operator.
      *
-     *      @return True, if the bus interfaces reference the same interface.
+     *    @return True, if the bus interfaces reference the same interface.
      */
     bool operator==(const HierInterface& other) const;
 
@@ -67,56 +67,56 @@ public:
     /*!
      *  Get the name of the referenced bus interface.
      *
-     *      @return The name of the referenced bus interface.
+     *    @return The name of the referenced bus interface.
      */
     QString getBusReference() const;
 
     /*!
      *  Set the bus interface reference.
      *
-     *      @param [in] newBusReference     The name of the new bus interface reference.
+     *    @param [in] newBusReference     The name of the new bus interface reference.
      */
     void setBusReference(QString const& newBusReference);
 
     /*!
      *  Get the presence.
      *
-     *      @return The presence.
+     *    @return The presence.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new presence.
+     *    @param [in] newIsPresent    The new presence.
      */
     void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Get the description.
      *
-     *      @return The description.
+     *    @return The description.
      */
     QString getDescription() const;
 
     /*!
      *  Set the description.
      *
-     *      @param [in] newDescription  The new description.
+     *    @param [in] newDescription  The new description.
      */
     void setDescription(QString const& newDescription);
 
     /*!
      *  Set the route to this interface.
      *
-     *      @param [in] newRoute    The new route.
+     *    @param [in] newRoute    The new route.
      */
     void setRoute(QList<QPointF> newRoute) const;
 
     /*!
      *  Get the route to this interface.
      *
-     *      @return The route to this interface.
+     *    @return The route to this interface.
      */
     QList<QPointF> getRoute() const;
 

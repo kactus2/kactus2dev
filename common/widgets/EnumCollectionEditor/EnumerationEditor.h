@@ -28,8 +28,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] hideCheckAll    Flag for hiding the check all enumerations check box.
-     *      @param [in] parent          The parent widget.
+     *    @param [in] hideCheckAll    Flag for hiding the check all enumerations check box.
+     *    @param [in] parent          The parent widget.
      */
     EnumerationEditor(bool hideCheckAll, QWidget* parent);
 
@@ -46,9 +46,9 @@ public:
     /*!
      *  Setup the list of selected enumerations.
      *
-     *      @param [in] availableItems  List of the available enumerations.
-     *      @param [in] exclusiveItems  List of exclusive enumerations.
-     *      @param [in] selectedItems   List of the selected enumerations.
+     *    @param [in] availableItems  List of the available enumerations.
+     *    @param [in] exclusiveItems  List of exclusive enumerations.
+     *    @param [in] selectedItems   List of the selected enumerations.
      */
     void setupItems(QStringList const& availableItems, QStringList const& exclusiveItems, QStringList const& selectedItems);
 
@@ -69,14 +69,14 @@ private slots:
     /*!
      *  Change the state of all the enumerations.
      *
-     *      @param [in] newState    The new state for the enumerations.
+     *    @param [in] newState    The new state for the enumerations.
      */
     void onCheckAllStateChange(bool newState);
 
     /*!
      *  Change the state of the check all button to match the state of the enumerations.
      *
-     *      @param [in] newState    The new state.
+     *    @param [in] newState    The new state.
      */
     void onChangeCheckAllState(Qt::CheckState newState);
 

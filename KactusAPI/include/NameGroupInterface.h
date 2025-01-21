@@ -40,35 +40,35 @@ public:
     /*!
      *  Get index of the selected item.
      *
-     *      @param [in] itemName    Name of the selected item.
+     *    @param [in] itemName    Name of the selected item.
      *
-     *      @return Index of the selected item.
+     *    @return Index of the selected item.
      */
     virtual int getItemIndex(std::string const& itemName) const = 0;
 
     /*!
      *  Get name of the indexed item.
      *
-     *      @param [in] itemIndex   Index of the selected item.
+     *    @param [in] itemIndex   Index of the selected item.
      *
-     *      @return Name of the selected item.
+     *    @return Name of the selected item.
      */
     virtual std::string getIndexedItemName(int itemIndex) const = 0;
 
     /*!
      *  Set a new name for the selected item.
      *
-     *      @param [in] currentName     Name of the selected item.
-     *      @param [in] newName         New name for the item.
+     *    @param [in] currentName     Name of the selected item.
+     *    @param [in] newName         New name for the item.
      *
-     *      @return True, if successful, false otherwise.
+     *    @return True, if successful, false otherwise.
      */
     virtual bool setName(std::string const& currentName, std::string const& newName) = 0;
     
     /*!
      *	Get the display name of the selected item.
      *  
-     *      @param [in] itemName	The name of the item whose display name to get.
+     *    @param [in] itemName	The name of the item whose display name to get.
      *		
      * 		@return The item display name.
      */
@@ -77,8 +77,8 @@ public:
     /*!
      *	Set the display name of the selected item.
      *  
-     *      @param [in] itemName	Description
-     *      @param [in] newDisplayName	Description
+     *    @param [in] itemName	Description
+     *    @param [in] newDisplayName	Description
      *		
      * 		@return True, if display name was set successfully, otherwise false.
      */
@@ -87,26 +87,26 @@ public:
     /*!
      *  Get the description of the selected item.
      *
-     *      @param [in] itemName    Name of the selected item.
+     *    @param [in] itemName    Name of the selected item.
      *
-     *      @return Description of the selected item.
+     *    @return Description of the selected item.
      */
     virtual std::string getDescription(std::string const& itemName) const;
 
     /*!
      *  Set a new description for the selected item.
      *
-     *      @param [in] itemName        Name of the selected item.
-     *      @param [in] newDescription  New description.
+     *    @param [in] itemName        Name of the selected item.
+     *    @param [in] newDescription  New description.
      *
-     *      @return True, if successful, false otherwise.
+     *    @return True, if successful, false otherwise.
      */
     virtual bool setDescription(std::string const& itemName, std::string const& newDescription);
 
     /*!
      *	Get the short description of an item.
      *  
-     *      @param [in] itemName	Name of the selected item.
+     *    @param [in] itemName	Name of the selected item.
      *		
      * 		@return Short description of the selected item.
      */
@@ -115,8 +115,8 @@ public:
     /*!
      *	Set a new short description for the selected item.
      *  
-     *      @param [in] itemName	Description
-     *      @param [in] newShortDescription	Description
+     *    @param [in] itemName	Description
+     *    @param [in] newShortDescription	Description
      *		
      * 		@return True, if successful, otherwise false.
      */
@@ -125,9 +125,9 @@ public:
     /*!
      *  Check if the selected item has a valid name.
      *
-     *      @param [in] itemName    Name of the selected item.
+     *    @param [in] itemName    Name of the selected item.
      *
-     *      @return True, if the name is valid, false otherwise.
+     *    @return True, if the name is valid, false otherwise.
      */
     virtual bool itemHasValidName(std::string const& itemName) const = 0;
 
@@ -140,9 +140,9 @@ private:
     /*!
      *  Get the item with the selected name, sliced to a NameGroup.
      *
-     *      @param [in] itemName    Name of the selected item.
+     *    @param [in] itemName    Name of the selected item.
      *
-     *      @return The sliced item with the selected name.
+     *    @return The sliced item with the selected name.
      */
     virtual QSharedPointer<NameGroup> getItem(std::string const& itemName) const = 0;
 };

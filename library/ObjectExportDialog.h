@@ -29,8 +29,8 @@ public:
     /*!
 	 *  The Constructor.
 	 *
-	 *      @param [in] parent          The parent widget.
-	 *      @param [in] f               Widget flags for the dialog.
+	 *    @param [in] parent          The parent widget.
+	 *    @param [in] f               Widget flags for the dialog.
 	 */
 	ObjectExportDialog(QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
@@ -42,7 +42,7 @@ public:
     /*!
      *  Get the path to the destination directory.
      *
-     *      @return The path to the destination directory.
+     *    @return The path to the destination directory.
      */
     QString getTargetDirectory() const;
 
@@ -56,7 +56,7 @@ private slots:
     /*!
      *  Handles the changes in the changing of the destination path.
      *
-     *      @param [in] newDestination  The new destination path.
+     *    @param [in] newDestination  The new destination path.
      */
     void onDestinationFolderChanged(const QString& newDestination);
 

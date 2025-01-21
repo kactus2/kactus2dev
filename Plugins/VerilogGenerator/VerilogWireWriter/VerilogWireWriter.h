@@ -32,7 +32,7 @@ public:
     /*!
      *  Writes the wire to given output.
      *
-     *      @param [in] output   The output to write to.
+     *    @param [in] output   The output to write to.
      */
     virtual void write(QTextStream& output) const;    
 
@@ -45,14 +45,14 @@ private:
     /*!
      *  Creates a Verilog wire declaration.     
      *
-     *      @return The Verilog wire declaration for this wire.
+     *    @return The Verilog wire declaration for this wire.
      */
     QString createDeclaration() const;
 
     /*!
      *  Gets the formatted size for the wire.
      *
-     *      @return The formatted size.
+     *    @return The formatted size.
      */
     QString formattedSize(QPair<QString, QString> const& bounds) const;
 

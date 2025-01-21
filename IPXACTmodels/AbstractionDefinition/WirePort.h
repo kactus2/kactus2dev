@@ -42,49 +42,49 @@ public:
     /*!
      *  Sets the group name for system mode.
      *
-     *      @param [in] groupName   The system group to set.
+     *    @param [in] groupName   The system group to set.
      */
     void setSystemGroup(QString const& groupName);
     
     /*!
      *  Gets the group name for system mode.
      *
-     *      @return The system group the wire belongs to.
+     *    @return The system group the wire belongs to.
      */
     QString getSystemGroup() const;
 
     /*!
      *  Sets the presence restriction for the port.
      *
-     *      @param [in] presence   The restriction to set.
+     *    @param [in] presence   The restriction to set.
      */
     void setPresence(PresenceTypes::Presence presence);
 
     /*!
      *  Gets the presence restriction for the port.
      *
-     *      @return The presence restriction for the port.
+     *    @return The presence restriction for the port.
      */
     PresenceTypes::Presence getPresence() const;
    
     /*!
      *  Sets the number of bits required for the port.
      *
-     *      @param [in] widthExpression   The number of bits to set.
+     *    @param [in] widthExpression   The number of bits to set.
      */
     void setWidth(QString const& widthExpression);
 
     /*!
      *  Gets the number of bits required for the port.
      *
-     *      @return The number of bits to required for the port.
+     *    @return The number of bits to required for the port.
      */
     QString getWidth() const;
 
     /*!
      *	Sets the allBits attribute for wire port width.
      *  
-     *      @param [in] allBits	Flag for setting allBits.
+     *    @param [in] allBits	Flag for setting allBits.
      */
     void setAllBits(bool allBits);
 
@@ -98,98 +98,98 @@ public:
     /*!
      *  Sets a direction restriction for the port.
      *
-     *      @param [in] direction   The required direction.
+     *    @param [in] direction   The required direction.
      */
     void setDirection(DirectionTypes::Direction direction);
    
     /*!
      *  Gets a direction restriction for the port.
      *
-     *      @return The required direction.
+     *    @return The required direction.
      */
     DirectionTypes::Direction getDirection() const;
     
     /*!
      *  Sets a timing constraint for the port.
      *
-     *      @param [in] timeConstraint      The constraint to set.
+     *    @param [in] timeConstraint      The constraint to set.
      */
     void setTimingConstraint(QSharedPointer<TimingConstraint> timeConstraint);
 
     /*!
      *  Gets the timing constraint for the port.
      *
-     *      @return The timing constraint.
+     *    @return The timing constraint.
      */
     QSharedPointer<TimingConstraint> getTimingConstraint() const;
         
     /*!
      *  Sets a load constraint for the port.
      *
-     *      @param [in] loadConstraint      The constraint to set.
+     *    @param [in] loadConstraint      The constraint to set.
      */
     void setLoadConstraint(QSharedPointer<CellSpecification> loadConstraint);
     
     /*!
      *  Gets the load constraint for the port.
      *
-     *      @return The load constraint.
+     *    @return The load constraint.
      */
     QSharedPointer<CellSpecification> getLoadConstraint() const;
             
     /*!
      *  Sets a drive constraint for the port.
      *
-     *      @param [in] driveConstraint     The constraint to set.
+     *    @param [in] driveConstraint     The constraint to set.
      */
     void setDriveConstraint(QSharedPointer<CellSpecification> driveConstraint);
     
     /*!
      *  Gets the drive constraint for the port.
      *
-     *      @return The drive constraint.
+     *    @return The drive constraint.
      */
     QSharedPointer<CellSpecification> getDriveConstraint() const;
                 
     /*!
      *  Sets a timing constraint for the port in the mirrored mode.
      *
-     *      @param [in] timeConstraint     The constraint to set.
+     *    @param [in] timeConstraint     The constraint to set.
      */
     void setMirroredTimingConstraint(QSharedPointer<TimingConstraint> timeConstraint);
     
     /*!
      *  Gets the timing constraint for the port in mirrored mode.
      *
-     *      @return The timing constraint.
+     *    @return The timing constraint.
      */
     QSharedPointer<TimingConstraint> getMirroredTimingConstraint() const;
                     
     /*!
      *  Sets a load constraint for the port in the mirrored mode.
      *
-     *      @param [in] loadConstraint     The constraint to set.
+     *    @param [in] loadConstraint     The constraint to set.
      */
     void setMirroredLoadConstraint(QSharedPointer<CellSpecification> loadConstraint);
         
     /*!
      *  Gets the load constraint for the port in mirrored mode.
      *
-     *      @return The load constraint.
+     *    @return The load constraint.
      */
     QSharedPointer<CellSpecification> getMirroredLoadConstraint() const;
                         
     /*!
      *  Sets a drive constraint for the port in the mirrored mode.
      *
-     *      @param [in] driveConstraint     The constraint to set.
+     *    @param [in] driveConstraint     The constraint to set.
      */
     void setMirroredDriveConstraint(QSharedPointer<CellSpecification> driveConstraint);
         
     /*!
      *  Gets the drive constraint for the port in mirrored mode.
      *
-     *      @return The drive constraint.
+     *    @return The drive constraint.
      */
     QSharedPointer<CellSpecification> getMirroredDriveConstraint() const;
 

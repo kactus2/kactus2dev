@@ -35,7 +35,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name    The register name.
+     *    @param [in] name    The register name.
      */
     RegisterBase(QString const& name = QString());
     RegisterBase(QString const& name, QString const& addressOffset);
@@ -52,34 +52,34 @@ public:
 	/*!
      *  Clone the register model and return pointer to the copy.
 	 * 
-	 *      @return Pointer to the cloned register model.
+	 *    @return Pointer to the cloned register model.
 	 */
     virtual QSharedPointer<RegisterBase> clone() = 0;
 
     /*!
      *  Get the presence value.
      *
-     *      @return The isPresent value.
+     *    @return The isPresent value.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the is present value.
      *
-     *      @param [in] newIsPresent    The new value for is present.
+     *    @param [in] newIsPresent    The new value for is present.
      */
     void setIsPresent(QString const& newIsPresent);
     /*!
      *  Get the dimension of the register.
      *
-     *      @return The first dimension defined for the register.
+     *    @return The first dimension defined for the register.
      */
     QString getDimension() const;
 
     /*!
      *  Set the first dimension of the register base.
      *
-     *      @param [in] newDimension    The new value for the first dim-element.
+     *    @param [in] newDimension    The new value for the first dim-element.
      */
     void setDimension(QString const& newDimension);
 
@@ -93,49 +93,49 @@ public:
     /*!
      *	Set the memory array of the register.
      *
-     *      @param [in] newMemArray     Pointer to the memory array to set.
+     *    @param [in] newMemArray     Pointer to the memory array to set.
      */
     void setMemoryArray(QSharedPointer<MemoryArray> newMemArray);
 
     /*!
      *  Get the address offset of the registerFile.
      *
-     *      @return The offset.
+     *    @return The offset.
      */
     QString getAddressOffset() const;
 
     /*!
      *  Set the address offset.
      *
-     *      @param [in] newAddressOffset    The new offset.
+     *    @param [in] newAddressOffset    The new offset.
      */
     void setAddressOffset(QString const& newAddressOffset);
 
     /*!
      *  Get the register type identifier.
      *
-     *      @return The type identifier of the register.
+     *    @return The type identifier of the register.
      */
     QString getTypeIdentifier() const;
 
     /*!
      *  Set the register type identifier.
      *
-     *      @param [in] newTypeIdentifier   The new register type identifier.
+     *    @param [in] newTypeIdentifier   The new register type identifier.
      */
     void setTypeIdentifier(QString const& newTypeIdentifier);
 
     /*!
      *  Get the parameters of the register.
      *
-     *      @return Pointer to a list containing the parameters.
+     *    @return Pointer to a list containing the parameters.
      */
     QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
     /*!
      *  Set the parameters for the register.
      *
-     *      @param [in] newParameters   Pointer to a list containing the new parameters
+     *    @param [in] newParameters   Pointer to a list containing the new parameters
      */
     void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
 
@@ -149,7 +149,7 @@ public:
     /*!
      *	Set the access policies of the register.
      *  
-     *      @param [in] newAccessPolicies     The new access policies to set.
+     *    @param [in] newAccessPolicies     The new access policies to set.
      */
     void setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies);
 
@@ -163,14 +163,14 @@ private:
     /*!
      *  Copy the parameters.
      *
-     *      @param [in] other   The register base class being copied.
+     *    @param [in] other   The register base class being copied.
      */
     void copyParameters(const RegisterBase& other);
 
     /*!
      *  Copy the access policies.
      *
-     *      @param [in] other   The register base class being copied.
+     *    @param [in] other   The register base class being copied.
      */
     void copyAccessPolicies(const RegisterBase& other);
 

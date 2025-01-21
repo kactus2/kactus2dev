@@ -32,30 +32,30 @@ public:
     /*!
      *  Adds a new association to the item.
      *
-     *      @param [in] association   The association to add.     
+     *    @param [in] association   The association to add.     
      */
     virtual void addAssociation(Association* association);
    
     /*!
      *  Removes an association from the item.
      *
-     *      @param [in] association   The association to remove.     
+     *    @param [in] association   The association to remove.     
      */
     virtual void removeAssociation(Association* association);
 
     /*!
      *  Gets the item associations.
      *
-     *      @return The associations of the item.
+     *    @return The associations of the item.
      */
     QList<Association*> getAssociations() const;
 
     /*!
      *  Defines the connection point for associations in scene coordinates.
      *     
-     *      @param [in] otherEnd   The position of the other end connection point.
+     *    @param [in] otherEnd   The position of the other end connection point.
      *
-     *      @return The connection point of the item.
+     *    @return The connection point of the item.
      */
     virtual QPointF connectionPoint(QPointF const& otherEnd = QPointF()) const = 0;
 

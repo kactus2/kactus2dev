@@ -27,8 +27,8 @@ public:
 	 /*!
       *  Constructor.
       *
-      *      @param [in] portsInterface     Interface for accessing the component ports.
-      *      @param [in] parent             The parent object.
+      *    @param [in] portsInterface     Interface for accessing the component ports.
+      *    @param [in] parent             The parent object.
       */
     using PortsFilter::PortsFilter;
 
@@ -42,7 +42,7 @@ private:
     /*!
      *  Get the index of the name column.
      *
-     *      @return Index of the name column.
+     *    @return Index of the name column.
      */
     int nameColumn() const final 
     {
@@ -52,9 +52,9 @@ private:
     /*!
      *  Check if a port is filtered.
      *
-     *      @param [in] portName    Name of the selected port.
+     *    @param [in] portName    Name of the selected port.
      *
-     *      @return True, if the port is accepted, false otherwise.
+     *    @return True, if the port is accepted, false otherwise.
      */
     bool portIsAccepted(QString const& /*portName*/) const final
     {

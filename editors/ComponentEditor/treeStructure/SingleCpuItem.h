@@ -33,13 +33,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] cpu                     The selected cpu.
-     *      @param [in] model                   The model that owns the items.
-     *      @param [in] libHandler              The instance that manages the library.
-     *      @param [in] component               The component being edited.
-     *      @param [in] referenceCounter        The counter for parameter references.
-     *      @param [in] expressions				The collection of objects for expression handling.
-     *      @param [in] parent                  The parent item.
+     *    @param [in] cpu                     The selected cpu.
+     *    @param [in] model                   The model that owns the items.
+     *    @param [in] libHandler              The instance that manages the library.
+     *    @param [in] component               The component being edited.
+     *    @param [in] referenceCounter        The counter for parameter references.
+     *    @param [in] expressions				The collection of objects for expression handling.
+     *    @param [in] parent                  The parent item.
      */
     SingleCpuItem(QSharedPointer<Cpu> cpu,
         ComponentEditorTreeModel* model,
@@ -64,28 +64,28 @@ public:
 	/*!
 	 *  Get the tool tip for the item.
 	 *
-     *      @return The text for the tool tip to print to user.
+     *    @return The text for the tool tip to print to user.
 	 */
 	QString getTooltip() const final;
 
 	/*!
 	 *  Get the text to be displayed in the tree for this item.
 	 *
-     *      @return The text to display.
+     *    @return The text to display.
 	 */
 	QString text() const final;
 
     /*!
 	 *  Check the validity of this item and sub items.
 	 *
-     *      @return True, if the item is in a valid state, false otherwise.
+     *    @return True, if the item is in a valid state, false otherwise.
 	 */
 	bool isValid() const final;
 
 	/*!
 	 *  Get the pointer to the editor of this item.
 	 *
-     *      @return Pointer to the editor to use for this item.
+     *    @return Pointer to the editor to use for this item.
 	 */
 	ItemEditor* editor() final;
 

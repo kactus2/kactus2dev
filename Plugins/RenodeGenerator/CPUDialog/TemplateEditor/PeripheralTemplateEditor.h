@@ -32,14 +32,14 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  Pointer to the owner of this widget.
+     *    @param [in] parent  Pointer to the owner of this widget.
      */
     PeripheralTemplateEditor(QString const& generationFolder, QWidget *parent = 0);
 
     /*!
      *  Setup the peripheral template.
      *	
-     *      @param [in] newTemplates    List of new peripheral templates.
+     *    @param [in] newTemplates    List of new peripheral templates.
      */
     void setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplars);
 
@@ -51,7 +51,7 @@ public:
     /*!
      *  Get the current peripheral templates.
      *	
-     *      @return The current peripheral templates.
+     *    @return The current peripheral templates.
      */
     QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > getTemplates() const;
 

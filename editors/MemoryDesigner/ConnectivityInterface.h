@@ -31,7 +31,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name   The name of the interface.
+	 *    @param [in] name   The name of the interface.
 	 */
 	explicit ConnectivityInterface(QString const& name);
 
@@ -43,98 +43,98 @@ public:
     /*!
      *  Gets the name of the interface.
      *
-     *      @return The name of the interface.
+     *    @return The name of the interface.
      */
     QString getName() const;
 
     /*!
      *  Sets the mode for the interface.
      *
-     *      @param [in] newMode     The mode to set.
+     *    @param [in] newMode     The mode to set.
      */
     void setMode(General::InterfaceMode newMode);
 
     /*!
      *  Gets the mode of the interface.
      *
-     *      @return The mode of the interface.
+     *    @return The mode of the interface.
      */
     General::InterfaceMode getMode() const;
 
     /*!
      *  Sets the base address for the memories connected to the interface.
      *
-     *      @param [in] address   The base address to set.
+     *    @param [in] address   The base address to set.
      */
     void setBaseAddress(QString const& address);
 
     /*!
      *  Gets the base address for the memories connected to the interface. 
      *
-     *      @return The base address for the memories connected to the interface.
+     *    @return The base address for the memories connected to the interface.
      */
     QString getBaseAddress() const;
 
     /*!
      *  Sets the remap address for the memories connected to the interface.
      *
-     *      @param [in] address   The remap address to set.
+     *    @param [in] address   The remap address to set.
      */
     void setRemapAddress(QString const& address);
 
     /*!
      *  Gets the remap address for the memories connected to the interface.
      *
-     *      @return The remap address.
+     *    @return The remap address.
      */
     QString getRemapAddress() const;
 
     /*!
      *  Sets the remap range for the memories connected to the interface.
      *
-     *      @param [in] range   The range to set.
+     *    @param [in] range   The range to set.
      */
     void setRemapRange(QString const& range);
 
     /*!
      *   Gets the remap range for the memories connected to the interface.
      *
-     *      @return The remap range.
+     *    @return The remap range.
      */
     QString getRemapRange() const;
 
     /*!
      *  Sets the instance the interface is a part of.
      *
-     *      @param [in] instance   The instance to set.
+     *    @param [in] instance   The instance to set.
      */
     void setInstance(QSharedPointer<ConnectivityComponent const> instance);
 
     /*!
      *  Gets the instance the interface is part of.
      *
-     *      @return The instance containing the interface.
+     *    @return The instance containing the interface.
      */
     QSharedPointer<ConnectivityComponent const> getInstance() const;
 
     /*!
      *  Checks if the interface is associated with a memory.
      *
-     *      @return True, if the interface is connected to a memory, otherwise false.
+     *    @return True, if the interface is connected to a memory, otherwise false.
      */
     bool isConnectedToMemory() const;
 
     /*!
      *  Sets the associated memory for the interface.
      *
-     *      @param [in] memory      The memory to associate the interface with.
+     *    @param [in] memory      The memory to associate the interface with.
      */
     void setConnectedMemory(QSharedPointer<MemoryItem> memory);
 
     /*!
      *  Gets the memory associated with the interface.
      *
-     *      @return The associated memory if any.
+     *    @return The associated memory if any.
      */
     QSharedPointer<MemoryItem> getConnectedMemory() const;
 
@@ -144,7 +144,7 @@ public:
     /*!
      *  Checks if the interface is hierarchical.
      *
-     *      @return True, if the interface is hierarchical, otherwise false.
+     *    @return True, if the interface is hierarchical, otherwise false.
      */
     bool isHierarchical() const;
 
@@ -154,28 +154,28 @@ public:
     /*!
      *  Checks if the interface is bridged.
      *
-     *      @return True, if the interface is bridged, otherwise false.
+     *    @return True, if the interface is bridged, otherwise false.
      */
     bool isBridged() const;
 
     /*!
      *  Get the next interface nodes for a connection tree.
      *
-     *      @return List of the next interface nodes.
+     *    @return List of the next interface nodes.
      */
     QVector<QSharedPointer<ConnectivityInterface> > getChildInterfaceNodes() const;
 
     /*!
      *  Add an interface node to the tree.
      *
-     *      @param [in] newChild    The new tree interface node.
+     *    @param [in] newChild    The new tree interface node.
      */
     void addChildInterfaceNode(QSharedPointer<ConnectivityInterface> newChild);
 
     /*!
      *  Remove a node from the tree.
      *
-     *      @param [in] indexOfInterface    Index of the tree node.
+     *    @param [in] indexOfInterface    Index of the tree node.
      */
     void removeChildInterface(int const& indexOfInterface);
 

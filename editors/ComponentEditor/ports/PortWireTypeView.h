@@ -26,7 +26,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this view.
+	 *    @param [in] parent  Pointer to the owner of this view.
      */
 	PortWireTypeView(QWidget* parent);
 	
@@ -47,7 +47,7 @@ protected:
     /*!
      *  Handles the context menu events.
      *
-     *      @param [in] event   The context menu event.
+     *    @param [in] event   The context menu event.
      */
     virtual void contextMenuEvent(QContextMenuEvent* event);
 

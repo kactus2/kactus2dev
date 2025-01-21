@@ -30,9 +30,9 @@ namespace ViewWriter
     /*!
      *  Write a view to an XML file.
      *
-     *      @param [in] writer       The used xml writer.
-     *      @param [in] view         The view to be written.
-     *      @param [in] docRevision  The IP-XACT standard revision to comply to.
+     *    @param [in] writer       The used xml writer.
+     *    @param [in] view         The view to be written.
+     *    @param [in] docRevision  The IP-XACT standard revision to comply to.
      */
     IPXACTMODELS_EXPORT void writeView(QXmlStreamWriter& writer, QSharedPointer<View> view, 
         Document::Revision docRevision);
@@ -43,24 +43,24 @@ namespace ViewWriter
         /*!
          *  Writes the presence to an XML file.
          *
-         *      @param [in] writer  The used xml writer.
-         *      @param [in] view    The view to be written.
+         *    @param [in] writer  The used xml writer.
+         *    @param [in] view    The view to be written.
          */
         void writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<View> view);
 
         /*!
          *  Writes the envIdentifiers to an XML file.
          *
-         *      @param [in] writer  The used xml writer.
-         *      @param [in] view    The view to be written.
+         *    @param [in] writer  The used xml writer.
+         *    @param [in] view    The view to be written.
          */
         void writeEnvIdentifiers(QXmlStreamWriter& writer, QSharedPointer<View> view);
 
         /*!
          *  Writes the instantiation references to an XML file.
          *
-         *      @param [in] writer  The used xml writer.
-         *      @param [in] view    The view to be written.
+         *    @param [in] writer  The used xml writer.
+         *    @param [in] view    The view to be written.
          */
         void writeInstantiationReferences(QXmlStreamWriter& writer, QSharedPointer<View> view);
     }

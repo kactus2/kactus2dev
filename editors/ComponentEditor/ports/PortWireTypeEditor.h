@@ -35,9 +35,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] component       Component containing the edited port.
-     *      @param [in] typeValidator   Validator for the port type definitions.
-	 *      @param [in] parent          The owner of the editor.
+     *    @param [in] component       Component containing the edited port.
+     *    @param [in] typeValidator   Validator for the port type definitions.
+	 *    @param [in] parent          The owner of the editor.
 	 */
     PortWireTypeEditor(QSharedPointer<Component> component, QSharedPointer<PortTypeValidator> typeValidator,
         QWidget* parent);
@@ -50,14 +50,14 @@ public:
     /*!
      *  Set a new component.
      *
-     *      @param [in] newComponent    The selected component.
+     *    @param [in] newComponent    The selected component.
      */
     void setComponent(QSharedPointer<Component> newComponent);
 
     /*!
      *  Set a new port for the port wire type model.
      *
-     *      @param [in] newPort     The selected port.
+     *    @param [in] newPort     The selected port.
      */
     void setPortForModel(QSharedPointer<Port> newPort);
 

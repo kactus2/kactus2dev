@@ -27,7 +27,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  The parent widget.
+     *    @param [in] parent  The parent widget.
      */
     DrawingBoard(QWidget* parent = 0);
 
@@ -37,7 +37,7 @@ public:
     /*!
      *  Registers a tab document (connects common signals etc.).
      *
-     *      @param [in] doc            The document to register.
+     *    @param [in] doc            The document to register.
      */
     void addAndOpenDocument(TabDocument* doc);
 
@@ -69,7 +69,7 @@ public slots:
     /*!
      *  Closes and removes the document at given index.
      *
-     *      @param [in] index   The document index to close.
+     *    @param [in] index   The document index to close.
      */
     void closeAndRemoveDocument(int index);
 
@@ -86,10 +86,10 @@ protected:
     /*!
      *  Filters the events for given target. Used to create context menu for closing tabs.
      *
-     *      @param [in] target      The target object whose event to filter.
-     *      @param [in] event       The event captured before passing to target.
+     *    @param [in] target      The target object whose event to filter.
+     *    @param [in] event       The event captured before passing to target.
      *
-     *      @return True, if the event was filtered and should not be passed further, otherwise false.
+     *    @return True, if the event was filtered and should not be passed further, otherwise false.
      */
     virtual bool eventFilter(QObject* target, QEvent* event);
 
@@ -132,9 +132,9 @@ private:
     /*!
      *  Checks if the current document should be saved. If the document contains errors, prompts the user.
      *
-     *      @param [in] doc   The document to save.
+     *    @param [in] doc   The document to save.
      *
-     *      @return True, if the document should be saved, otherwise false.
+     *    @return True, if the document should be saved, otherwise false.
      */
     bool shouldSave(TabDocument* doc);
 

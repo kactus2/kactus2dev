@@ -32,10 +32,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] scene               The scene.
-     *      @param [in] connection          The connection to add.
-     *      @param [in] containingDesign    The design containing the connection.
-     *      @param [in] parent              The parent command.
+     *    @param [in] scene               The scene.
+     *    @param [in] connection          The connection to add.
+     *    @param [in] containingDesign    The design containing the connection.
+     *    @param [in] parent              The parent command.
      */
     ComConnectionAddCommand(QGraphicsScene* scene, ComGraphicsConnection* connection,
         QSharedPointer<Design> containingDesign, QUndoCommand* parent = 0);
@@ -63,7 +63,7 @@ private:
     /*!
      *  Change the port item status from API interface to COM interface.
      *
-     *      @param [in] endPoint    The selected port item.
+     *    @param [in] endPoint    The selected port item.
      */
     void changePortItemFromApiToCom(ConnectionEndpoint* endPoint);
 

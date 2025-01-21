@@ -43,9 +43,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent          The owner of this widget.
-	 *      @param [in] libHandler      The instance that manages library.
-	 *      @param [in] busDef          The bus definition to edit.
+	 *    @param [in] parent          The owner of this widget.
+	 *    @param [in] libHandler      The instance that manages library.
+	 *    @param [in] busDef          The bus definition to edit.
      */
 	BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<BusDefinition> busDef);
 	
@@ -61,7 +61,7 @@ public:
 	/*!
      *  Get the VLNV that can be used to identify the Bus.
 	 *
-	 *      @return The VLNV that identifies the Bus.
+	 *    @return The VLNV that identifies the Bus.
      */
 	VLNV getIdentifyingVLNV() const override;
 
@@ -73,21 +73,21 @@ public:
     /*!
      *  Sets the protection state of the document.
      *
-     *      @param [in] locked True for locked state; false for unlocked.
+     *    @param [in] locked True for locked state; false for unlocked.
      */
     void setProtection(bool locked) override;
 
 	/*!
      *  Get the vlnv of the current bus definition.
 	 *
-	 *      @return VLNV of the bus definition/abstraction definition being edited.
+	 *    @return VLNV of the bus definition/abstraction definition being edited.
 	 */
 	VLNV getDocumentVLNV() const override;
 
     /*!
      *  Sets the edited bus definition.
      * 
-     *      @param [in] busDef   The bus definition to set. Must not be NULL.
+     *    @param [in] busDef   The bus definition to set. Must not be NULL.
      */
     void setBusDef(QSharedPointer<BusDefinition> busDef);
 
@@ -97,9 +97,9 @@ public slots:
     /*!
      *  Validates the document against the IP-XACT standard.
      *
-     *      @param [out] errorList Error message list for reporting standard violations.
+     *    @param [out] errorList Error message list for reporting standard violations.
      *
-     *      @return True if the document is valid. False if there were any violations.
+     *    @return True if the document is valid. False if there were any violations.
      */
     virtual bool validate(QVector<QString>& errorList);
 
@@ -118,8 +118,8 @@ signals:
     /*!
      *  Inform that a port abstraction has been removed.
      *
-     *      @param [in] portName    Name of the removed port abstraction.
-     *      @param [in] mode        Mode of the removed port abstraction.
+     *    @param [in] portName    Name of the removed port abstraction.
+     *    @param [in] mode        Mode of the removed port abstraction.
      */
     void portRemoved(QString const& portName, General::InterfaceMode const mode);
 
@@ -128,7 +128,7 @@ protected:
     /*!
      *  Called when the editor is shown.
      *
-     *      @param [in] event   The show event.
+     *    @param [in] event   The show event.
      */
     virtual void showEvent(QShowEvent* event);
 

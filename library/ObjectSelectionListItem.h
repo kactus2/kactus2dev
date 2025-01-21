@@ -35,10 +35,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] itemIcon    Icon used by the item.
-     *      @param [in] itemPath    File path of the item.
-     *      @param [in] isLocked    The lock status of the item.
-     *      @param [in] vlnv        VLNV associated with the item.
+     *    @param [in] itemIcon    Icon used by the item.
+     *    @param [in] itemPath    File path of the item.
+     *    @param [in] isLocked    The lock status of the item.
+     *    @param [in] vlnv        VLNV associated with the item.
 	 *
      */
     ObjectSelectionListItem(QIcon itemIcon, QString const& itemPath, bool isLocked, VLNV vlnv = VLNV());
@@ -51,28 +51,28 @@ public:
     /*!
      *  Get the VLNV associated with the item.
      *
-     *      @return The VLNV of the item.
+     *    @return The VLNV of the item.
      */
     VLNV getVLNV() const;
 
     /*!
      *  Get the file path of the item.
      *
-     *      @return The file path of the item.
+     *    @return The file path of the item.
      */
     QString getPath() const;
 
     /*!
      *  Get the item type.
      *
-     *      @return The type of the item.
+     *    @return The type of the item.
      */
     ObjectSelectionListItem::ItemType getType() const;
 
     /*!
      *  Check if the item is locked.
      *
-     *      @return True, if the item is locked, false otherwise.
+     *    @return True, if the item is locked, false otherwise.
      */
     bool itemIsLocked() const;
 

@@ -32,11 +32,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] fileSetInterface    Interface for accessing file sets.
-     *      @param [in] component           The component being edited.
-     *      @param [in] systemView	        The system view being edited.
-     *      @param [in] libHandler          The library handler.
-     *      @param [in] parent              The parent widget.
+     *    @param [in] fileSetInterface    Interface for accessing file sets.
+     *    @param [in] component           The component being edited.
+     *    @param [in] systemView	        The system view being edited.
+     *    @param [in] libHandler          The library handler.
+     *    @param [in] parent              The parent widget.
      */
 	SystemViewEditor(FileSetInterface* fileSetInterface, QSharedPointer<Component> component,
         QSharedPointer<SystemView> systemView, LibraryInterface* libHandler, QWidget* parent);
@@ -47,7 +47,7 @@ public:
     /*!
      *  Checks for the validity of the edited API interface.
      *
-	 *      @return True if the API interface is in valid state.
+	 *    @return True if the API interface is in valid state.
 	 */
 	bool isValid() const;
 

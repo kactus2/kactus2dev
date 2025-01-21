@@ -39,8 +39,8 @@ public:
     /*!
      *  Sets the ad-hoc port visibility data source being edited.
      *
-     *      @param [in] dataSource      The data source.
-     *      @param [in] connections     List of ad hoc connections within the design.
+     *    @param [in] dataSource      The data source.
+     *    @param [in] connections     List of ad hoc connections within the design.
      */
     void setDataSource(AdHocEnabled* dataSource,
         QSharedPointer<QList<QSharedPointer<AdHocConnection> > > connections);
@@ -48,36 +48,36 @@ public:
     /*!
      *  Check if the visibility can be changed for the selected port.
      *
-     *      @param [in] port    The selected port.
+     *    @param [in] port    The selected port.
      *
-     *      @return True, if the visibility can be changed, false otherwise.
+     *    @return True, if the visibility can be changed, false otherwise.
      */
     bool canChangeVisibility(QSharedPointer<Port> port) const;
 
     /*!
      *  Check if the selected port has connections.
      *
-     *      @param [in] port    The selected port.
+     *    @param [in] port    The selected port.
      *
-     *      @return True, if the selected port has been connected, otherwise false.
+     *    @return True, if the selected port has been connected, otherwise false.
      */
     bool portHasConnections(QSharedPointer<Port> port) const;
 
     /*!
      *  Check if the selected port has a tie off value.
      *
-     *      @param [in] port    The selected port.
+     *    @param [in] port    The selected port.
      *
-     *      @return True, if the selected port has a tie off value, otherwise false.
+     *    @return True, if the selected port has a tie off value, otherwise false.
      */
     bool portHasTieOffConnection(QSharedPointer<Port> port) const;
 
     /*!
      *  Check if the selected port is determined to be visible within the containing component.
      *
-     *      @param [in] portName    The name of the port.
+     *    @param [in] portName    The name of the port.
      *
-     *      @return True, if the selected port is determined to be visible, otherwise false.
+     *    @return True, if the selected port is determined to be visible, otherwise false.
      */
     bool isPortAdhocVisible(QString const& portName) const;
 
@@ -92,9 +92,9 @@ private:
     /*!
      *  Get a connection containing the tie off value of the selected port.
      *
-     *      @param [in] port    The selected port.
+     *    @param [in] port    The selected port.
      *
-     *      @return A connection containing the tie off value of the selected port. Empty pointer if no
+     *    @return A connection containing the tie off value of the selected port. Empty pointer if no
      *              connection is found.
      */
     QSharedPointer<AdHocConnection> getTieOffConnection(QSharedPointer<Port> port) const;

@@ -26,7 +26,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name   The name of the placeholder.
+	 *    @param [in] name   The name of the placeholder.
 	 */
     Kactus2Group(QString name);
 
@@ -41,44 +41,44 @@ public:
     /*!
      *  Clones the vendor extension.
      *
-     *      @return The clone copy of the vendor extension.
+     *    @return The clone copy of the vendor extension.
      */
     virtual Kactus2Group* clone() const;
 
     /*!
      *  Returns a type identifier for the vendor extension.
      *
-     *      @return A type identifier of the vendor extension.
+     *    @return A type identifier of the vendor extension.
      */
     virtual QString type() const;
 
     /*!
      *  Writes the vendor extension to XML.
      *
-     *      @param [in] writer   The writer used for writing the XML.
+     *    @param [in] writer   The writer used for writing the XML.
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Adds a vendor extension to the group.
      *
-     *      @param [in] extension   The extension to add.
+     *    @param [in] extension   The extension to add.
      */
     void addToGroup(QSharedPointer<VendorExtension> extension);
 
     /*!
      *  Removes a vendor extension from the group.
      *
-     *      @param [in] extension   The extension to remove.     
+     *    @param [in] extension   The extension to remove.     
      */
     void removeFromGroup(QSharedPointer<VendorExtension> extension);
 
     /*!
      *  Gets all the extensions with the given type.
      *
-     *      @param [in] type   The type to search for.
+     *    @param [in] type   The type to search for.
      *
-     *      @return The vendor extensions with the given type.
+     *    @return The vendor extensions with the given type.
      */
     QList<QSharedPointer<VendorExtension> > getByType(QString const& type) const;
 

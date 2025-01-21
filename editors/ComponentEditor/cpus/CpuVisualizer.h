@@ -33,10 +33,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *       @param [in] cpu				The CPU being visualized.
-     *       @param [in] memoryMaps			The available memory maps for the CPU to reference.
-     *       @param [in] expressionParser   The expression parser to use.
-	 *       @param [in] parent             The owner of the visualizer.
+     *    @param [in] cpu				The CPU being visualized.
+     *    @param [in] memoryMaps			The available memory maps for the CPU to reference.
+     *    @param [in] expressionParser   The expression parser to use.
+	 *    @param [in] parent             The owner of the visualizer.
 	 */
     CpuVisualizer(QSharedPointer<Cpu> cpu,
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps,
@@ -58,14 +58,14 @@ public:
 	/*!
      *  The minimum size hint for the visualizer.
 	 *
-	 *      @return The minimum size hint.
+	 *    @return The minimum size hint.
 	 */
 	QSize minimumSizeHint() const override;
 
 	/*!
      *  The size hint for the visualizer.
 	 *
-	 *      @return The size hint.
+	 *    @return The size hint.
 	 */
 	QSize sizeHint() const override;
 

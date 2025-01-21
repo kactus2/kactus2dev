@@ -77,13 +77,13 @@ public:
     
     /*!  Get the name of the referenced memory map if any.
 	 *
-	 *      @return The name of the memory map referenced in the slave interface.
+	 *    @return The name of the memory map referenced in the slave interface.
 	 */
 	QString getMemoryMapRef() const;
     
 	/*! Set the memory map for this interface.
 	 *
-	 *      @param [in] memoryMapRef    The name of the memory map to reference.
+	 *    @param [in] memoryMapRef    The name of the memory map to reference.
 	 */
 	void setMemoryMapRef(QString const& memoryMapRef);
 
@@ -93,25 +93,25 @@ public:
 
 	/*! Get the bridges for this slave interface.
 	 *
-	 *      @return The bridges for this slave interface.
+	 *    @return The bridges for this slave interface.
 	 */
 	QSharedPointer<QList<QSharedPointer<TransparentBridge> > > getBridges() const;
     
 	/*! Check if the slave is connected to a master interface through transparent bridge.
 	 *
-	 *      @return True if at least one bridge is found, otherwise false.
+	 *    @return True if at least one bridge is found, otherwise false.
 	 */
 	bool hasTransparentBridge() const;
 
 	/*! Get list of the master interfaces referred to through the contained bridge-elements.
 	 *
-	 *      @return The names of the referred master interfaces.
+	 *    @return The names of the referred master interfaces.
 	 */
 	QStringList getMasterReferences() const;
 
 	/*! Get the fileSetRefGroups for this slave interface.
 	 *
-	 *      @return The fileSetRefGroups for this slave interface.
+	 *    @return The fileSetRefGroups for this slave interface.
 	 */
 	QSharedPointer<QList<QSharedPointer<FileSetRefGroup> > > getFileSetRefGroup() const;
 

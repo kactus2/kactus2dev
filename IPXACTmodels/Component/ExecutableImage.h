@@ -34,7 +34,7 @@ public:
 	/*!
 	 *  The default constructor.
 	 *
-	 *      @param [in] name            Name of the executable image.
+	 *    @param [in] name            Name of the executable image.
 	 */
 	ExecutableImage(QString const& name = QString());
 	
@@ -50,56 +50,56 @@ public:
 	/*!
 	 *  Get the imageId attribute.
 	 *
-	 *      @return The imageId attribute.
+	 *    @return The imageId attribute.
 	 */
 	QString getImageId() const;
 
 	/*!
 	 *  Set the imageId attribute.
 	 *
-	 *      @param [in] id The id to set.
+	 *    @param [in] id The id to set.
 	 */
 	void setImageId(QString const& id);
 		
 	/*!
 	 *  Get the imageType attribute.
 	 *
-	 *      @return The imageType attribute.
+	 *    @return The imageType attribute.
 	 */
 	QString getImageType() const;
 
 	/*!
 	 *  Set the imageType attribute.
 	 *
-	 *      @param [in] type The imageType to set.
+	 *    @param [in] type The imageType to set.
 	 */
 	void setImageType(QString const& type);
 
     /*!
 	 *  Get the parameters of the executable image.
 	 *
-	 *      @return Pointer to a list holding the parameters for this executable image.
+	 *    @return Pointer to a list holding the parameters for this executable image.
 	 */
     QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
 	/*!
 	 *  Set the parameter for the executable image.
 	 *
-	 *      @param [in] parameters The parameters to set.
+	 *    @param [in] parameters The parameters to set.
 	 */
 	void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters);
 
 	/*!
 	 *  Get the language tools defined for the executable image.
 	 *
-	 *      @return The language tools of the executable image.
+	 *    @return The language tools of the executable image.
 	 */
 	QSharedPointer<LanguageTools> getLanguageTools() const;
 
     /*!
      *  Set the language tools for the executable image.
      *
-     *      @param [in] languageTools The language tools to set.
+     *    @param [in] languageTools The language tools to set.
      */
     void setLanguageTools(QSharedPointer<LanguageTools> languageTools);
 

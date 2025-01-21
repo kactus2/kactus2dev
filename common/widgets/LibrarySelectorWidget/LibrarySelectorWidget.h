@@ -30,7 +30,7 @@ public:
     /*!
      *  Constructor.
      *      
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
 	LibrarySelectorWidget(QWidget *parent = 0);
 	
@@ -40,7 +40,7 @@ public:
     /*!
      *  Get the edited path.
      *      
-     *      @return Path in the edit field.
+     *    @return Path in the edit field.
      */
     QString getPath() const;
 
@@ -52,7 +52,7 @@ public:
     /*!
      *  Checks if the path is valid.
      *      
-     *      @return True, if the path is in an active library, otherwise false.
+     *    @return True, if the path is in an active library, otherwise false.
      */
     bool isValid() const;
 

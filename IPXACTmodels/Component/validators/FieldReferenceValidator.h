@@ -23,18 +23,18 @@ namespace FieldReferenceValidator
     /*!
      *  Validates the given field reference.
      *
-     *      @param [in] fieldReference   The field reference to validate.
+     *    @param [in] fieldReference   The field reference to validate.
      *
-     *      @return True, if the field is valid IP-XACT, otherwise false.
+     *    @return True, if the field is valid IP-XACT, otherwise false.
      */
     IPXACTMODELS_EXPORT bool validate(QSharedPointer<FieldReference> fieldReference);
 
     /*!
      *  Locate errors within a field reference.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] fieldReference      The selected field reference.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] fieldReference      The selected field reference.
+     *    @param [in] context             Context to help locate the error.
      */
     IPXACTMODELS_EXPORT void findErrorsIn(QStringList& errorList, QSharedPointer<FieldReference> fieldReference, QString const& context);
 

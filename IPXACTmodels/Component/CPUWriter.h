@@ -30,8 +30,8 @@ namespace CPUWriter
     /*!
      *  Write a CPU to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] cpu		The cpu to be written.
+     *    @param [in] writer  The used xml writer.
+     *    @param [in] cpu		The cpu to be written.
      */
     IPXACTMODELS_EXPORT void writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu, Document::Revision docRevision);
 
@@ -40,8 +40,8 @@ namespace CPUWriter
         /*!
          *  Writes the address space references.
          *
-         *      @param [in] writer  The used xml writer.
-         *      @param [in] cpu		The cpu to be written.
+         *    @param [in] writer  The used xml writer.
+         *    @param [in] cpu		The cpu to be written.
          */
         void writeAddressSpaceRefs(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu);
 

@@ -31,7 +31,7 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] parent The owner of this widget.
+	 *    @param [in] parent The owner of this widget.
      */
 	FirmnessGroup(QWidget *parent);
 	
@@ -47,21 +47,21 @@ public:
     /*!
      *  Sets new firmness options.
      *
-     *      @param [in] options   The options to set.
+     *    @param [in] options   The options to set.
      */
     void setFirmness(Utils::FirmnessOptions options);
 
     /*!
      *  Gets the selected firmness options.
      *
-     *      @return Selected firmness options.
+     *    @return Selected firmness options.
      */
     Utils::FirmnessOptions getFirmness() const;
 
     /*!
      *  Select/clear all filters.
      *
-     *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+     *    @param [in] select     If true, all filters are set, otherwise all filters are cleared.
      */
 	void selectAll(bool select) override final;
 

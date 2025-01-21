@@ -34,10 +34,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component       Pointer to the component being edited.
-	 *      @param [in] handler         Pointer to the instance managing the library.
-     *      @param [in] viewValidator   The validator used for views.
-	 *      @param [in] parent          Pointer to the parent of this editor.
+	 *    @param [in] component       Pointer to the component being edited.
+	 *    @param [in] handler         Pointer to the instance managing the library.
+     *    @param [in] viewValidator   The validator used for views.
+	 *    @param [in] parent          Pointer to the parent of this editor.
 	 */
 	ViewsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
         QSharedPointer<ViewValidator> viewValidator, QWidget* parent = 0);

@@ -32,7 +32,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  Pointer to the owner of this widget.
+     *    @param [in] parent  Pointer to the owner of this widget.
      */
     LinuxDeviceTreeCPUEditor(QWidget *parent = 0);
 
@@ -44,14 +44,14 @@ public:
     /*!
      *  Setup the selected CPU containers.
      *
-     *      @param [in] cpuDetails  The selected CPU containers.
+     *    @param [in] cpuDetails  The selected CPU containers.
      */
     void setupCPUDetails(QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > cpuDetails);
 
     /*!
      *  Get the selected CPU containers.
      *
-     *      @return The selected CPU containers.
+     *    @return The selected CPU containers.
      */
     QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > getAcceptedContainers() const;
 

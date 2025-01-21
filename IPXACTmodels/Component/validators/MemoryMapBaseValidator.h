@@ -44,8 +44,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] expressionParser        The parser to use for solving expressions.
-     *      @param [in] addressBlockValidator   Validator used for address blocks.
+	 *    @param [in] expressionParser        The parser to use for solving expressions.
+     *    @param [in] addressBlockValidator   Validator used for address blocks.
 	 */
     MemoryMapBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<AddressBlockValidator> addressBlockValidator,
@@ -64,69 +64,69 @@ public:
     /*!
      *  Change the containing component.
      *
-     *      @param [in] newComponent    The selected component.
+     *    @param [in] newComponent    The selected component.
      */
     void componentChange(QSharedPointer<Component> newComponent);
 
     /*!
      *  Get the validator used for address blocks.
      *
-     *      @return The validator used for address blocks.
+     *    @return The validator used for address blocks.
      */
     QSharedPointer<AddressBlockValidator> getAddressBlockValidator() const;
 
     /*!
      *  Get the validator used for subspace maps.
      *
-     *      @return The validator used for subspace maps.
+     *    @return The validator used for subspace maps.
      */
     QSharedPointer<SubspaceMapValidator> getSubspaceValidator() const;
 
     /*!
      *  Validates the given memory map base.
      *
-     *      @param [in] memoryMapBase       The memory map base to validate.
-     *      @param [in] addressUnitBits     The address unit bits used by the memory map.
+     *    @param [in] memoryMapBase       The memory map base to validate.
+     *    @param [in] addressUnitBits     The address unit bits used by the memory map.
      *
-     *      @return True, if the memory map base is valid IP-XACT, otherwise false.
+     *    @return True, if the memory map base is valid IP-XACT, otherwise false.
      */
     virtual bool validate(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits);
 
     /*!
      *  Check if the memory map base contains a valid name.
      *
-     *      @param [in] memoryMapBase   The selected memory map base.
+     *    @param [in] memoryMapBase   The selected memory map base.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QSharedPointer<MemoryMapBase> memoryMapBase) const;
 
     /*!
      *  Check if the memory map base contains a valid isPresent value.
      *
-     *      @param [in] memoryMapBase   The selected memory map base.
+     *    @param [in] memoryMapBase   The selected memory map base.
      *
-     *      @return True, if the isPresent is valid, otherwise false.
+     *    @return True, if the isPresent is valid, otherwise false.
      */
     bool hasValidIsPresent(QSharedPointer<MemoryMapBase> memoryMapBase) const;
 
     /*!
      *  Check if the memory map base contains valid memory blocks.
      *
-     *      @param [in] memoryMapBase       The selected memory map base.
-     *      @param [in] addressUnitBits     The address unit bits used by the memory map.
+     *    @param [in] memoryMapBase       The selected memory map base.
+     *    @param [in] addressUnitBits     The address unit bits used by the memory map.
      *
-     *      @return True, if the memory blocks are valid, otherwise false.
+     *    @return True, if the memory blocks are valid, otherwise false.
      */
     bool hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits);
 
     /*!
      *  Locate errors within a memory map base.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] memoryMapBase       The selected memory map base.
-     *      @param [in] addressUnitBits     The address unit bits used by the memory map.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] memoryMapBase       The selected memory map base.
+     *    @param [in] addressUnitBits     The address unit bits used by the memory map.
+     *    @param [in] context             Context to help locate the error.
      */
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
         QString const& addressUnitBits, QString const& context);
@@ -136,7 +136,7 @@ protected:
     /*!
      *  Get the expression parser.
      *
-     *      @return The used expression parser.
+     *    @return The used expression parser.
      */
     QSharedPointer<ExpressionParser> getExpressionParser() const;
 
@@ -149,7 +149,7 @@ private:
     /*!
      *	Mark address blocks and subspace maps as invalid if they have duplicate names.
      *
-     *      @param [in] foundNames     The found names and associated memory blocks.
+     *    @param [in] foundNames     The found names and associated memory blocks.
      *
      * 	    @return True, if duplicate names were found, otherwise false.
      */
@@ -158,8 +158,8 @@ private:
     /*!
      *  Check if two memory blocks overlap.
      *
-     *      @param [in] memoryBlock     The selected memory block.
-     *      @param [in] comparedBlock   The compared memory block.
+     *    @param [in] memoryBlock     The selected memory block.
+     *    @param [in] comparedBlock   The compared memory block.
      */
     bool twoMemoryBlocksOverlap(QSharedPointer<MemoryBlockBase> memoryBlock,
         QSharedPointer<MemoryBlockBase> comparedBlock) const;
@@ -167,28 +167,28 @@ private:
     /*!
      *  Get the range of the selected memory block
      *
-     *      @param [in] block   The selected memory block.
+     *    @param [in] block   The selected memory block.
      *
-     *      @return Range of the selected memory block.
+     *    @return Range of the selected memory block.
      */
     quint64 getBlockRange(QSharedPointer<MemoryBlockBase> block) const;
 
     /*!
      *  Get the address space referenced by the selected subspace map.
      *
-     *      @param [in] subspace    The selected subspace map.
+     *    @param [in] subspace    The selected subspace map.
      *
-     *      @return The referenced address space.
+     *    @return The referenced address space.
      */
     QSharedPointer<AddressSpace> getReferencedAddressSpace(QSharedPointer<SubSpaceMap> subspace) const;
 
     /*!
      *  Get the segment referenced by the selected subspace map.
      *
-     *      @param [in] subspace            The selected subspace map.
-     *      @param [in] containingSpace     Address space referenced by the subspace map.
+     *    @param [in] subspace            The selected subspace map.
+     *    @param [in] containingSpace     Address space referenced by the subspace map.
      *
-     *      @return Segment referened by the selected subspace map.
+     *    @return Segment referened by the selected subspace map.
      */
     QSharedPointer<Segment> getReferencedSegment(QSharedPointer<SubSpaceMap> subspace,
         QSharedPointer<AddressSpace> containingSpace) const;
@@ -196,10 +196,10 @@ private:
     /*!
      *  Check if the address block width is a multiple of address unit bits.
      *
-     *      @param [in] addressUnitBits     The address unit bits.
-     *      @param [in] addressBlock        The selected address block.
+     *    @param [in] addressUnitBits     The address unit bits.
+     *    @param [in] addressBlock        The selected address block.
      *
-     *      @return True, if the address block width is a multiple of address unit bits, otherwise false.
+     *    @return True, if the address block width is a multiple of address unit bits, otherwise false.
      */
     bool addressBlockWidthIsMultipleOfAUB(QString const& addressUnitBits,
         QSharedPointer<AddressBlock> addressBlock) const;
@@ -207,9 +207,9 @@ private:
     /*!
      *  Find errors within a name.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] memoryMapBase   The selected memory map base.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] memoryMapBase   The selected memory map base.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInName(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
         QString const& context) const;
@@ -217,9 +217,9 @@ private:
     /*!
      *  Find errors within a isPresent.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] memoryMapBase   The selected memory map base.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] memoryMapBase   The selected memory map base.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInIsPresent(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
         QString const& context) const;
@@ -227,10 +227,10 @@ private:
     /*!
      *  Find errors within address blocks.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] memoryMapBase       The selected memory map base.
-     *      @param [in] addressUnitBits     The address unit bits used by the memory map.
-     *      @param [in] context             Context to help locate the error.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] memoryMapBase       The selected memory map base.
+     *    @param [in] addressUnitBits     The address unit bits used by the memory map.
+     *    @param [in] context             Context to help locate the error.
      */
     void findErrorsInAddressBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
         QString const& addressUnitBits, QString const& context);
@@ -238,11 +238,11 @@ private:
     /*!
      *  Find errors within overlapping memory blocks.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] memoryMapBase   The selected memory map base.
-     *      @param [in] memoryBlock     The selected memory block.
-     *      @param [in] blockIndex      The index of the address block.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] memoryMapBase   The selected memory map base.
+     *    @param [in] memoryBlock     The selected memory block.
+     *    @param [in] blockIndex      The index of the address block.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInOverlappingBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
         QSharedPointer<MemoryBlockBase> memoryBlock, int blockIndex, QString const& context) const;

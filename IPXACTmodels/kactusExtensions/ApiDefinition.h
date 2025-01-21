@@ -31,7 +31,7 @@ public:
     /*!
      *  Constructor which creates an empty API definition.
      *
-     *      @param [in] vlnv The VLNV of the API definition.
+     *    @param [in] vlnv The VLNV of the API definition.
      */
     ApiDefinition(VLNV const& vlnv, Document::Revision revision);
 
@@ -48,7 +48,7 @@ public:
     /*!
      *  Makes a copy of the document.
      *
-     *      @return The created copy of the API definition.
+     *    @return The created copy of the API definition.
      */
     virtual QSharedPointer<Document> clone()  const;
 
@@ -65,35 +65,35 @@ public:
     /*!
      *  Sets the API programming language.
      *
-     *      @param [in] language The name of the programming language.
+     *    @param [in] language The name of the programming language.
      */
     void setLanguage(QString const& language);
 
     /*!
      *  Sets the COM definition reference.
      *
-     *      @param [in] vlnv The VLNV of the COM definition to reference.
+     *    @param [in] vlnv The VLNV of the COM definition to reference.
      */
     void setComDefinitionRef(VLNV const& vlnv);
 
     /*!
      *  Adds a new data type to the API definition.
      *
-     *      @param [in] type The name of the data type to add.
+     *    @param [in] type The name of the data type to add.
      */
     void addDataType(QString const& type);
 
     /*!
      *  Removes a data type from the API definition.
      *
-     *      @param [in] type The name of the data type to remove.
+     *    @param [in] type The name of the data type to remove.
      */
     void removeDataType(QString const& type);
 
     /*!
      *  Sets the API's data types.
      *
-     *      @param [in] types A list of data type names.
+     *    @param [in] types A list of data type names.
      */
     void setDataTypes(QStringList const& types);
 

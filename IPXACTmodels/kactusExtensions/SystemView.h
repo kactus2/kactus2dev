@@ -32,14 +32,14 @@ public:
     /*!
      *  Constructor.
 	 *
-	 *      @param [in] viewNode A reference to a QDomNode to parse the information from.
+	 *    @param [in] viewNode A reference to a QDomNode to parse the information from.
 	 */
 	SystemView(QDomNode &viewNode);
 
 	/*!
      *  The constructor
      *
-	 *      @param [in] name The name of the view.
+	 *    @param [in] name The name of the view.
 	 */
 	SystemView(QString const& name = QString());
 
@@ -58,14 +58,14 @@ public:
     /*!
      *  Clone this system view.
      *
-     *      @return The cloned system view.
+     *    @return The cloned system view.
      */
     virtual SystemView* clone() const;
 
     /*!
      *  Get the type of this extension.
      *
-     *      @return The type of this extension.
+     *    @return The type of this extension.
      */
     virtual QString type() const;
 
@@ -74,7 +74,7 @@ public:
 	 *
 	 *  Uses the specified writer to write the class contents into file as valid IP-Xact.
 	 *
-	 *      @param [in] writer A QXmlStreamWriter instance that is used to write the document into file.
+	 *    @param [in] writer A QXmlStreamWriter instance that is used to write the document into file.
 	 */
 	virtual void write(QXmlStreamWriter& writer) const;
 
@@ -83,10 +83,10 @@ public:
 	 * 
 	 *		@param [in] fileSetNames	 File set names of the containing component.
 	 *		@param [in] HWViewNames		 Names of the HW views in the containing component.
-	 *      @param [in] errorList        The list to add the possible error messages to.
-	 *      @param [in] parentIdentifier String from parent to help to identify the location of the error.
+	 *    @param [in] errorList        The list to add the possible error messages to.
+	 *    @param [in] parentIdentifier String from parent to help to identify the location of the error.
 	 *
-	 *      @return True if contents are valid.
+	 *    @return True if contents are valid.
 	 */
 	bool isValid(QStringList const& fileSetNames, QStringList const& HWViewNames, QVector<QString>& errorList,
         QString const& parentIdentifier) const;
@@ -97,28 +97,28 @@ public:
 	 *		  @param [in] fileSetNames  File set names of the containing component.
 	 *		  @param [in] HWViewNames   Names of the HW views in the containing component.
 	 * 
-	 *      @return True if contents are valid.
+	 *    @return True if contents are valid.
 	*/
 	bool isValid(QStringList const& fileSetNames, QStringList const& HWViewNames) const;
 
     /*!
      *  Set the hierarchyRef for this view.
 	 *
-	 *      @param [in] hierarchyRef    The new hierarchyRef.
+	 *    @param [in] hierarchyRef    The new hierarchyRef.
 	 */
 	void setHierarchyRef(VLNV const& hierarchyRef);
 
     /*!
      *  Sets the reference to HW view to which the system is mapped.
      *
-     *      @param [in] viewName The name of the HW view.
+     *    @param [in] viewName The name of the HW view.
      */
     void setHWViewRef(QString const& viewName);
 
 	/*!
      *  Get pointer to the hierarchical design for this view.
 	 *
-	 *      @return The vlnv of a hierarchical design if the view is used to reference a hierarchical design.
+	 *    @return The vlnv of a hierarchical design if the view is used to reference a hierarchical design.
 	 */
 	VLNV getHierarchyRef() const;
 
@@ -130,14 +130,14 @@ public:
 	/*!
      *  Get the file set references of the system view.
 	 *
-	 *      @return QStringList containing the file set names.
+	 *    @return QStringList containing the file set names.
 	 */
 	QStringList getFileSetRefs() const;
 
 	/*!
      *  Set the file set references for the system view.
 	 *
-	 *      @param [in] fileSetRefs     Contains the file set names.
+	 *    @param [in] fileSetRefs     Contains the file set names.
 	 */
 	void setFileSetRefs(QStringList const& fileSetRefs);
 

@@ -33,21 +33,21 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name    The name of the remap state.
+     *    @param [in] name    The name of the remap state.
      */
     RemapState(QString const& name = QString());
 
 	/*!
 	 *  Copy constructor.
 	 *
-	 *      @param [in] other   The remap state to be copied.
+	 *    @param [in] other   The remap state to be copied.
 	 */
 	RemapState(const RemapState &other);
 
     /*!
 	 *  Assignment operator.
 	 *
-	 *      @param [in] other   The remap state being assigned.
+	 *    @param [in] other   The remap state being assigned.
 	 */
 	RemapState &operator=(const RemapState &other);
 
@@ -59,14 +59,14 @@ public:
     /*!
 	 *  Get the list of the remap ports for this remap state.
 	 *
-     *      @return List containing pointer to the remap port instances.
+     *    @return List containing pointer to the remap port instances.
 	 */
     QSharedPointer<QList<QSharedPointer<RemapPort> > > getRemapPorts() const;
 
     /*!
      *  Set the remap ports.
      *
-     *      @param [in] newRemapPorts   Pointer to a list containing the new remap ports.
+     *    @param [in] newRemapPorts   Pointer to a list containing the new remap ports.
      */
     void setRemapPorts(QSharedPointer<QList<QSharedPointer<RemapPort> > > newRemapPorts);
 
@@ -75,7 +75,7 @@ private:
     /*!
      *  Copy the remap ports.
      *
-     *      @param [in] other   The copied remap state.
+     *    @param [in] other   The copied remap state.
      */
     void copyRemapPorts(const RemapState& other);
 

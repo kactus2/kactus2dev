@@ -35,10 +35,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] libHandler   The library handler.
-     *      @param [in] component    The component being edited.
-     *      @param [in] APIInterface The API interface being edited.
-     *      @param [in] parent       The parent widget.
+     *    @param [in] libHandler   The library handler.
+     *    @param [in] component    The component being edited.
+     *    @param [in] APIInterface The API interface being edited.
+     *    @param [in] parent       The parent widget.
 	 */
 	ApiInterfaceEditor(LibraryInterface* libHandler,
 		QSharedPointer<Component> component, 
@@ -59,7 +59,7 @@ public:
     /*!
      *  Checks for the validity of the edited API interface.
      *
-	 *      @return True if the API interface is in valid state.
+	 *    @return True if the API interface is in valid state.
 	 */
 	bool isValid() const;
 

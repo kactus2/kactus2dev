@@ -30,7 +30,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  The owner of this view.
+     *    @param [in] parent  The owner of this view.
      */
     ConfigurableElementsView(QWidget* parent);
 
@@ -44,10 +44,10 @@ signals:
     /*!
      *  Emitted when a configurable element change command should be created.
      *
-     *      @param [in] oldValue    Old value of the indexed element.
-     *      @param [in] newValue    New value of the indexed element.
-     *      @param [in] index       The selected index.
-     *      @param [in] cevModel    Model containing the configurable elements.
+     *    @param [in] oldValue    Old value of the indexed element.
+     *    @param [in] newValue    New value of the indexed element.
+     *    @param [in] index       The selected index.
+     *    @param [in] cevModel    Model containing the configurable elements.
      */
     void createElementChangeCommand(QString const& oldValue, QString const& newValue, QModelIndex const& index,
         QAbstractItemModel* cevModel) const;
@@ -57,7 +57,7 @@ protected:
     /*!
      *  Handler for context menu events.
      *
-     *      @param [in] event   The context menu event.
+     *    @param [in] event   The context menu event.
      */
     virtual void contextMenuEvent(QContextMenuEvent* event);
 

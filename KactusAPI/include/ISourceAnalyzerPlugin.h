@@ -73,9 +73,9 @@ public:
      *  Calculates a language-dependent hash for the analyzed file. Hash calculation here may ignore
 	 *  whitespace and comments.
      *
-     *      @param [in] filename  The name of the file.
+     *    @param [in] filename  The name of the file.
      *
-     *      @return The hash value for the file.
+     *    @return The hash value for the file.
      */
     virtual QString calculateHash(QString const& filename) = 0;
 
@@ -83,8 +83,8 @@ public:
      *  This function is called once when the dependency analysis scan is started. It gives the plugin the
 	 *  ability to do preparations before any file is analyzed.
      *
-     *      @param [in] component       The component to which the dependency scan is being run.
-     *      @param [in] componentPath  The path to the directory where the component is located.
+     *    @param [in] component       The component to which the dependency scan is being run.
+     *    @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any preparations needed for the file dependency analysis should be made here.
      */
@@ -94,8 +94,8 @@ public:
      *  This function is called once after the dependency analysis scan has completed. It allows the plugin to
 	 *  make cleanup operations after the dependency scan has been finished, e.g destroy internal data structures.
      *
-     *      @param [in] component       The component to which the dependency scan is being run.
-     *      @param [in] componentPath  The path to the directory where the component is located.
+     *    @param [in] component       The component to which the dependency scan is being run.
+     *    @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any cleanups needed should be made here.
      */
@@ -104,11 +104,11 @@ public:
     /*!
      *  Retrieves all file dependencies the given file has.
 	 *
-     *      @param [in]  component      The component to which the dependency scan is being run.
-     *      @param [in]  componentPath  The path to the directory where the component is located.
-     *      @param [in]  filename       The name of the file to which the analysis is run.
+     *    @param [in]  component      The component to which the dependency scan is being run.
+     *    @param [in]  componentPath  The path to the directory where the component is located.
+     *    @param [in]  filename       The name of the file to which the analysis is run.
      *
-     *      @return The list of found dependencies.
+     *    @return The list of found dependencies.
      */
     virtual QList<FileDependencyDesc> getFileDependencies(Component const* component,
         QString const& componentPath, 

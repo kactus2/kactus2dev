@@ -39,10 +39,10 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] busInterface    Interface for accessing bus interfaces.
-     *      @param [in] busName         Name of the bus interface being edited.
-     *      @param [in] docRevision     The IP-XACT version to comply to.
-	 *      @param [in] parent          The owner of this editor.
+	 *    @param [in] busInterface    Interface for accessing bus interfaces.
+     *    @param [in] busName         Name of the bus interface being edited.
+     *    @param [in] docRevision     The IP-XACT version to comply to.
+	 *    @param [in] parent          The owner of this editor.
      */
     BusIfGeneralDetails(BusInterfaceInterface* busInterface, std::string const& busName, 
 		Document::Revision docRevision, QSharedPointer<ParameterFinder> finder, 
@@ -62,7 +62,7 @@ public:
 
 	/*! Check for the validity of the edited item.
 	*
-	*       @return True if item is valid.
+	*    @return True if item is valid.
 	*/
 	virtual bool isValid() const;
 
@@ -74,7 +74,7 @@ public:
     /*!
      *  Change the name of the bus interface being edited.
      *
-     *      @param [in] newName     The new bus interface name.
+     *    @param [in] newName     The new bus interface name.
      */
     void changeName(std::string const& newName);
 

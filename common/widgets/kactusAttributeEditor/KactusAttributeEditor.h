@@ -47,9 +47,9 @@ public:
     /*!
      *  Sets the given attributes as selected.
      *
-     *      @param [in] prodHier    Product hierarchy.
-     *      @param [in] firmness	Firmness.
-     *      @param [in] tags        Document tags.
+     *    @param [in] prodHier    Product hierarchy.
+     *    @param [in] firmness	Firmness.
+     *    @param [in] tags        Document tags.
      */
     void setAttributes(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
         QVector<TagData> tags);
@@ -57,7 +57,7 @@ public:
     /*!
      *  Sets the implementation visible with the given value.
      *
-     *      @param [in] implementation Implementation.
+     *    @param [in] implementation Implementation.
      */
     void setImplementation(KactusAttribute::Implementation implementation);
     
@@ -74,7 +74,7 @@ public:
     /*!
      *  Get document tags.
      *
-     *      @return Document tags.
+     *    @return Document tags.
      */
     QVector<TagData> getTags() const;
 

@@ -42,8 +42,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parser      The used expression parser.
-     *      @param [in] library     The used library interface.
+     *    @param [in] parser      The used expression parser.
+     *    @param [in] library     The used library interface.
      */
     InterconnectionValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library);
 
@@ -53,88 +53,88 @@ public:
     /*!
      *  Change the available component instances.
      *
-     *      @param [in] newInstances    The new component instances.
+     *    @param [in] newInstances    The new component instances.
      */
     void changeComponentInstances(QSharedPointer<QList<QSharedPointer<ComponentInstance> > > newInstances);
 
     /*!
      *  Validates the given interconnection.
      *
-     *      @param [in] interconnection     The selected interconnection.
+     *    @param [in] interconnection     The selected interconnection.
      *
-     *      @return True, if the interconnection is valid IP-XACT, otherwise false.
+     *    @return True, if the interconnection is valid IP-XACT, otherwise false.
      */
     bool validateInterconnection(QSharedPointer<Interconnection> interconnection) const;
 
     /*!
      *  Check if the name is valid.
      *
-     *      @param [in] name    The selected name.
+     *    @param [in] name    The selected name.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QString const& name) const;
 
     /*!
      *  Check if the isPresent is valid.
      *
-     *      @param [in] isPresent   The selected isPresent value.
+     *    @param [in] isPresent   The selected isPresent value.
      *
-     *      @return True, if the isPresent is valid, otherwise false.
+     *    @return True, if the isPresent is valid, otherwise false.
      */
     bool hasValidIsPresent(QString const& isPresent) const;
 
     /*!
      *  Check if the start interface is valid.
      *
-     *      @param [in] interconnection     The selected interconnection.
+     *    @param [in] interconnection     The selected interconnection.
      *
-     *      @return True, if the start interface is valid, otherwise false.
+     *    @return True, if the start interface is valid, otherwise false.
      */
     bool hasValidStartInterface(QSharedPointer<Interconnection> interconnection) const;
 
     /*!
      *  Check if the interfaces are valid.
      *
-     *      @param [in] interconnection     The selected interconnection.
+     *    @param [in] interconnection     The selected interconnection.
      *
-     *      @return True, if the interfaces are valid, otherwise false.
+     *    @return True, if the interfaces are valid, otherwise false.
      */
     bool hasValidInterfaces(QSharedPointer<Interconnection> interConnection) const;
 
     /*!
      *  Validates the given monitor interconnection.
      *
-     *      @param [in] connection  The selected monitor interconnection.
+     *    @param [in] connection  The selected monitor interconnection.
      *
-     *      @return True, if the monitor interconnection is valid, otherwise false.
+     *    @return True, if the monitor interconnection is valid, otherwise false.
      */
     bool validateMonitorInterconnection(QSharedPointer<MonitorInterconnection> connection) const;
 
     /*!
      *  Check if the monitored active interface is valid.
      *
-     *      @param [in] connection  The selected monitor interconnection.
+     *    @param [in] connection  The selected monitor interconnection.
      *
-     *      @return True, if the monitored active interface is valid, otherwise false.
+     *    @return True, if the monitored active interface is valid, otherwise false.
      */
     bool hasValidMonitoredActiveInterface(QSharedPointer<MonitorInterconnection> connection) const;
 
     /*!
      *  Check if the monitor interfaces are valid.
      *
-     *      @param [in] connection  The selected monitor interconnection.
+     *    @param [in] connection  The selected monitor interconnection.
      *
-     *      @return True, if the monitor interfaces are valid, otherwise false.
+     *    @return True, if the monitor interfaces are valid, otherwise false.
      */
     bool hasValidMonitorInterfaces(QSharedPointer<MonitorInterconnection> connection) const;
 
     /*!
      *  Locate errors within an interconnection.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] interconnection     The selected interconnection.
-     *      @param [in] context             Context to help locate the errors.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] interconnection     The selected interconnection.
+     *    @param [in] context             Context to help locate the errors.
      */
     void findErrorsInInterconnection(QVector<QString>& errors, QSharedPointer<Interconnection> interconnection,
         QString const& context) const;
@@ -142,9 +142,9 @@ public:
     /*!
      *  Locate errors within a monitor interconnection.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] connection  The selected monitor interconnection.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] connection  The selected monitor interconnection.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsInMonitorInterconnection(QVector<QString>& errors,
         QSharedPointer<MonitorInterconnection> connection, QString const& context) const;
@@ -158,11 +158,11 @@ private:
     /*!
      *  Check if a reference combination of component and bus interface is valid.
      *
-     *      @param [in] referenceCombinations   The used component / bus interface combinations.
-     *      @param [in] componentReference      The selected component reference.
-     *      @param [in] busReference            The selected bus reference.
+     *    @param [in] referenceCombinations   The used component / bus interface combinations.
+     *    @param [in] componentReference      The selected component reference.
+     *    @param [in] busReference            The selected bus reference.
      *
-     *      @return True, if the component / bus interface reference pair is unique, otherwise false.
+     *    @return True, if the component / bus interface reference pair is unique, otherwise false.
      */
     bool referenceCombinationIsUnique(QMap<QString, QString> referenceCombinations,
         QString const& componentReference, QString const& busReference) const;
@@ -170,47 +170,47 @@ private:
     /*!
      *  Check if an active interface is valid.
      *
-     *      @param [in] activeInterface     The selected active interface.
+     *    @param [in] activeInterface     The selected active interface.
      *
-     *      @return True, if the active interface is valid, otherwise false.
+     *    @return True, if the active interface is valid, otherwise false.
      */
     bool activeInterfaceIsValid(QSharedPointer<ActiveInterface> activeInterface) const;
 
     /*!
      *  Get the reference component instance.
      *
-     *      @param [in] instanceReference   The selected component instance reference.
+     *    @param [in] instanceReference   The selected component instance reference.
      *
-     *      @return The referenced component instance.
+     *    @return The referenced component instance.
      */
     QSharedPointer<ComponentInstance> getReferencedComponentInstance(QString const& instanceReference) const;
 
     /*!
      *  Get the component referenced by the component instance.
      *
-     *      @param [in] referencingInstance     The selected component instance.
+     *    @param [in] referencingInstance     The selected component instance.
      *
-     *      @return The referenced component.
+     *    @return The referenced component.
      */
     QSharedPointer<const Component> getReferencedComponent(QSharedPointer<ComponentInstance> referencingInstance) const;
 
     /*!
      *  Check if the bus interface reference is valid.
      *
-     *      @param [in] component       The referenced component.
-     *      @param [in] busReference    The selected bus interface reference.
+     *    @param [in] component       The referenced component.
+     *    @param [in] busReference    The selected bus interface reference.
      *
-     *      @return True, if the bus interface reference is valid, otherwise false.
+     *    @return True, if the bus interface reference is valid, otherwise false.
      */
     bool busReferenceIsValid(QSharedPointer<const Component> component, QString const& busReference) const;
 
     /*!
      *  Check if the exclude ports of an active interface are valid.
      *
-     *      @param [in] component           The referenced component.
-     *      @param [in] activeInterface     The selected active interface.
+     *    @param [in] component           The referenced component.
+     *    @param [in] activeInterface     The selected active interface.
      *
-     *      @return True, if the exclude ports are valid, otherwise false.
+     *    @return True, if the exclude ports are valid, otherwise false.
      */
     bool excludePortsAreValid(QSharedPointer<const Component> component,
         QSharedPointer<ActiveInterface> activeInterface) const;
@@ -218,10 +218,10 @@ private:
     /*!
      *  Check if a single exclude port is valid.
      *
-     *      @param [in] portReference   The selected port reference.
-     *      @param [in] portMaps        The port maps to search the port for.
+     *    @param [in] portReference   The selected port reference.
+     *    @param [in] portMaps        The port maps to search the port for.
      *
-     *      @return True, if the exclude port is valid, otherwise false.
+     *    @return True, if the exclude port is valid, otherwise false.
      */
     bool singleExcludePortIsValid(QString const& portReference, 
         QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const;
@@ -229,19 +229,19 @@ private:
     /*!
      *  Check if a monitor interface is valid.
      *
-     *      @param [in] monitorInterface    The selected monitor interface.
+     *    @param [in] monitorInterface    The selected monitor interface.
      *
-     *      @return True, if the monitor interface is valid, otherwise false.
+     *    @return True, if the monitor interface is valid, otherwise false.
      */
     bool monitorInterfaceIsValid(QSharedPointer<MonitorInterface> monitorInterface) const;
 
     /*!
      *  Find errors in name.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] name        The selected name.
-     *      @param [in] element     The name of the containing element.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] name        The selected name.
+     *    @param [in] element     The name of the containing element.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsInName(QVector<QString>& errors, QString const& name, QString const& element,
         QString const& context) const;
@@ -249,10 +249,10 @@ private:
     /*!
      *  Find errors in isPresent.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] isPresent       The selected isPresent value.
-     *      @param [in] innerContext    The item context to help locate the errors.
-     *      @param [in] context         Context to help locate the errors.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] isPresent       The selected isPresent value.
+     *    @param [in] innerContext    The item context to help locate the errors.
+     *    @param [in] context         Context to help locate the errors.
      */
     void findErrorsInIsPresent(QVector<QString>& errors, QString const& isPresent, QString const& innerContext,
         QString const& context) const;
@@ -260,10 +260,10 @@ private:
     /*!
      *  Find errors in the interconnection start interface.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] interconnection     The selected interconnection.
-     *      @param [in] innerContext        The item context to help locate the errors.
-     *      @param [in] context             Context to help locate the errors.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] interconnection     The selected interconnection.
+     *    @param [in] innerContext        The item context to help locate the errors.
+     *    @param [in] context             Context to help locate the errors.
      */
     void findErrorsInStartInterface(QVector<QString>& errors, QSharedPointer<Interconnection> interconnection,
         QString const& innerContext, QString const& context) const;
@@ -271,10 +271,10 @@ private:
     /*!
      *  Find errors in an active interface.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] activeInterface     The selected active interface.
-     *      @param [in] innerContext        The item context to help locate the errors.
-     *      @param [in] context             Context to help locate the errors.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] activeInterface     The selected active interface.
+     *    @param [in] innerContext        The item context to help locate the errors.
+     *    @param [in] context             Context to help locate the errors.
      */
     void findErrorsInActiveInterface(QVector<QString>& errors, QSharedPointer<ActiveInterface> activeInterface,
         QString const& innerContext, QString const& context) const;
@@ -282,12 +282,12 @@ private:
     /*!
      *  Find errors in component reference.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] componentReference  The selected component reference.
-     *      @param [in] referencedInstance  The referenced component instance.
-     *      @param [in] elementName         The name of the containing element.
-     *      @param [in] innerContext        The item context to help locate the errors.
-     *      @param [in] context             Context to help locate the errors.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] componentReference  The selected component reference.
+     *    @param [in] referencedInstance  The referenced component instance.
+     *    @param [in] elementName         The name of the containing element.
+     *    @param [in] innerContext        The item context to help locate the errors.
+     *    @param [in] context             Context to help locate the errors.
      */
     void findErrorsInComponentReference(QVector<QString>& errors, QString const& componentReference,
         QSharedPointer<ComponentInstance> referencedInstance, QString const& elementName,
@@ -296,12 +296,12 @@ private:
     /*!
      *  Find errors in bus interface reference.
      *
-     *      @param [in] errors                  List of found errors.
-     *      @param [in] busReference            The selected bus interface reference.
-     *      @param [in] referencedComponent     The referenced component.
-     *      @param [in] elementName             The containing element.
-     *      @param [in] innerContext            The item context to help locate the errors.
-     *      @param [in] context                 Context to help locate the errors.
+     *    @param [in] errors                  List of found errors.
+     *    @param [in] busReference            The selected bus interface reference.
+     *    @param [in] referencedComponent     The referenced component.
+     *    @param [in] elementName             The containing element.
+     *    @param [in] innerContext            The item context to help locate the errors.
+     *    @param [in] context                 Context to help locate the errors.
      */
     void findErrorsInBusReference(QVector<QString>& errors, QString const& busReference,
         QSharedPointer<const Component> referencedComponent, QString const& elementName, QString const& innerContext,
@@ -310,11 +310,11 @@ private:
     /*!
      *  Find errors in exclude ports.
      *
-     *      @param [in] errors                  List of found errors.
-     *      @param [in] activeInterface         The selected active interface.
-     *      @param [in] referencedComponent     The referenced component
-     *      @param [in] innerContext            The item context to help locate the errors.
-     *      @param [in] context                 Context to help locate the errors.
+     *    @param [in] errors                  List of found errors.
+     *    @param [in] activeInterface         The selected active interface.
+     *    @param [in] referencedComponent     The referenced component
+     *    @param [in] innerContext            The item context to help locate the errors.
+     *    @param [in] context                 Context to help locate the errors.
      */
     void findErrorsInExcludePorts(QVector<QString>& errors, QSharedPointer<ActiveInterface> activeInterface,
         QSharedPointer<const Component> referencedComponent, QString const& innerContext) const;
@@ -322,10 +322,10 @@ private:
     /*!
      *  Find errors in interfaces.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] interconnection     The selected interconnection.
-     *      @param [in] innerContext        The item context to help locate the errors.
-     *      @param [in] context             Context to help locate the errors.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] interconnection     The selected interconnection.
+     *    @param [in] innerContext        The item context to help locate the errors.
+     *    @param [in] context             Context to help locate the errors.
      */
     void findErrorsInInterfaces(QVector<QString>& errors, QSharedPointer<Interconnection> interConnection,
         QString const& innerContext, QString const& context) const;
@@ -333,10 +333,10 @@ private:
     /*!
      *  Find errors in monitored active interface.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] connection      The selected connection.
-     *      @param [in] innerContext    The item context to help locate the errors.
-     *      @param [in] context         Context to help locate the errors.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] connection      The selected connection.
+     *    @param [in] innerContext    The item context to help locate the errors.
+     *    @param [in] context         Context to help locate the errors.
      */
     void findErrorsInMonitoredActiveInterface(QVector<QString>& errors,
         QSharedPointer<MonitorInterconnection> connection, QString const& innerContext, QString const& context)
@@ -345,10 +345,10 @@ private:
     /*!
      *  Find errors in a monitor interface.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] monitorInterface    The selected monitor interface.
-     *      @param [in] innerContext        The item context to help locate the errors.
-     *      @param [in] context             Context to help locate the errors.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] monitorInterface    The selected monitor interface.
+     *    @param [in] innerContext        The item context to help locate the errors.
+     *    @param [in] context             Context to help locate the errors.
      */
     void findErrorsInSingleMonitorInterface(QVector<QString>& errors,
         QSharedPointer<MonitorInterface> monitorInterface, QString const& elementName, QString const& innerContext,
@@ -357,10 +357,10 @@ private:
     /*!
      *  Find errors in monitor interfaces.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] connection      The selected monitor interconnection.
-     *      @param [in] innerContext    The item context to help locate the errors.
-     *      @param [in] context         Context to help locate the errors.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] connection      The selected monitor interconnection.
+     *    @param [in] innerContext    The item context to help locate the errors.
+     *    @param [in] context         Context to help locate the errors.
      */
     void findErrorsInMonitorInterfaces(QVector<QString>& errors, QSharedPointer<MonitorInterconnection> connection,
         QString const& innerContext, QString const& context) const;

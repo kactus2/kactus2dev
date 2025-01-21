@@ -54,19 +54,19 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] expressionParser    The parse to use for solving expressions.
-     *      @param [in] choices             List of available choices.
-     *      @param [in] views               List of available views.
-     *      @param [in] ports               List of available ports.
-     *      @param [in] addressSpaces       List of available address spaces.
-     *      @param [in] memoryMaps          List of available memory maps.
-     *      @param [in] busInterfaces       List of available bus interfaces.
-     *      @param [in] fileSets            List of available file sets.
-     *      @param [in] remapStates         List of available remap states.
-     *      @param [in] modes               List of available modes.
-     *      @param [in] portMapValidator    Validator used for port maps.
-     *      @param [in] parameterValidator  Validator used for parameters.
-     *      @param [in] libraryHandler      The library interface.
+     *    @param [in] expressionParser    The parse to use for solving expressions.
+     *    @param [in] choices             List of available choices.
+     *    @param [in] views               List of available views.
+     *    @param [in] ports               List of available ports.
+     *    @param [in] addressSpaces       List of available address spaces.
+     *    @param [in] memoryMaps          List of available memory maps.
+     *    @param [in] busInterfaces       List of available bus interfaces.
+     *    @param [in] fileSets            List of available file sets.
+     *    @param [in] remapStates         List of available remap states.
+     *    @param [in] modes               List of available modes.
+     *    @param [in] portMapValidator    Validator used for port maps.
+     *    @param [in] parameterValidator  Validator used for parameters.
+     *    @param [in] libraryHandler      The library interface.
      */
     BusInterfaceValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
@@ -93,15 +93,15 @@ public:
     /*!
      *  Change the available component elements.
      *
-     *      @param [in] newChoices          The new choices.
-     *      @param [in] newViews            The new views.
-     *      @param [in] newPorts            The new ports.
-     *      @param [in] newAddressSpaces    The new address spaces.
-     *      @param [in] newMemoryMaps       The new memory maps.
-     *      @param [in] newBusInterfaces    The new bus interfaces.
-     *      @param [in] newFileSets         The new file sets.
-     *      @param [in] newRemapStates      The new remap states.
-     *      @param [in] newRemapStates      The new modes.
+     *    @param [in] newChoices          The new choices.
+     *    @param [in] newViews            The new views.
+     *    @param [in] newPorts            The new ports.
+     *    @param [in] newAddressSpaces    The new address spaces.
+     *    @param [in] newMemoryMaps       The new memory maps.
+     *    @param [in] newBusInterfaces    The new bus interfaces.
+     *    @param [in] newFileSets         The new file sets.
+     *    @param [in] newRemapStates      The new remap states.
+     *    @param [in] newRemapStates      The new modes.
      */
     void componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices,
         QSharedPointer<QList<QSharedPointer<View> > > newViews,
@@ -116,16 +116,16 @@ public:
     /*!
      *  Get the used abstraction type validator.
      *
-     *      @return The used abstraction type validator.
+     *    @return The used abstraction type validator.
      */
     QSharedPointer<AbstractionTypeValidator> getAbstractionValidator() const;
 
     /*!
      *  Validates the given bus interface.
      *
-     *      @param [in] busInterface    The selected bus interface.
+     *    @param [in] busInterface    The selected bus interface.
      *
-     *      @return True, if the bus interface is valid IP-XACT, otherwise false.
+     *    @return True, if the bus interface is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<BusInterface> busInterface,
         Document::Revision docRevision) const;
@@ -133,63 +133,63 @@ public:
     /*!
      *  Check if the name is valid.
      *
-     *      @param [in] busInterface    The selected bus interface.
+     *    @param [in] busInterface    The selected bus interface.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QSharedPointer<BusInterface> busInterface) const;
 
     /*!
      *  Check if the is present value is valid.
      *
-     *      @param [in] isPresent   The selected is present value.
+     *    @param [in] isPresent   The selected is present value.
      *
-     *      @return True, if the is present is valid, otherwise false.
+     *    @return True, if the is present is valid, otherwise false.
      */
     bool hasValidIsPresent(QString const& isPresent) const;
 
     /*!
      *  Check if the bus type is valid.
      *
-     *      @param [in] busInterface    The selected bus interface.
+     *    @param [in] busInterface    The selected bus interface.
      *
-     *      @return True, if the bus type is valid, otherwise false.
+     *    @return True, if the bus type is valid, otherwise false.
      */
     bool hasValidBusType(QSharedPointer<BusInterface> busInterface) const;
 
     /*!
      *  Check if the abstraction types are valid.
      *
-     *      @param [in] busInterface    The selected bus interface.
+     *    @param [in] busInterface    The selected bus interface.
      *
-     *      @return True, if the abstraction types are valid, otherwise false.
+     *    @return True, if the abstraction types are valid, otherwise false.
      */
     bool hasValidAbstractionTypes(QSharedPointer<BusInterface> busInterface) const;
 
     /*!
      *  Check if the bus interface mode is valid.
      *
-     *      @param [in] busInterface    The selected bus interface.
+     *    @param [in] busInterface    The selected bus interface.
      *
-     *      @return True, if the bus interface mode is valid, otherwise false.
+     *    @return True, if the bus interface mode is valid, otherwise false.
      */
     bool hasValidInterfaceMode(QSharedPointer<BusInterface> busInterface) const;
 
     /*!
      *  Check if the bits in LAU value is valid.
      *
-     *      @param [in] busInterface    The selected bus interface.
+     *    @param [in] busInterface    The selected bus interface.
      *
-     *      @return True, if the bits in LAU value is valid, otherwise false.
+     *    @return True, if the bits in LAU value is valid, otherwise false.
      */
     bool hasValidBitsInLAU(QSharedPointer<BusInterface> busInterface) const;
 
     /*!
      *  Check if the bit steering is valid.
      *
-     *      @param [in] busInterface    The selected bus interface.
+     *    @param [in] busInterface    The selected bus interface.
      *
-     *      @return True, if the bit steering is valid, otherwise false.
+     *    @return True, if the bit steering is valid, otherwise false.
      */
     bool hasValidBitSteering(QSharedPointer<BusInterface> busInterface,
         Document::Revision docRevision) const;
@@ -199,18 +199,18 @@ public:
     /*!
      *  Check if the bus interface contains valid parameters.
      *
-     *      @param [in] busInterface    The selected bus interface.
+     *    @param [in] busInterface    The selected bus interface.
      *
-     *      @return True, if the parameters are valid, otherwise false.
+     *    @return True, if the parameters are valid, otherwise false.
      */
     bool hasValidParameters(QSharedPointer<BusInterface> busInterface) const;
 
     /*!
      *  Locate errors within a bus interface.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The selected busInterface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The selected busInterface.
+     *    @param [in] context         Context to help locate the error.
      */
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context, Document::Revision docRevision) const;
@@ -218,9 +218,9 @@ public:
     /*!
      *  Check if the selected transparent bridges are valid.
      *
-     *      @param [in] bridges     The selected transparent bridges.
+     *    @param [in] bridges     The selected transparent bridges.
      *
-     *      @return True, if the bridges are valid, otherwise false.
+     *    @return True, if the bridges are valid, otherwise false.
      */
     bool hasValidBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const;
 
@@ -229,37 +229,37 @@ private:
     /*!
      *  Check if the master interface is valid.
      *
-     *      @param [in] master  The selected master interface.
+     *    @param [in] master  The selected master interface.
      *
-     *      @return True, if the master interface is valid, otherwise false.
+     *    @return True, if the master interface is valid, otherwise false.
      */
     bool hasValidMasterInterface(QSharedPointer<InitiatorInterface> master) const;
 
     /*!
      *  Check if the initiator interface is valid.
      *
-     *      @param [in] initiator  The selected initiator interface.
+     *    @param [in] initiator  The selected initiator interface.
      *
-     *      @return True, if the initiator interface is valid, otherwise false.
+     *    @return True, if the initiator interface is valid, otherwise false.
      */
     bool hasValidInitiatorInterface(QSharedPointer<InitiatorInterface> initiator) const;
 
     /*!
      *  Check if the given mode references are valid.
      *
-     *      @param [in] modeRefs    The mode references to check.
+     *    @param [in] modeRefs    The mode references to check.
      *
-     *      @return True, if all the references are valid, otherwise false.
+     *    @return True, if all the references are valid, otherwise false.
      */
     bool hasValidModeRefs(QStringList const& modeRefs) const;
 
     /*!
      *  Check if the slave interface is valid.
      *
-     *      @param [in] busInterface    The containing bus interface.
-     *      @param [in] slave           The selected slave interface.
+     *    @param [in] busInterface    The containing bus interface.
+     *    @param [in] slave           The selected slave interface.
      *
-     *      @return True, if the slave interface is valid, otherwise false.
+     *    @return True, if the slave interface is valid, otherwise false.
      */
     bool hasValidSlaveInterface(QSharedPointer<BusInterface> busInterface, 
         QSharedPointer<TargetInterface> slave) const;
@@ -267,10 +267,10 @@ private:
     /*!
      *  Check if the target interface is valid.
      *
-     *      @param [in] busInterface    The containing bus interface.
-     *      @param [in] target          The selected target interface.
+     *    @param [in] busInterface    The containing bus interface.
+     *    @param [in] target          The selected target interface.
      *
-     *      @return True, if the target interface is valid, otherwise false.
+     *    @return True, if the target interface is valid, otherwise false.
      */
     bool hasValidTargetInterface(QSharedPointer<BusInterface> busInterface,
         QSharedPointer<TargetInterface> target) const;
@@ -278,10 +278,10 @@ private:
     /*!
      *  Check if the slave interface has a valid memory map reference.
      *
-     *      @param [in] busInterface    The containing bus interface
-     *      @param [in] slave           The selected slave interface.
+     *    @param [in] busInterface    The containing bus interface
+     *    @param [in] slave           The selected slave interface.
      *
-     *      @return True, if the memory map reference is valid, otherwise false.
+     *    @return True, if the memory map reference is valid, otherwise false.
      */
     bool slaveInterfaceHasValidMemoryMapRef(QSharedPointer<BusInterface> busInterface,
         QSharedPointer<TargetInterface> slave) const;
@@ -289,92 +289,92 @@ private:
     /*!
      *  Check if a slave interface bridge have a valid master interface reference.
      *
-     *      @param [in] bridge  The selected bridge.
+     *    @param [in] bridge  The selected bridge.
      *
-     *      @return True, if the master interface reference is valid, otherwise false.
+     *    @return True, if the master interface reference is valid, otherwise false.
      */
     bool slaveBridgeReferencesValidMaster(QSharedPointer<TransparentBridge> bridge) const;
 
     /*!
      *  Check if the slave interface file set reference group is valid.
      *
-     *      @param [in] slave   The selected slave interface.
+     *    @param [in] slave   The selected slave interface.
      *
-     *      @return True, if the slave interface file set reference group is valid, otherwise false.
+     *    @return True, if the slave interface file set reference group is valid, otherwise false.
      */
     bool slaveInterfaceFileSetRefGroupsAreValid(QSharedPointer<TargetInterface> slave) const;
 
     /*!
      *  Check if a file set reference is valid.
      *
-     *      @param [in] fileSet reference   The selected file set reference.
+     *    @param [in] fileSet reference   The selected file set reference.
      *
-     *      @return True, if the file set reference is valid, otherwise false.
+     *    @return True, if the file set reference is valid, otherwise false.
      */
     bool slaveFileSetReferenceIsValid(QSharedPointer<FileSetRef> fileSetReference) const;
 
     /*!
      *  Check if the system interface is valid.
      *
-     *      @param [in] busInterface    The containing bus interface.
-     *      @param [in] systemGroup     The selected system group
+     *    @param [in] busInterface    The containing bus interface.
+     *    @param [in] systemGroup     The selected system group
      *
-     *      @return True, if the system interface is valid, otherwise false.
+     *    @return True, if the system interface is valid, otherwise false.
      */
     bool hasValidSystemInterface(QSharedPointer<BusInterface> busInterface, QString const& systemGroup) const;
 
     /*!
      *  Check if the mirrored slave interface is valid.
      *
-     *      @param [in] mirroredSlave   The selected mirrored slave interface.
+     *    @param [in] mirroredSlave   The selected mirrored slave interface.
      *
-     *      @return True, if the mirrored slave interface is valid, otherwise false.
+     *    @return True, if the mirrored slave interface is valid, otherwise false.
      */
     bool hasValidMirroredSlaveInterface(QSharedPointer<MirroredTargetInterface> mirroredSlave) const;
 
     /*!
      *  Check if the mirrored target interface is valid.
      *
-     *      @param [in] mirroredTarget   The selected mirrored target interface.
+     *    @param [in] mirroredTarget   The selected mirrored target interface.
      *
-     *      @return True, if the mirrored target interface is valid, otherwise false.
+     *    @return True, if the mirrored target interface is valid, otherwise false.
      */
     bool hasValidMirroredTargetInterface(QSharedPointer<MirroredTargetInterface> mirroredTarget) const;
 
     /*!
      *  Check if the mirrored slave interface range is valid.
      *
-     *      @param [in] mirroredSlave   The selected mirrored slave interface.
+     *    @param [in] mirroredSlave   The selected mirrored slave interface.
      *
-     *      @return True, if the range is valid, otherwise false.
+     *    @return True, if the range is valid, otherwise false.
      */
     bool mirroredSlaveRangeIsValid(QSharedPointer<MirroredTargetInterface> mirroredSlave) const;
 
     /*!
      *  Check if the mirrored slave interface remap address is valid.
      *
-     *      @param [in] remapAddress    The selected remap address.
+     *    @param [in] remapAddress    The selected remap address.
      *
-     *      @return True, if the remap address is valid, otherwise false.
+     *    @return True, if the remap address is valid, otherwise false.
      */
     bool mirroredSlaveRemapAddressIsValid(QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress) const;
 
     /*!
      *  Check if the mirrored slave interface remap address remap state is valid.
      *
-     *      @param [in] remapAddress    The selected mirrored slave interface remap address.
+     *    @param [in] remapAddress    The selected mirrored slave interface remap address.
      *
-     *      @return True, if the mirrored slave interface remap address is valid, otherwise false.
+     *    @return True, if the mirrored slave interface remap address is valid, otherwise false.
      */
     bool mirroredSlaveStateIsValid(QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress) const;
 
     /*!
      *  Check if the monitor interface is valid.
      *
-     *      @param [in] busInterface        The containing bus interface.
-     *      @param [in] monitorInterface    The selected monitor interface.
+     *    @param [in] busInterface        The containing bus interface.
+     *    @param [in] monitorInterface    The selected monitor interface.
      *
-     *      @return True, if the monitor interface is valid, otherwise false.
+     *    @return True, if the monitor interface is valid, otherwise false.
      */
     bool hasValidMonitorInterface(QSharedPointer<BusInterface> busInterface,
         QSharedPointer<BusInterface::MonitorInterface> monitorInterface) const;
@@ -382,19 +382,19 @@ private:
     /*!
      *  Check if the interface reference has a valid presence.
      *
-     *      @param [in] interfacePresence   The presence of the original interface.
-     *      @param [in] targetPresence      The presence of the target interface.
+     *    @param [in] interfacePresence   The presence of the original interface.
+     *    @param [in] targetPresence      The presence of the target interface.
      *
-     *      @return True, if the interface reference has a valid presence, otherwise false.
+     *    @return True, if the interface reference has a valid presence, otherwise false.
      */
     bool interfaceReferenceHasValidPresence(QString const& interfacePresence, QString const& targetPresence) const;
 
     /*!
      *  Find errors within name.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The selected bus interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The selected bus interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInName(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context) const;
@@ -402,9 +402,9 @@ private:
     /*!
      *  Find errors within isPresent.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The selected bus interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The selected bus interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInIsPresent(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context) const;
@@ -412,9 +412,9 @@ private:
     /*!
      *  Find errors within bus type.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The selected bus interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The selected bus interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInBusType(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context) const;
@@ -422,9 +422,9 @@ private:
     /*!
      *  Find errors within parameters.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The selected bus interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The selected bus interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInParameters(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context) const;
@@ -432,9 +432,9 @@ private:
     /*!
      *  Find errors within abstraction types.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The selected bus interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The selected bus interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInAbstractionTypes(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context) const;
@@ -442,10 +442,10 @@ private:
     /*!
      *  Find errors within interface mode.
      *
-     *      @param [in] errors                  List of found errors.
-     *      @param [in] busInterface            The selected bus interface.
-     *      @param [in] busInterfaceContext     Context information of the bus interface
-     *      @param [in] containingContext       Context to help locate the error.
+     *    @param [in] errors                  List of found errors.
+     *    @param [in] busInterface            The selected bus interface.
+     *    @param [in] busInterfaceContext     Context information of the bus interface
+     *    @param [in] containingContext       Context to help locate the error.
      */
     void findErrorsInInterfaceMode(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& busInterfaceContext, QString const& containingContext) const;
@@ -453,9 +453,9 @@ private:
     /*!
      *  Find errors within master interface.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] master      The selected master interface.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] master      The selected master interface.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInMasterInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> master,
         QString const& context) const;
@@ -463,9 +463,9 @@ private:
     /*!
      *  Find errors within initiator interface.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] master      The selected initiator interface.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] master      The selected initiator interface.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInInitiatorInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> initiator, 
         QString const& context) const;
@@ -473,9 +473,9 @@ private:
     /*!
      *  Find errors within mode references.
      *
-     *      @param [in] modeRefs    The references to check.
-     *      @param [in] errors      List of found errors.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] modeRefs    The references to check.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInModeReferences(QStringList const& modeRefs, QVector<QString>& errors, 
         QString const& context) const;
@@ -483,20 +483,20 @@ private:
     /*!
      *  Find errors within slave interface.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The containing bus interface.
-     *      @param [in] slave           The selected slave interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The containing bus interface.
+     *    @param [in] slave           The selected slave interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInSlaveInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QSharedPointer<TargetInterface> slave, QString const& context) const;
     /*!
      *  Find errors within target interface.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The containing bus interface.
-     *      @param [in] target          The selected target interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The containing bus interface.
+     *    @param [in] target          The selected target interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInTargetInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface, 
         QSharedPointer<TargetInterface> target, QString const& context) const;
@@ -504,10 +504,10 @@ private:
     /*!
      *  Find errors within system mode.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] systemGroup     The selected system group.
-     *      @param [in] busInterface    The containing bus interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] systemGroup     The selected system group.
+     *    @param [in] busInterface    The containing bus interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInSystemInterface(QVector<QString>& errors, QString const& systemGroup,
         QSharedPointer<BusInterface> busInterface, QString const& context) const;
@@ -515,9 +515,9 @@ private:
     /*!
      *  Find errors within mirrored slave interface.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] mirroredSlave   The selected mirrored slave interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] mirroredSlave   The selected mirrored slave interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInMirroredSlaveInterface(QVector<QString>& errors,
         QSharedPointer<MirroredTargetInterface> mirroredSlave, QString const& context) const;
@@ -525,9 +525,9 @@ private:
     /*!
      *  Find errors within mirrored target interface.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] mirroredTarget  The selected mirrored target interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] mirroredTarget  The selected mirrored target interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInMirroredTargetInterface(QVector<QString>& errors, 
         QSharedPointer<MirroredTargetInterface> mirroredTarget, QString const& context) const;
@@ -535,9 +535,9 @@ private:
     /*!
      *  Find errors within monitor interface.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] monitor     The selected monitor interface.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] monitor     The selected monitor interface.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInMonitorInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QSharedPointer<BusInterface::MonitorInterface> monitor, QString const& context) const;
@@ -545,9 +545,9 @@ private:
     /*!
      *  Find errors within bis in LAU.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The selected bus interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The selected bus interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInBitsInLAU(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context) const;
@@ -555,9 +555,9 @@ private:
     /*!
      *  Find errors within bit steering.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] busInterface    The selected bus interface.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] busInterface    The selected bus interface.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInBitSteering(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context, Document::Revision docRevision) const;

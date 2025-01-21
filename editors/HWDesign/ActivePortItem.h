@@ -37,8 +37,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] port    The selected port.
-     *      @param [in] parent  The owner of this item.
+     *    @param [in] port    The selected port.
+     *    @param [in] parent  The owner of this item.
      */
     ActivePortItem(QSharedPointer<Port> port, HWComponentItem* parent);
 
@@ -54,7 +54,7 @@ public:
 	/*!
 	 *  Get the type of this graphics item.
 	 *
-     *      @return AdHoc interface item type.
+     *    @return AdHoc interface item type.
 	 */
 	int type() const final { return Type; }
 
@@ -70,7 +70,7 @@ public:
     /*!
      *  Returns true if a connection is valid between the two endpoints.
      *
-     *      @param [in] other The other endpoint.
+     *    @param [in] other The other endpoint.
      *
      *      @remarks Does not take existing connections into account but simply
      *               validates whether a connection between the endpoints would be valid
@@ -81,7 +81,7 @@ public:
     /*!
      *  Check if the port is hierarchical.
      *
-     *      @return False, port items are always instance items and thus non-hierarchical.
+     *    @return False, port items are always instance items and thus non-hierarchical.
      */
     bool isHierarchical() const noexcept final;
 
@@ -103,7 +103,7 @@ public:
 	/*!
 	 *  Shortens the name label to better fit in the component.
 	 *
-	 *      @param [in] width   The width of the shortened name.
+	 *    @param [in] width   The width of the shortened name.
 	 */
     void shortenNameLabel(qreal width) final;
 
@@ -112,15 +112,15 @@ protected:
     /*!
      *  Notifies item state changes.
      *
-     *      @param [in] change  The change.
-     *      @param [in] value   The new value.
+     *    @param [in] change  The change.
+     *    @param [in] value   The new value.
      */
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) final;
 
     /*!
      *  Event for mouse button release.
      *
-     *      @param [in] event   The release event.
+     *    @param [in] event   The release event.
      */
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event)  final;
 
@@ -129,7 +129,7 @@ private:
     /*!
      *  Check whether the label should be drawn on the left side of the interface.
      *
-     *      @return True, if the label should be drawn to the left side.
+     *    @return True, if the label should be drawn to the left side.
      */
     bool labelShouldBeDrawnLeft() const final;
 

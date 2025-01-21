@@ -35,7 +35,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent      The owner of this widget.     
+	 *    @param [in] parent      The owner of this widget.     
 	 */
 	VendorExtensionsEditor(QWidget *parent);
 	
@@ -51,14 +51,14 @@ public:
     /*!
      * Locks/Unlocks the editor.
      *
-     *     @param [in] locked  The lock state to set.
+     *    @param [in] locked  The lock state to set.
      */
     void setLocked(bool locked);
     
     /*!
      * Set the context for the editor.
      *
-     *     @param [in] doc  The document widget whose vendor extensions are being edited.     
+     *    @param [in] doc  The document widget whose vendor extensions are being edited.     
      */
      void setContext(TabDocument* doc);
 
@@ -75,8 +75,8 @@ public slots:
     /*!
      *  Change the vendor extensions of the vendor extensions editor.
      *
-     *      @param [in] containingID    ID for the vendor extensions editor.
-     *      @param [in] extensionItem   The item containing the selected vendor extensions.
+     *    @param [in] containingID    ID for the vendor extensions editor.
+     *    @param [in] extensionItem   The item containing the selected vendor extensions.
      */
     void changeVendorExtensions(QString const& containingID, QSharedPointer<Extendable> extensionItem);
 

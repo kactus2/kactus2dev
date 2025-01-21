@@ -36,12 +36,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component that contains the view.
-     *      @param [in] cpu                     The remap state being edited.
-     *      @param [in] regionValidator         The validator for regions in the cpu.
-	 *      @param [in] libHandler              The instance that manages the library.
-     *      @param [in] expressions             Changes the referenced ids to parameter names.
-	 *      @param [in] parent                  The owner of this editor.
+	 *    @param [in] component               The component that contains the view.
+     *    @param [in] cpu                     The remap state being edited.
+     *    @param [in] regionValidator         The validator for regions in the cpu.
+	 *    @param [in] libHandler              The instance that manages the library.
+     *    @param [in] expressions             Changes the referenced ids to parameter names.
+	 *    @param [in] parent                  The owner of this editor.
 	 */
     SingleCpuEditor(QSharedPointer<Component> component,
         QSharedPointer<Cpu> cpu, 
@@ -69,7 +69,7 @@ protected:
     /*!
      *  The show event for this editor.
      *
-     *      @param [in] event   The show event.
+     *    @param [in] event   The show event.
      */
     void showEvent(QShowEvent * event) final;
 

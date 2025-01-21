@@ -27,8 +27,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] mainWnd         The program main window. Must not be null.
-     *      @param [in] parent          The parent widget. Can be null.
+     *    @param [in] mainWnd         The program main window. Must not be null.
+     *    @param [in] parent          The parent widget. Can be null.
      */
     CSourceTextEdit(QWidget* mainWnd, QWidget* parent = 0);
 

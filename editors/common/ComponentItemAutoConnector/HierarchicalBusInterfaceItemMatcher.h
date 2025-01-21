@@ -28,7 +28,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library     Access to the document library.
+     *    @param [in] library     Access to the document library.
      */
     HierarchicalBusInterfaceItemMatcher(LibraryInterface* library);
 
@@ -46,9 +46,9 @@ private:
     /*!
      *  Get connectible bus interface modes for the selected interface mode.
      *
-     *      @param [in] busMode     The selected bus interface mode.
+     *    @param [in] busMode     The selected bus interface mode.
      *
-     *      @return List of connectible interface modes.
+     *    @return List of connectible interface modes.
      */
     virtual QVector<General::InterfaceMode> getCompatibleModes(General::InterfaceMode busMode) const;
 };

@@ -31,11 +31,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item        The component item to move.
-     *      @param [in] oldPos      The item's old position.
-     *      @param [in] oldStack    The item's old stack.
-     *      @param [in] diagram     Diagram containing the scene of the component item.
-     *      @param [in] parent      The parent command.
+     *    @param [in] item        The component item to move.
+     *    @param [in] oldPos      The item's old position.
+     *    @param [in] oldStack    The item's old stack.
+     *    @param [in] diagram     Diagram containing the scene of the component item.
+     *    @param [in] parent      The parent command.
      */
     ComponentItemMoveCommand(ComponentItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
         DesignDiagram* diagram, QUndoCommand* parent = 0);

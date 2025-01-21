@@ -51,56 +51,56 @@ public:
     /*!
      *  Sets the constraint value.
      *
-     *      @param [in] delayPercentage   The value percentage.
+     *    @param [in] delayPercentage   The value percentage.
      */
     void setValue(double delayPercentage);
 
     /*!
      *  Gets the constraint value.
      *
-     *      @return The constraint value.
+     *    @return The constraint value.
      */
     double getValue() const;
 
     /*!
      *  Sets the clock edge for the constraint.
      *
-     *      @param [in] edge   The edge to set.
+     *    @param [in] edge   The edge to set.
      */
     void setClockEdge(TimingConstraint::ClockEdgeType edge);
       
     /*!
      *  Gets the clock edge.
      *
-     *      @return The clock edge type.
+     *    @return The clock edge type.
      */
     ClockEdgeType getClockEdge() const;
 
     /*!
      *  Sets the delay type for the constraint.
      *
-     *      @param [in] delayType   The delay type to set.
+     *    @param [in] delayType   The delay type to set.
      */
     void setDelayType(TimingConstraint::DelayType delayType);
 
     /*!
      *  Gets the delay type.
      *
-     *      @return The delay type.
+     *    @return The delay type.
      */
     DelayType getDelayType() const;
         
     /*!
      *  Sets the clock name for the constraint.
      *
-     *      @param [in] clockPort   The clock name to set.
+     *    @param [in] clockPort   The clock name to set.
      */
     void setClockName(QString const& clockPort);
 
     /*!
      *  Gets the clock name for the constraint.
      *
-     *      @return The clock name.
+     *    @return The clock name.
      */
     QString getClockName() const;
 

@@ -28,7 +28,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent              The owner of the item.
+	 *    @param [in] parent              The owner of the item.
 	 */
 	AddressableItem(QGraphicsItem* parent = nullptr);
 	
@@ -45,56 +45,56 @@ public:
 	/*!
      *  Get the offset of the item. 
 	 *
-	 *      @return The offset of the item from the parent item's base address.
+	 *    @return The offset of the item from the parent item's base address.
 	 */
 	virtual quint64 getOffset() const = 0;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
-	 *      @return The last address.
+	 *    @return The last address.
 	 */
 	virtual quint64 getLastAddress() const = 0;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
-	 *      @return The bit width of the item.
+	 *    @return The bit width of the item.
 	 */
 	virtual int getBitWidth() const = 0;
 
 	/*!
      *  Get number of bits the addressable unit contains.
 	 *
-	 *      @return The size of least addressable unit.
+	 *    @return The size of least addressable unit.
 	 */
 	//virtual unsigned int getAddressUnitSize() const = 0;
 
 	/*!
      *  Sets the first non-overlapping address to display.
 	 *
-	 *       @param [in] The first address to set.
+	 *    @param [in] The first address to set.
 	 */
     virtual void setDisplayOffset(quint64 const& address);
 
 	/*!
      *  Get the first non-overlapping address of the item.
 	 *
-	 *      @return The first non-overlapping address.
+	 *    @return The first non-overlapping address.
 	 */
     virtual quint64 getDisplayOffset();
 
 	/*!
      *  Sets the last non-overlapping address to display.
 	 *
-	 *       @param [in] The last address to set.
+	 *    @param [in] The last address to set.
 	 */
     virtual void setDisplayLastAddress(quint64 const& address);
 
     /*!
      *  Get the last non-overlapping address of the item.
      *
-     *      @return The last non-overlapping address.
+     *    @return The last non-overlapping address.
      */
     virtual quint64 getDisplayLastAddress();
 
@@ -104,7 +104,7 @@ public:
     /*!
      *  Checks if the item is conflicted (overlapping with others).
      *
-     *      @return True, if the item is conflicted, otherwise false.
+     *    @return True, if the item is conflicted, otherwise false.
      */
     bool isConflicted() const;
 
@@ -113,24 +113,24 @@ protected:
 	/*!
      *  Set the address to be shown on the top left corner.
 	 *
-	 *       @param [in] address The address to be shown in hexadecimal form.
+	 *    @param [in] address The address to be shown in hexadecimal form.
 	 */
 	 void setTopLabelText(quint64 address);
 
 	/*!
      *  Set the address to be shown on the bottom left corner.
 	 *
-	 *       @param [in] address The address to be shown in hexadecimal form.
+	 *    @param [in] address The address to be shown in hexadecimal form.
 	 */
 	 void setBottomLabelText(quint64 address);
 
 	/*!
 	 *  Converts an address to hexadecimal string.
 	 *
-     *      @param [in] address   The address to convert.
-     *      @param [in] bitWidth  The number of bits used in the representation.
+     *    @param [in] address   The address to convert.
+     *    @param [in] bitWidth  The number of bits used in the representation.
 	 *
-	 *      @return The hexadecimal representation.
+	 *    @return The hexadecimal representation.
 	 */
 	static QString toHexString(quint64 address, int bitWidth);
 

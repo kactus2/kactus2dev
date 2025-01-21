@@ -31,7 +31,7 @@ public:
     /*!
      *  Constructor for the name validator.
      *
-     *      @param [in] parent   Owner of this validator.
+     *    @param [in] parent   Owner of this validator.
      */
     explicit NameValidator(QObject* parent = 0);
 

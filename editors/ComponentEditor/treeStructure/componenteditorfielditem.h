@@ -39,18 +39,18 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] reg                 The register which contains this field.
-	 *      @param [in] field               The field being edited.
-	 *      @param [in] model               The model that owns the items.
-	 *      @param [in] libHandler          The instance that manages the library.
-	 *      @param [in] component           The component being edited.
-	 *      @param [in] parameterFinder     The parameter finder.
-	 *      @param [in] referenceCounter    The instance for counting references made to the parameters.
-     *      @param [in] expressionParser    Expression parser to use.
-     *      @param [in] formatter           The expression formatter.
-     *      @param [in] fieldValidator      Validator used for fields.
-     *      @param [in] fieldInterface      Interface for accessing fields.
-     *      @param [in] parent              The parent item.
+	 *    @param [in] reg                 The register which contains this field.
+	 *    @param [in] field               The field being edited.
+	 *    @param [in] model               The model that owns the items.
+	 *    @param [in] libHandler          The instance that manages the library.
+	 *    @param [in] component           The component being edited.
+	 *    @param [in] parameterFinder     The parameter finder.
+	 *    @param [in] referenceCounter    The instance for counting references made to the parameters.
+     *    @param [in] expressionParser    Expression parser to use.
+     *    @param [in] formatter           The expression formatter.
+     *    @param [in] fieldValidator      Validator used for fields.
+     *    @param [in] fieldInterface      Interface for accessing fields.
+     *    @param [in] parent              The parent item.
 	 */
     ComponentEditorFieldItem(QSharedPointer<Register> reg,
         QSharedPointer<Field> field,
@@ -80,49 +80,49 @@ public:
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *       @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *       @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const;
 
 	/*!
      *  Check the validity of this item and sub items.
 	 *
-	 *       @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	 */
 	virtual bool isValid() const;
 
 	/*!
      *  Get the editor of this item.
 	 *
-	 *       @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*!
      *  Get the visualizer of this item.
 	 * 
-	 *       @return The visualizer to use for this item.
+	 *    @return The visualizer to use for this item.
 	 */
 	virtual ItemVisualizer* visualizer();
 
 	/*!
      *  Set the visualizer for this item.
 	 *
-	 *      @param [in] visualizer The visualizer to set.
+	 *    @param [in] visualizer The visualizer to set.
 	 */
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*!
      *  Get the visualizer graphics item for the field.
 	 *
-	 *       @return The graphics item.
+	 *    @return The graphics item.
 	 */
 	virtual QGraphicsItem* getGraphicsItem();
 
@@ -151,8 +151,8 @@ signals:
     /*
      *  Informs of field name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void fieldNameChanged(QString const& oldName, QString const& newName);
 

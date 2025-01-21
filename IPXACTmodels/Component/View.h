@@ -60,9 +60,9 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name            Name of the view.
-	 *      @param [in] displayName     Display name of the view.
-	 *      @param [in] description     Description of the view.
+	 *    @param [in] name            Name of the view.
+	 *    @param [in] displayName     Display name of the view.
+	 *    @param [in] description     Description of the view.
 	 */
 	View(QString const& name = QString(), QString const& displayName = QString(),
         QString const& description = QString());
@@ -85,14 +85,14 @@ public:
 	/*!
 	 *  Get a list of envIdentifiers.
 	 *
-     *      @return A list containing the envIdentifiers.
+     *    @return A list containing the envIdentifiers.
 	 */
 	QSharedPointer<QList<QSharedPointer<EnvironmentIdentifier> > > getEnvIdentifiers() const;
 
 	/*!
 	 *  Add a new envIdentifier for this view.
 	 *
-	 *      @param [in] envIdentifier   The envIdentifier to add.
+	 *    @param [in] envIdentifier   The envIdentifier to add.
 	 */
 	void addEnvIdentifier(QSharedPointer<EnvironmentIdentifier> envIdentifier);
 	
@@ -104,63 +104,63 @@ public:
     /*!
      *  Gets the presence.
      *
-     *      @return The presence value.
+     *    @return The presence value.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new presence value.
+     *    @param [in] newIsPresent    The new presence value.
      */
     void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Get the name of the referenced component instantiation.
      *
-     *      @return The name of the referenced component instantiation.
+     *    @return The name of the referenced component instantiation.
      */
     QString getComponentInstantiationRef() const;
 
     /*!
      *  Set a component instantiation reference.
      *
-     *      @param [in] newInstantiationRef     Name of the referenced component instantiation.
+     *    @param [in] newInstantiationRef     Name of the referenced component instantiation.
      */
     void setComponentInstantiationRef(QString const& newInstantiationRef);
 
     /*!
      *  Get the name of the referenced design instantiation.
      *
-     *      @return The name of the referenced design instantiation.
+     *    @return The name of the referenced design instantiation.
      */
     QString getDesignInstantiationRef() const;
 
     /*!
      *  Set a design instantiation reference.
      *
-     *      @param [in] newInstantiationRef     Name of the referenced design instantiation.
+     *    @param [in] newInstantiationRef     Name of the referenced design instantiation.
      */
     void setDesignInstantiationRef(QString const& newInstantiationRef);
 
     /*!
      *  Get the name of the referenced design configuration instantiation.
      *
-     *      @return The name of the referenced design configuration instantiation.
+     *    @return The name of the referenced design configuration instantiation.
      */
     QString getDesignConfigurationInstantiationRef() const;
 
     /*!
      *  Set a design configuration instantiation reference.
      *
-     *      @param [in] newInstantiationRef     Name of the referenced design configuration instantiation.
+     *    @param [in] newInstantiationRef     Name of the referenced design configuration instantiation.
      */
     void setDesignConfigurationInstantiationRef(QString const& newInstantiationRef);
 
     /*!
      *  Check if the view is hierarchical.
      *
-     *      @return True, if the view is hierarchical, false otherwise.
+     *    @return True, if the view is hierarchical, false otherwise.
      */
     bool isHierarchical() const;
 

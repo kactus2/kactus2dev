@@ -32,7 +32,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] historySize The maximum number of undo commands kept in the history.
+     *    @param [in] historySize The maximum number of undo commands kept in the history.
      */
     GenericEditProvider(int historySize);
 
@@ -44,7 +44,7 @@ public:
     /*!
      *  Stores a new command to the edit stack.
      *
-     *      @param [in] command   The command to add.
+     *    @param [in] command   The command to add.
      */
     void addCommand(QSharedPointer<QUndoCommand> command);
 

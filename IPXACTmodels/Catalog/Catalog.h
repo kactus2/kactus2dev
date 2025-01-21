@@ -46,88 +46,88 @@ public:
 	/*!
 	 *  Creates a perfect copy of the catalog.
 	 *
-	 *      @return Copy of the catalog.
+	 *    @return Copy of the catalog.
 	 */
 	virtual QSharedPointer<Document> clone() const;
 
 	/*! Set the VLNV for the catalog.
 	*
-	*      @param [in] vlnv     The vlnv to set
+	*    @param [in] vlnv     The vlnv to set
 	*/
 	virtual void setVlnv(const VLNV& vlnv);
 
     /*!
      *  Get the catalog descriptions in the catalog.
      *
-     *      @return The catalogs referenced by this catalog.
+     *    @return The catalogs referenced by this catalog.
      */
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getCatalogs() const;
 
     /*!
      *  Get the bus definitions descriptions in the catalog.
      *
-     *      @return The bus definitions referenced by this catalog.
+     *    @return The bus definitions referenced by this catalog.
      */
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getBusDefinitions() const;
 
     /*!
      *  Get the abstractions definitions in the catalog.
      *
-     *      @return The abstractions definitions referenced by this catalog.
+     *    @return The abstractions definitions referenced by this catalog.
      */
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getAbstractionDefinitions() const;
 
     /*!
      *  Get the component descriptions in the catalog.
      *
-     *      @return The components referenced by this catalog.
+     *    @return The components referenced by this catalog.
      */
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getComponents() const;
 
     /*!
      *  Get the abstractor descriptions in the catalog.
      *
-     *      @return The abstractors referenced by this catalog.
+     *    @return The abstractors referenced by this catalog.
      */
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getAbstractors() const;
   
     /*!
      *  Get the design descriptions in the catalog.
      *
-     *      @return The designs referenced by this catalog.
+     *    @return The designs referenced by this catalog.
      */  
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getDesigns() const;
     
     /*!
      *  Get the design configuration descriptions in the catalog.
      *
-     *      @return The design configurations referenced by this catalog.
+     *    @return The design configurations referenced by this catalog.
      */
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getDesignConfigurations() const;
 
     /*!
      *  Get the generator chain descriptions in the catalog.
      *
-     *      @return The generator chains referenced by this catalog.
+     *    @return The generator chains referenced by this catalog.
      */
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getGeneratorChains() const;
 
     /*!
      *  Get the type definitions in the catalog.
      *
-     *      @return The type definitions referenced by this catalog.
+     *    @return The type definitions referenced by this catalog.
      */
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getTypeDefinitions() const;
     
 	/*! Get the VLNVs that this catalog depends on.
 	 *
-	 *      @return The dependency VLNVs.
+	 *    @return The dependency VLNVs.
 	 */
 	virtual QList<VLNV> getDependentVLNVs() const;
 
 	/*! Get the file dependencies of this catalog.
      *
-	 *      @return The dependency files.
+	 *    @return The dependency files.
      *
      *      @remark This function never returns anything because catalog only has VLNV dependencies.
 	 */
@@ -138,14 +138,14 @@ private:
     /*!
      *  Copies file descriptions from another catalog.
      *
-     *      @param [in] other   The catalog to copy from.
+     *    @param [in] other   The catalog to copy from.
      */
     void copyIpxactFiles(Catalog const& other);
 
     /*!
      *  Gets all the ipxact files in the catalog regardless of the type.
      *
-     *      @return All ipxact files in the catalog.
+     *    @return All ipxact files in the catalog.
      */
     QList<QSharedPointer<IpxactFile> > getAllFiles() const;
 

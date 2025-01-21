@@ -33,8 +33,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] left    The left side of the vector.
-     *      @param [in] right   The right side of the vector.
+     *    @param [in] left    The left side of the vector.
+     *    @param [in] right   The right side of the vector.
      */
     Vector(QString const& left, QString const& right);
    
@@ -44,14 +44,14 @@ public:
     /*!
      *  Create a copy of the Vector.
      *
-     *      @return A Vector identical to this.
+     *    @return A Vector identical to this.
      */
     Vector* clone() const;
 
     /*!
      *	Sets the vector id.
      *  
-     *      @param [in] id	Description
+     *    @param [in] id	Description
      */
     void setId(QString const& id);
 

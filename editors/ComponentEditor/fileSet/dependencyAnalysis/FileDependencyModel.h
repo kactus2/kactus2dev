@@ -33,8 +33,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component  The component to which this model is made.
-     *      @param [in] basePath   The component's base path.
+     *    @param [in] component  The component to which this model is made.
+     *    @param [in] basePath   The component's base path.
      */
     FileDependencyModel(QSharedPointer<Component> component,
                         QString const& basePath);
@@ -52,71 +52,71 @@ public:
     /*!
      *  Adds a new dependency to the model.
      *
-     *      @param [in] dependency The file dependency to add.
+     *    @param [in] dependency The file dependency to add.
      */
     void addDependency(QSharedPointer<FileDependency> dependency);
 
     /*!
      *  Removes a dependency from the model.
      *
-     *      @param [in] dependency The file dependency to remove.
+     *    @param [in] dependency The file dependency to remove.
      */
     void removeDependency(FileDependency* dependency);
 
     /*!
      *  Defines the location for the given item.
      *
-     *      @param [in] item  The item whose location to define.
-     *      @param [in] path  The path where the file resides.
+     *    @param [in] item  The item whose location to define.
+     *    @param [in] path  The path where the file resides.
      */
     void defineLocation(FileDependencyItem* item, QString const& path);
 
     /*!
      *  Resets the location of the given item.
      *
-     *      @param [in] item  The item whose location to reset.
+     *    @param [in] item  The item whose location to reset.
      */
     void resetLocation(FileDependencyItem* item);
 
     /*!
      *  Searches for a file item with the given path.
      *
-     *      @param [in] path The path.
+     *    @param [in] path The path.
      *
-     *      @return The corresponding item of null if not found in the model.
+     *    @return The corresponding item of null if not found in the model.
      */
     FileDependencyItem* findFileItem(QString const& path);
 
     /*!
      *  Searches for an external file item with the given path.
      *
-     *      @param [in,out] path The base path as an input. The found path if the item was found.
+     *    @param [in,out] path The base path as an input. The found path if the item was found.
      *
-     *      @return The corresponding item of null if not found in the model.
+     *    @return The corresponding item of null if not found in the model.
      */
     FileDependencyItem* findExternalFileItem(QString& path);
 
     /*!
      *  Searches for a folder item with the given path.
      *
-     *      @param [in] path The path.
+     *    @param [in] path The path.
      *
-     *      @return The corresponding item of null if not found in the model.
+     *    @return The corresponding item of null if not found in the model.
      */
     FileDependencyItem* findFolderItem(QString const& path);
 
     /*!
      *  Searches for a dependency between the given files.
      *
-     *      @param [in] file1 The first file.
-     *      @param [in] file2 The second file.
+     *    @param [in] file1 The first file.
+     *    @param [in] file2 The second file.
      */
     FileDependency* findDependency(QString const& file1, QString const& file2) const;
 
     /*!
      *  Returns the model index of the given file dependency item.
      *
-     *      @param [in] item The file dependency item.
+     *    @param [in] item The file dependency item.
      */
     QModelIndex getItemIndex(FileDependencyItem* item, int column) const;
 
@@ -143,18 +143,18 @@ public:
     /*!
      *  Adds a new folder item to the model.
      *
-     *      @param [in] path The folder path.
+     *    @param [in] path The folder path.
      */
     FileDependencyItem* addFolder(QString const& path);
 
     /*!
      *  Return header data for the given header column.
      *
-     *      @param [in] section      The index of the header column.
-	 *      @param [in] orientation  The orientation of the header, only Qt::Horizontal supported.
-     *      @param [in] role         The role of the data.
+     *    @param [in] section      The index of the header column.
+	 *    @param [in] orientation  The orientation of the header, only Qt::Horizontal supported.
+     *    @param [in] role         The role of the data.
      *
-     *      @return QVariant containing the data.
+     *    @return QVariant containing the data.
     */
     virtual QVariant headerData(int section, Qt::Orientation orientation,
     		                    int role = Qt::DisplayRole) const;
@@ -162,18 +162,18 @@ public:
     /*!
      *  Returns the number of columns in this model.
      *
-     *      @param [in] parent Model index identifying the item whose column count is requested.
+     *    @param [in] parent Model index identifying the item whose column count is requested.
      *
-     *      @return The number of columns.
+     *    @return The number of columns.
      */
     virtual int columnCount(const QModelIndex & parent = QModelIndex() ) const;
 
     /*! 
      *  Returns the number of rows an item has.
      *
-     *      @param [in] parent Model index identifying the item whose row count is wanted.
+     *    @param [in] parent Model index identifying the item whose row count is wanted.
      *
-     *      @return The number of rows the item has.
+     *    @return The number of rows the item has.
     */
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
@@ -290,25 +290,25 @@ private:
     /*!
      *  Analyzes the given file item.
      *
-     *      @param [in] fileItem The file item to analyze.
+     *    @param [in] fileItem The file item to analyze.
      */
     void analyze(FileDependencyItem* fileItem);
 
     /*!
      *  Calculates an Md5 sum for a given file. Changes in Md5 indicate change in file content.
      *
-     *      @param [in] absPath   Absolute path to the file to calculate Md5 for.
+     *    @param [in] absPath   Absolute path to the file to calculate Md5 for.
      *
-     *      @return The calculated Md5 sum.
+     *    @return The calculated Md5 sum.
      */
     QString calculateMd5forFile(QString const& absPath) const;
 
     /*!
      *  Searches for a dependency between the given files in the given container.
      *
-     *      @param [in] dependencies  The list of dependencies.
-     *      @param [in] file1         File path of the first file.
-     *      @param [in] file2         File path of the second file.
+     *    @param [in] dependencies  The list of dependencies.
+     *    @param [in] file1         File path of the first file.
+     *    @param [in] file2         File path of the second file.
      */
     FileDependency* findDependency(QList<FileDependency*> const& dependencies,
                                    QString const& file1, QString const& file2) const;
@@ -316,16 +316,16 @@ private:
     /*!
      *  Searches for all dependencies that reference the given file.
      *
-     *      @param [in]  file          File path of the file.
-     *      @param [out] dependencies  The found dependencies.
+     *    @param [in]  file          File path of the file.
+     *    @param [out] dependencies  The found dependencies.
      */
     QList<FileDependency*> findDependencies(QString const& file) const;
 
     /*!
      *  Moves the item to the new parent.
      *
-     *      @param [in] item    The item to move.
-     *      @param [in] parent  The new parent for the item.
+     *    @param [in] item    The item to move.
+     *    @param [in] parent  The new parent for the item.
      */
     void moveItem(FileDependencyItem* item, FileDependencyItem* parent);
 

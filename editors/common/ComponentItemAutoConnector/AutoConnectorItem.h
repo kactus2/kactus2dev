@@ -41,10 +41,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] itemName            Name of the connected item.
-     *      @param [in] componentItemName   Name of the containing component item.
-     *      @param [in] itemType            Type of the item.
-     *      @param [in] containerType       Type of the container.
+     *    @param [in] itemName            Name of the connected item.
+     *    @param [in] componentItemName   Name of the containing component item.
+     *    @param [in] itemType            Type of the item.
+     *    @param [in] containerType       Type of the container.
      */
     AutoConnectorItem(QString const& itemName, QString const& componentItemName,
         AutoConnectorItem::ItemType itemType,
@@ -70,56 +70,56 @@ public:
     /*!
      *  Get the name.
      *
-     *      @return Name of the item.
+     *    @return Name of the item.
      */
     QString getName() const;
 
     /*!
      *  Set a new name.
      *
-     *      @param [in] newName     New name for the item.
+     *    @param [in] newName     New name for the item.
      */
     void setName(QString const& newName);
 
     /*!
      *  Get the name of the containing component item.
      *
-     *      @return The name of the containing component item.
+     *    @return The name of the containing component item.
      */
     QString getContainingItem() const;
 
     /*!
      *  Set the name of the containing component item.
      *
-     *      @param [in] newComponentItem    New name for the containing component item.
+     *    @param [in] newComponentItem    New name for the containing component item.
      */
     void setContainingItem(QString const& newComponentItem);
 
     /*!
      *  Get the type.
      *
-     *      @return Type of the item.
+     *    @return Type of the item.
      */
     AutoConnectorItem::ItemType getItemType() const;
 
     /*!
      *  Set the type for the item.
      *
-     *      @param [in] newItemType     New type for the item.
+     *    @param [in] newItemType     New type for the item.
      */
     void setNewItemType(AutoConnectorItem::ItemType newItemType);
 
     /*!
      *  Get the container type.
      *
-     *      @return Type of the container.
+     *    @return Type of the container.
      */
     AutoConnectorItem::ContainerType getContainterType() const;
 
     /*!
      *  Set the type for the container.
      *
-     *      @param [in] newContainerType    New type for the container.
+     *    @param [in] newContainerType    New type for the container.
      */
     void setNewContainerType(AutoConnectorItem::ContainerType newContainerType);
 

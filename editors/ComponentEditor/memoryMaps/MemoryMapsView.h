@@ -26,7 +26,7 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this view.
+	 *    @param [in] parent  Pointer to the owner of this view.
 	 */
 	MemoryMapsView(QWidget* parent);
 
@@ -42,7 +42,7 @@ public:
     /*!
 	 *  Enable/disable the import/export csv-file functionality.
 	 *
-	 *      @param [in] allow   If true, then import/export is enabled.
+	 *    @param [in] allow   If true, then import/export is enabled.
 	 */
 	void setAllowImportExport(bool allow);
 
@@ -51,21 +51,21 @@ public slots:
 	/*!
 	 *  Create a csv-file of the editor contents.
 	 *
-	 *      @param [in] filePath    Contains an absolute file path to the file to create.
+	 *    @param [in] filePath    Contains an absolute file path to the file to create.
 	 */
 	void onCSVExport(const QString& filePath = QString());
 
     /*!
 	 *  Import contents of a csv-file to the editor.
 	 *
-	 *      @param [in] filePath    The path to the csv-file to import.
+	 *    @param [in] filePath    The path to the csv-file to import.
 	 */
 	void onCSVImport(const QString& filePath = QString());
 
     /*!
 	 *  Set the default path to use for import/export csv.
 	 *
-	 *      @param [in] path    The path to tuse ad default.
+	 *    @param [in] path    The path to tuse ad default.
 	 */
 	void setDefaultImportExportPath(const QString& path);
 
@@ -74,14 +74,14 @@ signals:
     /*!
      *  Copy the selected rows.
      *
-     *      @param [in] indexList   List of selected indexes containing the copied rows.
+     *    @param [in] indexList   List of selected indexes containing the copied rows.
      */
     void copyRows(QModelIndexList indexList);
 
     /*!
      *  Paste the copied rows.
      *
-     *      @param [in] targetIndex     The target of the paste action.
+     *    @param [in] targetIndex     The target of the paste action.
      */
     void pasteRows(QModelIndex targetIndex);
 
@@ -90,14 +90,14 @@ protected:
     /*!
 	 *  Handles keypress events for copy, paste, cut, delete and line separator insertion.
 	 *
-	 *      @param [in] event   The key event.
+	 *    @param [in] event   The key event.
 	 */
 	virtual void keyPressEvent(QKeyEvent* event) override final;
 
 	/*!
 	 *  Creates a context menu for adding/removing/editing items in the editor.
 	 *
-	 *      @param [in] event   The context menu event.
+	 *    @param [in] event   The context menu event.
 	 */
 	virtual void contextMenuEvent(QContextMenuEvent* event) override final;
 
@@ -133,10 +133,10 @@ private:
     /*!
     *  Generates a unique name within the table for the item.
     *
-    *      @param [in] original     The original name of the item.
-    *      @param [in] model        The model of this view.
+    *    @param [in] original     The original name of the item.
+    *    @param [in] model        The model of this view.
     *
-    *      @return Unique name for the item.
+    *    @return Unique name for the item.
     */
     QString getUniqueName(QString const& original, QAbstractItemModel* model);
 

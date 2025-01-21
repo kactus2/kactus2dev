@@ -32,8 +32,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] tagLabel    The tag label being edited.
-     *      @param [in] parent      The parent widget.
+     *    @param [in] tagLabel    The tag label being edited.
+     *    @param [in] parent      The parent widget.
      */
     TagDisplay(TagLabel* tagLabel, QWidget* parent = nullptr);
 
@@ -49,10 +49,10 @@ public:
     /*!
      *  The event filter.
      *
-     *      @param [in] watched     The monitored object.
-     *      @param [in] event       The occurring event.
+     *    @param [in] watched     The monitored object.
+     *    @param [in] event       The occurring event.
      *
-     *      @return True, if the event is caught, false otherwise.
+     *    @return True, if the event is caught, false otherwise.
      */
     bool eventFilter(QObject *watched, QEvent *event) final;
 
@@ -62,35 +62,35 @@ protected:
     /*!
      *  Check if color selection button should be shown.
      *
-     *      @return True, if button should be shown, otherwise false.
+     *    @return True, if button should be shown, otherwise false.
      */
     virtual bool showColorButton() const noexcept;
 
     /*!
      *  Handler for focus out events.
      *
-     *      @param [in] event   The focus event.
+     *    @param [in] event   The focus event.
      */
     void focusOutEvent(QFocusEvent* event) final;
 
     /*!
      *  Handler for key press events.
      *
-     *      @param [in] event   The key event.
+     *    @param [in] event   The key event.
      */
     void keyPressEvent(QKeyEvent *event) final;
     
     /*!
      *  Get the color display button.
      *
-     *      @return The color display button.
+     *    @return The color display button.
      */
     ColorBox* getColorButton();
 
     /*!
      *  Get the edited tag label.
      *
-     *      @return The edited tag label.
+     *    @return The edited tag label.
      */
     TagLabel* getEditedLabel() const;
 
@@ -102,7 +102,7 @@ protected:
     /*!
      *  Setup the tag editors.
      *
-     *      @param [in] nameEditor  The name editor for the tag.
+     *    @param [in] nameEditor  The name editor for the tag.
      */
     virtual void setupEditors(QWidget* nameEditor);
 
@@ -111,7 +111,7 @@ protected slots:
     /*!
      *  Handler for changing color through completer.
      *
-     *      @param [in] newColor    The color of the selected completer item.
+     *    @param [in] newColor    The color of the selected completer item.
      */
     void completerColorChange(QColor const& newColor);
 
@@ -120,16 +120,16 @@ signals:
     /*!
      *  Signals the accepted changes made in the editor.
      *
-     *      @param [in] editedLabel     The edited tag label.
-     *      @param [in] tagEditor       This editor.
+     *    @param [in] editedLabel     The edited tag label.
+     *    @param [in] tagEditor       This editor.
      */
     void acceptChanges(TagLabel* editedLabel, TagDisplay* tagEditor);
 
     /*!
      *  Signals the removal of this tag label.
      *
-     *      @param [in] editedLabel     The edited tag label.
-     *      @param [in] tagEditor       This editor.
+     *    @param [in] editedLabel     The edited tag label.
+     *    @param [in] tagEditor       This editor.
      */
     void deleteItem(TagLabel* editedLabel, TagDisplay* tagEditor);
 
@@ -150,14 +150,14 @@ private:
     /*!
      *  Setup the layout.
      *
-     *      @param [in] nameEditor  Name editor of the tag.
+     *    @param [in] nameEditor  Name editor of the tag.
      */
     void setupLayout(QWidget* nameEditor);
 
     /*!
      *  Get the current name from the name editor.
      *
-     *      @return The current name of the name editor.
+     *    @return The current name of the name editor.
      */
     virtual QString getNewName() const = 0;
 

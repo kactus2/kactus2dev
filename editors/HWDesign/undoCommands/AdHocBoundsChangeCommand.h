@@ -32,10 +32,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] referencedPort  The changed ad hoc port.
-     *      @param [in] newLeftBound    New value for the left bound of the tie off.
-     *      @param [in] newRightBound   New value for the right bound of the tie off.
-     *      @param [in] parent          The parent command.
+     *    @param [in] referencedPort  The changed ad hoc port.
+     *    @param [in] newLeftBound    New value for the left bound of the tie off.
+     *    @param [in] newRightBound   New value for the right bound of the tie off.
+     *    @param [in] parent          The parent command.
      */
     AdHocBoundsChangeCommand(QSharedPointer<PortReference> referencedPort, QString const& newLeftBound,
         QString const& newRightBound, QUndoCommand* parent = 0);
@@ -60,14 +60,14 @@ signals:
     /*!
      *  Informs of new references created from the selected expression.
      *
-     *      @param [in] expression  The selected expression.
+     *    @param [in] expression  The selected expression.
      */
     void increaseReferences(QString const& expression);
 
     /*!
      *  Informs of old references created from the selected expression.
      *
-     *      @param [in] expression  The selected expression.
+     *    @param [in] expression  The selected expression.
      */
     void decreaseReferences(QString const& expression);
 
@@ -85,15 +85,15 @@ private:
     /*!
      *  Setup the part select for the selected port reference.
      *
-     *      @param [in] newLeftValue    New value for the left bound.
-     *      @param [in] newRightValue   New value for the right bound.
+     *    @param [in] newLeftValue    New value for the left bound.
+     *    @param [in] newRightValue   New value for the right bound.
      */
     void setupPartSelectForPortReference(QString const& newLeftValue, QString const& newRightValue);
 
     /*!
      *  Set a new part select for the referenced port.
      *
-     *      @param [in] partSelect  The new part select.
+     *    @param [in] partSelect  The new part select.
      */
     void setPartSelectForReferencedPort(QSharedPointer<PartSelect> partSelect);
 

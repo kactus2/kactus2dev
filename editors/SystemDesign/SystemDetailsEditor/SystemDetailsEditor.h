@@ -36,8 +36,8 @@ public:
 	/*!
      *  Constructor.
 	 *
-	 *      @param [in] handler The library interface.
-	 *      @param [in] parent  The parent widget.
+	 *    @param [in] handler The library interface.
+	 *    @param [in] parent  The parent widget.
 	 */
 	SystemDetailsEditor(LibraryInterface* handler, QWidget *parent);
 	
@@ -49,7 +49,7 @@ public:
 	/*!
      *  Set the system to be displayed.
 	 *
-	 *      @param [in] designWidget The system design widget containing the opened system.
+	 *    @param [in] designWidget The system design widget containing the opened system.
 	 */
     void setSystem(DesignWidget* designWidget);
 

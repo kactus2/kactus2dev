@@ -38,11 +38,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] busInterface        Interface for accessing bus interfaces.
-     *      @param [in] busName             Name of the edited bus interface.
-	 *      @param [in] parameterFinder     The parameter finder.
-     *      @param [in] expressionParser    The expression parser.
-	 *      @param [in] parent              The owner of this editor.
+	 *    @param [in] busInterface        Interface for accessing bus interfaces.
+     *    @param [in] busName             Name of the edited bus interface.
+	 *    @param [in] parameterFinder     The parameter finder.
+     *    @param [in] expressionParser    The expression parser.
+	 *    @param [in] parent              The owner of this editor.
 	 */
     MirroredSlaveModeEditor(BusInterfaceInterface* busInterface,
         std::string const& busName,
@@ -62,7 +62,7 @@ public:
 	/*!
      *  Check for the validity of the edited item.
      *
-     *      @return True if item is valid.
+     *    @return True if item is valid.
      */
 	bool isValid() const final;
 
@@ -75,7 +75,7 @@ public:
 	/*!
      *  Get the interface mode of the editor.
 	 * 
-	 *      @return General::InterfaceMode Specifies the interface mode.
+	 *    @return General::InterfaceMode Specifies the interface mode.
      */
 	General::InterfaceMode getInterfaceMode() const final;
 
@@ -106,14 +106,14 @@ signals:
     /*!
      *  Increase the number of references in the selected parameter.
      *
-     *      @param [in] id      The id of the selected parameter.
+     *    @param [in] id      The id of the selected parameter.
      */
     void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the number of references in the selected parameter.
      *
-     *      @param [in] id      The id of the selected parameter.
+     *    @param [in] id      The id of the selected parameter.
      */
     void decreaseReferences(QString const& id);
 

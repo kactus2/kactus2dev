@@ -27,7 +27,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     ColorBox(QSize const& size, QWidget* parent = 0);
 
@@ -39,7 +39,7 @@ public:
     /*!
      *  Sets the color for the color box.
      *
-     *      @param [in] color The color to set.
+     *    @param [in] color The color to set.
      */
     void setColor(QColor const& color);
 
@@ -51,14 +51,14 @@ public:
     /*!
      *  Sets the text font.
      *
-     *      @param [in] font The font to set.
+     *    @param [in] font The font to set.
      */
     void setTextFont(QFont const& font);
 
     /*!
      *  Sets the text color.
      *
-     *      @param [in] color The color to set.
+     *    @param [in] color The color to set.
      */
     void setTextColor(QColor const& color);
 

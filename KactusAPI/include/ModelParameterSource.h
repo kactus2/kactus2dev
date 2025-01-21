@@ -27,7 +27,7 @@ public:
     /*!
      *  Sets the given visualizer to be used by the source.
      *
-     *      @param [in] visualizer   The visualizer to use.          
+     *    @param [in] visualizer   The visualizer to use.          
      */
     virtual void setModelParameterVisualizer(ModelParameterVisualizer* visualizer) = 0;
 

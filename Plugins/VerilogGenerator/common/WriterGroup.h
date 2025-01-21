@@ -36,14 +36,14 @@ public:
     /*!
      *  Writes the content to the given output.
      *
-     *      @param [in] output   The output to write to.
+     *    @param [in] output   The output to write to.
      */
     virtual void write(QTextStream& outputStream) const;
     
     /*!
      *  Adds a new writer to the group.
      *
-     *      @param [in] writer   The writer to add.     
+     *    @param [in] writer   The writer to add.     
      */
      void add(QSharedPointer<Writer> writer);
     

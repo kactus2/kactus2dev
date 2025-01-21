@@ -101,12 +101,12 @@ public:
     /*!
     *  Checks whether the generator may run for the given component or design. 
     *
-    *      @param [in] component	        The component for which to check support. If design is not null, component
+    *    @param [in] component	        The component for which to check support. If design is not null, component
     *                                      will refer to design or designConfiguration.
-    *      @param [in] design	            The design, if the generator is ran for a design.
-    *      @param [in] designConfiguration The design configuration for design, if it is not null.
+    *    @param [in] design	            The design, if the generator is ran for a design.
+    *    @param [in] designConfiguration The design configuration for design, if it is not null.
     *
-    *      @return True, if the generator may run the given component. Otherwise false.
+    *    @return True, if the generator may run the given component. Otherwise false.
     */
     virtual bool checkGeneratorSupport(QSharedPointer<Component const> component,
         QSharedPointer<Design const> design,
@@ -116,11 +116,11 @@ public:
      *  Runs the generation, creating new files and/or modifying the IP-XACT metadata. The function has
 	 *  also access to the parent window widget, so that it can show dialogs for the user to aid the generation.
      *
-     *      @param [in] utility			    The plugin utility interface.
-     *      @param [in] component	        The component for which to check support. If design is not null, component
+     *    @param [in] utility			    The plugin utility interface.
+     *    @param [in] component	        The component for which to check support. If design is not null, component
      *                                      will refer to design or designConfiguration.
-     *      @param [in] design	            The design, if the generator is ran for a design.
-     *      @param [in] designConfiguration The design configuration for design, if it is not null.
+     *    @param [in] design	            The design, if the generator is ran for a design.
+     *    @param [in] designConfiguration The design configuration for design, if it is not null.
      */
     virtual void runGenerator(IPluginUtility* utility, 
         QSharedPointer<Component> component,
@@ -135,40 +135,40 @@ private:
     /*!
      *  Writes the PADS part file.
      *
-     *      @param [in] file            The file to write to.
-     *      @param [in] partDescription The part description to write.
+     *    @param [in] file            The file to write to.
+     *    @param [in] partDescription The part description to write.
      *
-     *      @return True, if part file was successfully written, otherwise false.
+     *    @return True, if part file was successfully written, otherwise false.
      */
     bool generatePartFile(QFile* file, QString const& partDescription);
 
     /*!
      *  Writes the PADS CAE decal file.
      *
-     *      @param [in] file            The file to write to.
-     *      @param [in] partTitle       The part title displayed on all gates.
-     *      @param [in] partDescription The PADS part description.
+     *    @param [in] file            The file to write to.
+     *    @param [in] partTitle       The part title displayed on all gates.
+     *    @param [in] partDescription The PADS part description.
      *
-     *      @return True, if CAE file was successfully written, otherwise false.
+     *    @return True, if CAE file was successfully written, otherwise false.
      */
     bool generateCAEFile(QFile* file, QString const& partTitle, QString const& partDescription);
 
     /*!
      *  Generates the CAE decal terminals and prints them into an output stream.
      *
-     *      @param [in] output      The output stream for generation.
-     *      @param [in] drawSymbol  The rectangle used as a drawing symbol for decal.
-     *      @param [in] pinCount    The number of terminals in the decal.
+     *    @param [in] output      The output stream for generation.
+     *    @param [in] drawSymbol  The rectangle used as a drawing symbol for decal.
+     *    @param [in] pinCount    The number of terminals in the decal.
      */
     void insertCAETerminals( QTextStream& output, QRect const& drawSymbol, int pinCount );  
 
     /*!
      *  Generates the CAE decal and prints it into an output stream.
      *
-     *      @param [in] output          The output stream for generation.
-     *      @param [in] drawSymbol      The rectangle used as a drawing symbol for decal.
-     *      @param [in] gateTitle       The title of the gate.
-     *      @param [in] gateName        The name of the gate used as a decal name.      
+     *    @param [in] output          The output stream for generation.
+     *    @param [in] drawSymbol      The rectangle used as a drawing symbol for decal.
+     *    @param [in] gateTitle       The title of the gate.
+     *    @param [in] gateName        The name of the gate used as a decal name.      
      */
     void insertCAEDecal(QTextStream& output, QRect const& drawSymbol,
         QString const& gateTitle, QString const& gateName); 
@@ -177,10 +177,10 @@ private:
     /*!
      *  Generates the CAE header lines and prints them into an output stream.
      *
-     *      @param [in] output      The output stream for generation.
-     *      @param [in] timestamp   Header line with timestamp to insert.
-     *      @param [in] gateName    The name of the gate used as a decal name.
-     *      @param [in] pinCount    The number of terminals in the decal.
+     *    @param [in] output      The output stream for generation.
+     *    @param [in] timestamp   Header line with timestamp to insert.
+     *    @param [in] gateName    The name of the gate used as a decal name.
+     *    @param [in] pinCount    The number of terminals in the decal.
      */
     void insertCAEHeader( QTextStream& output, QString const& timestamp, QString const& gateName, int pinCount );
    
@@ -190,12 +190,12 @@ private:
     /*!
      *  Adds a file to a file set with defined file types.
      *
-     *      @param [in] fileSet         The file set.
-     *      @param [in] filePath        The path to file which is added.
-     *      @param [in] basePath        The base path of the component xlm file.
-     *      @param [in] fileTypes       The filetypes of the added file.
+     *    @param [in] fileSet         The file set.
+     *    @param [in] filePath        The path to file which is added.
+     *    @param [in] basePath        The base path of the component xlm file.
+     *    @param [in] fileTypes       The filetypes of the added file.
      *
-     *      @return True, if the file was successfully added to file set, otherwise false.
+     *    @return True, if the file was successfully added to file set, otherwise false.
      */
     bool addFileToFileset(QSharedPointer<FileSet> fileSet, QString const& filePath, QString const& basePath,
         const QStringList& fileTypes);

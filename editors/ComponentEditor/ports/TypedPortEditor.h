@@ -44,13 +44,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance that manages the library.
-	 *      @param [in] editorFactory           The factory for creating editor content.
-     *      @param [in] portType                Type of the edited ports: wire/transactional/structured.
-     *      @param [in] portsInterface          Interface for accessing ports.
-     *      @param [in] busInterface            Interface for accessing bus interfaces.
-	 *      @param [in] parent                  The owner of this widget.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] handler                 The instance that manages the library.
+	 *    @param [in] editorFactory           The factory for creating editor content.
+     *    @param [in] portType                Type of the edited ports: wire/transactional/structured.
+     *    @param [in] portsInterface          Interface for accessing ports.
+     *    @param [in] busInterface            Interface for accessing bus interfaces.
+	 *    @param [in] parent                  The owner of this widget.
 	 */
 	TypedPortEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
@@ -68,7 +68,7 @@ public:
 	/*!
      *  Check for the validity of the edited ports.
      *
-     *      @return True if all ports are in valid state.
+     *    @return True if all ports are in valid state.
      */
 	bool isValid() const;
 
@@ -80,7 +80,7 @@ public:
 	/*!
      *  Enable/disable the import/export csv functionality for the view.
 	 *
-	 *      @param [in] allow If true then import/export is enabled.
+	 *    @param [in] allow If true then import/export is enabled.
 	 */
 	void setAllowImportExport(bool allow);
 
@@ -103,21 +103,21 @@ private slots:
     /*!
      *  Handler for new interface creation for new bus definition.
      *
-     *      @param [in] selectedPorts   Ports to be mapped in the interface.
+     *    @param [in] selectedPorts   Ports to be mapped in the interface.
      */
     void onCreateNewInteface(QStringList const& selectedPorts);
 
     /*!
      *  Handler for new interface creation for existing bus definition.
      *
-     *      @param [in] selectedPorts   Ports to be mapped in the interface.
+     *    @param [in] selectedPorts   Ports to be mapped in the interface.
      */
     void onCreateInterface(QStringList const& selectedPorts);
 
     /*!
      *  Change the vendor extensions of the vendor extensions editor.
      *
-     *      @param [in] itemIndex   Index of the selected port.
+     *    @param [in] itemIndex   Index of the selected port.
      */
     void changeExtensionsEditorItem(QModelIndex const& itemIndex);
 
@@ -127,8 +127,8 @@ private:
     /*!
      *  Open the bus interface wizard.
      *
-     *      @param [in] busIf   The new bus interface.
-     *      @param [in] wizard  The selected interface wizard.
+     *    @param [in] busIf   The new bus interface.
+     *    @param [in] wizard  The selected interface wizard.
      */
     void openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard& wizard);
 

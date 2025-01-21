@@ -31,9 +31,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] field               The field to visualize.
-     *      @param [in] expressionParser    Parser for expressions in fields.
-	 *      @param [in] parent              The parent graph item.
+	 *    @param [in] field               The field to visualize.
+     *    @param [in] expressionParser    Parser for expressions in fields.
+	 *    @param [in] parent              The parent graph item.
 	 */
 	FieldGraphItem(QSharedPointer<Field> field, QSharedPointer<ExpressionParser> expressionParser,
         QGraphicsItem* parent);
@@ -51,42 +51,42 @@ public:
 	/*!
      *  Get the offset of the item. 
 	 *
-	 *      @return int The offset of the item from the parent item's base address.
+	 *    @return int The offset of the item from the parent item's base address.
 	 */
 	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last bit contained in the field.
 	 *
-	 *      @return The last bit.
+	 *    @return The last bit.
 	 */
 	virtual quint64 getLastAddress() const override final;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
-	 *      @return The bit width of the item.
+	 *    @return The bit width of the item.
 	 */
 	virtual int getBitWidth() const override final;
 
 	/*!
      *  Get number of bits the addressable unit contains.
 	 *
-	 *      @return The size of least addressable unit.
+	 *    @return The size of least addressable unit.
 	 */
 	virtual unsigned int getAddressUnitSize() const override final;
  
 	/*!
      *  Set the width for the item.
 	 *
-	 *      @param [in] width The new width of the item.
+	 *    @param [in] width The new width of the item.
 	 */
     virtual void setWidth(qreal width) override final;
 
 	/*!
      *  Sets the first non-overlapping address to display.
 	 *
-	 *      @param [in] The first address to set.
+	 *    @param [in] The first address to set.
 	 */
     virtual void setDisplayOffset(quint64 const& address) override final;
 
@@ -94,14 +94,14 @@ public:
     /*!
      *  Sets the last non-overlapping address to display.
      *
-     *      @param [in] The last address to set.
+     *    @param [in] The last address to set.
      */
     virtual void setDisplayLastAddress(quint64 const& address) override final;
     
     /*!
      *  Checks if the item is to be used in the visualization.
      *
-     *      @return True, if the item should be used, otherwise false.
+     *    @return True, if the item should be used, otherwise false.
      */
     virtual bool isPresent() const override final;
 

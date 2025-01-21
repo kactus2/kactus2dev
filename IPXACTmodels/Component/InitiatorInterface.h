@@ -41,39 +41,39 @@ public:
     
 	/*! Set the address space reference.
 	 *
-	 *      @param [in] addressSpaceRef     The name of the address space to reference.
+	 *    @param [in] addressSpaceRef     The name of the address space to reference.
 	 */
 	void setAddressSpaceRef(QString const& addressSpaceRef);
 
 	/*! Get the address space reference.
 	 *
-	 *      @return QString containing the address space name
+	 *    @return QString containing the address space name
 	 */
 	QString getAddressSpaceRef() const;
     
     /*!
      *  Set the presence value.
      *
-     *      @param [in] newIsPresent    The new isPresent value.
+     *    @param [in] newIsPresent    The new isPresent value.
      */
     void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Get the presence.
      *
-     *      @return The isPresent value.
+     *    @return The isPresent value.
      */
     QString getIsPresent() const;
 
 	/*! Set the base address.
 	 *
-	 *      @param [in]  baseAddress    The base address to set.
+	 *    @param [in]  baseAddress    The base address to set.
 	 */
 	void setBaseAddress(QString const& baseAddress);
 
 	/*! Get the base address.
 	 *
-	 *      @return The base address for the initiator interface.
+	 *    @return The base address for the initiator interface.
 	 */
 	QString getBaseAddress() const;
 

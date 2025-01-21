@@ -24,7 +24,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent          The parent widget.
+     *    @param [in] parent          The parent widget.
      */
     ImportWizardIntroPage(QWidget* parent);
 

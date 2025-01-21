@@ -33,9 +33,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] diagram     Diagram containing the scene of the column.
-     *      @param [in] column      The column to delete.
-     *      @param [in] parent      The owner of this command.
+     *    @param [in] diagram     Diagram containing the scene of the column.
+     *    @param [in] column      The column to delete.
+     *    @param [in] parent      The owner of this command.
      */
     SystemColumnDeleteCommand(DesignDiagram* diagram, SystemColumn* column, QUndoCommand* parent = 0);
 
@@ -62,14 +62,14 @@ private:
     /*!
      *  Add delete command for the connection.
      *
-     *      @param [in] connection  The selected connection.
+     *    @param [in] connection  The selected connection.
      */
     void addConnectionDeleteCommand(GraphicsConnection* connection);
 
     /*!
      *  Get the removed column.
      *
-     *      @return The removed column.
+     *    @return The removed column.
      */
     QSharedPointer<ColumnDesc> getDeletedColumn();
 

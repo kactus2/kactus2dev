@@ -31,9 +31,9 @@ namespace FileBuilderWriter
     /*!
      *  Write the default file builder.
      *
-     *      @param [in] writer          The used xml writer.
-     *      @param [in] nameGroup       The selected file builder.
-     *      @param [in] docRevision     The applied IP-XACT standard revision.
+     *    @param [in] writer          The used xml writer.
+     *    @param [in] nameGroup       The selected file builder.
+     *    @param [in] docRevision     The applied IP-XACT standard revision.
      */
     void writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
         Document::Revision docRevision);
@@ -44,8 +44,8 @@ namespace FileBuilderWriter
         /*!
          *  Write the build model of the file builder.
          *
-         *      @param [in] writer          Used XML writer.
-         *      @param [in] fileBuilder     The selected file builder.
+         *    @param [in] writer          Used XML writer.
+         *    @param [in] fileBuilder     The selected file builder.
          */
         void writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder);
     }

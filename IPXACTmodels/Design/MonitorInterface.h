@@ -27,8 +27,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] componentRef    The name of the referenced component instance.
-     *      @param [in] busRef          The name of the referenced bus interface.
+     *    @param [in] componentRef    The name of the referenced component instance.
+     *    @param [in] busRef          The name of the referenced bus interface.
      */
     MonitorInterface(QString componentRef = QString(), QString busRef = QString());
 
@@ -65,38 +65,38 @@ public:
     /*!
      *  Checks if the interface referenced a given instance and a bus interface.
      *
-     *      @param [in] instanceName        The name of the component instance to compare to.
-     *      @param [in] busInterfaceName    The name of the bus interface to compare to.
+     *    @param [in] instanceName        The name of the component instance to compare to.
+     *    @param [in] busInterfaceName    The name of the bus interface to compare to.
      *
-     *      @return True, if the given instance and bus interface are reference by the interface.
+     *    @return True, if the given instance and bus interface are reference by the interface.
      */
     bool references(QString const& instanceName, QString const& busInterfaceName) const;
 
     /*!
      *  Get the component reference.
      *
-     *      @return The name of the referenced component
+     *    @return The name of the referenced component
      */
     QString getComponentReference() const;
 
     /*!
      *  Set the component reference.
      *
-     *      @param [in] newComponentReference   The new component reference.
+     *    @param [in] newComponentReference   The new component reference.
      */
     void setComponentReference(QString const& newComponentReference);
 
     /*!
      *  Get the path.
      *
-     *      @return The path.
+     *    @return The path.
      */
     QString getPath() const;
 
     /*!
      *  Set the path.
      *
-     *      @param [in] newPath     The new path.
+     *    @param [in] newPath     The new path.
      */
     void setPath(QString const& newPath);
 

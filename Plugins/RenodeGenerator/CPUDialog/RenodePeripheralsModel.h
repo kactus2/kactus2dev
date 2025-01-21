@@ -30,7 +30,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this model.
+	 *    @param [in] parent  Pointer to the owner of this model.
 	 */
 	RenodePeripheralsModel(QObject *parent);
 	
@@ -42,73 +42,73 @@ public:
     /*!
      *  Setup the selected peripherals.
      *
-     *      @param [in] newPeripherals  The selected peripherals.
+     *    @param [in] newPeripherals  The selected peripherals.
      */
     void setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > newPeripherals);
 
 	/*!
 	 *  Setup the available peripheral templates.
 	 *	
-	 *      @param [in] newTemplates    List of the available peripheral templates.
+	 *    @param [in] newTemplates    List of the available peripheral templates.
 	 */
 	void setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates);
 
 	/*!
      *  Get the number of rows an item contains.
 	 *
-	 *      @param [in] parent  Identifies the parent that's row count is requested.
+	 *    @param [in] parent  Identifies the parent that's row count is requested.
 	 *
-	 *      @return Number of rows the item has.
+	 *    @return Number of rows the item has.
 	 */
 	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*!
      *  Get the number of columns the item has to be displayed.
 	 *
-	 *      @param [in] parent  Identifies the parent that's column count is requested.
+	 *    @param [in] parent  Identifies the parent that's column count is requested.
 	 *
-	 *      @return The number of columns to be displayed.
+	 *    @return The number of columns to be displayed.
 	 */
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*!
      *  Get the item flags that defines the possible operations for the item.
 	 *
-	 *      @param [in] index   Model index that identifies the item.
+	 *    @param [in] index   Model index that identifies the item.
 	 *
-	 *      @return Qt::ItemFlags specify the possible operations for the item.
+	 *    @return Qt::ItemFlags specify the possible operations for the item.
 	 */
 	Qt::ItemFlags flags(QModelIndex const& index) const;
 
 	/*!
      *  Get the header data for specified header.
 	 *
-	 *      @param [in] section         The section specifies the row/column number for the header.
-	 *      @param [in] orientation     Specified if horizontal or vertical header is wanted.
-	 *      @param [in] role            Specifies the type of the requested data.
+	 *    @param [in] section         The section specifies the row/column number for the header.
+	 *    @param [in] orientation     Specified if horizontal or vertical header is wanted.
+	 *    @param [in] role            Specifies the type of the requested data.
 	 *
-	 *      @return QVariant Contains the requested data.
+	 *    @return QVariant Contains the requested data.
 	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	/*!
      *  Get the data for specified item.
 	 *
-	 *      @param [in] index   Specifies the item that's data is requested.
-	 *      @param [in] role    The role that defines what kind of data is requested.
+	 *    @param [in] index   Specifies the item that's data is requested.
+	 *    @param [in] role    The role that defines what kind of data is requested.
 	 *
-	 *      @return QVariant Contains the data for the item.
+	 *    @return QVariant Contains the data for the item.
 	 */
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
 	/*!
      *  Save the data to the model for specified item.
 	 *
-	 *      @param [in] index   The model index of the item that's data is to be saved.
-	 *      @param [in] value   The data that is to be saved.
-	 *      @param [in] role    The role specifies what kind of data should be saved.
+	 *    @param [in] index   The model index of the item that's data is to be saved.
+	 *    @param [in] value   The data that is to be saved.
+	 *    @param [in] role    The role specifies what kind of data should be saved.
 	 *
-	 *      @return True if saving happened successfully.
+	 *    @return True if saving happened successfully.
 	 */
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
     
@@ -121,36 +121,36 @@ private:
     /*!
      *  Gets the value for the given index.
      *
-     *      @param [in] index   The index of the target data.
+     *    @param [in] index   The index of the target data.
      *
-     *      @return The data in the given index.
+     *    @return The data in the given index.
      */
     QVariant valueForIndex(QModelIndex const& index) const;
 
     /*!
      *  Gets the tooltip value for the given index.
      *
-     *      @param [in] index   The index of the target data.
+     *    @param [in] index   The index of the target data.
      *
-     *      @return The tooltip data in the given index.
+     *    @return The tooltip data in the given index.
      */
     QVariant tooltipForIndex(QModelIndex const& index) const;
 
     /*!
      *  Get the background color for the selected index.
      *
-     *      @param [in] index   The selected index.
+     *    @param [in] index   The selected index.
      *
-     *      @return Background color of the selected index.
+     *    @return Background color of the selected index.
      */
     QVariant backgroundColourForIndex(QModelIndex const& index) const;
 
     /*!
      *  Check if the class of the indexed peripheral is python peripheral.
      *
-     *      @param [in] index   The selected index.
+     *    @param [in] index   The selected index.
      *
-     *      @return True, if the indexed peripheral class is python peripheral, false otherwise.
+     *    @return True, if the indexed peripheral class is python peripheral, false otherwise.
      */
     bool classIsPythonPeripherals(QModelIndex const& index) const;
 

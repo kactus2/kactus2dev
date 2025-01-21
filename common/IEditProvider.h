@@ -32,7 +32,7 @@ public:
     /*!
      *  Stores a new command to the edit stack.
      *
-     *      @param [in] command   The command to add.
+     *    @param [in] command   The command to add.
      */
     virtual void addCommand(QSharedPointer<QUndoCommand> command) = 0;
 

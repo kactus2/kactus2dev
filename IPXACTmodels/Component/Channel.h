@@ -62,20 +62,20 @@ public:
     /*!
      *  Gets the presence.
      *
-     *      @return The presence value.
+     *    @return The presence value.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new presence value.
+     *    @param [in] newIsPresent    The new presence value.
      */
     void setIsPresent(QString const& newIsPresent);
 
 	/*! Get the references to bus interfaces that belong to this channel.
 	 *
-	 *      @return The interface name references.
+	 *    @return The interface name references.
 	 */
 	QStringList getInterfaceNames() const;
 
@@ -83,7 +83,7 @@ public:
 
 	/*! Set the interfaces that belong to this channel.
 	 *
-	 *      @param [in] interfaceNames The name references to interfaces.
+	 *    @param [in] interfaceNames The name references to interfaces.
 	*/
 	void setInterfaces(QStringList const& interfaceNames);
 

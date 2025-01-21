@@ -31,9 +31,9 @@ public:
 	/*!
 	 *  The constructor.
      *
-     *      @param [in] messages            For message output.
-	 *      @param [in] component           The instantiated component.
-     *      @param [in] activeView          The active view for the component.
+     *    @param [in] messages            For message output.
+	 *    @param [in] component           The instantiated component.
+     *    @param [in] activeView          The active view for the component.
 	 */
     MetaComponent(MessageMediator* messages, QSharedPointer<Component> component, QSharedPointer<View> activeView);
 
@@ -102,7 +102,7 @@ public:
     /*!
     *  Sorts list of parameters based on their interdependencies.
     *
-    *      @param [out] parameters         The list containing the parameters that will be sorted.
+    *    @param [out] parameters         The list containing the parameters that will be sorted.
     */
     static void sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters);
 

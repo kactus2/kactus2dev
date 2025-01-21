@@ -40,10 +40,10 @@ public:
     /*!
      *  Validates the given TimingConstraint.
      *
-	 *      @param [in] TimingConstraint    The TimingConstraint to validate.
-	 *      @param [in] ports               Collection ports where the constraint belongs to.
+	 *    @param [in] TimingConstraint    The TimingConstraint to validate.
+	 *    @param [in] ports               Collection ports where the constraint belongs to.
      *
-     *      @return True, if the TimingConstraint is valid IP-XACT, otherwise false.
+     *    @return True, if the TimingConstraint is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<TimingConstraint> timingConstraint,
 		QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
@@ -51,10 +51,10 @@ public:
     /*!
      *  Finds possible errors in a TimingConstraint and creates a list of them.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] TimingConstraint    The TimingConstraint whose errors to find.
-	 *      @param [in] context             Context to help locate the errors.
-	 *      @param [in] ports               Collection ports where the constraint belongs to.
+     *    @param [in] errors              List of found errors.
+     *    @param [in] TimingConstraint    The TimingConstraint whose errors to find.
+	 *    @param [in] context             Context to help locate the errors.
+	 *    @param [in] ports               Collection ports where the constraint belongs to.
      */
     void findErrorsIn(QVector<QString>& errors,
         QSharedPointer<TimingConstraint> timingConstraint,
@@ -65,18 +65,18 @@ private:
 	/*!
 	 *  Returns true, if value of parameter timingConstraint is valid.
 	 *
-	 *      @param [in] timingConstraint	The inspected timing constraint.
+	 *    @param [in] timingConstraint	The inspected timing constraint.
 	 *
-	 *      @return See above.
+	 *    @return See above.
 	 */
 	bool hasValidValue(QSharedPointer<TimingConstraint> timingConstraint) const;
 
 	/*!
 	 *  Returns true, if edge of parameter timingConstraint is valid.
 	 *
-	 *      @param [in] timingConstraint	The inspected timing constraint.
+	 *    @param [in] timingConstraint	The inspected timing constraint.
 	 *
-	 *      @return See above.
+	 *    @return See above.
 	 */
 	bool hasValidEdge(QSharedPointer<TimingConstraint> timingConstraint) const;
 

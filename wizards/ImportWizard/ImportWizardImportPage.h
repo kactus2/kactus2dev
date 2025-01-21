@@ -35,12 +35,12 @@ public:
     /*!
      *  The Constructor.
      *
-     *      @param [in] component               Pointer to the component to import to.
-     *      @param [in] handler                 The library handle.
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] busInterface            Interface for accessing bus interfaces.
-     *      @param [in] parent                  The parent wizard.
+     *    @param [in] component               Pointer to the component to import to.
+     *    @param [in] handler                 The library handle.
+     *    @param [in] parameterFinder         The parameter finder.
+     *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] busInterface            Interface for accessing bus interfaces.
+     *    @param [in] parent                  The parent wizard.
      */
     ImportWizardImportPage(QSharedPointer<Component> component,
         LibraryInterface* handler,

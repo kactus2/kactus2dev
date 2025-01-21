@@ -44,14 +44,14 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] handler             Pointer to the instance that manages the library.
-	 *      @param [in] component           Pointer to the component being edited.
-	 *      @param [in] fileName            Name of the file that is edited.
-     *      @param [in] parameterFinder     The used parameter finder.
-     *      @param [in] expressionParser    Parser for calculating expressions.
-     *      @param [in] fileInterface       Interface for files.
-     *      @param [in] files               The available files.
-	 *      @param [in] parent              Pointer to the owner of this widget.
+	 *    @param [in] handler             Pointer to the instance that manages the library.
+	 *    @param [in] component           Pointer to the component being edited.
+	 *    @param [in] fileName            Name of the file that is edited.
+     *    @param [in] parameterFinder     The used parameter finder.
+     *    @param [in] expressionParser    Parser for calculating expressions.
+     *    @param [in] fileInterface       Interface for files.
+     *    @param [in] files               The available files.
+	 *    @param [in] parent              Pointer to the owner of this widget.
 	 */
     FileEditor(LibraryInterface* handler,
         QSharedPointer<Component> component,
@@ -77,8 +77,8 @@ public slots:
     /*!
      *  Handle the name change of the containing file.
      *
-     *      @param [in] oldName     Old name of the file.
-     *      @param [in] newName     The new name of the file.
+     *    @param [in] oldName     Old name of the file.
+     *    @param [in] newName     The new name of the file.
      */
     void fileRenamed(std::string const& oldName, std::string const& newName);
 
@@ -98,7 +98,7 @@ protected:
     /*!
      *  Shows the editor and emits a request for the help file.
      *
-     *      @param [in] event   The show event.
+     *    @param [in] event   The show event.
      */
     virtual void showEvent(QShowEvent* event);
 
