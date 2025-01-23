@@ -19,9 +19,10 @@
 //-----------------------------------------------------------------------------
 // Function: BridgesModel::BridgesModel()
 //-----------------------------------------------------------------------------
-BridgesModel::BridgesModel(TransparentBridgeInterface* bridgeInterface, QObject *parent):
+BridgesModel::BridgesModel(TransparentBridgeInterface* bridgeInterface, Document::Revision docRevision, QObject *parent):
 QAbstractTableModel(parent),
-bridgeInterface_(bridgeInterface)
+bridgeInterface_(bridgeInterface),
+documentRevision_(docRevision)
 {
 
 }
@@ -84,7 +85,14 @@ QVariant BridgesModel::headerData(int section, Qt::Orientation orientation, int 
 
     if (section == BridgeColumns::INITIATOR_COLUMN)
     {
-        return tr("Initiator bus interface");
+        if (documentRevision_ == Document::Revision::Std14)
+        {
+            return tr("Master bus interface");
+        }
+        else
+        {
+            return tr("Initiator bus interface");
+        }
     }
     else
     {

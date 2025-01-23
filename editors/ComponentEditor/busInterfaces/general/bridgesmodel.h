@@ -13,6 +13,7 @@
 #define BRIDGESMODEL_H
 
 #include <IPXACTmodels/Component/TransparentBridge.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -32,9 +33,10 @@ public:
      *  The constructor
 	 *
 	 *    @param [in] bridgeInterface     Interface for accessing transparent bridges.
+     *    @param [in] docRevision         The IP-XACT version to comply to.
 	 *    @param [in] parent              The parent of this model.
      */
-    BridgesModel(TransparentBridgeInterface* bridgeInterface, QObject *parent);
+    BridgesModel(TransparentBridgeInterface* bridgeInterface, Document::Revision docRevision, QObject *parent);
 
 	/*!
      *  The destructor.
@@ -132,6 +134,9 @@ private:
 
 	//! Interface for accessing transparent bridges.
     TransparentBridgeInterface* bridgeInterface_;
+
+    //! The IP-XACT version to comply to.
+    Document::Revision documentRevision_;
 };
 
 #endif // BRIDGESMODEL_H
