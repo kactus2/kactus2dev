@@ -1,0 +1,24 @@
+﻿  Rcc'ing MemoryViewGenerator.qrc...
+  Moc'ing MemoryViewGeneratorPlugin.h...
+  ConnectivityComponent.cpp
+  ConnectivityConnection.cpp
+  ConnectivityGraph.cpp
+  ConnectivityGraphFactory.cpp
+  ConnectivityInterface.cpp
+  MasterSlavePathSearch.cpp
+  MemoryItem.cpp
+  ComponentSearch.cpp
+  MetaComponent.cpp
+  MetaDesign.cpp
+  MetaInstance.cpp
+  GenerationControl.cpp
+C:\Users\suokuism\programming\kactus2dev\Plugins\common\HDLParser\MetaInstance.cpp(1,1): warning C4828: The file contains a character starting at offset 0x2392 that is illegal in the current source character set (codepage 65001).
+  OutputControl.cpp
+  ViewSelection.cpp
+  MemoryViewGenerator.cpp
+  MemoryViewGeneratorPlugin.cpp
+C:\Users\suokuism\programming\kactus2dev\Plugins\common\HDLParser\MetaDesign.cpp(704,1): warning C4828: The file contains a character starting at offset 0x7086 that is illegal in the current source character set (codepage 65001).
+  qrc_MemoryViewGenerator.cpp
+  moc_MemoryViewGeneratorPlugin.cpp
+     Creating library C:\Users\suokuism\programming\kactus2dev\executable\Plugins\MemoryViewGenerator.lib and object C:\Users\suokuism\programming\kactus2dev\executable\Plugins\MemoryViewGenerator.exp
+  MemoryViewGenerator.vcxproj -> C:\Users\suokuism\programming\kactus2dev\executable\Plugins\MemoryViewGenerator.dll

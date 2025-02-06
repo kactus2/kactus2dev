@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Address block editor</title>
+</head>
+<body>
+    <h2>Address block editor</h2>
+    <p>
+        Address block editor is used to edit the details of an address block and the registers
+        contained within it.
+    </p>
+    <p>
+        <b>Name</b> is a mandatory identifier for the <i>address block</i>. The name must
+        be unique within all the <i>address blocks</i> of the containing <i>memory map</i>.
+    </p>
+    <p>
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+        <b>Short description</b> is an optional field for compact description of the <i>address block</i>.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>address block</i>.
+    </p>
+    <p>
+        <b>Base address</b> is mandatory and specifies the starting address for the <i>address
+            block</i> in address unit bits.
+    </p>
+    <p>
+        <b>Range</b> is mandatory and specifies the size of the block in <i>address units bits</i>.
+    </p>
+    <p>
+        <b>Width</b> is mandatory and defines the data width of a row in the <i>address block</i>.
+        The width value is given in bits.
+    </p>
+
+    <p>
+        <b>Usage</b> is a mandatory value to specify the usage of the address block and
+        may have one of the following values:
+    </p>
+    <ul>
+        <li>
+            <b>Memory</b> The <i>address block</i> is ROM, RAM or write-only memory as defined
+            by <b>access policies</b>. Registers and register files within will be considered virtual.
+        </li>
+        <li>
+            <b>Register</b> The <i>address block</i> range may contain registers.
+        </li>
+        <li>
+            <b>Reserved</b> The <i>address block</i> is reserved for other usage and shall not
+            contain registers or register files.
+        </li>
+    </ul>
+    
+    <p>
+        <b>Volatile</b> is optional and indicates whether the stored value may change without
+        the master's write operation or not.
+    </p>
+    
+    <p>
+        <b>Access policies</b> are optional and specify the accessability of the address block data for different operating modes,
+        specified by mode references. If no mode reference is present, then the access policy applies to all modes not already 
+        referenced by other access policies (i.e. only one access policy without mode references may exist).
+        
+        The possible access values for an access policy are:
+    </p>
+    <ul>
+        <li>
+            <b>read-write</b>. Both read and write transactions may have an effect on this <i>
+            address block</i>.
+        </li>
+        <li>
+            <b>read-only</b>. Only read transactions are allowed in this <i>address block</i>.
+        </li>
+        <li>
+            <b>write-only</b>. Only write transactions are allowed in this <i>address block</i>.
+        </li>
+        <li>
+            <b>read-writeOnce</b>. Read actions and the first write action may have an effect
+            on this <i>address block</i>.
+        </li>
+        <li>
+            <b>writeOnce</b>. Only the first write action affects the contents of this <i>address
+            block</i>.
+        </li>
+    </ul>
+
+    <h3>Registers table</h3>
+    <p>
+        The register table enables the user to define <i>registers</i> for the <i>address block</i>,
+        with each row representing a single register. Each register must also contain at
+        least one bit <i>field</i>.
+    </p>
+
+    <p>
+        <b>Name</b> is a mandatory identifier for the <i>register</i>.</p>
+    <p>
+        <b>Offset</b> is mandatory and specifies the location of the <i>register</i> from
+        the start of the containing <i>address block</i> expressed as number of addressing
+        units. The actual address of the <i>register</i> is the sum of <i>address block</i>'s
+        base address and the <i>register</i> offset. E.g. if the base address is 'h100 and
+        the register offset is 'h4, the register's address is 'h104. Offset can be given
+        as a SystemVerilog expression.
+    </p>
+    <p>
+        <b>Size</b> is mandatory and defines the number of data bits the <i>register</i>
+        contains. Size must be less than or equal to the width of the containing <i>address block</i>.
+    </p>
+    <p>
+        <b>Dimension</b> is optional and assigns an array dimension to the <i>register</i>.
+        The <i>register</i> will be repeated in the <i>address block</i> as many times as
+        indicated by the dimension value. If empty (default) or 1, the register will appear
+        exactly once.
+    </p>
+    <p>
+        <b>Volatile</b> is optional and indicates whether the <i>register</i> value may
+        change without a write operation to it, i.e. by an interrupt event, or not.
+    </p>
+    <p>
+        <b>Access</b> is optional and specifies the accessibility of the <i>register</i> by modifying
+        the first access policy of the register. If multiple <i>access policies</i> exist, then the access value 
+        cannot be edited here and must be edited for each access policy separately in the register editor. 
+        If no access policy exists, then one will be created for the register when the access is edited here.
+
+        The possible access values are:
+    </p>
+    <ul>
+        <li><b>read-write</b>. Both read and write transactions may have an effect on this <i>
+            register</i>.</li>
+        <li><b>read-only</b>. Only read transactions are allowed in this <i>register</i>.</li>
+        <li><b>write-only</b>. Only write transactions are allowed in this <i>register</i>.</li>
+        <li><b>read-writeOnce</b>. Both read and write transactions may have an effect on this
+            <i>register</i>. Only the first write transaction, after an event that caused the
+            reset value of the <i>register</i> to be loaded, may affet the contents of the <i>register</i>,
+            and read transactions return a value related to the values in the <i>register</i>.</li>
+        <li><b>writeOnce</b>. Only the first write transaction affects the contents of the <i>
+            register</i>.</li>
+    </ul>
+
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>register</i>.
+    </p>
+
+	<h3>Register files table</h3>
+    <p>
+        The register files table enables the user to define <i>register files</i> for the
+		<i>address block</i> where each row represents a single register file.
+		Register files are used to group together <i>registers</i>.
+    </p>
+
+    <p>
+        <b>Name</b> is a mandatory identifier for the <i>register file</i>.</p>
+    <p>
+        <b>Offset</b> is mandatory and specifies the location of the <i>register file</i> from
+        the start of the containing <i>address block</i> expressed as number of addressing
+        units. Offset can be given as a SystemVerilog expression.
+    </p>
+    <p>
+	   <b>Range</b> is mandatory and specifies the size of the <i>register file</i> in address
+	   unit bits.
+    </p>
+    <p>
+        <b>Dimension</b> is optional and assigns an array dimension to the <i>register file</i>.
+        The <i>register file</i> will be repeated in the <i>address block</i> as many times as
+        indicated by the dimension value. If empty (default) or 1, the register file will appear
+        exactly once.
+    </p>
+
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>register file</i>.
+    </p>
+</body>
+</html>

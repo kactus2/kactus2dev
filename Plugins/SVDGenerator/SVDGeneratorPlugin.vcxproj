@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{81A006F2-4FC4-4187-93E9-98C5EB8523C3}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)executable\Plugins\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)executable\Plugins\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>qt6.6.3</QtInstall>
+    <QtModules>core;gui;widgets;xml</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtInstall>6.2.4</QtInstall>
+    <QtModules>core;gui;widgets;xml</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;SVDGENERATORPLUGIN_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;..\..\;.;$(SolutionDir)KactusAPI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>IPXACTmodelsd.lib;KactusAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <QtMoc>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>.\GeneratedFiles\$(ConfigurationName)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtRcc>
+      <InitFuncName>%(Filename)</InitFuncName>
+      <Compression>default</Compression>
+      <NoCompression>true</NoCompression>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <QtRccDir>.\GeneratedFiles</QtRccDir>
+      <QtRccFileName>qrc_%(Filename).cpp</QtRccFileName>
+    </QtRcc>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_NO_DEBUG;NDEBUG;SVDGENERATORPLUGIN_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;..\..;.;$(SolutionDir)KactusAPI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>IPXACTmodels.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <QtMoc>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>.\GeneratedFiles\$(ConfigurationName)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtRcc>
+      <InitFuncName>%(Filename)</InitFuncName>
+      <Compression>default</Compression>
+      <NoCompression>true</NoCompression>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <QtRccDir>.\GeneratedFiles</QtRccDir>
+      <QtRccFileName>qrc_%(Filename).cpp</QtRccFileName>
+    </QtRcc>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraph.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp" />
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
+    <ClCompile Include="..\common\ConfigurationManager.cpp" />
+    <ClCompile Include="..\common\ConnectivityGraphUtilities.cpp" />
+    <ClCompile Include="..\common\CPUDialog\CPUEditor.cpp" />
+    <ClCompile Include="..\common\CPUDialog\CPUSelectionDialog.cpp" />
+    <ClCompile Include="..\common\CpuRoutesContainer.cpp" />
+    <ClCompile Include="..\common\HDLParser\MetaComponent.cpp" />
+    <ClCompile Include="..\common\HDLParser\MetaDesign.cpp" />
+    <ClCompile Include="..\common\HDLParser\MetaInstance.cpp" />
+    <ClCompile Include="..\common\PluginConfigurationManager.cpp" />
+    <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp" />
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp" />
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp" />
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp" />
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
+    <ClCompile Include="CPUDialog\SVDCPUDelegate.cpp" />
+    <ClCompile Include="CPUDialog\SVDCPUEditor.cpp" />
+    <ClCompile Include="CPUDialog\SVDCPUModel.cpp" />
+    <ClCompile Include="CPUDialog\SVDCpuRoutesContainer.cpp" />
+    <ClCompile Include="SVDConfigurationManager.cpp" />
+    <ClCompile Include="SVDGenerator.cpp" />
+    <ClCompile Include="SVDGeneratorPlugin.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="SVDGeneratorPlugin.h">
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="SVDGenerator.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="SVDGenerator.qrc">
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityConnection.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraph.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h" />
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
+    <ClInclude Include="..\common\ConfigurationManager.h" />
+    <ClInclude Include="..\common\ConnectivityGraphUtilities.h" />
+    <QtMoc Include="..\common\CPUDialog\CPUEditor.h" />
+    <QtMoc Include="..\common\CPUDialog\CPUSelectionDialog.h" />
+    <ClInclude Include="..\common\CpuRoutesContainer.h" />
+    <ClInclude Include="..\common\HDLParser\MetaComponent.h" />
+    <ClInclude Include="..\common\HDLParser\MetaDesign.h" />
+    <ClInclude Include="..\common\HDLParser\MetaInstance.h" />
+    <ClInclude Include="..\common\PluginConfigurationManager.h" />
+    <ClInclude Include="..\common\SingleCpuRoutesContainer.h" />
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h" />
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
+    </QtMoc>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h" />
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />
+    <QtMoc Include="CPUDialog\SVDCPUEditor.h">
+    </QtMoc>
+    <QtMoc Include="CPUDialog\SVDCPUModel.h">
+    </QtMoc>
+    <ClInclude Include="CPUDialog\SVDCPUColumns.h" />
+    <QtMoc Include="CPUDialog\SVDCPUDelegate.h">
+    </QtMoc>
+    <ClInclude Include="CPUDialog\SVDCpuRoutesContainer.h" />
+    <ClInclude Include="CPUDialog\SVDUtilities.h" />
+    <ClInclude Include="SVDConfigurationManager.h" />
+    <ClInclude Include="SVDGenerator.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

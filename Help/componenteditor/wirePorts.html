@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Wire ports editor</title>
+  </head>
+  <body>
+    <h2>Wire ports editor</h2>
+    <p>
+      Wire ports editor provides a table containing all the <i>wire ports</i> of a component. This editor is used
+      to add, remove and edit the wire ports.
+    </p>
+    <p>
+      <b>Port name</b> is a unique identifier and must match the name of the port in the implementation language.
+        For example, the ports listed in the VHDL entity declaration are listed here.
+    </p>
+    <p>
+      <b>Direction</b> has four options:
+    </p>
+    <ul>
+      <li><strong>in</strong> for input ports.</li>
+      <li><strong>out</strong> for output ports.</li>
+      <li><strong>inout</strong> for bidirectional and tri-state ports.</li>
+      <li><strong>phantom</strong> for ports that exist on the IP-XACT component but not on the implementation.
+        </li>
+    </ul>
+    <p>
+      <b>Left</b> and <b>right bounds</b> define the indices of a vectored port. The <b>width</b> of the port is
+        higher bound - lower bound + 1, e.g. 3 downto 0 requires 4 bits. For scalar ports
+        <i>left bound = right bound</i>. If either left bound or right bound is an expression, width cannot be set
+        manually.
+    </p>
+    <p>
+      The port <b>type</b> is optional together with a <b>type definition</b> that an optional language specific
+        reference to where the type is defined, e.g. package or header file. Typical values in VHDL are 'std_logic'
+        for scalar ports (i.e. 1 bit) and 'std_logic_vector' for vectored ports (multibit). In VHDL, 'std_logic'
+        types are defined in 'IEEE.std_logic_1164.all' ('all' means that the whole package is included). In
+        SystemC, the type definition is the include file name, e.g. 'systemc.h'. The type definition has no effect
+        if type is not set. The type can be applied to specific view(s) or all views.
+    </p>
+    <p>
+      <b>Default value</b> is optional and can be used to assign a value for an unconnected (input) port. This is
+        used, for example, when generating a structural top-level VHDL for the hierarchical component where some
+        input ports are not connected to any other port in the design.
+    </p>
+    <p>
+      <b>Array left</b> and <b>array right</b> are optional and define the indices of an array port. The values
+        can be given as an equation, but must resolve into a decimal number. If either left or right value is
+        given, the port is considered to be of an array type.
+    </p>
+    <p>
+        <b>Port tags</b> column displays the optional tags for a port. These can be used to group ports together 
+        to, for example, create bus interfaces.
+		<br><img src="../images/appicon.png" alt="Kactus-extension">
+    </p>
+    <p>
+      <b>Ad-hoc</b> column is a Kactus2-specific extension which is used in the graphical user interface of a
+        hierarchical design. Ad-hoc determines whether the port is shown as an ad-hoc port when the component is
+        instantiated in a design.
+	  <br><img src="../images/appicon.png" alt="Kactus-extension">
+      <br> EXAMPLE: The component instances are drawn as rectangles and their external interfaces are drawn to the
+        edges of the rectangle. There are different symbols for different directions. The example instance in
+        figure has 5 <i>bus interfaces</i>: clk, led, rst_n, from_hibi and pkt_codec. Each interface includes 1 or
+        multiple ports, and the interface definition has its own VLNV. Moreover, user can select that some ports
+        are shown as <i>Ad-hoc</i>, e.g. if they are not necessarily associated in any bus interface.  Example
+        figure displays 2 ad-hoc ports: rx_av_in and led_out.
+      <br> <img src="../images/adHocPorts.PNG" alt="Component instance with ad-Hoc ports">
+    </p>
+    <p>
+      <b>Description</b> is an optional free text for further details.
+    </p>
+    <p>
+      Wire ports editor provides a context menu (right mouse button) that contains following options:
+    </p>
+    <ul>
+      <li>Add new port (Add row)</li>
+      <li>Remove port (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>New Bus Interface creates a new bus interface in the component
+        using the currently selected ports</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>
+    <hr>
+    <p>
+      EXAMPLE. The figure shows the relation between VHDL source code and the port editor. The names, directions,
+        and bounds are obvious. Width is derived from the bounds, if given, but otherwise set to 1 to denote a
+        scalar port. The type of the ports is std_logic for clk and rst_n, and std_logic_vector for data_in and
+        data_out. For data_out, the type is defined only for view flat. In other ports no view is defined so the
+        same type is applied for all views (not shown in the figure below). The type definition is
+        IEEE.std_logic_1164.all for each port.
+	  <br>
+      <img src="../images/ports.png" alt="VHDL and screen_cap">
+    </p>
+  </body>
+</html>

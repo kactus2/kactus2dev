@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="../style.css" rel="Stylesheet" type="text/css" />
+    <title>Field editor</title>
+</head>
+<body>
+    <h2>Indirect interface editor</h2>
+
+    <p>
+      Indirect interface editor is used to edit the details of a single indirect interface. 
+      An <i>indirect interface</i> defines access to <i>memory maps</i> that are not directly 
+      accessible through a standard <i>bus interface</i>. The indirect <i>memory map</i>
+      is either a <i>memory map</i> within the containing <i>component</i> or accessed through
+      a master <i>bus interface</i> of this component using a <i>transparent bridge</i>.
+    </p>
+
+    <p>
+      <b>Name</b> is a mandatory identifier for the <i>indirect interface</i>. The name must be unique
+      within all the <i>indirect interface</i> of the containing <i>component</i>.
+    </p>
+    <p>
+      <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+      <b>Description</b> is an optional field for textual description of the <i>indirect interface</i>.
+    </p>
+        
+    <h3>General</h3>
+
+    <p>
+      <b>Indirect address field</b> is mandatory and defines the bit field used for
+      addressing in the <i>indirect interface</i>.
+    </p>
+    <p>
+        <b>Indirect data field</b> is mandatory and defines the bit field used for
+        data in read/write operations in the <i>indirect interface</i>.
+    </p>
+    <p>
+        <b>Bits in Lau</b> is optional and defines the number of bits addressable by
+        the least significant address bit.
+    </p>
+    <p>
+      <b>Endianness</b> is optional and indicates whether the interface is 'big-endian' or    
+      'little-endian' (default).
+    </p>
+
+    <h3>Indirect access target</h3>
+    <p>
+        <b>Memory map</b> defines the indirectly accessible <i>memory map</i> for     
+        the <i>indirect interface</i>. If a <i>memory map</i> has been defined,
+        <i>transparent bridges</i> must be left empty.
+    </p>
+    <p>
+        <b>Transparent bridge(s)</b> define the master <i>bus interface(s)</i> that
+        all transactions through this <i>indirect interface</i> are directed out of. 
+        If <i>transparent bridges</i> have been defined, <i>memory map</i> must be left empty.
+    </p>
+
+    <h3>Parameters</h3>
+    <p>
+      <b>Parameters</b> are optional and can specify any parameter data value(s) specific for this <i>indirect interface</i>.
+      For more information on parameters, see the component parameter editor.
+    </p>
+
+</body>
+</html>

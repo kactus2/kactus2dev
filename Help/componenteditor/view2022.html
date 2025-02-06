@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>View editor</title>
+  </head>
+  <body>
+    <h2>View editor</h2>
+    <p>
+        <i>View</i> specifies a representation level of a component, e.g. there might be different views for 
+        simulation and synthesis. This editor is used to edit the details of single view.
+    </p>
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>view</i>.
+    </p>
+    <p>
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+        <b>Short description</b> is an optional field for compact description of the <i>view</i>.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>view</i>.		
+    </p>
+	
+    <h3>Environment identifiers</h3>
+    <p>
+        Environment identifiers is optional textual information about how this view is deployed in 
+        different tool environments.
+    </p>
+    <p>
+		<b>Language</b> indicates this view may be compatible with a particular tool, but only if that 
+        language is supported in that tool, e.g., different versions of some simulators may support two or 
+        more languages.
+    </p>
+    <p>
+          <b>Tool</b> indicates that this view contains tool-information, e.g., HDL models that use 
+          simulator-specific extensions. This should contain tool name and company name, separated by dots
+          e.g. 'designcompiler.designcompany.com'. Alternatively, the tool can have a generic value
+          such as '*Simulation' or '*Synthesis'.
+    </p>
+    <p>
+          <b>VendorSpecific</b> can further qualify tool and language compatibility, e.g. if some 
+          appropriate simulator mode must be enabled. 
+    </p>
+	
+    <h3>Instantiations</h3>
+    <p>
+        <b>Component instantiation</b> is optional and specifies the <i>component instantiation</i>
+		containing all the implementation details for the component with this view. For convenience, 
+        details of the component instantiation are shown in the view editor if a <i>component instantiation</i> 
+		has been selected. 
+		For more information on the  component instantiation, see the component instantiation editor.
+    </p>
+    <p>
+        <b>Design configuration instantiation</b> is optional and specifies the referenced <i>design configuration 
+        instantiation</i>. For convenience, the referenced <i>design configuration</i> is shown in the view 
+		editor if a <i>design configuration instantiation</i> has been selected.
+		When this view is active, this <i>design configuration</i> should be used to
+		configure the component structure. 
+		For more information on the design configuration instantiation, see the design configuration 
+        instantiation editor.
+    </p>
+    <p>
+        <b>Design instantiation</b> is optional and specifies the referenced <i>design instantiation</i>. 		
+		For convenience, the referenced <i>design</i> is shown in the view 
+		editor if a <i>design instantiation</i> has been selected.
+		When this view is active, this <i>design</i> should be used to
+		describe the component structure. 
+		For more information on the design instantiation, see the design instantiation editor.
+    </p>
+    
+  </body>
+</html>

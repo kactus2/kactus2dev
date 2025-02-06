@@ -1,0 +1,11 @@
+﻿  Rcc'ing QuartusProjectGenerator.qrc...
+  Moc'ing QuartusProjectGenerator.h...
+  Moc'ing QuartusGenerator.h...
+  ComponentSearch.cpp
+  QuartusGenerator.cpp
+  QuartusProjectGenerator.cpp
+  qrc_QuartusProjectGenerator.cpp
+  moc_QuartusProjectGenerator.cpp
+  moc_QuartusGenerator.cpp
+     Creating library C:\Users\suokuism\programming\kactus2dev\executable\Plugins\QuartusProjectGenerator.lib and object C:\Users\suokuism\programming\kactus2dev\executable\Plugins\QuartusProjectGenerator.exp
+  QuartusProjectGenerator.vcxproj -> C:\Users\suokuism\programming\kactus2dev\executable\Plugins\QuartusProjectGenerator.dll

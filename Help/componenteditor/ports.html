@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Ports editor</title>
+  </head>
+  <body>
+    <h2>Ports editor</h2>
+    <p>
+      Ports editor provides a table containing all the ports of a component. This editor is used
+      to view, add, remove and edit the ports. The port details can be edited in the Wires and
+      Transactionals section.
+    </p>
+    <p>
+      <b>Port name</b> is a unique identifier and must match the name of the port in the implementation language.
+    </p>
+    <p>
+      <b>Type</b> shows the kind of the port. The type is set when the port is created and cannot be changed here.
+    </p>
+    <ul>
+      <li><strong>wire</strong> port carries binary value(s) and are used in RTL.</li>
+      <li><strong>transactional</strong> port is used for all other kind of ports, especially in TLM.</li>
+    </ul>
+    <p>
+        <b>Port tags</b> column displays the optional tags for a port. These can be used to group ports together 
+        to, for example, create bus interfaces.
+		<br><img src="../images/appicon.png" alt="Kactus-extension">
+    </p>
+    <p>
+      <b>Ad-hoc</b> column is a Kactus2-specific extension which is used in the graphical user interface of a
+        hierarchical design. Ad-hoc determines whether the port is shown as an ad-hoc port when the component is
+        instantiated in a design.
+        <br><img src="../images/appicon.png" alt="Kactus-extension">
+    </p>
+    <p>
+      <b>Description</b> is an optional free text for further details.
+    </p>
+    <p>
+      Ports editor provides a context menu (right mouse button) that contains following options:
+    </p>
+    <ul>
+      <li>Add new wire port (Add wire)</li>
+      <li>Add new transactional port (Add transactional)</li>
+      <li>Remove port (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+    </ul>
+  </body>
+</html>

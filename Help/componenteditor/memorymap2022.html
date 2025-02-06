@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Memory map editor</title>
+</head>
+<body>
+    <h2>Memory map editor</h2>
+    <p>
+        Memory map editor can be used to edit the details of a <i>memory map</i>.
+    </p>
+    <p>
+        Memory maps visualization is shown on the right of the editor. The visualization
+        can be expandped and minimized by clicking the expand arrow
+        <img src="../images/triangle_arrow_right.png" alt="expand">
+        and the minimize arrow
+        <img src="../images/triangle_arrow_down.png" alt="minimize">. Selecting any part
+        of the visualization will open the editor set for that item. The visualization can
+        be resized by dragging the border between the editor and the visualization. Holding
+        Ctrl-key while scrolling with the mouse wheel increases/decreases the width of the
+        items.
+    </p>
+
+    <p>
+        <b>Name</b> is a mandatory identifier for the <i>memory map</i>.
+    </p>
+    <p>
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+        <b>Short description</b> is an optional field for compact description of the <i>memory map</i>.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>memory map</i>.
+    </p>
+    <p>
+        <b>Address unit bits</b> (AUB) defines the number of data bits each address increment
+        of the <i>memory map</i> contains, e.g. 8b or 32b. The default setting for a <i>memory map</i>
+        is byte addressable (8 bits). E.g. if AUB=8, then 32-bit registers are at addresses
+        0x0, 0x4, 0x8... If AUB=32, they are in addresses 0x0, 0x1, 0x2... AUB is the unit
+        for base addresses and ranges within the address map.
+    </p>
+    <p>
+        <b>Target interface binding</b> shows which target <i>bus interfaces</i> are used to access
+        the <i>memory map</i>. The binding can only be set in the bus interface editor, but is
+        shown here for convenience.
+    </p>
+    
+    <p>
+        <b>Mode references</b> identify operating modes for which a memory remap is active. <i>Memory maps</i> do not contain <i>mode references</i>,
+        while <i>memory remaps</i> must be given at least one <i>mode reference</i> paired with a <i>priority</i> value. Each <i>mode reference</i>
+        value must be unique within the containing memory map, while <i>priorities</i> do not have such limitations.
+    </p>
+
+    <h3>Address blocks table</h3>
+    <p>
+        <b>Address block</b> specifies a single contiguous block, either a set of registers
+        or a block of memory. Registers within the <i>address block</i> are further divided
+        into bit <i>fields</i>.
+    </p>
+    <p>
+        <b>Name</b> is a mandatory identifier for the <i>address block</i>.
+    </p>
+    <p>
+        <b>Base address</b> is mandatory and specifies the starting address for the <i>address block</i>.
+        It is expressed as address unit bits as defined in the containing <i>memory map</i>,
+		e.g. 8 or 32 bits.
+    </p>
+    <p>
+        <b>Range</b> is mandatory and specifies the size of the block in address unit bits.
+    </p>
+    <p>
+        <b>Width</b> is mandatory and specifies the data width in bits of a row in the
+		<i>address block</i>. It sets the
+        maximum allowed size of a single transfer and also defines the maximum size of a
+        single register. Register can be smaller but not wider than the value.
+    </p>
+    <p>
+        <b>Usage</b> is optional and is used to categorize the usage of the <i>address block</i>. The
+        possible values are:
+    </p>
+    <ul>
+        <li><b>Memory</b> specifies the <i>address block</i> as memory.
+		A memory <i>address block</i> cannot contain registers.</li>
+        <li><b>Register</b> specifies the entire <i>address block</i> to contain registers.</li>
+        <li><b>Reserved</b> specifies the entire <i>address block</i> as reserved for usage
+		that is unknown to IP-XACT. A reserved <i>address block</i> cannot include registers.</li>
+    </ul>
+    <p>
+        <b>Access</b> is optional and specifies the accessibility of the <i>address block</i> by modifying
+        the first <i>access policy</i> of the <i>address block</i>. If multiple <i>access policies</i> exist, then the access value 
+        cannot be edited here and must be edited for each access policy separately in the address block editor. 
+        If no access policy exists, then one will be created for the address block when the access value is 
+        edited here. The possible access values are:
+    </p>
+    <ul>
+        <li><b>read-write</b>. Both read and write transactions may have an effect on this address
+            block.</li>
+        <li><b>read-only</b>. Only read transactions are allowed in this register.</li>
+        <li><b>write-only</b>. Only write transactions are allowed in this register.</li>
+        <li><b>read-writeOnce</b>. Read actions are allowed and the first write action may have
+            an effect on this address block.</li>
+        <li><b>writeOnce</b>. Only the first write action affects the contents of this address
+            block.</li>
+    </ul>
+    <p>
+        <b>Volatile</b> is optional and indicates that the stored value may change without initiator's
+        write operation. For example, the timer value gets updated automatically and initiator
+        must always issue a read to get the latest value.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>address block</i>.
+    </p>
+
+    <h3>Subspace maps table</h3>
+
+    <p>
+    <b>Name</b> is a mandatory identifier for the <i>subspace map</i>.
+    </p>
+    <p>
+        <b>Base address</b> is mandatory and specifies the starting address for the <i>subspace
+        map</i> in address unit bits. The range is equal to the referenced <i>address
+        space</i> or <i>segment</i>.
+    </p>
+    <p>
+        <b>Initiator interface</b> is a mandatory identifier for the bridged initiator <i>bus interface</i>
+        that is accessed by the subspace map.
+    </p>
+    <p>
+        <b>Segment</b> is an optional reference to a <i>segment</i> within the
+        referenced initiator <i>bus interface</i>. If a <i>segment</i> is defined,
+        the access is limited to the specified segment instead of the whole
+        <i>address space</i>.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>subspace map</i>.
+    </p>
+
+    <hr>
+    <p>
+        EXAMPLE 1. A simple IP could have 1 memory map, 1 address block inside it, and three
+        32-bit registers: ctrl, data_in, and data_out. Ctrl allows both read and write accesses,
+        data_in is write-only, and data_out is read-only. The lower part of ctrl register
+        is divided into two 8-bit fields and designer can describe how they are used. The
+        upper bits are not used. Data registers do not have field definitions.
+        <br>
+        <br>
+        Number of Addresss unit bits(AUB) of the memory map is set to 8 bits. There are
+        3 registers with identical size (32b), Hence, range = 12 = 3 * 32/AUB = 3 * 32/8
+        = 3 * 4. Let's assume base address=0x100. Since address block has 12 Bytes in total,
+        it reserves the (byte) addresses 0x100-0x10B. It is good to set the width of the
+        address block 32 b so that full register can be accessed at once. Smaller accesses
+        (e.g. 1 byte at a time) are also allowed.
+        <br>
+        <img src="../images/mem_map_visualization.png" alt="screen_cap_of_mem_map_visualization">
+    </p>
+
+    <p>
+        EXAMPLE 2. An opaque bridge provides access from a target interface
+        to an initiator interface through a specific memory region i.e. a subspace map.
+        The address space and any memory maps connected to the initiator interface
+        remain obscured (opaque) behind the subspace map.
+        <br>
+        <br>
+        The target bus interface accessIF provides access to memory map MM0 which contains
+        an address block ab0 and a subspace map ssm0. The subspace map refers initiator bus
+        interface outIF indicating that any access to memory locations within ssm0 are redirected
+        out of bus interface outIF. The subspace map size will match the address space AS0 range
+        (or segment range, if segment is specified) referenced in initiator interface outIF.
+        Any interface connected to accessIF will have visibility only to ab0 and ssm0 within the
+        memory map MM0 and no visibility to AS0 while still being able to transfer data to
+        components connected to outIF.
+        <br>
+        <img src="../images/subspace_map.png" alt="subspace map visual">
+    </p>
+</body>
+</html>

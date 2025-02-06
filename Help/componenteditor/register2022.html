@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Register editor</title>
+  </head>
+  <body>
+    <h2>Register editor</h2>
+    <p>
+      Register editor is used to edit the details of a single <i>register</i> and the possible 
+	    bit <i>fields</i> within the <i>register</i>. A bit field may contain just one bit, 
+	    the whole register or something in between.      
+    </p>
+	
+    <p>
+      <b>Name</b> is a mandatory identifier for the <i>register</i>. The name must be unique within 
+      all the <i>registers</i> of the containing <i>address block</i>.
+    </p>
+    <p>
+      <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+      <b>Short description</b> is an optional field for compact description of the <i>register</i>.
+    </p>
+    <p>
+      <b>Description</b> is an optional field for textual description of the <i>register</i>.		
+    </p>
+
+    <p>
+      <b>Offset</b> is a mandatory value to specify the location of the <i>register</i> from the start of the
+      containing <i>address block</i> expressed as address units.</p><p>
+
+      <b>Size</b> is mandatory and defines the number of data bits the <i>register</i> contains. 
+      Size must be less or equal to the width of the containing <i>address block</i>.
+    </p>
+    <p>
+      <b>Dimension</b> is optional and assigns an array dimension to the <i>register</i>. 
+	    The <i>register</i> will be repeated in the
+      <i>address block</i> as many times as indicated by the dimension value. An empty dimension (default)
+      or a dimension with value 1 means that the register is not an array and will appear exactly once.
+    </p>
+    <p>
+      <b>Volatile</b> is optional and indicates whether the <i>register</i> value may change without 
+	    a write operation to it.
+   </p>
+   <p>
+      <b>Access policies</b> are optional and specify the accessability of the register data for different operating modes,
+      specified by mode references. If no mode reference is present, then the access policy applies to all modes not already 
+      referenced by other access policies (i.e. only one access policy without mode references may exist).
+      
+      The possible access values for an access policy are:
+    </p>
+    <ul>
+      <li><b>read-write</b>. Both read and write transactions may have an effect on this <i>register</i>.</li>
+      <li><b>read-only</b>. Only read transactions are allowed in this <i>register</i>.</li>
+      <li><b>write-only</b>. Only write transactions are allowed in this <i>register</i>.</li>
+      <li><b>read-writeOnce</b>. Both read and write transactions may have an effect on this <i>register</i>. Only the
+          first write transaction, after an event that caused the reset value of the <i>register</i> to be loaded, may
+          affect the contents of the <i>register</i>, and read transactions return a value related to the values in the
+          <i>register</i>.</li>
+      <li><b>writeOnce</b>. Only the first write transaction affects the contents of the <i>register</i>.</li>
+    </ul>
+	
+    <h3>Fields table</h3>
+    <p>
+      The fields table enables the user to define the <i>register</i> bit <i>fields</i>.
+      A <i>register</i> must contain at least one field.
+    </p>
+    <p>
+	    <b>Name</b> is a mandatory identifier for the <i>field</i>.
+    </p>
+    <p>
+      <b>Offset</b> is a mandatory value to specify the starting bit of the <i>field</i> 
+	    within the <i>register</i>.
+    </p>
+    <p>
+      <b>Width</b> is a mandatory value to specify how many bits are included in the <i>field</i>.
+    </p>
+    <p>
+      <b>Resets</b> defines the reset values of the field. The reset values must be edited in the field editor.
+      If a field only has one reset value, it is displayed here. If a field contains multiple reset values, they
+      are displayed with a [multiple] tag. A tooltip provides basic information on the resets, displaying the reset type and value.
+    </p>
+    <p>
+      <b>Volatile</b> is optional and indicates whether the <i>field</i> value may change without 
+	    a write operation to it.
+   </p>
+    <p>
+      <b>Access</b> modifies the first field access policy of the field. If multiple field access policy exists, then the access 
+      cannot be edited here and must be edited for each field access policy separately in the field editor. 
+      If no field access policy exists, then one will be created for the field when the access is edited here. The possible access values are:
+    </p>
+    <ul>
+      <li>
+        <b>read-write</b>. Both read and write transactions may have an effect on this <i>field</i>. Write
+          transactions may affect the contents of the <i>field</i>, and read transactions return a value related to
+          the <i>field</i>.
+        </li>
+      <li>
+        <b>read-only</b>. A read transaction to this <i>field</i> returns a value related to the value in the <i>field</i>.
+          A write transaction to this <i>field</i> has undefined results.
+        </li>
+      <li>
+        <b>write-only</b>. A write transaction to this address affects the contents of the <i>field</i>. A read
+          transaction to this <i>field</i> has undefined results.
+        </li>
+      <li>
+        <b>read-writeOnce</b>. Both read and write transactions may have an effect on this <i>field</i>. Only the
+          first write transaction may affect the contents of the <i>field</i>, and read transactions return a value
+          related to the values in the <i>field</i>.
+        </li>
+      <li>
+        <b>writeOnce</b>. Only the first write transaction affects the contents of this <i>field</i>.
+      </li>
+    </ul>
+    <p>    
+		  <b>Description</b> is an optional field for textual description of the <i>field</i>.
+    </p>
+  </body>
+</html>

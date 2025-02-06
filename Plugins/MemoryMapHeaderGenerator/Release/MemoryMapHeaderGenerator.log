@@ -1,0 +1,32 @@
+﻿  Rcc'ing memorymapheadergenerator.qrc...
+  Moc'ing ..\..\common\widgets\viewSelector\viewselector.h...
+  Moc'ing systemheadersavemodel.h...
+  Moc'ing memorymapheadergenerator.h...
+  Moc'ing globalheadersavemodel.h...
+  Moc'ing localheadersavedelegate.h...
+  Moc'ing localheadersavemodel.h...
+  Moc'ing fileSaveDialog\filesavedialog.h...
+  Moc'ing fileSaveDialog\filesavedialogview.h...
+  viewselector.cpp
+  BaseMemoryMapHeaderWriter.cpp
+  filesavedialog.cpp
+  filesavedialogview.cpp
+  globalheadersavemodel.cpp
+  GlobalMemoryMapHeaderWriter.cpp
+  localheadersavedelegate.cpp
+  localheadersavemodel.cpp
+  LocalMemoryMapHeaderWriter.cpp
+  memorymapheadergenerator.cpp
+  systemheadersavemodel.cpp
+  SystemMemoryMapHeaderWriter.cpp
+  qrc_memorymapheadergenerator.cpp
+  moc_viewselector.cpp
+  moc_systemheadersavemodel.cpp
+  moc_memorymapheadergenerator.cpp
+  moc_globalheadersavemodel.cpp
+  moc_localheadersavedelegate.cpp
+  moc_localheadersavemodel.cpp
+  moc_filesavedialog.cpp
+  moc_filesavedialogview.cpp
+     Creating library C:\Users\suokuism\programming\kactus2dev\executable\Plugins\MemoryMapHeaderGenerator.lib and object C:\Users\suokuism\programming\kactus2dev\executable\Plugins\MemoryMapHeaderGenerator.exp
+  MemoryMapHeaderGenerator.vcxproj -> C:\Users\suokuism\programming\kactus2dev\executable\Plugins\MemoryMapHeaderGenerator.dll

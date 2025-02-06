@@ -1,0 +1,51 @@
+<html>
+<head>
+    <link href="../style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <h2>Catalog</h2>
+    <p>
+        Catalogs are used to group together IP-XACT documents that are somehow related.
+        For example, a catalog could list all the IP-XACT documents i.e. <i>components</i>,
+        <i>designs</i> and <i>design configurations</i> required in composing a specific
+        product. Catalogs can also include other catalogs.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>catalog</i>.
+    </p>
+
+    <h3>Catalog files</h3>
+    <p>
+        Catalog files lists the IP-XACT document files contained within catalog. All the
+        files are categorized according to the document type i.e. <i>Components</i> and
+        <i>Designs</i> are listed in separate sections. Items can be added by drag-dropping
+        from the IP-XACT library or creating new rows from the context menu (right mouse
+        button).
+    </p>
+    <p>
+        <b>Vendor</b>, <b>Library</b>, <b>Name</b> and <b>Version</b> together identify the IP-XACT
+        document in the catalog.
+    </p>
+    <p>
+        <b>Path</b> is mandatory and defines the path to the IP-XACT document XML file.
+        Path must be defined as relative to the catalog XML-file, as an absolute path or
+        as an external URI. If an URI is used, the schema must be explicitly defined (e.g.
+        http://...).
+    </p>
+    <p>
+        The Catalog files editor also contains a context menu (right mouse button) that
+        has the following options:
+    </p>
+    <ul>
+        <li>Opens the selected item (Catalog, Component or Bus) in separate editor. (Open)</li>
+        <li>Add new file to the catalog (Add row)</li>
+        <li>Remove file from catalog (Remove row)</li>
+        <li>Cut the selected cell content to clipboard(Cut)</li>
+        <li>Copy the contents of the selected cells to clipboard</li>
+        <li>Paste the contents of the clipboard to the selected cells</li>
+        <li>Clear the selected cells</li>
+        <li>Expand all categories to show all files (Expand all)</li>
+        <li>Collapse all categories to hide all files (Collapse all)</li>
+    </ul>
+</body>
+</html>

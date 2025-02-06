@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Bus interface editor</title>
+  </head>
+  <body>
+    <h2>Bus interface editor</h2>
+    <p>
+      Bus interface editor is used to edit the details of a single
+      <i>bus interface</i>. A bus interface is used to group ports
+      together to form an interface that fulfills the requirements
+      for a bus protocol. The editor has two tabs: the
+      <b>general</b> tab which is used to set the details of
+      the bus interface, and the <b>port maps</b> tab which is used to
+      group the ports to the bus interface.
+    </p>
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>bus interface</i>.
+    </p>
+    <p>
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p> 
+    <p>
+      <b>Short description</b> is an optional field for compact description of the <i>bus interface</i>.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>bus interface</i>.		
+    </p>
+
+   <h3>General settings</h3>
+     <p>
+       <b>Interface mode</b> is mandatory and has 7 possible choices:
+    </p>
+    <ul>
+        <li><b>Initiator</b> for initiating transactions.</li>
+        <li><b>Target</b> for responding to transactions.</li>
+        <li><b>System</b> for defining interfaces not belonging to either initiator or target interface modes.
+        They are categorized by a system group instead.</li>
+        <li><b>MirroredInitiator</b> is the mirrored version of an initiator interface.</li>
+        <li><b>MirroredTarget</b> is the mirrored version of a target interface.</li>
+        <li><b>MirroredSystem</b> is the mirrored version of a system interface.</li>
+        <li><b>Monitor</b> for verification.</li>
+    </ul>
+    <p>
+        Settings below the general section are mode-specific and change when the mode changes.
+        The different modes are detailed in their respective sections below. 
+    </p>        
+    <p>
+      <b>Addressable unit size</b> defines how many bits are included in the least addressable unit of the bus 
+      interface. The default setting is byte addressable (8 bits).
+    </p>
+    <p>
+      <b>Bit steering</b> evaluating to value '1' implies that the interface is able to dynamically align data on different byte 
+      channels in case of addressable interfaces. The default setting when the bit steering is not set is 0.
+      Bit steering is not allowed in mirrored-initiator, system or mirrored-system interface modes.
+    </p>
+    <p>
+      <b>Endianness</b> indicates whether the interface is 'big-endian' or 'little-endian' (default).
+    </p>
+    <p>
+      <b>Connection required</b> indicates that when instantiated in a design, this interface must be connected 
+      to some other interface and cannot be left unconnected.
+    </p>
+
+    <h3>Initiator</h3>
+    <p>
+        <b>Address space</b> defines the <i>address space</i> available for transactions on
+        the bus interface. <i>Address space</i> is optional, but, if defined,  
+        <i>base address</i> becomes mandatory as well.
+    </p>
+    <p>
+        <b>Base address</b> is defines the starting address of the <i>address space</i>. Typically
+        base address is 0.
+    </p>
+
+    <h3>Mirrored initiator</h3>
+    <p>
+		Mirrored initiator has no mode-specific options.
+	</p>
+	
+    <h3>Target</h3>
+    <p> A target bus interface may have access to a <i>memory map</i> or an initiator bus interface.
+      Access to a initiator bus interface is called a <i>transparent bridge</i>. Access is 
+      optional, but mutually exclusive i.e. a target bus interface may only access a memory map, 
+      a transparent bridge or neither.
+  </p>
+  <p>
+      <b>Memory map</b> is optional and defines the <i>memory map</i> accessible through
+      the bus interface. If a <i>memory map</i> has been defined, <i>transparent bridge</i>
+      cannot be defined.
+  </p>
+  <p>
+      <b>Transparent bridge(s)</b> are optional and define the initiator <i>bus interface(s)</i> that
+      all transactions to this <i>bus interface</i> are directed out of. 
+      If <i>transparent bridges</i> have been defined, <i>memory map</i> cannot be defined.
+  </p>
+    <p>
+        <b>File set references</b> define the associated <i>file sets</i> for the target bus
+        interface. For example, the file set could contain the interface implementation or
+        a software driver.
+    </p>
+     
+    <h3>Mirrored target</h3>
+    <p>
+        <b>Remap address</b> defines an address offset for the target <i>bus interface</i>
+        conneted to this interface. <i>Remap address</i>is optional,
+        but, if defined, <i>range</i> becomes mandatory as well.
+    </p>
+    <!--
+    <p>
+        <b>Modes</b> not implemented yet.
+    </p>
+    -->
+    <p>
+        <b>Range</b> defines the address range available for the connected target <i>bus interface</i>.
+    </p>
+
+    <h3>System and mirrored system</h3>
+    <p>
+        <b>System group</b> defines the group this <i>bus interface</i> is part of. The available system
+        groups are defined in the referenced <i>bus definition</i> (see below).
+    </p>
+        
+    <h3>Monitor</h3>
+    <p>
+        <b>Interface mode</b> is mandatory and defines the interface mode the monitor can be connected to.
+    </p>
+    <p>
+        <b>Group</b> defines the group this <i>bus interface</i> is part of when system or
+        mirrored system interface mode is selected. For other modes group has no effect.
+    </p>
+    
+    <h3>Bus definition</h3>
+    <p>
+      <b>Bus definition</b> is mandatory and contains a <i>VLNV</i>-reference to the <i>bus definition</i>
+      document that defines the qualities that the <i>bus interface</i> must meet.
+    </p>
+
+    <h3>Abstraction definition</h3>
+    <p>     
+      <b>Abstraction definition</b> contains an optional <i>VLNV</i>-reference to 
+      the <i>abstraction definition</i> document that defines the logical signals
+      on the bus. If multiple abstraction definitions are defined, <b>view references</b>
+	    specify which view(s) the abstraction is applied to. All views are considered,
+	    if the view reference is empty.
+	</p>
+	<p>
+	  <i>Port maps</i> on the other tab define how the logical signals in the <b>abstraction
+	  definition</b> are connected to the physical ports on the component.
+    </p>
+    <h3>Parameters</h3>
+    <p>
+      <b>Parameters</b> are optional and can specify any parameter data value(s) specific for this bus interface.
+      For more information on parameters, see the component parameter editor.
+    </p>
+  </body>
+</html>

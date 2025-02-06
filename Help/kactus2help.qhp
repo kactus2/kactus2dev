@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+  <namespace>fi.tuni.kactus2</namespace>
+  <virtualFolder>doc</virtualFolder>
+  <customFilter name="Kactus2 2.0">
+    <filterAttribute>kactus2</filterAttribute>
+    <filterAttribute>2.0</filterAttribute>
+  </customFilter>
+  <filterSection>
+    <filterAttribute>kactus2</filterAttribute>
+    <filterAttribute>2.0</filterAttribute>
+    <toc>
+      <section title="Kactus2 Manual" ref="index.html">
+        <section title="What you can do with Kactus2" ref="whatYouCanDo.html"/>
+        <section title="Getting Started" ref="gettingStarted/configureLibrary.html">
+          <section title="Step 1: Configuring Library" ref="gettingStarted/configureLibrary.html"/>
+          <section title="Step 2: Accessing Documents" ref="gettingStarted/accessingDocuments.html"/>
+          <section title="Step 3: Creating Documents" ref="gettingStarted/creatingDocuments.html"/>
+        </section>
+        <section title="General Help" ref="general/ribbon.html">
+          <section title="Toolbars and views" ref="general/toolbarsAndViews.html"/>
+          <section title="Library Navigation" ref="general/libraryNavigation.html"/>
+          <section title="Keyboard and Mouse Shortcuts" ref="general/shortcuts.html"/>
+          <section title="Expressions" ref="general/expressions.html"/>
+          <section title="Colors" ref="general/colors.html"/>
+          <section title="Workspace" ref="general/workSpace.html"/>
+          <section title="Default Applications" ref="general/defaultApplication.html"/>
+        </section>
+        <section title="IP-XACT 2022">
+          <section title="Bus Definition" ref="definitions/busdefinition2022.html"/>
+          <section title="Abstraction Definition" ref="definitions/abstractiondefinition2022.html"/>
+          <section title="Catalog" ref="definitions/catalog.html"/>
+          <section title="Component" ref="componenteditor/componenteditor.html">
+            <section title="General" ref="componenteditor/general2022.html" />
+            <section title="File sets" ref="componenteditor/filesets.html">
+              <section title="File set" ref="componenteditor/fileset2022.html">
+                <section title="File" ref="componenteditor/filegeneral.html" />
+              </section>
+            </section>
+            <section title="Choices" ref="componenteditor/choices.html" />
+            <section title="Parameters" ref="componenteditor/params.html" />
+            <section title="Memory maps" ref="componenteditor/memorymaps2022.html">
+              <section title="Memory map" ref="componenteditor/memorymap2022.html">
+                <section title="Address block" ref="componenteditor/addressblock2022.html">
+                  <section title="Register" ref="componenteditor/register2022.html">
+                    <section title="Field" ref="componenteditor/field2022.html" />
+                  </section>
+                  <section title="Register file" ref="componenteditor/registerFile2022.html" />
+                </section>
+              <section title="Subspace map" ref="componenteditor/subspacemap2022.html" />
+              </section>
+            </section>
+            <section title="Address spaces" ref="componenteditor/addressspaces2022.html">
+              <section title="Address space" ref="componenteditor/addressspace2022.html">
+                <section title="Memory map" ref="componenteditor/memorymap2022.html">
+                  <section title="Address block" ref="componenteditor/addressblock2022.html">
+                    <section title="Register" ref="componenteditor/register2022.html">
+                      <section title="Field" ref="componenteditor/field2022.html" />
+                    </section>
+                  </section>
+                </section>
+              </section>
+            </section>
+            <section title="Instantiations" ref="componenteditor/instantiations.html">
+              <section title="Component instantiations" ref="componenteditor/componentInstantiations.html">
+                <section title="Component instantiation" ref="componenteditor/componentInstantiation2022.html" />
+              </section>
+              <section title="Design configuration instantiations" ref="componenteditor/designConfigurationInstantiations.html">
+                <section title="Design configuration instantiation" ref="componenteditor/designConfigurationInstantiation2022.html" />
+              </section>
+              <section title="Design instantiations" ref="componenteditor/designInstantiations.html">
+                <section title="Design instantiation" ref="componenteditor/designInstantiation2022.html" />
+              </section>
+            </section>
+            <section title="Views" ref="componenteditor/views.html">
+              <section title="View" ref="componenteditor/view2022.html" />
+            </section>
+            <section title="System views" ref="componenteditor/systemviews.html">
+              <section title="System view" ref="componenteditor/systemview.html" />
+            </section>
+            <section title="Ports" ref="componenteditor/ports.html">
+              <section title="Wire ports" ref="componenteditor/wirePorts.html" />
+              <section title="Transactional ports" ref="componenteditor/transactionalPorts.html" />
+            </section>
+            <section title="Bus interfaces" ref="componenteditor/businterfaces2022.html">
+              <section title="Bus interface" ref="componenteditor/businterfacegeneral2022.html"/>
+              <section title="Portmaps" ref="componenteditor/portmaps2022.html"/>
+            </section>
+            <section title="Indirect interfaces" ref="componenteditor/indirectInterfaces.html">
+              <section title="Single indirect interface" ref="componenteditor/indirectInterface2022.html" />
+            </section>
+            <section title="Channels" ref="componenteditor/channels2022.html" />
+            <section title="Modes" ref="componenteditor/modes2022.html">
+              <section title="Mode" ref="componenteditor/mode2022.html" />
+            </section>
+            <section title="CPUs" ref="componenteditor/cpus2022.html">
+              <section title="CPU" ref="componenteditor/cpu2022.html" />
+            </section>
+            <section title="Other clock drivers" ref="componenteditor/otherclockdrivers.html" />
+            <section title="Power domains" ref="componenteditor/powerdomains2022.html"/>
+            <section title="Reset types" ref="componenteditor/resetTypes2022.html"/>
+            <section title="COM interfaces" ref="componenteditor/cominterfaces.html">
+              <section title="COM interface" ref="componenteditor/cominterface.html" />
+            </section>
+            <section title="API interfaces" ref="componenteditor/apiinterfaces.html">
+              <section title="API interface" ref="componenteditor/apiinterface.html" />
+            </section>
+            <section title="Software properties" ref="componenteditor/swproperties.html" />
+          </section>
+          <section title="HW Design" ref="hwdesign/hwdesign.html">
+            <section title="Component Instance" ref="hwdesign/hwinstance2022.html" />
+            <section title="Bus Interface" ref="hwdesign/busport2022.html" />
+            <section title="Interconnection" ref="hwdesign/connection.html" />
+            <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
+            <section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" />
+          </section>
+        </section>
+        <section title="IP-XACT 2014">
+          <section title="Bus Definition" ref="definitions/busdefinition.html"/>
+          <section title="Abstraction Definition" ref="definitions/abstractiondefinition.html"/>
+          <section title="Catalog" ref="definitions/catalog.html" />
+          <section title="Component" ref="componenteditor/componenteditor.html">
+            <section title="General" ref="componenteditor/general.html" />
+            <section title="File sets" ref="componenteditor/filesets.html">
+              <section title="File set" ref="componenteditor/fileset.html">
+                <section title="File" ref="componenteditor/filegeneral.html" />
+              </section>
+            </section>
+            <section title="Choices" ref="componenteditor/choices.html" />
+            <section title="Parameters" ref="componenteditor/params.html" />
+            <section title="Memory maps" ref="componenteditor/memorymaps.html">
+              <section title="Memory map" ref="componenteditor/memorymap.html">
+                <section title="Address block" ref="componenteditor/addressblock.html">
+                  <section title="Register" ref="componenteditor/register.html">
+                    <section title="Field" ref="componenteditor/field.html" />
+                  </section>
+                  <section title="Register file" ref="componenteditor/registerFile.html" />
+                </section>
+              <section title="Subspace map" ref="componenteditor/subspacemap.html" />
+              </section>
+            </section>
+            <section title="Address spaces" ref="componenteditor/addressspaces.html">
+              <section title="Address space" ref="componenteditor/addressspace.html">
+                <section title="Memory map" ref="componenteditor/memorymap.html">
+                  <section title="Address block" ref="componenteditor/addressblock.html">
+                    <section title="Register" ref="componenteditor/register.html">
+                      <section title="Field" ref="componenteditor/field.html" />
+                    </section>
+                  </section>
+                </section>
+              </section>
+            </section>
+            <section title="Instantiations" ref="componenteditor/instantiations.html">
+              <section title="Component instantiations" ref="componenteditor/componentInstantiations.html">
+                <section title="Component instantiation" ref="componenteditor/componentInstantiation.html" />
+              </section>
+              <section title="Design configuration instantiations" ref="componenteditor/designConfigurationInstantiations.html">
+                <section title="Design configuration instantiation" ref="componenteditor/designConfigurationInstantiation.html" />
+              </section>
+              <section title="Design instantiations" ref="componenteditor/designInstantiations.html">
+                <section title="Design instantiation" ref="componenteditor/designInstantiation.html" />
+              </section>
+            </section>
+            <section title="Views" ref="componenteditor/views.html">
+              <section title="View" ref="componenteditor/view.html" />
+            </section>
+            <section title="System views" ref="componenteditor/systemviews.html">
+              <section title="System view" ref="componenteditor/systemview.html" />
+            </section>
+            <section title="Ports" ref="componenteditor/ports.html">
+              <section title="Wire ports" ref="componenteditor/wirePorts.html" />
+              <section title="Transactional ports" ref="componenteditor/transactionalPorts.html" />
+            </section>
+            <section title="Bus interfaces" ref="componenteditor/businterfaces.html">
+              <section title="Bus interface" ref="componenteditor/businterfacegeneral.html" />
+              <section title="Portmaps" ref="componenteditor/portmaps.html" />
+            </section>
+            <section title="Indirect interfaces" ref="componenteditor/indirectInterfaces.html">
+              <section title="Single indirect interface" ref="componenteditor/indirectInterface.html" />
+            </section>
+            <section title="Channels" ref="componenteditor/channels.html" />
+            <section title="Remap states" ref="componenteditor/remapStates.html">
+              <section title="Single remap state" ref="componenteditor/singleRemapState.html" />
+            </section>
+            <section title="CPUs" ref="componenteditor/cpus.html">
+              <section title="CPU" ref="componenteditor/cpu.html" />
+            </section>
+            <section title="Other clock drivers" ref="componenteditor/otherclockdrivers.html" />
+            <section title="Reset types" ref="componenteditor/resetTypes.html"/>
+            <section title="COM interfaces" ref="componenteditor/cominterfaces.html">
+              <section title="COM interface" ref="componenteditor/cominterface.html" />
+            </section>
+            <section title="API interfaces" ref="componenteditor/apiinterfaces.html">
+              <section title="API interface" ref="componenteditor/apiinterface.html" />
+            </section>
+            <section title="Software properties" ref="componenteditor/swproperties.html" />
+          </section>
+          <section title="HW Design" ref="hwdesign/hwdesign.html">
+            <section title="Component Instance" ref="hwdesign/hwinstance.html" />
+            <section title="Bus Interface" ref="hwdesign/busport.html" />
+            <section title="Interconnection" ref="hwdesign/connection.html" />
+            <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
+            <section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" />
+          </section>
+        </section>
+        <section title="Memory Design" ref="memoryDesign/memoryDesign.html"/>
+        <section title="SW Design" ref="swsysdesign/swdesign.html">
+          <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
+        </section>
+        <!--section title="System Design" ref="swsysdesign/systemdesign.html"/-->
+        <section title="Community Guidelines" ref="communityGuideLines.html"/>
+      </section>
+    </toc>
+    <keywords>
+      <keyword name="HW Design" id="Kactus2::hwdesign" ref="hwdesign/hwdesign.html" />
+    </keywords>
+    <files>
+      <file>style.css</file>
+      <file>*.html</file>
+      <file>general/*.html</file>
+      <file>componenteditor/*.html</file>
+      <file>definitions/*.html</file>
+      <file>hwdesign/*.html</file>
+      <file>swsysdesign/*.html</file>
+      <file>memoryDesign/*.html</file>
+      <file>gettingStarted/*.html</file>
+      <file>images/*.png</file>
+    </files>
+  </filterSection>
+</QtHelpProject>

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Transactional ports editor</title>
+  </head>
+  <body>
+    <h2>Transactional ports editor</h2>
+    <p>
+      Transactional ports editor provides a table containing all the <i>transactional ports</i> of a component.
+        This editor is used to add, remove and edit the transactional ports.
+    </p>
+    <p>
+      <b>Port name</b> is a unique identifier and must match the name of the port in the implementation language.
+        For example, the ports listed in the VHDL entity declaration are listed here.
+    </p>
+    <p>
+        <b>Width</b> specifies the data width in bits. Can be given as an expression.
+    </p>
+    <p>
+      <b>Initiative</b> defines the type of access. Initiative has four options:
+    </p>
+    <ul>
+      <li><strong>requires</strong> defines an initiative requirement of the port.</li>
+      <li><strong>provides</strong> defines a provider port for initiative.</li>
+      <li><strong>both</strong> defines the type of access as both requires and provides.</li>
+      <li><strong>phantom</strong> for ports that exist on the IP-XACT component but not on the implementation.</li>
+    </ul>
+      <p>
+          <b>Kind</b> defines the ports type. Kind has four options, in addition to a custom type.
+          <ul>
+              <li><strong>tlm_port</strong> should only be used for TLM1 notation</li>
+              <li><strong>tlm_socket</strong></li>
+              <li><strong>simple_socket</strong></li>
+              <li><strong>multi_socket</strong></li>
+          </ul>
+      </p>
+      <p>
+          <b>Protocol</b> characterizes the information transportation method of the port. Currently not supported
+          in Kactus2.
+      </p>
+    <p>
+      The port <b>type</b> is optional together with a <b>type definition</b> that an optional language specific
+        reference to where the type is defined, e.g. package or header file. In SystemC, the type definition is 
+		the include file name, e.g. 'systemc.h'. The type definition has no effect if type is not set. 
+		The type can be applied to specific view(s) or all views.
+    </p>
+    <p>
+      <b>Array left</b> and <b>array right</b> are optional and define the indices of an array port. The values
+        can be given as an equation, but it must resolve into a decimal number. If either left or right value is
+        given, the port is considered to be of an array type.
+    </p>
+    <p>
+        <b>Port tags</b> column displays the optional tags for a port. These can be used to group ports together 
+        to, for example, create bus interfaces.
+		<br><img src="../images/appicon.png" alt="Kactus-extension">
+    </p>
+      <p>
+          <b>Max connections</b> and <b>Min connections</b> define the number of legal connections that can be made
+          to this port. <i>Max connceionts</i> indicates the maximum number of supported connections, while
+          <i>Min connections</i> indicates the minimum number of supported connections. These values can be given
+          as expressions.
+      </p>
+	  <p>
+	  <b>Ad-hoc</b> column is a Kactus2-specific extension which is used in the graphical user interface of a
+        hierarchical design. Ad-hoc determines whether the port is shown as an ad-hoc port when the component is
+        instantiated in a design.
+	  <br><img src="../images/appicon.png" alt="Kactus-extension">
+	  </p>
+    <p>
+      <b>Description</b> is an optional free text for further details.
+    </p>
+    <p>
+      Transactional ports editor provides a context menu (right mouse button) that contains following options:
+    </p>
+    <ul>
+      <li>Add new port (Add row)</li>
+      <li>Remove port (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>New Bus Interface creates a new bus interface in the component using the currently selected ports</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>  
+  </body>
+</html>

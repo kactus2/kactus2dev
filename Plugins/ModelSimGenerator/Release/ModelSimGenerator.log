@@ -1,0 +1,34 @@
+﻿  Rcc'ing ModelSimGenerator.qrc...
+  Moc'ing ModelSimGeneratorPlugin.h...
+  Moc'ing ..\..\mainwindow\MessageConsole\messageconsole.h...
+  Moc'ing ..\PluginSystem\GeneratorPlugin\FileOutputWidget.h...
+  Moc'ing ..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.h...
+  Moc'ing ..\PluginSystem\GeneratorPlugin\MessagePasser.h...
+  Moc'ing ..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h...
+  ComponentSearch.cpp
+  messageconsole.cpp
+  MetaComponent.cpp
+  MetaDesign.cpp
+  MetaInstance.cpp
+C:\Users\suokuism\programming\kactus2dev\Plugins\common\HDLParser\MetaInstance.cpp(1,1): warning C4828: The file contains a character starting at offset 0x2392 that is illegal in the current source character set (codepage 65001).
+  FileOutputWidget.cpp
+  GenerationControl.cpp
+  HDLGenerationDialog.cpp
+  MessagePasser.cpp
+  OutputControl.cpp
+  ViewSelection.cpp
+  ViewSelectionWidget.cpp
+  ModelSimGeneratorPlugin.cpp
+  ModelSimDocument.cpp
+C:\Users\suokuism\programming\kactus2dev\Plugins\common\HDLParser\MetaDesign.cpp(704,1): warning C4828: The file contains a character starting at offset 0x7086 that is illegal in the current source character set (codepage 65001).
+  ModelSimWriter.cpp
+  ModelSimWriterFactory.cpp
+  qrc_ModelSimGenerator.cpp
+  moc_ModelSimGeneratorPlugin.cpp
+  moc_messageconsole.cpp
+  moc_FileOutputWidget.cpp
+  moc_HDLGenerationDialog.cpp
+  moc_MessagePasser.cpp
+  moc_ViewSelectionWidget.cpp
+     Creating library C:\Users\suokuism\programming\kactus2dev\executable\Plugins\ModelSimGenerator.lib and object C:\Users\suokuism\programming\kactus2dev\executable\Plugins\ModelSimGenerator.exp
+  ModelSimGenerator.vcxproj -> C:\Users\suokuism\programming\kactus2dev\executable\Plugins\ModelSimGenerator.dll

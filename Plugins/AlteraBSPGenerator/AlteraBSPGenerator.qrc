@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>BSPicon24.png</file>
+    </qresource>
+</RCC>

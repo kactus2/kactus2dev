@@ -1,0 +1,35 @@
+﻿  Rcc'ing LinuxDeviceTree.qrc...
+  Moc'ing LinuxDeviceTreeDialog.h...
+  Moc'ing CPUSelection\LinuxDeviceTreeCPUModel.h...
+  Moc'ing CPUSelection\LinuxDeviceTreeCPUDelegate.h...
+  Moc'ing CPUSelection\LinuxDeviceTreeCPUEditor.h...
+  Moc'ing LinuxDeviceTreePlugin.h...
+  ConnectivityComponent.cpp
+  ConnectivityConnection.cpp
+  ConnectivityGraph.cpp
+  ConnectivityGraphFactory.cpp
+  ConnectivityInterface.cpp
+  MasterSlavePathSearch.cpp
+  MemoryConnectionAddressCalculator.cpp
+  MemoryDesignerConstants.cpp
+  MemoryItem.cpp
+  ConnectivityGraphUtilities.cpp
+  CpuRoutesContainer.cpp
+  SingleCpuRoutesContainer.cpp
+  ViewSelection.cpp
+  LinuxDeviceTreeCPUDelegate.cpp
+  LinuxDeviceTreeCPUDetails.cpp
+  LinuxDeviceTreeCPUEditor.cpp
+  LinuxDeviceTreeCPUModel.cpp
+  LinuxDeviceTreeCpuRoutesContainer.cpp
+  LinuxDeviceTreeDialog.cpp
+  LinuxDeviceTreeGenerator.cpp
+  LinuxDeviceTreePlugin.cpp
+  qrc_LinuxDeviceTree.cpp
+  moc_LinuxDeviceTreeDialog.cpp
+  moc_LinuxDeviceTreeCPUModel.cpp
+  moc_LinuxDeviceTreeCPUDelegate.cpp
+  moc_LinuxDeviceTreeCPUEditor.cpp
+  moc_LinuxDeviceTreePlugin.cpp
+     Creating library C:\Users\suokuism\programming\kactus2dev\executable\Plugins\LinuxDeviceTreeGenerator.lib and object C:\Users\suokuism\programming\kactus2dev\executable\Plugins\LinuxDeviceTreeGenerator.exp
+  LinuxDeviceTreeGenerator.vcxproj -> C:\Users\suokuism\programming\kactus2dev\executable\Plugins\LinuxDeviceTreeGenerator.dll

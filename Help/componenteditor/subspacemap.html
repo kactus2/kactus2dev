@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Subspace map editor</title>
+</head>
+<body>
+    <h2>Subspace map editor</h2>
+    <p>
+        Subspace map editor is used to edit the details of a subspace map. Subspaces
+        are used for opaque bridges to define access from a memory map to an
+        address space of a master interface.
+    </p>
+    <p>
+    <b>Name</b> is a mandatory identifier for the <i>subspace map</i>.
+  </p>
+  <p>
+      <b>Display name</b> is an optional and used for a more user-friendly identifier.
+  </p>
+  <p>
+      <b>Description</b> is an optional field for textual description of the <i>subspace map</i>.
+  </p>
+
+      <p>
+          <b>Base address</b> is mandatory and specifies the starting address for the <i>subspace
+              map</i> in address unit bits. The range is equal to the referenced <i>address
+              space</i> or <i>segment</i>.
+      </p>
+
+    <p>
+         <b>MasterRef</b> is a mandatory identifier for the bridged master <i>bus interface</i>
+           that is accessed by the subspace map.
+    </p>
+    <p>
+        <b>SegmentRef</b> is an optional reference to a <i>segment</i> within the
+          referenced master <i>bus interface</i>. If a <i>segment</i> is defined,
+          the access is limited to the specified segment instead of the whole
+          <i>address space</i>.
+    </p>
+  	<p>
+          <b>Is present</b> is optional and allows enabling/disabling of a <i>subspace map</i>
+          presence in a <i>memory map</i>. Value 1 indicates that the <i>subspace map</i>
+          is present in the <i>memory map</i> whereas value 0 marks the subspace map to be
+          treated as if it does not exist. Is present can be given as a SystemVerilog expression,
+          but it must evaluate to 1 or 0.
+    </p>
+</body>
+</html>

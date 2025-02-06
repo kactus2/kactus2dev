@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>LinuxDeviceTreeGenerator.png</file>
+    </qresource>
+</RCC>

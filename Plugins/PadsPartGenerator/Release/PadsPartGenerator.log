@@ -1,0 +1,10 @@
+﻿  Rcc'ing PadsPartGenerator.qrc...
+  Moc'ing PadsPartGenerator.h...
+  Moc'ing PadsPartGeneratorDialog.h...
+  PadsPartGenerator.cpp
+  PadsPartGeneratorDialog.cpp
+  qrc_PadsPartGenerator.cpp
+  moc_PadsPartGenerator.cpp
+  moc_PadsPartGeneratorDialog.cpp
+     Creating library C:\Users\suokuism\programming\kactus2dev\executable\Plugins\PadsPartGenerator.lib and object C:\Users\suokuism\programming\kactus2dev\executable\Plugins\PadsPartGenerator.exp
+  PadsPartGenerator.vcxproj -> C:\Users\suokuism\programming\kactus2dev\executable\Plugins\PadsPartGenerator.dll

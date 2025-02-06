@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>File sets editor</title>
+  </head>
+  <body>
+    <h2>File sets editor</h2>
+    <p>
+      File sets editor contains a summary table regarding each <i>file set</i> within the component. 
+      This table can be used to add and remove file sets.
+    </p>
+	<p>
+      <b>Name</b> is a mandatory identifier for the file set.
+    </p>
+    <p>
+	  <b>Group identifiers</b> are optional and can be used to describe the function or purpose of 
+	  the file with a single word. <i>Group identifiers</i> can contain multiple identifiers and 
+	  the possible words are not limited. However, the editor suggests the following options:
+	    <ul>
+	      <li>diagnostics</li>
+	      <li>documentation</li>
+	      <li>projectFiles</li>
+	      <li>simulation</li>
+	      <li>sourceFiles</li>
+	    </ul>
+    </p>
+	<p>
+      <b>Description</b> is optional field for detailed description of the file set.
+	</p>
+    <p>
+      Right clicking an item in the editor provides a context menu that can be used to:
+    </p>
+    <ul>
+      <li>Add a new file set to the component (Add row)</li>
+      <li>Remove a file set (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>
+	 
+    <h3>File dependencies</h3>
+    <br />
+    <img src="../images/appicon.png" width="25pix" alt="Kactus-extension" />
+	<br />
+    <p>
+      Below the file sets editor is a dependency table to display the dependencies between the 
+      files within all the file sets. File dependencies are typically introduced by include 
+	  directives (e.g. in C) or instantiation of other modules (e.g. sub-modules in Verilog).
+	  Kactus2 uses plugins to automatically analyse dependencies based on the file types.
+    </p>
+	 <p>
+      <b>Status</b> shows if the file has changed since the last dependency analysis.
+    </p>
+    <p>
+	  <b>Path</b> identifies the file.
+    </p>
+    <p>
+	  <b>Filesets</b> shows the fileset(s) containing the file.
+    </p>
+    <p>
+	  <b>#</b> column is used create custom dependencies. The first left-click on the mouse 
+	  starts the dependency from the file on the clicked line and the second click ends the 
+	  dependency to the file on the line. The first file is now dependent on the second file.
+    </p>
+    <p>
+	  <b>Dependencies</b> show the dependencies for the file. A file dependent on another has a 
+	  round end point of the arrow on the line whereas the required file has an arrow head on the 
+	  line. Automatically created dependencies are denoted in black and user created dependencies
+	  in magenta. A file can have arbitrary number of depenedencies. Clicking on the arrow shows 
+	  additional  information about the dependency in the Dependency Information below.
+	</p>
+	 
+    <h3>File set source directories</h3>
+  	<p>
+      Kactus2 will search the directories defined here for files to be automatically
+      added into the component file sets.
+    </p>
+
+	<h3>Dependency information</h3>
+  	<p>
+      <b>Description</b> displays the description of the file dependency.
+    </p>
+    <p>
+	  <b>Bidirectional</b> indicates that both of the files are dependent on each other.
+    </p>
+    <p>
+	  <b>Locked</b> can be set to protect the depencendy from being changed without explicitly
+	  re-opening the lock.
+    </p>
+	<p>
+	   <b>Reverse Direction</b> changes the dependent and prerequisite file relation to the
+	   opposite of the current state.
+	</p>
+    <hr>
+    <p>
+      EXAMPLE. The names of filesets do not need to be same as directories
+      (vhdlSource vs. vhd/) but they can be (e.g. syn). <br>
+      <img src="../images/filesets.png" alt="screen cap">
+    </p>
+  </body>
+</html>

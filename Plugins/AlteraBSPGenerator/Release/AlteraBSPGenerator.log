@@ -1,0 +1,19 @@
+﻿  Rcc'ing AlteraBSPGenerator.qrc...
+  Moc'ing commandlinegeneratordialog.h...
+  Moc'ing commandlineconsole.h...
+  Moc'ing alterabspgenerator.h...
+  Moc'ing alterabspgeneratordialog.h...
+  Moc'ing ..\..\common\widgets\viewSelector\viewselector.h...
+  viewselector.cpp
+  alterabspgeneratordialog.cpp
+  commandlineconsole.cpp
+  commandlinegeneratordialog.cpp
+  alterabspgenerator.cpp
+  qrc_AlteraBSPGenerator.cpp
+  moc_commandlinegeneratordialog.cpp
+  moc_commandlineconsole.cpp
+  moc_alterabspgenerator.cpp
+  moc_alterabspgeneratordialog.cpp
+  moc_viewselector.cpp
+     Creating library C:\Users\suokuism\programming\kactus2dev\executable\Plugins\AlteraBSPGenerator.lib and object C:\Users\suokuism\programming\kactus2dev\executable\Plugins\AlteraBSPGenerator.exp
+  AlteraBSPGenerator.vcxproj -> C:\Users\suokuism\programming\kactus2dev\executable\Plugins\AlteraBSPGenerator.dll

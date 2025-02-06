@@ -1,0 +1,15 @@
+﻿  Rcc'ing MCAPICodeGenerator.qrc...
+  Moc'ing ..\..\common\dialogs\comboSelector\comboselector.h...
+  Moc'ing MCAPICodeGeneratorPlugin.h...
+  comboselector.cpp
+  NameGenerationPolicy.cpp
+  CSourceWriter.cpp
+  MCAPICodeGenerator.cpp
+  MCAPICodeGeneratorPlugin.cpp
+  MCAPIHeaderGenerator.cpp
+  MCAPIParser.cpp
+  qrc_MCAPICodeGenerator.cpp
+  moc_comboselector.cpp
+  moc_MCAPICodeGeneratorPlugin.cpp
+     Creating library C:\Users\suokuism\programming\kactus2dev\executable\Plugins\MCAPICodeGenerator.lib and object C:\Users\suokuism\programming\kactus2dev\executable\Plugins\MCAPICodeGenerator.exp
+  MCAPICodeGenerator.vcxproj -> C:\Users\suokuism\programming\kactus2dev\executable\Plugins\MCAPICodeGenerator.dll

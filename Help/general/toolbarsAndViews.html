@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Toolbar</title>
+  </head>
+  <body>
+    <h1>Toolbars and views</h1>
+    <h2>Toolbars</h2>
+    <p>
+    The Kactus2 main window contains a toolbar at the top and sidebars on both sides. The toolbar contains actions for
+    performing common actions within the Kactus2.
+    </p>
+    <p>
+    The toolbar adapts to the size of the window. If the window gets too small for the
+    toolbar, two buttons for scrolling left and right will be made visible.
+    Scrolling can also be done by using the mouse wheel.
+    </p>
+    <p>
+    The toolbar hides actions that are not available in the current environment. For example,
+    generators are not show when no component or design has been selected.
+    </p>
+    <p>
+    UI views can be docked to a sidebar. Multiple views can be docked
+    to the same sidebar and the active view can be hidden by clicking its icon in the sidebar, or changed 
+    by clicking the icon of another view.
+    </p>
+    <h3>The toolbar groups</h3>
+    <p>
+    The <b>File</b> group contains functions for controlling the files of the component.
+        <ul>
+            <li>
+            <img src="../images/file-new.png"><br/><b>New.</b> Creates a new component, design, system,
+            bus, COM definition or API definition.
+            <br>
+            </li>
+            <li>
+            <img src="../images/file-save.png"><br/><b>Save.</b> Saves the active document with its
+            current name and location. Activates when a document has been edited.
+            </li>
+            <br>
+            <li>
+            <img src="../images/file-save-as.png"><br><b>Save As.</b> Saves the document with a new name
+            and location.
+            </li>
+            <br>
+            <li>
+            <img src="../images/file-save_all.png"><br><b>Save all.</b> Saves all open documents.
+            </li>
+            <br />
+            <li>
+            <img src="../images/file-print.png"><br><b>Print.</b> Prints the currently open design.
+            </li>
+            <br />
+            <li>
+                <img src="../images/export.png"><br/><b>Export image.</b> Export an image of the currently open
+                design document. Possible image formats are SVG, JPG and PNG.
+            </li>
+            <br>
+            <li>
+                <img src="../images/import.png"><br><b>Import File to Component.</b> Imports elements from a
+                source file e.g. VHDL or verilog to the active component.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>Library</b> group contains functions for maintaining the IP-XACT libraries used by the Kactus2.
+        <ul>
+            <li>
+            <img src="../images/library-config.png"><br><b>Configure libraries.</b> Select the
+            libraries used in Kactus2. The libraries can be set as default and active.
+            </li>
+            <br>
+            <li>
+            <img src="../images/library-refresh.png"><br><b>Refresh libraries.</b> Refresh the currently
+            active libraries.
+            </li>
+            <br>
+            <li>
+            <img src="../images/checkIntegrity.png"><br><b>View Library Integrity Report.</b> Shows
+			a report of errors within all library items. This operation may take a long time with
+			large libraries.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>Protection</b> group shows the current documents editability. The lock status can be changed with
+    this button.
+        <ul>
+            <li>
+            <img src="../images/protection-locked.png"><br><b>Locked.</b> While locked, no changes can be
+            made to the document.
+            </li>
+            <br>
+            <li>
+            <img src="../images/protection-unlocked.png"><br><b>Unlocked.</b> While unlocked, the documents
+            can be edited and saved.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>Generation</b> group shows all the available generator plugins underneath Run generator:
+        <ul>
+            <li>
+            <img src="../images/automation.png"><br><b>Run generator</b>
+            Runs a chosen generator for the active component. If the active document is a design, all component
+            instances are included in documentation generation.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>Diagram Tools</b> group consist of tools related to the design editors of Kactus2. This group is only
+    visible to the HW, SW and system design editors.
+        <ul>
+            <li>
+                <img src="../images/diagram-add-column.png" /><br />
+                <b>Add Column.</b> Creates a new column to the design. In HW design, the type of the possible
+                items in the new column can be customized.
+            </li>
+            <br />
+            <li>
+                <img src="../images/tool-select.png" /><br />
+                <b>Select Tool.</b> Allows the selection of items within the HW design. Information regarding the
+                selected item is show on the different editors of the des.
+            </li>
+            <br />
+            <li>
+                <img src="../images/tool-interconnection.png" /><br />
+                <b>Interconnection Tool.</b> Allows the creation of interconnections between the interfaces of
+                component instances. After selecting the starting point, the possible ending points for the
+                connection are highlighted in the design. An interconnection cannot be dragged from the starting
+                point to the ending point. Both points must be selected separately.
+            </li>
+            <br />
+            <li>
+                <img src="../images/tool-interface.png" /><br />
+                <b>Interface Tool.</b> Draft interfaces can be to the component containing the currently opening
+                design. These interfaces must be placed within columns allowing interface items.
+            </li>
+            <br />
+            <li>
+                <img src="../images/tool-drafting.png" /><br />
+                <b>Drafting Tool.</b> Allows the creation of draft component instances and interfaces. The drafted
+                component instances must be placed in columns allowing component instances. Interfaces can be
+                placed either into the component containing the design, or any of the drafted component instances.
+            </li>
+            <br />
+            <li>
+                <img src="../images/tool-toggle_offpage.png" /><br />
+                <b>Toggle Off-Page Tool.</b> Changes the selected connections from regular to off-page, and from
+                off-page to regular. Off-page connections are displayed as squares near an interface, and the
+                connected point is displayed when an off-page point is selected.
+            </li>
+            <br />
+            <li>
+                <img src="../images/balloon.png" /><br />
+                <b>Sticky Note Tool.</b> Create notes regarding the currently open design. Notes can be associated
+                with an item contained within the design. This can be achieved through the button located at the
+                top right corner of the note.
+            </li>
+        </ul>
+    </p>
+	<p>
+    The <b>Filtering Tools</b> group has actions for filtering and adjusting the visualization of the memory
+	layout for current component hierarchy. Available only in the Memory Designer.
+        <ul>
+		    <li>
+                <img src="../images/filterSegments.png" /><br />
+                <b>Filter Segments.</b> Show/hide the segments within the address spaces.
+            </li>
+			<br />
+			<li>
+                <img src="../images/filterAddressBlocks.png" /><br />
+                <b>Filter Address Blocks.</b> Show/hide the address blocks within the memory maps.
+            </li>
+			<br />
+			<li>
+                <img src="../images/filterRegisters.png" /><br />
+                <b>Filter Registers.</b> Show/hide the registers within the address blocks.
+            </li>
+			<br />
+			<li>
+                <img src="../images/filterFields.png" /><br />
+                <b>Filter Fields.</b> Show/hide the bit fields within the registers.
+            </li>
+			<br />
+            <li>
+                <img src="../images/addressSpaceFilter.png" /><br />
+                <b>Address Space Filter.</b> Show/hide the address space items on the path
+				from the furthest address space to the connected memory maps.
+            </li>
+			<br />
+            <li>
+                <img src="../images/filterUnconnectedMemoryItems.png" /><br />
+                <b>Unconnected items filter</b> Show/hide unconnected memory items.
+            </li>
+			<br />
+			<li>
+                <img src="../images/compressMemoryItems.png" /><br />
+                <b>Compress Memory Items.</b> Minimize the vertical space taken by the
+				memory items. When disabled, the item height is relative to the contained address range.
+            </li>
+			<br />
+			<li>
+                <img src="../images/compressFields.png" /><br />
+                <b>Compress Field Items.</b> Minimize the horizontal space taken by the bit field items.
+            </li>
+            <br />
+			<li>
+                <img src="../images/extendFields.png" /><br />
+                <b>Extend Field Items.</b> Extend the horizontal space taken by the bit field items.
+				This ensures the full name is visible for every item.
+            </li>
+            <br />
+        </ul>
+    </p>
+    <p>
+    The <b>View</b> group has actions for defining the view of the current design. Visible Windows -button
+    is always available.
+        <ul>
+            <li>
+            <img src="../images/view-zoom_in.png"><br><b>Zoom In.</b> Enlarge the display of the active
+            design.
+            </li>
+            <br>
+            <li>
+            <img src="../images/view-zoom_out.png"><br><b>Zoom Out.</b> Reduce the display of the active
+            design.
+            </li>
+            <br>
+            <li>
+            <img src="../images/view-zoom_original.png"><br><b>Original 1:1 Zoom.</b> Return the display
+            to original size.
+            </li>
+            <br>
+            <li>
+            <img src="../images/view-fit_best.png"><br><b>Fit Document to View.</b> Fit the currently
+            active document to the available view.
+            </li>
+            <br>
+            <li>
+            <img src="../images/dockSelect.png"><br><b>Visible Windows.</b> Allows changing the
+            visibilities of the available windows.
+            </li>
+            <br>
+            <li>
+            <img src="../images/visibility.png"><br><b>Visibilities.</b> Change the visibilities of
+            design items.
+            </li>
+        </ul>
+    </p>
+    <p>
+        The <b>Configuration</b> group contains actions related to configuring the currently open document.
+        <ul>
+            <li>
+                <img src="../images/viewConfiguration.png"><br><b>View Configuration.</b> Configure the views used
+                in the currently open document. The items are constructed recursively, so that the contained items
+                within a component with a hierarchical view are displayed below said item. This allows the display
+                of all the items contained within the currently active document.
+            </li>
+            <br />
+            <li>
+                <img src="../images/memoryDesigner.png"><br><b>Open Memory Designer.</b> Opens a view of the memory
+                layout of the underlying component hierarchy. Available only in Hardware Design view.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>Workspace</b> group shows the currently selected workspace.
+        <ul>
+            <li>
+            <img src="../images/workspace.png"><br><b>Workspace.</b> Select, delete or create other 
+            workspaces. Only non-active, non-default workspaces can be deleted.
+            </li>
+        </ul>
+    </p>
+    <p>
+    The <b>System</b> group contains actions related to the whole system.
+        <ul>
+            <li>
+            <img src="../images/settings-general.png"><br><b>Settings.</b> Displays the available settings
+            for Kactus2.
+            </li>
+            <br>
+            <li>
+            <img src="../images/system-help.png"><br><b>Help.</b> Opens the Kactus2 manual.
+            </li>
+            <br>
+            <li>
+            <img src="../images/system-about.png"><br><b>About.</b> Shows information about Kactus2.
+            </li>
+            <br>
+            <li>
+            <img src="../images/system-exit.png"><br><b>Exit.</b> Exit Kactus2.
+            </li>
+        </ul>
+    </p>
+
+    <h2>Views</h2>
+    <p>
+        Views are used to present additional data regarding the currently open document.
+    </p>
+    <h3>Common</h3>
+    <p>
+        Views that can be displayed regardless of the currently open document:
+        <ul>
+            <li>
+                <b>Context Help</b> displays help of the currently open document or editor.
+            </li>
+            <li>
+                <b>IP-XACT Library</b> shows the used libraries of Kactus2. See
+                <a href="libraryNavigation.html">library navigation</a>.
+            </li>
+            <li>
+                <b>Output</b> displays data of the actions performed by Kactus2.
+            </li>
+        </ul>
+    </p>
+    <h3>Vendor Extensions</h3>
+    <p>
+          Vendor Extensions are used to edit the user defined extensions. Depending on the currently
+          active editor, either the extensions of the current document or the active element are displayed.
+    </p>
+    <h3>Design</h3>
+    <p>
+        Views that are related to design documents, both HW and system.
+        <ul>
+            <li>
+                <b>Connection Editor</b> displays data of the currently active interconnection. See
+                <a href="../hwdesign/connection.html">interconnection</a>,
+                <a href="../hwdesign/adhocconnection.html">ad-hoc connection</a>,
+                <a href="../swsysdesign/apiconnection.html">api connection</a> or
+                <a href="../swsysdesign/comconnection.html">com connection</a>.
+            </li>
+            <li>
+                <b>Component Instance Details</b> displays details of the active component instance. See
+                <a href="../hwdesign/hwinstance.html">component instance</a>,
+                <a href="../swsysdesign/hwmappinginstance.html">HW mapping instance</a>,
+                <a href="../swsysdesign/swinstance.html">SW component instance</a>.
+            </li>
+            <li>
+                <b>Design Configuration Details</b> allows the editing of the design details. The current
+                <i>design configuration</i> can be changed, and the view configuration allows the
+                editing of the active views for the contained component instances.
+            </li>
+            <li>
+                <b>Interface Editor</b> displays data related to the currently active interface:
+                <ul>
+                    <li>
+                        <b>Bus interface</b> contains data of the <i>bus type</i>, <i>abstraction type</i>, the
+                        <i>interface mode</i> and the contained <i>port maps</i>.
+                    </li>
+                    <li>
+                        <b>API interface</b> displays the <i>API type</i> of the interface and its
+                        <i>dependency direction</i>.
+                    </li>
+                    <li>
+                        <b>COM interface</b> details the <i>COM type</i>, <i>transfer type</i> and
+                        <i>direction</i> of the interface, as well as allowing editing of its property values.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </p>
+    <h3>HW design</h3>
+    <p>
+        Views for displaying details only related to a HW design.
+        <ul>
+            <li>
+                <b>Ad hoc port editor</b> allows the editing of ad hoc ports. The port names and directions are displayed, and
+                port visibility can be enabled or disabled.
+            </li>
+            <li>
+                <b>Design parameters</b> displays the parameters of the parameters associated with the current
+                design. See <a href="../componenteditor/params.html">parameters</a>.
+            </li>
+        </ul>
+    </p>
+    <h3>System design</h3>
+    <p>
+        Views for displaying details related only to a system design.
+        <ul>
+            <li>
+                <b>HW Mapping Details</b> allows the editing of the referenced HW component and selecting the
+                referenced active view. Additional functions for handling the SW are also provided.
+            </li>
+        </ul>
+    </p>
+  </body>
+</html>
