@@ -5,6 +5,9 @@
 #include "InstanceWidgets.h"
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
+#include <editors/common/DesignWidget.h>
+#include <common/graphicsItems/ComponentItem.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -13,7 +16,7 @@
 #include "common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h"
 
 #include <KactusAPI/include/BusInterfaceInterface.h>
-#include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/LibraryHandler.h>
 #include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/PortsInterface.h>
@@ -37,19 +40,15 @@
 #include <QString>
 #include <QScrollArea>
 #include <QFrame>
-<<<<<<< HEAD
-=======
 #include <QSet>
 #include <QHash>
 #include <QList>
->>>>>>> bc6325de1 (commit before merging)
 
 class InterconnectGeneratorDialog : public QDialog
 {
     Q_OBJECT
 public:
-    InterconnectGeneratorDialog(QSharedPointer<Component> selectedComponent,
-        QSharedPointer<Design> selectedDesign, LibraryInterface* library,
+    InterconnectGeneratorDialog(DesignWidget* designWidget, LibraryHandler* library,
         MessageMediator* messager, QWidget* parent = nullptr);
     ~InterconnectGeneratorDialog() = default;
 
@@ -62,7 +61,9 @@ protected:
     void accept() override;
 
 private:
-    void createComponentInstanceList(QSharedPointer<Design> selectedDesign);
+    void getBusesFromInstances();
+    void getBusesFromTopComponent();
+    void getAbstractionDefinitions(QSharedPointer<BusInterface> bus, bool fromInstance = true);
     void addNewInitiator();
     void addNewTarget();
     void addInstance(const QString& type);
@@ -79,28 +80,20 @@ private:
     void collectInitiators(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
     void collectTargets(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
 
+    LibraryHandler* library_;
     ConfigStruct* config_;
-    LibraryInterface* library_;
+    VLNVEditor* vlnvEditor_;
+    ParameterGroupBox* parameterGroupBox_;
     MessageMediator* messager_;
+    DesignWidget* designWidget_;
+    QSharedPointer<Component> selectedComponent_;
     QString designVLNV_;
     InstanceComboBox* componentInstances_;
     QVBoxLayout* instancesContainerLayout_;
     QVBoxLayout* initiatorsContainerLayout_;
     QVBoxLayout* targetsContainerLayout_;
 
-<<<<<<< HEAD
-    QLineEdit* interconnectEdit_;
-    QLineEdit* busEdit_;
-    QLineEdit* clockEdit_;
-    QLineEdit* resetEdit_;
-    QLineEdit* addressWidthEdit_;
-    QLineEdit* idWidthEdit_;
-    QLineEdit* dataWidthEdit_;
-    InstanceComboBox* busTypeCombo_;
-    QSet<QString> absRefs_;
-=======
     QSet<QSharedPointer<ConfigurableVLNVReference>> absRefs_;
->>>>>>> bc6325de1 (commit before merging)
     QSet<QString> addedInitiators_;
     QSet<QString> addedTargets_;
     QHash<QString, QSet<QSharedPointer<BusInterface > > > instanceBusesHash_;

@@ -1,5 +1,4 @@
 #include "InterconnectGeneratorDialog.h"
-#include <QFormLayout>
 #include "KactusAPI/include/BusInterfaceInterface.h"
 #include "KactusAPI/include/ListParameterFinder.h"
 
@@ -16,27 +15,30 @@
 #include <QIcon>
 #include <QMessageBox>
 
-InterconnectGeneratorDialog::InterconnectGeneratorDialog(QSharedPointer<Component> selectedComponent,
-    QSharedPointer<Design> selectedDesign, LibraryInterface* library,
+InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWidget, LibraryHandler* library,
     MessageMediator* messager,
     QWidget* parent) : QDialog(parent),
     library_(library),
     messager_(messager),
+    designWidget_(designWidget),
     instancesContainerLayout_(new QVBoxLayout()),
     initiatorsContainerLayout_(new QVBoxLayout()),
-    targetsContainerLayout_(new QVBoxLayout())
+    targetsContainerLayout_(new QVBoxLayout()),
+    vlnvEditor_(new VLNVEditor(VLNV::BUSDEFINITION, library, this, this))
 {
     setMinimumWidth(900);
     setMinimumHeight(900);
 
-    QString designVLNV = selectedComponent->getVlnv().toString(":");
-    designVLNV_ = designVLNV;
+    designVLNV_ = designWidget->getEditedComponent()->getVlnv().toString(":");
 
     QWidget* hiddenWidget = new QWidget(this);
     hiddenWidget->hide();
     componentInstances_ = new InstanceComboBox(hiddenWidget);
 
-    createComponentInstanceList(selectedDesign);
+    auto parameters = QSharedPointer<
+        QList<QSharedPointer<Parameter>>>(new QList<QSharedPointer<Parameter>>());
+    auto choices = QSharedPointer<
+        QList<QSharedPointer<Choice>>>(new QList<QSharedPointer<Choice>>());
 
     QSharedPointer<ListParameterFinder> listFinder =
         QSharedPointer<ListParameterFinder>(new ListParameterFinder());
@@ -218,7 +220,7 @@ void InterconnectGeneratorDialog::updateNameCombos()
 void InterconnectGeneratorDialog::addInstance(const QString& type)
 {
     QStringList availableInstances;
-    updateNameCombo(nullptr, type, availableInstances); 
+    updateNameCombo(nullptr, type, availableInstances);
 
     if (availableInstances.isEmpty()) {
         QMessageBox::information(this, tr("All Instances Added"),
@@ -236,7 +238,7 @@ void InterconnectGeneratorDialog::addInstance(const QString& type)
     QFormLayout* instanceLayout = new QFormLayout(instanceFrame);
     instanceLayout->addRow("Instance Name:", nameAndEditorLayout);
     instanceLayout->addRow(interfaceEditor);
-    
+
     if (type == "Initiator") {
         initiatorsContainerLayout_->addWidget(instanceFrame);
         addedInitiators_.insert(instanceName);
@@ -259,64 +261,13 @@ QVBoxLayout* InterconnectGeneratorDialog::createNameAndEnumerationEditorLayout(
     updateNameCombo(nameCombo, type, availableInstances);
 
     if (availableInstances.isEmpty()) {
-        QMessageBox::information(this, tr("No Instances Available"), 
+        QMessageBox::information(this, tr("No Instances Available"),
             tr("All instances have already been added.")
-);
+        );
         delete instanceFrame;
         return layout;
     }
-    instanceLayout->addRow("Name:", nameCombo);
 
-    dataWidthEdit_ = new QLineEdit("32");
-
-    QLabel* typeLabel = new QLabel(type);
-
-    QVBoxLayout* addressLayout = new QVBoxLayout();
-    if (hasAddressRegions)
-    {
-        QPushButton* addAddressButton = new QPushButton("Add Address Region");
-        connect(addAddressButton, &QPushButton::clicked, this, [addressLayout, this]() {
-            QHBoxLayout* regionLayout = new QHBoxLayout();
-
-            QLineEdit* startEdit = new QLineEdit();
-            QLineEdit* endEdit = new QLineEdit();
-            QPushButton* removeAddressButton = new QPushButton(QIcon(":/icons/common/graphics/remove.png"), tr(""));
-
-            connect(removeAddressButton, &QPushButton::clicked, this, [regionLayout, addressLayout]() {
-                addressLayout->removeItem(regionLayout);
-                QLayoutItem* item;
-                while ((item = regionLayout->takeAt(0)) != nullptr) {
-                    delete item->widget();
-                    delete item;
-                }
-                delete regionLayout;
-                });
-
-            regionLayout->addWidget(new QLabel("Start:"));
-            regionLayout->addWidget(startEdit);
-            regionLayout->addWidget(new QLabel("End:"));
-            regionLayout->addWidget(endEdit);
-            regionLayout->addWidget(removeAddressButton);
-            addressLayout->addLayout(regionLayout);
-            });
-
-        instanceLayout->addRow(addAddressButton);
-        instanceLayout->addRow(addressLayout);
-    }
-
-    QFrame* line = new QFrame();
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-
-    QPushButton* closeButton = new QPushButton(QIcon(":/icons/common/graphics/cross.png"), QString());
-    if (type == "Initiator") {
-        closeButton->setText(tr("Remove Initiator"));
-    }
-    else {
-        closeButton->setText(tr("Remove Target"));
-    }
-
-    connect(closeButton, &QPushButton::clicked, this, [instanceFrame, line, type, this]() {
     QPushButton* closeButton = new QPushButton(QIcon(":/icons/common/graphics/cross.png"), QString());
     closeButton->setText(type == "Initiator" ? tr("Remove Initiator") : tr("Remove Target"));
 
@@ -348,24 +299,6 @@ QVBoxLayout* InterconnectGeneratorDialog::createNameAndEnumerationEditorLayout(
         updateNameCombos();
         });
 
-
-    if (type == "Initiator")
-    {
-        initiatorsContainerLayout_->addWidget(instanceFrame);
-        initiatorsContainerLayout_->addWidget(line);
-    }
-    else
-    {
-        targetsContainerLayout_->addWidget(instanceFrame);
-        targetsContainerLayout_->addWidget(line);
-    }
-
-    updateNameCombos();
-        QString instanceName = nameCombo->currentText();
-        addedInstances_.remove(instanceName);
-        updateNameCombos();
-        });
-
     return layout;
 }
 
@@ -391,55 +324,13 @@ void InterconnectGeneratorDialog::clearInitiatorAndTargetLists()
     targetsContainerLayout_->update();
 }
 
-void InterconnectGeneratorDialog::updateNameCombos()
+void InterconnectGeneratorDialog::setUpLayout()
 {
-    QList<QComboBox*> nameCombos = instancesContainerLayout_->findChildren<QComboBox*>();
-    for (QComboBox* combo : nameCombos)
-    {
-        combo->clear();
-        for (int i = 0; i < componentInstances_->count(); ++i)
-        {
-            combo->addItem(componentInstances_->itemText(i));
-        }
-    }
-}
-
-void InterconnectGeneratorDialog::setUpLayout(QString designVLNV)
-{
-    setWindowTitle("Interconnect Configuration");
+    setWindowTitle("Interconnect Component Configuration");
 
     QGroupBox* configGroup = new QGroupBox(tr("Interconnect Component Configuration"), this);
     QFormLayout* formLayout = new QFormLayout();
 
-    QLabel* designLabel = new QLabel(designVLNV, this);
-    formLayout->addRow(tr("Design VLNV:"), designLabel);
-
-    interconnectEdit_ = new QLineEdit();
-    formLayout->addRow(tr("Interconnect VLNV:"), interconnectEdit_);
-
-    busEdit_ = new QLineEdit();
-    formLayout->addRow(tr("Bus VLNV:"), busEdit_);
-
-    clockEdit_ = new QLineEdit();
-    formLayout->addRow(tr("Clock VLNV:"), clockEdit_);
-
-    resetEdit_ = new QLineEdit();
-    formLayout->addRow(tr("Reset VLNV:"), resetEdit_);
-
-    busTypeCombo_ = new InstanceComboBox();
-    busTypeCombo_->addItem("AXI4LITE");
-    busTypeCombo_->addItem("AXI4");
-    formLayout->addRow(tr("Bus Type:"), busTypeCombo_);
-
-    addressWidthEdit_  = new QLineEdit("32");
-    formLayout->addRow(tr("Address Width:"), addressWidthEdit_);
-
-    idWidthEdit_ = new QLineEdit("8");
-    formLayout->addRow(tr("ID Width:"), idWidthEdit_);
-
-    configGroup->setLayout(formLayout);
-
-    // Initiators section
     busInterfaceCombo_ = new InstanceComboBox(this);
 
     clockCombo_ = new InstanceComboBox(this);
@@ -566,17 +457,9 @@ void InterconnectGeneratorDialog::setUpLayout(QString designVLNV)
     buttonBox->addButton(tr("Generate"), QDialogButtonBox::AcceptRole);
     buttonBox->addButton(QDialogButtonBox::Cancel);
 
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &InterconnectGeneratorDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &InterconnectGeneratorDialog::reject);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout();
-    mainLayout->addWidget(configGroup);
-
-    QHBoxLayout* bottomLayout = new QHBoxLayout();  // Create a horizontal layout for Initiator and Target
-    bottomLayout->addWidget(initiatorsGroup);
-    bottomLayout->addWidget(targetsGroup);
-
-    mainLayout->addLayout(bottomLayout);  // Add the horizontal layout to the main layout
     mainLayout->addWidget(buttonBox);
 
     setLayout(mainLayout);
@@ -585,12 +468,6 @@ void InterconnectGeneratorDialog::setUpLayout(QString designVLNV)
 void InterconnectGeneratorDialog::accept()
 {
     ConfigStruct* config = new ConfigStruct;
-
-    // Collect VLNV values
-    QString interconVLNV = interconnectEdit_->text();
-    QString busVLNV = busEdit_->text();
-    QString clkVLNV = clockEdit_->text();
-    QString rstVLNV = resetEdit_->text();
 
     if (!vlnvEditor_->isValid()) {
         QMessageBox::warning(this, tr("Input Error"), tr("Select valid VLNV for interconnect component."));
@@ -617,13 +494,12 @@ void InterconnectGeneratorDialog::accept()
     QString busType = absRef->getName();
     QString clkVLNV = clockCheckBox_->isChecked() ? clkRef->toString() : "";
     QString rstVLNV = resetCheckBox_->isChecked() ? rstRef->toString() : "";
-    
+
     config->DesignVLNV = designVLNV_;
     config->InterconVLNV = interconVLNV;
     config->BusVLNV = busVLNV;
     config->ClkVLNV = clkVLNV;
     config->RstVLNV = rstVLNV;
-    config->AddressWidth = 32;
     config->BusType = busType.split(".abs")[0];
     config->AddressWidth = 32;
     config->IDWidth = 8;
@@ -651,7 +527,7 @@ void InterconnectGeneratorDialog::accept()
     target.Name = "core_imem_bridge";
     target.DataWidth = 32;
     target.AddressRegions = addrList;
-    
+
     targets.append(target);
 
     config->InitList = initiators;
@@ -733,7 +609,6 @@ void InterconnectGeneratorDialog::collectInitiators(
             }
         }
     }
-    return true; // Success
 }
 
 void InterconnectGeneratorDialog::collectTargets(

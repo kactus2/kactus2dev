@@ -292,12 +292,10 @@
       <Filter>Header Files\include</Filter>
     </ClInclude>
     <ClInclude Include="include\LibraryLoader.h">
-<<<<<<< HEAD
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="include\NullChannel.h">
       <Filter>Generated Files</Filter>
-=======
       <Filter>Header Files\include</Filter>
     </ClInclude>
     <ClInclude Include="include\NullChannel.h">
@@ -308,7 +306,6 @@
     </ClInclude>
     <ClInclude Include="include\ModeConditionParserInterface.h">
       <Filter>Header Files\include</Filter>
->>>>>>> 2968a3b46832b36b512d5a4af80e73eda4b50274
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -523,14 +520,11 @@
       <Filter>Source Files\interfaces\component</Filter>
     </ClCompile>
     <ClCompile Include="utilities\NullChannel.cpp">
-<<<<<<< HEAD
       <Filter>Generated Files</Filter>
-=======
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
     <ClCompile Include="expressions\ModeConditionParserInterface.cpp">
       <Filter>Source Files\expressions</Filter>
->>>>>>> 2968a3b46832b36b512d5a4af80e73eda4b50274
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

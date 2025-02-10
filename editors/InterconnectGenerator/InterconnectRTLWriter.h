@@ -19,7 +19,8 @@ class InterconnectRTLWriter
 {
 public:
     InterconnectRTLWriter(QSharedPointer<Component> component, LibraryInterface* library,
-                          MessageMediator* messager, QString directory, ConfigStruct* config);
+        MessageMediator* messager, QString directory, ConfigStruct* config,
+        QString clk, QString rst);
 
     ~InterconnectRTLWriter() = default;
 
@@ -45,7 +46,7 @@ public:
 
 private:
 
-    QSharedPointer<Component> component_{nullptr};
+    QSharedPointer<Component> component_{ nullptr };
 
     MessageMediator* messager_{ nullptr };
 
@@ -57,13 +58,13 @@ private:
     QString clkPort_;
     QString rstPort_;
 
-    QStringList axiLitePorts_ = {"aw_addr", "aw_prot", "aw_valid", "aw_ready",
+    QStringList axiLitePorts_ = { "aw_addr", "aw_prot", "aw_valid", "aw_ready",
                                 "w_data", "w_strb", "w_valid", "w_ready",
                                 "b_reasp", "b_valid", "b_ready",
                                 "ar_addr", "ar_prot", "ar_valid", "ar_ready",
-                                "r_data", "r_resp", "r_valid", "r_ready"};
+                                "r_data", "r_resp", "r_valid", "r_ready" };
 
-    QStringList axiPorts_ = {"aw_id", "aw_addr", "aw_len", "aw_burst", "aw_lock",
+    QStringList axiPorts_ = { "aw_id", "aw_addr", "aw_len", "aw_burst", "aw_lock",
                             "aw_cache", "aw_prot", "aw_qos", "aw_region",
                             "aw_atop", "aw_user", "aw_valid", "aw_ready",
                             "w_data", "w_strb", "w_last", "w_user", "w_valid", "w_ready",
@@ -71,7 +72,7 @@ private:
                             "ar_id", "ar_addr", "ar_len", "ar_burst", "ar_lock",
                             "ar_cache", "ar_prot", "ar_qos", "ar_region",
                             "ar_atop", "ar_user", "ar_valid", "ar_ready",
-                            "r_id", "r_data", "r_resp", "r_last", "r_user", "r_valid", "r_ready"};
+                            "r_id", "r_data", "r_resp", "r_last", "r_user", "r_valid", "r_ready" };
 
     QString axiTargetBus_ = "_target";
     QString axiInitBus_ = "_init";

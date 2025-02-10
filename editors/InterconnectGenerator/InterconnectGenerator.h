@@ -29,7 +29,7 @@ class InterconnectGenerator
 {
 public:
     //! The constructor
-    InterconnectGenerator(LibraryInterface* library,  MessageMediator* messager);
+    InterconnectGenerator(LibraryInterface* library, MessageMediator* messager);
 
     //! The destructor
     ~InterconnectGenerator() = default;

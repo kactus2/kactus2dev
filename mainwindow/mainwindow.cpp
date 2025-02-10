@@ -121,74 +121,74 @@
 //-----------------------------------------------------------------------------
 // Function: MainWindow::MainWindow()
 //-----------------------------------------------------------------------------
-MainWindow::MainWindow(LibraryHandler* library, MessageMediator* messageChannel, QWidget *parent):
-QMainWindow(parent),
-libraryHandler_(library),
-designTabs_(0),
-leftToolbar_(new QToolBar(this)),
-rightToolbar_(new QToolBar(this)),
-dockHandler_(new DockWidgetHandler(library, messageChannel, leftToolbar_, rightToolbar_, this)),
-ribbon_(0), 
-statusBar_(new QStatusBar(this)),
-scriptEditor_(new PythonSourceEditor(this)),
-actNew_(0),
-actSave_(0),
-actSaveAs_(0),
-actSaveHierarchy_(0),
-actPrint_(0),
-actImageExport_(0),
-editGroup_(0),
-actUndo_(0),
-actRedo_(0),
-actLibraryLocations_(0),
-actLibrarySearch_(0),
-actCheckIntegrity_(0),
-generationGroup_(0),
-pluginActionGroup_(0),
-actGenDocumentation_(0),
-actRunImport_(0),
-diagramToolsGroup_(0),
-actAddColumn_(0),
-actToolSelect_(0),
-actToolConnect_(0),
-actToolInterface_(0),
-actToolDraft_(0),
-actToolToggleOffPage_(0),
-actToolLabel_(0),
-actZoomIn_(0),
-actZoomOut_(0),
-actZoomOriginal_(0),
-actFitInView_(0),
-actVisibleDocks_(0),
-actVisibilityControl_(0),
-openMemoryDesignerAction_(0),
-openInterconnectGenerator_(0),
-actWorkspaces_(0),
-protectGroup_(0),
-actRefresh_(0),
-actProtect_(0),
-actSettings_(0),
-actAbout_(0),
-actHelp_(0),
-actExit_(0),
-configurationToolsGroup_(0),
-actionConfigureViews_(0),
-filteringGroup_(0),
-actionFilterAddressSpaceChains_(0),
-actionCondenseMemoryItems_(0),
-actionCondenseFieldItems_(0),
-actionExtendFieldItems_(0),
-actionFilterSegments_(0),
-actionFilterAddressBlocks_(0),
-actionFilterRegisters_(0),
-actionFilterFields_(0),
-actionFilterUnconnectedMemoryItems_(0),
-windowsMenu_(this),
-visibilityMenu_(this),
-workspaceMenu_(this),
-workspace_(this, dockHandler_),
-messageChannel_(messageChannel)
-{    
+MainWindow::MainWindow(LibraryHandler* library, MessageMediator* messageChannel, QWidget* parent) :
+    QMainWindow(parent),
+    libraryHandler_(library),
+    designTabs_(0),
+    leftToolbar_(new QToolBar(this)),
+    rightToolbar_(new QToolBar(this)),
+    dockHandler_(new DockWidgetHandler(library, messageChannel, leftToolbar_, rightToolbar_, this)),
+    ribbon_(0),
+    statusBar_(new QStatusBar(this)),
+    scriptEditor_(new PythonSourceEditor(this)),
+    actNew_(0),
+    actSave_(0),
+    actSaveAs_(0),
+    actSaveHierarchy_(0),
+    actPrint_(0),
+    actImageExport_(0),
+    editGroup_(0),
+    actUndo_(0),
+    actRedo_(0),
+    actLibraryLocations_(0),
+    actLibrarySearch_(0),
+    actCheckIntegrity_(0),
+    generationGroup_(0),
+    pluginActionGroup_(0),
+    actGenDocumentation_(0),
+    actRunImport_(0),
+    diagramToolsGroup_(0),
+    actAddColumn_(0),
+    actToolSelect_(0),
+    actToolConnect_(0),
+    actToolInterface_(0),
+    actToolDraft_(0),
+    actToolToggleOffPage_(0),
+    actToolLabel_(0),
+    actZoomIn_(0),
+    actZoomOut_(0),
+    actZoomOriginal_(0),
+    actFitInView_(0),
+    actVisibleDocks_(0),
+    actVisibilityControl_(0),
+    openMemoryDesignerAction_(0),
+    openInterconnectGenerator_(0),
+    actWorkspaces_(0),
+    protectGroup_(0),
+    actRefresh_(0),
+    actProtect_(0),
+    actSettings_(0),
+    actAbout_(0),
+    actHelp_(0),
+    actExit_(0),
+    configurationToolsGroup_(0),
+    actionConfigureViews_(0),
+    filteringGroup_(0),
+    actionFilterAddressSpaceChains_(0),
+    actionCondenseMemoryItems_(0),
+    actionCondenseFieldItems_(0),
+    actionExtendFieldItems_(0),
+    actionFilterSegments_(0),
+    actionFilterAddressBlocks_(0),
+    actionFilterRegisters_(0),
+    actionFilterFields_(0),
+    actionFilterUnconnectedMemoryItems_(0),
+    windowsMenu_(this),
+    visibilityMenu_(this),
+    workspaceMenu_(this),
+    workspace_(this, dockHandler_),
+    messageChannel_(messageChannel)
+{
     setWindowTitle(QCoreApplication::applicationName());
     setWindowIcon(QIcon(":icons/common/graphics/appicon.png"));
 
@@ -201,7 +201,7 @@ messageChannel_(messageChannel)
         "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
         "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
         "QGroupBox::title { subcontrol-origin: margin; margin: 0 8px; }"
-        "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"        
+        "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"
         "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
         "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
         "QTableView::indicator:unchecked {image: none;}"
@@ -230,7 +230,7 @@ messageChannel_(messageChannel)
     updateWindows();
 
 
-    QSplitter* mainSplit = new QSplitter(Qt::Horizontal ,this);
+    QSplitter* mainSplit = new QSplitter(Qt::Horizontal, this);
     mainSplit->addWidget(designTabs_);
     mainSplit->addWidget(scriptEditor_);
     scriptEditor_->setVisible(false);
@@ -376,7 +376,7 @@ void MainWindow::setupActions()
     // the action to search for IP-Xact documents in file system
     actLibrarySearch_ = new QAction(QIcon(":/icons/common/graphics/library-refresh.png"),
         tr("Refresh Library"), this);
-    connect(actLibrarySearch_, SIGNAL(triggered()),	this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
+    connect(actLibrarySearch_, SIGNAL(triggered()), this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 
     // Check the library integrity
     actCheckIntegrity_ = new QAction(QIcon(":/icons/common/graphics/checkIntegrity.png"),
@@ -391,7 +391,7 @@ void MainWindow::setupActions()
 
     generationMenu_ = new QMenu(this);
 
-    actGenerate_ = new QAction(QIcon(":icons/common/graphics/automation.png"), tr("Run Generator"), this);   
+    actGenerate_ = new QAction(QIcon(":icons/common/graphics/automation.png"), tr("Run Generator"), this);
     actGenerate_->setMenu(generationMenu_);
     connect(actGenerate_, SIGNAL(triggered()), this, SLOT(onGenerate()), Qt::UniqueConnection);
 
@@ -453,7 +453,7 @@ void MainWindow::setupActions()
     modeActionGroup_->addAction(actToolDraft_);
     modeActionGroup_->addAction(actToolToggleOffPage_);
     modeActionGroup_->addAction(actToolLabel_);
-    connect(modeActionGroup_, SIGNAL(triggered(QAction *)), this, SLOT(drawModeChange(QAction *)));
+    connect(modeActionGroup_, SIGNAL(triggered(QAction*)), this, SLOT(drawModeChange(QAction*)));
 
     //! Initialize the action to condense memory graphics items.
     actionCondenseMemoryItems_ = new QAction(QIcon(":icons/common/graphics/compressMemoryItems.png"),
@@ -569,7 +569,7 @@ void MainWindow::setupActions()
     connect(openInterconnectGenerator_, SIGNAL(triggered()), this, SLOT(onInterconnectGenerate()), Qt::UniqueConnection);
 
     // Initialize the action to manage workspaces.
-    actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"),	tr("Workspaces"), this);
+    actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"), tr("Workspaces"), this);
     connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
     actWorkspaces_->setMenu(&workspaceMenu_);
 
@@ -666,7 +666,7 @@ void MainWindow::setupMenus()
     protectGroup_ = new RibbonGroup(tr("Protection"), ribbon_);
     protectGroup_->addAction(actProtect_);
 
-    protectAction_ = ribbon_->addGroup(protectGroup_); 
+    protectAction_ = ribbon_->addGroup(protectGroup_);
     protectAction_->setVisible(false);
 
     // The "Edit" group.
@@ -746,7 +746,7 @@ void MainWindow::setupMenus()
     ribbon_->addGroup(workspacesGroup);
 
     connect(&workspace_, SIGNAL(requestMenuUpdate()), this, SLOT(updateWorkspaceMenu()), Qt::UniqueConnection);
-    connect(&workspace_, SIGNAL(workspaceChanged(QString const&)), 
+    connect(&workspace_, SIGNAL(workspaceChanged(QString const&)),
         this, SLOT(onWorkspaceChanged(QString const&)), Qt::UniqueConnection);
 
     //! The "System" group.
@@ -966,7 +966,7 @@ void MainWindow::updateMenuStrip()
 
     MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(doc);
     bool isMemoryDesign = memoryDocument != 0;
-    
+
     actSave_->setEnabled(doc != 0 && doc->isModified());
     actSaveAs_->setEnabled(doc != 0);
     actSaveHierarchy_->setEnabled(componentEditor || dynamic_cast<DesignWidget*>(doc));
@@ -976,8 +976,8 @@ void MainWindow::updateMenuStrip()
     generationAction_->setEnabled(unlocked);
     generationAction_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));
 
-    actGenDocumentation_->setEnabled((isHWDesign|| isHWComp) && unlocked);
-    actGenDocumentation_->setVisible((isHWDesign|| isHWComp));
+    actGenDocumentation_->setEnabled((isHWDesign || isHWComp) && unlocked);
+    actGenDocumentation_->setVisible((isHWDesign || isHWComp));
 
     actGenerate_->setEnabled(unlocked);
     actGenerate_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));
@@ -1247,7 +1247,7 @@ void MainWindow::fitInView()
 //-----------------------------------------------------------------------------
 // Function: drawModeChange()
 //-----------------------------------------------------------------------------
-void MainWindow::drawModeChange(QAction *action)
+void MainWindow::drawModeChange(QAction* action)
 {
     TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
@@ -1386,7 +1386,7 @@ void MainWindow::createNew()
 {
     // Create a property page dialog to work as a "New" dialog.
     PropertyPageDialog dialog(QSize(48, 48), 1, PropertyPageDialog::VIEW_ICONS,
-                              PropertyPageDialog::APPLY_CURRENT, this);
+        PropertyPageDialog::APPLY_CURRENT, this);
     dialog.setFixedWidth(620);
     dialog.setWindowTitle(tr("New"));
 
@@ -1403,14 +1403,14 @@ void MainWindow::createNew()
     // Add pages to the dialog.
     NewComponentPage* compPage = new NewComponentPage(libraryHandler_, &dialog);
     connect(compPage, SIGNAL(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
+        QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)));
     dialog.addPage(QIcon(":icons/common/graphics/hw-component.png"), tr("HW Component"), compPage);
 
     NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
     connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
+        QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)));
     dialog.addPage(QIcon(":icons/common/graphics/hw-design.png"), tr("HW Design"), designPage);
@@ -1422,7 +1422,7 @@ void MainWindow::createNew()
 
     NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
     connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, Document::Revision, QString const&)),
-            this, SLOT(createSWDesign(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
+        this, SLOT(createSWDesign(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/sw-design48x48.png"), tr("SW Design"), swDesignPage);
 
     NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
@@ -1437,7 +1437,7 @@ void MainWindow::createNew()
 
     NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);
     connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, Document::Revision, QString const&)),
-            this, SLOT(createComDefinition(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
+        this, SLOT(createComDefinition(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
 
     dialog.finalizePages();
@@ -1506,10 +1506,10 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
     QSharedPointer<View> newHierarchicalView(new View());
     newHierarchicalView->setName(NameGenerationPolicy::hierarchicalViewName());
 
-    QSharedPointer<ConfigurableVLNVReference> tempReference (new ConfigurableVLNVReference(desConfVLNV));
+    QSharedPointer<ConfigurableVLNVReference> tempReference(new ConfigurableVLNVReference(desConfVLNV));
 
     QSharedPointer<DesignConfigurationInstantiation> hierarchicalInstantiation
-        (new DesignConfigurationInstantiation(desConfVLNV.getName() + "_" + desConfVLNV.getVersion()));
+    (new DesignConfigurationInstantiation(desConfVLNV.getName() + "_" + desConfVLNV.getVersion()));
     hierarchicalInstantiation->setDesignConfigurationReference(tempReference);
 
     newHierarchicalView->setDesignConfigurationInstantiationRef(hierarchicalInstantiation->name());
@@ -1614,13 +1614,13 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     }
 
     // Create the view.
-    QSharedPointer<View> view (new View(dialog.getViewName()));
+    QSharedPointer<View> view(new View(dialog.getViewName()));
 
     VLNV designConfigVLNV = dialog.getDesignConfVLNV();
     QSharedPointer<DesignConfigurationInstantiation> hierarchyInstantiation
-        (new DesignConfigurationInstantiation(NameGenerationPolicy::designConfigurationInstantiationName(dialog.getQualifierName())));
+    (new DesignConfigurationInstantiation(NameGenerationPolicy::designConfigurationInstantiationName(dialog.getQualifierName())));
     hierarchyInstantiation->setDesignConfigurationReference(
-        QSharedPointer<ConfigurableVLNVReference>( new ConfigurableVLNVReference( designConfigVLNV ) ) );
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(designConfigVLNV)));
 
     view->setDesignConfigurationInstantiationRef(hierarchyInstantiation->name());
 
@@ -1737,12 +1737,12 @@ void MainWindow::createSWDesign(VLNV const& vlnv, Document::Revision revision, Q
     component->setVersion(VersionHelper::versionFileStr());
 
     // Create the view.
-    QSharedPointer<View> view (new View("software"));
+    QSharedPointer<View> view(new View("software"));
 
-    QSharedPointer<ConfigurableVLNVReference> tempReference (new ConfigurableVLNVReference(desConfVLNV));
+    QSharedPointer<ConfigurableVLNVReference> tempReference(new ConfigurableVLNVReference(desConfVLNV));
 
     QSharedPointer<DesignConfigurationInstantiation> hierarchicalInstantiation
-        (new DesignConfigurationInstantiation(desConfVLNV.getName() + "_" + desConfVLNV.getVersion()));
+    (new DesignConfigurationInstantiation(desConfVLNV.getName() + "_" + desConfVLNV.getVersion()));
     hierarchicalInstantiation->setDesignConfigurationReference(tempReference);
 
     view->setDesignConfigurationInstantiationRef(hierarchicalInstantiation->name());
@@ -1852,12 +1852,12 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     }
 
     // Create the view.
-    QSharedPointer<View> view (new View(dialog.getViewName()));
+    QSharedPointer<View> view(new View(dialog.getViewName()));
 
-    QSharedPointer<ConfigurableVLNVReference> tempReference (new ConfigurableVLNVReference(dialog.getDesignConfVLNV()));
+    QSharedPointer<ConfigurableVLNVReference> tempReference(new ConfigurableVLNVReference(dialog.getDesignConfVLNV()));
 
     QSharedPointer<DesignConfigurationInstantiation> hierarchicalInstantiation
-        (new DesignConfigurationInstantiation(dialog.getDesignConfVLNV().getName() + "_" + dialog.getDesignConfVLNV().getVersion()));
+    (new DesignConfigurationInstantiation(dialog.getDesignConfVLNV().getName() + "_" + dialog.getDesignConfVLNV().getVersion()));
     hierarchicalInstantiation->setDesignConfigurationReference(tempReference);
 
     view->setDesignConfigurationInstantiationRef(hierarchicalInstantiation->name());
@@ -1882,7 +1882,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
         newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
             "Low-level", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
         newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
-            "Middle-level", ColumnTypes::COMPONENTS, 0,GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
+            "Middle-level", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
         newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
             "High-level", ColumnTypes::COMPONENTS, 0, GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH)));
         newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
@@ -1991,7 +1991,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
         sysViewName = "system" + QString::number(runningNumber);
     }
 
-    QSharedPointer<SystemView> systemView (new SystemView(sysViewName));
+    QSharedPointer<SystemView> systemView(new SystemView(sysViewName));
     systemView->setHierarchyRef(desConfVLNV);
     systemView->setHWViewRef(viewName);
 
@@ -2107,7 +2107,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     }
 
     // Create the view.
-    QSharedPointer<SystemView> view (new SystemView(dialog.getViewName()));
+    QSharedPointer<SystemView> view(new SystemView(dialog.getViewName()));
     view->setHierarchyRef(dialog.getDesignConfVLNV());
     view->setHWViewRef(component->getHierViews().first());
 
@@ -2247,7 +2247,7 @@ void MainWindow::createBus(VLNV const& vlnv, Document::Revision revision, QStrin
 //-----------------------------------------------------------------------------
 // Function: mainwindow::createAbsDef()
 //-----------------------------------------------------------------------------
-void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory )
+void MainWindow::createAbsDef(const VLNV& busDefVLNV, const QString& directory)
 {
     Q_ASSERT(busDefVLNV.isValid());
     Q_ASSERT(!directory.isEmpty());
@@ -2432,11 +2432,11 @@ void MainWindow::openCatalog(const VLNV& vlnv)
     {
         return;
     }
- 
+
     if (!libraryHandler_->contains(vlnv))
     {
         emit errorMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
-        return;            
+        return;
     }
 
     QSharedPointer<Catalog> catalog = libraryHandler_->getModel(vlnv).dynamicCast<Catalog>();
@@ -2584,8 +2584,8 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
 
     connect(memoryDesignWidget, SIGNAL(destroyed(QObject*)), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-//     connect(memoryDesignWidget, SIGNAL(clearItemSelection()),
-//         libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+    //     connect(memoryDesignWidget, SIGNAL(clearItemSelection()),
+    //         libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
 
     connect(memoryDesignWidget, SIGNAL(clearItemSelection()), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
@@ -2600,14 +2600,6 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
 void MainWindow::onInterconnectGenerate()
 {
     LibraryInterface* lib = KactusAPI::getLibrary();
-<<<<<<< HEAD
-<<<<<<< HEAD
-    InterconnectGenerator interconGen = InterconnectGenerator(lib, messageChannel_);
-    VLNV interconVLNV = interconGen.generate();
-=======
-
-=======
->>>>>>> bc6325de1 (commit before merging)
     TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
     if (!doc || doc->isProtected())
@@ -2620,14 +2612,13 @@ void MainWindow::onInterconnectGenerate()
     if (interconnectDialog.exec() == QDialog::Accepted) {
         ConfigStruct* config = interconnectDialog.getConfig();
         QHash<QString, QList<QSharedPointer<BusInterface > > > initiators = interconnectDialog.getSelectedInitiators();
-            QHash<QString, QList<QSharedPointer<BusInterface > > > targets = interconnectDialog.getSelectedTargets();
+        QHash<QString, QList<QSharedPointer<BusInterface > > > targets = interconnectDialog.getSelectedTargets();
 
         LibraryInterface* lib = KactusAPI::getLibrary();
         InterconnectGenerator interconGen = InterconnectGenerator(lib, messageChannel_);
         interconGen.generate(config, initiators, targets);
         doc->refresh();
     }
->>>>>>> 86e3e5e65 (first iteration completed)
 }
 
 //-----------------------------------------------------------------------------
@@ -2822,7 +2813,7 @@ void MainWindow::openComponent(VLNV const& vlnv)
     }
 
     connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
-            this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
+        this, SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SLOT(openHWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openBus(const VLNV&)),
@@ -3094,7 +3085,7 @@ void MainWindow::changeProtection(bool locked)
             // ask user if he wants to save the changes made to document
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("The document has been modified. The changes need to be saved before the "
-                "document can be locked. Save changes and continue?"), QMessageBox::Yes | QMessageBox::No, this);
+                    "document can be locked. Save changes and continue?"), QMessageBox::Yes | QMessageBox::No, this);
 
             // if user does not want to save or save can't be done
             if (msgBox.exec() == QMessageBox::No || !doc->save())
@@ -3144,7 +3135,7 @@ void MainWindow::changeProtection(bool locked)
             // Ask the user if he wants to save and switch locks.
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("The document is being edited in another tab and has unsaved changes. Changes need to be saved "
-                   "before this tab can be unlocked. Save changes and switch locks?"),
+                    "before this tab can be unlocked. Save changes and switch locks?"),
                 QMessageBox::Yes | QMessageBox::No, this);
 
             // Restore the lock if the user canceled.
@@ -3337,7 +3328,7 @@ void MainWindow::selectVisibleDocks()
 //-----------------------------------------------------------------------------
 // Function: mainwindow::hideEvent()
 //-----------------------------------------------------------------------------
-void MainWindow::hideEvent( QHideEvent* event )
+void MainWindow::hideEvent(QHideEvent* event)
 {
     disconnectVisibilityControls();
     QMainWindow::hideEvent(event);
@@ -3346,7 +3337,7 @@ void MainWindow::hideEvent( QHideEvent* event )
 //-----------------------------------------------------------------------------
 // Function: mainwindow::showEvent()
 //-----------------------------------------------------------------------------
-void MainWindow::showEvent( QShowEvent* event )
+void MainWindow::showEvent(QShowEvent* event)
 {
     connectVisibilityControls();
     QMainWindow::showEvent(event);
@@ -3458,7 +3449,7 @@ bool MainWindow::hasInvalidReferences(QList<VLNV> hierRefs, VLNV const& referenc
                     "which is design configuration and references to design %3. This "
                     "design is not found in library so component can not be opened in "
                     "design view. Edit component with component editor to remove invalid references").arg(
-                    referencingVlnv.toString(":"), ref.toString(":"), refToDesign.toString(":")));
+                        referencingVlnv.toString(":"), ref.toString(":"), refToDesign.toString(":")));
                 invalidReferences = true;
             }
         }
@@ -3503,7 +3494,7 @@ void MainWindow::onRunImportWizard()
     {
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
             tr("The document has been modified. The changes need to be saved before the "
-            "import wizard can be run. Save changes and continue?"),
+                "import wizard can be run. Save changes and continue?"),
             QMessageBox::Yes | QMessageBox::No, this);
 
         // if user does not want to save or save can't be done
@@ -3540,7 +3531,7 @@ void MainWindow::onRunImportWizard()
 void MainWindow::createGeneratorPluginActions()
 {
     generationMenu_->clear();
-    
+
     generationMenu_->addAction(actGenDocumentation_);
 
     for (IPlugin* plugin : PluginManager::getInstance().getActivePlugins())
@@ -3567,7 +3558,7 @@ void MainWindow::createGeneratorPluginActions()
     }
 
     connect(pluginActionGroup_, SIGNAL(triggered(QAction*)),
-            this, SLOT(runGeneratorPlugin(QAction*)), Qt::UniqueConnection);
+        this, SLOT(runGeneratorPlugin(QAction*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -3660,27 +3651,27 @@ void MainWindow::setPluginVisibilities()
                 {
                 case KactusAttribute::HW:
                 case KactusAttribute::SW:
-                    {
-                        desConfVLNV = component->getHierRef(viewName);
-                        break;
-                    }
+                {
+                    desConfVLNV = component->getHierRef(viewName);
+                    break;
+                }
                 case KactusAttribute::SYSTEM:
-                    {
-                        desConfVLNV = component->getHierSystemRef(viewName);
-                        break;
-                    }
+                {
+                    desConfVLNV = component->getHierSystemRef(viewName);
+                    break;
+                }
                 default:
-                    {
-                        Q_ASSERT(false);
-                        return;
-                    }
+                {
+                    Q_ASSERT(false);
+                    return;
+                }
                 }
 
                 // if the hierarchy ref is not directly to the design but design config is in between
                 if (desConfVLNV.isValid() && desConfVLNV != desVLNV)
                 {
-                     QSharedPointer<Document const> libDesConf = libraryHandler_->getModelReadOnly(desConfVLNV);
-                     designConfiguration = libDesConf.dynamicCast<DesignConfiguration const>();
+                    QSharedPointer<Document const> libDesConf = libraryHandler_->getModelReadOnly(desConfVLNV);
+                    designConfiguration = libDesConf.dynamicCast<DesignConfiguration const>();
                 }
             }
         }
@@ -3748,7 +3739,7 @@ void MainWindow::onConfigureViews()
     QSharedPointer<DesignConfiguration> libraryDesignConfiguration;
 
     DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
-    QString viewName ("");
+    QString viewName("");
 
     if (desWidget && componentVLNV != designVLNV)
     {

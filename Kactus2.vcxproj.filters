@@ -3412,6 +3412,9 @@
     <ClCompile Include="editors\InterconnectGenerator\InterconnectRTLWriter.cpp">
       <Filter>Source Files\editors\InterconnectGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InstanceWidgets.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6162,6 +6165,9 @@
       <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </QtMoc>
     <QtMoc Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\InterconnectGenerator\InstanceWidgets.h">
       <Filter>Header Files\editors\InterconnectGenerator</Filter>
     </QtMoc>
   </ItemGroup>
