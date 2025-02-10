@@ -83,7 +83,42 @@ public:
      */
     std::string getVersion() const;
 
-    std::vector<std::string> getLibraryPaths() const;
+    /*!
+     *	Get configured active library paths.
+     *
+     *    @return The configured active library paths.
+     */
+    std::vector<std::string> getActiveLibraryPaths() const;
+
+    /*!
+     *	Get all configured active and inactive library paths.
+     *	    
+     *    @return All of the configured library paths.
+     */
+    std::vector<std::string> getAllLibraryPaths() const;
+    
+    /*!
+     *	Set a given library path as active or inactive. If set as active, also add the path if not found.
+     *
+     *    @param [in] path         The path to set active.
+     *    @param [in] isActive     Indicates if the path should be set active or inactive.
+     */
+    void setLibraryPathActive(std::string const& path, bool isActive);
+
+    /*!
+     *	Add a new library path and optionally set is as active.
+     *  
+     *    @param [in] path         The path to add.
+     *    @param [in] isActive     Indicates if the new path should be set active or not.
+     */
+    void addLibraryPath(std::string const& path, bool isActive = false);
+
+    /*!
+     *	Remove a library path. Prints error if trying to remove default path.
+     *  
+     *    @param [in] path     The path to remove.
+     */
+    void removeLibraryPath(std::string const& path);
 
     /*!
      *  Get the interface for accessing the component ports.
@@ -128,11 +163,11 @@ public:
     void setupLibrary(std::string const& settingsFileString);
 
     /*!
-     * Set the paths where IP-XACT files are stored.
+     * Sets new active library paths. First path is set as default.
      *
-     *    @param [in] paths  The locations that are currently available to store the files.
+     *    @param [in] paths  The new locations that are currently available to store the files.
      */
-    void setLibraryPaths(std::vector<std::string> paths) const;
+    void setLibraryPaths(std::vector<std::string> const& paths) const;
 
     /*!
      * Get the default library path for IP-XACT files.

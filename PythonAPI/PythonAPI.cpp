@@ -91,9 +91,9 @@ std::string PythonAPI::getVersion() const
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::getLibraryPaths()
 //-----------------------------------------------------------------------------
-std::vector<std::string> PythonAPI::getLibraryPaths() const
+std::vector<std::string> PythonAPI::getAllLibraryPaths() const
 {
-    QStringList locations = KactusAPI::getLibraryPaths();
+    QStringList locations = KactusAPI::getAllLibraryPaths();
 
     std::vector<std::string> paths;
     for (auto const& path : locations)
@@ -101,6 +101,49 @@ std::vector<std::string> PythonAPI::getLibraryPaths() const
         paths.push_back(path.toStdString());
     }
   
+    return paths;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setLibraryPathActive()
+//-----------------------------------------------------------------------------
+void PythonAPI::setLibraryPathActive(std::string const& path, bool isActive)
+{
+    KactusAPI::setLibraryPathActive(QString::fromStdString(path), isActive);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::addLibraryPath()
+//-----------------------------------------------------------------------------
+void PythonAPI::addLibraryPath(std::string const& path, bool isActive /*= false*/)
+{
+    KactusAPI::addLibraryPath(QString::fromStdString(path), isActive);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeLibraryPath()
+//-----------------------------------------------------------------------------
+void PythonAPI::removeLibraryPath(std::string const& path)
+{
+    if (KactusAPI::removeLibraryPath(QString::fromStdString(path)) == false)
+    {
+        messager_->showError(QStringLiteral("Error: Cannot remove default library path"));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getActiveLibraryPaths()
+//-----------------------------------------------------------------------------
+std::vector<std::string> PythonAPI::getActiveLibraryPaths() const
+{
+    QStringList locations = KactusAPI::getActiveLibraryPaths();
+
+    std::vector<std::string> paths;
+    for (auto const& path : locations)
+    {
+        paths.push_back(path.toStdString());
+    }
+
     return paths;
 }
 
@@ -147,15 +190,13 @@ BusInterfaceInterface* PythonAPI::getBusInterface()
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::setLibraryPaths()
 //-----------------------------------------------------------------------------
-void PythonAPI::setLibraryPaths(std::vector<std::string> paths) const
+void PythonAPI::setLibraryPaths(std::vector<std::string> const& paths) const
 {
     QStringList libraryPaths;
     for (auto const& path : paths)
     {
-
         libraryPaths.append(QString::fromStdString(path));
     }
-
 
     KactusAPI::setLibraryPaths(libraryPaths);
 }

@@ -73,20 +73,53 @@ public:
     static QString getVersionFileString();
 
     /*!
-     * Gets the paths where IP-XACT files are stored.
+     * Gets the active paths where IP-XACT files are stored.
      *
-     *    @return The paths where IP-XACT files are stored.
+     *    @return The active paths where IP-XACT files are stored.
      */
-    static QStringList getLibraryPaths();
+    static QStringList getActiveLibraryPaths();
 
     /*!
-     * Set the paths where IP-XACT files are stored.
+     * Gets all paths where IP-XACT files are stored.
+     *
+     *    @return All of the paths where IP-XACT files are stored.
+     */
+    static QStringList getAllLibraryPaths();
+
+    /*!
+     * Set the paths where IP-XACT files are stored. The first active path is set as default, if there are changes.
      *
      *    @param [in] activeLocations  The locations that are currently available to store the files.
      *    @param [in] allLocations     All the locations available, but not all need to be active.
      */
     static void setLibraryPaths(QStringList const& activeLocations,
         QStringList const& allLocations = QStringList() );
+
+    /*!
+     *	Set a given library path as active or inactive. If set as active, also add the path if not found.
+     *  
+     *    @param [in] path         The path to set active.
+     *    @param [in] isActive     Indicates if the path should be set active or inactive.
+     */
+    static void setLibraryPathActive(QString const& path, bool isActive);
+
+    /*!
+     *	Add a new library path and set it active or inactive.
+     *  
+     *    @param [in] path         The path to add.
+     *    @param [in] isActive     Flag to indicate if path should be set active or inactive.
+     */
+    static void addLibraryPath(QString const& path, bool isActive);
+
+    /*!
+     *	Removes selected library path, if selected path is not the default path. If path to remove is not found
+     *  in settings, nothing is removed.
+     *  
+     *    @param [in] path     The path to remove
+     *	    
+     *    @return True, if path removal was successful (or nothing was done). False, if the path to remove is the default path.
+     */
+    static bool removeLibraryPath(QString const& path);
 
     /*!
      * Get the default library path for IP-XACT files.
