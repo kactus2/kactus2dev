@@ -76,7 +76,7 @@
     <QtModules>core;gui;widgets;help;printsupport;svg;xml</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtInstall>6.2.4</QtInstall>
+    <QtInstall>qt6.6.3</QtInstall>
     <QtModules>core;gui;widgets;help;printsupport;svg;xml</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -861,6 +861,10 @@ CreateHelp
     <ClCompile Include="editors\HWDesign\undoCommands\ReplaceComponentCommand.cpp" />
     <ClCompile Include="editors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp" />
     <ClCompile Include="editors\HWDesign\WarningSymbol.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\ConfigJsonParser.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectGenerator.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectRTLWriter.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressBlockGraphicsItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.cpp" />
@@ -2102,6 +2106,10 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="editors\InterconnectGenerator\ConfigJsonParser.h" />
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectGenerator.h" />
+    <QtMoc Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.h" />
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectRTLWriter.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressBlockGraphicsItem.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.h" />
@@ -2924,6 +2932,7 @@ CreateHelp
   </ItemGroup>
   <ItemGroup>
     <None Include="common\graphicsItems\ConnectionItem.inl" />
+    <None Include="editors\InterconnectGenerator\config.json" />
     <None Include="wizards\common\IPXactElementComparator.inl" />
     <None Include="wizards\common\ListComparator.inl" />
   </ItemGroup>

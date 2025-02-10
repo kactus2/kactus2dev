@@ -1,0 +1,1978 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Header Files\kactusExtensions">
+      <UniqueIdentifier>{baefef4c-d901-4edd-a506-4608479a05fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\kactusExtensions">
+      <UniqueIdentifier>{9a1ab151-3ac8-45ec-910d-4264f073bda9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{a1bee4a2-7ee8-4820-9673-b6c6e7a03481}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{3512f2ef-cd60-43f9-8388-f194f8eff4e9}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{74b008bb-44e4-4850-b19d-a5c6c4fa24b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{f81db2e0-6b15-4378-a84f-e30cbdb942c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BusDefinition">
+      <UniqueIdentifier>{9784a5a1-4c50-4889-8187-b6a3563987d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BusDefinition">
+      <UniqueIdentifier>{b3c73ea0-2cec-4b2d-93eb-a9a6e3650ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AbstractionDefinition">
+      <UniqueIdentifier>{e9b14fb4-39de-494f-9933-5cf8c923a03e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AbstractionDefinition">
+      <UniqueIdentifier>{77c749b9-09e3-42ef-bc9f-febe4f45e004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Design">
+      <UniqueIdentifier>{3105a439-452c-4dc3-9807-e87a57bfc118}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Design">
+      <UniqueIdentifier>{b950dcd0-9d3d-40cb-a908-a4b49e4c0001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Component">
+      <UniqueIdentifier>{9bdefd34-268c-40c1-b3a4-93c31334293e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Component">
+      <UniqueIdentifier>{d70ea028-d12a-4260-8f6a-8f4e96a9e470}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\validators">
+      <UniqueIdentifier>{bc49e2f5-b962-4eb8-bcee-ff4575f6267f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\validators">
+      <UniqueIdentifier>{1d95ce5a-b997-4755-bd65-527b1d5afd4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BusDefinition\validators">
+      <UniqueIdentifier>{be9134bf-e797-422d-befb-f9d1e2c8cf51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BusDefinition\validators">
+      <UniqueIdentifier>{06ae740e-ae54-4934-9ff6-2fa1ac8d2396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Component\validators">
+      <UniqueIdentifier>{8daac011-d12d-41f3-a0d6-788003de5c37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Component\validators">
+      <UniqueIdentifier>{c2588e78-c087-4ca0-820f-78ef99341553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AbstractionDefinition\validators">
+      <UniqueIdentifier>{fe0e3948-8852-4e01-8cf4-89112e8feaff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AbstractionDefinition\validators">
+      <UniqueIdentifier>{95fa34c7-584f-4e11-97ce-905ebabfe1f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Design\validators">
+      <UniqueIdentifier>{4adde65a-aa38-44fb-ba47-3725121b1fe2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Design\validators">
+      <UniqueIdentifier>{7167ec92-b7f3-470a-a7cd-7a154a9c3035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\kactusExtensions\validators">
+      <UniqueIdentifier>{f2b900ef-3d64-4ad0-92d1-592fc252c4e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\kactusExtensions\validators">
+      <UniqueIdentifier>{400a4962-d1b4-46a4-a93f-52c4f3b9514d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Catalog">
+      <UniqueIdentifier>{300d32ff-9bc3-4bc3-b1a8-f5cfc464bd7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Catalog">
+      <UniqueIdentifier>{2c69e06e-0636-46ef-9854-26900eb868c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Catalog\validators">
+      <UniqueIdentifier>{9c883f7b-85d7-4788-a56e-2b3c39628e68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Catalog\validators">
+      <UniqueIdentifier>{64de22a1-b68b-4616-88ed-eb3641e323ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utilities">
+      <UniqueIdentifier>{2f3204f3-1ca5-4000-bf6e-a525ffc7e46c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utilities">
+      <UniqueIdentifier>{54d2758c-a610-4b1c-9a03-7f22e6644109}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DesignConfiguration">
+      <UniqueIdentifier>{3756b817-3a7e-4d61-aaeb-4228dc0db3b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DesignConfiguration\validators">
+      <UniqueIdentifier>{069e3eba-3a4e-4c79-afa5-f6963520eef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DesignConfiguration">
+      <UniqueIdentifier>{08dd8af0-de2a-47a7-9b4c-07b5f19ca328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DesignConfiguration\validators">
+      <UniqueIdentifier>{b997b8ac-3800-4bf7-b01f-9f96768da459}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BusDefinition\BusDefinition.cpp">
+      <Filter>Source Files\BusDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="BusDefinition\BusDefinitionReader.cpp">
+      <Filter>Source Files\BusDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="BusDefinition\BusDefinitionWriter.cpp">
+      <Filter>Source Files\BusDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\MonitorInterface.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\PortReference.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\ActiveInterface.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\AdHocConnection.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\ComponentInstance.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\Design.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\DesignReader.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\DesignWriter.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\HierInterface.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\Interconnection.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\MonitorInterconnection.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\ComponentInstanceReader.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\ComponentInstanceWriter.cpp">
+      <Filter>Source Files\Design</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Extendable.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="generaldeclarations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\AbstractionDefinition.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\AbstractionDefinitionReader.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\AbstractionDefinitionWriter.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\PortAbstraction.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\TransactionalAbstraction.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\TransactionalAbstractionReader.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\TransactionalAbstractionWriter.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\TransactionalPort.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\WireAbstraction.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\WireAbstractionReader.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\WireAbstractionWriter.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\WirePort.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiInterconnection.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiInterface.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ColumnDesc.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComInterconnection.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComInterface.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComProperty.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\FileDependency.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\HierApiInterconnection.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\HierComInterconnection.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\Kactus2Group.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\Kactus2Placeholder.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\Kactus2Position.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\Kactus2Value.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\KactusAttribute.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\SystemView.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AddressBlock.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AddressBlockReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AddressBlockWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AddressSpace.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AddressSpaceReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AddressSpaceWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AlternateRegister.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\BuildCommand.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\BusInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\BusInterfaceReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\BusInterfaceWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Channel.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ChannelReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ChannelWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Component.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ComponentGenerator.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ComponentGeneratorReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ComponentGeneratorWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ComponentInstantiation.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ComponentReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ComponentWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Cpu.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\CPUReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\CPUWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\DesignConfigurationInstantiation.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\DesignInstantiation.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\EnumeratedValue.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\EnumeratedValueReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\EnumeratedValueWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Field.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\File.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FileReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FileSet.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FileSetReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FileSetWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FileWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Function.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\InstantiationsReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\InstantiationsWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryBlockBase.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryMap.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryMapBase.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryMapBaseReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryMapBaseWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryMapReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryMapWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryRemap.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Model.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\OtherClockDriver.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\OtherClockDriverReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\OtherClockDriverWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Port.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PortReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PortWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Register.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\RegisterBase.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\RegisterDefinition.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\RegisterFile.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\RegisterReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\RegisterWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\RemapPort.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\RemapState.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\RemapStateReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\RemapStateWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Transactional.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\View.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ViewReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ViewWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Wire.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\WireTypeDef.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\WriteValueConstraint.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Assertion.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\BooleanValue.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\BuildModel.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\CellSpecification.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ClockUnit.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\CommonItemsReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\CommonItemsWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ConfigurableElementValue.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ConfigurableVLNVReference.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\DirectionTypes.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Document.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\DocumentReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\DocumentWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Extendable.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\FileBuilder.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\FileBuilderReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\FileBuilderWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ModuleParameter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ModuleParameterReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ModuleParameterWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\NameGroup.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\NameGroupReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\NameGroupWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\NameValuePair.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Parameter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ParameterReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ParameterWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\PartSelect.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Protocol.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ProtocolReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ProtocolWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Range.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\TransactionalTypes.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Vector.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Enumeration.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Segment.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AbstractionType.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PortMap.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiDefinition.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiFunction.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiFunctionParameter.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComDefinition.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="common\GenericVendorExtension.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\VLNV.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\ValueFormatter.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ConnectionRoute.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="BusDefinition\validators\BusDefinitionValidator.cpp">
+      <Filter>Source Files\BusDefinition\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\EnumeratedValueValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\FileValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\FieldValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\FileSetValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\CPUValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\RemapStateValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\RegisterValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\MemoryReserve.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\AddressBlockValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\MemoryMapValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\MemoryMapBaseValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\AddressSpaceValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\AccessTypes.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\ChannelValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\PortValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\TimingConstraint.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\PresenceTypes.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiDefinitionWriter.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComDefinitionWriter.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\InstantiationsValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\ViewValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\BusInterfaceValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\PortMapValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\validators\AbstractionDefinitionValidator.cpp">
+      <Filter>Source Files\AbstractionDefinition\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\TimingConstraintValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\CellSpecificationValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\ProtocolValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\ComponentGeneratorValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\ComponentValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\AssertionValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\validator\AdHocConnectionValidator.cpp">
+      <Filter>Source Files\Design\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\validator\ComponentInstanceValidator.cpp">
+      <Filter>Source Files\Design\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\validator\DesignValidator.cpp">
+      <Filter>Source Files\Design\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Design\validator\InterconnectionValidator.cpp">
+      <Filter>Source Files\Design\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ApiDefinitionReader.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\validators\ApiDefinitionValidator.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\ComDefinitionReader.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\validators\ComDefinitionValidator.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="common\PortAlignment.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\validators\SystemDesignConfigurationValidator.cpp">
+      <Filter>Source Files\kactusExtensions\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\validators\SystemViewConfigurationValidator.cpp">
+      <Filter>Source Files\kactusExtensions\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusExtensions\InterfaceGraphicsData.cpp">
+      <Filter>Source Files\kactusExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\Catalog.cpp">
+      <Filter>Source Files\Catalog</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\CatalogReader.cpp">
+      <Filter>Source Files\Catalog</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\CatalogWriter.cpp">
+      <Filter>Source Files\Catalog</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\IpxactFile.cpp">
+      <Filter>Source Files\Catalog</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\validators\CatalogValidator.cpp">
+      <Filter>Source Files\Catalog\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\IndirectInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\IndirectInterfaceReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\TransparentBridge.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\IndirectInterfaceWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\IndirectInterfaceValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\PortTypeValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\AbstractionTypeValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\ParameterValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\namevalidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\NMTokenValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities\XmlUtils.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\RegisterFileValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\RegisterBaseValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldReset.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities\BusDefinitionUtils.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SubSpaceMap.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SubSpaceMapWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SubspaceMapReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryBlockBaseReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryBlockBaseWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\MemoryBlockValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\SubspaceMapValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\CommonItemsValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ChoiceWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\validators\DesignConfigurationValidator.cpp">
+      <Filter>Source Files\DesignConfiguration\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\validators\InterconnectionConfigurationValidator.cpp">
+      <Filter>Source Files\DesignConfiguration\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\validators\ViewConfigurationValidator.cpp">
+      <Filter>Source Files\DesignConfiguration\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\AbstractorInstance.cpp">
+      <Filter>Source Files\DesignConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\DesignConfiguration.cpp">
+      <Filter>Source Files\DesignConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\DesignConfigurationReader.cpp">
+      <Filter>Source Files\DesignConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\DesignConfigurationWriter.cpp">
+      <Filter>Source Files\DesignConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\InterconnectionConfiguration.cpp">
+      <Filter>Source Files\DesignConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\InterfaceRef.cpp">
+      <Filter>Source Files\DesignConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\MultipleAbstractorInstances.cpp">
+      <Filter>Source Files\DesignConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignConfiguration\ViewConfiguration.cpp">
+      <Filter>Source Files\DesignConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\Packet.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\PacketField.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\PacketReader.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Qualifier.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\PacketWriter.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\QualifierValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\validators\PacketValidator.cpp">
+      <Filter>Source Files\AbstractionDefinition\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\FileType.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Region.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ExecutableImage.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\LanguageTools.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\RegionValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryArray.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryArrayReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryArrayWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\MemoryArrayValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldAccessPolicy.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldAccessPolicyReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldReference.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ModeReference.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldReferenceWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldReferenceReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldAccessPolicyWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\FieldAccessPolicyValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\FieldReferenceValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AccessPolicy.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AccessPolicyReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\AccessPolicyWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\InitiatorInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\TargetInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MirroredTargetInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ModeReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Mode.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ModeWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PortSlice.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\ModeValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\PortSliceValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FileSetRef.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldSlice.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\FieldSliceValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PowerDomain.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PowerDomainReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PowerDomainWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\PowerDomainValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="common\QualifierReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Driver.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="common\QualifierWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Choice.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ChoiceReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\ChoiceValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SubPort.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Structured.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="common\DocumentUtils.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\CollectionValidators.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\HierarchicalValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\validators\PortAbstractionValidator.cpp">
+      <Filter>Source Files\AbstractionDefinition\validators</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BusDefinition\BusDefinition.h">
+      <Filter>Header Files\BusDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\ActiveInterface.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\AdHocConnection.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\ComponentInstance.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\Design.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\HierInterface.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\Interconnection.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\MonitorInterconnection.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\MonitorInterface.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\PortReference.h">
+      <Filter>Header Files\Design</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Extendable.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="generaldeclarations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ipxactmodels_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\PortAbstraction.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\TransactionalAbstraction.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\TransactionalPort.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\WireAbstraction.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\WireAbstractionWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\WirePort.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ApiInterconnection.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ApiInterface.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ColumnDesc.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ComInterconnection.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ComInterface.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ComProperty.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\FileDependency.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\HierApiInterconnection.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\HierComInterconnection.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\Kactus2Group.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\Kactus2Placeholder.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\Kactus2Position.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\Kactus2Value.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\KactusAttribute.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\SystemView.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\AddressBlock.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\AddressSpace.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\AlternateRegister.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\BuildCommand.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\BusInterface.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Channel.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Component.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ComponentGenerator.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ComponentInstantiation.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Cpu.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\DesignConfigurationInstantiation.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\DesignInstantiation.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\EnumeratedValue.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Field.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\File.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FileSet.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Function.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryBlockBase.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryMap.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryMapBase.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryRemap.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Model.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\OtherClockDriver.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Port.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Register.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\RegisterBase.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\RegisterDefinition.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\RegisterFile.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\RemapPort.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\RemapState.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Transactional.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\View.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Wire.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\WireTypeDef.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\WriteValueConstraint.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Array.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Assertion.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\BooleanValue.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\BuildModel.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\CellSpecification.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ClockUnit.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ConfigurableElementValue.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ConfigurableVLNVReference.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\DirectionTypes.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Document.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Extendable.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\FileBuilder.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ModuleParameter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\NameGroup.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\NameValuePair.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Parameter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\PartSelect.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Protocol.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Qualifier.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Range.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\TransactionalTypes.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Vector.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Enumeration.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Segment.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\AbstractionType.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\PortMap.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ApiDefinition.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ApiFunction.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ApiFunctionParameter.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ComDefinition.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="common\VendorExtension.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\VLNV.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\ConnectionRoute.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\ValueFormatter.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="BusDefinition\validators\BusDefinitionValidator.h">
+      <Filter>Header Files\BusDefinition\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\FieldValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\EnumeratedValueValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\FileValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\FileSetValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\CPUValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\RemapStateValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\RegisterValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\MemoryReserve.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\AddressBlockValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\MemoryMapBaseValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\MemoryMapValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\AddressSpaceValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\AccessTypes.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ChannelValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\PortValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\TimingConstraint.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\PresenceTypes.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\InstantiationsValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ViewValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\OtherClockDriverValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\PortMapValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\validators\AbstractionDefinitionValidator.h">
+      <Filter>Header Files\AbstractionDefinition\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\ProtocolValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\TimingConstraintValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\CellSpecificationValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ComponentValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ComponentGeneratorValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\AssertionValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\validator\AdHocConnectionValidator.h">
+      <Filter>Header Files\Design\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\validator\ComponentInstanceValidator.h">
+      <Filter>Header Files\Design\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\validator\InterconnectionValidator.h">
+      <Filter>Header Files\Design\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Design\validator\DesignValidator.h">
+      <Filter>Header Files\Design\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\validators\ApiDefinitionValidator.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\validators\ComDefinitionValidator.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="common\PortAlignment.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\validators\SystemDesignConfigurationValidator.h">
+      <Filter>Header Files\kactusExtensions\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\validators\SystemViewConfigurationValidator.h">
+      <Filter>Header Files\kactusExtensions\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusExtensions\InterfaceGraphicsData.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\BusInterfaceValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Catalog\Catalog.h">
+      <Filter>Header Files\Catalog</Filter>
+    </ClInclude>
+    <ClInclude Include="Catalog\IpxactFile.h">
+      <Filter>Header Files\Catalog</Filter>
+    </ClInclude>
+    <ClInclude Include="Catalog\validators\CatalogValidator.h">
+      <Filter>Header Files\Catalog\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\IndirectInterface.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\IndirectInterfaceReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\TransparentBridge.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\IndirectInterfaceWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\IndirectInterfaceValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\PortTypeValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\AbstractionTypeValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\ParameterValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="utilities\XmlUtils.h">
+      <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\RegisterFileValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\RegisterBaseValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldReset.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="utilities\BusDefinitionUtils.h">
+      <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="common\TagData.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SubSpaceMap.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SubSpaceMapWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SubspaceMapReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryBlockBaseReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryBlockBaseWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\MemoryBlockValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\SubspaceMapValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\CommonItemsValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ChoiceWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\AbstractorInstance.h">
+      <Filter>Header Files\DesignConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\DesignConfiguration.h">
+      <Filter>Header Files\DesignConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\DesignConfigurationReader.h">
+      <Filter>Header Files\DesignConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\DesignConfigurationWriter.h">
+      <Filter>Header Files\DesignConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\InterconnectionConfiguration.h">
+      <Filter>Header Files\DesignConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\InterfaceRef.h">
+      <Filter>Header Files\DesignConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\MultipleAbstractorInstances.h">
+      <Filter>Header Files\DesignConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\ViewConfiguration.h">
+      <Filter>Header Files\DesignConfiguration</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\validators\DesignConfigurationValidator.h">
+      <Filter>Header Files\DesignConfiguration\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\validators\InterconnectionConfigurationValidator.h">
+      <Filter>Header Files\DesignConfiguration\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignConfiguration\validators\ViewConfigurationValidator.h">
+      <Filter>Header Files\DesignConfiguration\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\Packet.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\PacketField.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\WireAbstractionReader.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\TransactionalAbstractionReader.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\PacketReader.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\PacketWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="common\NameGroupWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\QualifierValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\validators\PacketValidator.h">
+      <Filter>Header Files\AbstractionDefinition\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\NameGroupReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\NameGroupWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ModuleParameterWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ParameterReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ParameterWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ProtocolReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ProtocolWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ModuleParameterReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\FileType.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Region.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ExecutableImage.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\LanguageTools.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\RegionValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ViewReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ViewWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryArray.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryArrayReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryArrayWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\MemoryArrayValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldAccessPolicyReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldAccessPolicy.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldReference.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ModeReference.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldReferenceReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldReferenceWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldAccessPolicyWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\FieldAccessPolicyValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\FieldReferenceValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\AccessPolicy.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\AccessPolicyReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\AccessPolicyWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\InitiatorInterface.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\TargetInterface.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MirroredTargetInterface.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ModeReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Mode.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ModeWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\PortSlice.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\ModeValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\PortSliceValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FileSetRef.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldSlice.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\FieldSliceValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\PowerDomain.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\PowerDomainReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\PowerDomainWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\PowerDomainValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\RemapStateReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\RemapStateWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="utilities\Copy.h">
+      <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="common\QualifierReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Driver.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\OtherClockDriverReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="common\QualifierWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Choice.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ChoiceReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\ChoiceValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SubPort.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Structured.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="common\DocumentUtils.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\HierarchicalValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\CollectionValidators.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\validators\PortAbstractionValidator.h">
+      <Filter>Header Files\AbstractionDefinition\validators</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
+      <Filter>Header Files\BusDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="BusDefinition\BusDefinitionWriter.h">
+      <Filter>Header Files\BusDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Design\DesignReader.h">
+      <Filter>Header Files\Design</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Design\DesignWriter.h">
+      <Filter>Header Files\Design</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Design\ComponentInstanceReader.h">
+      <Filter>Header Files\Design</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Design\ComponentInstanceWriter.h">
+      <Filter>Header Files\Design</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\AddressBlockReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\AddressBlockWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\AddressSpaceReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\AddressSpaceWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\BusInterfaceReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\BusInterfaceWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\ChannelReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\ChannelWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\ComponentGeneratorReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\ComponentGeneratorWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\ComponentReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\ComponentWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\CPUReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\CPUWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\EnumeratedValueReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\EnumeratedValueWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\FieldReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\FieldWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\FileReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\FileSetReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\FileSetWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\FileWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\InstantiationsReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\InstantiationsWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\MemoryMapBaseReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\MemoryMapBaseWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\MemoryMapReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\MemoryMapWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <QtMoc Include="Component\OtherClockDriverWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </QtMoc>
+    <CustomBuild Include="Component\PortReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\PortWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\RegisterReader.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component\RegisterWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\CommonItemsReader.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\CommonItemsWriter.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\DocumentReader.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\DocumentWriter.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\FileBuilderReader.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\FileBuilderWriter.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusExtensions\ApiDefinitionWriter.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusExtensions\ComDefinitionWriter.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusExtensions\ApiDefinitionReader.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </CustomBuild>
+    <CustomBuild Include="kactusExtensions\ComDefinitionReader.h">
+      <Filter>Header Files\kactusExtensions</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Catalog\CatalogReader.h">
+      <Filter>Header Files\Catalog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Catalog\CatalogWriter.h">
+      <Filter>Header Files\Catalog</Filter>
+    </CustomBuild>
+    <QtMoc Include="common\validators\namevalidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </QtMoc>
+    <QtMoc Include="common\validators\NMTokenValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </QtMoc>
+    <CustomBuild Include="common\GenericVendorExtension.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

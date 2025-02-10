@@ -1,0 +1,141 @@
+//-----------------------------------------------------------------------------
+// File: ConnectionRoute.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 28.09.2015
+//
+// Description:
+// Vendor extension for storing connection routes in design.
+//-----------------------------------------------------------------------------
+
+#include "ConnectionRoute.h"
+
+#include <QPointF>
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::ConnectionRoute()
+//-----------------------------------------------------------------------------
+ConnectionRoute::ConnectionRoute(QString const& connectionName) :
+name_(connectionName)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::~ConnectionRoute()
+//-----------------------------------------------------------------------------
+ConnectionRoute::~ConnectionRoute()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::ConnectionRoute()
+//-----------------------------------------------------------------------------
+ConnectionRoute::ConnectionRoute(ConnectionRoute const& other) :
+    name_(other.name_),
+    offpage_(other.offpage_),
+    route_(other.route_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::clone()
+//-----------------------------------------------------------------------------
+VendorExtension* ConnectionRoute::clone() const
+{
+    return new ConnectionRoute(*this);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::type()
+//-----------------------------------------------------------------------------
+QString ConnectionRoute::type() const
+{
+    return QStringLiteral("kactus2:route");
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::write()
+//-----------------------------------------------------------------------------
+void ConnectionRoute::write(QXmlStreamWriter& writer) const
+{
+    writer.writeStartElement(QStringLiteral("kactus2:route"));
+    
+    writer.writeAttribute(QStringLiteral("kactus2:connRef"), name());
+    if (isOffpage())
+    {
+        writer.writeAttribute(QStringLiteral("kactus2:offPage"), QStringLiteral("true"));
+    }
+    else
+    {
+        writer.writeAttribute(QStringLiteral("kactus2:offPage"), QStringLiteral("false"));
+    }
+
+    for (auto const& routePoint : route_)
+    {
+        writer.writeEmptyElement(QStringLiteral("kactus2:position"));
+        writer.writeAttribute(QStringLiteral("x"), QString::number(routePoint.x()));
+        writer.writeAttribute(QStringLiteral("y"), QString::number(routePoint.y()));
+    }
+
+    writer.writeEndElement();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::setName()
+//-----------------------------------------------------------------------------
+void ConnectionRoute::setName(QString const& name)
+{
+    name_ = name;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::name()
+//-----------------------------------------------------------------------------
+QString ConnectionRoute::name() const
+{
+    return name_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::setOffpage()
+//-----------------------------------------------------------------------------
+void ConnectionRoute::setOffpage(bool offpage)
+{
+    offpage_ = offpage;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::isOffpage()
+//-----------------------------------------------------------------------------
+bool ConnectionRoute::isOffpage() const
+{
+    return offpage_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::addPoint()
+//-----------------------------------------------------------------------------
+void ConnectionRoute::addPoint(QPointF const& point)
+{
+    route_.append(point);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::setRoute()
+//-----------------------------------------------------------------------------
+void ConnectionRoute::setRoute(QList<QPointF> const& route)
+{
+    route_ = route;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::getRoute()
+//-----------------------------------------------------------------------------
+QList<QPointF> ConnectionRoute::getRoute() const
+{
+    return route_;
+}
