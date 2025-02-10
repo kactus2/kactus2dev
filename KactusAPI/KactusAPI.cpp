@@ -90,10 +90,7 @@ QStringList KactusAPI::getActiveLibraryPaths()
 QStringList KactusAPI::getAllLibraryPaths()
 {
     QSettings settings;
-    QStringList allPaths(settings.value(QStringLiteral("Library/ActiveLocations")).toStringList());
-    allPaths.append(settings.value(QStringLiteral("Library/Locations")).toStringList());
-
-    return allPaths;
+    return settings.value(QStringLiteral("Library/Locations")).toStringList();
 }
 
 //-----------------------------------------------------------------------------

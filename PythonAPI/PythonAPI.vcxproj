@@ -83,6 +83,13 @@
       <AdditionalLibraryDirectories>$(SolutionDir)executable;$(PYTHON_DIR)\libs;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>python310_d.lib;IPXACTmodelsd.lib;KactusAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>cp _pythonAPI_d.pyd ..\executable\
+cp pythonAPI.py ..\executable\</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy pythonapi files to executable dir</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
