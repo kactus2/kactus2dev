@@ -106,12 +106,12 @@ public:
     void setLibraryPathActive(std::string const& path, bool isActive);
 
     /*!
-     *	Add a new library path and optionally set is as active.
+     *	Add a new library path and set as active by default.
      *  
      *    @param [in] path         The path to add.
      *    @param [in] isActive     Indicates if the new path should be set active or not.
      */
-    void addLibraryPath(std::string const& path, bool isActive = false);
+    void addLibraryPath(std::string const& path, bool isActive = true);
 
     /*!
      *	Remove a library path. Prints error if trying to remove default path.

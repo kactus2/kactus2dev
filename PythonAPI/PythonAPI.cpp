@@ -115,7 +115,7 @@ void PythonAPI::setLibraryPathActive(std::string const& path, bool isActive)
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::addLibraryPath()
 //-----------------------------------------------------------------------------
-void PythonAPI::addLibraryPath(std::string const& path, bool isActive /*= false*/)
+void PythonAPI::addLibraryPath(std::string const& path, bool isActive /*= true*/)
 {
     KactusAPI::addLibraryPath(QString::fromStdString(path), isActive);
 }
