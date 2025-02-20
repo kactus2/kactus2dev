@@ -332,7 +332,7 @@ bool PythonAPI::vlnvExistsInLibrary(std::string const& vendor, std::string const
 // Function: PythonAPI::createComponent()
 //-----------------------------------------------------------------------------
 bool PythonAPI::createComponent(std::string const& vendor, std::string const& library, std::string const& name,
-    std::string const& version)
+    std::string const& version, StdRev revision /*= StdRev::Std22*/)
 {
     if (vendor.empty() || library.empty() || name.empty() || version.empty())
     {
@@ -352,7 +352,10 @@ bool PythonAPI::createComponent(std::string const& vendor, std::string const& li
         return false;
     }
 
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(newComponentVLNV, Document::Revision::Std14));
+    Document::Revision docRevision = revision == PythonAPI::StdRev::Std22 
+        ? Document::Revision::Std22 : Document::Revision::Std14;
+
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(newComponentVLNV, docRevision));
 
     component->setHierarchy(KactusAttribute::FLAT);
     component->setFirmness(KactusAttribute::MUTABLE);
@@ -515,6 +518,19 @@ std::string PythonAPI::getComponentDescription() const
     {
         return std::string();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getComponentStdRevision()
+//-----------------------------------------------------------------------------
+std::string PythonAPI::getComponentStdRevision() const
+{
+    if (activeComponent_)
+    {
+        return Document::toStdString(activeComponent_->getRevision());
+    }
+
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -881,7 +897,7 @@ void PythonAPI::setFileBuildersForInterface(std::string const& setName)
 // Function: PythonAPI::createDesign()
 //-----------------------------------------------------------------------------
 bool PythonAPI::createDesign(std::string const& vendor, std::string const& library, 
-    std::string const& name, std::string const& version)
+    std::string const& name, std::string const& version, StdRev revision /*= StdRev::Std22*/)
 {
     if (vendor.empty() || library.empty() || name.empty() || version.empty())
     {
@@ -895,7 +911,7 @@ bool PythonAPI::createDesign(std::string const& vendor, std::string const& libra
         QString::fromStdString(name),
         QString::fromStdString(version));
 
-    if (createComponent(vendor, library, name, version) == false)
+    if (createComponent(vendor, library, name, version, revision) == false)
     {
         messager_->showError("Error in creating containing component.");
         return false;
@@ -945,6 +961,19 @@ bool PythonAPI::createDesign(std::string const& vendor, std::string const& libra
     openDesign(designVLNV.toString().toStdString());
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getDesignStdRevision()
+//-----------------------------------------------------------------------------
+std::string PythonAPI::getDesignStdRevision() const
+{
+    if (activeDesign_)
+    {
+        return Document::toStdString(activeDesign_->getRevision());
+    }
+
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------

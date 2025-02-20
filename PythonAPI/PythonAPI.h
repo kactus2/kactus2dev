@@ -67,6 +67,15 @@ class PythonAPI
 public:
     
     /*!
+     *  IP-XACT std revision for use in python.
+     */
+    enum StdRev
+    {
+        Std14, // IEEE 1685-2014
+        Std22  // IEEE 1685-2022
+    };
+
+    /*!
      *  The constructor.
      */
     PythonAPI();
@@ -243,17 +252,18 @@ public:
         std::string const& version) const;
 
     /*!
-     *  Create a new component with the selected VLNV.
+     *  Create a new component with the selected VLNV. Defaults to IP-XACT 2022.
      *
      *    @param [in] vendor      Vendor of the selected VLNV.
      *    @param [in] library     Library of the selected VLNV.
      *    @param [in] name        Name of the selected VLNV.
      *    @param [in] version     Version of the selected VLNV.
+     *    @param [in] revision    IP-XACT standard revision to use.
      *
      *    @return True, if the component was created successfully, false otherwise.
      */
     bool createComponent(std::string const& vendor, std::string const& library, std::string const& name,
-        std::string const& version);
+        std::string const& version, StdRev revision = StdRev::Std22);
 
     /*!
      *  Get the directory path of the selected VLNV document.
@@ -300,6 +310,11 @@ public:
      */
 
     std::string getComponentDescription() const;
+
+    /*!
+     *	Get the IP-XACT standard revision of the active component
+     */
+    std::string getComponentStdRevision() const;
 
     /*!
      *  Save the component to the library.
@@ -358,17 +373,23 @@ public:
     void setFileBuildersForInterface(std::string const& setName);
         
     /*!
-     *  Create a new design with the selected VLNV.
+     *  Create a new design with the selected VLNV. Defaults to IP-XACT 2022.
      *
      *    @param [in] vendor      Vendor of the selected VLNV.
      *    @param [in] library     Library of the selected VLNV.
      *    @param [in] name        Name of the selected VLNV.
      *    @param [in] version     Version of the selected VLNV.
+     *    @param [in] revision    IP-XACT standard revision to use.
      *
      *    @return True, if the design was created successfully, false otherwise.
      */
     bool createDesign(std::string const& vendor, std::string const& library, std::string const& name,
-        std::string const& version);
+        std::string const& version, StdRev revision = StdRev::Std22);
+    
+    /*!
+     *	Get the IP-XACT standard revision of the active design.
+     */
+    std::string getDesignStdRevision() const;
 
     /*!
      *  Set the selected design as active design.
