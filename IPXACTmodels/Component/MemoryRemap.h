@@ -34,22 +34,22 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name        Name of the memory remap.
-     *      @param [in] remapState  The remap state refered by the memory remap.
+     *    @param [in] name        Name of the memory remap.
+     *    @param [in] remapState  The remap state refered by the memory remap.
      */
     MemoryRemap(QString const& name = QString(), QString const& remapState = QString());
 
     /*!
      *  Copy constructor.
      *
-     *      @param [in] other   The memory remap being copied.
+     *    @param [in] other   The memory remap being copied.
      */
     MemoryRemap(const MemoryRemap& other);
 
     /*!
      *  Assignment operator.
      *
-     *      @param [in] other   The memory remap being assigned.
+     *    @param [in] other   The memory remap being assigned.
      */
     MemoryRemap& operator=(const MemoryRemap& other);
 
@@ -61,21 +61,21 @@ public:
     /*!
      *  Get the element name of the memory remap.
      *
-     *      @return QString containing "Memory remap".
+     *    @return QString containing "Memory remap".
      */
     virtual QString elementName() const;
 
     /*!
      *  Get the remap state of the memory remap.
      *
-     *      @return The name of the remap state of the memory remap.
+     *    @return The name of the remap state of the memory remap.
      */
     QString getRemapState() const;
 
     /*!
      *  Set the remap state of the memory remap.
      *
-     *      @param [in] newRemapState   The name of the new remap state of the memory remap.
+     *    @param [in] newRemapState   The name of the new remap state of the memory remap.
      */
     void setRemapState(QString newRemapState);
 
@@ -89,7 +89,7 @@ public:
     /*!
      *	Set the memory remap definition reference.
      *  
-     *      @param [in] newDefinitionRef     The new definition reference.
+     *    @param [in] newDefinitionRef     The new definition reference.
      */
     void setMemoryRemapDefinitionReference(QString const& newDefinitionRef);
 
@@ -104,7 +104,7 @@ public:
     /*!
      *	Set the type definitions reference for this memory remap
      *  
-     *      @param [in] newTypeDefinitionsRef     The type definitions reference to set.
+     *    @param [in] newTypeDefinitionsRef     The type definitions reference to set.
      */
     void setTypeDefinitionsReference(QString const& newTypeDefinitionsRef);
 
@@ -118,7 +118,7 @@ public:
     /*!
      *	Set the mode references of the remap.
      *  
-     *      @param [in] newModeRefs     The mode references to set.
+     *    @param [in] newModeRefs     The mode references to set.
      */
     void setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeRefs);
 

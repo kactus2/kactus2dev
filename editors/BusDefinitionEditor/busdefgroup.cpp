@@ -15,10 +15,14 @@
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
 #include <editors/common/DocumentNameGroupEditor.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
+
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -27,11 +31,13 @@
 #include <QRegularExpression>
 #include <QSizePolicy>
 #include <QLabel>
+#include <QSplitter>
 
 //-----------------------------------------------------------------------------
 // Function: BusDefGroup::BusDefGroup()
 //-----------------------------------------------------------------------------
-BusDefGroup::BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent):
+BusDefGroup::BusDefGroup(LibraryInterface* libraryHandler, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ParameterFinder> parameterFinder, QWidget *parent) :
 QWidget(parent),
 library_(libraryHandler),
 busDef_(),
@@ -57,7 +63,25 @@ extendEditor_(new VLNVEditor(VLNV::BUSDEFINITION, libraryHandler, parent, this))
 
     documentNameGroupEditor_.setTitle("Bus definition");
 
+    // Create parameter editor, but set parameters and choices later.
+    parameterEditor_ = new ParameterGroupBox(nullptr, nullptr, parameterFinder, expressionFormatter, 
+        Document::Revision::Unknown, this);
+    parameterEditor_->setFlat(true);
+
     setupLayout();
+
+    connect(parameterEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(parameterEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(parameterEditor_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+    connect(parameterEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(parameterEditor_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        this,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        Qt::UniqueConnection);
 
     connect(&maxInitiatorsEditor_, SIGNAL(editingFinished()), this, SLOT(onInitiatorsChanged()), Qt::UniqueConnection);
     connect(&maxTargetsEditor_, SIGNAL(editingFinished()),	this, SLOT(onTargetsChanged()), Qt::UniqueConnection);
@@ -101,6 +125,7 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
 
     systemGroupEditor_.setItems(busDef_);
 
+    parameterEditor_->setNewParameters(busDef->getParameters(), busDef->getChoices(), busDef->getRevision());
 }
 
 //-----------------------------------------------------------------------------
@@ -232,21 +257,43 @@ void BusDefGroup::setupLayout()
     QVBoxLayout* systemGroupLayout = new QVBoxLayout(systemGroupBox);
     systemGroupLayout->addWidget(&systemGroupEditor_);
 
-    QGridLayout* topLayout = new QGridLayout(this);
+    QVBoxLayout* rootLayout = new QVBoxLayout(this);
+    
+    QWidget* topHalfWidget = new QWidget();
+    QHBoxLayout* topHalfLayout = new QHBoxLayout(topHalfWidget);
 
     QWidget* rightSideContainer = new QWidget(this);
     QVBoxLayout* containerLayout = new QVBoxLayout();
     containerLayout->setContentsMargins(0, 0, 0, 0);
     containerLayout->addWidget(extendEditor_);
     containerLayout->addWidget(selectionGroup);
+    containerLayout->addWidget(systemGroupBox);
     rightSideContainer->setLayout(containerLayout);
+    
+    topHalfLayout->addWidget(&documentNameGroupEditor_);
+    topHalfLayout->addWidget(rightSideContainer);
 
-    topLayout->addWidget(&documentNameGroupEditor_, 0, 0, 1, 1);
-    topLayout->addWidget(rightSideContainer, 0, 1, 1, 1);
-    topLayout->addWidget(systemGroupBox, 1, 0, 1, 1);
+    QSplitter* splitter = new QSplitter(Qt::Vertical);
+    splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    splitter->addWidget(topHalfWidget);
+    splitter->addWidget(parameterEditor_);
 
-    topLayout->setColumnStretch(0, 1);
-    topLayout->setColumnStretch(1, 1);
+    QSplitterHandle* handle = splitter->handle(1);
+    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    handleLayout->setSpacing(0);
+    handleLayout->setContentsMargins(0, 0, 0, 0);
+
+    QFrame* line = new QFrame(handle);
+    line->setLineWidth(2);
+    line->setMidLineWidth(2);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    handleLayout->addWidget(line);
+
+    splitter->setStyleSheet(QStringLiteral("QSplitter::handle { background: white }"));
+    splitter->setHandleWidth(18);
+
+    rootLayout->addWidget(splitter);
 
     maxInitiatorsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     maxTargetsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);

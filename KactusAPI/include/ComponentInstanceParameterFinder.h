@@ -34,8 +34,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] componentInstance	The component instance whose parameters are being searched for.
-	 *      @param [in] component		    The instantiated component.
+     *    @param [in] componentInstance	The component instance whose parameters are being searched for.
+	 *    @param [in] component		    The instantiated component.
      */
     ComponentInstanceParameterFinder(QSharedPointer<const ComponentInstance> componentInstance,
         QSharedPointer<const Component> component);
@@ -53,9 +53,9 @@ public:
     /*!
      *  Finds the value of the parameter with the given id.
      *
-     *      @param [in] id      The id of the parameter to search for.
+     *    @param [in] id      The id of the parameter to search for.
      *
-     *      @return The value of the parameter.
+     *    @return The value of the parameter.
      */
     QString valueForId(QStringView id) const final;
 

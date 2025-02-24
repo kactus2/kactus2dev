@@ -36,21 +36,21 @@ public:
     /*!
      *  Writes the comment to the given output.
      *
-     *      @param [in] output   The output to write to.
+     *    @param [in] output   The output to write to.
      */
     virtual void write(QTextStream& output) const;
 
     /*!
      *  Sets the maximum number of characters per line.
      *
-     *      @param [in] maxLength   The maximum number of characters to set.
+     *    @param [in] maxLength   The maximum number of characters to set.
      */
     void setLineLength(int maxLength);
 
     /*!
      *  Sets the indent for each line.
      *
-     *      @param [in] size   The number of spaces used for indent.
+     *    @param [in] size   The number of spaces used for indent.
      */
     void setIndent(int size);
 
@@ -63,7 +63,7 @@ private:
     /*!
      *  Checks if the writer should write nothing.
      *
-     *      @return True, if the writer has nothing to write, otherwise false.
+     *    @return True, if the writer has nothing to write, otherwise false.
      */
     bool nothingToWrite() const;
     

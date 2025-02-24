@@ -60,56 +60,56 @@ public:
     /*!
      *  Create a copy of the language tools.
      *
-     *      @return A copy of the language tools object.
+     *    @return A copy of the language tools object.
      */
     QSharedPointer<LanguageTools> clone() const;
 
     /*!
      *  Get the file builders.
      *
-     *      @return A pointer to a list containing the file builders.
+     *    @return A pointer to a list containing the file builders.
      */
     QSharedPointer<QList<QSharedPointer<FileBuilder> > > getFileBuilders() const;
 
     /*!
      *  Set the file builders.
      *
-     *      @param [in] newFileBuilders  The new file builders.
+     *    @param [in] newFileBuilders  The new file builders.
      */
     void setFileBuilders(QSharedPointer<QList<QSharedPointer<FileBuilder> > > newDefaultFileBuilders);
 
     /*!
      *  Get the linker defined in the language tools.
      *
-     *      @return The linker in the language tools.
+     *    @return The linker in the language tools.
      */
     QString getLinker() const;
 
     /*!
      *  Set the linker in the language tools.
      *
-     *      @param [in] linker The linker to set.
+     *    @param [in] linker The linker to set.
      */
     void setLinker(QString const& linker);
 
     /*!
      *  Get the linker flags defined in the language tools.
      *
-     *      @return The linker glags in the language tools.
+     *    @return The linker glags in the language tools.
      */
     QString getLinkerFlags() const;
 
     /*!
      *  Set the linker flags in the language tools.
      *
-     *      @param [in] linker The linker flags to set.
+     *    @param [in] linker The linker flags to set.
      */
     void setLinkerFlags(QString const& flags);
 
     /*!
      *  Get the linker command file defined in the language tools.
      *
-     *      @return The linker command file.
+     *    @return The linker command file.
      */
     QSharedPointer<LanguageTools::LinkerCommandFile> getLinkerCommandFile() const;
 

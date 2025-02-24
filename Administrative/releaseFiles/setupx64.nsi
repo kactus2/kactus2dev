@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "3.13.2 64-bit"
+!define PRODUCT_VERSION "3.13.3 64-bit"
 !define PRODUCT_PUBLISHER "TUNI"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -60,15 +60,13 @@ Section "MainSection" SEC01
   File "..\..\executable\Qt6Core.dll"
   File "..\..\executable\Qt6Gui.dll"
   File "..\..\executable\Qt6Help.dll"
-  File "..\..\executable\Qt6Network.dll"
   File "..\..\executable\Qt6PrintSupport.dll"
   File "..\..\executable\Qt6Sql.dll"
   File "..\..\executable\Qt6Widgets.dll"
   File "..\..\executable\Qt6Xml.dll"
   File "..\..\executable\Qt6Svg.dll"
-  File "..\..\executable\libEGL.dll"
-  File "..\..\executable\libGLESv2.dll"
-  File "..\..\executable\d3dcompiler_47.dll"
+  File "..\..\executable\opengl32sw.dll"
+  File "..\..\executable\D3Dcompiler_47.dll"
   File "..\..\executable\IPXACTmodels.dll"
   File "..\..\PythonAPI\pythonAPI.py"
   File "..\..\PythonAPI\_pythonAPI.pyd"
@@ -119,7 +117,6 @@ Section "MainSection" SEC01
 
   SetOutPath "$INSTDIR\platforms"
   SetOverwrite on
-  File "..\..\executable\platforms\qminimal.dll"
   File "..\..\executable\platforms\qwindows.dll"
   
   SetOutPath "$INSTDIR\sqldrivers"
@@ -129,6 +126,10 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR\styles"
   SetOverwrite on
   File "..\..\executable\styles\qwindowsvistastyle.dll"
+
+  SetOutPath "$INSTDIR\imageformats"
+  SetOverwrite on
+  File "..\..\executable\imageformats\qjpeg.dll"
 
   SetOutPath "$INSTDIR\Plugins"
   SetOverwrite on
@@ -207,8 +208,8 @@ SectionEnd
 Section "DependencySection" SEC02
   SetOutPath "$TEMP\Kactus2Installer"
   SetOverwrite ifnewer
-  File "vcredist_x64.exe"
-  ExecWait '"$OUTDIR\vcredist_x64.exe" /q /norestart'
+  File "..\..\executable\vc_redist.x64.exe"
+  ExecWait '"$OUTDIR\vc_redist.x64.exe" /q /norestart'
   SetOutPath "$INSTDIR"
   RMDir /r "$TEMP\Kactus2Installer"
 SectionEnd
@@ -281,8 +282,8 @@ Section Uninstall
   Delete "$INSTDIR\Plugins\MCAPICodeGenerator.dll"
   Delete "$INSTDIR\styles\qwindowsvistastyle.dll"
   Delete "$INSTDIR\sqldrivers\qsqlite.dll"
-  Delete "$INSTDIR\platforms\qminimal.dll"
   Delete "$INSTDIR\platforms\qwindows.dll"
+  Delete "$INSTDIR\imageformats\qjpeg.dll"
   Delete "$INSTDIR\DefaultSettings.ini"
   Delete "$INSTDIR\upgrade.cfg"
   Delete "$INSTDIR\README.md"
@@ -293,15 +294,13 @@ Section Uninstall
   Delete "$INSTDIR\_pythonAPI.pyd"
   Delete "$INSTDIR\pythonAPI.py"
   Delete "$INSTDIR\IPXACTmodels.dll"
-  Delete "$INSTDIR\d3dcompiler_47.dll"
-  Delete "$INSTDIR\libGLESv2.dll"
-  Delete "$INSTDIR\libEGL.dll"
+  Delete "$INSTDIR\D3Dcompiler_47.dll"
+  Delete "$INSTDIR\opengl32sw.dll"
   Delete "$INSTDIR\Qt6Svg.dll"
   Delete "$INSTDIR\Qt6Xml.dll"
   Delete "$INSTDIR\Qt6Widgets.dll"
   Delete "$INSTDIR\Qt6Sql.dll"
   Delete "$INSTDIR\Qt6PrintSupport.dll"
-  Delete "$INSTDIR\Qt6Network.dll"
   Delete "$INSTDIR\Qt6Help.dll"
   Delete "$INSTDIR\Qt6Gui.dll"
   Delete "$INSTDIR\Qt6Core.dll"
@@ -360,6 +359,7 @@ Section Uninstall
   RMDir "$INSTDIR\styles"
   RMDir "$INSTDIR\sqldrivers"
   RMDir "$INSTDIR\platforms"
+  RMDir "$INSTDIR\imageformats"
   RMDir "$INSTDIR\ExampleScripts"
   RMDir "$INSTDIR\__pycache__"
   RMDir "$INSTDIR\Library\tut.fi\ip.swp.api\IPTLM.apiDef\1.1"

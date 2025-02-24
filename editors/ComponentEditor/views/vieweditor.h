@@ -45,13 +45,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component that contains the view.
-	 *      @param [in] view                    The view being edited.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] parameterInterface      Interface for accessing parameters.
-	 *      @param [in] parent                  The owner of this editor.
+	 *    @param [in] component               The component that contains the view.
+	 *    @param [in] view                    The view being edited.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] parameterInterface      Interface for accessing parameters.
+	 *    @param [in] parent                  The owner of this editor.
 	 */
 	ViewEditor(QSharedPointer<Component> component,
         QSharedPointer<View> view,

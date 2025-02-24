@@ -82,48 +82,48 @@ public:
     /*!
      *  Sets the given highlighter to be used by the plugin.
      *
-     *      @param [in] highlighter   The highlighter to use.          
+     *    @param [in] highlighter   The highlighter to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
 
     /*!
      *  Returns the supported import file types.
      *
-     *      @return The file types the import plugin supports.
+     *    @return The file types the import plugin supports.
      */
     virtual QStringList getSupportedFileTypes() const;
     
     /*!
      *  Gets any compatibility warnings for the plugin.
      *
-     *      @return The warning text.
+     *    @return The warning text.
      */
     virtual QString getCompatibilityWarnings() const;
     
     /*!
      *  Get component declarations from the selected input file.
      *
-     *      @param [in] input   The selected input file.
+     *    @param [in] input   The selected input file.
      *
-     *      @return List of component declarations found in the selected input.
+     *    @return List of component declarations found in the selected input.
      */
     virtual QStringList getFileComponents(QString const& input) const override final;
 
     /*!
      *  Get the name of the selected component declaration.
      *
-     *      @param [in] componentDeclaration    The selected component declaration.
+     *    @param [in] componentDeclaration    The selected component declaration.
      *
-     *      @return Name of the selected component declaration.
+     *    @return Name of the selected component declaration.
      */
     virtual QString getComponentName(QString const& componentDeclaration) const override final;
 
     /*!
      *  Runs the import by parsing the given input and applying the parsed elements to the given component.
      *
-     *      @param [in] input                   The input text to parse.
-     *      @param [in] componentDeclaration    Declaration of the selected component.
-     *      @param [in] targetComponent         The component to apply all imported changes to.
+     *    @param [in] input                   The input text to parse.
+     *    @param [in] componentDeclaration    Declaration of the selected component.
+     *    @param [in] targetComponent         The component to apply all imported changes to.
      */
     virtual void import(QString const& input, QString const& componentDeclaration,
         QSharedPointer<Component> targetComponent);
@@ -139,17 +139,17 @@ private:
     /*!
      *  Creates a port in the component from the given line in the pin file.
      *
-     *      @param [in] line                The line to parse as port.
-     *      @param [in] targetComponent     The component to add the port into.
+     *    @param [in] line                The line to parse as port.
+     *    @param [in] targetComponent     The component to add the port into.
      */
     void createPort(QString const& line, QSharedPointer<Component> targetComponent);
 
     /*!
      *  Parses pin direction to IP-XACT port direction.
      *
-     *      @param [in] direction   The direction to parse.
+     *    @param [in] direction   The direction to parse.
      *
-     *      @return The port direction.
+     *    @return The port direction.
      */
     DirectionTypes::Direction parseDirection(QString const& direction);
 

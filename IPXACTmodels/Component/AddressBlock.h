@@ -37,8 +37,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name            Name of the address block.
-     *      @param [in] baseAddress     The base address.
+     *    @param [in] name            Name of the address block.
+     *    @param [in] baseAddress     The base address.
      */
     AddressBlock(QString const& name = QString(), QString const& baseAddress = QString());
 	
@@ -54,63 +54,63 @@ public:
     /*!
      *  Clone this address block and return pointer to the copy.
      *
-     *      @return Pointer to the cloned address block.
+     *    @return Pointer to the cloned address block.
      */
     virtual QSharedPointer<MemoryBlockBase> clone() const;
 
     /*!
      *  Get the type identifier.
      *
-     *      @return Address block type identifier.
+     *    @return Address block type identifier.
      */
     QString getTypeIdentifier() const;
 
     /*!
      *  Set the type identifier.
      *
-     *      @param [in] newTypeIdentifier   The new type identifier.
+     *    @param [in] newTypeIdentifier   The new type identifier.
      */
     void setTypeIdentifier(QString const& newTypeIdentifier);
 
 	/*!
      *  Get the address range of the address block.
 	 *
-	 *      @return The address range.
+	 *    @return The address range.
 	 */
 	QString getRange() const;
 
 	/*!
      *  Set the address range of the address block.
 	 *
-	 *      @param [in] newRange    The new range value.
+	 *    @param [in] newRange    The new range value.
 	 */
 	void setRange(QString const& newRange);
 
 	/*!
      *  Get the attributes linked to range element.
 	 *
-	 *      @return The range attributes.
+	 *    @return The range attributes.
 	 */
     QMap<QString, QString> getRangeAttributes() const;
     
 	/*!
      *  Set the attributes linked to range element.
 	 *
-	 *      @param [in] newRangeAttributes      The new range attributes.
+	 *    @param [in] newRangeAttributes      The new range attributes.
 	 */
     void setRangeAttributes(QMap<QString, QString> const& newRangeAttributes);
 
 	/*!
      *  Get the bit width of a row in the address block.
 	 *
-	 *      @return The width of the address block.
+	 *    @return The width of the address block.
 	 */
     QString getWidth() const;
 
 	/*!
      *  Set the bit width of a row in the address block.
 	 *
-	 *      @param [in] newWidth    The new width.
+	 *    @param [in] newWidth    The new width.
 	 */
     void setWidth(QString const& newWidth);
 
@@ -124,21 +124,21 @@ public:
 	/*!
      *  Set the attributes linked to the width element.
 	 *
-	 *      @param [in] newWidthAttributes  The new attributes for the width element.
+	 *    @param [in] newWidthAttributes  The new attributes for the width element.
 	 */
     void setWidthAttributes(QMap<QString, QString> const& newWidthAttributes);
 
 	/*!
      *  Get the type of usage for the address block.
 	 *
-	 *      @return Usage.
+	 *    @return Usage.
 	 */
 	General::Usage getUsage() const;
 
 	/*!
      *  Set the type of usage for the address block.
 	 *
-	 *      @param [in] newUsage    The new usage type.
+	 *    @param [in] newUsage    The new usage type.
 	 */
 	void setUsage(General::Usage newUsage);
 
@@ -152,7 +152,7 @@ public:
 	/*!
      *  Set the volatile setting.
 	 *
-	 *      @param [in] newVolatileSetting  True for volatile address block, false otherwise.
+	 *    @param [in] newVolatileSetting  True for volatile address block, false otherwise.
 	 */
     void setVolatile(bool newVolatileValue);
 
@@ -164,35 +164,35 @@ public:
 	/*!
      *  Get the access information.
 	 *
-	 *      @return Accessibility of the address block data.
+	 *    @return Accessibility of the address block data.
 	 */
     AccessTypes::Access getAccess() const;
 
 	/*!
      *  Set the accessibility of the address block.
 	 *
-	 *      @param [in] newAccess   The new access type of the address block.
+	 *    @param [in] newAccess   The new access type of the address block.
 	 */
     void setAccess(AccessTypes::Access newAccess);
 
 	/*!
      *  Get the list containing the register elements of address block.
 	 *
-	 *      @return Pointer to a list containing the register elements.
+	 *    @return Pointer to a list containing the register elements.
  	 */
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > getRegisterData() const;
 
     /*!
      *  Set the register elements.
      *
-     *      @param [in] newRegisterData     The new register elements.
+     *    @param [in] newRegisterData     The new register elements.
      */
     void setRegisterData(QSharedPointer<QList<QSharedPointer<RegisterBase> > > newRegisterData);
     
     /*!
      *  Get offsets from each of the address block's registers.
      *
-     *      @return     A list of offsets from all the registers.
+     *    @return     A list of offsets from all the registers.
      */
     QStringList getAllRegisterOffsets() const;
 
@@ -206,7 +206,7 @@ public:
     /*!
      *	Set the memory array of the address block.
      *  
-     *      @param [in] newMemoryArray     The memory array to set.
+     *    @param [in] newMemoryArray     The memory array to set.
      */
     void setMemoryArray(QSharedPointer<MemoryArray> newMemoryArray);
 
@@ -220,7 +220,7 @@ public:
     /*!
      *	Set the misalignment allowed attribute.
      *  
-     *      @param [in] newMisalignmentAllowed     New misalignment allowed value.
+     *    @param [in] newMisalignmentAllowed     New misalignment allowed value.
      */
     void setMisalignmentAllowed(bool newMisalignmentAllowed);
 
@@ -234,7 +234,7 @@ public:
     /*!
      *	Set the address block definition reference.
      *  
-     *      @param [in] newAddressBlockDefinitionRef     The definition reference to set.
+     *    @param [in] newAddressBlockDefinitionRef     The definition reference to set.
      */
     void setAddressBlockDefinitionRef(QString const& newAddressBlockDefinitionRef);
 
@@ -248,7 +248,7 @@ public:
     /*!
      *	Set the type definitions reference.
      *  
-     *      @param [in] newTypeDefinitionsRef     The type definitions reference to set.
+     *    @param [in] newTypeDefinitionsRef     The type definitions reference to set.
      */
     void setTypeDefinitionsRef(QString const& newTypeDefinitionsRef);
 
@@ -262,7 +262,7 @@ public:
     /*!
      *	Set the access policies of the address block.
      *  
-     *      @param [in] newAccessPolicies     The access policies to set.
+     *    @param [in] newAccessPolicies     The access policies to set.
      */
     void setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies);
 
@@ -271,7 +271,7 @@ private:
     /*!
      *  Copy the register elements.
      *
-     *      @param [in] other   Address block being copied.
+     *    @param [in] other   Address block being copied.
      */
     void copyRegisterData(const AddressBlock& other);
 

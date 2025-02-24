@@ -50,15 +50,15 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] fieldItem           The field being edited.
-	 *      @param [in] component           The component being edited.
-	 *      @param [in] handler             The instance managing the library.
-     *      @param [in] parameterFinder     The instance for finding parameter references.
-     *      @param [in] expressionParser    The expression parser to use.
-     *      @param [in] fieldValidator      The used field validator.
-     *      @param [in] fieldInterface      Interface for fields.
-     *      @param [in] containingRegister  Register containing the edited field.
-	 *      @param [in] parent              The parent of this editor.
+	 *    @param [in] fieldItem           The field being edited.
+	 *    @param [in] component           The component being edited.
+	 *    @param [in] handler             The instance managing the library.
+     *    @param [in] parameterFinder     The instance for finding parameter references.
+     *    @param [in] expressionParser    The expression parser to use.
+     *    @param [in] fieldValidator      The used field validator.
+     *    @param [in] fieldInterface      Interface for fields.
+     *    @param [in] containingRegister  Register containing the edited field.
+	 *    @param [in] parent              The parent of this editor.
 	 */
     SingleFieldEditor(QSharedPointer<Field> fieldItem,
         QSharedPointer<Component> component,
@@ -88,8 +88,8 @@ public slots:
     /*
      *  Handles field name change from register editor.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void onFieldNameChanged(QString const& oldName, QString const& newName);
 
@@ -103,7 +103,7 @@ protected:
     /*!
 	 *  informs of the required help document.
 	 *
-	 *      @param [in] event   The show event.
+	 *    @param [in] event   The show event.
 	 */
 	virtual void showEvent(QShowEvent* event);
 
@@ -122,42 +122,42 @@ private slots:
     /*!
      *  Sets the selected volatile value for the field.
      *
-     *      @param [in] newVolatileValue    The selected volatile value.
+     *    @param [in] newVolatileValue    The selected volatile value.
      */
     void onVolatileSelected(QString const& newVolatileValue);
 
     /*!
      *  Sets the selected access value for the field.
      *
-     *      @param [in] newAccessValue      The selected access value.
+     *    @param [in] newAccessValue      The selected access value.
      */
     void onAccessSelected(QString const& newAccessValue);
 
     /*!
      *  Sets the selected modified write value for the field.
      *
-     *      @param [in] newModWriteValue    The selected modified write value.
+     *    @param [in] newModWriteValue    The selected modified write value.
      */
     void onModifiedWriteSelected(QString const& newModWriteValue);
 
     /*!
      *  Sets the selected read action value for the field.
      *
-     *      @param [in] newReadActionValue  The selected read action value.
+     *    @param [in] newReadActionValue  The selected read action value.
      */
     void onReadActionSelected(QString const& newReadActionValue);
 
     /*!
      *  Sets the selected testable value for the field.
      *
-     *      @param [in] newTestableValue    The selected testable value.
+     *    @param [in] newTestableValue    The selected testable value.
      */
     void onTestableSelected(QString const& newTestableValue);
 
     /*!
      *  Sets the selected test constrained value for the field.
      *
-     *      @param [in] newTestConstrainedValue     The selected test constrained value.
+     *    @param [in] newTestConstrainedValue     The selected test constrained value.
      */
     void onTestConstrainedSelected(QString const& newTestConstrainedValue);
 
@@ -179,21 +179,21 @@ private slots:
     /*!
      *  Sets the selected write constraint value for the field.
      *
-     *      @param [in] newIndex    The index of the selected write constraint value.
+     *    @param [in] newIndex    The index of the selected write constraint value.
      */
     void onWriteConstraintSelected(int newIndex);
 
     /*!
      *  Sets the edited write constraint minimum value for the field.
      *
-     *      @param [in] newWriteConstraintMin   The edited write constraint minimum value.
+     *    @param [in] newWriteConstraintMin   The edited write constraint minimum value.
      */
     void onWriteConstraintMinimumEdited();
 
     /*!
      *  Sets the edited write constraint maximum value for the field.
      *
-     *      @param [in] newWriteConstraintMax   The edited write constraint maximum value.
+     *    @param [in] newWriteConstraintMax   The edited write constraint maximum value.
      */
     void onWriteConstraintMaximumEdited();
 
@@ -206,23 +206,23 @@ private:
     /*!
      *  Change the signal blocking status of the expression editors in this editor.
      *
-     *      @param [in] blockStatus     The new signal blocking status for the expression editors.
+     *    @param [in] blockStatus     The new signal blocking status for the expression editors.
      */
     void changeExpressionEditorSignalBlockStatus(bool blockStatus) const;
 
     /*!
      *  Calculates the value of an expression.
      *
-     *      @param [in] expression  The expression to be calculated.
+     *    @param [in] expression  The expression to be calculated.
      *
-     *      @return The calculated value of an expression.
+     *    @return The calculated value of an expression.
      */
     QString formattedValueFor(QString const& expression) const;
 
     /*!
      *  Set the status of  write constraint minimum and maximum editors.
      *
-     *      @param [in] writeConstraintIndex    The index of the write constraint value.
+     *    @param [in] writeConstraintIndex    The index of the write constraint value.
      */
     void setWriteMinMaxConstraintEnableStatus(int writeConstraintIndex) const;
     

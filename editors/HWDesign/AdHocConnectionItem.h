@@ -55,7 +55,7 @@ public:
     /*!
      *  Get the type of this connection item.
      *
-     *      @return Ad hoc connection item type.
+     *    @return Ad hoc connection item type.
      */
     int type() const final { return Type; }
 

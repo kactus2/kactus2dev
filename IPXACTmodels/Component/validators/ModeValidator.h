@@ -19,6 +19,7 @@
 
 #include <IPXACTmodels/Component/validators/PortSliceValidator.h>
 #include <IPXACTmodels/Component/validators/FieldSliceValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -30,16 +31,16 @@ class BuildCommand;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:File.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ModeValidator
+class IPXACTMODELS_EXPORT ModeValidator : public HierarchicalValidator
 {
 public:
 
 	/*!
      *  The constructor.
      * 
-     *      @param [in] sliceValidator The validator for port slices.
-     *      @param [in] component      The component containing the modes.
-     *      @param [in] mode           The expression parser for solving expressions in modes.
+     *    @param [in] sliceValidator The validator for port slices.
+     *    @param [in] component      The component containing the modes.
+     *    @param [in] mode           The expression parser for solving expressions in modes.
 	 *
 	 */
     ModeValidator(
@@ -56,18 +57,18 @@ public:
     /*!
      *  Validates the given mode.
      *
-     *      @param [in] mode           The mode to validate.
+     *    @param [in] mode           The mode to validate.
      *
-     *      @return True, if the mode is valid IP-XACT, otherwise false.
+     *    @return True, if the mode is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<Mode> mode) const;
 
     /*!
      *  Check if the mode name is valid.
      *
-     *      @param [in] name    The name to be evaluated.
+     *    @param [in] name    The name to be evaluated.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QString const& name) const;
 
@@ -76,9 +77,9 @@ public:
     /*!
      *  Check if the port slices are valid.
      *
-     *      @param [in] mode    The mode whose port slices to check.
+     *    @param [in] mode    The mode whose port slices to check.
      *
-     *      @return True, if the slices are valid, otherwise false.
+     *    @return True, if the slices are valid, otherwise false.
      */
     bool hasValidPortSlices(QSharedPointer<Mode> mode) const;
 
@@ -87,9 +88,9 @@ public:
     /*!
      *  Finds possible errors in a mode and creates a list of them.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] mode        The mode whose errors to find.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] mode        The mode whose errors to find.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> mode,
 		QString const& context) const;
@@ -102,6 +103,15 @@ public:
 
     //! Get the field slice validator.
     QSharedPointer<FieldSliceValidator> getFieldSliceValidator() const;
+
+    /*!
+     *	Set the mode condition expression parser.
+     *  
+     *    @param [in] expressionParser     The parser to set.
+     */
+    void setConditionParser(QSharedPointer<ExpressionParser> expressionParser);
+
+    QSharedPointer<ExpressionParser> getConditionParser() const;
 
 private:
     

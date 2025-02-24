@@ -30,11 +30,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library             The library which is expected to contain the parsed documents.
-     *      @param [in] messages		    For message output.
-     *      @param [in] design              The design to parse.
-     *      @param [in] designConf          The design configuration to parse.
-     *      @param [in] topInstance         The parsed meta instance of the top component.
+     *    @param [in] library             The library which is expected to contain the parsed documents.
+     *    @param [in] messages		    For message output.
+     *    @param [in] design              The design to parse.
+     *    @param [in] designConf          The design configuration to parse.
+     *    @param [in] topInstance         The parsed meta instance of the top component.
      */
     MetaDesign(LibraryInterface* library,
         MessageMediator* messages,
@@ -53,9 +53,9 @@ public:
     /*!
      *  Parses a hierarchy of designs and return the list of them.
      *
-     *      @param [in] library                 The library which is expected to contain the parsed documents.
-     *      @param [in] input		            The starting point for hierarchy parsing.
-     *      @param [in] topComponentView        The active view of the component in input.
+     *    @param [in] library                 The library which is expected to contain the parsed documents.
+     *    @param [in] input		            The starting point for hierarchy parsing.
+     *    @param [in] topComponentView        The active view of the component in input.
      */
     static QList<QSharedPointer<MetaDesign> > parseHierarchy(LibraryInterface* library,
         GenerationTuple input,
@@ -101,9 +101,9 @@ private:
     /*!
      *  Parses parameters within a list.
      *
-     *      @param [inout] subList              The list which parameters are parsed.
-     *      @param [in] input		            The list of parameters which may affect the parsing result. May be null.
-     *      @param [in] topComponentView        The list of overrides for the parsed parameters. May be null.
+     *    @param [inout] subList              The list which parameters are parsed.
+     *    @param [in] input		            The list of parameters which may affect the parsing result. May be null.
+     *    @param [in] topComponentView        The list of overrides for the parsed parameters. May be null.
      */
     static void parseParameters(
         QSharedPointer<QList<QSharedPointer<Parameter> > > subList,
@@ -123,9 +123,9 @@ private:
     /*!
      *  Assigns ports of mInterface with the wires of mInterconnect.
      *
-     *      @param [in] mInterface              The interface which will have the ports.
-     *      @param [in] mIterconnect		    The interconnect which will have the wires.
-     *      @param [in] isHierarchical          True, if mInterface is in topInstance, else false.
+     *    @param [in] mInterface              The interface which will have the ports.
+     *    @param [in] mIterconnect		    The interconnect which will have the wires.
+     *    @param [in] isHierarchical          True, if mInterface is in topInstance, else false.
      */
     void wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
         QSharedPointer<MetaInterconnection> mIterconnect, bool isHierarchical);
@@ -133,12 +133,12 @@ private:
     /*!
      *  Associate the selected meta port with wire.
      *
-     *      @param [in] metaInterconnect    Meta interconnection containing the wire.
-     *      @param [in] portAbstraction     Connected logical port.
-     *      @param [in] assignment          Meta assignment for the port.
-     *      @param [in] connectedWires      List of already connected meta wire.
-     *      @param [in] isHierarchical      Flag for hierarchical ports.
-     *      @param [in] metaPort            The selected meta port.
+     *    @param [in] metaInterconnect    Meta interconnection containing the wire.
+     *    @param [in] portAbstraction     Connected logical port.
+     *    @param [in] assignment          Meta assignment for the port.
+     *    @param [in] connectedWires      List of already connected meta wire.
+     *    @param [in] isHierarchical      Flag for hierarchical ports.
+     *    @param [in] metaPort            The selected meta port.
      */
     void associateWithWire(QSharedPointer<MetaInterconnection> metaInterconnect,
         QSharedPointer<PortAbstraction> portAbstraction, QSharedPointer<MetaPortAssignment> assignment,
@@ -147,12 +147,12 @@ private:
     /*!
      *  Associate the selected meta port with transactional.
      *
-     *      @param [in] metaInterconnect            Meta interconnection containing the wire.
-     *      @param [in] portAbstraction             Connected logical port.
-     *      @param [in] assignment                  Meta assignment for the port.
-     *      @param [in] connectedTransactionals     List of already connected meta transactionals.
-     *      @param [in] isHierarchical              Flag for hierarchical ports.
-     *      @param [in] metaPort                    The selected meta port.
+     *    @param [in] metaInterconnect            Meta interconnection containing the wire.
+     *    @param [in] portAbstraction             Connected logical port.
+     *    @param [in] assignment                  Meta assignment for the port.
+     *    @param [in] connectedTransactionals     List of already connected meta transactionals.
+     *    @param [in] isHierarchical              Flag for hierarchical ports.
+     *    @param [in] metaPort                    The selected meta port.
      */
     void associateWithTransactional(QSharedPointer<MetaInterconnection> metaInterconnect,
         QSharedPointer<PortAbstraction> portAbstraction, QSharedPointer<MetaPortAssignment> assignment,
@@ -167,12 +167,12 @@ private:
     /*!
      *  Parses a port assignment for an ad-hoc port.
      *
-     *      @param [in] mPort                   The port which get an assignment.
-     *      @param [in] connection		        The interconnect which is associated with IP-XACT port corresponding mPrt.
-     *      @param [in] mWire                   Wire which will be referred by the assignment.
-     *      @param [in] isHierarchical          True, if this connection is hierarchical.
-     *      @param [in] wireName                Name of mWire.
-     *      @param [in] matchingPartSelect      The part select that affects the bounds of the assignment.
+     *    @param [in] mPort                   The port which get an assignment.
+     *    @param [in] connection		        The interconnect which is associated with IP-XACT port corresponding mPrt.
+     *    @param [in] mWire                   Wire which will be referred by the assignment.
+     *    @param [in] isHierarchical          True, if this connection is hierarchical.
+     *    @param [in] wireName                Name of mWire.
+     *    @param [in] matchingPartSelect      The part select that affects the bounds of the assignment.
      */
     void parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort,
         QSharedPointer<AdHocConnection> connection,
@@ -184,10 +184,10 @@ private:
     /*!
      *  Finds hierarchical ports within an ad-hoc interconnection.
      *
-     *      @param [in] connection		        The interconnect which ports are beign searched.
-     *      @param [out] foundPorts             Every port found for the interconnection.
-     *      @param [out] foundHierPorts         Every hierarchical port found for the interconnection.
-     *      @param [out] matchingPartSelects    The part select that affects the bounds of the assignment.
+     *    @param [in] connection		        The interconnect which ports are beign searched.
+     *    @param [out] foundPorts             Every port found for the interconnection.
+     *    @param [out] foundHierPorts         Every hierarchical port found for the interconnection.
+     *    @param [out] matchingPartSelects    The part select that affects the bounds of the assignment.
      */
     void findHierarchicalPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
         QList<QSharedPointer<MetaPort> > &foundPorts,
@@ -197,9 +197,9 @@ private:
     /*!
      *  Finds ports within an ad-hoc interconnection.
      *
-     *      @param [in] connection		        The interconnect which ports are beign searched.
-     *      @param [out] foundPorts             Every port found for the interconnection.
-     *      @param [out] matchingPartSelects    The part select that affects the bounds of the assignment.
+     *    @param [in] connection		        The interconnect which ports are beign searched.
+     *    @param [out] foundPorts             Every port found for the interconnection.
+     *    @param [out] matchingPartSelects    The part select that affects the bounds of the assignment.
      */
     void findPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
         QList<QSharedPointer<MetaPort> > &foundPorts,
@@ -222,7 +222,7 @@ private:
      *  Tries to find hierarchy from mInstance for the active view and then create a sub design.
      *  If sub design is created, it shall be appended to the list of the sub designs.
      *
-     *      @param [in] mInstance		        The instance, which component is expected to have needed instantiations.
+     *    @param [in] mInstance		        The instance, which component is expected to have needed instantiations.
      *                                          Consequently, will be the top instance of the created meta design.
      */
     void findHierarchy(QSharedPointer<MetaInstance> mInstance);
@@ -230,9 +230,9 @@ private:
     /*!
      *  Finds a design from a design instantiation.
      *
-     *      @param [in] dis                     Where from the design is searched.
+     *    @param [in] dis                     Where from the design is searched.
      *
-     *      @return The found design, or null.
+     *    @return The found design, or null.
      */
     QSharedPointer<Design> findDesignFromInstantiation(QSharedPointer<DesignInstantiation> designInstantiation,
         QSharedPointer<DesignConfiguration> configurationInstantiation);
@@ -240,9 +240,9 @@ private:
     /*!
      *  Finds a design and design configuration from a design instantiation.
      *
-     *      @param [in] configurationInstantiation                    Where from the design configuration is searched.
+     *    @param [in] configurationInstantiation                    Where from the design configuration is searched.
      *
-     *      @return The found design configuration, or null.
+     *    @return The found design configuration, or null.
      */
     QSharedPointer<DesignConfiguration> findDesignConfigurationFromInsantiation(
         QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation);
@@ -252,8 +252,8 @@ private:
      *  Compares new bounds to existing bounds of the wire and then assigns the largest combination of two
      *  If even one of the existing bounds is missing, candidates will replace them both.
      *
-     *      @param [in] wire                    The wire which bounds are possibly enlarged.
-     *      @param [in] boundCand		        The candidate for new bounds.
+     *    @param [in] wire                    The wire which bounds are possibly enlarged.
+     *    @param [in] boundCand		        The candidate for new bounds.
      */
     void assignLargerBounds(QSharedPointer<MetaWire> wire, QPair<QString,QString> const& boundCand);
 

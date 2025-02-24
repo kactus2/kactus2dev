@@ -28,7 +28,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent   The parent item.
+     *    @param [in] parent   The parent item.
      */
     explicit ColorFillTextItem(QGraphicsItem* parent = 0);
 
@@ -38,9 +38,9 @@ public:
     /*!
      *  Sets the background fill color.
      *
-     *      @param [in] color   The background color to set.
+     *    @param [in] color   The background color to set.
      *
-     *      @return 
+     *    @return 
      */
     void setFill(QColor const& color);
 

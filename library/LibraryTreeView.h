@@ -36,9 +36,9 @@ public:
 
 	/*! The constructor
 	* 
-	*      @param [in] handler  The instance that manages the library.
-	*      @param [in] filter   The class that does the filtering for the view.
-	*      @param [in] parent   The owner of this widget.
+	*    @param [in] handler  The instance that manages the library.
+	*    @param [in] filter   The class that does the filtering for the view.
+	*    @param [in] parent   The owner of this widget.
 	*
 	*/
 	LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* filter, QWidget* parent = 0);
@@ -163,7 +163,7 @@ public slots:
 
     /*! Set the index to be the current index and select and expand it.
     *
-    *      @param [in] index Specified the index to be set as the current index.
+    *    @param [in] index Specified the index to be set as the current index.
     */
     virtual void setCurrentIndex(QModelIndex const& index);
 
@@ -192,7 +192,7 @@ protected:
 
     /*! Handler for the context menu events.
     *
-    *      @param [in] event The contextMenuEvent to be handled.
+    *    @param [in] event The contextMenuEvent to be handled.
     */
     virtual void contextMenuEvent(QContextMenuEvent* event);
 

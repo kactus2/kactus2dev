@@ -45,15 +45,15 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component           The component that contains the editor.
-     *      @param [in] memoryRemap         The memory remap being edited.
-     *      @param [in] parentMapName       Name of the parent of the memory remap being edited.
-     *      @param [in] libHandler          The instance that manages the library.
-     *      @param [in] parameterFinder     The finder for the parameter references.
-     *      @param [in] expressionParser    The expression parser.
-     *      @param [in] mapInterface        Interface for memory maps.
-     *      @param [in] isMemoryRemap       Flag for informing if the edited item is a memory map or a remap.
-     *      @param [in] parent              The owner of this editor.
+     *    @param [in] component           The component that contains the editor.
+     *    @param [in] memoryRemap         The memory remap being edited.
+     *    @param [in] parentMapName       Name of the parent of the memory remap being edited.
+     *    @param [in] libHandler          The instance that manages the library.
+     *    @param [in] parameterFinder     The finder for the parameter references.
+     *    @param [in] expressionParser    The expression parser.
+     *    @param [in] mapInterface        Interface for memory maps.
+     *    @param [in] isMemoryRemap       Flag for informing if the edited item is a memory map or a remap.
+     *    @param [in] parent              The owner of this editor.
      */
     SingleMemoryMapEditor(QSharedPointer<Component> component,
         QSharedPointer<MemoryMapBase> memoryRemap,
@@ -80,17 +80,17 @@ public slots:
     /*
      *  Handles memory map name change from memory maps editor.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void onMemoryMapNameChanged(QString const& oldName, QString const& newName);
 
     /*
      *  Handles of memory remap name change from memory maps editor.
      *
-     *      @param [in] parentName  Name of the containing memory map.
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] parentName  Name of the containing memory map.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void onMemoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
 
@@ -104,7 +104,7 @@ protected:
     /*!
      *  The show event for this editor.
      *
-     *      @param [in] event   The show event.
+     *    @param [in] event   The show event.
      */
     virtual void showEvent(QShowEvent * event);
 
@@ -126,7 +126,7 @@ private slots:
     /*!
      *  Sets the new remap state to the memory remap.
      *
-     *      @param [in] newRemapState   The name of the selected remap state.
+     *    @param [in] newRemapState   The name of the selected remap state.
      */
     void onRemapStateSelected(QString const& newRemapState);
 
@@ -145,37 +145,37 @@ signals:
     /*!
      *  Emitted when address unit bits are changed for memory map.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bits.
+     *    @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
     /*
      *  Informs of address block name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void addressBlockNameChanged(QString const& oldName, QString const& newName);
 
     /*!
      *  Informs of subspace map name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void subspaceMapNameChanged(QString const& oldName, QString const& newName);
 
     /*!
      *  Informs change in child addressing.
      *
-     *      @param [in]
+     *    @param [in]
      */
     void childAddressingChanged(int);
 
     /*!
      *  Informs change in child graphics.
      *
-     *      @param [in]
+     *    @param [in]
      */
     void childGraphicsChanged(int);
 

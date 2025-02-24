@@ -34,10 +34,10 @@ public:
     /*!
      * The constructor.
      *
-     *     @param [in] outputChannel    Channel for standard messages and interpreter output.
-     *     @param [in] errorChannel     Channel for error messages.
-     *     @param [in] printPromt       Flag for enabling prompt printing.
-     *     @param [in] parent           The parent object.
+     *    @param [in] outputChannel    Channel for standard messages and interpreter output.
+     *    @param [in] errorChannel     Channel for error messages.
+     *    @param [in] printPromt       Flag for enabling prompt printing.
+     *    @param [in] parent           The parent object.
      */
      explicit PythonInterpreter(WriteChannel* outputChannel, 
          WriteChannel* errorChannel, bool printPromt = true,
@@ -49,9 +49,9 @@ public:
     /*!
      * Initializes the interpreter. This function must be called before writing any commands with write().
      *
-     *     @param [in] interactive  Flag for enabling interactive std input. Set to true on command-line.
+     *    @param [in] interactive  Flag for enabling interactive std input. Set to true on command-line.
      *
-     *     @return True, if initialization was successful, otherwise false.
+     *    @return True, if initialization was successful, otherwise false.
      */
      bool initialize(bool interactive = true);     
      
@@ -63,7 +63,7 @@ public:
     /*!
      * Execute a single line in the interpreter.
      *
-     *     @param [in] line  The line to execute.
+     *    @param [in] line  The line to execute.
      */
      void execute(std::string const& line);
 
@@ -76,21 +76,21 @@ public slots:
     /*!
      * Write a command for interpreter to execute.
      *
-     *     @param [in] command  The command to execute.
+     *    @param [in] command  The command to execute.
      */
     virtual void write(QString const& command) override final;
 
     /*!
      * Execute the given arbitrary long string in the interpreter.
      *
-     *     @param [in] string  The string to execute.
+     *    @param [in] string  The string to execute.
      */
     void executeString(QString const& string);
 
     /*!
      * Run a script from a given file.
      *
-     *     @param [in] filePath  Path to the file to run.
+     *    @param [in] filePath  Path to the file to run.
      */
     void runFile(QString const& filePath);
 
@@ -99,16 +99,16 @@ private:
     /*!
      * Redirect the interpreter output and error output to WriteChannels.
      *
-     *     @param [in] interactive  Flag for enabling interactive std input. Set to true on command-line.
+     *    @param [in] interactive  Flag for enabling interactive std input. Set to true on command-line.
      *
-     *     @return True, if the input and outputs could be redirected, otherwise false.
+     *    @return True, if the input and outputs could be redirected, otherwise false.
      */
      bool redirectIO(bool interactive);
 
      /*!
       * Import and set the core api available in python context.
       *
-      *     @return True, if the api was set, otherwise false.
+      *    @return True, if the api was set, otherwise false.
       */
       bool setAPI();
 

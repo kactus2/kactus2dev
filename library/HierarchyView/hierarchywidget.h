@@ -33,9 +33,9 @@ public:
 
 	/*! The constructor
 	 * 
-	 *      @param [in] parent      The owner of this widget.
-	 *      @param [in] handler     The instance that manages library.
-	 *      @param [in] dataModel   The model that provides data to view and filter.
+	 *    @param [in] parent      The owner of this widget.
+	 *    @param [in] handler     The instance that manages library.
+	 *    @param [in] dataModel   The model that provides data to view and filter.
 	 */
     HierarchyWidget(LibraryInterface* handler, HierarchyModel* dataModel, QWidget* parent);
 	
@@ -44,14 +44,14 @@ public:
 
 	/*! Select the library items that represent the given vlnv.
 	 *
-	 *      @param [in] vlnv Identifies the objects to select.
+	 *    @param [in] vlnv Identifies the objects to select.
 	 */
 	void selectItems(const VLNV& vlnv);
     	
     /*!
      *  Gets the filter for the tree model.
      *
-     *      @return The filter in use.
+     *    @return The filter in use.
      */
     LibraryFilter* getFilter() const;
 

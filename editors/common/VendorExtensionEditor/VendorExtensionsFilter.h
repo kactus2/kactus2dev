@@ -28,7 +28,7 @@ public:
 	 /*!
       *  Constructor.
       *
-      *      @param [in] parent          The parent object.
+      *    @param [in] parent          The parent object.
       */
     VendorExtensionsFilter(QObject* parent = 0);
 
@@ -46,10 +46,10 @@ protected:
     /*!
 	 *  Implementation of the row filtering.
 	 *
-	 *      @param [in] source_row      The row to check for filtering.
-     *      @param [in] source_parent   The parent index of the row.
+	 *    @param [in] source_row      The row to check for filtering.
+     *    @param [in] source_parent   The parent index of the row.
      *
-     *      @return True, if the row passes the filters, otherwise false.
+     *    @return True, if the row passes the filters, otherwise false.
 	 */
     virtual bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
 };

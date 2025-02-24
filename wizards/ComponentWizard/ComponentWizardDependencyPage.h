@@ -34,11 +34,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component           The component.
-     *      @param [in] parameterFinder     Finder used to identify parameters.
-     *      @param [in] componentPath       Path to the component.
-     *      @param [in] fileSetInterface    Interface for accessing file sets.
-     *      @param [in] parent              The parent wizard.
+     *    @param [in] component           The component.
+     *    @param [in] parameterFinder     Finder used to identify parameters.
+     *    @param [in] componentPath       Path to the component.
+     *    @param [in] fileSetInterface    Interface for accessing file sets.
+     *    @param [in] parent              The parent wizard.
      */
     ComponentWizardDependencyPage(QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,

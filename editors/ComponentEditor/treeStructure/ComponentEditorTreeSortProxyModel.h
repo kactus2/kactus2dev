@@ -26,7 +26,7 @@ public:
 	 /*!
 	 *  Constructor.
 	 *
-	 *      @param [in] parent     The parent object.
+	 *    @param [in] parent     The parent object.
 	 */
     ComponentEditorTreeProxyModel(QObject *parent = 0);
 
@@ -38,7 +38,7 @@ public:
     /*!
      *  Sets the items to be hidden.
      *
-     *      @param [in] hiddenItemNames   The names of the items to hide.
+     *    @param [in] hiddenItemNames   The names of the items to hide.
      */
     void setRowVisibility(QStringList hiddenItemNames);
 
@@ -51,20 +51,20 @@ protected:
      *
      *  Note that the corresponding summary view may sort its content into other order.
      *
-     *      @param [in] left        The left item in comparison left < right.
-     *      @param [in] right       The right item in comparison left < right.
+     *    @param [in] left        The left item in comparison left < right.
+     *    @param [in] right       The right item in comparison left < right.
      *
-     *      @return True if left precedes right, otherwise false.
+     *    @return True if left precedes right, otherwise false.
      */
     bool lessThan(QModelIndex const& left, QModelIndex const& right) const;
 
 	/*!
 	 *  Filters the selected rows.
 	 *
-	 *      @param [in] source_row      The row to check for filtering.
-	 *      @param [in] source_parent   The parent index of the row.
+	 *    @param [in] source_row      The row to check for filtering.
+	 *    @param [in] source_parent   The parent index of the row.
 	 *
-	 *      @return True, if row passes filters, otherwise false.
+	 *    @return True, if row passes filters, otherwise false.
 	 */
     bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const;
 
@@ -77,7 +77,7 @@ private:
 	/*!
 	 *  Checks if item is valid. Invalid items should not be hidden.
 	 *
-	 *      @param [in] index   Index of item.
+	 *    @param [in] index   Index of item.
 	 */
     bool itemIsValidAndCanBeHidden(QModelIndex const& index) const;
 

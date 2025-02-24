@@ -34,19 +34,20 @@ QUndoCommand(parent),
     del_(true)
 {
     // Create child commands for removing interconnections.
-    foreach (GraphicsConnection* conn, port_->getConnections())
+    for (GraphicsConnection* conn : port_->getConnections())
     {
         new ConnectionDeleteCommand(diagram, static_cast<HWConnection*>(conn), this);
     }
 
-    foreach (GraphicsConnection* conn, port_->getOffPageConnector()->getConnections())
+    for (GraphicsConnection* conn : port_->getOffPageConnector()->getConnections())
     {
         new ConnectionDeleteCommand(diagram, static_cast<HWConnection*>(conn), this);
     }
 
     if (port_->getBusInterface()->getAllPortMaps())
     {
-        foreach (QSharedPointer<PortMap> portMap, *port_->getBusInterface()->getAllPortMaps())
+        auto const& allPortMaps = port_->getBusInterface()->getAllPortMaps();
+        for (auto const& portMap : *allPortMaps)
         {
             new DeletePhysicalPortCommand(componentItem_->componentModel(),
                 componentItem_->componentModel()->getPort(portMap->getPhysicalPort()->name_),

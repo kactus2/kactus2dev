@@ -57,14 +57,14 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component                   The component for which the wizard is run.
-     *      @param [in] busIf                       The bus interface for which the wizard is run.
-     *      @param [in] handler                     Pointer to the instance which manages the library.
-     *      @param [in] portNames                   Names of the physical ports used to generate the interface.
-     *      @param [in] parent                      The parent widget.
-     *      @param [in] absDefVLNV                  VLNV of the fixed abstraction definition of the bus interface.
+     *    @param [in] component                   The component for which the wizard is run.
+     *    @param [in] busIf                       The bus interface for which the wizard is run.
+     *    @param [in] handler                     Pointer to the instance which manages the library.
+     *    @param [in] portNames                   Names of the physical ports used to generate the interface.
+     *    @param [in] parent                      The parent widget.
+     *    @param [in] absDefVLNV                  VLNV of the fixed abstraction definition of the bus interface.
      *                                              If invalid, VLNV can be chosen freely on general page.
-     *      @param [in] descriptionAsLogicalName    Logical signal naming selection.
+     *    @param [in] descriptionAsLogicalName    Logical signal naming selection.
      */
     BusInterfaceWizard(QSharedPointer<Component> component,  
         QSharedPointer<BusInterface> busIf,
@@ -83,14 +83,14 @@ signals:
      /*!
       *  Increase the number of references made to a specific parameter.
       *
-      *      @param [in] id  The id of the parameter whose reference count is to be increased.
+      *    @param [in] id  The id of the parameter whose reference count is to be increased.
       */
      void increaseReferences(QString id);
 
      /*!
       *  Decrease the number of references made to a specific parameter.
       *
-      *      @param [in] id  The id of the parameter whose reference count is to be decreased.
+      *    @param [in] id  The id of the parameter whose reference count is to be decreased.
       */
      void decreaseReferences(QString id);
 

@@ -48,7 +48,7 @@ public:
      *		@param [in]	defaultPath     The default path for the Linux Device Tree file.
      *		@param [in]	component       The top component of the selected design.
      *		@param [in]	design          The selected design.
-     *      @param [in] library         The library interface.
+     *    @param [in] library         The library interface.
      *		@param [in]	parent          Parent item for the dialog.
      */
     LinuxDeviceTreeDialog(QString const& defaultPath, QSharedPointer<Component> component,
@@ -69,35 +69,35 @@ public:
     /*!
      *  Get the top component view from which the device tree file is constructed from.
      *
-     *      @return	The name of the selected view.
+     *    @return	The name of the selected view.
      */
     QString getSelectedView() const;
 
     /*!
      *  Check if the file should be saved to a file set.
      *
-     *      @return	True, if the file should be saved to a file set, false otherwise.
+     *    @return	True, if the file should be saved to a file set, false otherwise.
      */
     bool saveFileToFileSet() const;
 
     /*!
      *  Get the name of the file set where to save the file to.
      *
-     *      @return	The name of the selected file set.
+     *    @return	The name of the selected file set.
      */
     QString getTargetFileSet() const;
 
     /*!
      *  Check if address blocks should be written.
      *
-     *      @return True, if address blocks should be written, false otherwise.
+     *    @return True, if address blocks should be written, false otherwise.
      */
     bool allowAddressBlocks() const;
 
     /*!
      *  Get the list of the selected CPU containers.
      *
-     *      @return List of the selected CPU containers.
+     *    @return List of the selected CPU containers.
      */
     QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > getAcceptedContainers() const;
 
@@ -118,7 +118,7 @@ private slots:
     /*!
      *  Setup the CPU editor.
      *
-     *      @param [in] view    Name of the active view.
+     *    @param [in] view    Name of the active view.
      */
     void setupCPUEditor(QString const& view);
 
@@ -147,7 +147,7 @@ private:
      *  Get the name of the design referenced by the currently active view.
      *
      *
-     *      @return 
+     *    @return 
      */
     QString getDesignName();
 

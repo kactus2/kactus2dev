@@ -40,8 +40,8 @@ public:
     /*!
      *  Write an enumerated value to an XML file.
      *
-     *      @param [in] writer              The used xml writer.
-     *      @param [in] enumeratedValue     The enumerated value to be written.
+     *    @param [in] writer              The used xml writer.
+     *    @param [in] enumeratedValue     The enumerated value to be written.
      */
     void writeEnumeratedValue(QXmlStreamWriter& writer, QSharedPointer<EnumeratedValue> enumeratedValue) const;
 
@@ -54,24 +54,24 @@ private:
     /*!
      *  Write the enumeration usage.
      *
-     *      @param [in] writer              Used XML writer.
-     *      @param [in] enumeratedValue     The selected enumerated value item.
+     *    @param [in] writer              Used XML writer.
+     *    @param [in] enumeratedValue     The selected enumerated value item.
      */
     void writeUsage(QXmlStreamWriter& writer, QSharedPointer<EnumeratedValue> enumeratedValue) const;
 
     /*!
      *  Write the name group.
      *
-     *      @param [in] writer              Used XML writer.
-     *      @param [in] enumeratedValue     The selected enumerated value item.
+     *    @param [in] writer              Used XML writer.
+     *    @param [in] enumeratedValue     The selected enumerated value item.
      */
     void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<EnumeratedValue> enumeratedValue) const;
 
     /*!
      *  Write the value.
      *
-     *      @param [in] writer              Used XML writer.
-     *      @param [in] enumeratedValue     The selected enumerated value item.
+     *    @param [in] writer              Used XML writer.
+     *    @param [in] enumeratedValue     The selected enumerated value item.
      */
     void writeValue(QXmlStreamWriter& writer, QSharedPointer<EnumeratedValue> enumeratedValue) const;
 };

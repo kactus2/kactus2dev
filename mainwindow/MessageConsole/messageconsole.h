@@ -27,7 +27,7 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] parent     The owner of this widget
+	 *    @param [in] parent     The owner of this widget
 	 *
 	*/
 	explicit MessageConsole(QWidget *parent);
@@ -45,13 +45,13 @@ public slots:
 
 	/*! Prints an error message to the text edit.
 	 *
-	 *      @param [in] message     The message to print.
+	 *    @param [in] message     The message to print.
 	*/
 	void onErrorMessage(QString const& message);
 
 	/*! Prints a notice message to the text edit.
 	 *
-	 *      @param [in] message  The message to print.
+	 *    @param [in] message  The message to print.
 	*/
 	void onNoticeMessage(QString const& message);
 
@@ -64,7 +64,7 @@ private:
 
     /*! Set the color for text to be printed.
      *
-     *      @param [in] color  The color to apply to text.
+     *    @param [in] color  The color to apply to text.
     */
     void setTextColor(QColor const& color);
 	

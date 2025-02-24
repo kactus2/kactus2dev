@@ -36,11 +36,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] parameterExpressions            The expressions for selecting parameter references.
-     *      @param [in] moduleParameterExpressions      The expressions for selecting module parameter references.
-     *      @param [in] defaultExpressions              The expressions for resolving default values.
-     *      @param [in] completionModel                 The completion model for selecting parameter references.
-	 *      @param [in] parent                          The parent widget.
+     *    @param [in] parameterExpressions            The expressions for selecting parameter references.
+     *    @param [in] moduleParameterExpressions      The expressions for selecting module parameter references.
+     *    @param [in] defaultExpressions              The expressions for resolving default values.
+     *    @param [in] completionModel                 The completion model for selecting parameter references.
+	 *    @param [in] parent                          The parent widget.
 	 */
     ComponentInstanceConfigurableElementsEditor( ExpressionSet parameterExpressions,
         ExpressionSet moduleParameterExpressions, ExpressionSet defaultExpressions, 
@@ -58,10 +58,10 @@ public:
 	/*!
      *  Set the component instance to be edited.
 	 *
-	 *      @param [in] component           Pointer to the component referenced by the component instance.
-     *      @param [in] instance            Pointer to the component instance to edit.
-     *      @param [in] viewConfiguration   Pointer to the view configuration of the component instance.
-     *      @param [in] editProvider        Pointer to the editing capabilities.
+	 *    @param [in] component           Pointer to the component referenced by the component instance.
+     *    @param [in] instance            Pointer to the component instance to edit.
+     *    @param [in] viewConfiguration   Pointer to the view configuration of the component instance.
+     *    @param [in] editProvider        Pointer to the editing capabilities.
 	 */
     void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
         QSharedPointer<ViewConfiguration> viewConfiguration, QSharedPointer<IEditProvider> editProvider);
@@ -79,14 +79,14 @@ signals:
     /*!
      *  Increase the amount of references to a parameter with the matching ID.
      *
-     *      @param [in] id  ID of the parameter, whose references are being increased.
+     *    @param [in] id  ID of the parameter, whose references are being increased.
      */
     void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the amount of references to a parameter with a matching ID.
      *
-     *      @param [in] id  ID of the parameter, whose references are being decreased.
+     *    @param [in] id  ID of the parameter, whose references are being decreased.
      */
     void decreaseReferences(QString const& id);
 

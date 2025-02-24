@@ -46,7 +46,7 @@ public:
     /*!
      *  Get the type of the extension.
      *
-     *      @return The type of the extension.
+     *    @return The type of the extension.
      */
     virtual QString type() const;
 
@@ -58,28 +58,28 @@ public:
     /*!
      *  Sets the name of the column.
      *
-     *      @param [in] name The name of the column.
+     *    @param [in] name The name of the column.
      */
     void setName(QString const& name);
 
     /*!
      *  Sets the content type.
      *
-     *      @param [in] contentType The content type.
+     *    @param [in] contentType The content type.
      */
     void setContentType(ColumnTypes::ColumnContentType contentType);
 
     /*!
      *  Sets the allowed items.
      *
-     *      @param [in] allowedItems The allowed items as bit flags.
+     *    @param [in] allowedItems The allowed items as bit flags.
      */
     void setAllowedItems(unsigned int allowedItems);
 
     /*!
      *  Sets the width of the column.
      *
-     *      @param [in] width The width of the column.
+     *    @param [in] width The width of the column.
      */
     void setWidth(unsigned int width);
 

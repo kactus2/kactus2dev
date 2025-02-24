@@ -87,6 +87,7 @@ HEADERS += ./generaldeclarations.h \
     ./common/GenericVendorExtension.h \
     ./common/validators/ChoiceValidator.h \
     ./common/validators/CommonItemsValidator.h \
+    ./common/validators/HierarchicalValidator.h \
     ./common/validators/QualifierValidator.h \
     ./common/validators/AssertionValidator.h \
     ./common/validators/CellSpecificationValidator.h \
@@ -252,6 +253,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/RegisterReader.h \
     ./Component/RegisterWriter.h \
     ./Component/OtherClockDriverWriter.h \
+    ./Component/validators/CollectionValidators.h \
     ./Component/validators/FieldAccessPolicyValidator.h \
     ./Component/validators/FieldReferenceValidator.h \
     ./Component/validators/FieldSliceValidator.h \
@@ -306,8 +308,10 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h
-SOURCES += ./generaldeclarations.cpp \
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
+    ./AbstractionDefinition/validators/PortAbstractionValidator.h
+SOURCES += ./Component/validators/CollectionValidators.cpp \
+    ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
     ./kactusExtensions/ApiDefinitionWriter.cpp \
@@ -553,6 +557,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/Wire.cpp \
     ./Component/WireTypeDef.cpp \
     ./Component/WriteValueConstraint.cpp \
+    ./common/validators/HierarchicalValidator.cpp \
     ./Component/validators/AbstractionTypeValidator.cpp \
     ./Component/validators/AddressBlockValidator.cpp \
     ./Component/validators/AddressSpaceValidator.cpp \
@@ -606,4 +611,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/ViewConfiguration.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
+    ./AbstractionDefinition/validators/PortAbstractionValidator.cpp

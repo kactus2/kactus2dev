@@ -37,10 +37,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component  The new HW component to which to switch.
-     *      @param [in] viewName   The initial name suggestion for the system view.
-     *      @param [in] lh         The library interface.
-     *      @param [in] parent     The parent widget.
+     *    @param [in] component  The new HW component to which to switch.
+     *    @param [in] viewName   The initial name suggestion for the system view.
+     *    @param [in] lh         The library interface.
+     *    @param [in] parent     The parent widget.
      */
     SwitchHWDialog(QSharedPointer<Component> component, QString const& viewName, LibraryInterface* lh,
                    QWidget* parent);
@@ -53,7 +53,7 @@ public:
     /*!
      *  Sets the system view name suggestions.
      *
-     *      @param [in] suggestions The list of suggestions.
+     *    @param [in] suggestions The list of suggestions.
      */
     void setViewNameSuggestions(QStringList const& suggestions);
 
@@ -96,7 +96,7 @@ private slots:
     /*!
      *  Called when the action selection has changed.
      *
-     *      @param [in] button The action button.
+     *    @param [in] button The action button.
      */
     void actionChanged(QAbstractButton* button);
 

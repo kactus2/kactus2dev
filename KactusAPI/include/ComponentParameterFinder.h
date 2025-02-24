@@ -30,7 +30,7 @@ public:
     /*!
      *  Constructor.
      *
-	 *      @param [in] component		The component which parameters are being searched for.
+	 *    @param [in] component		The component which parameters are being searched for.
      */
     explicit ComponentParameterFinder(QSharedPointer<Component const> component) noexcept;
 
@@ -48,62 +48,62 @@ public:
     /*!
      *  Get the parameter with the given id.
      *
-     *      @param [in] parameterId     The id of the parameter being searched for.
+     *    @param [in] parameterId     The id of the parameter being searched for.
      */
     QSharedPointer<Parameter> getParameterWithID(QStringView parameterId) const override;
 
     /*!
      *  Checks if a parameter with the given id exists.
      *
-     *      @param [in] id      The id to search for.
+     *    @param [in] id      The id to search for.
      *
-     *      @return True, if the parameter with the given id exists, otherwise false.
+     *    @return True, if the parameter with the given id exists, otherwise false.
      */
     bool hasId(QStringView id) const override;
 
     /*!
      *  Finds the name of the parameter with the given id.
      *
-     *      @param [in] id      The id to search for.
+     *    @param [in] id      The id to search for.
      *
-     *      @return The name of the parameter.
+     *    @return The name of the parameter.
      */
     QString nameForId(QStringView id) const override;
 
     /*!
      *  Finds the value of the parameter with the given id.
      *
-     *      @param [in] id      The id of the parameter to search for.
+     *    @param [in] id      The id of the parameter to search for.
      *
-     *      @return The value of the parameter.
+     *    @return The value of the parameter.
      */
     QString valueForId(QStringView id) const override;
 
     /*!
      *  Gets all of the ids of components parameters.
      *
-     *      @return A list containing all of the ids.
+     *    @return A list containing all of the ids.
      */
     virtual QStringList getAllParameterIds() const override;
 
     /*!
      *  Gets the number of parameters in the component.
      *
-     *      @return The number of parameters in the component.
+     *    @return The number of parameters in the component.
      */
     virtual int getNumberOfParameters() const override;
 
     /*!
     *  Registers a parameter model that can modify parameters for the finder.
     *
-    *      @param [in] model   The model to register.
+    *    @param [in] model   The model to register.
     */
     virtual void registerParameterModel(QAbstractItemModel const* model) override;
 
     /*!
      *  Set a new component for the parameter finder.
      *
-     *      @param [in] component   The new component.
+     *    @param [in] component   The new component.
      */
     virtual void setComponent(QSharedPointer<Component const> component);
 
@@ -115,7 +115,7 @@ public:
     /*!
      *  Finds all the parameters in component bus interfaces.
      *
-     *      @return The parameters in all bus interfaces.
+     *    @return The parameters in all bus interfaces.
      */
     QList<QSharedPointer<Parameter> > allBusInterfaceParameters() const;
     
@@ -132,14 +132,14 @@ public:
     /*!
      *  Finds all the parameters in component registers.
      *
-     *      @return The parameters in all registers.
+     *    @return The parameters in all registers.
      */
     QList<QSharedPointer<Parameter> > allRegisterParameters() const;
 
     /*!
      *  Get all the parameters in indirect interfaces.
      *
-     *      @return The parameters in indirect interfaces.
+     *    @return The parameters in indirect interfaces.
      */
     QList<QSharedPointer<Parameter> > allIndirectInterfacesParameters() const;
 
@@ -153,7 +153,7 @@ protected:
     /*!
      *  Get the component.
      *
-     *      @return The contained component.
+     *    @return The contained component.
      */
     QSharedPointer<const Component> getComponent() const noexcept;
 

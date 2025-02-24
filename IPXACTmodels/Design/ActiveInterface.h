@@ -29,8 +29,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] componentRef    The name of the referenced component instance.
-     *      @param [in] busRef          The name of the referenced bus interface.
+     *    @param [in] componentRef    The name of the referenced component instance.
+     *    @param [in] busRef          The name of the referenced bus interface.
      */
     ActiveInterface(QString const& componentRef = QString(), QString const& busRef = QString());
 
@@ -52,7 +52,7 @@ public:
     /*!
      *  Comparison operator.
      *
-     *      @return True, if the interfaces refer the same component and bus interface, otherwise false.
+     *    @return True, if the interfaces refer the same component and bus interface, otherwise false.
      */
     bool operator==(const ActiveInterface& other) const;
 
@@ -64,45 +64,45 @@ public:
     /*!
      *  The operator <.
      *
-     *      @return The operator uses QString to compare instance names and bus interface names.
+     *    @return The operator uses QString to compare instance names and bus interface names.
      */
     bool operator<(const ActiveInterface& other) const;
 
     /*!
      *  Checks if the interface referenced a given instance and a bus interface.
      *
-     *      @param [in] instanceName        The name of the component instance to compare to.
-     *      @param [in] busInterfaceName    The name of the bus interface to compare to.
+     *    @param [in] instanceName        The name of the component instance to compare to.
+     *    @param [in] busInterfaceName    The name of the bus interface to compare to.
      *
-     *      @return True, if the given instance and bus interface are reference by the interface.
+     *    @return True, if the given instance and bus interface are reference by the interface.
      */
     bool references(QString const& instanceName, QString const& busInterfaceName) const;
 
     /*!
      *  Get the referenced component.
      *
-     *      @return The name of the referenced component.
+     *    @return The name of the referenced component.
      */
     QString getComponentReference() const;
 
     /*!
      *  Set a new component referenced.
      *
-     *      @param [in] newComponentReference   The new component reference.
+     *    @param [in] newComponentReference   The new component reference.
      */
     void setComponentReference(QString const& newComponentReference);
 
     /*!
      *  Get a list of excluded ports.
      *
-     *      @return Pointer to a list containing the excluded ports.
+     *    @return Pointer to a list containing the excluded ports.
      */
     QSharedPointer<QStringList> getExcludePorts() const;
 
     /*!
      *  Set a new list of excluded ports.
      *
-     *      @param [in] newExcludePorts     A new list of excluded ports.
+     *    @param [in] newExcludePorts     A new list of excluded ports.
      */
     void setExcludePorts(QSharedPointer<QStringList> newExcludePorts);
 

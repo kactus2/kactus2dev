@@ -45,10 +45,10 @@ protected:
     /*!
      *  Create a table item.
      *
-     *      @param [in] itemName                Name for the table item.
-     *      @param [in] containingComponent     Component containing the selected item.
+     *    @param [in] itemName                Name for the table item.
+     *    @param [in] containingComponent     Component containing the selected item.
      *
-     *      @return The new table item.
+     *    @return The new table item.
      */
     virtual QTableWidgetItem* createTableWidgetItem(QString const& itemName,
         QSharedPointer<Component> containingComponent) const;
@@ -58,10 +58,10 @@ private:
     /*!
      *  Find the possible item connections from the selected components.
      *
-     *      @param [in] firstComponent      The first component.
-     *      @param [in] secondComponent     The second component.
+     *    @param [in] firstComponent      The first component.
+     *    @param [in] secondComponent     The second component.
      *
-     *      @return List of item / possible connected items pairs.
+     *    @return List of item / possible connected items pairs.
      */
     virtual QVector<QPair<QString, QVector<QString> > > findPossibleCombinations(
         QSharedPointer<Component> firstComponent, QSharedPointer<Component> secondComponent) const;
@@ -69,10 +69,10 @@ private:
     /*!
      *  Find the names of the ports possible to be connected to the selected port.
      *
-     *      @param [in] protDirection       Direction of the selected port.
-     *      @param [in] secondItemPorts     List of the ports contained within the second component.
+     *    @param [in] protDirection       Direction of the selected port.
+     *    @param [in] secondItemPorts     List of the ports contained within the second component.
      *
-     *      @return List of connectible port names.
+     *    @return List of connectible port names.
      */
     QVector<QString> getConnectablePortNames(DirectionTypes::Direction portDirection,
         QSharedPointer<QList<QSharedPointer<Port> > > secondItemPorts) const;
@@ -80,9 +80,9 @@ private:
     /*!
      *  Get connectible port directions for the selected port direction.
      *
-     *      @param [in] portDirection   The selected port direction.
+     *    @param [in] portDirection   The selected port direction.
      *
-     *      @return List of connectible port directions.
+     *    @return List of connectible port directions.
      */
     virtual QVector<DirectionTypes::Direction> getConnectableDirections(DirectionTypes::Direction portDirection)
         const;
@@ -90,9 +90,9 @@ private:
     /*!
      *	Find items that are already connected to populate the connection table with.
      *
-     *      @param [in] firstInstanceName   The first component.
-     *      @param [in] secondInstanceName  The second component.
-     *      @param [in] design              The containing design.
+     *    @param [in] firstInstanceName   The first component.
+     *    @param [in] secondInstanceName  The second component.
+     *    @param [in] design              The containing design.
      *
      * 	    @return List of item connected item pairs.
      */

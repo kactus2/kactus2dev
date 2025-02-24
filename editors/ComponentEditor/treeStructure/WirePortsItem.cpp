@@ -79,7 +79,7 @@ ItemEditor* WirePortsItem::editor()
 {
 	if (!editor_)
     {
-        QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
+        QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface(expressions_.parser, expressions_.formatter));
 
         const QString defaultPath = QString("%1/wireList.csv").arg(libHandler_->getDirectoryPath(component_->getVlnv()));
 
@@ -100,6 +100,16 @@ ItemEditor* WirePortsItem::editor()
         connectItemEditorToVendorExtensionsEditor();
 	}
 	return editor_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WirePortsItem::getFont()
+//-----------------------------------------------------------------------------
+QFont WirePortsItem::getFont() const
+{
+    QFont font(ComponentEditorItem::getFont());
+    font.setBold(component_->hasWires());
+    return font;
 }
 
 //-----------------------------------------------------------------------------

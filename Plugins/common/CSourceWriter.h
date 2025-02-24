@@ -24,8 +24,8 @@ public:
     /*!
      * Constructor.
      *
-     *      @param [in] filename      The name of the destination file.
-     *      @param [in] indentString  The indentation string.
+     *    @param [in] filename      The name of the destination file.
+     *    @param [in] indentString  The indentation string.
      */
     explicit CSourceWriter(QString const& filename, QString const& indentString);
 
@@ -37,7 +37,7 @@ public:
     /*!
      *  Opens the file for writing.
      *
-     *      @return False if errors. Otherwise true.
+     *    @return False if errors. Otherwise true.
      */
     bool open();
 
@@ -59,7 +59,7 @@ public:
     /*!
      *  Writes a line to the source file. Newline is automatically written after the line.
      *
-     *      @param [in] line The line to write.
+     *    @param [in] line The line to write.
      */
     void writeLine(QString const& line);
 
@@ -71,8 +71,8 @@ public:
     /*!
      *  Writes a #include to the source file.
      *
-     *      @param [in] headerName The name of the header file.
-     *      @param [in] local      If true, the header is included with "" instead of <>.
+     *    @param [in] headerName The name of the header file.
+     *    @param [in] local      If true, the header is included with "" instead of <>.
      */
     void writeInclude(QString const& headerName, bool local = false);
 
@@ -94,14 +94,14 @@ public:
     /*!
      *  Ends a structure type definition.
      *
-     *      @param [in] name The name of the struct.
+     *    @param [in] name The name of the struct.
      */
     void endStruct(QString const& name);
 
     /*!
      *  Writes a header block comment.
      *
-     *      @param [in] desc The descriptive text.
+     *    @param [in] desc The descriptive text.
      */
     void writeHeaderComment(QString const& desc);
 

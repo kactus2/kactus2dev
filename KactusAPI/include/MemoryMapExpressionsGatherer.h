@@ -38,9 +38,9 @@ public:
     /*!
      *  Get the expressions from a given memory map.
      *
-     *      @param [in] memoryMap   The given memory map.
+     *    @param [in] memoryMap   The given memory map.
      *
-     *      @return A list containing all the expressions used in a memory map.
+     *    @return A list containing all the expressions used in a memory map.
      */
     QStringList getExpressions(QSharedPointer<MemoryMap> memoryMap) const;
 

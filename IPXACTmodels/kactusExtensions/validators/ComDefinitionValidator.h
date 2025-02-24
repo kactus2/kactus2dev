@@ -30,7 +30,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] expressionParser    The expression parser to use.
+     *    @param [in] expressionParser    The expression parser to use.
 	 */
     ComDefinitionValidator();
 
@@ -40,17 +40,17 @@ public:
     /*!
      *  Validates the given ComDefinition.
      *
-     *      @param [in] ComDefinition           The ComDefinition to validate.
+     *    @param [in] ComDefinition           The ComDefinition to validate.
      *
-     *      @return True, if the ComDefinition is valid IP-XACT, otherwise false.
+     *    @return True, if the ComDefinition is valid IP-XACT, otherwise false.
      */
     virtual bool validate(QSharedPointer<const ComDefinition> comDefinition) const;
 
     /*!
      *  Finds possible errors in a ComDefinition and creates a list of them.
      *
-     *      @param [out] errors         List of found errors.
-     *      @param [in] ComDefinition   The ComDefinition whose errors to find.
+     *    @param [out] errors         List of found errors.
+     *    @param [in] ComDefinition   The ComDefinition whose errors to find.
      */
     virtual void findErrorsIn(QVector<QString>& errorList, QSharedPointer<const ComDefinition> comDefinition) const;
 

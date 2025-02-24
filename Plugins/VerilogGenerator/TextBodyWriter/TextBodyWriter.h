@@ -30,7 +30,7 @@ public:
     /*!
      *  Writes the comment to the given output.
      *
-     *      @param [in] output   The output to write to.
+     *    @param [in] output   The output to write to.
      */
     virtual void write(QTextStream& output) const;
 

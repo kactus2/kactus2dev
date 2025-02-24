@@ -38,21 +38,21 @@ public:
     /*!
      *  Get the names of the available items.
      *
-     *      @return Names of the available items.
+     *    @return Names of the available items.
      */
     virtual std::vector<std::string> getItemNames() const = 0;
 
     /*!
      *  Get the number of available items.
      *
-     *      @return Number of available items.
+     *    @return Number of available items.
      */
     virtual int itemCount() const = 0;
 
     /*!
      *  Validates the contained items.
      *
-     *      @return True, if all the items are valid, false otherwise.
+     *    @return True, if all the items are valid, false otherwise.
      */
     virtual bool validateItems() const = 0;
 
@@ -65,19 +65,19 @@ protected:
     /*!
      *  Transform the selected name to a unique item name.
      *
-     *      @param [in] newName     The selected name.
+     *    @param [in] newName     The selected name.
      *
-     *      @return A unique name derived from the selected name.
+     *    @return A unique name derived from the selected name.
      */
     QString getUniqueName(std::string const& newName, std::string const& itemTypeName) const;
 
     /*!
      *  Check if the new name is different from the current name.
      *
-     *      @param [in] newName     The new name.
-     *      @param [in] oldName     The current name.
+     *    @param [in] newName     The new name.
+     *    @param [in] oldName     The current name.
      *
-     *      @return True, if the new name is different, false otherwise.
+     *    @return True, if the new name is different, false otherwise.
      */
     bool nameHasChanged(std::string const& newName, std::string const& oldName) const;
 
@@ -86,9 +86,9 @@ private:
     /*!
      *  Check if the selected name is unique.
      *
-     *      @param [in] portName    The selected name.
+     *    @param [in] portName    The selected name.
      *
-     *      @return True, if the selected name is unique, false otherwise.
+     *    @return True, if the selected name is unique, false otherwise.
      */
     bool nameIsUnique(std::string_view name, std::vector<std::string> const& reservedNamed) const;
 };

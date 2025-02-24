@@ -35,7 +35,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] designParameterFinder   Locates the design parameters.
+     *    @param [in] designParameterFinder   Locates the design parameters.
      */
     DesignDiagramResolver(QSharedPointer<ListParameterFinder> designParameterFinder);
 
@@ -53,8 +53,8 @@ public:
     /*!
      *  Resolve and draw a symbol for tie off in an ad hoc port item.
      *
-     *      @param [in] tieOff      The tie off of the selected port.
-     *      @param [in] tieOffPort  The selected port item.
+     *    @param [in] tieOff      The tie off of the selected port.
+     *    @param [in] tieOffPort  The selected port item.
      */
     void resolveAdhocTieOff(QString const& tieOff, AdHocItem* tieOffPort);
 
@@ -64,11 +64,11 @@ private:
     /*!
      *  Get the parsed value from a tie off value.
      *
-     *      @param [in] tieOffValue     The unparsed tie off value.
-     *      @param [in] portName        The ad hoc port name.
-     *      @param [in] ownerComponent  The encompassing component of the ad hoc port containing the tie off value.     
+     *    @param [in] tieOffValue     The unparsed tie off value.
+     *    @param [in] portName        The ad hoc port name.
+     *    @param [in] ownerComponent  The encompassing component of the ad hoc port containing the tie off value.     
      *
-     *      @return Parsed tie off value.
+     *    @return Parsed tie off value.
      */
     QString getParsedTieOffValue(QString const& tieOffValue,
         QString const& portName, QSharedPointer<Component const> ownerComponent) const;

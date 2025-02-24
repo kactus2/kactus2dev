@@ -63,7 +63,7 @@ private:
     /*!
      *  Change the component used in the component validator parameter finder.
      *
-     *      @param [in] targetComponent     The new component.
+     *    @param [in] targetComponent     The new component.
      */
     void changeComponentValidatorParameterFinder(QSharedPointer<Component> targetComponent);
 
@@ -71,40 +71,40 @@ private:
   /*!
      *  Finds any errors within a given bus definition document.
      *
-     *      @param [in]  busDefinition   The bus definition to search in.
-     *      @param [out] errorList      The list of errors to add any found errors.
+     *    @param [in]  busDefinition   The bus definition to search in.
+     *    @param [out] errorList      The list of errors to add any found errors.
      */
     void findErrorsInBusDefinition(QSharedPointer<BusDefinition> busDefinition, QVector<QString>& errorList);
     
     /*!
      *  Finds any errors within a given abstraction definition document.
      *
-     *      @param [in]  abstraction    The bus definition to search in.
-     *      @param [out] errorList      The list of errors to add any found errors.
+     *    @param [in]  abstraction    The bus definition to search in.
+     *    @param [out] errorList      The list of errors to add any found errors.
      */
     void findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDefinition> abstraction, QVector<QString>& errorList);
 
     /*!
      *  Finds any errors within a given component.
      *
-     *      @param [in] component   The selected component.
-     *      @param [in] errorList   The list of errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] errorList   The list of errors.
      */
     void findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList);
 
     /*!
      *  Finds any errors within a given design.
      *
-     *      @param [in] design      The selected design.
-     *      @param [in] errorList   The list of errors.
+     *    @param [in] design      The selected design.
+     *    @param [in] errorList   The list of errors.
      */
     void findErrorsInDesign(QSharedPointer<Design> design, QVector<QString>& errorList);
 
     /*!
      *  Finds any errors within a given design configuration.
      *
-     *      @param [in] configuration   The selected design configuration.
-     *      @param [in] errorList       The list of errors.
+     *    @param [in] configuration   The selected design configuration.
+     *    @param [in] errorList       The list of errors.
      */
     void findErrorsInDesignConfiguration(QSharedPointer<DesignConfiguration> configuration,
         QVector<QString>& errorList);
@@ -117,6 +117,9 @@ private:
 
      //! The parameter finder used in the component validator.
      QSharedPointer<ComponentParameterFinder> componentValidatorFinder_{ new ParameterCache(QSharedPointer<Component>()) };
+
+     //! The parameter finder used in the abstraction definition validator.
+     QSharedPointer<ListParameterFinder> absDefParameterFinder_{ new ListParameterFinder() };
 
      //! The used abstraction definition validator.
      AbstractionDefinitionValidator abstractionValidator_;

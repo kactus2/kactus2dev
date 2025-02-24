@@ -35,15 +35,15 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] refCounter              The instance for counting references.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The expression parser.
-     *      @param [in] busInterface            Interface for accessing bus interfaces.
-	 *      @param [in] parent                  The parent item.
+	 *    @param [in] model                   The model that owns the items.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] refCounter              The instance for counting references.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] expressionParser        The expression parser.
+     *    @param [in] busInterface            Interface for accessing bus interfaces.
+	 *    @param [in] parent                  The parent item.
 	 */
 	TransactionalPortsItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
@@ -60,30 +60,38 @@ public:
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	QString getTooltip() const final;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	QString text() const final;
 
 	/*!
      *  Check the validity of this item and sub items.
 	 *
-	 *      @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	 */
 	bool isValid() const final;
 
 	/*!
      *  Get pointer to the editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	ItemEditor* editor() final;
+   
+	/*! 
+	 *  Get the font to be used for text of this item.
+	 *	The font is bold, if transactional ports exist, otherwise regular.
+	 *
+	 *    @return QFont instance that defines the font to be used.
+	 */
+	QFont getFont() const final;
 
 signals:
 

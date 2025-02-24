@@ -36,8 +36,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] libInterface The library interface.
-     *      @param [in] parentDlg    The parent dialog.
+     *    @param [in] libInterface The library interface.
+     *    @param [in] parentDlg    The parent dialog.
      */
     NewPage(LibraryInterface* libInterface, VLNV::IPXactType vlnvType, QString title = QString(), 
         QString description = QString(), QWidget* parentDlg = 0);
@@ -54,7 +54,7 @@ public:
     /*!
      *  Pre-validates the contents of the page. This is used for enabling/disabling the OK button.
      *
-     *      @return True, if the contents are valid and OK button should be enabled.
+     *    @return True, if the contents are valid and OK button should be enabled.
      *              False, if the contents are invalid and OK button should be disabled.
      *
      *      @remarks Must not show any message boxes.
@@ -64,7 +64,7 @@ public:
     /*!
      *  Validates the contents of the page thoroughly.
      *
-     *      @return True, if the contents are valid. False, if they are invalid.
+     *    @return True, if the contents are valid. False, if they are invalid.
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
@@ -73,7 +73,7 @@ public:
     /*!
      *  Called when the page is to be changed and this page would be hidden.
      *
-     *      @return False, if the page change should be rejected. Otherwise true.
+     *    @return False, if the page change should be rejected. Otherwise true.
      */
     virtual bool onPageChange();
     
@@ -92,46 +92,46 @@ protected:
     /*!
      *  Gets the selected product hierarchy level, if selected.
      *
-     *      @return The selected product hierarchy.
+     *    @return The selected product hierarchy.
      */
     virtual KactusAttribute::ProductHierarchy getProductHierarchy() const;
 
     /*!
      *  Checks if the given VLNV is not found in the library.
      *
-     *      @param [in] vlnv   The VLNV to check.
+     *    @param [in] vlnv   The VLNV to check.
      *
-     *      @return True, if the VLNV is not already in the library, otherwise false.
+     *    @return True, if the VLNV is not already in the library, otherwise false.
      */
     bool isUnusedVLNV(VLNV const& vlnv) const;
 
     /*!
      *  Gets the selected path within the library.
      *
-     *      @return The selected path.
+     *    @return The selected path.
      */
     QString selectedPath() const;
 
     /*!
      *  Shows an error message for a VLNV already found in the library.
      *
-     *      @param [in] vlnv    The reserved VLNV.     
+     *    @param [in] vlnv    The reserved VLNV.     
      */
     void showErrorForReservedVLVN(VLNV const& vlnv);
 
     /*!
      *  Gets the name of the VLNV type
      *
-     *      @param [in] type    The type whose name to get.
+     *    @param [in] type    The type whose name to get.
      *
-     *      @return The name of the VLNV document type.
+     *    @return The name of the VLNV document type.
      */
     QString type2Show(VLNV::IPXactType const& type);
 
     /*!
      *  Gets the selected document revision.
      *
-     *      @return The selected IP-XACT revision.
+     *    @return The selected IP-XACT revision.
      */
     Document::Revision selectedRevision() const;
 

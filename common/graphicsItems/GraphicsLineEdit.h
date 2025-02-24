@@ -26,7 +26,7 @@ public:
     /*!
      *  Constructor.
      *  
-     *      @param [in] parent  The parent.
+     *    @param [in] parent  The parent.
      */
     GraphicsLineEdit(QGraphicsItem* parent);
 
@@ -38,7 +38,7 @@ public:
     /*!
      *  Sets the editor read only.
      *  
-     *      @param [in] readOnly    True for read only.
+     *    @param [in] readOnly    True for read only.
      */
     void setReadOnly(bool readOnly);
 

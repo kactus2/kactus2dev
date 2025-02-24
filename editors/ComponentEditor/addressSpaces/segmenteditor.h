@@ -37,13 +37,13 @@ public:
     /*!
      *  The constructor
      *
-     *      @param [in] addrSpace               The address space whose segments are edited.
-     *      @param [in] component               The component being edited.
-     *      @param [in] componentPath           The path to component xml file.
-     *      @param [in] parameterFinder         Finder for available parameter names.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] parent                  Pointer to the owner of this editor.
+     *    @param [in] addrSpace               The address space whose segments are edited.
+     *    @param [in] component               The component being edited.
+     *    @param [in] componentPath           The path to component xml file.
+     *    @param [in] parameterFinder         Finder for available parameter names.
+     *    @param [in] expressionParser        Parser for expressions.
+     *    @param [in] expressionFormatter     Formatter for expressions.
+     *    @param [in] parent                  Pointer to the owner of this editor.
 	 */
 	SegmentEditor(QSharedPointer<AddressSpace> addrSpace, 
 		QSharedPointer<Component> component,
@@ -87,14 +87,14 @@ signals:
     /*!
      *  Increase the amount of references to a parameter with a matching id.
      *
-     *      @param [in] id      Id of the parameter, whose references are being increased.
+     *    @param [in] id      Id of the parameter, whose references are being increased.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the amount of references to a parameter with a matching id.
      *
-     *      @param [in] id      Id of the parameter, whose references are being increased.
+     *    @param [in] id      Id of the parameter, whose references are being increased.
      */
     void decreaseReferences(QString id);
 

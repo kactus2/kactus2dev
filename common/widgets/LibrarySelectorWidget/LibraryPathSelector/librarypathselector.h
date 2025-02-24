@@ -49,25 +49,25 @@ public:
     /*!
      *  Gets the active library paths.
      *
-     *      @return     The active library locations. 
+     *    @return     The active library locations. 
      */
     QStringList getLibraryLocations();
 
     /*!
      *  Checks if there is a library for a given path.
      *
-     *      @param [in] path   The path to search for.
+     *    @param [in] path   The path to search for.
      *
-     *      @return     True, if the path is under any of the active libraries, otherwise false.
+     *    @return     True, if the path is under any of the active libraries, otherwise false.
      */
     bool hasIndexFor(QString const& path);
 
     /*!
      *  Sets the index for the corresponding library for a given path.
      *
-     *      @param [in] path   The path under a library.
+     *    @param [in] path   The path under a library.
      *
-     *      @return     True, if the path is under any of the active libraries and can be set, otherwise false.
+     *    @return     True, if the path is under any of the active libraries and can be set, otherwise false.
      */
     bool setIndexFor(QString const& path);
 

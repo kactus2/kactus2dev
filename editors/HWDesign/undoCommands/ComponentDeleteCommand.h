@@ -33,10 +33,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] diagram     The diagram containing the component item.
-     *      @param [in] column      The column containing the component item.
-     *      @param [in] component   The component item to remove.
-     *      @param [in] parent      The parent command.
+     *    @param [in] diagram     The diagram containing the component item.
+     *    @param [in] column      The column containing the component item.
+     *    @param [in] component   The component item to remove.
+     *    @param [in] parent      The parent command.
      */
     ComponentDeleteCommand(DesignDiagram* diagram, GraphicsColumn* column, HWComponentItem* component,
         QUndoCommand* parent = 0);
@@ -72,7 +72,7 @@ private:
     /*!
      *  Create a possible tie off value delete command for the selected connection end point.
      *
-     *      @param [in] endPoint    The selected connection end point.
+     *    @param [in] endPoint    The selected connection end point.
      */
     void createTieOffDeleteCommand(ConnectionEndpoint* endPoint);
 

@@ -84,112 +84,112 @@ public:
 	/*!
 	 *  Gets the presence.
 	 *
-	 *      @return The presence value.
+	 *    @return The presence value.
 	 */
 	QString getIsPresent() const;
 
 	/*!
 	 *  Set the presence.
 	 *
-	 *      @param [in] newIsPresent    The new presence value.
+	 *    @param [in] newIsPresent    The new presence value.
 	 */
 	void setIsPresent(QString const& newIsPresent);
 
 	/*!
 	 *  Get the list of the bitSteering attributes.
 	 *
-	 *      @return A QMap containing the attributes for bitSteering element.
+	 *    @return A QMap containing the attributes for bitSteering element.
 	 */
 	QMap<QString, QString> getBitSteeringAttributes();
 
 	/*!
 	 *  Is the bitSteering on or off.
 	 *
-	 *      @return The bit of the bus interface.
+	 *    @return The bit of the bus interface.
 	 */
 	QString getBitSteering() const;
 
 	/*!
 	 *  Get bits in lau value.
 	 *
-	 *      @return The bits in lau value.
+	 *    @return The bits in lau value.
 	 */
 	QString getBitsInLau() const;
 
 	/*!
 	 *  Get the vlnv to the bus definition.
 	 *
-	 *      @return The vlnv tag of the bus definition that this bus interface references.
+	 *    @return The vlnv tag of the bus definition that this bus interface references.
 	 */
 	ConfigurableVLNVReference getBusType() const;
 
 	/*!
 	 *  Can this interface be left unconnected.
 	 *
-	 *      @return Qstring of true, false or empty. Empty means an unspecified requirement.
+	 *    @return Qstring of true, false or empty. Empty means an unspecified requirement.
 	 */
 	QString getConnectionRequired() const;
 
 	/*!
 	 *  Get the endianness of the bus interface.
 	 *
-	 *      @return BIG, LITTLE or UNSPECIFIED.
+	 *    @return BIG, LITTLE or UNSPECIFIED.
 	 */
 	Endianness getEndianness() const;
 
 	/*!
 	 *  Get the mode of this interface.
 	 *
-	 *      @return The interface mode.
+	 *    @return The interface mode.
 	 */
 	General::InterfaceMode getInterfaceMode() const;
 
 	/*!
 	 *  Get the parameters of the bus interface.
 	 *
-	 *      @return Pointer to a list holding the parameters for this interface.
+	 *    @return Pointer to a list holding the parameters for this interface.
 	 */
 	QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
 	/*!
 	 *  Get the abstraction types for this interface.
 	 *
-	 *      @return Pointer to a list containing the abstraction types for this interface.
+	 *    @return Pointer to a list containing the abstraction types for this interface.
 	 */
 	QSharedPointer<QList<QSharedPointer<AbstractionType> > > getAbstractionTypes() const;
 
 	/*!
 	 *  Set the bit steering attributes for this interface.
 	 *
-	 *      @param [in] bitSteeringAttributes   A QMap holding the new attributes.
+	 *    @param [in] bitSteeringAttributes   A QMap holding the new attributes.
 	 */
 	void setBitSteeringAttributes(QMap<QString, QString> const& bitSteeringAttributes);
 
 	/*!
 	 *  Set the bit steering for this interface.
 	 *
-	 *      @param [in] bitSteering     The new bitSteering value.
+	 *    @param [in] bitSteering     The new bitSteering value.
 	 */
 	void setBitSteering(QString const& bitSteering);
 
 	/*!
 	 *  Set the bits in lau value.
 	 *
-	 *      @param [in] newBitsInLau    The new bits for the lau value.
+	 *    @param [in] newBitsInLau    The new bits for the lau value.
 	 */
 	void setBitsInLau(QString const& newBitsInLau);
 
 	/*!
 	 *  Set the bus definition for this interface.
 	 *
-	 *      @param busType The vlnv of the bus definition.
+	 *    @param busType The vlnv of the bus definition.
 	 */
 	void setBusType(ConfigurableVLNVReference const& newBusType);
 
 	/*!
 	 *  Set the connectionRequired value.
 	 *
-	 *      @param [in] connectionRequired  True or false.
+	 *    @param [in] connectionRequired  True or false.
 	 */
 	void setConnectionRequired(bool connectionRequired);
 
@@ -201,49 +201,49 @@ public:
 	/*!
 	 *  Set the endianness for this interface.
 	 *
-	 *      @param [in] endianness  BIG, LITTLE or UNSPECIFIED.
+	 *    @param [in] endianness  BIG, LITTLE or UNSPECIFIED.
 	 */
 	void setEndianness(Endianness endianness);
 
 	/*!
 	 *  Set the interface mode for this interface.
 	 *
-	 *      @param [in] interfaceMode   The new interface mode.
+	 *    @param [in] interfaceMode   The new interface mode.
 	 */
 	void setInterfaceMode(General::InterfaceMode interfaceMode);
 
 	/*!
 	 *  Set the port maps for this interface.
 	 *
-	 *      @param [in] portMaps    Pointer to a list containing the port maps for this interface.
+	 *    @param [in] portMaps    Pointer to a list containing the port maps for this interface.
 	 */
 	void setPortMaps(QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps);
 
 	/*!
 	 *  Set the port maps for this interface.
 	 *
-	 *      @param [in] abstractionTypes    Pointer to a list containing the abstraction types for this interface.
+	 *    @param [in] abstractionTypes    Pointer to a list containing the abstraction types for this interface.
 	 */
 	void setAbstractionTypes(QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes);
 
 	/*!
 	 *  Get the pointer to the master-element.
 	 *
-	 *      @return A pointer to the master-instance of the interface.
+	 *    @return A pointer to the master-instance of the interface.
 	 */
 	QSharedPointer<InitiatorInterface> getMaster() const;
 
 	/*!
 	 *  Set the master element for this interface.
 	 *
-	 *      @param [in] master  A pointer to the new master interface.
+	 *    @param [in] master  A pointer to the new master interface.
 	 */
 	void setMaster(QSharedPointer<InitiatorInterface> master);
 
 	/*!
 	 *  Get the pointer to the initiator-element.
 	 *
-	 *      @return A pointer to the initiator-instance of the interface.
+	 *    @return A pointer to the initiator-instance of the interface.
 	 */
 	QSharedPointer<InitiatorInterface> getInitiator() const;
 
@@ -252,28 +252,28 @@ public:
 	/*!
 	 *  Get the pointer to the monitor interface.
 	 *
-	 *      @return A pointer to the monitor interface.
+	 *    @return A pointer to the monitor interface.
 	 */
 	QSharedPointer<MonitorInterface> getMonitor() const;
 
 	/*!
 	 *  Set the monitor element for this interface.
 	 *
-	 *      @param [in] monitor     A pointer to the new monitor instance.
+	 *    @param [in] monitor     A pointer to the new monitor instance.
 	 */
 	void setMonitor(QSharedPointer<MonitorInterface> monitor);
 
 	/*!
 	 *  Get the pointer to the slave instance of the interface.
 	 *
-	 *      @return A pointer to the slave instance of the interface.
+	 *    @return A pointer to the slave instance of the interface.
 	 */
 	QSharedPointer<TargetInterface> getSlave() const;
 
 	/*!
 	 *  Set the slave element for this interface.
 	 *
-	 *      @param [in] slave   A pointer to the new slave interface.
+	 *    @param [in] slave   A pointer to the new slave interface.
 	 */
 	void setSlave(QSharedPointer<TargetInterface> slave);
 
@@ -282,113 +282,113 @@ public:
 	/*!
 	 *  Get the system group name.
 	 *
-	 *      @return The system group name.
+	 *    @return The system group name.
 	 */
 	QString getSystem() const;
 
 	/*!
 	 *  Set the system element for this interface.
 	 *
-	 *      @param [in] systemGroupName  The name of the system group to set.
+	 *    @param [in] systemGroupName  The name of the system group to set.
 	 */
 	void setSystem(QString const& systemGroupName);
 
 	/*!
 	 *  Get the pointer to the mirroredSlace element
 	 *
-	 *      @return A pointer to the mirroredSlave element of this interface.
+	 *    @return A pointer to the mirroredSlave element of this interface.
 	 */
 	QSharedPointer<MirroredTargetInterface> getMirroredSlave() const;
 
 	/*!
 	 *  Set the mirroredSlave element for this interface.
 	 *
-	 *      @param [in] mirroredSlave   A pointer to the new mirroredSlave instance.
+	 *    @param [in] mirroredSlave   A pointer to the new mirroredSlave instance.
 	 */
 	void setMirroredSlave(QSharedPointer<MirroredTargetInterface> mirroredSlave);
 
 	/*!
 	 *  Get the pointer to the mirroredTarget element
 	 *
-	 *      @return A pointer to the mirroredTarget element of this interface.
+	 *    @return A pointer to the mirroredTarget element of this interface.
 	 */
 	QSharedPointer<MirroredTargetInterface> getMirroredTarget() const;
 
 	/*!
 	 *  Set the mirroredTarget element for this interface.
 	 *
-	 *      @param [in] mirroredTarget   A pointer to the new mirroredTarget instance.
+	 *    @param [in] mirroredTarget   A pointer to the new mirroredTarget instance.
 	 */
 	void setMirroredTarget(QSharedPointer<MirroredTargetInterface> mirroredTarget);
 
 	/*!
 	 *  Does this bus interface have a transparent bridge element defined.
 	 *
-	 *      @return True if a bridge is found, otherwise false.
+	 *    @return True if a bridge is found, otherwise false.
 	 */
 	bool hasTransparentBridge() const;
 
 	/*!
 	 *  Get the attributes of the bus interface.
 	 *
-	 *      @return QMap containing the attributes.
+	 *    @return QMap containing the attributes.
 	 */
 	QMap<QString, QString> getAttributes() const;
 
 	/*!
 	 *  Set the attributes for the bus interface.
 	 *
-	 *      @param [in] attributes  QMap containing the attributes.
+	 *    @param [in] attributes  QMap containing the attributes.
 	 */
 	void setAttributes(QMap<QString, QString> const& attributes);
 
 	/*!
 	 *  Check if the selected physical port has been mapped in the bus interface.
 	 *
-	 *      @param [in] portName    Name of the selected physical port.
+	 *    @param [in] portName    Name of the selected physical port.
 	 *
-	 *      @return True, if the physical port has been mapped, false otherwise.
+	 *    @return True, if the physical port has been mapped, false otherwise.
 	 */
 	bool containsMappedPhysicalPort(QString const& portName) const;
 
 	/*!
 	 *  Check if the selected logical port has been mapped in the bus interface.
 	 *
-	 *      @param [in] portName    Name of the selected logical port.
+	 *    @param [in] portName    Name of the selected logical port.
 	 *
-	 *      @return True, if the selected logical port has been mapped in the bus interface.
+	 *    @return True, if the selected logical port has been mapped in the bus interface.
 	 */
 	bool containsMappedlogicalPort(QString const& portName) const;
 
 	/*!
 	 *  Get the names of all the mapped physical ports.
 	 *
-	 *      @return A list of the names of all the mapped physical ports.
+	 *    @return A list of the names of all the mapped physical ports.
 	 */
 	QStringList getAllMappedPhysicalPorts() const;
 
 	/*!
 	 *  Get the port maps.
 	 *
-	 *      @return A list containing all the port maps.
+	 *    @return A list containing all the port maps.
 	 */
 	QSharedPointer<QList<QSharedPointer<PortMap> > > getAllPortMaps() const;
 
 	/*!
 	 *  Get all the port maps contained within the abstraction type with the selected view reference.
 	 *
-	 *      @param [in] view    Name of the view referenced by the selected abstraction type.
+	 *    @param [in] view    Name of the view referenced by the selected abstraction type.
 	 *
-	 *      @return Port maps contained within the abstraction type referencing the selected view.
+	 *    @return Port maps contained within the abstraction type referencing the selected view.
 	 */
 	QList<QSharedPointer<PortMap> > getPortMapsForView(QString const& view) const;
 
 	/*!
 	 *  Get the abstraction type referencing the selected view.
 	 *
-	 *      @param [in] view    Name of the selected view referenced by the abstraction type.
+	 *    @param [in] view    Name of the selected view referenced by the abstraction type.
 	 *
-	 *      @return The abstraction type referencing the selected view.
+	 *    @return The abstraction type referencing the selected view.
 	 */
 	QSharedPointer<AbstractionType> getAbstractionContainingView(QString const& view) const;
 
@@ -410,28 +410,28 @@ public:
 	/*!
 	 *  Sets the default position in the parent component's graphical representation.
 	 *
-	 *      @param [in] pos The position to set.
+	 *    @param [in] pos The position to set.
 	 */
 	void setDefaultPos(QPointF const& pos);
 
 	/*!
 	 *  Returns the default position in the parent component's graphical representation.
 	 *
-	 *      @return The default position.
+	 *    @return The default position.
 	 */
 	QPointF getDefaultPos();
 
 	/*!
 	 *  Get the memory map reference of a slave interface.
 	 *
-	 *      @return The name of the memory map referenced by slave interface.
+	 *    @return The name of the memory map referenced by slave interface.
 	 */
 	QString getMemoryMapRef() const;
 
 	/*!
 	 *  Get the address space reference of a master or mirrored master interface.
 	 *
-	 *      @return The name of the address space referenced by interface.
+	 *    @return The name of the address space referenced by interface.
 	 */
 	QString getAddressSpaceRef() const;
 
@@ -440,21 +440,21 @@ private:
 	/*!
 	 *  Copy the abstraction types.
 	 *
-	 *      @param [in] other   The bus interface being copied.
+	 *    @param [in] other   The bus interface being copied.
 	 */
 	void copyAbstractionTypes(const BusInterface& other);
 
 	/*!
 	 *  Copy the parameters.
 	 *
-	 *      @param [in] other   The bus interface being copied.
+	 *    @param [in] other   The bus interface being copied.
 	 */
 	void copyParameters(const BusInterface& other);
 
 	/*!
 	 *  Copy the interface modes.
 	 *
-	 *      @param [in] other   The bus interface being copied.
+	 *    @param [in] other   The bus interface being copied.
 	 */
 	void copyInterfaceModes(const BusInterface& other);
 

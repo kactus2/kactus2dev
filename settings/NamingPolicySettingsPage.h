@@ -34,7 +34,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in/out] settings The settings store.
+     *    @param [in/out] settings The settings store.
      */
     NamingPolicySettingsPage(QSettings& settings);
 
@@ -56,7 +56,7 @@ private slots:
     /*!
      *  Updates the widget contents according to the new category selection.
      *
-     *      @param [in] index The category index.
+     *    @param [in] index The category index.
      */
     void onCategoryChanged(int index);
 

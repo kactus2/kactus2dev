@@ -46,35 +46,35 @@ public:
         /*!
          *  The constructor.
          *
-         *      @param [in] addressSpaceReference   The address space reference.
+         *    @param [in] addressSpaceReference   The address space reference.
          */
         AddressSpaceRef(QString const& addressSpaceReference = QString());
 
         /*!
          *  Get the address space reference.
          *
-         *      @return Address space reference.
+         *    @return Address space reference.
          */
         QString getAddressSpaceRef() const;
 
         /*!
          *  Set the address space reference.
          *
-         *      @param [in] newAddressSpaceRef  The new address space reference.
+         *    @param [in] newAddressSpaceRef  The new address space reference.
          */
         void setAddressSpaceRef(QString const& newAddressSpaceRef);
 
         /*!
          *  Get the is present.
          *
-         *      @return Is present value.
+         *    @return Is present value.
          */
         QString getIsPresent() const;
 
         /*!
          *  Set the is present value.
          *
-         *      @param [in] newIsPresent    The new is present value.
+         *    @param [in] newIsPresent    The new is present value.
          */
         void setIsPresent(QString const& newIsPresent);
     };
@@ -82,7 +82,7 @@ public:
     /*!
      *  Default constructor.
      *
-     *      @param [in] name    Name of the cpu.
+     *    @param [in] name    Name of the cpu.
      */
     Cpu(QString const& name = QString());
 
@@ -98,42 +98,42 @@ public:
     /*!
      *  Gets the presence.
      *
-     *      @return The presence value.
+     *    @return The presence value.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new presence value.
+     *    @param [in] newIsPresent    The new presence value.
      */
     void setIsPresent(QString const& newIsPresent);
 
 	/*!
      *  Get list of the address space references for this cpu.
 	 *
-	 *      @return A list containing the addressSpaceRefs.
+	 *    @return A list containing the addressSpaceRefs.
 	 */
     QStringList getAddressSpaceRefs() const;
 
     /*!
      *  Get the address space references.
      *
-     *      @return List of address space references.
+     *    @return List of address space references.
      */
     QSharedPointer<QList<QSharedPointer<Cpu::AddressSpaceRef> > > getAddressSpaceReferences() const;
           
     /*!
      *  Set the address space references.
      *
-     *      @param [in] addrSpaceNames    The address space references to set.
+     *    @param [in] addrSpaceNames    The address space references to set.
      */  
     void setAddressSpaceRefs(QStringList addrSpaceNames);
 
     /*!
      *  Set the address space references.
      *
-     *      @param [in] newAddressSpaceRefs     List containing the new address space references.
+     *    @param [in] newAddressSpaceRefs     List containing the new address space references.
      */
     void setAddressSpaceReferences(QSharedPointer<QList<QSharedPointer<AddressSpaceRef> > > newAddressSpaceRefs);
 
@@ -154,7 +154,7 @@ public:
     /*!
      *  Get the address unit bits
      *
-     *      @return The address unit bits.
+     *    @return The address unit bits.
      */
     QString getAddressUnitBits() const;
 
@@ -166,7 +166,7 @@ public:
 	/*!
      *  Get the parameters of the cpu.
 	 *
-	 *      @return List containing pointers to the parameters for the cpu.
+	 *    @return List containing pointers to the parameters for the cpu.
 	 */
 	QSharedPointer<QList<QSharedPointer<Parameter> > >  getParameters();
 
@@ -175,14 +175,14 @@ private:
     /*!
      *  Copy the parameters.
      *
-     *      @param [in] other   The cpu being copied.
+     *    @param [in] other   The cpu being copied.
      */
     void copyParameters(const Cpu& other);
 
     /*!
      *  Copy the address space references.
      *
-     *      @param [in] other   The cpu being copied.
+     *    @param [in] other   The cpu being copied.
      */
     void copyAddressSpaceRefs(const Cpu& other);
 

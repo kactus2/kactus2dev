@@ -84,7 +84,7 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
     }
 
     // Retrieve the model.
-    QSharedPointer<Component> system = getLibraryInterface()->getModel(vlnv).staticCast<Component>();
+    QSharedPointer<Component> system = getLibHandler()->getModel(vlnv).staticCast<Component>();
 
     if (system == nullptr)
     {
@@ -105,11 +105,11 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
     if (onlySW_)
     {
-        setDocumentType("SW Design");
+        setDocumentType(DocumentType::SW_DESIGN);
     }
     else
     {
-        setDocumentType("System Design");
+        setDocumentType(DocumentType::SYSTEM_DESIGN);
     }
 
     // Open in unlocked mode by default only if the version is draft.
@@ -151,7 +151,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     }
 
     // Check for a valid VLNV type.
-    designVLNV.setType(getLibraryInterface()->getDocumentType(designVLNV));
+    designVLNV.setType(getLibHandler()->getDocumentType(designVLNV));
 
     if (!designVLNV.isValid())
     {
@@ -165,20 +165,20 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     // if the component contains a direct reference to a design
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
+        QSharedPointer<Document> libComp = getLibHandler()->getModel(designVLNV);	
         design = libComp.staticCast<Design>();
     }
     // if component had reference to a design configuration
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);
+        QSharedPointer<Document> libComp = getLibHandler()->getModel(designVLNV);
         designConf = libComp.staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
 
         if (designVLNV.isValid())
         {
-            QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
+            QSharedPointer<Document> libComp = getLibHandler()->getModel(designVLNV);	
             design = libComp.staticCast<Design>();
         }
 
@@ -194,7 +194,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     if (!onlySW_)
     {
         // Update the design.
-        updateSystemDesignV2(getLibraryInterface(), comp->getHierRef(hwViewRef), *design, designConf);
+        updateSystemDesignV2(getLibHandler(), comp->getHierRef(hwViewRef), *design, designConf);
     }
 
     if (!getDiagram()->setDesign(comp, viewName, design, designConf))
@@ -588,7 +588,7 @@ bool SystemDesignWidget::saveAs()
     VLNV vlnv;
     QString directory;
 
-    if (!NewObjectDialog::saveAsDialog(this, getLibraryInterface(), oldVLNV, vlnv, directory))
+    if (!NewObjectDialog::saveAsDialog(this, getLibHandler(), oldVLNV, vlnv, directory))
     {
         return false;
     }
@@ -651,7 +651,7 @@ bool SystemDesignWidget::saveAs()
     getDiagram()->updateHierComponent();
 
     // get the paths to the original xml file
-    QFileInfo sourceInfo(getLibraryInterface()->getPath(oldComponent->getVlnv()));
+    QFileInfo sourceInfo(getLibHandler()->getPath(oldComponent->getVlnv()));
     QString sourcePath = sourceInfo.absolutePath();
 
 	// Update the file paths and copy necessary files.
@@ -689,24 +689,24 @@ bool SystemDesignWidget::saveAs()
 
     bool writeSucceeded = true;
 
-    getLibraryInterface()->beginSave();
+    getLibHandler()->beginSave();
 
     // if design configuration is used then write it.
-    if (designConf && !getLibraryInterface()->writeModelToFile(directory, designConf))
+    if (designConf && !getLibHandler()->writeModelToFile(directory, designConf))
     {
         writeSucceeded = false;
     }
     
-    if (!getLibraryInterface()->writeModelToFile(directory, design))
+    if (!getLibHandler()->writeModelToFile(directory, design))
     {
         writeSucceeded = false;
     }
-    if (!getLibraryInterface()->writeModelToFile(directory, getEditedComponent()))
+    if (!getLibHandler()->writeModelToFile(directory, getEditedComponent()))
     {
         writeSucceeded = false;
     }
 
-    getLibraryInterface()->endSave();
+    getLibHandler()->endSave();
 
     if (writeSucceeded)
     {

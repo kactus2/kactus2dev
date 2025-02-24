@@ -32,7 +32,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     FileDependencyInfoWidget(QWidget* parent );
 
@@ -57,7 +57,7 @@ public slots:
     /*!
      *  Sets the given file dependency editable in the widget.
      *
-     *      @param [in] dependency The dependency to set for editing.
+     *    @param [in] dependency The dependency to set for editing.
      *
      *      @remarks If the dependency is null, all contents of the widgets are cleared and
      *               the widgets are set to disabled mode.
@@ -69,14 +69,14 @@ private slots:
     /*!
      *  Handles a change in the direction..
      *
-     *      @param [in] state   The new state for the direction.
+     *    @param [in] state   The new state for the direction.
      */
     void directionChanged(int state);
 
     /*!
      *  Handles the change in the locked check.
      *
-     *      @param [in] state   The new state.
+     *    @param [in] state   The new state.
      */
     void lockedCheckChanged(int state);
     
@@ -105,7 +105,7 @@ private:
     /*!
      *  Locks / unlocks everything.
      *
-     *      @param [in] isLocked    The lock status.
+     *    @param [in] isLocked    The lock status.
      */
     void lockEverything(bool isLocked);
 

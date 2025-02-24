@@ -29,8 +29,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] configurationObject     JSON object containing the editor configuration.
-     *      @param [in] parent                  Pointer to the owner of this widget.
+     *    @param [in] configurationObject     JSON object containing the editor configuration.
+     *    @param [in] parent                  Pointer to the owner of this widget.
      */
     RenodeFileSelectionGroup(QJsonObject const& configurationObject, QWidget* parent = 0);
 
@@ -42,21 +42,21 @@ public:
     /*!
      *  Check if the CPU file should be written.
      *
-     *      @return True, if the CPU file should be written, false otherwise.
+     *    @return True, if the CPU file should be written, false otherwise.
      */
     bool writeCpu();
 
     /*!
      *  Check if the memory file should be written.
      *
-     *      @return True, if the memory file should be written, false otherwise.
+     *    @return True, if the memory file should be written, false otherwise.
      */
     bool writeMemory();
 
     /*!
      *  Check if the peripherals file should be written.
      *
-     *      @return True, if the peripherals file should be written, false otherwise.
+     *    @return True, if the peripherals file should be written, false otherwise.
      */
     bool writePeripherals();
 
@@ -70,14 +70,14 @@ private slots:
     /*!
      *  Handle the state change in all check boxes.
      *
-     *      @param [in] newState    The new state.
+     *    @param [in] newState    The new state.
      */
     void onCheckAllStateChange(bool newState);
 
     /*!
      *  Handle the state change in a single check box. Change the state in the select all -check box accordingly.
      *
-     *      @param [in] newState    The new state.
+     *    @param [in] newState    The new state.
      */
     void onItemClicked(bool newState);
 
@@ -86,7 +86,7 @@ private:
     /*!
      *  Apply the configuration to file selections.
      *
-     *      @param [in] configurationObject     JSON object containing the editor configuration.
+     *    @param [in] configurationObject     JSON object containing the editor configuration.
      */
     void applyConfigurations(QJsonObject const& configurationObject);
 

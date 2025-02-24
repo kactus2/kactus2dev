@@ -39,12 +39,12 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] parameterFinder         The parameter finder for component.
-     *      @param [in] expressionParser        The expression parser.
-     *      @param [in] subspaceMapInterface    Interface for accessing subspace maps.
-     *      @param [in] blocks                  Pointer to the available memory blocks.
-	 *      @param [in] parent                  The parent of this editor.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] parameterFinder         The parameter finder for component.
+     *    @param [in] expressionParser        The expression parser.
+     *    @param [in] subspaceMapInterface    Interface for accessing subspace maps.
+     *    @param [in] blocks                  Pointer to the available memory blocks.
+	 *    @param [in] parent                  The parent of this editor.
 	 */
     SubspaceMapsEditor(QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -78,43 +78,43 @@ signals:
     /*!
      *  Emits an error message for the user.
      *
-     *      @param [in] msg     The error message.
+     *    @param [in] msg     The error message.
      */
     void errorMessage(const QString& msg) const;
 
     /*!
      *  Emits a notice message for the user.
      *
-     *      @param [in] msg   [Description].
+     *    @param [in] msg   [Description].
      */
     void noticeMessage(const QString& msg) const;
 
     /*!
      *  Increases the number of references to the given parameter.
      *
-     *      @param [in] id  The target parameter.
+     *    @param [in] id  The target parameter.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decreases the number of references to the given parameter.
      *
-     *      @param [in] id  The target parameter.
+     *    @param [in] id  The target parameter.
      */
     void decreaseReferences(QString id);
 
     /*!
      *  Assign new address unit bits for address blocks.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bits.
+     *    @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
     /*
      *  Informs of address block name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void subspaceMapNameChanged(QString const& oldName, QString const& newName);
 
@@ -131,21 +131,21 @@ signals:
     /*!
      *  Informs of an added child.
      *
-     *      @param [in] index   The index of the new child.
+     *    @param [in] index   The index of the new child.
      */
     void childAdded(int index);
 
     /*!
      *  Informs of a removed child.
      *
-     *      @param [in] index   The index of the removed child.
+     *    @param [in] index   The index of the removed child.
      */
     void childRemoved(int index);
 
     /*!
      *  Informs of a change in item addressing.
      *
-     *      @param [in] index   Index of the item whose addressing is changed.
+     *    @param [in] index   Index of the item whose addressing is changed.
      */
     void childAddressingChanged(int index);
 

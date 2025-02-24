@@ -39,8 +39,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parser      The used expression parser.
-     *      @param [in] library     The used library interface.
+     *    @param [in] parser      The used expression parser.
+     *    @param [in] library     The used library interface.
      */
     DesignValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library);
 
@@ -50,80 +50,80 @@ public:
     /*!
      *  Validates the given design.
      *
-     *      @param [in] design  The selected design.
+     *    @param [in] design  The selected design.
      *
-     *      @return True, if the design is valid IP-XACT, otherwise false.
+     *    @return True, if the design is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<Design> design) const;
 
     /*!
      *  Check if the design vlnv is valid.
      *
-     *      @param [in] design  The selected design.
+     *    @param [in] design  The selected design.
      *
-     *      @return True, if the vlnv is valid, otherwise false.
+     *    @return True, if the vlnv is valid, otherwise false.
      */
     bool hasValidVLNV(QSharedPointer<Design> design) const;
 
     /*!
      *  Check if the component instances are valid.
      *
-     *      @param [in] design  The selected design.
+     *    @param [in] design  The selected design.
      *
-     *      @return True, if the component instances are valid, otherwise false.
+     *    @return True, if the component instances are valid, otherwise false.
      */
     bool hasValidComponentInstances(QSharedPointer<Design> design) const;
 
     /*!
      *  Check if the interconnections are valid.
      *
-     *      @param [in] design  The selected design.
+     *    @param [in] design  The selected design.
      *
-     *      @return True, if the interconnections are valid, otherwise false.
+     *    @return True, if the interconnections are valid, otherwise false.
      */
     bool hasValidInterconnections(QSharedPointer<Design> design) const;
 
     /*!
      *  Check if the monitor interconnections are valid.
      *
-     *      @param [in] design  The selected design.
+     *    @param [in] design  The selected design.
      *
-     *      @return True, if the monitor interconnections are valid, otherwise false.
+     *    @return True, if the monitor interconnections are valid, otherwise false.
      */
     bool hasValidMonitorInterconnections(QSharedPointer<Design> design) const;
 
     /*!
      *  Check if the ad hoc connections are valid.
      *
-     *      @param [in] design  The selected design.
+     *    @param [in] design  The selected design.
      *
-     *      @return True, if the ad hoc connections are valid, otherwise false.
+     *    @return True, if the ad hoc connections are valid, otherwise false.
      */
     bool hasValidAdHocConnections(QSharedPointer<Design> design) const;
 
     /*!
      *  Check if the parameters are valid.
      *
-     *      @param [in] design  The selected design.
+     *    @param [in] design  The selected design.
      *
-     *      @return True, if the parameters are valid, otherwise false.
+     *    @return True, if the parameters are valid, otherwise false.
      */
     bool hasValidParameters(QSharedPointer<Design> design) const;
 
     /*!
      *  Check if the assertions are valid.
      *
-     *      @param [in] design  The selected design.
+     *    @param [in] design  The selected design.
      *
-     *      @return True, if the assertions are valid, otherwise false.
+     *    @return True, if the assertions are valid, otherwise false.
      */
     bool hasValidAssertions(QSharedPointer<Design> design) const;
 
     /*!
      *  Locate errors within a design.
      *
-     *      @param [in] errors  List of found errors.
-     *      @param [in] design  The selected design.
+     *    @param [in] errors  List of found errors.
+     *    @param [in] design  The selected design.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Design> design) const;
 
@@ -136,17 +136,17 @@ private:
     /*!
      *  Find errors in design VLNV.
      *
-     *      @param [in] errors  List of found errors.
-     *      @param [in] design  The selected design.
+     *    @param [in] errors  List of found errors.
+     *    @param [in] design  The selected design.
      */
     void findErrorsInVLNV(QVector<QString>& errors, QSharedPointer<Design> design) const;
 
     /*!
      *  Find errors in component instances.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] design      The selected design.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] design      The selected design.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsInComponentInstances(QVector<QString>& errors, QSharedPointer<Design> design,
         QString const& context) const;
@@ -154,9 +154,9 @@ private:
     /*!
      *  Find errors in interconnections.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] design      The selected design.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] design      The selected design.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsInInterconnections(QVector<QString>& errors, QSharedPointer<Design> design,
         QString const& context) const;
@@ -164,9 +164,9 @@ private:
     /*!
      *  Find errors in monitor interconnections.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] design      The selected design.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] design      The selected design.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsInMonitorInterconnections(QVector<QString>& errors, QSharedPointer<Design> design,
         QString const& context) const;
@@ -174,9 +174,9 @@ private:
     /*!
      *  Find errors in ad hoc connections.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] design      The selected design.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] design      The selected design.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsInAdHocConnections(QVector<QString>& errors, QSharedPointer<Design> design,
         QString const& context) const;
@@ -184,9 +184,9 @@ private:
     /*!
      *  Find errors in parameters.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] design      The selected design.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] design      The selected design.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsInParameters(QVector<QString>& errors, QSharedPointer<Design> design, QString const& context)
         const;
@@ -194,9 +194,9 @@ private:
     /*!
      *  Find errors in assertions.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] design      The selected design.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] design      The selected design.
+     *    @param [in] context     Context to help locate the errors.
      */
     void findErrorsInAssertions(QVector<QString>& errors, QSharedPointer<Design> design, QString const& context)
         const;

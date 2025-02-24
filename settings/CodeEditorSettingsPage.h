@@ -38,7 +38,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in/out] settings The settings store.
+     *    @param [in/out] settings The settings store.
      */
     CodeEditorSettingsPage(QSettings& settings);
 
@@ -55,7 +55,7 @@ public:
     /*!
      *  Validates the contents of the page thoroughly.
      *
-     *      @return True, if the contents are valid. False, if they are invalid.
+     *    @return True, if the contents are valid. False, if they are invalid.
      *
      *      @remarks Showing message boxes for errors is allowed.
      */

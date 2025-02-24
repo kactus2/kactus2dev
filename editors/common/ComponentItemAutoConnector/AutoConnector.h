@@ -39,11 +39,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] firstComponentContainer     The first component container.
-     *      @param [in] secondComponentContainer    The second component container.
-     *      @param [in] tableToolsContainer         The table tools container.
-     *      @param [in] itemName                    Name of the items being connected.
-     *      @param [in] parent                      The parent of this widget.
+     *    @param [in] firstComponentContainer     The first component container.
+     *    @param [in] secondComponentContainer    The second component container.
+     *    @param [in] tableToolsContainer         The table tools container.
+     *    @param [in] itemName                    Name of the items being connected.
+     *    @param [in] parent                      The parent of this widget.
      */
     AutoConnector(ComponentItemAutoConnector::AutoContainer const& firstComponentContainer, 
         ComponentItemAutoConnector::AutoContainer const& secondComponentContainer, 
@@ -58,7 +58,7 @@ public:
     /*!
      *  Get the list of connected items.
      *
-     *      @return A list of connected item pairs.
+     *    @return A list of connected item pairs.
      */
     QVector<QPair<QString, QString> > getConnectedItems() const;
 
@@ -80,7 +80,7 @@ public:
     /*!
      *	Fill the connection table with already connected items.
      *  
-     *      @param [in] design     The containing design.
+     *    @param [in] design     The containing design.
      */
     void connectAlreadyConnectedItems(QSharedPointer<Design> design);
 
@@ -107,9 +107,9 @@ private:
     /*!
      *  Setup the layout.
      *
-     *      @param [in] firstComponentName      Name of the first container.
-     *      @param [in] secondComponentName     Name of the second container.
-     *      @param [in] itemName                Name of the items being connected.
+     *    @param [in] firstComponentName      Name of the first container.
+     *    @param [in] secondComponentName     Name of the second container.
+     *    @param [in] itemName                Name of the items being connected.
      */
     void setupLayout(QString const& firstComponentName, QString const& secondComponentName,
         QString const& itemName);

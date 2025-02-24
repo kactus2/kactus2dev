@@ -28,9 +28,9 @@ namespace ChannelWriter
     /*!
      *  Write a channel to an XML file.
      *
-     *      @param [in] writer      The used xml writer.
-     *      @param [in] channel		The channel to be written.
-     *      @param [in] docRevision The applied IP-XACT standard revision.
+     *    @param [in] writer      The used xml writer.
+     *    @param [in] channel		The channel to be written.
+     *    @param [in] docRevision The applied IP-XACT standard revision.
      */
     IPXACTMODELS_EXPORT void writeChannel(QXmlStreamWriter& writer, QSharedPointer<Channel> channel,
         Document::Revision docRevision);

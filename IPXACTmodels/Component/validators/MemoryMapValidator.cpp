@@ -53,7 +53,7 @@ void MemoryMapValidator::componentChange(QSharedPointer<Component> newComponent)
 //-----------------------------------------------------------------------------
 // Function: MemoryMapValidator::validate()
 //-----------------------------------------------------------------------------
-bool MemoryMapValidator::validate(QSharedPointer<MemoryMap> memoryMap) const
+bool MemoryMapValidator::validate(QSharedPointer<MemoryMap> memoryMap)
 {
     if (docRevision_ == Document::Revision::Std14)
     {
@@ -84,7 +84,7 @@ bool MemoryMapValidator::hasValidAddressUnitBits(QSharedPointer<MemoryMap> memor
 //-----------------------------------------------------------------------------
 // Function: MemoryMapValidator::hasValidMemoryRemaps()
 //-----------------------------------------------------------------------------
-bool MemoryMapValidator::hasValidMemoryRemaps(QSharedPointer<MemoryMap> memoryMap) const
+bool MemoryMapValidator::hasValidMemoryRemaps(QSharedPointer<MemoryMap> memoryMap)
 {
     if (!memoryMap->getMemoryRemaps()->isEmpty())
     {
@@ -192,7 +192,7 @@ bool MemoryMapValidator::hasValidStructure(QSharedPointer<MemoryMap> memoryMap) 
 // Function: MemoryMapValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void MemoryMapValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMap> memoryMap,
-    QString const& context) const
+    QString const& context)
 {
     QString memoryMapContext = memoryMap->elementName();
     memoryMapContext.append(QLatin1Char(' '));
@@ -318,7 +318,7 @@ void MemoryMapValidator::findErrorsInAddressUnitBits(QVector<QString>& errors, Q
 // Function: MemoryMapValidator::findErrorsInMemoryRemaps()
 //-----------------------------------------------------------------------------
 void MemoryMapValidator::findErrorsInMemoryRemaps(QVector<QString>& errors, QSharedPointer<MemoryMap> memoryMap,
-    QString const& context) const
+    QString const& context)
 {
     if (!memoryMap->getMemoryRemaps()->isEmpty())
     {

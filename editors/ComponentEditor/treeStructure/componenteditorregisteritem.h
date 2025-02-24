@@ -45,18 +45,18 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] reg                     The register being edited.
-     *      @param [in] containingRegisterData  Register data containing the edited register.
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-	 *      @param [in] referenceCounter        The instance counting references made to parameters.
-	 *      @param [in] expressionParser        The expression parser to use.
-     *      @param [in] registerValidator       Validator for registers.
-     *      @param [in] registerInterface       Interface for registers.
-	 *      @param [in] parent                  The parent item.
+	 *    @param [in] reg                     The register being edited.
+     *    @param [in] containingRegisterData  Register data containing the edited register.
+	 *    @param [in] model                   The model that owns the items.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+	 *    @param [in] referenceCounter        The instance counting references made to parameters.
+	 *    @param [in] expressionParser        The expression parser to use.
+     *    @param [in] registerValidator       Validator for registers.
+     *    @param [in] registerInterface       Interface for registers.
+	 *    @param [in] parent                  The parent item.
 	 */
 	ComponentEditorRegisterItem(QSharedPointer<Register> reg, 
         QSharedPointer<QList<QSharedPointer<RegisterBase> > > containingRegisterData,
@@ -82,55 +82,55 @@ public:
 
 	/*! Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const;
 
 	/*! Check the validity of this item and sub items.
 	 *
-	 *      @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	 */
 	virtual bool isValid() const;
 
 	/*! Get pointer to the editor of this item.
 	 *
-	 *      @return Pointer to the editor to use for this item.
+	 *    @return Pointer to the editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*! Add a new child to the item.
 	 * 
-	 *      @param [in] index The index to add the child into.
+	 *    @param [in] index The index to add the child into.
 	 */
 	virtual void createChild(int index) override final;
 
     /*! Remove a child from the item.
      *
-     *      @param [in] index The index to remove the child from.
+     *    @param [in] index The index to remove the child from.
      */
     virtual void removeChild(int index) override final;
 
 	/*! Get pointer to the visualizer of this item.
 	 * 
-	 *      @return Pointer to the visualizer to use for this item.
+	 *    @return Pointer to the visualizer to use for this item.
 	 */
 	virtual ItemVisualizer* visualizer() override final;
 
 	/*! Set the visualizer for this item.
 	 *
-	 *      @param [in] visualizer Pointer to the visualizer.
+	 *    @param [in] visualizer Pointer to the visualizer.
 	 */
     void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*! Get the visualizer graphics item for the register.
 	 *
-	 *      @return QGraphicsItem* Pointer to the graphics item.
+	 *    @return QGraphicsItem* Pointer to the graphics item.
 	 */
 	virtual QGraphicsItem* getGraphicsItem() override final;
 
@@ -145,16 +145,16 @@ signals:
     /*
      *  Informs of field name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void fieldNameChanged(QString const& oldName, QString const& newName);
 
     /*
      *  Informs of register name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void registerNameChanged(QString const& oldName, QString const& newName);
 

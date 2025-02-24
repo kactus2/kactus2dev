@@ -26,9 +26,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] engine     The help engine containing the documentation.
-     *      @param [in] urlPrefix  A prefix used automatically for all URLs.
-     *      @param [in] parent     The parent widget.
+     *    @param [in] engine     The help engine containing the documentation.
+     *    @param [in] urlPrefix  A prefix used automatically for all URLs.
+     *    @param [in] parent     The parent widget.
      */
     ContextHelpBrowser(QHelpEngine* engine, QString const& urlPrefix, QWidget* parent = 0);
 
@@ -45,7 +45,7 @@ public:
     /*!
      *  Sets the content for the browser.
      *
-     *      @param [in] url   The url to the content to set.
+     *    @param [in] url   The url to the content to set.
      */
     virtual void setSource(QUrl const& url);
 
@@ -53,7 +53,7 @@ public slots:
     /*!
      *  Shows the given help page.
      *
-     *      @param [in] url The URL of the page to show. This will be appended to the given URL prefix.
+     *    @param [in] url The URL of the page to show. This will be appended to the given URL prefix.
      */
     void onHelpRequested(QString const& url);
 

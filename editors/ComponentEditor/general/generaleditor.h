@@ -33,6 +33,7 @@ class Component;
 class LibraryInterface;
 class Document;
 class KactusAttributeEditor;
+class ModeConditionParserInterface;
 
 
 //-----------------------------------------------------------------------------
@@ -46,9 +47,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] libHandler The library handler.
-     *      @param [in] component  The component model to edit.
-     *      @param [in] parent     The parent widget.
+     *    @param [in] libHandler The library handler.
+     *    @param [in] component  The component model to edit.
+     *    @param [in] parent     The parent widget.
 	 */
 	GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget *parent = 0);
 
@@ -64,7 +65,7 @@ public:
     /*!
      *  Check for the validity of the edited item.
      *
-     *      @return True is item is valid.
+     *    @return True is item is valid.
      */
     virtual bool isValid() const;
 
@@ -146,6 +147,9 @@ private:
 
     //! Expression parser for validator.
     QSharedPointer<ExpressionParser> parser_;
+
+    //! The mode condition parser factory to use in the component validator.
+    QSharedPointer<ModeConditionParserInterface> modeConditionParserInterface_;
 
     //! Validator for checking the component compliance.
     QSharedPointer<ComponentValidator> validator_;

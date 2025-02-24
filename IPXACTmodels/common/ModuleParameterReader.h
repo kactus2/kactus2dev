@@ -28,10 +28,10 @@ namespace ModuleParameterReader
     /*!
      *  Creates a module parameter from XML description.
      *
-     *      @param [in] moduleParameterNode   The XML description of the module parameter.
-     *      @param [in] docRevision           The IP-XACT standard to comply to.
+     *    @param [in] moduleParameterNode   The XML description of the module parameter.
+     *    @param [in] docRevision           The IP-XACT standard to comply to.
 
-     *      @return The created module parameter.
+     *    @return The created module parameter.
      */
     IPXACTMODELS_EXPORT QSharedPointer<ModuleParameter> createModuleParameterFrom(QDomNode const& moduleParameterNode,
         Document::Revision docRevision);
@@ -42,9 +42,9 @@ namespace ModuleParameterReader
         /*!
          *  Reads the presence of the module parameter.
          *
-         *      @param [in] moduleParameterNode     XML description of the module parameter.
-         *      @param [in] moduleParameter         The module parameter whose presence is being read.
-         *      @param [in] docRevision             The IP-XACT standard to comply to.
+         *    @param [in] moduleParameterNode     XML description of the module parameter.
+         *    @param [in] moduleParameter         The module parameter whose presence is being read.
+         *    @param [in] docRevision             The IP-XACT standard to comply to.
          */
         void parseIsPresent(QDomNode const& moduleParameterNode, QSharedPointer<ModuleParameter> moduleParameter,
             Document::Revision docRevision);

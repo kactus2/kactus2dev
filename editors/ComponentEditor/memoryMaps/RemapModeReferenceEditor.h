@@ -30,8 +30,8 @@ public:
     /*!
      *	The constructor.
      *  
-     *      @param [in] modeRefInterface    The mode reference interface to use.
-     *      @param [in] parent              The parent widget.
+     *    @param [in] modeRefInterface    The mode reference interface to use.
+     *    @param [in] parent              The parent widget.
      */
     RemapModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent, bool isRemap);
 

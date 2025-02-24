@@ -93,20 +93,20 @@ void ComponentChangeNameCommand::renameInstanceAndConnections(QString const& pre
     QList<GraphicsConnection*> allConnections;
 
     // Update component reference in interconnections and ad-hoc connections.
-    foreach (ConnectionEndpoint* endpoint, component_->getEndpoints())
+    for (ConnectionEndpoint* endpoint : component_->getEndpoints())
     {
         allConnections.append(endpoint->getConnections()); 
         allConnections.append(endpoint->getOffPageConnector()->getConnections());
     }
 
-    foreach (GraphicsConnection* connection, allConnections)
+    for (GraphicsConnection* connection : allConnections)
     {
          connection->changeConnectionComponentReference(previousName, newName);
     }
 
     // Find all connections, including ad-hoc, that are using the default naming and should be renamed.
     QList<GraphicsConnection*> renamedConnections;
-    foreach (GraphicsConnection* connection, allConnections)
+    for (GraphicsConnection* connection : allConnections)
     {
         if (connection->hasDefaultName())
         {
@@ -118,17 +118,17 @@ void ComponentChangeNameCommand::renameInstanceAndConnections(QString const& pre
     component_->setName(newName);
 
     // Instance must be renamed before renaming the connections with automatic naming.
-    foreach (GraphicsConnection* connection, renamedConnections)
+    for (GraphicsConnection* connection : renamedConnections)
     {
         connection->setName(connection->createDefaultName());
     }
 
     // Rename ad-hoc connections defining tie-offs for the component instance.
-    foreach (QSharedPointer<AdHocConnection> adhocConnection, *containingDesign_->getAdHocConnections())
+    for (auto const& adhocConnection : *containingDesign_->getAdHocConnections())
     {
         if (!adhocConnection->getTiedValue().isEmpty())
         {
-            foreach (QSharedPointer<PortReference> internalReference, *adhocConnection->getInternalPortReferences())
+            for (auto const& internalReference : *adhocConnection->getInternalPortReferences())
             {
                 if (internalReference->getComponentRef().compare(previousName) == 0)
                 {
@@ -392,7 +392,7 @@ void EndpointNameChangeCommand::undo()
     QUndoCommand::undo();
 
     endpoint_->setName(oldName_);
-    foreach (QSharedPointer<HierInterface> interface, activeIntefaces_)
+    for (auto const& interface : activeIntefaces_)
     {
         interface->setBusReference(oldName_);
     }
@@ -406,7 +406,7 @@ void EndpointNameChangeCommand::redo()
     QUndoCommand::redo();
 
     endpoint_->setName(newName_);
-    foreach (QSharedPointer<HierInterface> interface, activeIntefaces_)
+    for (auto const& interface : activeIntefaces_)
     {
         interface->setBusReference(newName_);
     }
@@ -674,7 +674,7 @@ void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
     // Disconnect the connections.
     if (endpoint_->getBusInterface()->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
     {
-        foreach(GraphicsConnection* conn, endpoint_->getConnections())
+        for (GraphicsConnection* conn : endpoint_->getConnections())
         {
             if (conn->endpoint1() != endpoint_)
             {
@@ -719,7 +719,7 @@ void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
     // Undefined end points of the connections can now be defined.
     if (busType.isValid())
     {
-        foreach(GraphicsConnection* conn, endpoint_->getConnections())
+        for (GraphicsConnection* conn : endpoint_->getConnections())
         {
             if (conn->endpoint1() != endpoint_)
             {
@@ -739,12 +739,14 @@ void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
 // Function: EndPointPortMapCommand::EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
 EndPointPortMapCommand::EndPointPortMapCommand(ConnectionEndpoint* endpoint,
-    QList< QSharedPointer<PortMap> > newPortMaps, QUndoCommand* parent) :
+    QList< QSharedPointer<PortMap> > newPortMaps, QSharedPointer<Component> component,
+    QUndoCommand* parent) :
 QUndoCommand(parent),
 endpoint_(endpoint),
 abstraction_(),
 oldPortMaps_(),
-newPortMaps_(newPortMaps)
+newPortMaps_(newPortMaps),
+component_(component)
 {
     QSharedPointer<BusInterface> endPointBus = endpoint->getBusInterface();
     if (endPointBus && endPointBus->getAbstractionTypes() && endPointBus->getAbstractionTypes()->size() > 0)
@@ -752,7 +754,7 @@ newPortMaps_(newPortMaps)
         abstraction_ = endPointBus->getAbstractionTypes()->first();
         if (abstraction_->getPortMaps())
         {
-            foreach (QSharedPointer<PortMap> oldMap, *abstraction_->getPortMaps())
+            for (auto const& oldMap : *abstraction_->getPortMaps())
             {
                 oldPortMaps_.append(oldMap);
             }
@@ -775,8 +777,9 @@ void EndPointPortMapCommand::undo()
 {
     if (endpoint_->isBus())
     {
+        component_->getBusInterfaces()->removeOne(endpoint_->getBusInterface());
         abstraction_->getPortMaps()->clear();
-        foreach (QSharedPointer<PortMap> oldMap, oldPortMaps_)
+        for (auto const& oldMap : oldPortMaps_)
         {
             abstraction_->getPortMaps()->append(oldMap);
         }
@@ -792,8 +795,13 @@ void EndPointPortMapCommand::redo()
 {
     if (endpoint_->isBus())
     {
+        if (!component_->getBusInterfaces()->contains(endpoint_->getBusInterface()))
+        {
+            component_->getBusInterfaces()->append(endpoint_->getBusInterface());
+        }
+
         abstraction_->getPortMaps()->clear();
-        foreach (QSharedPointer<PortMap> newMap, newPortMaps_)
+        for (auto const& newMap : newPortMaps_)
         {
             abstraction_->getPortMaps()->append(newMap);
         }

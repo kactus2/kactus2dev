@@ -28,7 +28,7 @@ public:
      *  Constructor.
      *
      *		@param [in, out] component  The component being edited.
-     *      @param [in] parent          The parent widget.
+     *    @param [in] parent          The parent widget.
      */
     ComponentWizardIntroPage(QSharedPointer<Component> component, QWidget* parent);
 

@@ -30,8 +30,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] configurationFolder     Folder path for the generator.
-     *      @param [in] parent                  Parent widget.
+     *    @param [in] configurationFolder     Folder path for the generator.
+     *    @param [in] parent                  Parent widget.
      */
 	PeripheralTemplatesDialog(QString const& generationFolder, QWidget* parent);
 
@@ -43,14 +43,14 @@ public:
     /*!
      *  Setup the available peripheral templates.
      *	
-     *      @param [in] newTemplates    List of the selected peripheral templates.
+     *    @param [in] newTemplates    List of the selected peripheral templates.
      */
     void setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates);
 
     /*!
      *  Get a list of the available peripheral templates.
      *
-     *      @return List of peripheral templates.
+     *    @return List of peripheral templates.
      */
     QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > getTemplates() const;
 

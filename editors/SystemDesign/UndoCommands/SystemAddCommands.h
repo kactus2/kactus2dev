@@ -32,10 +32,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component   The component to which to add a port.
-     *      @param [in] pos         The position where to add the port.
-     *      @param [in] diagram     Diagram containing the scene of the component.
-     *      @param [in] parent      The parent command.
+     *    @param [in] component   The component to which to add a port.
+     *    @param [in] pos         The position where to add the port.
+     *    @param [in] diagram     Diagram containing the scene of the component.
+     *    @param [in] parent      The parent command.
      */
     SWPortAddCommand(SystemComponentItem* component, QPointF const& pos, DesignDiagram* diagram,
         QUndoCommand* parent = 0);
@@ -43,10 +43,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component   The component to which to add a port.
-     *      @param [in] port        The port to add.
-     *      @param [in] diagram     Diagram containing the scene of the component.
-     *      @param [in] parent      The parent command.
+     *    @param [in] component   The component to which to add a port.
+     *    @param [in] port        The port to add.
+     *    @param [in] diagram     Diagram containing the scene of the component.
+     *    @param [in] parent      The parent command.
      */
     SWPortAddCommand(SystemComponentItem* component, SWPortItem* port, DesignDiagram* diagram,
         QUndoCommand* parent = 0);

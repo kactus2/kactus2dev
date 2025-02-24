@@ -47,9 +47,9 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] libHandler The instance that manages the library.
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] parent      The parent of this editor.
+	 *    @param [in] libHandler The instance that manages the library.
+	 *    @param [in] component   The component being edited.
+	 *    @param [in] parent      The parent of this editor.
 	 *
 	*/
 	ComInterfacesEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget* parent = 0);
@@ -59,7 +59,7 @@ public:
 
 	/*! Check for the validity of the editor
 	* 
-	*      @return True if the editor is in valid state.
+	*    @return True if the editor is in valid state.
 	*/
 	virtual bool isValid() const;
 

@@ -42,18 +42,18 @@ public:
     /*!
      *  Validates the given Protocol.
      *
-     *      @param [in] Protocol           The Protocol to validate.
+     *    @param [in] Protocol           The Protocol to validate.
      *
-     *      @return True, if the Protocol is valid IP-XACT, otherwise false.
+     *    @return True, if the Protocol is valid IP-XACT, otherwise false.
      */
     virtual bool validate(QSharedPointer<Protocol> Protocol) const;
 
     /*!
      *  Finds possible errors in a Protocol and creates a list of them.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] Protocol   The Protocol whose errors to find.
-     *      @param [in] context     Context to help locate the errors.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] Protocol   The Protocol whose errors to find.
+     *    @param [in] context     Context to help locate the errors.
      */
     virtual void findErrorsIn(QVector<QString>& errors,
 		QSharedPointer<Protocol> Protocol, QString const& contex) const;
@@ -63,9 +63,9 @@ private:
     /*!
      *  Check if the name is valid.
      *
-     *      @param [in] name    The name to be evaluated.
+     *    @param [in] name    The name to be evaluated.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
 	bool hasValidName(QString const& name) const;
 

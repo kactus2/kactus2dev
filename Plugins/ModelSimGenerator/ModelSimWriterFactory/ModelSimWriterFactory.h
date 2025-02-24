@@ -28,11 +28,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] library                 The component library.
-     *      @param [in] messages                For message output.
-     *      @param [in] settings                Points to the settings to be used within the generation.
-	 *      @param [in] kactusVersion		    The version of the current Kactus build.
-	 *      @param [in] generatorVersion	    The current version of the generator.
+     *    @param [in] library                 The component library.
+     *    @param [in] messages                For message output.
+     *    @param [in] settings                Points to the settings to be used within the generation.
+	 *    @param [in] kactusVersion		    The version of the current Kactus build.
+	 *    @param [in] generatorVersion	    The current version of the generator.
 	 */
     ModelSimWriterFactory(LibraryInterface* library, 
         MessageMediator* messages, GenerationSettings* settings,
@@ -48,10 +48,10 @@ public:
     /*!
      *  Creates writers for the given formatted HDL component.
      *
-     *      @param [in] outputPath			The path to the output file.
-     *      @param [in] component           The component which is needs writing.
+     *    @param [in] outputPath			The path to the output file.
+     *    @param [in] component           The component which is needs writing.
      *
-     *      @return The objects that bundles the writers. Will be null, if could not be created.
+     *    @return The objects that bundles the writers. Will be null, if could not be created.
      */
     virtual QSharedPointer<GenerationOutput> prepareComponent(QString const& outputPath,
         QSharedPointer<MetaComponent> component);
@@ -59,9 +59,9 @@ public:
     /*!
      *  Creates writers for the given parsed meta design.
      *
-     *      @param [in] design             The design which is needs writing.
+     *    @param [in] design             The design which is needs writing.
      *
-     *      @return The objects that bundles the writers. Will be null, if could not be created.
+     *    @return The objects that bundles the writers. Will be null, if could not be created.
      */
     virtual QList<QSharedPointer<GenerationOutput> > prepareDesign(QList<QSharedPointer<MetaDesign> >& designs);
     

@@ -31,9 +31,9 @@ public:
 
 	/*! The constructor.
 	 *
-	 *      @param [in] busInterface    Interface for accessing bus interfaces.
-	 *      @param [in] parent          The owner of this combo box.
-	 *      @param [in] mode            The mode that defines the types of interfaces to show.
+	 *    @param [in] busInterface    Interface for accessing bus interfaces.
+	 *    @param [in] parent          The owner of this combo box.
+	 *    @param [in] mode            The mode that defines the types of interfaces to show.
 	*/
     InterfaceSelector(BusInterfaceInterface* busInterface, QWidget* parent,
         General::InterfaceMode mode = General::INTERFACE_MODE_COUNT);
@@ -46,7 +46,7 @@ public:
 	/*!
      *  Set the interface mode filter.
 	 *
-	 *      @param [in] mode The mode that defines the types of interfaces to show.
+	 *    @param [in] mode The mode that defines the types of interfaces to show.
 	 *
 	 *  Note: If the mode is undefined (General::INTERFACE_MODE_COUNT) then all types of interfaces are shown.
      */
@@ -62,7 +62,7 @@ public slots:
 	/*!
      *  Set the specified interface as selected.
 	 *
-	 *      @param [in] interfaceName The name of the interface to select.
+	 *    @param [in] interfaceName The name of the interface to select.
      */
 	void selectInterface(const QString& interfaceName);
 

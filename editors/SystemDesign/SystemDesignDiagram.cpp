@@ -2034,7 +2034,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
 // Function: SystemDesignDiagram::createConnection()
 //-----------------------------------------------------------------------------
 GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* startPoint, 
-    ConnectionEndpoint* endPoint)
+    ConnectionEndpoint* endPoint, bool /*isOffPage*/)
 {
     QSharedPointer<ConnectionRoute> route(new ConnectionRoute(""));
 
@@ -2144,7 +2144,7 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::createAddCommandForConnection()
 //-----------------------------------------------------------------------------
-QUndoCommand* SystemDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection, QUndoCommand* parentCommand /*= nullptr*/)
+QUndoCommand* SystemDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection, QUndoCommand* /*parentCommand*/)
 {
     ApiGraphicsConnection* apiConnection = dynamic_cast<ApiGraphicsConnection*>(connection);
     if (apiConnection)

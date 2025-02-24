@@ -41,7 +41,7 @@ public:
     /*!
      *  Constructor.
      */
-    DesignWidget(LibraryInterface* lh, QWidget* parent = nullptr);
+    DesignWidget(LibraryInterface* libHandler, QWidget* parent = nullptr);
 
     /*!
      *  Destructor.
@@ -64,18 +64,18 @@ public:
     /*!
      *  Sets a design to be displayed in the design diagram.
      *
-     *      @param [in] vlnv      The VLNV of the top-level component.
-     *      @param [in] viewName  The name of the view to open.
+     *    @param [in] vlnv      The VLNV of the top-level component.
+     *    @param [in] viewName  The name of the view to open.
      *
-     *      @return False if there were errors opening the design; otherwise true.
+     *    @return False if there were errors opening the design; otherwise true.
      */
     virtual bool setDesign(VLNV const& vlnv, QString const& viewName) = 0;
 
     /*!
      *  Changes the state of a visibility control.
      *
-     *      @param [in] name   The name of the visibility control.
-     *      @param [in] state  The new state for the visibility control.
+     *    @param [in] name   The name of the visibility control.
+     *    @param [in] state  The new state for the visibility control.
      */
     virtual void setVisibilityControlState(QString const& name, bool state);
 
@@ -97,7 +97,7 @@ public:
     /*!
      *  Sets the zoom level of the design.
      *
-     *      @param [in] level The zoom level in percents.
+     *    @param [in] level The zoom level in percents.
      */
     virtual void setZoomLevel(int level);
 
@@ -109,21 +109,21 @@ public:
     /*!
      *  Sets the draw mode of the design.
      *
-     *      @param [in] mode The draw mode.
+     *    @param [in] mode The draw mode.
      */
     virtual void setMode(DrawMode mode);
 
     /*!
      *  Sets the protection state of the document.
      *
-     *      @param [in] locked True for locked state; false for unlocked.
+     *    @param [in] locked True for locked state; false for unlocked.
      */
     virtual void setProtection(bool locked);
 
     /*!
      *  Sets the edited component.
      *
-     *      @param [in] component The component to set as the edited one.
+     *    @param [in] component The component to set as the edited one.
      */
     void setEditedComponent(QSharedPointer<Component> component);
 
@@ -155,7 +155,7 @@ public:
     /*!
      *  Returns the edit provider.
      *
-     *      @return Base class implementation returns null.
+     *    @return Base class implementation returns null.
      *
      *      @remarks Edit support should be queried with getFlags().
      */
@@ -174,7 +174,7 @@ public:
     /*!
      *  Centers the current view to a point.
      *
-     *      @param [in] centerPoint   The point to center to.
+     *    @param [in] centerPoint   The point to center to.
      */
     void centerViewTo(QPointF const& centerPoint);
 
@@ -232,11 +232,6 @@ signals:
 protected:
     void showEvent(QShowEvent* event);
 
-    /*!
-     *  Returns the library interface.
-     */
-    LibraryInterface* getLibraryInterface();
-
     virtual bool setDesign(QSharedPointer<Component> component, const QString& viewName);
 
     //! Removes all selected sticky notes.
@@ -258,9 +253,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The library interface.
-    LibraryInterface* library_;
 
     //! The graphics view for showing the diagram.
     QGraphicsView* view_ = new QGraphicsView(this);

@@ -38,8 +38,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] interface    The interface to delete.
-     *      @param [in] removePorts  If true, the ports that are part of the interface are also removed.
+     *    @param [in] interface    The interface to delete.
+     *    @param [in] removePorts  If true, the ports that are part of the interface are also removed.
      */
     InterfaceDeleteCommand(DesignDiagram* diagram, HierarchicalBusInterfaceItem* interface, bool removePorts,
         QUndoCommand* parent = 0);

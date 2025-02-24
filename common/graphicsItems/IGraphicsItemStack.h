@@ -31,29 +31,29 @@ public:
     /*!
      *  Adds an item to stack.
      *
-     *      @param [in] item  The item to add.
-     *      @param [in] load  If true, the item is being loaded from a design.
+     *    @param [in] item  The item to add.
+     *    @param [in] load  If true, the item is being loaded from a design.
      */
     virtual void addItem(QGraphicsItem* item, bool load = false) = 0;
 
     /*!
      *  Removes an item from the stack.
      *
-     *      @param [in] item the item to remove.
+     *    @param [in] item the item to remove.
      */
     virtual void removeItem(QGraphicsItem* item) = 0;
 
     /*!
      *  Called when an item is moved within the stack.
      *
-     *      @param [in] item     The item that has been moved.
+     *    @param [in] item     The item that has been moved.
      */
     virtual void onMoveItem(QGraphicsItem* item) = 0;
 
     /*!
      *  Called when an item is released from being moved by mouse.
      *
-     *      @param [in] item The item that has been released.
+     *    @param [in] item The item that has been released.
      */
     virtual void onReleaseItem(QGraphicsItem* item) = 0;
 
@@ -75,7 +75,7 @@ public:
     /*!
      *  Returns true if the stack is allowed to contain the given item.
      *
-     *      @param [in] item The item to test for.
+     *    @param [in] item The item to test for.
      */
     virtual bool isItemAllowed(QGraphicsItem* item) const = 0;
 

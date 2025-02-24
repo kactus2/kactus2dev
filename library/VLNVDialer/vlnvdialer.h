@@ -38,7 +38,7 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] parent The owner of this widget.
+	 *    @param [in] parent The owner of this widget.
 	 *
 	*/
 	VLNVDialer(QWidget *parent);
@@ -55,14 +55,14 @@ public:
 	/*!
 	 *  Set filter settings for the library.
 	 *
-	 *      @param [in] settings    Settings containing the library filters.
+	 *    @param [in] settings    Settings containing the library filters.
 	 */
 	void loadFilterSettings(QSettings& settings);
 
 	/*!
 	 *  Save settings for dock widget filters.
 	 *
-	 *      @param [in] settings    The settings.
+	 *    @param [in] settings    The settings.
 	 */
 	void saveFilterSettings(QSettings& settings) const;
 
@@ -92,7 +92,7 @@ signals:
     /*!
      *  Informs of tag filter change.
      *
-     *      @param [in] tagFilters  The new visible tags.
+     *    @param [in] tagFilters  The new visible tags.
      */
     void tagFiltersChanged(QVector<TagData> tagFilters);
 

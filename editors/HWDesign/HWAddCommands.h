@@ -47,10 +47,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component   The component to which to add a port.
-     *      @param [in] pos         The position where to add the port.
-     *      @param [in] diagram     Diagram containing the scene of the port.
-     *      @param [in] parent      The parent command.
+     *    @param [in] component   The component to which to add a port.
+     *    @param [in] pos         The position where to add the port.
+     *    @param [in] diagram     Diagram containing the scene of the port.
+     *    @param [in] parent      The parent command.
      */
     PortAddCommand(HWComponentItem* component, QPointF const& pos, DesignDiagram* diagram,
         QUndoCommand* parent = 0);
@@ -107,9 +107,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] scene           The scene.
-     *      @param [in] connectionItem  The interconnection to add.
-     *      @param [in] parent          The parent command.
+     *    @param [in] scene           The scene.
+     *    @param [in] connectionItem  The interconnection to add.
+     *    @param [in] parent          The parent command.
      */
     ConnectionAddCommand(QGraphicsScene* scene, HWConnection* connectionItem, QSharedPointer<Design> design,
                          QUndoCommand* parent = 0);
@@ -161,11 +161,11 @@ public:
      *
 	 *      Creates the child commands for adding physical ports to the component model. 
 	 *
-     *      @param [in] destComponent  The component to which to copy an interface.
-	 *      @param [in] interface      The interface item to paste.
-	 *      @param [in] column         The target column.
-     *      @param [in] diagram        The target design diagram.
-     *      @param [in] parent         The parent command.
+     *    @param [in] destComponent  The component to which to copy an interface.
+	 *    @param [in] interface      The interface item to paste.
+	 *    @param [in] column         The target column.
+     *    @param [in] diagram        The target design diagram.
+     *    @param [in] parent         The parent command.
      */
     BusInterfacePasteCommand(QSharedPointer<Component> destComponent, HierarchicalBusInterfaceItem* interfaceItem,
         GraphicsColumn* column, DesignDiagram* diagram, QUndoCommand* parent = 0);
@@ -225,9 +225,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component  The component to which to copy a physical port.
-	 *      @param [in] port       The port to paste.
-     *      @param [in] parent     The parent command.
+     *    @param [in] component  The component to which to copy a physical port.
+	 *    @param [in] port       The port to paste.
+     *    @param [in] parent     The parent command.
      */
    AddPhysicalPortCommand(QSharedPointer<Component>, QSharedPointer<Port> port, QUndoCommand* parent = 0);
 

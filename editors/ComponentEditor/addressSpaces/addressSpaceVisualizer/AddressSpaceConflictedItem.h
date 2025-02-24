@@ -27,10 +27,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addrPos             Address alignment.
-	 *      @param [in] addressSpaceWidth   Address space width.
-	 *      @param [in] expressionParser    The used expression parser.
-	 *      @param [in] parent              Pointer to the parent graph item.
+	 *    @param [in] addrPos             Address alignment.
+	 *    @param [in] addressSpaceWidth   Address space width.
+	 *    @param [in] expressionParser    The used expression parser.
+	 *    @param [in] parent              Pointer to the parent graph item.
 	 */
 	AddressSpaceConflictedItem(VisualizerItem::LabelLayout addrPos,
         QString const& addressSpaceWidth,

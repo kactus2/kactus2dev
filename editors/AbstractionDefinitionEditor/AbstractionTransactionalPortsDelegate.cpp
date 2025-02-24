@@ -22,11 +22,20 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsDelegate::AbstractionTransactionalPortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionTransactionalPortsDelegate::AbstractionTransactionalPortsDelegate(LibraryInterface* libraryAccess,
-    Document::Revision stdRevision, QObject *parent):
-AbstractionPortsDelegate(libraryAccess, stdRevision, parent)
+AbstractionTransactionalPortsDelegate::AbstractionTransactionalPortsDelegate(QAbstractItemModel* parametersModel,
+    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* libraryAccess,
+    Document::Revision stdRevision, QObject* parent) :
+AbstractionPortsDelegate(parametersModel, parameterFinder, libraryAccess, stdRevision, parent)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTransactionalPortsDelegate::columnAcceptsExpression()
+//-----------------------------------------------------------------------------
+bool AbstractionTransactionalPortsDelegate::columnAcceptsExpression(int column) const
+{
+    return column == LogicalPortColumns::BUSWIDTH;
 }
 
 //-----------------------------------------------------------------------------

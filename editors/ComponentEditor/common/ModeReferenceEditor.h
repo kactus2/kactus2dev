@@ -27,8 +27,8 @@ public:
     /*!
      *	The constructor.
      *  
-     *      @param [in] model        The mode reference model to use.
-     *      @param [in] parent       The parent widget.
+     *    @param [in] model        The mode reference model to use.
+     *    @param [in] parent       The parent widget.
      */
     ModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent);
 

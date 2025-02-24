@@ -94,6 +94,9 @@ parameterInterface_(parameterInterface)
     connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
+    connect(view_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
 	// set proxy to do the sorting automatically
 	QSortFilterProxyModel* sortingProxy = new QSortFilterProxyModel(this);
 

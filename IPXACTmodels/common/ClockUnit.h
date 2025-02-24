@@ -34,49 +34,49 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] value   The contained value.
+     *    @param [in] value   The contained value.
      */
     explicit ClockUnit(QString const& value = QString());
 
     /*!
      *  Get the assigned value.
      *
-     *      @return Value of the clock unit.
+     *    @return Value of the clock unit.
      */
     QString getValue() const;
 
     /*!
      *  Set the value.
      *
-     *      @param [in] newValue    The new value to be set.
+     *    @param [in] newValue    The new value to be set.
      */
     void setValue(QString const& newValue);
 
     /*!
      *  Get the used time units.
      *
-     *      @return The used time unit.
+     *    @return The used time unit.
      */
     TimeUnit getTimeUnit() const;
 
     /*!
      *  Set a new time unit.
      *
-     *      @param [in] newTimeUnit     The new time unit.
+     *    @param [in] newTimeUnit     The new time unit.
      */
     void setTimeUnit(TimeUnit newTimeUnit);
 
     /*!
      *  Set a new time unit.
      *
-     *      @param [in] newTimeUnit     String form of the new time unit.
+     *    @param [in] newTimeUnit     String form of the new time unit.
      */
     void setTimeUnit(QString const& newTimeUnit);
 
     /*!
      *  Change the used time unit to string.
      *
-     *      @return String containing the used time unit.
+     *    @return String containing the used time unit.
      */
     QString timeUnitToString() const;
 

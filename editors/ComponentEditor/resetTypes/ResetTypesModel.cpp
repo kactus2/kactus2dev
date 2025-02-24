@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 // Function: ResetTypesModel::ResetTypesModel()
 //-----------------------------------------------------------------------------
-ResetTypesModel::ResetTypesModel(QSharedPointer<Component> component, ComponentValidator& validator,
+ResetTypesModel::ResetTypesModel(QSharedPointer<Component> component, QSharedPointer<ComponentValidator> validator,
     QObject* parent):
 QAbstractTableModel(parent),
 component_(component),
@@ -142,7 +142,7 @@ QVariant ResetTypesModel::data(QModelIndex const& index, int role) const
     else if (role == Qt::ForegroundRole)
     {
         if (index.column() == ResetTypeColumns::NAME_COLUMN &&
-            !validator_.singleResetTypeIsValid(resetType, resetTypes_))
+            !validator_->singleResetTypeIsValid(resetType, resetTypes_))
         {
             return KactusColors::ERROR;
         }

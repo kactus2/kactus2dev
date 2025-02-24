@@ -1158,7 +1158,8 @@ bool PortMapInterface::connectPorts(std::string const& logicalPortName, std::str
     QSharedPointer<PortMap::LogicalPort> newMappedLogical = newPortMap->getLogicalPort();
 
     QString logicalWireWidth(QString::fromStdString(
-        logicalPortInterface_->getWidth(logicalPortName, interfaceMode, systemGroup)));
+        logicalPortInterface_->getWidthValue(logicalPortName, General::str2Interfacemode(QString::fromStdString(interfaceMode), 
+            General::InterfaceMode::INTERFACE_MODE_COUNT), systemGroup)));
     if (!logicalWireWidth.isEmpty())
     {
         qint64 logicalSize = parseExpressionToDecimal(logicalWireWidth).toInt();
@@ -1319,7 +1320,7 @@ void PortMapInterface::createRequiredSignals()
 //-----------------------------------------------------------------------------
 void PortMapInterface::createOptionalSignals()
 {
-    createPortMapsWithPresence(PresenceTypes::OPTIONAL);
+    createPortMapsWithPresence(PresenceTypes::OPTIONAL | PresenceTypes::UNKNOWN);
 }
 
 //-----------------------------------------------------------------------------
@@ -1333,20 +1334,20 @@ void PortMapInterface::createAllSignals()
 //-----------------------------------------------------------------------------
 // Function: PortMapInterface::createPortMapsWithPresence()
 //-----------------------------------------------------------------------------
-void PortMapInterface::createPortMapsWithPresence(PresenceTypes::Presence presence)
+void PortMapInterface::createPortMapsWithPresence(int presence)
 {
     std::string busMode = General::interfaceMode2Str(interfaceMode_).toStdString();
     
     std::vector<std::string> logicalSignals;
 
-    for (auto signalName : logicalPortInterface_->getItemNamesWithModeAndGroup(busMode, systemGroup_))
+    for (auto const& signalName : logicalPortInterface_->getItemNamesWithModeAndGroup(busMode, systemGroup_))
     {
         bool notFound = std::find(logicalSignals.cbegin(), logicalSignals.cend(), signalName) == logicalSignals.cend();
         bool protMapDoesNotExist = !portMapExistsForLogicalSignal(signalName);
         PresenceTypes::Presence portPresence = logicalPortInterface_->getPresence(signalName, busMode, systemGroup_);
 
         if (notFound && protMapDoesNotExist &&
-            (presence == PresenceTypes::ALL || presence == portPresence))
+            (presence == PresenceTypes::ALL || ((presence & portPresence) != 0) )) // AND for checking combined presence
         {
             logicalSignals.push_back(signalName);
         }

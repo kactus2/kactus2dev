@@ -42,10 +42,10 @@ public:
     /*!
      *  The Constructor.
      *
-     *      @param [in] lh                      The library interface.
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] parent                  The parent wizard.
+     *    @param [in] lh                      The library interface.
+     *    @param [in] parameterFinder         The parameter finder.
+     *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] parent                  The parent wizard.
      */
     ComponentWizardViewsPage(LibraryInterface* lh, QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentWizard* parent);
@@ -85,7 +85,7 @@ private slots:
     /*!
      *  Called when a view is selected from the list.
      *
-     *      @param [in] index   The index of the selected view.
+     *    @param [in] index   The index of the selected view.
      */
     void onViewSelected(QModelIndex const& index);
 
@@ -97,22 +97,22 @@ private:
     /*!
      *  Updates the icon for a given tab according to editor validity.
      *
-     *      @param [in] tabIndex   The index of the tab to update.
+     *    @param [in] tabIndex   The index of the tab to update.
      */
     void updateIconForTab(int tabIndex) const;
 
     /*!
      *  Creates an editor for a given view.
      *
-     *      @param [in] component   The component whose view the editor is for.
-     *      @param [in] view        The view for which to create an editor.
+     *    @param [in] component   The component whose view the editor is for.
+     *    @param [in] view        The view for which to create an editor.
      */
     void createEditorForView(QSharedPointer<Component> component, QSharedPointer<View> view);
 
     /*!
      *  Removes all editors for a given view.
      *
-     *      @param [in] viewName   The name of the view whose editors to remove.
+     *    @param [in] viewName   The name of the view whose editors to remove.
      */
     void removeEditorsForView(QString const& viewName);
 
@@ -122,10 +122,10 @@ private:
     /*!
      *  Finds a design instantiation referenced by a view.
      *
-     *      @param [in] component   The component containing the view.
-     *      @param [in] targetView  The selected view.
+     *    @param [in] component   The component containing the view.
+     *    @param [in] targetView  The selected view.
      *
-     *      @return A design instantiation referenced by a view.
+     *    @return A design instantiation referenced by a view.
      */
     QSharedPointer<DesignInstantiation> getReferencedDesignInstantiation(QSharedPointer<Component> component,
         QSharedPointer<View> targetView) const;
@@ -133,10 +133,10 @@ private:
     /*!
      *  Finds a design configuration instantiation referenced by a view.
      *
-     *      @param [in] component   The component containing the view.
-     *      @param [in] targetView  The selected view.
+     *    @param [in] component   The component containing the view.
+     *    @param [in] targetView  The selected view.
      *
-     *      @return A component design configuration referenced by a view.
+     *    @return A component design configuration referenced by a view.
      */
     QSharedPointer<DesignConfigurationInstantiation> getReferencedDesignConfigurationInstantiation(
         QSharedPointer<Component> component, QSharedPointer<View> targetView) const;

@@ -33,9 +33,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] completionModel     Model containing the completions used in expression editor.
-     *      @param [in] parameterFinder     The parameter finder to use for for expression editor.
-     *      @param [in] parent              The parent object.
+     *    @param [in] completionModel     Model containing the completions used in expression editor.
+     *    @param [in] parameterFinder     The parameter finder to use for for expression editor.
+     *    @param [in] parent              The parent object.
      */
     ExpressionDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QObject* parent);
@@ -76,14 +76,14 @@ signals:
     /*!
     *  Increase the amount of references to a parameter corresponding to the id.
     *
-    *      @param [in] id      The id of the parameter being searched for.
+    *    @param [in] id      The id of the parameter being searched for.
     */
     void increaseReferences(QString id);
 
     /*!
     *  Decrease the amount of references to a parameter corresponding to the id.
     *
-    *      @param [in] id      The id of the parameter being searched for.
+    *    @param [in] id      The id of the parameter being searched for.
     */
     void decreaseReferences(QString id);
 
@@ -92,34 +92,34 @@ protected:
     /*!
      *  Checks if the given column supports expressions in the editor.
      *
-     *      @param [in] column   The column to check.
+     *    @param [in] column   The column to check.
      *
-     *      @return True, if the cells in the column allow expressions, otherwise false.
+     *    @return True, if the cells in the column allow expressions, otherwise false.
      */
     virtual bool columnAcceptsExpression(int column) const = 0;
 
     /*!
      *  Gets the parameter finder used in expressions.
      *
-     *      @return The parameter finder.
+     *    @return The parameter finder.
      */
     QSharedPointer<ParameterFinder> getParameterFinder() const;
 
     /*!
      *  Creates an editor for expressions.
      *
-     *      @param [in] parent   The parent widget for the editor.
+     *    @param [in] parent   The parent widget for the editor.
      *
-     *      @return An editor for expressions.
+     *    @return An editor for expressions.
      */
     ExpressionEditor* createExpressionEditor(QWidget* parent) const;
 
     /*!
      *  Creates a line editor for expressions.
      *
-     *      @param [in] parent   The parent widget for the editor.
+     *    @param [in] parent   The parent widget for the editor.
      *
-     *      @return A line editor for expressions.
+     *    @return A line editor for expressions.
      */
     ExpressionLineEditor* createExpressionLineEditor(QWidget* parent) const;
 

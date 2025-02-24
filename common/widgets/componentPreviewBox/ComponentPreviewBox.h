@@ -34,8 +34,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] lh         The library interface. 
-     *      @param [in] parent     The parent widget.
+     *    @param [in] lh         The library interface. 
+     *    @param [in] parent     The parent widget.
      */
     ComponentPreviewBox(LibraryInterface* lh, QWidget* parent = nullptr);
 
@@ -51,7 +51,7 @@ public:
     /*!
      *  Sets the component that will be visualized.
      *
-     *      @param [in] component  The component to visualize.
+     *    @param [in] component  The component to visualize.
      */
     void setComponent(QSharedPointer<Component> component);
 
@@ -63,21 +63,21 @@ public:
 	/*!
      *  Get the bounding rect of all items on the scene.
 	 *
-	 *      @return The rect that bounds all items.
+	 *    @return The rect that bounds all items.
 	 */
 	QRectF itemsBoundingRect() const;
 
     /*!
      *  Get the graphics scene.
      *
-     *      @return The graphics scene used by the preview.
+     *    @return The graphics scene used by the preview.
      */
     QGraphicsScene* scene() const;
 
     /*!
      *  Set the preview interactive i.e. user can move interfaces.
      *
-     *      @param [in] interactive  Interactive or view-only.
+     *    @param [in] interactive  Interactive or view-only.
      */
     void setInteractive(bool interactive);
 

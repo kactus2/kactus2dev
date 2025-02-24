@@ -57,7 +57,7 @@ private slots:
     /*!
      *  Shows a warning message on the information display.
      *
-     *      @param [in] message The message to show.
+     *    @param [in] message The message to show.
      */
     void showWarningMessage(QString const& message);
 

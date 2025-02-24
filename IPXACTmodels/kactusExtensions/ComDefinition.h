@@ -27,7 +27,7 @@ public:
     /*!
      *  Constructor which creates an empty communication definition.
      *
-     *      @param [in] vlnv The VLNV of the communication definition.
+     *    @param [in] vlnv The VLNV of the communication definition.
      */
     ComDefinition(VLNV const& vlnv, Document::Revision revision);
 
@@ -44,7 +44,7 @@ public:
     /*!
      *  Makes a copy of the document.
      *
-     *      @return The created copy of the COM definition.
+     *    @return The created copy of the COM definition.
      */
     virtual QSharedPointer<Document> clone()  const;
 
@@ -61,42 +61,42 @@ public:
     /*!
      *  Adds a new transfer type to the communication definition.
      *
-     *      @param [in] type The name of the transfer type to add.
+     *    @param [in] type The name of the transfer type to add.
      */
     void addTransferType(QString const& type);
 
     /*!
      *  Removes a transfer type from the communication definition.
      *
-     *      @param [in] type The name of the transfer type to remove.
+     *    @param [in] type The name of the transfer type to remove.
      */
     void removeTransferType(QString const& type);
 
     /*!
      *  Sets the supported transfer types.
      *
-     *      @param [in] types A list of transfer type names.
+     *    @param [in] types A list of transfer type names.
      */
     void setTransferTypes(QStringList const& types);
 
     /*!
      *  Adds a property to the definition.
      *
-     *      @param [in] prop The property to add.
+     *    @param [in] prop The property to add.
      */
     void addProperty(QSharedPointer<ComProperty> prop);
 
     /*!
      *  Removes a property from the definition.
      *
-     *      @param [in] name The name of the property to remove.
+     *    @param [in] name The name of the property to remove.
      */
     void removeProperty(QString const& name);
 
     /*!
      *  Sets the properties.
      *
-     *      @param [in] properties A list of properties to set.
+     *    @param [in] properties A list of properties to set.
      */
     void setProperties(QList< QSharedPointer<ComProperty> > const& properties);
 

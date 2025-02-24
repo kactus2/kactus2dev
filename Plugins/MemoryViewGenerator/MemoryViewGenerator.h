@@ -55,8 +55,8 @@ public:
     /*!
      *  Generates slave memory listing for the given component.
      *
-     *      @param [in] topComponent    The top component in the hierarchy to generate listing for.
-     *      @param [in] outputPath      Path to the output file.
+     *    @param [in] topComponent    The top component in the hierarchy to generate listing for.
+     *    @param [in] outputPath      Path to the output file.
      */
     void generate(QSharedPointer<Component> topComponent, QString const& activeView, QString const& outputPath);
   
@@ -69,16 +69,16 @@ private:
     /*!
      *  Writes the listing into a given file.
      *
-     *      @param [in] outputPath   The path to the output file.
+     *    @param [in] outputPath   The path to the output file.
      */
     void writeFile(QString const& outputPath, QVector<QVector<QSharedPointer<const ConnectivityInterface> > >  masterRoutes);
 
     /*!
      *  Writes the given memory element into output.
      *
-     *      @param [in] item            The memory element to write.
-     *      @param [in] addressOffset   Offset for the memory item.
-     *      @param [in] outputStream    The output to write the element into.
+     *    @param [in] item            The memory element to write.
+     *    @param [in] addressOffset   Offset for the memory item.
+     *    @param [in] outputStream    The output to write the element into.
      */
     void writeItem(QSharedPointer<MemoryItem> item, int addressOffset, QTextStream& outputStream);
 

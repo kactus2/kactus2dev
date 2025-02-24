@@ -61,9 +61,9 @@ private:
     /*!
      *  Finds the number of checked items under a given tree item.
      *
-     *      @param [in] item   The item to start the count from.
+     *    @param [in] item   The item to start the count from.
      *
-     *      @return The number of checked items under the item including the item itself.
+     *    @return The number of checked items under the item including the item itself.
      */
     int findNumberOfCheckedItems(QTreeWidgetItem* item);
 

@@ -108,7 +108,7 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
 
     if (!tieOffConnection->getInternalPortReferences()->isEmpty())
     {
-        foreach (QSharedPointer<PortReference> internalReference, *tieOffConnection->getInternalPortReferences())
+        for (auto const& internalReference : *tieOffConnection->getInternalPortReferences())
         {
             HWComponentItem* componentItem =
                 containingDiagram_->getComponentItem(internalReference->getComponentRef());
@@ -127,7 +127,7 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
 
     if (!tieOffConnection->getExternalPortReferences()->isEmpty())
     {
-        foreach (QSharedPointer<PortReference> externalReference, *tieOffConnection->getExternalPortReferences())
+        for (auto const& externalReference : *tieOffConnection->getExternalPortReferences())
         {
             HWConnectionEndpoint* endPoint =
                 containingDiagram_->getDiagramAdHocPort(externalReference->getPortRef());

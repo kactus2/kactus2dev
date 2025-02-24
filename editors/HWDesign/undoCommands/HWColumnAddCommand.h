@@ -29,10 +29,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] layout      The column layout.
-     *      @param [in] column      The column to add.
-     *      @param [in] diagram     Diagram containing the column layout.
-     *      @param [in] parent      The parent command.
+     *    @param [in] layout      The column layout.
+     *    @param [in] column      The column to add.
+     *    @param [in] diagram     Diagram containing the column layout.
+     *    @param [in] parent      The parent command.
      */
     HWColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column, DesignDiagram* diagram,
         QUndoCommand* parent = 0);
@@ -60,14 +60,14 @@ private:
     /*!
      *  Get the mandatory port items that have not been inserted into any columns.
      *
-     *      @return The mandatory port items that have not been inserted into any columns.
+     *    @return The mandatory port items that have not been inserted into any columns.
      */
     QVector<HierarchicalPortItem*> getMissingAdHocPortItems() const;
 
     /*!
      *  Get the mandatory ports that have not been inserted into any columns.
      *
-     *      @return The mandatory ports that have not been inserted into any column
+     *    @return The mandatory ports that have not been inserted into any column
      */
     QVector<QSharedPointer<Port> > getMissingAdHocPorts() const;
 
@@ -84,17 +84,17 @@ private:
     /*!
      *  Check if the selected port exists in the design diagram.
      *
-     *      @param [in] adHocPort   The selected ad hoc port.
+     *    @param [in] adHocPort   The selected ad hoc port.
      *
-     *      @return True, if the port is found in the design diagram, otherwise false.
+     *    @return True, if the port is found in the design diagram, otherwise false.
      */
     bool portExistsInDiagram(QSharedPointer<Port> adHocPort) const;
 
     /*!
      *  Get the position vendor extension for the selected ad hoc port.
      *
-     *      @param [in] positionGroup   Extension group for ad hoc positions.
-     *      @param [in] adhocPort       The selected ad hoc port.
+     *    @param [in] positionGroup   Extension group for ad hoc positions.
+     *    @param [in] adhocPort       The selected ad hoc port.
      */
     QSharedPointer<Kactus2Placeholder> getAdHocPositionExtension(QSharedPointer<Kactus2Group> positionGroup,
         QSharedPointer<Port> adhocPort) const;

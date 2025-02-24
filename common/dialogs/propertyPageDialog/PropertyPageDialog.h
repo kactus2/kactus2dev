@@ -49,11 +49,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] listIconSize  The icon size in the contents list.
-     *      @param [in] viewMode      Specifies the view mode how the organizer is shown.
-     *      @param [in] applyMode     Apply mode which specifies what pages are applied when
+     *    @param [in] listIconSize  The icon size in the contents list.
+     *    @param [in] viewMode      Specifies the view mode how the organizer is shown.
+     *    @param [in] applyMode     Apply mode which specifies what pages are applied when
      *                                the user presses OK.
-     *      @param [in] parent        The parent widget. Can be null.
+     *    @param [in] parent        The parent widget. Can be null.
      */
     PropertyPageDialog(QSize const& listIconSize, int iconColumnCount,
                        ViewMode viewMode, ApplyMode applyMode, QWidget* parent = 0);
@@ -66,9 +66,9 @@ public:
     /*!
      *  Adds a new property page to the dialog.
      *
-     *      @param [in] icon  The icon for the page.
-     *      @param [in] text  The text description for the page.
-     *      @param [in] view  The page view.
+     *    @param [in] icon  The icon for the page.
+     *    @param [in] text  The text description for the page.
+     *    @param [in] view  The page view.
      */
     void addPage(QIcon const& icon, QString const& text, PropertyPageView* view);
 
@@ -81,8 +81,8 @@ public slots:
     /*!
      *  Changes the current page based on the selection in the contents list.
      *
-     *      @param [in] current   The current list item selected in the contents list.
-     *      @param [in] previous  The previously selected item in the contents list.
+     *    @param [in] current   The current list item selected in the contents list.
+     *    @param [in] previous  The previously selected item in the contents list.
      */
     void changePage(QListWidgetItem* current, QListWidgetItem* previous);
 

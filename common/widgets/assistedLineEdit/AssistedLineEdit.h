@@ -33,8 +33,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parentWnd   The parent window of the line edit. Must not be null.
-     *      @param [in] parent      The parent widget. Can be null.
+     *    @param [in] parentWnd   The parent window of the line edit. Must not be null.
+     *    @param [in] parent      The parent widget. Can be null.
      */
     AssistedLineEdit(QWidget* parentWnd, QWidget* parent = 0);
 
@@ -50,7 +50,7 @@ public:
     /*!
      *  Sets the content matcher.
      *
-     *      @param [in] matcher The matcher to set.
+     *    @param [in] matcher The matcher to set.
      */
     void setContentMatcher(ILineContentMatcher* matcher);
 
@@ -59,7 +59,7 @@ protected:
     /*!
      *  Handles the given key press event.
      *
-     *      @param [in] e The key event.
+     *    @param [in] e The key event.
      */
     void keyPressEvent(QKeyEvent* e);
 

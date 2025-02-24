@@ -34,13 +34,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] libInterface                Library interface.
-     *      @param [in] component                   The instantiated component.
-     *      @param [in] instanceName                The instance name.
-     *      @param [in] displayName                 The instance display name.
-     *      @param [in] description                 The instance description.
-     *      @param [in] uuid                        The instance id.
-     *      @param [in] configurableElementValues   The configurable element values.
+     *    @param [in] libInterface                Library interface.
+     *    @param [in] component                   The instantiated component.
+     *    @param [in] instanceName                The instance name.
+     *    @param [in] displayName                 The instance display name.
+     *    @param [in] description                 The instance description.
+     *    @param [in] uuid                        The instance id.
+     *    @param [in] configurableElementValues   The configurable element values.
      */
 	SWComponentItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
 		QSharedPointer<ComponentInstance> instance);
@@ -53,7 +53,7 @@ public:
     /*!
      *  Sets the file set reference.
      *
-     *      @param [in] fileSetName The name of the referenced file set in the top-level component.
+     *    @param [in] fileSetName The name of the referenced file set in the top-level component.
      */
     void setFileSetRef(QString const& fileSetName);
 
@@ -87,7 +87,7 @@ public:
     /*!
      *  Checks if the component instance is a draft.
      *
-     *      @return True, if the instance is a draft, otherwise false.
+     *    @return True, if the instance is a draft, otherwise false.
      */
     bool isDraft() const;
 

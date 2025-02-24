@@ -29,7 +29,7 @@ public:
     /*!
      *  The copy constructor.
      *
-     *      @param [in] other   The enumeration to copy.
+     *    @param [in] other   The enumeration to copy.
      */
     Enumeration(Enumeration const& other);
 
@@ -39,42 +39,42 @@ public:
     /*!
      *  Sets the enumeration value.
      *
-     *      @param [in] value   The value to set.
+     *    @param [in] value   The value to set.
      */
     void setValue(QString const& value);
 
     /*!
      *  Gets the enumeration value.
      *
-     *      @return The enumeration value.
+     *    @return The enumeration value.
      */
     QString getValue() const;
     
     /*!
      *  Sets the enumeration text to display instead of value.
      *
-     *      @param [in] text   The text to set.
+     *    @param [in] text   The text to set.
      */
     void setText(QString const& text);
     
     /*!
      *  Gets the enumeration text.
      *
-     *      @return The enumeration text.
+     *    @return The enumeration text.
      */
     QString getText() const;
         
     /*!
      *  Sets the clarifying help text.
      *
-     *      @param [in] help   The help text to set.
+     *    @param [in] help   The help text to set.
      */
     void setHelp(QString const& help);
         
     /*!
      *  Gets the clarifying help text.
      *
-     *      @return The enumeration help text.
+     *    @return The enumeration help text.
      */
     QString getHelp() const;
 

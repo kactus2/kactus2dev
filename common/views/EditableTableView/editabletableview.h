@@ -39,7 +39,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] parent  Pointer to the owner of this view.
+     *    @param [in] parent  Pointer to the owner of this view.
 	 */
 	EditableTableView(QWidget *parent);
 	
@@ -51,42 +51,42 @@ public:
 	/*!
      *  Enable/disable the import/export csv file functionality.
 	 *
-	 *      @param [in] allow   If true then import/export is enabled.
+	 *    @param [in] allow   If true then import/export is enabled.
 	 */
 	virtual void setAllowImportExport(bool allow);
 
     /*!
      *  Checks if import and export are allowed in the table.
      *
-     *      @return True, if import and export are allowed, otherwise false.
+     *    @return True, if import and export are allowed, otherwise false.
      */
     bool importExportAllowed() const;
 
     /*!
      *  Enable / disable the element copying.
      *
-     *      @param [in] allow   If true, element copying is allowed.
+     *    @param [in] allow   If true, element copying is allowed.
      */
     void setAllowElementCopying(bool allow);
 
 	/*!
      *  Set the model class for this view.	 
 	 *
-	 *      @param [in] model The model displayed by this view.
+	 *    @param [in] model The model displayed by this view.
 	 */
 	virtual void setModel(QAbstractItemModel* model);
 
     /*!
      *  Sets the text visible in the corner button. Both headers must be visible for the text to show.
      *
-     *      @param [in] text   The text to set.
+     *    @param [in] text   The text to set.
      */
     void setCornerButtonText(QString const& text);
 
     /*!
     *  Sets if the column sizes are fit to content at model load.
     *
-    *      @param [in] fit   To fit or not.
+    *    @param [in] fit   To fit or not.
     */
     void setFitColumnsToContent(bool fit);
 
@@ -95,28 +95,28 @@ public slots:
 	/*!
      *  Set the items in the view to be draggable or not.
 	 *
-	 *      @param [in] draggable   If true the positions of the items can change by dragging.
+	 *    @param [in] draggable   If true the positions of the items can change by dragging.
      */
 	void setItemsDraggable(bool draggable);
 
 	/*!
      *  Create a csv-file of the editor contents.
 	 *
-	 *      @param [in] filePath    Contains an absolute file path to the file to create.
+	 *    @param [in] filePath    Contains an absolute file path to the file to create.
 	 */
 	void onCSVExport(const QString& filePath = QString());
 
 	/*!
      *  Import contents of a csv-file to the editor.
 	 *
-	 *      @param [in] filePath    The path to the csv-file to import.
+	 *    @param [in] filePath    The path to the csv-file to import.
 	 */
 	void onCSVImport(const QString& filePath = QString());
 
 	/*!
      *  Set the default path to use for import/export csv.
 	 *
-	 *      @param [in]  path   The path to use as default.
+	 *    @param [in]  path   The path to use as default.
 	 */
 	virtual void setDefaultImportExportPath(const QString& path);
 
@@ -125,7 +125,7 @@ signals:
 	/*!
      *  A new item should be added to given index.
 	 *
-	 *      @param [in] index   The position where new item should be added at.
+	 *    @param [in] index   The position where new item should be added at.
 	 */
 	void addItem(const QModelIndex& index);
 
@@ -139,15 +139,15 @@ signals:
 	/*!
      *  Move item to another position.
 	 *
-	 *      @param [in] originalPos     Identifies the item that should be moved.
-	 *      @param [in] newPos          The new position the item should be moved to.
+	 *    @param [in] originalPos     Identifies the item that should be moved.
+	 *    @param [in] newPos          The new position the item should be moved to.
 	 */
 	void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
 
     /*!
      *  Copy the selected rows.
      *
-     *      @param [in] indexList   List of selected indexes containing the copied rows.
+     *    @param [in] indexList   List of selected indexes containing the copied rows.
      */
     void copyRows(QModelIndexList indexList);
 
@@ -176,42 +176,42 @@ protected:
     /*!
      *  Adds basic actions for the context menu (add, remove, clear, cut, copy, paste).
      *
-     *      @param [in] menu    Menu containing the actions.
-     *      @param [in] index   Index of the item at the context menu event position.
+     *    @param [in] menu    Menu containing the actions.
+     *    @param [in] index   Index of the item at the context menu event position.
      */
     void addBasicActionsForContextMenu(QMenu& menu, QModelIndex const& index);
 
     /*!
      *  Add actions for copying and pasting elements to the context menu.
      *
-     *      @param [in] menu    Menu containing the actions.
-     *      @param [in] index   Index of the item at the context menu event position.
+     *    @param [in] menu    Menu containing the actions.
+     *    @param [in] index   Index of the item at the context menu event position.
      */
     void addElementCopyActionForContextMenu(QMenu& menu, QModelIndex const& index);
 
     /*!
      *  Add actions for importing and exporting to the context menu.
      *
-     *      @param [in] menu    Menu containing the actions.
+     *    @param [in] menu    Menu containing the actions.
      */
     void addImportExportActionsForContextMenu(QMenu& menu);
 
     /*!
      *  Counts the number of rows in a list of indexes.
      *
-     *      @param [in] indexes   The indexes to count.
+     *    @param [in] indexes   The indexes to count.
      *
-     *      @return The number of rows in the indexes.
+     *    @return The number of rows in the indexes.
      */
     int countRows(QModelIndexList const& indexes);
 
     /*!
      *  Handler for intercepting events.
      *
-     *      @param [in] target   The target for the event.
-     *      @param [in] event    The event to intercept or pass to target.
+     *    @param [in] target   The target for the event.
+     *    @param [in] event    The event to intercept or pass to target.
      *
-     *      @return True, if the event is filtered and not passed to target, otherwise false.
+     *    @return True, if the event is filtered and not passed to target, otherwise false.
      */
     virtual bool eventFilter(QObject* target, QEvent* event);
 
@@ -295,9 +295,9 @@ private:
     /*!
      *  Generates a unique name within the table for the item.
      *
-     *      @param [in] original     The original name of the item.
+     *    @param [in] original     The original name of the item.
      *
-     *      @return Unique name for the item.
+     *    @return Unique name for the item.
      */
     QString getUniqueName(QString const& original);
 

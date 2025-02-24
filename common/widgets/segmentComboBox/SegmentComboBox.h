@@ -41,8 +41,8 @@ public:
     /*!
      *  Setup the combo box.
      *
-     *      @param [in] containingSpace     Address space containing the available segments.
-     *      @param [in] segmentReference    Currently selected segment.
+     *    @param [in] containingSpace     Address space containing the available segments.
+     *    @param [in] segmentReference    Currently selected segment.
      */
     void setupSelection(QSharedPointer<AddressSpace> containingSpace, QString const& segmentReference = "");
 

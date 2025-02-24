@@ -34,8 +34,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] libInterface    The library interface.
-     *      @param [in] parentDlg       The parent dialog.
+     *    @param [in] libInterface    The library interface.
+     *    @param [in] parentDlg       The parent dialog.
      */
     NewComponentPage(LibraryInterface* libInterface, QWidget* parentDlg);
 
@@ -52,7 +52,7 @@ public:
     /*!
      *  Validates the contents of the page thoroughly.
      *
-     *      @return True, if the contents are valid. False, if they are invalid.
+     *    @return True, if the contents are valid. False, if they are invalid.
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
@@ -66,7 +66,7 @@ public:
     /*!
      *  Called when the page is to be changed and this page would be hidden.
      *
-     *      @return False, if the page change should be rejected. Otherwise true.
+     *    @return False, if the page change should be rejected. Otherwise true.
      */
     bool onPageChange() final;
 

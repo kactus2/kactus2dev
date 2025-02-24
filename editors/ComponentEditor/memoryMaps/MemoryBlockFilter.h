@@ -32,9 +32,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parser          The expression parser.
-     *      @param [in] blockInterface  Interface for accessing memory blocks.
-     *      @param [in] parent          The parent object.
+     *    @param [in] parser          The expression parser.
+     *    @param [in] blockInterface  Interface for accessing memory blocks.
+     *    @param [in] parent          The parent object.
      */
     MemoryBlockFilter(QSharedPointer<ExpressionParser> parser, MemoryBlockInterface* blockInterface,
         QObject* parent = 0);
@@ -53,10 +53,10 @@ protected:
     /*!
 	 *  Implementation of the row filtering.
 	 *
-	 *      @param [in] source_row      The row to check for filtering.
-     *      @param [in] source_parent   The parent index of the row.
+	 *    @param [in] source_row      The row to check for filtering.
+     *    @param [in] source_parent   The parent index of the row.
      *
-     *      @return True, if the row passes the filters, otherwise false.
+     *    @return True, if the row passes the filters, otherwise false.
 	 */
     virtual bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
 

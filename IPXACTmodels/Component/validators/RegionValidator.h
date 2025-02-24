@@ -34,7 +34,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] expressionParser        The parser to use for solving expressions.
+	 *    @param [in] expressionParser        The parser to use for solving expressions.
 	 */
     RegionValidator(QSharedPointer<ExpressionParser> expressionParser);
 
@@ -48,45 +48,45 @@ public:
     /*!
      *  Validates the given address region.
      *
-     *      @param [in] Region        The selected address region.
+     *    @param [in] Region        The selected address region.
      *
-     *      @return True, if the address region is valid IP-XACT, otherwise false.
+     *    @return True, if the address region is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<Region> region) const;
 
     /*!
      *  Check if the name is valid.
      *
-     *      @param [in] name    The selected name.
+     *    @param [in] name    The selected name.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QString const& name) const;
 
     /*!
      *  Check if the address region contains a valid range.
      *
-     *      @param [in] Region    The selected address region.
+     *    @param [in] Region    The selected address region.
      *
-     *      @return True, if the range is valid, otherwise false.
+     *    @return True, if the range is valid, otherwise false.
      */
     bool hasValidRange(QSharedPointer<Region> region) const;
 
     /*!
      *  Check if the address region contains a valid address offset.
      *
-     *      @param [in] Region    The selected address region.
+     *    @param [in] Region    The selected address region.
      *
-     *      @return True, if the address offset is valid, otherwise false.
+     *    @return True, if the address offset is valid, otherwise false.
      */
     bool hasValidAddressOffset(QSharedPointer<Region> region) const;
 
     /*!
      *  Locate errors within an address region.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] region          The selected region.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] region          The selected region.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Region> region,
         QString const& context) const;
@@ -96,9 +96,9 @@ private:
     /*!
      *  Find errors within address region name.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] region          The selected address region.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] region          The selected address region.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInName(QVector<QString>& errors, QSharedPointer<Region> region,
         QString const& context) const;
@@ -106,9 +106,9 @@ private:
     /*!
      *  Find errors within address space range.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] region          The selected address region.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] region          The selected address region.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInRange(QVector<QString>& errors, QSharedPointer<Region> region,
         QString const& context) const;
@@ -116,9 +116,9 @@ private:
     /*!
      *  Find errors within address space offset.
      *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] region          The selected address region.
-     *      @param [in] context         Context to help locate the error.
+     *    @param [in] errors          List of found errors.
+     *    @param [in] region          The selected address region.
+     *    @param [in] context         Context to help locate the error.
      */
     void findErrorsInOffset(QVector<QString>& errors, QSharedPointer<Region> region,
         QString const& context) const;

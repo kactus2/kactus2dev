@@ -132,7 +132,7 @@ GraphicsItemLabel* HWConnectionEndpoint::getNameLabel() const
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndPoint::getOffPageConnector()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint* HWConnectionEndpoint::getOffPageConnector()
+ConnectionEndpoint* HWConnectionEndpoint::getOffPageConnector() const
 {
     return offPageConnector_;
 }

@@ -37,12 +37,12 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component   The component being edited.
+	 *    @param [in] component   The component being edited.
 	 *		@param [in] mode		The mode being edited.
-     *      @param [in] validator   The validator for FieldSlice.
-     *      @param [in] expressions	The collection of objects for expression handling.
-	 *      @param [in] handler     The instance managing the library.
-	 *      @param [in] parent      The parent of this editor.
+     *    @param [in] validator   The validator for FieldSlice.
+     *    @param [in] expressions	The collection of objects for expression handling.
+	 *    @param [in] handler     The instance managing the library.
+	 *    @param [in] parent      The parent of this editor.
 	*/
 	FieldSliceEditor(QSharedPointer<Component> component, 
         QSharedPointer<Mode> mode,
@@ -66,14 +66,14 @@ signals:
 	/*!
 	 *  Increase the amount of references to a parameter corresponding to the id.
 	 *
-	 *      @param [in] parameterId     The id of the parameter being referenced.
+	 *    @param [in] parameterId     The id of the parameter being referenced.
 	 */
 	void increaseReferences(QString const& parameterId);
 
 	/*!
 	 *  Decrease the amount of references to a parameter corresponding to the id.
 	 *
-	 *      @param [in] parameterId     The id of the parameter being referenced.
+	 *    @param [in] parameterId     The id of the parameter being referenced.
 	 */
 	void decreaseReferences(QString const& parameterId);
 

@@ -24,6 +24,7 @@ class MemoryMapValidator;
 class MemoryMapInterface;
 class BusInterfaceInterface;
 class ParameterValidator;
+class MemoryMapsValidator;
 
 //-----------------------------------------------------------------------------
 //! The Memory maps-item in the component navigation tree.
@@ -37,14 +38,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-     *      @param [in] referenceCounter        The instance for counting references to parameters.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The expression formatter.
-	 *      @param [in] parent                  The parent item.
+	 *    @param [in] model                   The model that owns the items.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] component               The component being edited.
+     *    @param [in] referenceCounter        The instance for counting references to parameters.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] expressionParser        The expression formatter.
+	 *    @param [in] parent                  The parent item.
 	 */
 	ComponentEditorMemMapsItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
@@ -61,42 +62,42 @@ public:
 	/*!
      *  Get the font to be used for text of this item.
 	 *
-	 *      @return QFont instance that defines the font to be used.
+	 *    @return QFont instance that defines the font to be used.
 	 */
 	virtual QFont getFont() const;
 
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const;
 
 	/*!
      *  Get The editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*!
      *  Add a new child to the item.
 	 * 
-	 *      @param [in] index The index to add the child into.
+	 *    @param [in] index The index to add the child into.
 	 */
 	virtual void createChild(int index);
 
 	/*!
      *  Get The visualizer of memory maps.
 	 * 
-	 *      @return The visualizer to use for memory maps.
+	 *    @return The visualizer to use for memory maps.
 	 */
 	virtual ItemVisualizer* visualizer();
 
@@ -105,7 +106,7 @@ public slots:
     /*!
      *  Give the selected memory map order to pass its address unit bits forward.
      *
-     *      @param [in] memoryMapIndex   The index of the selected memory map.
+     *    @param [in] memoryMapIndex   The index of the selected memory map.
      */
     void addressUnitBitsChangedOnMemoryMap(int memoryMapIndex);
 
@@ -114,32 +115,32 @@ signals:
     /*!
      *  Informs that a new memory remap item should be added.
      *
-     *      @param [in] memoryRemapIndex        The index of the new memory remap item.
-     *      @param [in] parentMemoryMapName     Name of the parent memory map of the new memory remap.
+     *    @param [in] memoryRemapIndex        The index of the new memory remap item.
+     *    @param [in] parentMemoryMapName     Name of the parent memory map of the new memory remap.
      */
     void memoryRemapAdded(int memoryRemapIndex, QString const& parentMemoryMapName);
 
     /*!
      *  Informs that a memory remap item should be removed.
      *
-     *      @param [in] memoryRemapIndex        The index of the removed memory remap item.
-     *      @param [in] parentMemoryMapName     Name of the parent memory map of the removed memory remap.
+     *    @param [in] memoryRemapIndex        The index of the removed memory remap item.
+     *    @param [in] parentMemoryMapName     Name of the parent memory map of the removed memory remap.
      */
     void memoryRemapRemoved(int memoryRemapIndex, QString const& parentMemoryMapName);
 
     /*
      *  Informs of memory map name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void memoryMapNameChanged(QString const& oldName, QString const& newName);
 
     /*
      *  Informs of memory remap name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void memoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
 
@@ -151,9 +152,16 @@ private:
 	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
 
     /*!
+     *  Check the validity of this item.
+     *
+     *    @return bool True if item is in valid state.
+     */
+    virtual bool isValid() const override;
+
+    /*!
      *  Create the necessary validators for memory maps.
      */
-    void createMemoryMapValidator();
+    void createValidators();
 
     /*!
      *  Create the interfaces for memory maps.
@@ -163,9 +171,9 @@ private:
     /*!
      *  Create the interface for accessing bus interfaces.
      *
-     *      @param [in] parameterValidator  Validator for parameters.
+     *    @param [in] parameterValidator  Validator for parameters.
      *
-     *      @return The interface for accessing bus interfaces.
+     *    @return The interface for accessing bus interfaces.
      */
     BusInterfaceInterface* createInterfaceForBus(QSharedPointer<ParameterValidator> parameterValidator);
 
@@ -182,6 +190,9 @@ private:
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
+    //! The current memory maps validator
+    QSharedPointer<MemoryMapsValidator> memoryMapsValidator_;
+    
     //! The current memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 

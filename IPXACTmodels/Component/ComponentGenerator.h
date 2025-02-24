@@ -66,91 +66,91 @@ public:
 
     /*! Set the hidden setting for this component generator.
 	 *
-	 *      @param [in] hidden  The hidden value to set.
+	 *    @param [in] hidden  The hidden value to set.
 	 */
 	void setHidden(bool hidden);
 
 	/*! Get the hidden setting of this component generator.
 	 *
-	 *      @return The hidden setting.
+	 *    @return The hidden setting.
 	 */
 	BooleanValue getHidden() const;
 
 	/*! Set the scope of this component generator.
 	 *
-	 *      @param [in] scope The scope to be set.
+	 *    @param [in] scope The scope to be set.
 	 */
 	void setScope(Scope scope);
 
 	/*! Get the scope of this component generator.
 	 *
-	 *      @return  The scope of the generator.
+	 *    @return  The scope of the generator.
 	 */
 	Scope getScope() const;
 
 	/*! Set the phase for the component generator.
 	 *
-	 *      @param [in] phase   The phase value to set.
+	 *    @param [in] phase   The phase value to set.
 	 */
 	void setPhase(QString const& phaseExpression);
 
     /*! Get the phase of the component generator.
 	 *
-	 *      @return The generator phase.
+	 *    @return The generator phase.
 	 */
 	QString getPhase() const;
 
 	/*! Get the parameters for this component generator.
 	 *
-	 *      @return QList containing pointers to the parameters.
+	 *    @return QList containing pointers to the parameters.
 	 */
 	QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters();
     
 	/*! Set the ApiType for this Component Generator
 	 *
-	 *      @param [in] apiType enum ApiType containing the API type.
+	 *    @param [in] apiType enum ApiType containing the API type.
 	 */
 	void setApiType(ApiType apiType);
 
     /*! Get the API type of the generator.
 	 *
-	 *      @return The generator API type.
+	 *    @return The generator API type.
 	 */
 	ApiType getApiType() const;
 
     /*! Set the supported transport methods.
 	 *
-	 *      @param [in] transportMethods The transport methods to set.
+	 *    @param [in] transportMethods The transport methods to set.
 	 */
 	void setTransportMethods(QStringList const& transportMethods);
 
 	/*! Get the supported transport methods.
 	 *
-	 *      @return The supported transport methods.
+	 *    @return The supported transport methods.
 	 */
 	QStringList getTransportMethods() const;
     
 	/*! Set the path to the generator executable for this generator.
 	 *
-	 *      @param [in] generatorExe The path to the generator executable.
+	 *    @param [in] generatorExe The path to the generator executable.
 	 */
 	void setGeneratorExe(QString const& generatorExe);
 
 	/*! Get the path of the generator executable.
 	 *
-	 *      @return The generator executable path.
+	 *    @return The generator executable path.
 	 */
 	QString getGeneratorExe() const;
 
 	/*! Set the groups for this component generator.
 	 *
-	 *      @param [in] groups The names of the groups for this generator.
+	 *    @param [in] groups The names of the groups for this generator.
 	 */
 	void setGroups(QStringList const& groups);
 
 	/*! Get list of the groups for this Component Generator
 	 *
-	 *      @return The names of the groups this generator belongs to.
+	 *    @return The names of the groups this generator belongs to.
 	 */
 	QStringList getGroups() const;
 	

@@ -40,12 +40,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addressSpace        Pointer to the local memory map being edited.
-	 *      @param [in] component           Pointer to the component being edited.
-	 *      @param [in] handler             Pointer to the instance managing the library.
-	 *      @param [in] parameterFinder     Pointer to the parameter finder.
-     *      @param [in] blockInterface      Interface for address blocks.
-	 *      @param [in] parent              Pointer to the owner of the editor.
+	 *    @param [in] addressSpace        Pointer to the local memory map being edited.
+	 *    @param [in] component           Pointer to the component being edited.
+	 *    @param [in] handler             Pointer to the instance managing the library.
+	 *    @param [in] parameterFinder     Pointer to the parameter finder.
+     *    @param [in] blockInterface      Interface for address blocks.
+	 *    @param [in] parent              Pointer to the owner of the editor.
 	 */
 	LocalMemoryMapEditor(QSharedPointer<AddressSpace> addressSpace,
 		QSharedPointer<Component> component,
@@ -87,21 +87,21 @@ signals:
     /*!
      *  Increase the amount of references to a parameter.
      *
-     *      @param [in] id  The id of the parameter.
+     *    @param [in] id  The id of the parameter.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the amount of references to a parameter.
      *
-     *      @param [in] id  The id of the parameter.
+     *    @param [in] id  The id of the parameter.
      */
     void decreaseReferences(QString id);
 
     /*!
      *  Assign the new address unit bits for address blocks.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bits.
+     *    @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 

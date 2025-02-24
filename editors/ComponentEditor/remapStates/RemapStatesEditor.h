@@ -32,10 +32,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component           Pointer to the component being edited.
-     *      @param [in] handler             Pointer to the instance managing the library.
-     *      @param [in] parameterFinder     Finder used to locate parameter ids.
-     *      @param [in] parent              Pointer to the parent of this editor.
+     *    @param [in] component           Pointer to the component being edited.
+     *    @param [in] handler             Pointer to the instance managing the library.
+     *    @param [in] parameterFinder     Finder used to locate parameter ids.
+     *    @param [in] parent              Pointer to the parent of this editor.
      */
     RemapStatesEditor(QSharedPointer<Component> component, LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
@@ -67,7 +67,7 @@ protected:
     /*!
 	 *  Handler for widget's show event.
 	 *
-	 *      @param [in] event   The given show event.
+	 *    @param [in] event   The given show event.
 	 */
 	virtual void showEvent(QShowEvent* event);
 

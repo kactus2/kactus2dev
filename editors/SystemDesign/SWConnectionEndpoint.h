@@ -34,10 +34,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component   Component containing the end point.
-     *      @param [in] name        Name of the item.
-     *      @param [in] parent      The parent graphics item.
-     *      @param [in] dir         The initial direction for the endpoint.
+     *    @param [in] component   Component containing the end point.
+     *    @param [in] name        Name of the item.
+     *    @param [in] parent      The parent graphics item.
+     *    @param [in] dir         The initial direction for the endpoint.
      */
     SWConnectionEndpoint(QSharedPointer<Component> component, QString const& name = QString(),
         QGraphicsItem* parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
@@ -54,7 +54,7 @@ public:
     /*!
      *  Sets the COM/API type. The type of the VLNV determines the type of the endpoint.
      *
-     *      @param [in] type The VLNV of the COM/API definition.
+     *    @param [in] type The VLNV of the COM/API definition.
      */
     virtual void setTypeDefinition(VLNV const& type) = 0;
 
@@ -76,7 +76,7 @@ public:
     /*!
      *  Returns true if a connection is valid between the two endpoints.
      *
-     *      @param [in] other The other endpoint.
+     *    @param [in] other The other endpoint.
      *
      *      @remarks Does not take existing connections into account but simply
      *               validates whether a connection between the endpoints would be valid
@@ -101,7 +101,7 @@ public:
 
     ConnectionEndpoint::EndpointType getType() const noexcept override;
 
-    virtual ConnectionEndpoint* getOffPageConnector();
+    virtual ConnectionEndpoint* getOffPageConnector() const;
     
     /*! 
      *  Returns the encompassing component.
@@ -118,14 +118,14 @@ protected:
     /*!
      *  Set the type for the end point.
      *
-     *      @param [in] newType     The new end point type.
+     *    @param [in] newType     The new end point type.
      */
     void setType(ConnectionEndpoint::EndpointType newType);
 
     /*!
      *  Get the name label.
      *
-     *      @return The name label.
+     *    @return The name label.
      */
     GraphicsItemLabel* getNameLabel() const;
 

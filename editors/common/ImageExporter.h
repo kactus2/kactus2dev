@@ -25,10 +25,10 @@ namespace ImageExporter
     /*!
      *  Export an image of the selected document.
      *
-     *      @param [in] libraryPath         Library path of the selected document.
-     *      @param [in] identifyingVLNV     VLNV of the component containing the selected document.
-     *      @param [in] scene               Graphics scene of the selected document.
-     *      @param [in] parent              Parent item for determining the export path.
+     *    @param [in] libraryPath         Library path of the selected document.
+     *    @param [in] identifyingVLNV     VLNV of the component containing the selected document.
+     *    @param [in] scene               Graphics scene of the selected document.
+     *    @param [in] parent              Parent item for determining the export path.
      */
     bool exportImage(QString const& libraryPath, VLNV const& identifyingVLNV, QGraphicsScene* scene,
         QWidget* parent);

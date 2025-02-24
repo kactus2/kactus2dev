@@ -30,6 +30,30 @@ ModeConditionParser::ModeConditionParser(QSharedPointer<ParameterFinder> finder,
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModeConditionParser::setFieldSlices()
+//-----------------------------------------------------------------------------
+void ModeConditionParser::setFieldSlices(FieldSlice::List fieldSlices)
+{
+    fieldSlices_ = fieldSlices;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeConditionParser::setPortSlices()
+//-----------------------------------------------------------------------------
+void ModeConditionParser::setPortSlices(PortSlice::List portSlices)
+{
+    portSlices_ = portSlices;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeConditionParser::setModes()
+//-----------------------------------------------------------------------------
+void ModeConditionParser::setModes(Mode::List modes)
+{
+    modes_ = modes;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModeConditionParser::isSymbol()
 //-----------------------------------------------------------------------------
 bool ModeConditionParser::isSymbol(QStringView expression) const

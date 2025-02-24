@@ -24,8 +24,8 @@ public:
     /*!
      *  The constructor for the header.
      *
-     *      @param [in] orientation     The headers orientation.
-     *      @param [in] parent          The parent of the header.
+     *    @param [in] orientation     The headers orientation.
+     *    @param [in] parent          The parent of the header.
      */
     ModuleParameterHeaderView(Qt::Orientation orientation, QWidget* parent = 0);
 
@@ -36,28 +36,28 @@ protected:
     /*!
      *  Gets the description column index.
      *
-     *      @return     The description column index.
+     *    @return     The description column index.
      */
     virtual int descriptionColumn() const;
 
     /*!
      *  Gets the value column index.
      *
-     *      @return     The value column index.
+     *    @return     The value column index.
      */
     virtual int valueColumn() const;
 
     /*!
      *  Gets the maximum column index.
      *
-     *      @return     The maximum column index.
+     *    @return     The maximum column index.
      */
     virtual int maximumColumn() const;
 
     /*!
      *  Gets the index of array right column.
      *
-     *      @return     The array right column index.
+     *    @return     The array right column index.
      */
     virtual int arrayRightColumn() const;
 

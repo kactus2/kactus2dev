@@ -21,6 +21,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
@@ -29,12 +30,13 @@
 //-----------------------------------------------------------------------------
 ComponentInstantiationsItem::ComponentInstantiationsItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, ComponentInstantiationInterface* instantiationInterface,
-    ComponentEditorItem* parent):
+    ComponentEditorItem* parent) :
 ComponentEditorItem(model, libHandler, component, parent),
 validator_(validator),
+allInstantiationsValidator_(allInstantiationsValidator),
 expressionParser_(expressionParser),
 instantiationInterface_(instantiationInterface)
 {
@@ -45,7 +47,7 @@ instantiationInterface_(instantiationInterface)
 
     setReferenceCounter(referenceCounter);
 
-    foreach(QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
+    for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
     {
         QSharedPointer<SingleComponentInstantiationItem> componentInstantiationItem =
             createChildItem(instantiation);
@@ -120,6 +122,20 @@ void ComponentInstantiationsItem::createChild( int index )
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstantiationsItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentInstantiationsItem::isValid() const
+{
+    // Validation for all instantiations only done once here (no need to do the same in design and design config instantiation)
+    auto instantiationsAsNameGroups = CollectionValidators::itemListToNameGroupList(component_->getComponentInstantiations());
+    instantiationsAsNameGroups->append(*CollectionValidators::itemListToNameGroupList(component_->getDesignInstantiations()));
+    instantiationsAsNameGroups->append(*CollectionValidators::itemListToNameGroupList(component_->getDesignConfigurationInstantiations()));
+    allInstantiationsValidator_->childrenHaveUniqueNames(instantiationsAsNameGroups);
+
+    return ComponentEditorItem::isValid();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsItem::createSingleComponentInstantiationItem()
 //-----------------------------------------------------------------------------
 QSharedPointer<SingleComponentInstantiationItem> ComponentInstantiationsItem::createChildItem(
@@ -139,13 +155,8 @@ QSharedPointer<SingleComponentInstantiationItem> ComponentInstantiationsItem::cr
     QSharedPointer<IPXactSystemVerilogParser> cimpParser =
         QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(cimpFinder));
 
-    QSharedPointer<InstantiationsValidator> cimpValidator = QSharedPointer<InstantiationsValidator>(
-        new InstantiationsValidator(cimpParser, component_->getFileSets(),
-            QSharedPointer<ParameterValidator>(
-                new ParameterValidator(cimpParser, component_->getChoices(), component_->getRevision())), libHandler_));
-
     QSharedPointer<SingleComponentInstantiationItem> componentInstantiationItem(
-        new SingleComponentInstantiationItem(model_, libHandler_, component_, instantiation, cimpValidator,
+        new SingleComponentInstantiationItem(model_, libHandler_, component_, instantiation, validator_,
             cimpCounter, cimpFinder, cimpFormatter, cimpParser, instantiationInterface_, this));
 
     return componentInstantiationItem;

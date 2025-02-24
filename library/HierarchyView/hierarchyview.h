@@ -36,9 +36,9 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] parent      The owner of this widget.
-	 *      @param [in] handler     The instance that manages the library.
-	 *      @param [in] filter      The instance that does sorting and filtering.
+	 *    @param [in] parent      The owner of this widget.
+	 *    @param [in] handler     The instance that manages the library.
+	 *    @param [in] filter      The instance that does sorting and filtering.
 	*/
 	HierarchyView(QWidget *parent, LibraryInterface* handler, HierarchyFilter* filter);
 	
@@ -47,7 +47,7 @@ public:
 
 	/*! Select the item with given indexes in the view.
 	 *
-	 *      @param [in] indexes List in model indexes to select.
+	 *    @param [in] indexes List in model indexes to select.
 	*/
 	void setSelectedIndexes(const QModelIndexList& indexes);
 
@@ -77,7 +77,7 @@ public slots:
 
 	/*! Set the index to be the current index and select and expand it.
 	 *
-	 *      @param [in] index Specified the index to be set as the current index.
+	 *    @param [in] index Specified the index to be set as the current index.
 	 *
 	*/
 	virtual void setCurrentIndex(QModelIndex const& index);
@@ -147,7 +147,7 @@ protected:
 
 	/*! Handler for the context menu events.
      *
-     *      @param [in] event The contextMenuEvent to be handled.
+     *    @param [in] event The contextMenuEvent to be handled.
     */
     virtual void contextMenuEvent(QContextMenuEvent* event);
 

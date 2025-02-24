@@ -30,10 +30,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] segment             Pointer to the segment represented by this graph item.
-	 *      @param [in] addressSpaceWidth   Width of the address space.
-	 *      @param [in] expressionParser    Pointer to the expression parser.
-	 *      @param [in] parent              Pointer to the parent graph item.
+	 *    @param [in] segment             Pointer to the segment represented by this graph item.
+	 *    @param [in] addressSpaceWidth   Width of the address space.
+	 *    @param [in] expressionParser    Pointer to the expression parser.
+	 *    @param [in] parent              Pointer to the parent graph item.
 	 */
 	SegmentGraphItem(QSharedPointer<Region> segment, QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent = 0);
@@ -53,28 +53,28 @@ public:
 	/*!
      *  Get the offset of the item. 
 	 *
-	 *      @return int The offset of the item.
+	 *    @return int The offset of the item.
 	 */
 	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
-	 *      @return The last address.
+	 *    @return The last address.
 	 */
 	virtual quint64 getLastAddress() const override final;
 
     /*!
      *  Sets the first non-overlapping address to display.
 	 *
-	 *      @param [in] address     The first address to set.
+	 *    @param [in] address     The first address to set.
 	 */
     virtual void setOverlappingTop(quint64 const& address) override final;
 
 	/*!
      *  Sets the last non-overlapping address to display.
 	 *
-	 *      @param [in] address     The last address to set.
+	 *    @param [in] address     The last address to set.
 	 */
     virtual void setOverlappingBottom(quint64 const& address) override final;
 

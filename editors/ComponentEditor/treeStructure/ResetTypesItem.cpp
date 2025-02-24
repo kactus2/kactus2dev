@@ -19,7 +19,7 @@
 // Function: ResetTypesItem::ResetTypesItem()
 //-----------------------------------------------------------------------------
 ResetTypesItem::ResetTypesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-    QSharedPointer<Component> component, ComponentValidator& validator, ComponentEditorItem* parent):
+    QSharedPointer<Component> component, QSharedPointer<ComponentValidator> validator, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 componentValidator_(validator)
 {
@@ -81,5 +81,5 @@ QString ResetTypesItem::getTooltip() const
 //-----------------------------------------------------------------------------
 bool ResetTypesItem::isValid() const
 {
-    return componentValidator_.hasValidResetTypes(component_);
+    return componentValidator_->hasValidResetTypes(component_);
 }

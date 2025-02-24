@@ -27,7 +27,7 @@ public:
     /*!
      *  Constructor which initializes the dialog.
      *
-     *      @param [in] parent   The parent widget.
+     *    @param [in] parent   The parent widget.
      */
     DeleteWorkspaceDialog(QWidget* parent = 0);
 
@@ -39,7 +39,7 @@ public:
     /*!
      *  Adds a workspace name to the dialog.
      *
-     *      @param [in] name The name of the existing workspace.
+     *    @param [in] name The name of the existing workspace.
      */
     void addWorkspaceName(QString const& name);
 

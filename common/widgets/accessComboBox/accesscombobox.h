@@ -38,14 +38,14 @@ public:
 	/*!
      *  Get the currently selected access value.
 	 *
-	 *      @return The selected value.
+	 *    @return The selected value.
 	 */
 	AccessTypes::Access getCurrentValue() const;
 
 	/*!
      *  Set the value to be currently selected.
 	 *
-	 *      @param [in] access  The value to select.
+	 *    @param [in] access  The value to select.
 	 */
 	void setCurrentValue(AccessTypes::Access access);
 

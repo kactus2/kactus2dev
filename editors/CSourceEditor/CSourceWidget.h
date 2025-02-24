@@ -35,17 +35,17 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] sourceFile      The name of the source file in the file system.
-     *      @param [in] ownerComponent  The component who "owns" the source file that will be edited.
-     *      @param [in] libInterface    The library interface.
-     *      @param [in] mainWnd         The main window.
-     *      @param [in] parent          The parent widget.
+     *    @param [in] sourceFile      The name of the source file in the file system.
+     *    @param [in] ownerComponent  The component who "owns" the source file that will be edited.
+     *    @param [in] libInterface    The library interface.
+     *    @param [in] mainWnd         The main window.
+     *    @param [in] parent          The parent widget.
      *
      *      @remarks The file is assumed to exist in the file system.
      */
     CSourceWidget(QString const& sourceFile,
                   QSharedPointer<Component> ownerComponent,
-                  LibraryInterface* libInterface,
+                  LibraryInterface* libHandler,
                   QWidget* mainWnd, QWidget* parent = 0);
 
     /*!

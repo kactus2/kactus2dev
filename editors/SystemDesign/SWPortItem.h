@@ -32,18 +32,18 @@ public:
     /*!
      *  Constructor which creates a graphics item for an undefined interface.
      *
-     *      @param [in] name                    Name of the item.
-     *      @param [in] containingComponent     Component containing the item.
-     *      @param [in] parent                  The parent item.
+     *    @param [in] name                    Name of the item.
+     *    @param [in] containingComponent     Component containing the item.
+     *    @param [in] parent                  The parent item.
      */
     SWPortItem(QString const& name, QSharedPointer<Component> containingComponent, QGraphicsItem *parent);
 
     /*!
      *  Constructor which creates a graphics item for an API interface.
      *
-     *      @param [in] apiIf                   The API interface.
-     *      @param [in] containingComponent     Component containing the item.
-     *      @param [in] parent                  The parent item.
+     *    @param [in] apiIf                   The API interface.
+     *    @param [in] containingComponent     Component containing the item.
+     *    @param [in] parent                  The parent item.
      */
     SWPortItem(QSharedPointer<ApiInterface> apiIf,
         QSharedPointer<Component> containingComponent = QSharedPointer<Component>(), QGraphicsItem *parent = 0);
@@ -51,9 +51,9 @@ public:
     /*!
      *  Constructor which creates a graphics item for a COM interface.
      *
-     *      @param [in] comIf                   The COM interface.
-     *      @param [in] containingComponent     Component containing the item.
-     *      @param [in] parent                  The parent item.
+     *    @param [in] comIf                   The COM interface.
+     *    @param [in] containingComponent     Component containing the item.
+     *    @param [in] parent                  The parent item.
      */
     SWPortItem(QSharedPointer<ComInterface> comIf,
         QSharedPointer<Component> containingComponent = QSharedPointer<Component>(), QGraphicsItem *parent = 0);
@@ -76,14 +76,14 @@ public:
     /*!
      *  Sets the selection highlight on/off.
      *
-     *      @param [in] on If true, the selection highlight is turned on. Otherwise it is turned off.
+     *    @param [in] on If true, the selection highlight is turned on. Otherwise it is turned off.
      */
     virtual void setSelectionHighlight(bool on);
 
     /*!
      *  Sets the COM/API type. The type of the VLNV determines the type of the endpoint.
      *
-     *      @param [in] type The VLNV of the COM/API definition.
+     *    @param [in] type The VLNV of the COM/API definition.
      */
     virtual void setTypeDefinition(VLNV const& type);
 
@@ -101,14 +101,14 @@ public:
     /*!
      *  Attaches the endpoint to a connection.
      *
-     *      @param [in] connection The connection.
+     *    @param [in] connection The connection.
      */
     virtual void addConnection(GraphicsConnection* connection);
 
     /*!
      *  Unattaches the endpoint from a connection.
      *
-     *      @param [in] connection The connection.
+     *    @param [in] connection The connection.
      */
     virtual void removeConnection(GraphicsConnection* connection);
 
@@ -130,7 +130,7 @@ public:
 	/*!
      *  Sets the name for the port.
 	 *
-	 *      @param [in] name The name to set for the port.
+	 *    @param [in] name The name to set for the port.
 	 */
 	virtual void setName(QString const& name);
 
@@ -142,16 +142,16 @@ public:
 	/*! 
      *  Sets the description for the port.
 	 *
-	 *      @param [in] description The description to set.
+	 *    @param [in] description The description to set.
 	 */
 	virtual void setDescription(QString const& description);
 
     /*!
      *  Called when a connection between this and another end point is done.
      *
-     *      @param [in] other The other end point of the connection.
+     *    @param [in] other The other end point of the connection.
      *
-     *      @return False if there was an error in the connection. Otherwise true.
+     *    @return False if there was an error in the connection. Otherwise true.
      */
     virtual bool onConnect(ConnectionEndpoint const* other);
 
@@ -163,7 +163,7 @@ public:
     /*!
      *  Returns true if a connection is valid between the two endpoints.
      *
-     *      @param [in] other The other endpoint.
+     *    @param [in] other The other endpoint.
      *
      *      @remarks Does not take existing connections into account but simply
      *               validates whether a connection between the endpoints would be valid
@@ -215,7 +215,7 @@ public:
 	/*!
 	 *  Shorten the name label to better fit the component.
 	 *  
-	 *      @param [in] width   The width of the shortened name.
+	 *    @param [in] width   The width of the shortened name.
 	 */
 	void shortenNameLabel( qreal width ) final;
 
@@ -234,29 +234,29 @@ protected:
     /*!
      *  Item changes.
      *
-     *      @param [in] change  The changed graphics item.
-     *      @param [in] value   The new value.
+     *    @param [in] change  The changed graphics item.
+     *    @param [in] value   The new value.
      */
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
     
     /*!
      *  Handler for mouse press events.
      *
-     *      @param [in] event   The caught mouse press event.
+     *    @param [in] event   The caught mouse press event.
      */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
     
     /*!
      *  Handler for mouse move events.
      *
-     *      @param [in] event   The mouse movement event.
+     *    @param [in] event   The mouse movement event.
      */
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
     /*!
      *  Handler for mouse release event.
      *
-     *      @param [in] event   The mouse release event.
+     *    @param [in] event   The mouse release event.
      */
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 

@@ -1394,6 +1394,22 @@ bool Component::hasPorts() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::hasWires()
+//-----------------------------------------------------------------------------
+bool Component::hasWires() const
+{
+    return model_->hasWires();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::hasTransactionals()
+//-----------------------------------------------------------------------------
+bool Component::hasTransactionals() const
+{
+    return model_->hasTransactionals();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Component::getAddressSpaceNames()
 //-----------------------------------------------------------------------------
 QStringList Component::getAddressSpaceNames() const 

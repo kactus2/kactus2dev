@@ -35,7 +35,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parameterFinder     Locates the parameters for increasing and decreasing references.
+     *    @param [in] parameterFinder     Locates the parameters for increasing and decreasing references.
      */
     DesignParameterReferenceCounter(QSharedPointer<ParameterFinder> parameterFinder);
 
@@ -47,26 +47,26 @@ public:
     /*!
      *  Set a new design for the reference counter.
      *
-     *      @param [in] newDesign   The selected design.
+     *    @param [in] newDesign   The selected design.
      */
     void setDesign(QSharedPointer<Design> newDesign);
 
     /*!
      *  Count the number of references made to the selected parameter in the contained component instances.
      *
-     *      @param [in] parameterID     ID of the selected parameter.
+     *    @param [in] parameterID     ID of the selected parameter.
      *
-     *      @return The number of references made to the selected parameter in the contained component instances.
+     *    @return The number of references made to the selected parameter in the contained component instances.
      */
     int countReferencesInComponentInstances(QString const& parameterID) const;
 
     /*!
      *  Count the number of references made to the selected parameter in a single component instance.
      *
-     *      @param [in] parameterID     ID of the selected parameter.
-     *      @param [in] instance        The selected component instance.
+     *    @param [in] parameterID     ID of the selected parameter.
+     *    @param [in] instance        The selected component instance.
      *
-     *      @return The number of references made to the selected parameter in the selected component instance.
+     *    @return The number of references made to the selected parameter in the selected component instance.
      */
     int countReferencesInSingleComponentInstance(QString const& parameterID,
         QSharedPointer<ComponentInstance> instance) const;
@@ -74,10 +74,10 @@ public:
     /*!
      *  Count the number of references made to the selected parameter in the ad hoc connections.
      *
-     *      @param [in] parameterID     ID of the selected parameter.
-     *      @param [in] connections     The selected ad hoc connections.
+     *    @param [in] parameterID     ID of the selected parameter.
+     *    @param [in] connections     The selected ad hoc connections.
      *
-     *      @return The number of references made to the selected parameter in the ad hoc connections.
+     *    @return The number of references made to the selected parameter in the ad hoc connections.
      */
     int countReferencesInAdHocConnections(QString const& parameterID,
         QSharedPointer<QList<QSharedPointer<AdHocConnection> > > connections) const;
@@ -85,10 +85,10 @@ public:
     /*!
      *  Count the number of references made to the selected parameter in a single ad hoc connection.
      *
-     *      @param [in] parameterID     ID of the selected parameter.
-     *      @param [in] connection      The selected ad hoc connection.
+     *    @param [in] parameterID     ID of the selected parameter.
+     *    @param [in] connection      The selected ad hoc connection.
      *
-     *      @return The number of references made to the selected parameter in the selected ad hoc connection.
+     *    @return The number of references made to the selected parameter in the selected ad hoc connection.
      */
     int countReferencesInSingleAdHocConnection(QString const& parameterID,
         QSharedPointer<AdHocConnection> connection) const;
@@ -96,10 +96,10 @@ public:
     /*!
      *  Count the number of references made to the selected parameter in a single part select.
      *
-     *      @param [in] parameterID     ID of the selected parameter.
-     *      @param [in] partSelect      The selected part select.
+     *    @param [in] parameterID     ID of the selected parameter.
+     *    @param [in] partSelect      The selected part select.
      *
-     *      @return The number of references made to the selected parameter in the selected part select.
+     *    @return The number of references made to the selected parameter in the selected part select.
      */
     int countReferencesInPartSelect(QString const& parameterID, QSharedPointer<PartSelect> partSelect) const;
 
@@ -108,8 +108,8 @@ public slots:
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameterList       The selected parameters.
-     *      @param [in] parameterInterface  Interface for accessing parameters.
+     *    @param [in] parameterList       The selected parameters.
+     *    @param [in] parameterInterface  Interface for accessing parameters.
      */
     virtual void recalculateReferencesToParameters(QVector<QString> const& parameterList,
         AbstractParameterInterface* parameterInterface);

@@ -32,9 +32,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] diagram     The diagram containing the connection item.
-     *      @param [in] connection  The connection to remove.
-     *      @param [in] parent      The parent command.
+     *    @param [in] diagram     The diagram containing the connection item.
+     *    @param [in] connection  The connection to remove.
+     *    @param [in] parent      The parent command.
      */
     ConnectionDeleteCommand(DesignDiagram* diagram, HWConnection* connection, QUndoCommand* parent = 0);
 

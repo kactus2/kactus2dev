@@ -30,9 +30,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] connection          The connection to delete.
-     *      @param [in] containingDesign    The design containing the connection.
-     *      @param [in] parent              The parent undo command.
+     *    @param [in] connection          The connection to delete.
+     *    @param [in] containingDesign    The design containing the connection.
+     *    @param [in] parent              The parent undo command.
      */
     ComConnectionDeleteCommand(ComGraphicsConnection* connection, QSharedPointer<Design> containingDesign,
         QUndoCommand* parent = 0);

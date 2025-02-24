@@ -32,17 +32,17 @@ public:
     /*! Get a model that matches given VLNV. Must be used when changes are made to the document.
      *  The provided document is a copy, meaning that it must be explicitly saved after the changes.
      * 
-     *      @param [in] vlnv    Identifies the desired document.
+     *    @param [in] vlnv    Identifies the desired document.
      *
-     *      @return The model that matches the document. The ownership of the object remains on Library Handler.
+     *    @return The model that matches the document. The ownership of the object remains on Library Handler.
     */
     virtual QSharedPointer<Document> getModel(VLNV const& vlnv) = 0;
 
     /*! Convenience function for getting the model that matches given VLNV, if the type is known beforehand.
     *
-    *      @param [in] vlnv    Identifies the desired document.
+    *    @param [in] vlnv    Identifies the desired document.
     *
-    *      @return The model that matches the document.
+    *    @return The model that matches the document.
     */
     template <class T>
     QSharedPointer<T> getModel(VLNV const& vlnv)
@@ -53,17 +53,17 @@ public:
     /*! Get a model that matches given VLNV for read-only access. May be used when no changes are to be made
      *  for the document.
      * 
-     *      @param [in] vlnv    Identifies the desired document.
+     *    @param [in] vlnv    Identifies the desired document.
      *
-     *      @return The model that matches the document. The ownership of the object remains on Library Handler.
+     *    @return The model that matches the document. The ownership of the object remains on Library Handler.
     */
     virtual QSharedPointer<Document const> getModelReadOnly(VLNV const& vlnv) = 0;
 
     /*! Convenience function for getting the model that matches given VLNV, if the type is known beforehand.
     *
-    *      @param [in] vlnv    Identifies the desired document.
+    *    @param [in] vlnv    Identifies the desired document.
     *
-    *      @return The read-only model that matches the document.
+    *    @return The read-only model that matches the document.
     */
     template <class T>
     QSharedPointer<T const> getModelReadOnly(VLNV const& vlnv)
@@ -73,40 +73,40 @@ public:
 
     /*! Checks if the library already contains the specified VLNV.
      *
-     *      @param [in] vlnv    The VLNV that is searched within the library.
+     *    @param [in] vlnv    The VLNV that is searched within the library.
      *
-     *      @return True if the vlnv was found, otherwise false.
+     *    @return True if the vlnv was found, otherwise false.
     */
     virtual bool contains(VLNV const& vlnv) const = 0;
 
     /*! Gets all the VLNVs currently in the library.
      *
-     *      @return All known VLNVs in the library.
+     *    @return All known VLNVs in the library.
     */
     virtual QList<VLNV> getAllVLNVs() const = 0;
 
     /*! Get a path to the specified IP-XACT document.
      *
-     *      @param [in] vlnv    Specifies the wanted IP-XACT document.
+     *    @param [in] vlnv    Specifies the wanted IP-XACT document.
      *
-     *      @return The path to the document. If VLNV is not found then empty string is returned.
+     *    @return The path to the document. If VLNV is not found then empty string is returned.
     */
     virtual const QString getPath(VLNV const& vlnv) const = 0;
 
     /*! Get the directory path to the specified IP-XACT document.
      *
-     *      @param [in] vlnv    Specifies the wanted IP-XACT document.
+     *    @param [in] vlnv    Specifies the wanted IP-XACT document.
      *
-     *      @return The directory path to the document. Does not contain the XML file name.
+     *    @return The directory path to the document. Does not contain the XML file name.
     */
     virtual QString getDirectoryPath(VLNV const& vlnv) const = 0;
 
     /*! Write the model to file system to given file path.
      *
-     *      @param [in] path            Directory path that specifies the directory to save to file into.
-     *      @param [in] model           The library component that is written.
+     *    @param [in] path            Directory path that specifies the directory to save to file into.
+     *    @param [in] model           The library component that is written.
      * 
-     *      @return True if the model was in valid state and was successfully written.
+     *    @return True if the model was in valid state and was successfully written.
      *
      *      @remark The path must not contain the file name.
      *      @remark If file already exists in file system it is overwritten.
@@ -116,9 +116,9 @@ public:
 
     /*! Write the already registered model to file system.
      * 
-     *      @param [in] modelThe        model to be written.
+     *    @param [in] modelThe        model to be written.
      * 
-     *      @return True if the model was in valid state and was successfully written.
+     *    @return True if the model was in valid state and was successfully written.
      *
      *      @remark The model must be already part of the library and it's file path can be found.
      *      @remark This operation cannot be undone.
@@ -135,8 +135,8 @@ public:
     * all possible sub VLNVs that need other VLNVs and adds them to the list.
     * The list doesn't contain single VLNV twice.
     *
-    *      @param [in] vlnv     The VLNV that is used as starting point for the search.
-    *      @param [out] list    The list where all VLNVs are added to.
+    *    @param [in] vlnv     The VLNV that is used as starting point for the search.
+    *    @param [out] list    The list where all VLNVs are added to.
     */
     virtual void getNeededVLNVs(VLNV const& vlnv, QList<VLNV>& list) = 0;
 
@@ -146,8 +146,8 @@ public:
     * absolute file paths to the needed files. This function searches files
     * only from this document, it does not search possible subcomponents.
     *
-    *      @param [in] vlnv     The VLNV that is used for the search.
-    *      @param [out] list    The files are appended to the list if they are not already on the list.
+    *    @param [in] vlnv     The VLNV that is used for the search.
+    *    @param [out] list    The files are appended to the list if they are not already on the list.
     */
     virtual void getDependencyFiles(VLNV const& vlnv, QStringList& list) = 0;
 
@@ -160,35 +160,35 @@ public:
      * 
      * If vlnv is not found in the library then VLNV::INVALID is returned.
      *
-     *      @param [in] vlnv Specifies the document that's type is wanted.
+     *    @param [in] vlnv Specifies the document that's type is wanted.
      *
-     *      @return The type of the document.
+     *    @return The type of the document.
     */
     virtual VLNV::IPXactType getDocumentType(VLNV const& vlnv) = 0;
 
     /*! Count how many times the given component is instantiated in the library.
      *
-     *      @param [in] vlnv Identifies the component that's instances are searched.
+     *    @param [in] vlnv Identifies the component that's instances are searched.
      *
-     *      @return Number of found instances.
+     *    @return Number of found instances.
      */
     virtual int referenceCount(VLNV const& vlnv) const = 0;
 
     /*! Get the components that have instantiated the given vlnv in their design.
      *
-     *      @param [out] list           The search results.
-     *      @param [in] vlnvToSearch    Identifies the component to search for.
+     *    @param [out] list           The search results.
+     *    @param [in] vlnvToSearch    Identifies the component to search for.
      * 
-     *      @return Number of owners found.
+     *    @return Number of owners found.
     */
     virtual int getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const = 0;
 
     /*! Get the items that are needed by the specified item.
      *
-     *      @param [out] list           The search results.
-     *      @param [in] vlnvToSearch    Identifies the item thats child-items are wanted.
+     *    @param [out] list           The search results.
+     *    @param [in] vlnvToSearch    Identifies the item thats child-items are wanted.
      *
-     *      @return int The number of found children.
+     *    @return int The number of found children.
     */
     virtual int getChildren(QList<VLNV>& list, VLNV const& vlnvToSearch) const = 0;
 
@@ -201,9 +201,9 @@ public:
      * design VLNV is returned. If design is not found then invalid VLNV is 
      * returned.
      * 
-     *      @param [in] hierarchyRef The hierarchical reference obtained from component's view.
+     *    @param [in] hierarchyRef The hierarchical reference obtained from component's view.
      *
-     *      @return VLNV The VLNV identifying the design object.
+     *    @return VLNV The VLNV identifying the design object.
     */
     virtual VLNV getDesignVLNV(VLNV const& hierarchyRef) = 0;
 
@@ -216,17 +216,17 @@ public:
      * design pointer is returned. If design is not found then null pointer is 
      * returned.
      * 
-     *      @param [in] hierarchyRef The hierarchical reference obtained from component's view.
+     *    @param [in] hierarchyRef The hierarchical reference obtained from component's view.
      *
-     *      @return The design.
+     *    @return The design.
     */
     virtual QSharedPointer<Design> getDesign(VLNV const& hierarchyRef) = 0;
 
     /*! Check if the identified object is in valid state.
      *
-     *      @param [in] VLNV Identifies the object to check.
+     *    @param [in] VLNV Identifies the object to check.
      *
-     *      @return bool True if the object was valid. False if invalid or object was not found in library.
+     *    @return bool True if the object was valid. False if invalid or object was not found in library.
     */
     virtual bool isValid(VLNV const& vlnv) = 0;
 
@@ -241,14 +241,14 @@ public slots:
 
     /*! Edit an item in the library
      *
-     *      @param [in] vlnv Reference to the vlnv that identifies the object to edit.
+     *    @param [in] vlnv Reference to the vlnv that identifies the object to edit.
     */
     virtual void onEditItem(VLNV const& vlnv) = 0;
 
     /*! Open the specified component design
      *
-     *      @param [in] vlnv 		Identifies the component that's design is wanted
-     *      @param [in] viewName 	Identifies the view for the design.
+     *    @param [in] vlnv 		Identifies the component that's design is wanted
+     *    @param [in] viewName 	Identifies the view for the design.
     */
     virtual void onOpenDesign(VLNV const& vlnv, QString const& viewName) = 0;
 
@@ -257,7 +257,7 @@ public slots:
      * This function does not ask user to verify the deletion, it just removes the object and
      * it's xml file. If vlnv is for component the component's files are not removed.
      * 
-     *      @param [in] vlnv Identifies the object.
+     *    @param [in] vlnv Identifies the object.
     */
     virtual void removeObject(VLNV const& vlnv) = 0;
 
@@ -265,7 +265,7 @@ public slots:
      * 
      * This function opens a dialog that asks user to confirm the deletion of the objects.
      * 
-     *      @param [in] vlnvList Identifies the objects to remove.
+     *    @param [in] vlnvList Identifies the objects to remove.
     */
     virtual void removeObjects(const QList<VLNV>& vlnvList) = 0;
 

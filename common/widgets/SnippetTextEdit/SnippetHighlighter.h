@@ -33,7 +33,7 @@ public:
     /*!
      *  Adds magic words.
      *
-     *      @param [in] magicWords The magic words to add.
+     *    @param [in] magicWords The magic words to add.
      */
     void addMagicWords(QStringList const& magicWords);
 

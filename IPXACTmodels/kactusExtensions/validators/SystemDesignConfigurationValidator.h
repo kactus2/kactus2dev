@@ -40,8 +40,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parser      The used expression parser.
-     *      @param [in] library     The used library interface.
+     *    @param [in] parser      The used expression parser.
+     *    @param [in] library     The used library interface.
      */
     SystemDesignConfigurationValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library);
 
@@ -51,9 +51,9 @@ public:
     /*!
      *  Check if the view configurations are valid.
      *
-     *      @param [in] designConfiguration     The selected design configuration.
+     *    @param [in] designConfiguration     The selected design configuration.
      *
-     *      @return True, if the view configurations are valid, otherwise false.
+     *    @return True, if the view configurations are valid, otherwise false.
      */
     virtual bool hasValidViewConfigurations(QSharedPointer<DesignConfiguration> designConfiguration) const;
 
@@ -66,8 +66,8 @@ private:
     /*!
      *  Check if the view configuration references a hw component instances.
      *
-     *      @param [in] viewConfiguration   The view configuration to check.
-     *      @param [in] hwInstances         The currently available hw component instances.
+     *    @param [in] viewConfiguration   The view configuration to check.
+     *    @param [in] hwInstances         The currently available hw component instances.
      */
     bool viewConfigurationReferencesHWInstance(QSharedPointer<ViewConfiguration> viewConfiguration,
         QSharedPointer<QList<QSharedPointer<ComponentInstance> > > hwInstances) const;
@@ -75,9 +75,9 @@ private:
     /*!
      *  Find errors in view configurations.
      *
-     *      @param [in] errors                  List of found errors.
-     *      @param [in] designConfiguration     The selected design configuration.
-     *      @param [in] context                 Context to help locate the errors.
+     *    @param [in] errors                  List of found errors.
+     *    @param [in] designConfiguration     The selected design configuration.
+     *    @param [in] context                 Context to help locate the errors.
      */
     virtual void findErrorsInViewConfigurations(QVector<QString>& errors,
         QSharedPointer<DesignConfiguration> designConfiguration, QString const& context) const;

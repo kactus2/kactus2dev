@@ -48,42 +48,42 @@ public:
     /*!
      *  Get the command.
      *
-     *      @return The command.
+     *    @return The command.
      */
     QString getCommand() const;
 
     /*!
      *  Get the flags.
      *
-     *      @return The flags.
+     *    @return The flags.
      */
     QString getFlags() const;
 
     /*!
      *  Get the replace default flags expression.
      *
-     *      @return An expression determining should the default flags be replaced or not.
+     *    @return An expression determining should the default flags be replaced or not.
      */
     QString getReplaceDefaultFlags() const;
 
     /*!
      *  Set the command.
      *
-     *      @param [in] newCommand  The new command.
+     *    @param [in] newCommand  The new command.
      */
     void setCommand(QString const& newCommand);
 
     /*!
      *  Set the flags.
      *
-     *      @param [in] newFlags    The new flags.
+     *    @param [in] newFlags    The new flags.
      */
     void setFlags(QString const& newFlags);
 
     /*!
      *  Set the expression for default flags replacement.
      *
-     *      @param [in] newReplaceDefaultFlags  The new replacing expression.
+     *    @param [in] newReplaceDefaultFlags  The new replacing expression.
      */
     void setReplaceDefaultFlags(QString const& newReplaceDefaultFlags);
 

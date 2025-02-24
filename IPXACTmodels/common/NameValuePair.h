@@ -28,8 +28,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name    Name of the pair.
-     *      @param [in] value   Value of the pair.
+     *    @param [in] name    Name of the pair.
+     *    @param [in] value   Value of the pair.
      */
     NameValuePair(QString const& name = QString(), QString const& value = QString());
 
@@ -45,14 +45,14 @@ public:
     /*!
      *  Get the contained value.
      *
-     *      @return The value.
+     *    @return The value.
      */
     QString getValue() const;
 
     /*!
      *  Set a value.
      *
-     *      @param [in] newValue    The new value.
+     *    @param [in] newValue    The new value.
      */
     void setValue(QString const& newValue);
 

@@ -38,11 +38,11 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] component       The component being edited.
-	 *      @param [in] handler         The instance managing the library.
-     *      @param [in] validator		The validator used for power domains.
-     *      @param [in] expressions		The collection of objects for expression handling.
-	 *      @param [in] parent          The owner of this widget.
+	 *    @param [in] component       The component being edited.
+	 *    @param [in] handler         The instance managing the library.
+     *    @param [in] validator		The validator used for power domains.
+     *    @param [in] expressions		The collection of objects for expression handling.
+	 *    @param [in] parent          The owner of this widget.
 	 *
 	 */
 	PowerDomainsEditor(QSharedPointer<Component> component, LibraryInterface* handler,

@@ -26,7 +26,7 @@ public:
 	/*!
 	 *  The constructor.
      *
-	 *      @param [in] parent  Pointer to the owner of this delegate.
+	 *    @param [in] parent  Pointer to the owner of this delegate.
 	 */
 	InterfacePortMapDelegate(QObject *parent = 0);
 	
@@ -40,19 +40,19 @@ protected:
     /*!
      *  Paint the editor.
      *
-     *      @param [in] painter     The used painter.
-     *      @param [in] option      The style options.
-     *      @param [in] index       The current index.
+     *    @param [in] painter     The used painter.
+     *    @param [in] option      The style options.
+     *    @param [in] index       The current index.
      */
     void paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
 
     /*!
      *  The editor events.
      *
-     *      @param [in] event   The event itself.
-     *      @param [in] model   The used item model.
-     *      @param [in] option  The style options.
-     *      @param [in] index   The current model index.
+     *    @param [in] event   The event itself.
+     *    @param [in] model   The used item model.
+     *    @param [in] option  The style options.
+     *    @param [in] index   The current model index.
      */
     bool editorEvent(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option,
         QModelIndex const& index);

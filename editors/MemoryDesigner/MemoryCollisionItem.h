@@ -29,9 +29,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] firstItem           The first memory connection.
-     *      @param [in] secondItem          The second memory connection.
-     *      @param [in] containingScene     The scene containing the memory connections.
+     *    @param [in] firstItem           The first memory connection.
+     *    @param [in] secondItem          The second memory connection.
+     *    @param [in] containingScene     The scene containing the memory connections.
      */
     MemoryCollisionItem(MemoryConnectionItem* firstItem, MemoryConnectionItem* secondItem,
         QGraphicsScene* containingScene);

@@ -34,9 +34,9 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name            Name of the register.
-	 *      @param [in] addressOffset   Offset of the register.
-	 *      @param [in] size            Size of the register.
+	 *    @param [in] name            Name of the register.
+	 *    @param [in] addressOffset   Offset of the register.
+	 *    @param [in] size            Size of the register.
 	 */
 	Register(QString const& name = QString(), QString const& addressOffset = QString(),
         QString const& size = QString());
@@ -53,7 +53,7 @@ public:
 	/*!
      *  Clone the register and return pointer to the copy.
 	 * 
-	 *      @return Pointer to the cloned register.
+	 *    @return Pointer to the cloned register.
 	 */
     virtual QSharedPointer<RegisterBase> clone();
     
@@ -61,28 +61,28 @@ public:
     /*!
      *  Get the alternate registers of this register.
      *
-     *      @return Pointer to a list containing the alternate registers.
+     *    @return Pointer to a list containing the alternate registers.
      */
     QSharedPointer<QList<QSharedPointer<AlternateRegister> > > getAlternateRegisters() const;
 
     /*!
      *  Set the alternate registers for this register.
      *
-     *      @param [in] alternateRegisters  Pointer to a list containing the new alternateRegisters.
+     *    @param [in] alternateRegisters  Pointer to a list containing the new alternateRegisters.
      */
     void setAlternateRegisters(QSharedPointer<QList<QSharedPointer<AlternateRegister> > > newAlternateRegisters);
 
 	/*!
      *  Get the width of the register.
 	 *
-	 *      @return The width of the register in bits.
+	 *    @return The width of the register in bits.
 	 */
     QString getSize() const;
 
 	/*!
      *  Set the width of the register.
 	 *
-	 *      @param [in] size    The width of the register in bits.
+	 *    @param [in] size    The width of the register in bits.
 	 */
     void setSize(QString const& newSize);
 
@@ -96,7 +96,7 @@ public:
     /*!
      *	Set the register definition reference.
      *  
-     *      @param [in] registerDefinitionRef     The new register definition reference.
+     *    @param [in] registerDefinitionRef     The new register definition reference.
      */
     void setRegisterDefinitionReference(QString const& registerDefinitionRef);
 
@@ -110,7 +110,7 @@ public:
     /*!
      *	Set the type definitions reference.
      *  
-     *      @param [in] typeDefinitionsRef     The new type definitions reference to set.
+     *    @param [in] typeDefinitionsRef     The new type definitions reference to set.
      */
     void setTypeDefinitionsReference(QString const& typeDefinitionsRef);
 
@@ -119,7 +119,7 @@ private:
     /*!
      *  Copy the alternate registers.
      *
-     *      @param [in] other   The register being copied.
+     *    @param [in] other   The register being copied.
      */
     void copyAlternateRegisters(const Register& other);
 

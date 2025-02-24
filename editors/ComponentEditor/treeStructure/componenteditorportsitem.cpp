@@ -21,6 +21,7 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Component/validators/PortValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorPortsItem::ComponentEditorPortsItem()
@@ -33,6 +34,7 @@ ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* mod
     ComponentEditorItem(model, libHandler, component, parent),
     expressions_(expressions),
     portValidator_(new PortValidator(expressions.parser, component->getViews())),
+    portsValidator_(new PortsValidator(portValidator_)),
     portsInterface_(new PortsInterface(portValidator_, expressions.parser, expressions.formatter)),
     busInterface_(busInterface)
 {
@@ -84,18 +86,9 @@ QString ComponentEditorPortsItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorPortsItem::isValid() const
 {
-    QStringList portNames;
-	for (QSharedPointer<Port> port : *component_->getPorts()) 
-    {
-        if (portNames.contains(port->name()) || !portValidator_->validate(port))
-        {
-			return false;
-		}
-
-        portNames.append(port->name());
-	}
-
-	return true;
+    auto portsAsNameGroup = CollectionValidators::itemListToNameGroupList(component_->getPorts());
+    portsValidator_->childrenHaveUniqueNames(portsAsNameGroup);
+    return ComponentEditorItem::isValid();
 }
 
 //-----------------------------------------------------------------------------

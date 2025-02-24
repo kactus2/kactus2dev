@@ -34,7 +34,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  Pointer to the owner of this widget.
+     *    @param [in] parent  Pointer to the owner of this widget.
      */
     CPUEditor(QWidget *parent = 0);
 
@@ -46,16 +46,16 @@ public:
     /*!
      *  Setup the selected CPUs.
      *
-     *      @param [in] library     Interface for accessing the library.
-     *      @param [in] component   Top component of the selected design.
-     *      @param [in] activeView  Active view of the design.
+     *    @param [in] library     Interface for accessing the library.
+     *    @param [in] component   Top component of the selected design.
+     *    @param [in] activeView  Active view of the design.
      */
     virtual void setupCPUDetails(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView) = 0;
 
     /*!
      *  Get the selected CPUs.
      *
-     *      @return List of the selected CPUs.
+     *    @return List of the selected CPUs.
      */
     virtual QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs() const = 0;
 
@@ -68,7 +68,7 @@ public slots:
     /*!
      *  Setup the folder path.
      *
-     *      @param [in] newFolderPath   The new folder path.
+     *    @param [in] newFolderPath   The new folder path.
      */
     virtual void setupFolderPath(QString const& newFolderPath);
 
@@ -77,7 +77,7 @@ signals:
     /*!
      *  Inform of a change in the destination folder path.
      *
-     *      @param [in] newPath     The new folder path.
+     *    @param [in] newPath     The new folder path.
      */
     void changeInSelectedPath(QString const& newPath);
 

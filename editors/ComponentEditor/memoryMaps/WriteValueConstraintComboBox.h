@@ -29,8 +29,8 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] writeConstraint     Pointer to the write constraint being edited.
-	 *      @param [in] parent              Pointer to the owner of the group box.
+	 *    @param [in] writeConstraint     Pointer to the write constraint being edited.
+	 *    @param [in] parent              Pointer to the owner of the group box.
 	 */
 	WriteValueConstraintComboBox(QSharedPointer<WriteValueConstraint> writeConstraint, QWidget* parent);
 
@@ -46,7 +46,7 @@ public:
     /*!
      *  Sets the type for the write constraint.
      *
-     *      @param [in] newIndex    The index of the selected write constraint type.
+     *    @param [in] newIndex    The index of the selected write constraint type.
      */
     void onIndexChanged(int newIndex);
 

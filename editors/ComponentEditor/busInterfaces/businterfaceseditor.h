@@ -51,11 +51,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] handler             The instance that manages the library.
-	 *      @param [in] component           The component being edited.
-     *      @param [in] busInterface        Interface for accessing bus interfaces.
-	 *      @param [in] parameterFinder     The parameter finder.
-	 *      @param [in] parent              The owner of this editor.
+	 *    @param [in] handler             The instance that manages the library.
+	 *    @param [in] component           The component being edited.
+     *    @param [in] busInterface        Interface for accessing bus interfaces.
+	 *    @param [in] parameterFinder     The parameter finder.
+	 *    @param [in] parent              The owner of this editor.
 	 */
 	BusInterfacesEditor(LibraryInterface* handler,
         QSharedPointer<Component> component,

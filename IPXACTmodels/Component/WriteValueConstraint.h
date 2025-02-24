@@ -49,42 +49,42 @@ public:
 	/*! 
      *  Get the type of the constraint.
 	 *
-	 *      @return The constraint type.
+	 *    @return The constraint type.
 	 */
 	Type getType() const;
 
 	/*! 
      *  Set the type for the constraint.
 	 *
-	 *      @param [in] newType     The new type.
+	 *    @param [in] newType     The new type.
 	 */
 	void setType(Type newType);
 
 	/*!
      *  Get the minimum value of the constraint.
 	 * 
-	 *      @return The minimum value.
+	 *    @return The minimum value.
 	 */
     QString getMinimum() const;
 
 	/*!
      *  Set the minimum value for the constraint.
 	 * 
-	 *      @param [in] newMinimum  The minimum value to set.
+	 *    @param [in] newMinimum  The minimum value to set.
 	 */
     void setMinimum(QString const& newMinimum);
 
 	/*!
      *  Get the maximum value of the constraint.
 	 * 
-	 *      @return The maximum value.
+	 *    @return The maximum value.
 	 */
     QString getMaximum() const;
 
 	/*!
      *  Set the maximum value for the constraint.
 	 * 
-	 *      @param [in] newMaximum  The maximum value to set.
+	 *    @param [in] newMaximum  The maximum value to set.
 	 */
     void setMaximum(QString const& newMaximum);
 
@@ -112,25 +112,25 @@ namespace WriteValueConversions
     /*!
      *  Convert a string to write value constraint type.
      *
-     *      @param [in] typeText    The selected string.
+     *    @param [in] typeText    The selected string.
      *
-     *      @return Write value constraint type matching the selected string.
+     *    @return Write value constraint type matching the selected string.
      */
     IPXACTMODELS_EXPORT WriteValueConstraint::Type stringToType(QString const& typeText);
 
     /*!
      *  Convert a write value constraint type to string.
      *
-     *      @param [in] constraintType      The selected write value constraint type.
+     *    @param [in] constraintType      The selected write value constraint type.
      *
-     *      @return String matching the selected write value constraint type.
+     *    @return String matching the selected write value constraint type.
      */
     IPXACTMODELS_EXPORT QString typeToString(WriteValueConstraint::Type const& constraintType);
 
     /*!
      *  Get a list of all the write value constraint types in string format.
      *
-     *      @return String list of all the write value constraint types.
+     *    @return String list of all the write value constraint types.
      */
     IPXACTMODELS_EXPORT QStringList getConstraintTypes();
 };

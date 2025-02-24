@@ -19,6 +19,7 @@
 #include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/validators/ModeValidator.h>
 #include <IPXACTmodels/Component/validators/PortSliceValidator.h>
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
 
 #include <KactusAPI/include/ModeConditionParser.h>
 
@@ -32,11 +33,15 @@ ModesItem::ModesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandl
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 modes_(component->getModes()),
-expressions_(expressions)
+expressions_(expressions),
+modeValidator_(new ModeValidator(component, nullptr)),
+modesValidator_(new HierarchicalValidator())
 {
     setParameterFinder(expressions.finder);
     setExpressionFormatter(expressions.formatter);
     setReferenceCounter(referenceCounter);
+
+    modesValidator_->setChildValidator(modeValidator_);
 
     const auto MODE_COUNT = modes_->count();
     for (int i = 0; i < MODE_COUNT; ++i)
@@ -103,12 +108,20 @@ void ModesItem::createChild(int index)
     QSharedPointer<ModeConditionParser> parser(new ModeConditionParser(expressions_.finder,
         mode->getPortSlices(), mode->getFieldSlices(), component_->getModes()));
 
-    QSharedPointer<ModeValidator> validator(new ModeValidator(component_, parser));
-
     QSharedPointer<SingleModeItem> modeItem(new SingleModeItem(mode, model_,
-        libHandler_, component_, referenceCounter_, expressions_, validator, this));
+        libHandler_, component_, referenceCounter_, expressions_, modeValidator_, parser, this));
 
     modeItem->setLocked(locked_);
 
     childItems_.insert(index, modeItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModesItem::isValid()
+//-----------------------------------------------------------------------------
+bool ModesItem::isValid() const
+{
+    auto modesAsNameGroup = CollectionValidators::itemListToNameGroupList(modes_);
+    modesValidator_->childrenHaveUniqueNames(modesAsNameGroup);
+    return ComponentEditorItem::isValid();
 }

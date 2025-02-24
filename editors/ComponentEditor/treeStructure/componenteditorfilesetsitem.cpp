@@ -25,6 +25,7 @@
 
 #include <IPXACTmodels/Component/validators/FileValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorfilesetsitem::ComponentEditorFileSetsItem()
@@ -39,6 +40,7 @@ fileSets_(component->getFileSets()),
 expressionParser_(expressionParser),
 fileValidator_(new FileValidator(expressionParser_)),
 fileSetValidator_(new FileSetValidator(fileValidator_, expressionParser_)),
+fileSetsValidator_(new FileSetsValidator(fileSetValidator_)),
 fileSetInterface_(0)
 {
     setReferenceCounter(referenceCounter);
@@ -132,6 +134,16 @@ void ComponentEditorFileSetsItem::createChild(int index)
 
 	fileSetItem->setLocked(locked_);
 	childItems_.insert(index, fileSetItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetsItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorFileSetsItem::isValid() const
+{
+    auto fileSetsAsNameGroups = CollectionValidators::itemListToNameGroupList(fileSets_);
+    fileSetsValidator_->childrenHaveUniqueNames(fileSetsAsNameGroups);
+    return ComponentEditorItem::isValid();
 }
 
 //-----------------------------------------------------------------------------

@@ -60,7 +60,7 @@ public:
     /*!
      *  Create a copy of the Qualifier.
      *
-     *      @return A Qualifier identical to this.
+     *    @return A Qualifier identical to this.
      */
     Qualifier* clone() const;
 
@@ -79,7 +79,7 @@ public:
     /*!
      *	Checks if the qualifier has a specific type set.
      *  
-     *      @param [in] type	The type to check.
+     *    @param [in] type	The type to check.
      *		
      * 		@return True, if the type is set, otherwise false.
      */
@@ -88,7 +88,7 @@ public:
     /*!
      *	Sets the qualifier type.
      *  
-     *      @param [in] type	The type to set.
+     *    @param [in] type	The type to set.
      */
     void setType(Type type);
 
@@ -108,7 +108,7 @@ public:
     /*!
      *	Get a selected attribute.
      *  
-     *      @param [in] attributeName	The attribute name.
+     *    @param [in] attributeName	The attribute name.
      *		
      * 		@return The attribute as a string.
      */
@@ -117,8 +117,8 @@ public:
     /*!
      *	Sets a given qualifier attribute.
      *  
-     *      @param [in] attributeName	The attribute name to set.
-     *      @param [in] attributeValue	The attribute value to set.
+     *    @param [in] attributeName	The attribute name to set.
+     *    @param [in] attributeValue	The attribute value to set.
      */
     void setAttribute(Attribute attribute, QString const& attributeValue);
 
@@ -129,7 +129,7 @@ public:
     /*!
      *	Gets a qualifier type as string.
      *  
-     *      @param [in] type	Type to convert to string.
+     *    @param [in] type	Type to convert to string.
      *		
      * 		@return Type as string.
      */
@@ -138,7 +138,7 @@ public:
     /*!
      *	Converts a qualifier type from string to type.
      *
-     *      @param [in] typeString	Type as a string to convert to type.
+     *    @param [in] typeString	Type as a string to convert to type.
      *
      * 		@return Qualifier type.
      */
@@ -147,7 +147,7 @@ public:
     /*!
      *	Converts a qualifier attribute name string to attribute.
      *  
-     *      @param [in] attributeName	The attribute as string.
+     *    @param [in] attributeName	The attribute as string.
      *		
      * 		@return The converted attribute.
      */

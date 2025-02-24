@@ -46,19 +46,19 @@ public:
 	/*!
      *  The constructor.
      *
-	 *      @param [in] topComponent            Top component of the selected design.
-	 *      @param [in] library                 Interface for accessing the library.
-	 *      @param [in] viewsNames              Names of the available views.
-     *      @param [in] fileSetNames            Names of the available file sets.
-     *      @param [in] cpuEditor               Editor for CPU details.
-     *      @param [in] dialogType              The type text for dialog.
-     *      @param [in] extraEditor             An extra editor.
-	 *      @param [in] parent                  Parent widget.
-     *      @param [in] minimumWidth            The minimum width of the dialog.
-     *      @param [in] configurationFolder     Folder path for the generator.
-     *      @param [in] saveToFileSet           Flag for save to file set.
-     *      @param [in] configurationFileSet    Name of the target file set.
-     *      @param [in] configurationView       Name of the view to use in the generator.
+	 *    @param [in] topComponent            Top component of the selected design.
+	 *    @param [in] library                 Interface for accessing the library.
+	 *    @param [in] viewsNames              Names of the available views.
+     *    @param [in] fileSetNames            Names of the available file sets.
+     *    @param [in] cpuEditor               Editor for CPU details.
+     *    @param [in] dialogType              The type text for dialog.
+     *    @param [in] extraEditor             An extra editor.
+	 *    @param [in] parent                  Parent widget.
+     *    @param [in] minimumWidth            The minimum width of the dialog.
+     *    @param [in] configurationFolder     Folder path for the generator.
+     *    @param [in] saveToFileSet           Flag for save to file set.
+     *    @param [in] configurationFileSet    Name of the target file set.
+     *    @param [in] configurationView       Name of the view to use in the generator.
      */
 	CPUSelectionDialog(QSharedPointer<Component> topComponent,
         LibraryInterface* library,
@@ -82,35 +82,35 @@ public:
     /*!
      *  Get the list of the selected CPUs.
      *
-     *      @return List of the CPU data and their connected paths.
+     *    @return List of the CPU data and their connected paths.
      */
     QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs();
 
     /*!
      *  Check if the files should be saved to a file set.
      *
-     *      @return True, if the files should be saved to a file set, false otherwise.
+     *    @return True, if the files should be saved to a file set, false otherwise.
      */
     bool saveToFileSet() const;
 
     /*!
      *  Get the name of the file set to save the files to.
      *
-     *      @return Name of the target file set.
+     *    @return Name of the target file set.
      */
     QString getTargetFileSet() const;
 
     /*!
      *  Get the target folder for the SVD files.
      *
-     *      @return Path to the target folder of the selected SVD files.
+     *    @return Path to the target folder of the selected SVD files.
      */
     QString getTargetFolder() const;
 
     /*!
      *  Get the active view.
      *
-     *      @return Name of the active view.
+     *    @return Name of the active view.
      */
     QString getView() const;
 
@@ -131,7 +131,7 @@ signals:
     /*!
      *  Signal informing of a change in the destination path.
      *
-     *      @param [in] newFolderLocation   The new destination.
+     *    @param [in] newFolderLocation   The new destination.
      */
     void changeInSelectedPath(QString const& newFolderLocation);
 
@@ -144,10 +144,10 @@ private:
     /*!
      *  Setup the dialog.
      *
-     *      @param [in] configurationFolder     Folder path for the generated files.
-     *      @param [in] saveToFileSet           Flag for saving to a file set.
-     *      @param [in] configurationFileSet    Name of the selected file set.
-     *      @param [in] configurationView       The currently active view.
+     *    @param [in] configurationFolder     Folder path for the generated files.
+     *    @param [in] saveToFileSet           Flag for saving to a file set.
+     *    @param [in] configurationFileSet    Name of the selected file set.
+     *    @param [in] configurationView       The currently active view.
      */
     void setupConfiguration(QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet, QString const& configurationView);
 

@@ -47,9 +47,9 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] handler     The instance managing the library.
-	 *      @param [in] parent  The parent of this editor.
+	 *    @param [in] component   The component being edited.
+	 *    @param [in] handler     The instance managing the library.
+	 *    @param [in] parent  The parent of this editor.
 	 */
 	ApiInterfacesEditor(QSharedPointer<Component> component, LibraryInterface* handler,	QWidget* parent = 0);
 	
@@ -64,7 +64,7 @@ public:
 
 	/*! Check for the validity of the editor
 	* 
-	*      @return True if the editor is in valid state.
+	*    @return True if the editor is in valid state.
 	*/
 	virtual bool isValid() const;
 

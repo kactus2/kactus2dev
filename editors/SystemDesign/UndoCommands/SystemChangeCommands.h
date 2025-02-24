@@ -33,9 +33,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint          The SW connection end point.
-     *      @param [in] oldBusType        The endpoint's old API/COM type.
-     *      @param [in] parent            The parent command.
+     *    @param [in] endpoint          The SW connection end point.
+     *    @param [in] oldBusType        The endpoint's old API/COM type.
+     *    @param [in] parent            The parent command.
      */
     TypeDefinitionChangeCommand(SWConnectionEndpoint* endpoint, VLNV const& oldType, QUndoCommand* parent = 0);
 
@@ -83,9 +83,9 @@ public:
 	/*!
      *  Constructor.
      *
-	 *      @param [in] component        Pointer to the component instance that is being edited.
-	 *      @param [in] newConfElements  The new property values for the instance.
-	 *      @param [in] parent           Pointer to the owner of this command.
+	 *    @param [in] component        Pointer to the component instance that is being edited.
+	 *    @param [in] newConfElements  The new property values for the instance.
+	 *    @param [in] parent           Pointer to the owner of this command.
 	 */
 	PropertyValuesChangeCommand(SystemComponentItem* component, QMap<QString, QString> const& newPropertyValues, 
 		                        QUndoCommand* parent = 0);
@@ -134,9 +134,9 @@ public:
 	/*!
      *  Constructor.
      *
-	 *      @param [in] component        Pointer to the component instance that is being edited.
-	 *      @param [in] newConfElements  The new file set reference for the instance.
-	 *      @param [in] parent           Pointer to the owner of this command.
+	 *    @param [in] component        Pointer to the component instance that is being edited.
+	 *    @param [in] newConfElements  The new file set reference for the instance.
+	 *    @param [in] parent           Pointer to the owner of this command.
 	 */
 	FileSetRefChangeCommand(SWComponentItem* component, QString const& newFileSetRef, QUndoCommand* parent = 0);
 

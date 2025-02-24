@@ -27,9 +27,9 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name        The name of the connection.
-	 *      @param [in] startPoint  The starting interface in the connection.
-	 *      @param [in] endPoint    The end interface in the connection.
+	 *    @param [in] name        The name of the connection.
+	 *    @param [in] startPoint  The starting interface in the connection.
+	 *    @param [in] endPoint    The end interface in the connection.
 	 */
     ConnectivityConnection(QString const& name, QSharedPointer<ConnectivityInterface> startPoint,
         QSharedPointer<ConnectivityInterface> endPoint);
@@ -42,21 +42,21 @@ public:
     /*!
      *  Gets the name of the connection.
      *
-     *      @return The name of the connection.
+     *    @return The name of the connection.
      */
     QString getName() const;
 
     /*!
      *  Gets the first interface in the connection.
      *
-     *      @return The first interface in the connection.
+     *    @return The first interface in the connection.
      */
     QSharedPointer<ConnectivityInterface> getFirstInterface() const;
 
     /*!
      *  Gets the second interface in the connection.
      *
-     *      @return The second interface in the connection.
+     *    @return The second interface in the connection.
      */
     QSharedPointer<ConnectivityInterface> getSecondInterface() const;
 

@@ -30,10 +30,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name                The name of the interconnection.
-     *      @param [in] activeInterface     The monitored active interface.
-     *      @param [in] displayName         Display name.
-     *      @param [in] description         Description.
+     *    @param [in] name                The name of the interconnection.
+     *    @param [in] activeInterface     The monitored active interface.
+     *    @param [in] displayName         Display name.
+     *    @param [in] description         Description.
      */
     MonitorInterconnection(QString const& name, 
         QSharedPointer<MonitorInterface> activeInterface = QSharedPointer<MonitorInterface>(0),
@@ -62,42 +62,42 @@ public:
     /*!
      *  Get the monitored active interface.
      *
-     *      @return Pointer to the monitored active interface.
+     *    @return Pointer to the monitored active interface.
      */
     QSharedPointer<MonitorInterface> getMonitoredActiveInterface() const;
 
     /*!
      *  Set the monitored active interface.
      *
-     *      @param [in] newActiveInterface  The new monitored active interface.
+     *    @param [in] newActiveInterface  The new monitored active interface.
      */
     void setMonitoredctiveInterface(QSharedPointer<MonitorInterface> newActiveInterface);
 
     /*!
      *  Get the monitor interfaces.
      *
-     *      @return A pointer to a list of monitor interfaces.
+     *    @return A pointer to a list of monitor interfaces.
      */
     QSharedPointer<QList<QSharedPointer<MonitorInterface> > > getMonitorInterfaces() const;
 
     /*!
      *  Set the monitor interfaces.
      *
-     *      @param [in] newMonitorInterfaces    The new monitor interfaces.
+     *    @param [in] newMonitorInterfaces    The new monitor interfaces.
      */
     void setMonitorInterfaces(QSharedPointer<QList<QSharedPointer<MonitorInterface> > > newMonitorInterfaces);
 
     /*!
      *  Get the presence.
      *
-     *      @return The presence.
+     *    @return The presence.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new presence.
+     *    @param [in] newIsPresent    The new presence.
      */
     void setIsPresent(QString const& newIsPresent);
 

@@ -64,7 +64,7 @@ QSharedPointer<Wire> PortReader::Details::createWireFrom(QDomElement const& wire
     QString directionString = directionElement.firstChild().nodeValue();
 
     QSharedPointer<Wire> newWire (new Wire());
-    newWire->setDirection(DirectionTypes::str2Direction(directionString, DirectionTypes::IN));
+    newWire->setDirection(DirectionTypes::str2Direction(directionString, DirectionTypes::DIRECTION_INVALID));
 
     if (docRevision == Document::Revision::Std22)
     {

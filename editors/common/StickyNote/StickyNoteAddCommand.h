@@ -35,10 +35,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item        The item to add.
-     *      @param [in] scene       The scene to which to add the item.
-     *      @param [in] position    The initial position of the item.
-     *      @param [in] parent      The parent command.
+     *    @param [in] item        The item to add.
+     *    @param [in] scene       The scene to which to add the item.
+     *    @param [in] position    The initial position of the item.
+     *    @param [in] parent      The parent command.
      */
     StickyNoteAddCommand(StickyNote* noteItem, QGraphicsScene* scene, QPointF position, QUndoCommand* parent = 0);
 

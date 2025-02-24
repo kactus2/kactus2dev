@@ -23,17 +23,23 @@
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationsItem::DesignConfigurationInstantiationsItem()
 //-----------------------------------------------------------------------------
 DesignConfigurationInstantiationsItem::DesignConfigurationInstantiationsItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator,
+    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ParameterValidator> parameterValidator, 
+    QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> /*expressionParser*/, ComponentEditorItem* parent):
+    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent) :
 ComponentEditorItem(model, libHandler, component, parent),
-validator_(validator)
+validator_(validator),
+parameterValidator_(parameterValidator),
+expressionParser_(expressionParser),
+allInstantiationsValidator_(allInstantiationsValidator)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -42,8 +48,7 @@ validator_(validator)
 
     setReferenceCounter(referenceCounter);
 
-    foreach(QSharedPointer<DesignConfigurationInstantiation> instantiation,
-        *component->getDesignConfigurationInstantiations())
+    for (auto instantiation : *component->getDesignConfigurationInstantiations())
     {
         QSharedPointer<MultipleParameterFinder> instantiationMultiFinder =
             QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder);
@@ -57,8 +62,8 @@ validator_(validator)
             QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(instantiationMultiFinder));
 
         QSharedPointer<ComponentEditorItem> childItem(new SingleDesignConfigurationInstantiationItem(model,
-            libHandler, component, instantiationReferenceCounter, instantiation, validator,
-            instantiationMultiFinder, instantiationFormatter, this));
+            libHandler, component, instantiationReferenceCounter, instantiation, validator, parameterValidator,
+            instantiationMultiFinder, instantiationFormatter, expressionParser, this));
         childItems_.append(childItem);
 
         connect(childItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
@@ -129,8 +134,8 @@ void DesignConfigurationInstantiationsItem::createChild(int index)
 
     QSharedPointer<SingleDesignConfigurationInstantiationItem> child(
         QSharedPointer<SingleDesignConfigurationInstantiationItem>(new SingleDesignConfigurationInstantiationItem(
-        model_, libHandler_, component_, instantiationCounter, instantiation, validator_, instantiationMultiFinder,
-        instantiationFormatter, this)));
+        model_, libHandler_, component_, instantiationCounter, instantiation, validator_, parameterValidator_, 
+            instantiationMultiFinder, instantiationFormatter, expressionParser_, this)));
     child->setLocked(locked_);
 
     connect(child.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),

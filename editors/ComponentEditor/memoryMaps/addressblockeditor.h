@@ -38,12 +38,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] registers           Registers for the interface.
-     *      @param [in] registerInterface   Interface for registers.
-	 *      @param [in] component           The component being edited.
-	 *      @param [in] handler             The instance managing the library.
-	 *      @param [in] parameterFinder     The parameter finder.
-	 *      @param [in] parent              The parent of this editor.
+     *    @param [in] registers           Registers for the interface.
+     *    @param [in] registerInterface   Interface for registers.
+	 *    @param [in] component           The component being edited.
+	 *    @param [in] handler             The instance managing the library.
+	 *    @param [in] parameterFinder     The parameter finder.
+	 *    @param [in] parent              The parent of this editor.
 	 */
     AddressBlockEditor(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registers,
         RegisterInterface* registerInterface, QSharedPointer<Component> component,
@@ -68,15 +68,15 @@ signals:
     /*
      *  Informs of register name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void registerNameChanged(QString const& oldName, QString const& newName);
 
     /*!
      *  Change the value for address unit bits in the model.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bits value.
+     *    @param [in] newAddressUnitBits  The new address unit bits value.
      */
     void addressUnitBitsChanged(int newAddressUnitBits);
 
@@ -93,49 +93,49 @@ signals:
     /*!
      *  Sends an error message forward.
      *
-     *      @param [in] msg     The error message.
+     *    @param [in] msg     The error message.
      */
     void errorMessage(const QString& msg) const;
 
     /*!
      *  Sends a notification message forward.
      *
-     *      @param [in] msg     The notification message.
+     *    @param [in] msg     The notification message.
      */
     void noticeMessage(const QString& msg) const;
 
     /*!
      *  Increase the amount of references made to the given parameter.
      *
-     *      @param [in] id  The id of the given parameter.
+     *    @param [in] id  The id of the given parameter.
      */
     void increaseReferences(QString id) const;
 
     /*!
      *  Decrease the amount of references made to the given parameter.
      *
-     *      @param [in] id  The id the given parameter.
+     *    @param [in] id  The id the given parameter.
      */
     void decreaseReferences(QString id) const;
 
     /*!
      *  Informs that a new item has been created.
      *
-     *      @param [in] index   The index of the new item.
+     *    @param [in] index   The index of the new item.
      */
     void childAdded(int index);
 
     /*!
      *  Informs that an item has been removed.
      *
-     *      @param [in] index   The index of the removed item.
+     *    @param [in] index   The index of the removed item.
      */
     void childRemoved(int index);
 
     /*!
      *  Informs of a change in item addressing.
      *
-     *      @param [in] index   Index of the item whose addressing is changed.
+     *    @param [in] index   Index of the item whose addressing is changed.
      */
     void childAddressingChanged(int index);
 

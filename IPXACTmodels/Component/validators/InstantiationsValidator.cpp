@@ -35,6 +35,7 @@ InstantiationsValidator::InstantiationsValidator(QSharedPointer<ExpressionParser
                                                  QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
                                                  QSharedPointer<ParameterValidator> parameterValidator,
                                                  LibraryInterface* libraryHandler):
+HierarchicalValidator(),
 expressionParser_(expressionParser),
 availableFileSets_(fileSets),
 parameterValidator_(parameterValidator),
@@ -65,7 +66,8 @@ void InstantiationsValidator::componentChange(QSharedPointer<QList<QSharedPointe
 bool InstantiationsValidator::validateDesignInstantiation(QSharedPointer<DesignInstantiation> designInstantiation)
     const
 {
-    return hasValidName(designInstantiation->name()) && hasValidDesignReference(designInstantiation);
+    return validComparedToSiblings(designInstantiation) && hasValidName(designInstantiation->name()) && 
+        hasValidDesignReference(designInstantiation);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,8 +127,8 @@ void InstantiationsValidator::findErrorsInDesignInstantiation(QVector<QString>& 
 bool InstantiationsValidator::validateDesignConfigurationInstantiation(
 	QSharedPointer<DesignConfigurationInstantiation> instantiation) const
 {
-    return hasValidName(instantiation->name()) && hasValidDesignConfigurationReference(instantiation) &&
-        hasValidParameters(instantiation->getParameters());
+    return validComparedToSiblings(instantiation) && hasValidName(instantiation->name()) && 
+        hasValidDesignConfigurationReference(instantiation) && hasValidParameters(instantiation->getParameters());
 }
 
 //-----------------------------------------------------------------------------
@@ -224,7 +226,7 @@ void InstantiationsValidator::findErrorsInDesignConfigurationInstantiation(QVect
 bool InstantiationsValidator::validateComponentInstantiation (QSharedPointer<ComponentInstantiation> instantiation,
     Document::Revision docRevision) const
 {
-    return hasValidName(instantiation->name()) &&
+    return validComparedToSiblings(instantiation) && hasValidName(instantiation->name()) &&
         componentInstantiationFileBuildersAreValid(instantiation) &&
         componentInstantiationFileSetReferencesAreValid(instantiation) &&
         hasValidModuleParameters(instantiation, docRevision) &&
@@ -454,4 +456,20 @@ bool InstantiationsValidator::moduleParameterHasValidPresence(QSharedPointer<Mod
 QSharedPointer<ParameterValidator> InstantiationsValidator::getParameterValidator() const
 {
     return parameterValidator_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::setParameterValidator()
+//-----------------------------------------------------------------------------
+void InstantiationsValidator::setParameterValidator(QSharedPointer<ParameterValidator> newParameterValidator)
+{
+    parameterValidator_ = newParameterValidator;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::setExpressionParser()
+//-----------------------------------------------------------------------------
+void InstantiationsValidator::setExpressionParser(QSharedPointer<ExpressionParser> newExpressionParser)
+{
+    expressionParser_ = newExpressionParser;
 }

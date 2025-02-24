@@ -43,6 +43,7 @@ class GraphicsConnection;
 class HWComponentItem;
 class HWConnection;
 class HWConnectionEndpoint;
+class Component;
 
 class AdHocConnection;
 class ComponentInstance;
@@ -61,10 +62,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component   The component.
-     *      @param [in] newName     The component's new name.
-     *      @param [in] design      Design containing the component instance.
-     *      @param [in] parent      The parent command.
+     *    @param [in] component   The component.
+     *    @param [in] newName     The component's new name.
+     *    @param [in] design      Design containing the component instance.
+     *    @param [in] parent      The parent command.
      */
     ComponentChangeNameCommand(ComponentItem* component, QString const& newName, QSharedPointer<Design> design,
         QUndoCommand* parent = 0);
@@ -92,18 +93,18 @@ private:
     /*!
      *  Renames the component instance and change the component reference in connections.
      *
-     *      @param [in] oldReference    The old component reference.
-     *      @param [in] newReference    The new component reference.
+     *    @param [in] oldReference    The old component reference.
+     *    @param [in] newReference    The new component reference.
      */
     void renameInstanceAndConnections(QString const& previousName, QString const& newReference);
 
     /*!
      *  Change the default name of an ad hoc connection.
      *
-     *      @param [in] connection      The selected ad hoc connection.
-     *      @param [in] portReference   The reference port of the containing interface.
-     *      @param [in] oldReference    Old component reference.
-     *      @param [in] newReference    New component reference.
+     *    @param [in] connection      The selected ad hoc connection.
+     *    @param [in] portReference   The reference port of the containing interface.
+     *    @param [in] oldReference    Old component reference.
+     *    @param [in] newReference    New component reference.
      */
     void changeAdHocConnectionDefaultName(QSharedPointer<AdHocConnection> connection, QString const& portReference,
         QString const& oldReference, QString const& newReference);
@@ -131,9 +132,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component      The component.
-     *      @param [in] newDisplayName The component's new display name.
-     *      @param [in] parent         The parent command.
+     *    @param [in] component      The component.
+     *    @param [in] newDisplayName The component's new display name.
+     *    @param [in] parent         The parent command.
      */
     ComponentChangeDisplayNameCommand(ComponentItem* component, QString const& newDisplayName,
 		QUndoCommand* parent = 0);
@@ -178,9 +179,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component      The component.
-     *      @param [in] newDescription The component's new description.
-     *      @param [in] parent         The parent command.
+     *    @param [in] component      The component.
+     *    @param [in] newDescription The component's new description.
+     *    @param [in] parent         The parent command.
      */
     ComponentChangeDescriptionNameCommand(ComponentItem* component, QString const& newDescription,
 		QUndoCommand* parent = 0);
@@ -226,11 +227,11 @@ public:
     /*!
      *  The constructor
      *
-     *      @param [in] instanceName        The name of the component instance
-     *      @param [in] oldActiveView       The name of the previous active view.
-     *      @param [in] newActiveView       The name of the new active view.
-     *      @param [in] activeViewModel     Pointer to the model that manages the active views.
-     *      @param [in] parent              Pointer to the parent command.
+     *    @param [in] instanceName        The name of the component instance
+     *    @param [in] oldActiveView       The name of the previous active view.
+     *    @param [in] newActiveView       The name of the new active view.
+     *    @param [in] activeViewModel     Pointer to the model that manages the active views.
+     *    @param [in] parent              Pointer to the parent command.
      */
     ComponentActiveViewChangeCommand(const QString& instanceName, QString const& oldActiveView,
         QString const& newActiveView, ActiveViewModel* activeViewModel, QUndoCommand* parent = 0);
@@ -284,10 +285,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] diagram     The design diagram containing the packaged component.
-     *      @param [in] component   The component to package.
-     *      @param [in] vlnv        The VLNV of the packaged component.
-     *      @param [in] parent      The parent command.
+     *    @param [in] diagram     The design diagram containing the packaged component.
+     *    @param [in] component   The component to package.
+     *    @param [in] vlnv        The VLNV of the packaged component.
+     *    @param [in] parent      The parent command.
      */
     ComponentPacketizeCommand(DesignDiagram* diagram, ComponentItem* component, VLNV const& vlnv, 
         QUndoCommand* parent = 0);
@@ -338,9 +339,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint          The diagram connection end point.
-     *      @param [in] newInterfaceMode  The end point's new interface mode.
-     *      @param [in] parent            The parent command.
+     *    @param [in] endpoint          The diagram connection end point.
+     *    @param [in] newInterfaceMode  The end point's new interface mode.
+     *    @param [in] parent            The parent command.
      */
 	EndpointChangeCommand(ConnectionEndpoint* endpoint,
 		General::InterfaceMode newMode,
@@ -390,9 +391,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint  The connection endpoint.
-     *      @param [in] newName   The endpoint's new name.
-     *      @param [in] parent    The parent command.
+     *    @param [in] endpoint  The connection endpoint.
+     *    @param [in] newName   The endpoint's new name.
+     *    @param [in] parent    The parent command.
      */
     EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
         QString const& newName,
@@ -445,9 +446,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint        The connection endpoint.
-     *      @param [in] newDescription  The endpoint's new description.
-     *      @param [in] parent          The parent command.
+     *    @param [in] endpoint        The connection endpoint.
+     *    @param [in] newDescription  The endpoint's new description.
+     *    @param [in] parent          The parent command.
      */
 	EndpointDescChangeCommand(ConnectionEndpoint* endpoint, QString const& newDescription,
                               QUndoCommand* parent = 0);
@@ -495,9 +496,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint  The connection endpoint.
-     *      @param [in] newDir    The endpoint's new dependency direction.
-     *      @param [in] parent    The parent command.
+     *    @param [in] endpoint  The connection endpoint.
+     *    @param [in] newDir    The endpoint's new dependency direction.
+     *    @param [in] parent    The parent command.
      */
 	EndpointDependencyDirectionChangeCommand(ConnectionEndpoint* endpoint, DependencyDirection newDir,
                                              QUndoCommand* parent = 0);
@@ -545,9 +546,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint  The connection endpoint.
-     *      @param [in] newDir    The endpoint's new COM direction.
-     *      @param [in] parent    The parent command.
+     *    @param [in] endpoint  The connection endpoint.
+     *    @param [in] newDir    The endpoint's new COM direction.
+     *    @param [in] parent    The parent command.
      */
     EndpointComDirectionChangeCommand(ConnectionEndpoint* endpoint, DirectionTypes::Direction newDir,
                                       QUndoCommand* parent = 0);
@@ -595,9 +596,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint  The connection endpoint.
-     *      @param [in] newDir    The endpoint's new COM data type.
-     *      @param [in] parent    The parent command.
+     *    @param [in] endpoint  The connection endpoint.
+     *    @param [in] newDir    The endpoint's new COM data type.
+     *    @param [in] parent    The parent command.
      */
     EndpointTransferTypeChangeCommand(ConnectionEndpoint* endpoint, QString const& newTransferType,
                                   QUndoCommand* parent = 0);
@@ -645,9 +646,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint   The connection endpoint.
-     *      @param [in] newValues  The endpoint's new property values.
-     *      @param [in] parent     The parent command.
+     *    @param [in] endpoint   The connection endpoint.
+     *    @param [in] newValues  The endpoint's new property values.
+     *    @param [in] parent     The parent command.
      */
     EndpointPropertyValuesChangeCommand(ConnectionEndpoint* endpoint,
                                         QMap<QString, QString> const& newValues,
@@ -696,11 +697,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint    The diagram connection end point.
-     *      @param [in] busType     The end point's current bus type.
-     *      @param [in] absType     The end point's current abs type.
-     *      @param [in] activeView  The active view of the containing item.
-     *      @param [in] parent      The parent command.
+     *    @param [in] endpoint    The diagram connection end point.
+     *    @param [in] busType     The end point's current bus type.
+     *    @param [in] absType     The end point's current abs type.
+     *    @param [in] activeView  The active view of the containing item.
+     *    @param [in] parent      The parent command.
      */
     EndPointTypesCommand(ConnectionEndpoint* endpoint, VLNV const& busType, VLNV const& absType,
         QString const& activeView, QUndoCommand* parent = 0);
@@ -761,12 +762,14 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endpoint          The diagram connection end point.
-     *      @param [in] newPortMaps       The new port maps for the end point.
-     *      @param [in] parent            The parent command.
+     *    @param [in] endpoint          The diagram connection end point.
+     *    @param [in] newPortMaps       The new port maps for the end point.
+     *    @param [in] component         The component whose design is being edited.
+     *    @param [in] parent            The parent command.
      */
     EndPointPortMapCommand(ConnectionEndpoint* endpoint,
                            QList< QSharedPointer<PortMap> > newPortMaps,
+                           QSharedPointer<Component> component,
                            QUndoCommand* parent = 0);
 
     /*!
@@ -804,6 +807,9 @@ private:
 
     //! The end point's new port maps.
     QList< QSharedPointer<PortMap> > newPortMaps_;
+
+    //! The component whose design is being edited.
+    QSharedPointer<Component> component_;
 };
 
 //-----------------------------------------------------------------------------

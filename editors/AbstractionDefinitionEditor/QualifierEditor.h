@@ -15,12 +15,15 @@
 #include "QualifierData.h"
 
 #include <IPXACTmodels/common/Qualifier.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QLineEdit>
 #include <QFrame>
 #include <QLabel>
 #include <QComboBox>
 #include <QCheckBox>
+
+class QGridLayout;
 
 //-----------------------------------------------------------------------------
 //! Editor for qualifiers in 2022 standard Abstraction Definition.
@@ -34,10 +37,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] libraryAccess   Interface to the library.
-     *      @param [in] parent          The owner of this instance
+     *    @param [in] stdRevision	    The IP-XACT standard revision in use.
+     *    @param [in] parent          The owner of this instance
      */
-	QualifierEditor(QWidget *parent);
+	QualifierEditor(Document::Revision stdRevision, QWidget *parent);
 
 	virtual ~QualifierEditor() = default;
 
@@ -48,12 +51,23 @@ public:
 	/*!
 	 *	Setup the qualifier editor.
 	 *  
-	 *      @param [in] allQualifiers		List of all possible qualifiers.
-	 *      @param [in] activeQualifiers	List of selected qualifiers.
-	 *      @param [in] attributes			Map of the qualifier's attributes.
+	 *    @param [in] qualifierOptions		List of all possible qualifiers.
 	 */
-	void setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<QString, QString> const& attributes);
+	void setupEditor(QStringList const& qualifierOptions);
 	
+	/*!
+	 *	Set the editor data.
+	 *  
+	 *    @param [in] activeQualifiers  The qualifiers that should be set checked.
+	 *    @param [in] attributes	      The qualifier attributes to set.
+	 */
+	void setupEditorData(QStringList const& activeQualifiers, QMap<QString, QString> const& attributes);
+
+	/*!
+	 *	Hide all attribute editors from the editor.
+	 */
+	void hideAllAttributes();
+
 	/*!
 	 *	Get the qualifier data from the editor.
 	 *
@@ -78,7 +92,7 @@ private slots:
 	/*!
 	 *	Update attribute visibility when qualifier checkbox is toggled.
 	 *  
-	 *      @param [in] isChecked	Flag indicating if checkbox was checked or not.
+	 *    @param [in] isChecked	Flag indicating if checkbox was checked or not.
 	 */
 	void onItemClicked(bool isChecked);
 
@@ -99,11 +113,6 @@ private:
 	QMap<QString, QString> getAttributes() const;
 
 	/*!
-	 *	Populate the editor with qualifier checkboxes.
-	 */
-	void populateCheckBoxes();
-
-	/*!
 	 *	Setup the editor layout.
 	 */
 	void setupLayout();
@@ -111,25 +120,34 @@ private:
 	/*!
 	 *	Set a single attribute value to the corresponding editor.
 	 *  
-	 *      @param [in] attributeType	The attribute to set.
-	 *      @param [in] attributeValue	The value to set.
+	 *    @param [in] attributeType	The attribute to set.
+	 *    @param [in] attributeValue	The value to set.
 	 */
 	void setQualifierAttribute(Qualifier::Attribute attributeType, QString const& attributeValue);
 
 	/*!
 	 *	Get the editor for a given attribute.
 	 *  
-	 *      @param [in] attribute	The attribute whose editor to look for.
+	 *    @param [in] attribute	The attribute whose editor to look for.
 	 *		
 	 * 		@return A pointer to the corresponding editor, or nullptr if invalid attribute type.
 	 */
 	QComboBox* getAttributeEditor(Qualifier::Attribute attribute);
 
 	/*!
+	 *	Get the attribute editor for a given qualifier type.
+	 *  
+	 *    @param [in] qualifierType     The qualfier type whose attribute editor to get.
+	 *	    
+	 * 	    @return The attribute editor, or nullptr if not found.
+	 */
+	QWidget* getAttributeEditor(Qualifier::Type qualifierType);
+	
+	/*!
 	 *	Set the visibility for the attributes of a qualifier, based on if qualifier is set.
 	 *  
-	 *      @param [in] qualifier	The qualifier, whose attributes are shown/hidden.
-	 *      @param [in] visible		Flag indicating if attributes should be shown or hidden.
+	 *    @param [in] qualifier	The qualifier, whose attributes are shown/hidden.
+	 *    @param [in] visible		Flag indicating if attributes should be shown or hidden.
 	 */
 	void setQualifierAttributesVisible(Qualifier::Type qualifier, bool visible);
 
@@ -140,11 +158,14 @@ private:
 	/*!
 	 *	Get the attributes for a given qualifier.
 	 *  
-	 *      @param [in] qualifier	The qualifier.
+	 *    @param [in] qualifier	The qualifier.
 	 *		
 	 * 		@return A list of attributes for a qualifier.
 	 */
 	QList<Qualifier::Attribute> getQualifierTypeAttributes(Qualifier::Type qualifier);
+
+	//! The qualifiers and attributes layout.
+	QGridLayout* qualifierAndAttributelayout_;
 
 	//! The editor for the power domain reference. Not used in absDef.
     QLineEdit* powerDomainLineEdit_;
@@ -160,8 +181,8 @@ private:
 	//! Editable combobox for flow control flow type.
 	QComboBox* flowTypeSelector_;
 
-	//! List of the qualifier checkboxes.
-	QList<QCheckBox*> qualifierBoxes_;
+	//! Map of qualifier checkboxes and their associated type.
+	QHash<Qualifier::Type, QCheckBox*> qualifierBoxes_;
 
 	//! List of pre-set flow types. If flow type is not in this list,
 	//  Then it will be set as user.
@@ -170,6 +191,9 @@ private:
 		QStringLiteral("ready"),
 		QStringLiteral("busy")
 	};
+
+	//! The IP-XACT standard revision in use.
+	Document::Revision stdRevision_;
 };
 
 #endif // QUALIFIEREDITOR_H

@@ -41,14 +41,14 @@ public:
     /*!
      * The constructor.
      *
-     *      @param [in] registerInterface       Interface for registers.
-     *      @param [in] registerFile            The register file to edit.
-     *      @param [in] component               The component containing the register file.
-     *      @param [in] handler                 The available IP-XACT library.
-     *      @param [in] parameterFinder         Finder for parameters.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] registerFileValidator   Validator for register files.
-     *      @param [in] parent                  The parent widget.
+     *    @param [in] registerInterface       Interface for registers.
+     *    @param [in] registerFile            The register file to edit.
+     *    @param [in] component               The component containing the register file.
+     *    @param [in] handler                 The available IP-XACT library.
+     *    @param [in] parameterFinder         Finder for parameters.
+     *    @param [in] expressionFormatter     Formatter for expressions.
+     *    @param [in] registerFileValidator   Validator for register files.
+     *    @param [in] parent                  The parent widget.
     */
     SingleRegisterFileEditor(RegisterInterface* registerInterface,
         QSharedPointer<RegisterFile> registerFile,
@@ -83,8 +83,8 @@ signals:
     /*
      *  Informs of register name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void registerNameChanged(QString const& oldName, QString const& newName);
 
@@ -118,16 +118,16 @@ private:
     /*!
      * Get the formatted value of a given expression.
      *
-     *     @param [in] expression  The expression to format.
+     *    @param [in] expression  The expression to format.
      *
-     *     @return The formatted value.
+     *    @return The formatted value.
      */
     QString formattedValueFor(QString const& expression) const;
 
     /*!
      * Block/unblock signals from expression editor.
      *
-     *     @param [in] blockStatus  If true, signals are blocked, otherwise signals are enabled.
+     *    @param [in] blockStatus  If true, signals are blocked, otherwise signals are enabled.
      */
      void changeExpressionEditorsSignalBlockStatus(bool blockStatus) const;
 

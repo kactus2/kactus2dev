@@ -28,7 +28,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] port                    The port to write to Verilog.
+     *    @param [in] port                    The port to write to Verilog.
      */
     VerilogPortWriter(QSharedPointer<MetaPort> port);
 
@@ -37,7 +37,7 @@ public:
 
 	/*! Writes the Verilog port declaration into a text stream.
 	 *
-	 *      @param [in] output   The text stream to write the port into.
+	 *    @param [in] output   The text stream to write the port into.
 	 */
     void write(QTextStream& outputStream) const;
 
@@ -52,21 +52,21 @@ private:
     /*!
      *  Checks if the writer should write nothing.
      *
-     *      @return True, if the writer has nothing to write, otherwise false.
+     *    @return True, if the writer has nothing to write, otherwise false.
      */
     bool nothingToWrite() const;
 
     /*!
      *  Creates a Verilog port declaration from the port model.     
      *
-     *      @return A Verilog port declaration.
+     *    @return A Verilog port declaration.
      */
     QString createDeclaration() const; 
 
     /*!
      *  Creates a string representation of the port direction.
      *
-     *      @return The port direction.
+     *    @return The port direction.
      */
     QString direction() const;
     

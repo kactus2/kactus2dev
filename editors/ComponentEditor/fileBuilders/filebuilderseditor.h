@@ -39,12 +39,12 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] fileBuilderInterface    Interface for accessing file builders.
-     *      @param [in] parameterFinder         Finder used to identify parameters.
-     *      @param [in] expressionParser        Parser used to calculate expressions.
-     *      @param [in] expressionFormatter     Formatter used to format expressions.
-     *      @param [in] availableFileBuilders   List of editable file builders.
-     *      @param [in] parent                  Pointer to the owner of this editor.
+     *    @param [in] fileBuilderInterface    Interface for accessing file builders.
+     *    @param [in] parameterFinder         Finder used to identify parameters.
+     *    @param [in] expressionParser        Parser used to calculate expressions.
+     *    @param [in] expressionFormatter     Formatter used to format expressions.
+     *    @param [in] availableFileBuilders   List of editable file builders.
+     *    @param [in] parent                  Pointer to the owner of this editor.
 	 */
     FileBuildersEditor(FileBuilderInterface* fileBuilderInterface,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -61,7 +61,7 @@ public:
 	/*!
      *  Check for the validity of the edited file builders.
 	 *
-	 *      @return True if all file builders are in valid state.
+	 *    @return True if all file builders are in valid state.
 	 */
 	virtual bool isValid() const;
 
@@ -84,14 +84,14 @@ signals:
     /*!
      *  Increase the number of references in the selected parameter.
      *
-     *      @param [in] id  Id of the selected parameter.
+     *    @param [in] id  Id of the selected parameter.
      */
     void increaseReferences(QString id) const;
     
     /*!
      *  Decrease the number of references in the selected parameter.
      *
-     *      @param [in] id  Id of the selected parameter.
+     *    @param [in] id  Id of the selected parameter.
      */
     void decreaseReferences(QString id) const;
 

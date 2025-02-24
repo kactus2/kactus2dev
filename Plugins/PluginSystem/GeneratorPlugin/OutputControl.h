@@ -48,8 +48,8 @@ struct GenerationOutput
     /*!
      *  Finds position for body text highlight in document, if any exists.
      *
-	 *      @param [out] begin                  The position where the highlight begins, if successful.
-     *      @param [out] end                    The position where the highlight ends, if successful.
+	 *    @param [out] begin                  The position where the highlight begins, if successful.
+     *    @param [out] end                    The position where the highlight ends, if successful.
      */
     virtual void getBodyHighlight(int& begin, int& end) const = 0;
 };
@@ -70,21 +70,21 @@ public:
     /*!
      *  Checks if the file output configuration is valid.
      *
-     *      @param [out] warning   The stated reason for not accepting.
+     *    @param [out] warning   The stated reason for not accepting.
      */
     bool validSelections(QString &warning);
 
     /*!
      *  Sets the path for the output file for the generation.
      *
-     *      @param [in] path   The path to set.
+     *    @param [in] path   The path to set.
      */
     void setOutputPath(QString const& path);
 
     /*!
      *  Gets the output path for generation.
      *
-     *      @return The path to output file.
+     *    @return The path to output file.
      */
     QString getOutputPath() const;
     
@@ -96,10 +96,10 @@ public:
     /*!
      *  Tries to change the file name of an output. Will rewrite the content.
      *
-     *      @param [in] index           The position of the output within the list.
-     *      @param [in] newName         The would-be new name for the file.
+     *    @param [in] index           The position of the output within the list.
+     *    @param [in] newName         The would-be new name for the file.
      *
-     *      @return The changed output if the change was successful.
+     *    @return The changed output if the change was successful.
      */
     QSharedPointer<GenerationOutput> changeFileName(int index, QString const& newName);
 

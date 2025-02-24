@@ -39,11 +39,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] remapPorts              The list containing the remap ports of this remap state.
-     *      @param [in] component               The component whose remap state is being edited.
-     *      @param [in] parameterFinder         The parameter finder used to search the components parameters.
-     *      @param [in] expressionFormatter     Changes the parameter ids to names in references.
-     *      @param [in] parent                  Pointer to the owner of this editor.
+     *    @param [in] remapPorts              The list containing the remap ports of this remap state.
+     *    @param [in] component               The component whose remap state is being edited.
+     *    @param [in] parameterFinder         The parameter finder used to search the components parameters.
+     *    @param [in] expressionFormatter     Changes the parameter ids to names in references.
+     *    @param [in] parent                  Pointer to the owner of this editor.
      */
     RemapConditionEditor(QSharedPointer<QList<QSharedPointer<RemapPort> > > remapPorts,
         QSharedPointer<Component> component,
@@ -71,28 +71,28 @@ signals:
 	/*!
 	 *  Prints an error message to the user.
 	 *
-	 *      @param [in] msg     The error message.
+	 *    @param [in] msg     The error message.
 	 */
 	void errorMessage(const QString& msg) const;
 
 	/*!
 	 *  Prints a notification to the user.
 	 *
-	 *      @param [in] msg     The notification message.
+	 *    @param [in] msg     The notification message.
 	 */
 	void noticeMessage(const QString& msg) const;
 
     /*!
      *  Increase the amount of references to the parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the amount of references to the parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void decreaseReferences(QString id);
 

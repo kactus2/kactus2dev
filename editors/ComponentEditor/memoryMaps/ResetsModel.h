@@ -34,10 +34,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] resetInterface      Interface for resets.
-     *      @param [in] expressionParser    Pointer to the expression parser.
-     *      @param [in] parameterFinder     Pointer to the parameter finder.
-     *      @param [in] parent              Pointer to the owner of the model.
+     *    @param [in] resetInterface      Interface for resets.
+     *    @param [in] expressionParser    Pointer to the expression parser.
+     *    @param [in] parameterFinder     Pointer to the parameter finder.
+     *    @param [in] parent              Pointer to the owner of the model.
      */
     ResetsModel(ResetInterface* resetInterface, QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder, QObject *parent);
@@ -50,59 +50,59 @@ public:
     /*!
      *  Get the number of rows an item contains.
      *
-     *      @param [in] parent  Identifies the parent that's row count is requested.
+     *    @param [in] parent  Identifies the parent that's row count is requested.
      *
-     *      @return Number of rows the item has.
+     *    @return Number of rows the item has.
      */
     virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
     /*!
      *  Get the number of columns the item has to be displayed.
      *
-     *      @param [in] parent  Identifies the parent that's column count is requested.
+     *    @param [in] parent  Identifies the parent that's column count is requested.
      *
-     *      @return The number of columns to be displayed.
+     *    @return The number of columns to be displayed.
      */
     virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
     /*!
      *  Get the item flags that defines the possible operations for the item.
      *
-     *      @param [in] index   Model index that identifies the item.
+     *    @param [in] index   Model index that identifies the item.
      *
-     *      @return Qt::ItemFlags specify the possible operations for the item.
+     *    @return Qt::ItemFlags specify the possible operations for the item.
      */
     Qt::ItemFlags flags(const QModelIndex& index) const;
 
     /*!
      *  Get the header data for specified header.
      *
-     *      @param [in] section         The section specifies the row/column number for the header.
-     *      @param [in] orientation     Specified if horizontal or vertical header is wanted.
-     *      @param [in] role            Specifies the type of the requested data.
+     *    @param [in] section         The section specifies the row/column number for the header.
+     *    @param [in] orientation     Specified if horizontal or vertical header is wanted.
+     *    @param [in] role            Specifies the type of the requested data.
      *
-     *      @return QVariant Contains the requested data.
+     *    @return QVariant Contains the requested data.
      */
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
     /*!
      *  Get the data for specified item.
      *
-     *      @param [in] index   Specifies the item that's data is requested.
-     *      @param [in] role    The role that defines what kind of data is requested.
+     *    @param [in] index   Specifies the item that's data is requested.
+     *    @param [in] role    The role that defines what kind of data is requested.
      *
-     *      @return QVariant Contains the data for the item.
+     *    @return QVariant Contains the data for the item.
      */
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
     /*!
      *  Save the data to the model for specified item.
      *
-     *      @param [in] index   The model index of the item that's data is to be saved.
-     *      @param [in] value   The data that is to be saved.
-     *      @param [in] role    The role specifies what kind of data should be saved.
+     *    @param [in] index   The model index of the item that's data is to be saved.
+     *    @param [in] value   The data that is to be saved.
+     *    @param [in] role    The role specifies what kind of data should be saved.
      *
-     *      @return True if saving happened successfully.
+     *    @return True if saving happened successfully.
      */
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
@@ -111,37 +111,37 @@ protected:
     /*!
      *  Check if the column index is valid for expressions.
      *
-     *      @param [in] index   The index being evaluated.
+     *    @param [in] index   The index being evaluated.
      *
-     *      @return     True, if column can have expressions, otherwise false.
+     *    @return     True, if column can have expressions, otherwise false.
      */
     virtual bool isValidExpressionColumn(QModelIndex const& index) const;
 
     /*!
      *  Gets the expression for the given index, or plain value if there is no expression.
      *
-     *      @param [in] index   The index of target data.
+     *    @param [in] index   The index of target data.
      *
-     *      @return     Expression or plain value in the given index.
+     *    @return     Expression or plain value in the given index.
      */
     virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
 
     /*!
      *  Validates the data in the column.
      *
-     *      @param [in] index   The index being validated.
+     *    @param [in] index   The index being validated.
      *
-     *      @return     True, if the data is valid, otherwise false.
+     *    @return     True, if the data is valid, otherwise false.
      */
     virtual bool validateIndex(QModelIndex const& index) const;
 
     /*!
      *  Gets the number of all the references made on the selected row to the selected parameter.
      *
-     *      @param [in] row         The row of the selected item.
-     *      @param [in] valueID     The selected parameter.
+     *    @param [in] row         The row of the selected item.
+     *    @param [in] valueID     The selected parameter.
      *
-     *      @return The amount of references made on the selected row to the selected parameter.
+     *    @return The amount of references made on the selected row to the selected parameter.
      */
     virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const;
 
@@ -150,14 +150,14 @@ protected:
     /*!
      *  Add a new item to the given index.
      *
-     *      @param [in] index   The index identifying the position for new item.
+     *    @param [in] index   The index identifying the position for new item.
      */
     virtual void onAddItem(const QModelIndex& index);
 
     /*!
      *  Remove the item in the given index.
      *
-     *      @param [in] index   The index identifying the item to remove.
+     *    @param [in] index   The index identifying the item to remove.
      */
     virtual void onRemoveItem(const QModelIndex& index);
 
@@ -177,27 +177,27 @@ private:
     /*!
      *  Get the formatted value of an expression in the selected index.
      *
-     *      @param [in] index   The selected index.
+     *    @param [in] index   The selected index.
      *
-     *      @return The formatted value of an expression in the selected index.
+     *    @return The formatted value of an expression in the selected index.
      */
     virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const;
 
     /*!
      *  Get the expression of the selected index.
      *
-     *      @param [in] index   The selected index.
+     *    @param [in] index   The selected index.
      *
-     *      @return The expression of the selected index.
+     *    @return The expression of the selected index.
      */
     virtual QVariant expressionForIndex(QModelIndex const& index) const;
 
     /*!
      *  Gets the value for the given index.
      *
-     *      @param [in] index   The index of target data.
+     *    @param [in] index   The index of target data.
      *
-     *      @return     The data in the given index.
+     *    @return     The data in the given index.
      */
     QVariant valueForIndex(QModelIndex const& index) const;
 

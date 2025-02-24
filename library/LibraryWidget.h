@@ -48,8 +48,8 @@ public:
 
     /*! The constructor.
      *
-     *      @param [in] library    The IP-XACT library interface.
-     *      @param [in] parent     The parent widget.
+     *    @param [in] library    The IP-XACT library interface.
+     *    @param [in] parent     The parent widget.
     */
     LibraryWidget(LibraryHandler* library, MessageMediator* messageChannel, QWidget* parent = 0);
 
@@ -58,28 +58,28 @@ public:
 
     /*! Gets the handle for library access.
      *
-     *      @return     The library access handle.
+     *    @return     The library access handle.
     */
     LibraryHandler* getLibraryHandler() const;
     
     /*!
      *  Set filter settings for the library.
      *
-     *      @param [in] settings    Settings containing the library filters.
+     *    @param [in] settings    Settings containing the library filters.
      */
     void loadFilterSettings(QSettings& settings);
 
     /*!
      *  Save settings for dock widget filters.
      *
-     *      @param [in] settings    The settings.
+     *    @param [in] settings    The settings.
      */
     void saveFilterSettings(QSettings& settings) const;
 
     /*!
      *  Selects the given VLNV in all library views.
      *
-     *      @param [in] componentVLNV   The VLVN to select.
+     *    @param [in] componentVLNV   The VLVN to select.
      */
     void selectComponent(VLNV const& componentVLNV) const;
 
@@ -110,20 +110,20 @@ public slots:
     /*!
      *  Shows errors about the library item with the given VLNV.
      *
-     *      @param [in] vlnv The VLNV of the library item.
+     *    @param [in] vlnv The VLNV of the library item.
      */
     void onShowErrors(VLNV const& vlnv);
     
     /*! Create a new abstraction definition for given bus definition.
      *
-     *      @param [in] busDefVLNV Identifies the bus definition to create the abs def for.
+     *    @param [in] busDefVLNV Identifies the bus definition to create the abs def for.
      *
      */
     void onCreateAbsDef(VLNV const& busDefVLNV);
 
     /*! Create new design with given vlnv.
      *
-     *      @param [in] vlnv The vlnv that identifies the design.
+     *    @param [in] vlnv The vlnv that identifies the design.
      *
     */
     void onCreateDesign(VLNV const& vlnv);
@@ -147,7 +147,7 @@ private:
 
     /*! Connects the given filter to the filtering widget.
      *
-     *      @param [in} filter     The filter to connect.
+     *    @param [in} filter     The filter to connect.
     */
     void connectLibraryFilter(LibraryFilter* filter) const;
 

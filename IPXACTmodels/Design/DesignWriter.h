@@ -27,8 +27,8 @@ namespace DesignWriter
     /*!
      *  Write the design.
      *
-     *      @param [in] writer  The used XML writer.
-     *      @param [in] design  The selected design.
+     *    @param [in] writer  The used XML writer.
+     *    @param [in] design  The selected design.
      */
     IPXACTMODELS_EXPORT void writeDesign(QXmlStreamWriter& writer, QSharedPointer<Design> design);
 
@@ -37,33 +37,33 @@ namespace DesignWriter
         /*!
          *  Write the start of the XML file.
          *
-         *      @param [in] writer  The used XML writer.
-         *      @param [in] design  The selected design.
+         *    @param [in] writer  The used XML writer.
+         *    @param [in] design  The selected design.
          */
         void writeDesignStart(QXmlStreamWriter& writer, QSharedPointer<Design> design);
 
         /*!
          *  Write the component instances of the design.
          *
-         *      @param [in] writer  The used XML writer.
-         *      @param [in] design  The selected design.
+         *    @param [in] writer  The used XML writer.
+         *    @param [in] design  The selected design.
          */
         void writeComponentInstances(QXmlStreamWriter& writer, QSharedPointer<Design> design);
 
         /*!
          *  Write the design interconnections.
          *
-         *      @param [in] writer  The used XML writer.
-         *      @param [in] design  The selected design.
+         *    @param [in] writer  The used XML writer.
+         *    @param [in] design  The selected design.
          */
         void writeInterconnections(QXmlStreamWriter& writer, QSharedPointer<Design> design);
 
         /*!
          *  Write a single interconnection.
          *
-         *      @param [in] writer                  The used XML writer.
-         *      @param [in] currentInterconnection  The selected interconnection.
-         *      @param [in] docRevision             The applied IP-XACT standard revision.
+         *    @param [in] writer                  The used XML writer.
+         *    @param [in] currentInterconnection  The selected interconnection.
+         *    @param [in] docRevision             The applied IP-XACT standard revision.
          */
         void writeSingleInterconncetion(QXmlStreamWriter& writer,
             QSharedPointer<Interconnection> currentInterconnection, Document::Revision docRevision);
@@ -71,9 +71,9 @@ namespace DesignWriter
         /*!
          *  Write an active interface.
          *
-         *      @param [in] writer              The used XML writer.
-         *      @param [in] activeInterface     The selected active interface.
-         *      @param [in] docRevision             The applied IP-XACT standard revision.
+         *    @param [in] writer              The used XML writer.
+         *    @param [in] activeInterface     The selected active interface.
+         *    @param [in] docRevision             The applied IP-XACT standard revision.
          */
         void writeActiveInterface(QXmlStreamWriter& writer, QSharedPointer<ActiveInterface> activeInterface,
             Document::Revision docRevision);
@@ -83,17 +83,17 @@ namespace DesignWriter
         /*!
          *  Write a hier interface.
          *
-         *      @param [in] writer          The used XML writer.
-         *      @param [in] hierInterface   The selected hier interface.
+         *    @param [in] writer          The used XML writer.
+         *    @param [in] hierInterface   The selected hier interface.
          */
         void writeHierInterface(QXmlStreamWriter& writer, QSharedPointer<HierInterface> hierInterface);
 
         /*!
          *  Write a monitor interconnection.
          *
-         *      @param [in] writer              The used XML writer.
-         *      @param [in] monitorConnection   The selected monitor interconnection.
-         *      @param [in] docRevision             The applied IP-XACT standard revision.
+         *    @param [in] writer              The used XML writer.
+         *    @param [in] monitorConnection   The selected monitor interconnection.
+         *    @param [in] docRevision             The applied IP-XACT standard revision.
          */
         void writeMonitorInterconnection(QXmlStreamWriter& writer,
             QSharedPointer<MonitorInterconnection> monitorConnection, Document::Revision docRevision);
@@ -101,9 +101,9 @@ namespace DesignWriter
         /*!
          *  Write a monitor interface.
          *
-         *      @param [in] writer              The used XML writer.
-         *      @param [in] monitorInterface    The selected monitor interface.
-         *      @param [in] docRevision             The applied IP-XACT standard revision.
+         *    @param [in] writer              The used XML writer.
+         *    @param [in] monitorInterface    The selected monitor interface.
+         *    @param [in] docRevision             The applied IP-XACT standard revision.
          */
         void writeMonitorInterface(QXmlStreamWriter& writer, QSharedPointer<MonitorInterface> monitorInterface,
             Document::Revision docRevision);
@@ -111,17 +111,17 @@ namespace DesignWriter
         /*!
          *  Write ad-hoc connections.
          *
-         *      @param [in] writer  The used XML writer.
-         *      @param [in] design  The selected design.
+         *    @param [in] writer  The used XML writer.
+         *    @param [in] design  The selected design.
          */
         void writeAdHocConnections(QXmlStreamWriter& writer, QSharedPointer<Design> design);
 
         /*!
          *  Write a single ad-hoc connection.
          *
-         *      @param [in] writer              The used XML writer.
-         *      @param [in] adHocConnection     The selected ad-hoc connection.
-         *      @param [in] docRevision         The applied IP-XACT standard revision.
+         *    @param [in] writer              The used XML writer.
+         *    @param [in] adHocConnection     The selected ad-hoc connection.
+         *    @param [in] docRevision         The applied IP-XACT standard revision.
          */
         void writeSingleAdHocConnection(QXmlStreamWriter& writer, QSharedPointer<AdHocConnection> adHocConnection,
             Document::Revision docRevision);
@@ -129,9 +129,9 @@ namespace DesignWriter
         /*!
          *  Write ad-hoc port references.
          *
-         *      @param [in] writer              The used XML writer.
-         *      @param [in] adHocConnection     The selected ad-hoc connection.
-         *      @param [in] docRevision         The applied IP-XACT standard revision.
+         *    @param [in] writer              The used XML writer.
+         *    @param [in] adHocConnection     The selected ad-hoc connection.
+         *    @param [in] docRevision         The applied IP-XACT standard revision.
          */
         void writeAdHocPortReferences(QXmlStreamWriter& writer, QSharedPointer<AdHocConnection> adHocConnection,
             Document::Revision docRevision);
@@ -139,9 +139,9 @@ namespace DesignWriter
         /*!
          *  Write a port reference.
          *
-         *      @param [in] writer          The used XML writer.
-         *      @param [in] portRefernce    The selected port reference.
-         *      @param [in] docRevision     The applied IP-XACT standard revision.
+         *    @param [in] writer          The used XML writer.
+         *    @param [in] portRefernce    The selected port reference.
+         *    @param [in] docRevision     The applied IP-XACT standard revision.
          */
         void writePortReference(QXmlStreamWriter& writer, QSharedPointer<PortReference> portRefernce,
             Document::Revision docRevision);

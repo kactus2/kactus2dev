@@ -28,239 +28,239 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name   The name of the memory.
-     *      @param [in] type   The type of the memory.
+	 *    @param [in] name   The name of the memory.
+     *    @param [in] type   The type of the memory.
 	 */
 	MemoryItem(QString const& name, QString const& type);
 
     /*!
      *  Gets the name of the memory.
      *
-     *      @return The name of the memory.
+     *    @return The name of the memory.
      */
     QString getName() const;
 
     /*!
      *  Gets the type of the memory e.g. address space or register.
      *
-     *      @return The type of the memory.
+     *    @return The type of the memory.
      */
     QString getType() const;
 
     /*!
      *  Sets a display name for the memory.
      *
-     *      @param [in] displayName   The display name to set.
+     *    @param [in] displayName   The display name to set.
      */
     void setDisplayName(QString const& displayName);
 
     /*!
      *  Gets the display name of the memory.
      *
-     *      @return The display name of the memory.
+     *    @return The display name of the memory.
      */
     QString getDisplayName() const;
 
     /*!
      *  Sets an identifier for the memory.
      *
-     *      @param [in] identifier   The identifier to set.
+     *    @param [in] identifier   The identifier to set.
      */
     void setIdentifier(QString const& identifier);
     
     /*!
      *  Gets the memory identifier.
      *
-     *      @return The identifier for the memory.
+     *    @return The identifier for the memory.
      */
     QString getIdentifier() const;
 
     /*!
      *  Gets the number of addressable unit bits in the memory.
      *
-     *      @return The number addressable unit bits in the memory.
+     *    @return The number addressable unit bits in the memory.
      */
     QString getAUB() const;
 
     /*!
      *  Sets the number of addressable unit bits in the memory.
      *
-     *      @param [in] aub   The number of bits in an addressable unit.
+     *    @param [in] aub   The number of bits in an addressable unit.
      */
     void setAUB(QString const& aub);
 
     /*!
      *  Sets the address for the memory.
      *
-     *      @param [in] address   The memory address to set.
+     *    @param [in] address   The memory address to set.
      */
     void setAddress(QString const& address);
 
     /*!
      *  Gets the memory address.
      *
-     *      @return The address for the memory.
+     *    @return The address for the memory.
      */
     QString getAddress() const;
 
     /*!
      * Sets the range for the memory.
      *
-     *      @param [in] range   The range to set.
+     *    @param [in] range   The range to set.
      */
     void setRange(QString const& range);
 
     /*!
      *  Gets the range for the memory.
      *
-     *      @return The range for the memory.
+     *    @return The range for the memory.
      */
     QString getRange() const;
 
     /*!
      *  Sets the width for the memory.
      *
-     *      @param [in] width   The memory width to set.
+     *    @param [in] width   The memory width to set.
      */
     void setWidth(QString const& width);
 
     /*!
      *  Gets the memory width in bits.
      *
-     *      @return The width of the memory.
+     *    @return The width of the memory.
      */
     QString getWidth() const;
 
     /*!
      *  Sets the size for the memory.
      *
-     *      @param [in] size    The size to set.
+     *    @param [in] size    The size to set.
      */
     void setSize(QString const& size);
 
     /*!
      *  Gets the size for the memory.
      *
-     *      @return The memory size.
+     *    @return The memory size.
      */
     QString getSize() const;
 
     /*!
      *  Sets the offset for the memory.
      *
-     *      @param [in] offset   The offset to set.
+     *    @param [in] offset   The offset to set.
      */
     void setOffset(QString const& offset);
 
     /*!
      *  Gets the offset for the memory.
      *
-     *      @return The memory offset.
+     *    @return The memory offset.
      */
     QString getOffset() const;
 
     /*!
      *  Adds a sub-element for the memory.
      *
-     *      @param [in] child   The sub-element to add.
+     *    @param [in] child   The sub-element to add.
      */
     void addChild(QSharedPointer<MemoryItem> child);
 
     /*!
      *  Gets the sub-elements for the memory.
      *
-     *      @return The sub-elements for the memory.
+     *    @return The sub-elements for the memory.
      */
     QVector<QSharedPointer<MemoryItem> > getChildItems() const;
 
     /*!
      *  Set the dimension of the memory item.
      *
-     *      @param [in] dimension    The new dimension value.
+     *    @param [in] dimension    The new dimension value.
      */
     void setDimension(QString const& dimension);
 
     /*!
      *  Gets the dimension of the memory. Only used for registers.
      *
-     *      @return The dimension of the memory.
+     *    @return The dimension of the memory.
      */
     QString getDimension() const;
 
     /*!
      *  Set the usage for the memory item.
      *
-     *      @param [in] newUsage    The new usage value.
+     *    @param [in] newUsage    The new usage value.
      */
     void setUsage(General::Usage const& newUsage);
 
     /*!
      *  Get the usage of the memory item.
      *
-     *      @return The usage value.
+     *    @return The usage value.
      */
     General::Usage getUsage() const;
 
     /*!
      *  Set the value for the memory item.
      *
-     *      @param [in] newValue    The new value.
+     *    @param [in] newValue    The new value.
      */
     void setValue(QString const& newValue);
 
     /*!
      *  Get the value of the memory item.
      *
-     *      @return The value.
+     *    @return The value.
      */
     QString getValue() const;
 
     /*!
      *  Get the reset value of the memory item.
      *
-     *      @return The reset value of the memory item.
+     *    @return The reset value of the memory item.
      */
     QString getResetValue() const;
 
     /*!
      *  Set a new reset value for the memory item.
      *
-     *      @param [in] newResetValue   The new reset value.
+     *    @param [in] newResetValue   The new reset value.
      */
     void setResetValue(QString const& newResetValue);
 
     /*!
      *  Get the reset mask of the memory item.
      *
-     *      @return The reset mask of the memory item.
+     *    @return The reset mask of the memory item.
      */
     QString getResetMask() const;
 
     /*!
      *  Set a new reset mask for the memory item.
      *
-     *      @param [in] newResetMask    The new reset mask.
+     *    @param [in] newResetMask    The new reset mask.
      */
     void setResetMask(QString const& newResetMask);
 
     /*!
      *  Get the is present of the memory item.
      *
-     *      @return The is present of the memory item.
+     *    @return The is present of the memory item.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set a new is present for the memory item.
      *
-     *      @param [in] newIsPresent    The new is present.
+     *    @param [in] newIsPresent    The new is present.
      */
     void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Set a new initiator reference for the memory item.
      *
-     *      @param [in] newReference    The new initiator reference.
+     *    @param [in] newReference    The new initiator reference.
      */
     void setInitiatorReference(QString const& newReference);
 
@@ -272,7 +272,7 @@ public:
     /*!
      *  Set a new segment reference for the memory item.
      *
-     *      @param [in] newReference    The new segment reference.
+     *    @param [in] newReference    The new segment reference.
      */
     void setSegmentReference(QString const& newReference);
 

@@ -31,14 +31,14 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] firstComponent      The first component containing the items to be connected.
-     *      @param [in] secondComponent     The second component containing the items to be connected.
-     *      @param [in] firstList           View of the first item list to be connected.
-     *      @param [in] secondList          View of the second item list to be connected.
-     *      @param [in] firstName           Name of the first item.
-     *      @param [in] secondName          Name of the second item.
-     *      @param [in] itemMatcher         Checks for possible matches between two items.
-     *      @param [in] parent              The parent item.
+     *    @param [in] firstComponent      The first component containing the items to be connected.
+     *    @param [in] secondComponent     The second component containing the items to be connected.
+     *    @param [in] firstList           View of the first item list to be connected.
+     *    @param [in] secondList          View of the second item list to be connected.
+     *    @param [in] firstName           Name of the first item.
+     *    @param [in] secondName          Name of the second item.
+     *    @param [in] itemMatcher         Checks for possible matches between two items.
+     *    @param [in] parent              The parent item.
      */
     AutoConnectorConnectionTable(QSharedPointer<Component> firstComponent,
         QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
@@ -53,7 +53,7 @@ public:
     /*!
      *  Get the connected items.
      *
-     *      @return A list of connected item pairs.
+     *    @return A list of connected item pairs.
      */
     QVector<QPair<QString, QString> > getConnectedItems() const;
 
@@ -78,31 +78,31 @@ protected:
     /*!
      *  Handles the context menu.
      *
-     *      @param [in] event   The context menu event.
+     *    @param [in] event   The context menu event.
      */
     virtual void contextMenuEvent(QContextMenuEvent *event);
 
     /*!
      *  Handles the mime data drop.
      *
-     *      @param [in] row     Row to drop the mime data to.
-     *      @param [in] column  Column to drop the mime data to.
-     *      @param [in] data    The mime data.
-     *      @param [in] action  The drop action.
+     *    @param [in] row     Row to drop the mime data to.
+     *    @param [in] column  Column to drop the mime data to.
+     *    @param [in] data    The mime data.
+     *    @param [in] action  The drop action.
      */
     virtual bool dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action);
 
     /*!
      *  Handles the events for drag entering this table
      *
-     *      @param [in] event   The selected drag enter event.
+     *    @param [in] event   The selected drag enter event.
      */
     virtual void dragEnterEvent(QDragEnterEvent *event);
 
     /*!
      *  Handles the events for drag moving in this table
      *
-     *      @param [in] event   The selected drag move event.
+     *    @param [in] event   The selected drag move event.
      */
     virtual void dragMoveEvent(QDragMoveEvent *event);
 

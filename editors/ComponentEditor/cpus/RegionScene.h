@@ -36,9 +36,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *       @param [in] addrSpace         The address space being visualized.
-     *       @param [in] expressionParser  The expression parser to use for local memory maps.
-	 *       @param [in] parent            The owner of the scene.
+	 *    @param [in] addrSpace         The address space being visualized.
+     *    @param [in] expressionParser  The expression parser to use for local memory maps.
+	 *    @param [in] parent            The owner of the scene.
 	 */
     RegionScene(QSharedPointer<Cpu> cpu,
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps, 
@@ -60,14 +60,14 @@ protected:
     /*!
      *  Get the width of the visualized memory.
      *
-     *      @return The width of the memory.
+     *    @return The width of the memory.
      */
     QString getWidth() const final;
 
     /*!
      *  Get the range of the visualized memory.
      *
-     *      @return The range of the memory.
+     *    @return The range of the memory.
      */
     QString getRange() const final;
 

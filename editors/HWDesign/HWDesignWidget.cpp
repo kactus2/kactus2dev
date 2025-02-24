@@ -106,7 +106,7 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 		if (vlnv.isValid() && vlnv.getType() == VLNV::COMPONENT) {
 
 			// create model 
-			QSharedPointer<Component> comp = getLibraryInterface()->getModel<Component>(vlnv);
+			QSharedPointer<Component> comp = getLibHandler()->getModel<Component>(vlnv);
 
 			if (comp == nullptr|| !setDesign(comp, viewName))
             {
@@ -117,13 +117,13 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 	// if vlnv was writeSucceeded but view is empty then should create a new design for the component
 	else if (vlnv.isValid() && viewName.isEmpty())
     {
-		Q_ASSERT(getLibraryInterface()->contains(vlnv));
-		Q_ASSERT(getLibraryInterface()->getDocumentType(vlnv) == VLNV::COMPONENT);
+		Q_ASSERT(getLibHandler()->contains(vlnv));
+		Q_ASSERT(getLibHandler()->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-		QSharedPointer<Component> comp = getLibraryInterface()->getModel<Component>(vlnv);
+		QSharedPointer<Component> comp = getLibHandler()->getModel<Component>(vlnv);
 
 		// get the directory path where the component's xml file is located
-		const QString xmlPath = getLibraryInterface()->getPath(vlnv);
+		const QString xmlPath = getLibHandler()->getPath(vlnv);
 		QFileInfo xmlInfo(xmlPath);
 		const QString dirPath = xmlInfo.absolutePath();
 
@@ -143,8 +143,8 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 	connect(getDiagram(), SIGNAL(modeChanged(DrawMode)), this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
 
 	setModified(false);
-	
-	setDocumentType(QStringLiteral("HW Design"));
+
+    setDocumentType(DocumentType::HW_DESIGN);
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 
 	emit clearItemSelection();
@@ -180,10 +180,10 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString cons
             }
         }
 
-        designConfiguration = getLibraryInterface()->getModel(configurationVLNV).dynamicCast<DesignConfiguration>();       
+        designConfiguration = getLibHandler()->getModel(configurationVLNV).dynamicCast<DesignConfiguration>();       
         if (designConfiguration)
         {
-            design = getLibraryInterface()->getModel(designConfiguration->getDesignRef()).dynamicCast<Design>();
+            design = getLibHandler()->getModel(designConfiguration->getDesignRef()).dynamicCast<Design>();
         }
 
         if (!design)
@@ -204,7 +204,7 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString cons
             }
         }
 
-        design = getLibraryInterface()->getModel(designVLNV).dynamicCast<Design>();
+        design = getLibHandler()->getModel(designVLNV).dynamicCast<Design>();
         if (!design)
         {
             emit errorMessage(tr("VLNV %1 was not found in library.").arg(designVLNV.toString()));
@@ -238,7 +238,7 @@ bool HWDesignWidget::saveAs()
     VLNV vlnv;
 
     QString directory;
-    if (!NewObjectDialog::saveAsDialog(this, getLibraryInterface(), oldVLNV, prodHier, firmness, tags, vlnv,
+    if (!NewObjectDialog::saveAsDialog(this, getLibHandler(), oldVLNV, prodHier, firmness, tags, vlnv,
         directory))
     {
         return false;
@@ -312,7 +312,7 @@ bool HWDesignWidget::saveAs()
 	getDiagram()->updateHierComponent();
 
 	// get the paths to the original xml file
-	QFileInfo sourceInfo(getLibraryInterface()->getPath(oldComponent->getVlnv()));
+	QFileInfo sourceInfo(getLibHandler()->getPath(oldComponent->getVlnv()));
 	QString sourcePath = sourceInfo.absolutePath();
 
 	// update the file paths and copy necessary files
@@ -322,25 +322,25 @@ bool HWDesignWidget::saveAs()
 
 	bool writeSucceeded = true;
 
-	getLibraryInterface()->beginSave();
+	getLibHandler()->beginSave();
 
 	// if design configuration is used then write it.
-	if (designConf && !getLibraryInterface()->writeModelToFile(directory, designConf))
+	if (designConf && !getLibHandler()->writeModelToFile(directory, designConf))
     {
 	    writeSucceeded = false;
 	}
 
-	if (!getLibraryInterface()->writeModelToFile(directory, design))
+	if (!getLibHandler()->writeModelToFile(directory, design))
     {
 		writeSucceeded = false;
 	}
 
-	if (!getLibraryInterface()->writeModelToFile(directory, topComponent))
+	if (!getLibHandler()->writeModelToFile(directory, topComponent))
     {
 		writeSucceeded = false;
 	}
 
-	getLibraryInterface()->endSave();
+	getLibHandler()->endSave();
 
 	if (writeSucceeded)
     {
@@ -514,6 +514,7 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
             new InterfaceDeleteCommand(getDiagram(), diagIf, removePorts, cmd.data());
         connect(childCmd, SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
 
+        static_cast<HWDesignDiagram*>(getDiagram())->setInterfacesHaveBeenDeleted();
         childCmd->redo();
     }
 
@@ -734,17 +735,17 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 	VLNV vlnv;
 	QString path;
 
-	if (prevlnv.isValid() && getLibraryInterface()->contains(prevlnv)) 
+	if (prevlnv.isValid() && getLibHandler()->contains(prevlnv)) 
     {
 		vlnv = prevlnv;
-		path = getLibraryInterface()->getPath(prevlnv);
+		path = getLibHandler()->getPath(prevlnv);
 
 		QFileInfo info(path);
 		path = info.absolutePath();
 	}
 	else
     {
-        NewObjectDialog newDesignDialog(getLibraryInterface(), VLNV::COMPONENT, true, parentWidget());
+        NewObjectDialog newDesignDialog(getLibHandler(), VLNV::COMPONENT, true, parentWidget());
 		newDesignDialog.setVLNV(prevlnv);
 		newDesignDialog.exec();
 
@@ -759,10 +760,10 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 
 	QSharedPointer<Component> newComponent;
 	
-	if (getLibraryInterface()->contains(prevlnv))
+	if (getLibHandler()->contains(prevlnv))
     {
 		// find the component
-		QSharedPointer<Document> libComp = getLibraryInterface()->getModel(prevlnv);
+		QSharedPointer<Document> libComp = getLibHandler()->getModel(prevlnv);
 		newComponent = libComp.staticCast<Component>();
 
 		Q_ASSERT_X(newComponent, "HWDesignWidget::createEmptyDesign",
@@ -774,7 +775,7 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 		newComponent = QSharedPointer<Component>(new Component(vlnv, getEditedComponent()->getRevision()));
 	}
 
-    getLibraryInterface()->writeModelToFile(path, newComponent);
+    getLibHandler()->writeModelToFile(path, newComponent);
 
 	createDesignForComponent(newComponent, path);
 
@@ -796,7 +797,7 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	QString version = designVLNV.getVersion();
 
 	// if vlnv is reserved then add "(<number>)" to end of version field
-	while (getLibraryInterface()->contains(designVLNV))
+	while (getLibHandler()->contains(designVLNV))
     {
 		++runningNumber;
 		designVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
@@ -810,7 +811,7 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	version = desConfVLNV.getVersion();
 
 	// if vlnv is reserved then add "(<number>)" to end of version field
-	while (getLibraryInterface()->contains(desConfVLNV))
+	while (getLibHandler()->contains(desConfVLNV))
     {
 		++runningNumber;
 		desConfVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
@@ -840,9 +841,9 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 
 	auto newDesign = QSharedPointer<Design>(new Design(designVLNV, component->getRevision()));
 
-	getLibraryInterface()->writeModelToFile(dirPath, newDesign);
-	getLibraryInterface()->writeModelToFile(dirPath, designConf);
-    getLibraryInterface()->writeModelToFile(component);
+	getLibHandler()->writeModelToFile(dirPath, newDesign);
+	getLibHandler()->writeModelToFile(dirPath, designConf);
+    getLibHandler()->writeModelToFile(component);
 
 	setDesign(component, viewName);
 }
@@ -881,6 +882,140 @@ void HWDesignWidget::updateFiles(QSharedPointer<Component> topComponent, QString
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::loadChangesFromSibling()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::loadChangesFromRelatedTab()
+{
+    // Load updated component from disk
+    if (auto libraryComponent = getLibHandler()->getModelReadOnly<Component>(getEditedComponent()->getVlnv()))
+    {
+        loadBusInterfaceChanges(libraryComponent);
+        loadPortChanges(libraryComponent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::loadBusInterfaceChanges()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::loadBusInterfaceChanges(QSharedPointer<Component const> libraryComponent)
+{
+    auto design = getDiagram()->getDesign();
+    auto designComponentInterfaces = QList<QSharedPointer<BusInterface> >(*getEditedComponent()->getBusInterfaces());
+    auto libraryComponentInterfaces = QList<QSharedPointer<BusInterface> >(*libraryComponent->getBusInterfaces());
+
+    // First check for added interfaces
+    for (auto const& compBusif : libraryComponentInterfaces)
+    {
+        // Replace if found with same name
+        if (auto foundInterface = Search::findByName(compBusif->name(), designComponentInterfaces))
+        {
+            designComponentInterfaces.removeOne(foundInterface);
+        }
+
+        designComponentInterfaces.append(compBusif);
+    }
+
+    auto hwDiagram = static_cast<HWDesignDiagram*>(getDiagram());
+   
+    // Remove deleted interfaces (aka if interface exists in design component but not in component loaded from disk).
+    for (auto designComponentInterfaceIt = designComponentInterfaces.begin(); designComponentInterfaceIt != designComponentInterfaces.end();)
+    {
+        if (auto foundInterface = Search::findByName((*designComponentInterfaceIt)->name(), libraryComponentInterfaces);
+            foundInterface == nullptr)
+        {
+            // Remove connections and routes from design, if interface had no connections
+            if (auto endpointItem = hwDiagram->getHierarchicalInterface((*designComponentInterfaceIt)->name()))
+            {
+                auto busItem = static_cast<HierarchicalBusInterfaceItem*>(endpointItem);
+
+                if (auto const& connections = busItem->getConnections(); connections.isEmpty())
+                {
+                    design->removeInterfaceGraphicsData((*designComponentInterfaceIt)->name());
+                    for (auto const& connection : busItem->getConnections())
+                    {
+                        auto interconnectionItem = static_cast<HWConnection*>(connection);
+                        design->removeRoute(interconnectionItem->getRouteExtension());
+                        design->getInterconnections()->removeOne(interconnectionItem->getInterconnection());
+                    }
+                }
+
+                hwDiagram->removeItem(busItem);
+            }
+
+            designComponentInterfaceIt = designComponentInterfaces.erase(designComponentInterfaceIt);
+        }
+        else
+        {
+            ++designComponentInterfaceIt;
+        }
+    }
+
+    QSharedPointer<QList<QSharedPointer<BusInterface> > >newBuses(new QList(designComponentInterfaces));
+    getEditedComponent()->setBusInterfaces(newBuses);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::loadPortChanges()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::loadPortChanges(QSharedPointer<Component const> libraryComponent)
+{
+    auto design = getDiagram()->getDesign();
+    auto designComponentPorts = QList<QSharedPointer<Port> >(*getEditedComponent()->getPorts());
+    auto libraryComponentPorts = QList<QSharedPointer<Port> >(*libraryComponent->getPorts());
+
+    // First check for added ports
+    for (auto const& compPort : libraryComponentPorts)
+    {
+        // Replace if found with same name
+        if (auto foundPort = Search::findByName(compPort->name(), designComponentPorts))
+        {
+            designComponentPorts.removeOne(foundPort);
+        }
+
+        designComponentPorts.append(compPort);
+    }
+
+    // Remove deleted ports (aka if port exists in deisgn component but not in component loaded from disk)
+    for (auto designComponentPortIt = designComponentPorts.begin(); designComponentPortIt != designComponentPorts.end();)
+    {
+        if (auto foundPort = Search::findByName((*designComponentPortIt)->name(), libraryComponentPorts);
+            foundPort == nullptr)
+        {
+            // Remove from design
+            auto adHocVisibilities = getDiagram()->getDesign()->getAdHocPortPositions().dynamicCast<Kactus2Group>();
+            for (auto const& adHocVisibility : adHocVisibilities->getByType("kactus2:adHocVisible"))
+            {
+                if (adHocVisibility.dynamicCast<Kactus2Placeholder>()->getAttributeValue("portName") == (*designComponentPortIt)->name())
+                {
+                    adHocVisibilities->removeFromGroup(adHocVisibility);
+                    break;
+                }
+            }
+
+            // Remove connections and routes
+            if (auto portItem = getDiagram()->getDiagramAdHocPort((*designComponentPortIt)->name()))
+            {
+                for (auto const& connection : portItem->getConnections())
+                {
+                    auto adHocConnection = static_cast<AdHocConnectionItem*>(connection);
+                    getDiagram()->getDesign()->removeRoute(adHocConnection->getRouteExtension());
+                    getDiagram()->getDesign()->getAdHocConnections()->removeOne(adHocConnection->getInterconnection());
+                }
+            }
+
+            designComponentPortIt = designComponentPorts.erase(designComponentPortIt);
+        }
+        else
+        {
+            ++designComponentPortIt;
+        }
+    }
+
+    QSharedPointer<QList<QSharedPointer<Port> > >newPortsQ(new QList(designComponentPorts));
+    getEditedComponent()->setPorts(newPortsQ);
 }
 
 //-----------------------------------------------------------------------------

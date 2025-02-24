@@ -26,9 +26,9 @@ namespace  IndirectInterfaceReader
     /*!
      *  Creates an indirect interface definition from an XML description.
      *
-     *      @param [in] interfaceNode   The XML node describing the interface.
+     *    @param [in] interfaceNode   The XML node describing the interface.
      *
-     *      @return The created indirect interface.
+     *    @return The created indirect interface.
      */
     IPXACTMODELS_EXPORT QSharedPointer<IndirectInterface> createIndirectInterfaceFrom(QDomNode const& interfaceNode,
         Document::Revision docRevision);
@@ -38,16 +38,16 @@ namespace  IndirectInterfaceReader
         /*!
           *  Reads the attributes from XML to an indirect interface.
           *
-          *      @param [in] interfaceNode           The XML description of the indirect interface.
-          *      @param [in/out] indirectInterface   The indirect interface to insert the attributes into.
+          *    @param [in] interfaceNode           The XML description of the indirect interface.
+          *    @param [in/out] indirectInterface   The indirect interface to insert the attributes into.
           */
         void parseAttributes(QDomNode const& interfaceNode, QSharedPointer<IndirectInterface> indirectInterface);
 
         /*!
           *  Reads the indirect address and data from XML to an indirect interface.
           *
-          *      @param [in] interfaceNode           The XML description of the indirect interface.
-          *      @param [in/out] indirectInterface   The indirect interface to insert the address and data into.
+          *    @param [in] interfaceNode           The XML description of the indirect interface.
+          *    @param [in/out] indirectInterface   The indirect interface to insert the address and data into.
           */
         void parseIndirectAddressAndData(QDomNode const& interfaceNode,
             QSharedPointer<IndirectInterface> indirectInterface);
@@ -55,16 +55,16 @@ namespace  IndirectInterfaceReader
         /*!
           *  Reads the memory map reference from XML to an indirect interface.
           *
-          *      @param [in] interfaceNode           The XML description of the indirect interface.
-          *      @param [in/out] indirectInterface   The indirect interface to insert the memory map reference into.
+          *    @param [in] interfaceNode           The XML description of the indirect interface.
+          *    @param [in/out] indirectInterface   The indirect interface to insert the memory map reference into.
           */
         void parseMemoryMapRef(QDomNode const& interfaceNode, QSharedPointer<IndirectInterface> indirectInterface);
 
         /*!
           *  Reads the transparent bridges from XML to an indirect interface.
           *
-          *      @param [in] interfaceNode           The XML description of the indirect interface.
-          *      @param [in/out] indirectInterface   The indirect interface to insert the transparent bridges into.
+          *    @param [in] interfaceNode           The XML description of the indirect interface.
+          *    @param [in/out] indirectInterface   The indirect interface to insert the transparent bridges into.
           */
         void parseTransparentBridges(QDomNode const& interfaceNode,
             QSharedPointer<IndirectInterface> indirectInterface, Document::Revision docRevision);
@@ -72,24 +72,24 @@ namespace  IndirectInterfaceReader
         /*!
           *  Reads the endianness from XML to an indirect interface.
           *
-          *      @param [in] interfaceNode           The XML description of the indirect interface.
-          *      @param [in/out] indirectInterface   The indirect interface to insert the endianness into.
+          *    @param [in] interfaceNode           The XML description of the indirect interface.
+          *    @param [in/out] indirectInterface   The indirect interface to insert the endianness into.
           */
         void parseEndianness(QDomNode const& interfaceNode, QSharedPointer<IndirectInterface> indirectInterface);
 
         /*!
           *  Reads the bits in lau element from XML to an indirect interface.
           *
-          *      @param [in] interfaceNode           The XML description of the indirect interface.
-          *      @param [in/out] indirectInterface   The indirect interface to insert the bits in lau info into.
+          *    @param [in] interfaceNode           The XML description of the indirect interface.
+          *    @param [in/out] indirectInterface   The indirect interface to insert the bits in lau info into.
           */
         void parseBitsInLau(QDomNode const& interfaceNode, QSharedPointer<IndirectInterface> indirectInterface);
 
         /*!
           *  Reads the parameters from XML to an indirect interface.
           *
-          *      @param [in] interfaceNode           The XML description of the indirect interface.
-          *      @param [in/out] indirectInterface   The indirect interface to insert the parameters into.
+          *    @param [in] interfaceNode           The XML description of the indirect interface.
+          *    @param [in/out] indirectInterface   The indirect interface to insert the parameters into.
           */
         void parseParameters(QDomNode const& interfaceNode, QSharedPointer<IndirectInterface> indirectInterface,
             Document::Revision docRevision);

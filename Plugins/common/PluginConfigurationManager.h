@@ -39,7 +39,7 @@ private:
     /*!
      *  Print the selected error.
      *
-     *      @param [in] errorMessage    The selected error message.
+     *    @param [in] errorMessage    The selected error message.
      */
     virtual void printError(QString const& errorMessage) const override final;
 

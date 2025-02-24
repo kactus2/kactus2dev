@@ -34,8 +34,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] factory     Factory for creating the tree.
-     *      @param [in] parent      The parent widget.
+     *    @param [in] factory     Factory for creating the tree.
+     *    @param [in] parent      The parent widget.
      */
     TreeItemEditor(MemoryTreeFactory const* factory, QWidget* parent = nullptr);
 
@@ -50,7 +50,7 @@ public:
     /*!
      *  Selects the given path in the tree.
      *
-     *      @param [in] path    The path to select.
+     *    @param [in] path    The path to select.
      */
     void selectPath(QStringList const& path);
 
@@ -74,10 +74,10 @@ private:
     /*!
      *  Finds a child with the given name.
      *
-     *      @param [in] parent  The parent of the child.
-     *      @param [in] name    The name of the child to find.
+     *    @param [in] parent  The parent of the child.
+     *    @param [in] name    The name of the child to find.
      *
-     *      @return The index of the found child.
+     *    @return The index of the found child.
      */
     QModelIndex findChild(QModelIndex const& parent, QString const& name);
 

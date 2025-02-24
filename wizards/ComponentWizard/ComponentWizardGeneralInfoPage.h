@@ -33,7 +33,7 @@ public:
      *  Constructor.
      *
      *		@param [in, out] component Pointer to the component being edited.
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     ComponentWizardGeneralInfoPage(QSharedPointer<Component> component, QWidget* parent);
 
@@ -50,7 +50,7 @@ public:
     /*!
      *  Check if the settings on the page are valid and user can move to next page.
      *
-     *      @return True if all settings are valid, otherwise false.
+     *    @return True if all settings are valid, otherwise false.
      */
     virtual bool isComplete() const;
 

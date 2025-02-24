@@ -37,10 +37,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component   The component containing the ad hoc port.
-     *      @param [in] port        The selected port.
-     *      @param [in] dataGroup   The visibility data group of the item.
-     *      @param [in] parent      The owner of this item.
+     *    @param [in] component   The component containing the ad hoc port.
+     *    @param [in] port        The selected port.
+     *    @param [in] dataGroup   The visibility data group of the item.
+     *    @param [in] parent      The owner of this item.
      */
     HierarchicalPortItem(QSharedPointer<Component> component, QSharedPointer<Port> port,
         QSharedPointer<Kactus2Placeholder> dataGroup, QGraphicsItem* parent = 0);
@@ -53,7 +53,7 @@ public:
 	/*!
 	 *  Get the type of this graphics item.
 	 *
-     *      @return AdHoc interface item type.
+     *    @return AdHoc interface item type.
 	 */
 	int type() const { return Type; }
 
@@ -69,7 +69,7 @@ public:
     /*!
      *  Set the direction for this ad hoc interface item.
      *
-     *      @param [in] dir     The new item direction.
+     *    @param [in] dir     The new item direction.
      */
     void setDirection(QVector2D const& dir);
 
@@ -86,14 +86,14 @@ public:
     /*!
      *  Get the visibility data group of the item.
      *
-     *      @return The visibility data group of the item.
+     *    @return The visibility data group of the item.
      */
     QSharedPointer<Kactus2Placeholder> getDataGroup() const;
 
     /*!
      *  Set a new visibility and position data group.
      *
-     *      @param [in] newDataGroup    The new visibility and position data group.
+     *    @param [in] newDataGroup    The new visibility and position data group.
      */
     void setDataGroup(QSharedPointer<Kactus2Placeholder> newDataGroup);
 
@@ -102,15 +102,15 @@ protected:
     /*!
      *  Notifies item state changes.
      *
-     *      @param [in] change  The change.
-     *      @param [in] value   The new value.
+     *    @param [in] change  The change.
+     *    @param [in] value   The new value.
      */
     QVariant itemChange(GraphicsItemChange change, QVariant const& value) final;
 
     /*!
      *  Event for mouse button release.
      *
-     *      @param [in] event   The release event.
+     *    @param [in] event   The release event.
      */
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) final;
 
@@ -119,7 +119,7 @@ private:
     /*!
      *  Check whether the label should be drawn on the left side of the interface.
      *
-     *      @return True, if the label should be drawn to the left side.
+     *    @return True, if the label should be drawn to the left side.
      */
     bool labelShouldBeDrawnLeft() const final;
 

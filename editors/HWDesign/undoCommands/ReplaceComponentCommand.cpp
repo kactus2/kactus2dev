@@ -55,7 +55,7 @@ diagram_(diagram)
     changeConnections(oldComp, newComp_, connectionNames);
     changeConnections(newComp_, oldComp, connectionNames);
 
-    for(Association* association : oldComp->getAssociations())
+    for (Association* association : oldComp->getAssociations())
     {
         new AssociationChangeEndpointCommand(association, oldComp, newComp_, this);
     }

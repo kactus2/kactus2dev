@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
+
 #include <QList>
 #include <QSharedPointer>
 #include <QString>
@@ -29,7 +31,7 @@ class TransparentBridge;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:indirectInterface.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT IndirectInterfaceValidator
+class IPXACTMODELS_EXPORT IndirectInterfaceValidator : public HierarchicalValidator
 {
 public:
 
@@ -37,9 +39,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component           The component containing the indirect interface to validate.
-     *      @param [in] parser              The expression parser to use in validation.
-     *      @param [in] parameterValidator  The validator to use for parameters.
+     *    @param [in] component           The component containing the indirect interface to validate.
+     *    @param [in] parser              The expression parser to use in validation.
+     *    @param [in] parameterValidator  The validator to use for parameters.
      */
     IndirectInterfaceValidator(QSharedPointer<Component> component,
         QSharedPointer<ExpressionParser> parser,
@@ -57,90 +59,90 @@ public:
     /*!
      *  Validates the given IndirectInterface.
      *
-     *      @param [in] indirectInterface           The indirectInterface to validate.
+     *    @param [in] indirectInterface           The indirectInterface to validate.
      *
-     *      @return True, if the IndirectInterface is valid IP-XACT, otherwise false.
+     *    @return True, if the IndirectInterface is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<IndirectInterface> indirectInterface) const;
     
     /*!
      *  Check if the name is valid.
      *
-     *      @param [in] indirectInterface   The indirect interface to check.
+     *    @param [in] indirectInterface   The indirect interface to check.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QSharedPointer<IndirectInterface> indirectInterface) const;
    
     /*!
      *  Check if the address field reference is valid.
      *
-     *      @param [in] indirectInterface   The indirect interface to check.
+     *    @param [in] indirectInterface   The indirect interface to check.
      *
-     *      @return True, if the reference is valid, otherwise false.
+     *    @return True, if the reference is valid, otherwise false.
      */
     bool hasValidAddressReference(QSharedPointer<IndirectInterface> indirectInterface) const;
    
     /*!
      *  Check if the data field reference is valid.
      *
-     *      @param [in] indirectInterface   The indirect interface to check.
+     *    @param [in] indirectInterface   The indirect interface to check.
      *
-     *      @return True, if the reference is valid, otherwise false.
+     *    @return True, if the reference is valid, otherwise false.
      */
     bool hasValidDataReference(QSharedPointer<IndirectInterface> indirectInterface) const;
    
     /*!
      *  Check if the memory map reference is valid.
      *
-     *      @param [in] indirectInterface   The indirect interface to check.
+     *    @param [in] indirectInterface   The indirect interface to check.
      *
-     *      @return True, if the reference is valid, otherwise false.
+     *    @return True, if the reference is valid, otherwise false.
      */
     bool hasValidMemoryMapReference(QSharedPointer<IndirectInterface> testInterface) const;
    
     /*!
      *  Check if the selected transparent bridge references are valid.
      *
-     *      @param [in] bridges     The selected transparent bridges.
+     *    @param [in] bridges     The selected transparent bridges.
      *
-     *      @return True, if the references are valid, otherwise false.
+     *    @return True, if the references are valid, otherwise false.
      */
     bool hasValidTransparentBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const;
 
     /*!
      *  Check if the bits in lau definition is valid.
      *
-     *      @param [in] indirectInterface   The indirect interface to check.
+     *    @param [in] indirectInterface   The indirect interface to check.
      *
-     *      @return True, if the bits in lau definition is valid, otherwise false.
+     *    @return True, if the bits in lau definition is valid, otherwise false.
      */
     bool hasValidBitsInLau(QSharedPointer<IndirectInterface> indirectInterface) const;
        
     /*!
      *  Check if the endianness is valid.
      *
-     *      @param [in] indirectInterface   The indirect interface to check.
+     *    @param [in] indirectInterface   The indirect interface to check.
      *
-     *      @return True, if the endianness is valid, otherwise false.
+     *    @return True, if the endianness is valid, otherwise false.
      */
     bool hasValidEndianness(QSharedPointer<IndirectInterface> indirectInterface) const;
        
     /*!
      *  Check if the parameters are valid.
      *
-     *      @param [in] indirectInterface   The indirect interface to check.
+     *    @param [in] indirectInterface   The indirect interface to check.
      *
-     *      @return True, if the parameters are valid, otherwise false.
+     *    @return True, if the parameters are valid, otherwise false.
      */
     bool hasValidParameters(QSharedPointer<IndirectInterface> indirectInterface) const;
 
     /*!
     *  Finds possible errors in an indirectInterface and creates a list of them.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface,
         QString const& context) const;
@@ -150,47 +152,47 @@ private:
     /*!
      * Finds the field with the given Id reference.
      *
-     *      @param [in] fieldReference   The Id of the field to find.
+     *    @param [in] fieldReference   The Id of the field to find.
      *
-     *      @return The found field.
+     *    @return The found field.
      */
     QSharedPointer<Field> findField(QString const& fieldReference) const;
 
     /*!
      *  Checks if the given field reference is valid.
      *
-     *      @param [in] fieldReference      The Id reference to check.
-     *      @param [in] targetMemoryMap     The name of the indirect memory map in the interface.
+     *    @param [in] fieldReference      The Id reference to check.
+     *    @param [in] targetMemoryMap     The name of the indirect memory map in the interface.
      *
-     *      @returnTrue, if the reference is valid, otherwise false.
+     *    @returnTrue, if the reference is valid, otherwise false.
      */
     bool isValidFieldReference(QString const& fieldReference, QString const& targetMemoryMap) const;
 
     /*!
      *  Checks if the given field is defined within the given memory map.
      *
-     *      @param [in] memoryMapName   The name of the memory map to check.
-     *      @param [in] fieldReference  The Id reference of the field to check.
+     *    @param [in] memoryMapName   The name of the memory map to check.
+     *    @param [in] fieldReference  The Id reference of the field to check.
      *
-     *      @return True, if the field is defined within the memory map, otherwise false.
+     *    @return True, if the field is defined within the memory map, otherwise false.
      */
     bool memoryMapContainsField(QString const& memoryMapName, QString const& fieldReference) const;
     
     /*!
      *  Checks if the given indirect map has either a memory map or transparent bridges but not both.
      *
-     *      @param [in] indirectInterface   The indirect interface to check.
+     *    @param [in] indirectInterface   The indirect interface to check.
      *
-     *      @return True, if either memory map or bridges are defined, otherwise false.
+     *    @return True, if either memory map or bridges are defined, otherwise false.
      */
     bool hasEitherMemoryMapReferenceOrTransparentBridge(QSharedPointer<IndirectInterface> indirectInterface) const;
        
     /*!
     *  Finds possible errors in indirectInterface name.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */    
     void findErrorsInName(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface, 
         QString const& context) const;
@@ -198,9 +200,9 @@ private:
     /*!
     *  Finds possible errors in indirectInterface address reference.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */    
     void findErrorsInAddressReference(QVector<QString>& errors, 
         QSharedPointer<IndirectInterface> indirectInterface, QString const& context) const;
@@ -208,9 +210,9 @@ private:
     /*!
     *  Finds possible errors in indirectInterface data reference.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */    
     void findErrorsInDataReference(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface,
         QString const& context) const;
@@ -218,9 +220,9 @@ private:
     /*!
     *  Finds possible errors in an indirectInterface defining either a memory map or transparent bridges.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */    
     void findErrorsInMemoryReference(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface,
         QString const& context) const;
@@ -228,9 +230,9 @@ private:
     /*!
     *  Finds possible errors in indirectInterface memory map reference.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */    
     void findErrorsInMemoryMap(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface,
         QString const& context) const;
@@ -238,9 +240,9 @@ private:
     /*!
     *  Finds possible errors in indirectInterface transparent bridges.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */   
     void findErrorsInTransparentBridges(QVector<QString>& errors,
         QSharedPointer<IndirectInterface> indirectInterface, QString const& context) const;
@@ -248,9 +250,9 @@ private:
     /*!
     *  Finds possible errors in indirectInterface bits in lau definition.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */   
     void findErrorsInBitsInLau(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface,
         QString const& context) const;
@@ -258,9 +260,9 @@ private:
     /*!
     *  Finds possible errors in indirectInterface endianness.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */   
     void findErrorsInEndianness(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface,
         QString const& context) const;
@@ -268,9 +270,9 @@ private:
     /*!
     *  Finds possible errors in indirectInterface parameters.
     *
-    *      @param [in] errors              List of found errors.
-    *      @param [in] indirectInterface   The indirectInterface whose errors to find.
-    *      @param [in] context             Context to help locate the errors.
+    *    @param [in] errors              List of found errors.
+    *    @param [in] indirectInterface   The indirectInterface whose errors to find.
+    *    @param [in] context             Context to help locate the errors.
     */   
     void findErrorsInParameters(QVector<QString>& errors, QSharedPointer<IndirectInterface> indirectInterface,
         QString const& context) const;

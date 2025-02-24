@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 ParametersView::ParametersView(QWidget* parent):
 EditableTableView(parent),
-recalculateReferencesAction_(tr("Recalculate references"), this)
+recalculateReferencesAction_(tr("Recalculate references"), this),
+openReferenceTreeAction_(tr("Open reference tree"), this)
 {
     setupActions();
 }
@@ -48,6 +49,7 @@ void ParametersView::contextMenuEvent(QContextMenuEvent* event)
     addBasicActionsForContextMenu(menu, index);
     addElementCopyActionForContextMenu(menu, index);
     addRecalculateReferencesActionForContextMenu(menu);
+    addOpenReferenceTreeActionForContextMenu(menu);
     addImportExportActionsForContextMenu(menu);
 
 	menu.exec(event->globalPos());
@@ -61,9 +63,9 @@ void ParametersView::contextMenuEvent(QContextMenuEvent* event)
 void ParametersView::addRecalculateReferencesActionForContextMenu(QMenu& menu)
 {
     QModelIndexList indexList = selectedIndexes();
-    foreach (QModelIndex currentIndex, indexList)
+    for (QModelIndex const& currentIndex : indexList)
     {
-        if (!currentIndex.isValid() || currentIndex.column() != ParameterColumns::USAGE_COUNT)
+        if (!currentIndex.isValid())
         {
             return;
         }
@@ -71,6 +73,31 @@ void ParametersView::addRecalculateReferencesActionForContextMenu(QMenu& menu)
 
     menu.addSeparator();
     menu.addAction(&recalculateReferencesAction_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParametersView::addOpenReferenceTreeActionForContextMenu()
+//-----------------------------------------------------------------------------
+void ParametersView::addOpenReferenceTreeActionForContextMenu(QMenu& menu)
+{
+    QModelIndexList indexList = selectedIndexes();
+
+    // Context menu action should be shown only when at least one index is selected.
+    if (indexList.isEmpty())
+    {
+        return;
+    }
+
+    for (QModelIndex const& currentIndex : indexList)
+    {
+        if (!currentIndex.isValid())
+        {
+            return;
+        }
+    }
+
+    menu.addSeparator();
+    menu.addAction(&openReferenceTreeAction_);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,6 +112,13 @@ void ParametersView::setupActions()
     recalculateReferencesAction_.setStatusTip(tr("Recalculate the references made to the parameter"));
     connect(&recalculateReferencesAction_, SIGNAL(triggered()),
         this, SLOT(onRecalculateReferencesAction()), Qt::UniqueConnection);
+
+    addAction(&openReferenceTreeAction_);
+    openReferenceTreeAction_.setToolTip(tr("Display references to selected parameters"));
+    openReferenceTreeAction_.setStatusTip(tr("Display references to selected parameters"));
+    connect(&openReferenceTreeAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenReferenceTreeAction()), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -101,6 +135,30 @@ void ParametersView::onRecalculateReferencesAction()
         QModelIndex newIndex = sortProxy->mapToSource(indexes.at(i));
         sortedIndexes.append(newIndex);
     }
+    
+    // Do recalculation for all parameters, if none were selected.
+    if (sortedIndexes.isEmpty())
+    {
+        for (int i = 0; i < model()->rowCount(); ++i)
+        {
+            QModelIndex currentIndex = model()->index(i, ParameterColumns::USAGE_COUNT);
+            sortedIndexes.append(currentIndex);
+        }
+    }
 
     emit(recalculateReferenceToIndexes(sortedIndexes));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParametersView::onOpenReferenceTreeAction()
+//-----------------------------------------------------------------------------
+void ParametersView::onOpenReferenceTreeAction()
+{
+    QModelIndex index = currentIndex();
+    QModelIndex valueIdIndex = index.sibling(index.row(), ParameterColumns::ID);
+    QModelIndex nameIndex = index.sibling(index.row(), ParameterColumns::NAME);
+    QString targetId = valueIdIndex.data(Qt::DisplayRole).toString();
+    QString parameterName = nameIndex.data(Qt::DisplayRole).toString();
+
+    emit(openReferenceTree(targetId, parameterName));
 }

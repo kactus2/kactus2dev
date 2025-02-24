@@ -25,7 +25,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  The parent of this view.
+     *    @param [in] parent  The parent of this view.
      */
     ArrayView(QWidget* parent);
 
@@ -37,15 +37,15 @@ public:
     /*!
      *  Reimplemented to do nothing when keyboard search is initiated.
      *
-     *      @param [in] search  The found item should be the best match for this string.
+     *    @param [in] search  The found item should be the best match for this string.
      */
     virtual void keyboardSearch(const QString &search);
 
     /*!
      *  The event filter for this view.
      *
-     *      @param [in] filterObject    The object to be filtered.
-     *      @param [in] filterEvent     The event to be filtered.
+     *    @param [in] filterObject    The object to be filtered.
+     *    @param [in] filterEvent     The event to be filtered.
      */
     virtual bool eventFilter(QObject *filterObject, QEvent *filterEvent);
 

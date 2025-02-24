@@ -45,8 +45,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] utility         The interface which offers core utilites for plugins.
-     *      @param [in] parentObject    The parent object of this writer.
+     *    @param [in] utility         The interface which offers core utilites for plugins.
+     *    @param [in] parentObject    The parent object of this writer.
      */
     SystemMemoryMapHeaderWriter(IPluginUtility* utility, QObject* parentObject);
 
@@ -58,9 +58,9 @@ public:
     /*!
      *  Write the memory map header file.
      *
-     *      @param [in] component               The component whose header file is being written.
-     *      @param [in] designConfiguration     The design configuration for the component.
-     *      @param [in] design                  The designg for the component.
+     *    @param [in] component               The component whose header file is being written.
+     *    @param [in] designConfiguration     The design configuration for the component.
+     *    @param [in] design                  The designg for the component.
      */
     virtual void writeMemoryMapHeader(QSharedPointer<Component> component,
         QSharedPointer<DesignConfiguration> designConfiguration, QSharedPointer<Design> design);
@@ -78,16 +78,16 @@ private:
 	/*!
 	 *  Search the CPU instances and their containing component to find the generated global headers.
 	 *
-	 *      @param [in] component   Pointer to the hierarchical component to search.
-	 *      @param [in] hwViewName  The name of the hierarchical view on the component.
+	 *    @param [in] component   Pointer to the hierarchical component to search.
+	 *    @param [in] hwViewName  The name of the hierarchical view on the component.
 	 */
 	void searchInstanceFiles(QSharedPointer<const Component> component, const QString& hwViewName);
 
     /*!
      *  Find the system view currently used in the system design.
      *
-     *      @param [in] component               The component whose system view is in use.
-     *      @param [in] designConfiguration     The design configuration of the component.
+     *    @param [in] component               The component whose system view is in use.
+     *    @param [in] designConfiguration     The design configuration of the component.
      */
     QSharedPointer<SystemView> findSystemView(QSharedPointer<Component> component,
         QSharedPointer<DesignConfiguration> designConfiguration) const;

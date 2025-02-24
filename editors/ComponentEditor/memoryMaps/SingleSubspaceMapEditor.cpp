@@ -231,6 +231,11 @@ void SingleSubspaceMapEditor::setupLayout()
         subspaceDefinitionLayout->addRow(tr("Initiator bus interface reference:"), initiatorSelector_);
         subspaceDefinitionLayout->addRow(tr("Segment reference:"), segmentSelector_);
     }
+
+    QWidget* spacer = new QWidget();
+    spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    subspaceDefinitionLayout->addRow(spacer);
+
     QGridLayout* topOfPageLayout = new QGridLayout();
     topOfPageLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
     topOfPageLayout->addWidget(subspaceDefinitionGroup, 0, 1, 1, 1);    

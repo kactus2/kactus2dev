@@ -35,21 +35,21 @@ public:
     /*!
      *  Set a boolean value.
      *
-     *      @param [in] value   The new boolean value.
+     *    @param [in] value   The new boolean value.
      */
     void setValue(bool value);
 
     /*!
      *  Get the contained value as a boolean value.
      *
-     *      @return True for a BOOL_TRUE, otherwise false. 
+     *    @return True for a BOOL_TRUE, otherwise false. 
      */
     bool toBool() const;
 
     /*!
      *  Gets the value as a string.
      *
-     *      @return String of the given value.
+     *    @return String of the given value.
      */
     QString toString() const;
 

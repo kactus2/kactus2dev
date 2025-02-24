@@ -45,14 +45,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] subspaceInterface       Interface for accessing subspace maps.
-	 *      @param [in] subspaceMap             The subspace map being edited.
-     *      @param [in] containingMap           Memory map containing the edited address block.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance managing the library.
-	 *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionParser        The expression parser.
-	 *      @param [in] parent                  The parent of this editor.
+     *    @param [in] subspaceInterface       Interface for accessing subspace maps.
+	 *    @param [in] subspaceMap             The subspace map being edited.
+     *    @param [in] containingMap           Memory map containing the edited address block.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] handler                 The instance managing the library.
+	 *    @param [in] parameterFinder         The parameter finder.
+     *    @param [in] expressionParser        The expression parser.
+	 *    @param [in] parent                  The parent of this editor.
 	 */
     SingleSubspaceMapEditor(SubspaceMapInterface* subspaceInterface,
         QSharedPointer<SubSpaceMap> subspaceMap,
@@ -82,8 +82,8 @@ public slots:
     /*
      *  Handles subspace map name change from memory map editor.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void onSubspaceNameChanged(QString const& oldName, QString const& newName);
 
@@ -109,7 +109,7 @@ protected:
     /*!
 	 *  Shows the widget and informs of the required help document.
 	 *
-	 *      @param [in] event   The show event.
+	 *    @param [in] event   The show event.
 	 */
 	virtual void showEvent(QShowEvent* event) override final;
 
@@ -128,14 +128,14 @@ private slots:
     /*!
      *  Handle the change in master bus interface reference.
      *
-     *      @param [in] newMasterReference  The new master bus interface reference.
+     *    @param [in] newMasterReference  The new master bus interface reference.
      */
     void onMasterSelected(QString const& newMasterReference);
 
     /*!
      *  Handle the change in segment reference.
      *
-     *      @param [in] newSegment  The new segment reference.
+     *    @param [in] newSegment  The new segment reference.
      */
     void onSegmentSelected(QString const& newSegment);
 
@@ -149,9 +149,9 @@ private:
     /*!
      *  Get the address space of the selected bus interface.
      *
-     *      @param [in] busReference    Name of the selected bus interface.
+     *    @param [in] busReference    Name of the selected bus interface.
      *
-     *      @return Address space of the selected bus interface.
+     *    @return Address space of the selected bus interface.
      */
     QSharedPointer<AddressSpace> getSpace(QString const& busReference);
 
@@ -168,16 +168,16 @@ private:
     /*!
      *  Change the status of signal blocking in all the expression editors.
      *
-     *      @param [in] blockStatus     The new signal blocking status.
+     *    @param [in] blockStatus     The new signal blocking status.
      */
     void changeExpressionEditorSignalBlockStatus(bool blockStatus);
 
     /*!
      *  Calculates the value of an expression.
      *
-     *      @param [in] expression  The expression, whose value is to be calculated.
+     *    @param [in] expression  The expression, whose value is to be calculated.
      *
-     *      @return The calculated value of the given expression.
+     *    @return The calculated value of the given expression.
      */
     QString formattedValueFor(QString const& expression) const;
 

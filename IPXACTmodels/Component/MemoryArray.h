@@ -54,7 +54,7 @@ public:
     /*!
      *	Set the dimensions of the array.
      *  
-     *      @param [in] dimensions     The dimensions to set.
+     *    @param [in] dimensions     The dimensions to set.
      *	    
      */
     void setDimensions(QSharedPointer<QList<QSharedPointer<Dimension> > > dimensions);
@@ -69,7 +69,7 @@ public:
     /*!
      *	Set the array stride or bitStride, if in a field element.
      *  
-     *      @param [in] stride     Description
+     *    @param [in] stride     Description
      */
     void setStride(QString const& stride);
 

@@ -37,63 +37,63 @@ public:
     /*!
      *  Set the structured port as packed.
      *
-     *      @param [in] packed Packed or not.
+     *    @param [in] packed Packed or not.
      */
     constexpr void setPacked(bool packed) noexcept { packed_ = packed; }
 
     /*!
      *  Check if the structured port can be packed.
      *
-     *      @return True, if the port can be packed, otherwise false.
+     *    @return True, if the port can be packed, otherwise false.
      */
     [[nodiscard]] bool isPacked() const noexcept { return packed_; }
 
     /*!
      *  Set the port type.
      *
-     *      @param [in] type The type to set.
+     *    @param [in] type The type to set.
      */
     constexpr void setType(Type type) noexcept { portType_ = type; }
 
     /*!
      *  Get the port type.
      *
-     *      @return The port type.
+     *    @return The port type.
      */
     [[nodiscard]] constexpr Type getType() const noexcept { return portType_; }
 
     /*!
      *  Set the direction of this port.
      *
-     *      @param [in] direction   The new direction.
+     *    @param [in] direction   The new direction.
      */
     constexpr void setDirection(DirectionTypes::Direction direction) noexcept { direction_ = direction; }
 
     /*!
      *  Get the direction of the port.
      *
-     *      @return Enum direction specifying the port direction.
+     *    @return Enum direction specifying the port direction.
      */
     [[nodiscard]] constexpr DirectionTypes::Direction getDirection() const noexcept { return direction_; }
 
     /*!
      *  Get the vectors in the structured port.
      *
-     *      @return The vectors in the port.
+     *    @return The vectors in the port.
      */
     [[nodiscard]] QSharedPointer<QList<Vector> > getVectors() const { return vectors_; }
 
     /*!
      *  Get the sub-ports in the structured port.
      *
-     *      @return The sub-ports in the port.
+     *    @return The sub-ports in the port.
      */
     [[nodiscard]] SubPort::List getSubPorts() const { return subPorts_; }
 
     /*!
      *  Convert the structured type to string.
      *
-     *      @return The string representation of the type.
+     *    @return The string representation of the type.
      */
     [[nodiscard]] static QString toString(Type type);
 

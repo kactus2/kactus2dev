@@ -34,9 +34,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] item                The component item to delete.
-     *      @param [in] containingDesign    The design containing the system component item.
-     *      @param [in] parent              The owner of this command.
+     *    @param [in] item                The component item to delete.
+     *    @param [in] containingDesign    The design containing the system component item.
+     *    @param [in] parent              The owner of this command.
      */
     SystemComponentDeleteCommand(ComponentItem* item, QSharedPointer<Design> containingDesign,
         QUndoCommand* parent = 0);
@@ -71,7 +71,7 @@ private:
     /*!
      *  Add delete command for the contained interconnection.
      *
-     *      @param [in] connection  The selected connection.
+     *    @param [in] connection  The selected connection.
      */
     void addConnectionDeleteCommand(GraphicsConnection* connection);
 

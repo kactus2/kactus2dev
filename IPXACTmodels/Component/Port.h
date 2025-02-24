@@ -42,7 +42,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] portName    Name of the port.
+	 *    @param [in] portName    Name of the port.
 	 */
     explicit Port(QString const& portName = QString());
 
@@ -64,175 +64,175 @@ public:
     /*!
      *  Get a pointer to the wire element.
      *
-     *      @return A pointer to the wire instance.
+     *    @return A pointer to the wire instance.
      */
     QSharedPointer<Wire> getWire() const;
 
     /*!
      *  Set the wire element for the port.
      *
-     *      @param [in] newWire     The new wire element.
+     *    @param [in] newWire     The new wire element.
      */
     void setWire(QSharedPointer<Wire> newWire);
 
     /*!
      *  Get a pointer to the transactional element.
      *
-     *      @return Pointer to the transactional element.
+     *    @return Pointer to the transactional element.
      */
     QSharedPointer<Transactional> getTransactional() const;
 
     /*!
      *  Set the transactional element for the port.
      *
-     *      @param [in] newTransactional    The new transactional element.
+     *    @param [in] newTransactional    The new transactional element.
      */
     void setTransactional(QSharedPointer<Transactional> newTransactional);
 
     /*!
      *  Get the structured element.
      *
-     *      @return The structured element.
+     *    @return The structured element.
      */
     QSharedPointer<Structured> getStructured() const;
 
     /*!
      *  Set the structured element for the port.
      *
-     *      @param [in] newStructural    The new structural element.
+     *    @param [in] newStructural    The new structural element.
      */
     void setStructured(QSharedPointer<Structured> newStructured);
 
     /*!
      *  Get the left bound of a vectored port.
      *
-     *      @return the left bound of the port.
+     *    @return the left bound of the port.
      */
     QString getLeftBound() const;
         
     /*!
      *  Set the left bound of the port.
      *
-     *      @param [in] newLeftBound    The new left bound of the port.
+     *    @param [in] newLeftBound    The new left bound of the port.
      */
     void setLeftBound(QString const& newLeftBound);
     
     /*!
      *  Get the right bound of a vectored port.
      *
-     *      @return The right bound of the port.
+     *    @return The right bound of the port.
      */
     QString getRightBound() const;
 
     /*!
      *  Set the right bound of the port.
      *
-     *      @param [in] newRightBound   The new right bound of the port.
+     *    @param [in] newRightBound   The new right bound of the port.
      */
     void setRightBound(QString const& newRightBound);
 
 	/*!
 	 *  Set the size of the port.
 	 *
-	 *      @param [in] size    The new size. Port bounds are set to size-1 and 0;
+	 *    @param [in] size    The new size. Port bounds are set to size-1 and 0;
 	 */
 	void setPortSize(int size);
     
     /*!
      *  Get the default value of the port.
      *
-     *      @return The contained default value.
+     *    @return The contained default value.
      */
     QString getDefaultValue() const;
     
 	/*!
 	 *  Set the default value for the port.
 	 *
-	 *      @param [in] defaultValue    The new default value.
+	 *    @param [in] defaultValue    The new default value.
 	 */
 	void setDefaultValue(const QString& defaultValue);
     
     /*!
      *  Get the direction of the port.
      *
-     *      @return Enum direction.
+     *    @return Enum direction.
      */
     DirectionTypes::Direction getDirection() const;
 
 	/*!
 	 *  Set the direction.
 	 *
-	 *      @param [in] direction   The new direction.
+	 *    @param [in] direction   The new direction.
 	 */
 	void setDirection(DirectionTypes::Direction direction);
     
 	/*!
 	 *  Get the value of the logical directions allowed for wires or logical initiatives allowed for transactionals.
 	 *
-     *      @return True, if the given value is allowed, false otherwise.
+     *    @return True, if the given value is allowed, false otherwise.
 	 */
 	bool allLogicalDirectionsAllowed() const;
     
 	/*!
 	 *  Set the port to allow/disallow logical directions / initiatives.
 	 *
-	 *      @param [in] allowed     The setting.
+	 *    @param [in] allowed     The setting.
 	 */
 	void setAllLogicalDirectionsAllowed(bool allowed);
 
 	/*!
 	 *  Get the type name of the port for a given view.
 	 *
-	 *      @param [in] viewName    The name of the view.
+	 *    @param [in] viewName    The name of the view.
      *
-     *      @return The matching type name.
+     *    @return The matching type name.
 	 */
 	QString getTypeName(const QString& viewName = QString()) const;
     
 	/*!
 	 *  Set the type name for the port in given view.
 	 *
-	 *      @param [in] typeName    The name of the type.
-	 *      @param [in] viewName    The name of the view used for this type.
+	 *    @param [in] typeName    The name of the type.
+	 *    @param [in] viewName    The name of the view used for this type.
 	 */
 	void setTypeName(const QString& typeName, const QString& viewName = QString());
 
 	/*!
 	 *  Check if the port has a type name in given view.
 	 *
-	 *      @param [in] viewName    The name of the view that's type name is searched for.
+	 *    @param [in] viewName    The name of the view that's type name is searched for.
      *
-     *      @return True if a type is found, false otherwise.
+     *    @return True if a type is found, false otherwise.
 	 */
 	bool hasType(const QString& viewName = QString()) const;
     
 	/*!
 	 *  Get the type definition of the given type name.
 	 *
-	 *      @param [in] typeName    The name of the type that's type definition is wanted.
-     *      @return The found type definition.
+	 *    @param [in] typeName    The name of the type that's type definition is wanted.
+     *    @return The found type definition.
 	 */
 	QString getTypeDefinition(const QString& typeName) const;
 
 	/*!
 	 *  Get the type definitions of the wired port.
 	 *
-     *      @return A list containing the type definitions.
+     *    @return A list containing the type definitions.
 	 */
 	QStringList getTypeDefinitions() const;
 
 	/*!
 	 *  Set the type definition of the given type name.
 	 *
-	 *      @param [in] typeName        Identifies the type definition.
-	 *      @param [in] typeDefinition  The type definition to be set.
+	 *    @param [in] typeName        Identifies the type definition.
+	 *    @param [in] typeDefinition  The type definition to be set.
 	 */
 	void setTypeDefinition(const QString& typeName, const QString& typeDefinition);
 
 	/*!
 	 *  Check if the port has a type definition.
 	 *
-     *      @return True if the type definition is defined.
+     *    @return True if the type definition is defined.
 	 */
 	bool hasTypeDefinitions() const;
         
@@ -244,7 +244,7 @@ public:
     /*!
      *  Sets default the ad-hoc visibility of the port.
      *
-     *      @param [in] visible If true, the port is set visible for ad-hoc connections.
+     *    @param [in] visible If true, the port is set visible for ad-hoc connections.
      */
     void setAdHocVisible(bool visible);
 
@@ -256,84 +256,84 @@ public:
     /*!
      *  Sets the default position in the parent component's graphical representation.
      *
-     *      @param [in] pos The position to set.
+     *    @param [in] pos The position to set.
      */
     void setDefaultPos(QPointF const& pos);
 
     /*!
      *  Gets the left value of the array.
      *
-     *      @return The left value of the array.
+     *    @return The left value of the array.
      */
     QString getArrayLeft() const;
 
     /*!
      *  Sets the left value for the array.
      *
-     *      @param [in] newArrayLeft    The value to be set as left.
+     *    @param [in] newArrayLeft    The value to be set as left.
      */
     void setArrayLeft(QString const& newArrayLeft);
 
     /*!
      *  Gets the right value of the array.
      *
-     *      @return The right value of the array.
+     *    @return The right value of the array.
      */
     QString getArrayRight() const;
 
     /*!
      *  Sets the right value for the array.
      *
-     *      @param [in] newArrayRight   The value to be set as right.
+     *    @param [in] newArrayRight   The value to be set as right.
      */
     void setArrayRight(QString const& newArrayRight);
 
     /*!
      *  Gets the tags associated with the port.
      *
-     *      @return Tags associated with the port.
+     *    @return Tags associated with the port.
      */
     QString getPortTags() const;
 
     /*!
      *  Set the port tags.
      *
-     *      @param [in] portTags    The tags separated by a comma.
+     *    @param [in] portTags    The tags separated by a comma.
      */
     void setPortTags(const QString& portTags);
 
     /*!
      *  Get the presence of the port.
      *
-     *      @return The presence.
+     *    @return The presence.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence for the port.
      *
-     *      @param [in] newIsPresent    The new presence expression.
+     *    @param [in] newIsPresent    The new presence expression.
      */
     void setIsPresent(QString const& newIsPresent);
     
     /*!
      *  Get the arrays associated with the port.
      *
-     *      @return Pointer to a list containing the arrays.
+     *    @return Pointer to a list containing the arrays.
      */
     QSharedPointer<QList<Array> > getArrays() const;
 
     /*!
      *  Get the wire type definitions.
      *
-     *      @return The type definitions contained within the wire port.
+     *    @return The type definitions contained within the wire port.
      */
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getWireTypes() const;
 
     /*!
      *  Get the transactional type definitions.
      *
-     *      @return The type definitions contained within the transactional port.
+     *    @return The type definitions contained within the transactional port.
      */
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getTransactionalTypes() const;
 

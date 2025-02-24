@@ -38,8 +38,8 @@ public:
     /*!
      *  Populate the selected model with ports from the selected component.
      *
-     *      @param [in] selectedList            The selected item model.
-     *      @param [in] containingComponent     The selected component.
+     *    @param [in] selectedList            The selected item model.
+     *    @param [in] containingComponent     The selected component.
      */
     virtual void initializeList(QStandardItemModel* selectedList, QSharedPointer<Component> containingComponent)
         const;

@@ -45,10 +45,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component to create the configuration for.
-     *      @param [in] configType  What kind of configuration is to be created.
-	 *      @param [in] parent      Pointer to the owner of this dialog
+	 *    @param [in] handler     Pointer to the instance that manages the library.
+	 *    @param [in] component   Pointer to the component to create the configuration for.
+     *    @param [in] configType  What kind of configuration is to be created.
+	 *    @param [in] parent      Pointer to the owner of this dialog
 	 */
 	CreateConfigurationDialog(LibraryInterface* handler,
 		QSharedPointer<Component> component,
@@ -61,28 +61,28 @@ public:
 	/*!
      *  Get the VLNV for the design configuration to create.
 	 *
-	 *      @return VLNV the vlnv for the design configuration.
+	 *    @return VLNV the vlnv for the design configuration.
 	 */
 	VLNV getConfigurationVLNV() const;
 
 	/*!
      *  Get the VLNV for the design to create.
 	 *
-	 *      @return VLNV the vlnv for the design.
+	 *    @return VLNV the vlnv for the design.
 	 */
 	VLNV getDesignVLNV() const;
 
 	/*!
      *  Get the name for the view to be saved to the component.
 	 *
-	 *      @return QString Contains the name for the view.
+	 *    @return QString Contains the name for the view.
 	 */
 	QString getConfigurationName() const;
 
 	/*!
      *  Find out if user wanted to use existing design or create a new one.
 	 *
-	 *      @return CreateConfigurationDialog::DesignSelection specifies what kind of operation was selected.
+	 *    @return CreateConfigurationDialog::DesignSelection specifies what kind of operation was selected.
 	 */
 	DesignSelection designSelection() const;
 

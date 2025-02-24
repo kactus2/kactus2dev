@@ -77,7 +77,7 @@ void MasterExpressionEditor::finishEditingCurrentWord()
     if (shouldChangeTerm)
     {
         expression_ = replaceNthWordWith(currentWordIndex(), expression_, finishedWord);
-    
+
         if (currentWordIsUniqueParameterName())
         {
             complete(nameCompleter_->currentIndex());
@@ -118,7 +118,7 @@ void MasterExpressionEditor::handleKeyPressEvent(QKeyEvent* keyEvent)
     {
         if (hasSelection())
         {
-            removeSelectionInExpression();
+            replaceSelectionInExpression(keyEvent);
         }
         else if (removesOperatorBeforeWord(keyEvent))
         {
@@ -479,7 +479,7 @@ bool MasterExpressionEditor::keyMovesCursor(QKeyEvent* keyEvent) const
 //-----------------------------------------------------------------------------
 // Function: ExpressionLineEditor::removeSelectionInExpression()
 //-----------------------------------------------------------------------------
-void MasterExpressionEditor::removeSelectionInExpression()
+void MasterExpressionEditor::replaceSelectionInExpression(QKeyEvent* keyEvent)
 {
     QString selectedText = getSelectedText();
 
@@ -490,6 +490,7 @@ void MasterExpressionEditor::removeSelectionInExpression()
 
     int firstTermPos = indexOfNthWord(firstWord, expression_);
     expression_.remove(expression_.indexOf(selectedText, firstTermPos), selectedText.length());
+    expression_.insert(getSelectionStartIndex(), keyEvent->text()); // Don't just remove selection, also insert whatever was typed.
 }
 
 //-----------------------------------------------------------------------------

@@ -44,7 +44,7 @@ del_(true)
     // Create child commands for removing interconnections.
     QList<GraphicsConnection*> connections;
 
-    foreach (ConnectionEndpoint* endpoint, componentItem_->getEndpoints())
+    for (ConnectionEndpoint* endpoint : componentItem_->getEndpoints())
     {
         //HWConnectionEndpoint* endpoint = dynamic_cast<HWConnectionEndpoint*>(item);
 
@@ -54,7 +54,7 @@ del_(true)
             portConnections.append(endpoint->getOffPageConnector()->getConnections());
         }
 
-        foreach (GraphicsConnection* connection, portConnections)
+        for (GraphicsConnection* connection : portConnections)
         {
             if (!connections.contains(connection))
             {

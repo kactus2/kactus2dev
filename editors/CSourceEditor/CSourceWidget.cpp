@@ -40,8 +40,8 @@
 // Function: CSourceWidget::CSourceWidget()
 //-----------------------------------------------------------------------------
 CSourceWidget::CSourceWidget(QString const& sourceFile, QSharedPointer<Component> ownerComponent,
-    LibraryInterface* libInterface, QWidget* mainWnd, QWidget* parent):
-TabDocument(parent, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
+    LibraryInterface* libHandler, QWidget* mainWnd, QWidget* parent):
+TabDocument(parent, libHandler, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
     textEdit_(new CSourceTextEdit(mainWnd, this)),
     sourceFile_(sourceFile),
     editProvider_(new TextEditProvider(*textEdit_))
@@ -51,7 +51,7 @@ TabDocument(parent, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
 
     foreach (QSharedPointer<ApiInterface const> apiIf, ownerComponent->getApiInterfaces())
     {
-        QSharedPointer<Document const> libComp = libInterface->getModelReadOnly(apiIf->getApiType());
+        QSharedPointer<Document const> libComp = libHandler->getModelReadOnly(apiIf->getApiType());
         QSharedPointer<ApiDefinition const> apiDef = libComp.dynamicCast<ApiDefinition const>();
 
         if (apiDef != 0)
@@ -61,7 +61,7 @@ TabDocument(parent, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
 
             if (apiDef->getComDefinitionRef().isValid())
             {
-                libComp = libInterface->getModelReadOnly(apiDef->getComDefinitionRef());
+                libComp = libHandler->getModelReadOnly(apiDef->getComDefinitionRef());
                 QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
 
                 if (comDef != 0)
@@ -83,7 +83,7 @@ TabDocument(parent, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
     readFileContentFromDisk();
 
     setDocumentName(QFileInfo(sourceFile).fileName());
-    setDocumentType("Code");
+    setDocumentType(DocumentType::CODE);
 
     connect(textEdit_->document(), SIGNAL(contentsChanged()),
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);

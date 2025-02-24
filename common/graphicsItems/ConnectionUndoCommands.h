@@ -27,9 +27,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] conn      The interconnection.
-     *      @param [in] oldRoute  The old route of the interconnection.
-     *      @param [in] parent    The parent command.
+     *    @param [in] conn      The interconnection.
+     *    @param [in] oldRoute  The old route of the interconnection.
+     *    @param [in] parent    The parent command.
      */
     ConnectionMoveCommand(GraphicsConnection* connection, QList<QPointF> const& oldRoute,
                           QUndoCommand* parent = 0);
@@ -134,10 +134,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] conn         The connection.
-     *      @param [in] oldEndpoint  The old endpoint from which to disconnect the connection.
-     *      @param [in] newEndpoint  The new endpoint to which to connect the connection.
-     *      @param [in] parent       The parent command.
+     *    @param [in] conn         The connection.
+     *    @param [in] oldEndpoint  The old endpoint from which to disconnect the connection.
+     *    @param [in] newEndpoint  The new endpoint to which to connect the connection.
+     *    @param [in] parent       The parent command.
      */
     ConnectionExchangeCommand(GraphicsConnection* connection, ConnectionEndpoint* oldEndpoint,
                               ConnectionEndpoint* newEndpoint, QUndoCommand* parent = 0);
@@ -185,7 +185,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] conn    The interconnection to delete.
+     *    @param [in] conn    The interconnection to delete.
      */
     ConnectionToggleOffPageCommand(GraphicsConnection* conn, QUndoCommand* parent = 0);
 

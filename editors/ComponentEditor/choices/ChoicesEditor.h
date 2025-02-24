@@ -37,11 +37,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component   The component whose choices to edit.
-     *      @param [in] validator   The validator used for choices.
-     *      @param [in] parent      The parent widget.
+     *    @param [in] component   The component whose choices to edit.
+     *    @param [in] validator   The validator used for choices.
+     *    @param [in] parent      The parent widget.
      *
-     *      @return <Description>.
+     *    @return <Description>.
      */
     ChoicesEditor(QSharedPointer<Component> component, QSharedPointer<ChoiceValidator> validator,
         QWidget* parent = 0);
@@ -53,7 +53,7 @@ public:
 
    /*! Check for the validity of the choices.
     * 
-    *       @return True, if all the choices are valid, otherwise false.
+    *    @return True, if all the choices are valid, otherwise false.
     */
     virtual bool isValid() const;
     
@@ -67,7 +67,7 @@ public slots:
     /*!
      *	Called when the choise list is emptied or is no longer empty.
      *  
-     *       @param [in] isEmpty     Indicates if the list was emptied or no longer empty.
+     *    @param [in] isEmpty     Indicates if the list was emptied or no longer empty.
      */
     void onChoiceListEmpty(bool isEmpty);
 
@@ -83,7 +83,7 @@ private slots:
     /*!
      *	Called when a choice has been selected.
      * 
-     *      @param [in] newIndex    Index of the selected choice.
+     *    @param [in] newIndex    Index of the selected choice.
      */
     void selectionChoiceChanged(QModelIndex const& newIndex);
 

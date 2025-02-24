@@ -29,7 +29,7 @@ public:
     /*!
      *  The constructor.
      * 
-     *      @param [in] cpu     The CPU.
+     *    @param [in] cpu     The CPU.
      */
     SVDCpuRoutesContainer(QSharedPointer<Cpu> cpu);
 
@@ -41,98 +41,98 @@ public:
     /*!
      *  Creates an SVD CPU route from CPU route.
      *
-     *      @return SVD CPU route.
+     *    @return SVD CPU route.
      */
     SVDCpuRoutesContainer(SingleCpuRoutesContainer const& other);
 
     /*!
      *  Setup the data.
      *
-     *      @param [in] configurationObject     Object containing the data.
+     *    @param [in] configurationObject     Object containing the data.
      */
     void setupConfiguration(QJsonObject const& configurationObject);
 
     /*!
      *  Get the revision.
      *
-     *      @return The revision.
+     *    @return The revision.
      */
     QString getRevision() const;
 
     /*!
      *  Set the revision.
      *
-     *      @param [in] newRevision     The new revision.
+     *    @param [in] newRevision     The new revision.
      */
     void setRevision(QString const& newRevision);
 
     /*!
      *  Get the endian.
      *
-     *      @return The endian.
+     *    @return The endian.
      */
     QString getEndian() const;
 
     /*!
      *  Set the endian.
      *
-     *      @param [in] newEndian   The new endian.
+     *    @param [in] newEndian   The new endian.
      */
     void setEndian(QString const& newEndian);
 
     /*!
      *  Check the value of MPU presence.
      *
-     *      @return True, if MPU is present, otherwise false.
+     *    @return True, if MPU is present, otherwise false.
      */
     bool isMPUPresent() const;
 
     /*!
      *  Set the MPU presence.
      *
-     *      @param [in] newPresence     The new MPU presence.
+     *    @param [in] newPresence     The new MPU presence.
      */
     void setMPUPresence(bool newPresence);
 
     /*!
      *  Check the FPU presence.
      *
-     *      @return True, if the FPU is present, false otherwise.
+     *    @return True, if the FPU is present, false otherwise.
      */
     bool isFPUPresent() const;
 
     /*!
      *  Set the FPU presence.
      *
-     *      @param [in] newPresence     The new FPU presence.
+     *    @param [in] newPresence     The new FPU presence.
      */
     void setFPUPresence(bool newPresence);
 
     /*!
      *  Get the number of NVIC bits.
      *
-     *      @return Number of NVIC bits.
+     *    @return Number of NVIC bits.
      */
     QString getNVICPrioBits() const;
 
     /*!
      *  Set the number of NVIC bits.
      *
-     *      @param [in] newBits     The new NVIC bits.
+     *    @param [in] newBits     The new NVIC bits.
      */
     void setNVICPrioBits(QString const& newBits);
 
     /*!
      *  Check if the CPU has a vendor specific system tick timer.
      *
-     *      @return True, if the CPU has a vendor specific system tick timer, false otherwise.
+     *    @return True, if the CPU has a vendor specific system tick timer, false otherwise.
      */
     bool isVendorSystickConfig() const;
 
     /*!
      *  Set the flag for vendor specific system tick timer.
      *
-     *      @param [in] newConfig   The new vendor specific system tick timer.
+     *    @param [in] newConfig   The new vendor specific system tick timer.
      */
     void setVendorSystickConfig(bool newConfig);
 

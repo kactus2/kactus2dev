@@ -29,9 +29,9 @@ namespace  ComDefinitionReader
     /*!
      *  Creates a Com definition from XML description.
      *
-     *      @param [in] document   The XML document to create the Com definition from.
+     *    @param [in] document   The XML document to create the Com definition from.
      *
-     *      @return The created Com definition.
+     *    @return The created Com definition.
      */
     IPXACTMODELS_EXPORT QSharedPointer<ComDefinition> createComDefinitionFrom(QDomNode const& document);
  
@@ -40,14 +40,14 @@ namespace  ComDefinitionReader
         /*!
          *  Parses all found transfer types from the given XML node.
          *
-         *      @param [in] node The source XML node.
+         *    @param [in] node The source XML node.
          */
         void parseTransferTypes(QDomNode const& node, QSharedPointer<ComDefinition> comDefinition);
 
         /*!
          *  Parses all found properties from the given XML node.
          *
-         *      @param [in] node The source XML node.
+         *    @param [in] node The source XML node.
          */
         void parseProperties(QDomNode const& node, QSharedPointer<ComDefinition> comDefinition);
     }

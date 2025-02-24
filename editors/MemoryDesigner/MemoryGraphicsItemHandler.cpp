@@ -19,19 +19,13 @@
 #include <editors/MemoryDesigner/AddressSpaceGraphicsItem.h>
 #include <editors/MemoryDesigner/MemoryMapGraphicsItem.h>
 #include <editors/MemoryDesigner/MemoryColumn.h>
+#include <editors/MemoryDesigner/MemoryCollisionItem.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryGraphicsItemHandler::MemoryGraphicsItemHandler()
 //-----------------------------------------------------------------------------
 MemoryGraphicsItemHandler::MemoryGraphicsItemHandler():
-QObject(),
-filterAddressSpaceSegments_(true),
-filterAddressBlocks_(true),
-filterRegisters_(true),
-filterFields_(true),
-filterUnconnectedMemoryItems_(true),
-memoryMapItems_(),
-spaceItems_()
+QObject()
 {
 
 }
@@ -115,12 +109,12 @@ void MemoryGraphicsItemHandler::filterUnconnectedMemoryItems(bool filterUnconnec
 {
     filterUnconnectedMemoryItems_ = filterUnconnected;
 
-    foreach (AddressSpaceGraphicsItem* spaceItem, spaceItems_)
+    for (AddressSpaceGraphicsItem* spaceItem : spaceItems_)
     {
         filterUnconnectedMemoryItem(spaceItem);
     }
 
-    foreach (MemoryMapGraphicsItem* mapItem, memoryMapItems_)
+    for (MemoryMapGraphicsItem* mapItem : memoryMapItems_)
     {
         filterUnconnectedMemoryItem(mapItem);
     }
@@ -143,6 +137,30 @@ void MemoryGraphicsItemHandler::filterUnconnectedMemoryItem(MainMemoryGraphicsIt
 bool MemoryGraphicsItemHandler::unconnectedMemoryItemsAreFiltered() const
 {
     return filterUnconnectedMemoryItems_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::filterMemoryOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryGraphicsItemHandler::filterMemoryOverlapItems(bool filterOverlap)
+{
+    filterMemoryOverlapItems_ = filterOverlap;
+
+    for (auto addrSpace : spaceItems_)
+    {
+        for (auto overlapItem : addrSpace->getMemoryCollisions())
+        {
+            overlapItem->setVisible(!filterOverlap);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::memoryOverlapItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryGraphicsItemHandler::memoryOverlapItemsAreFiltered() const
+{
+    return filterMemoryOverlapItems_;
 }
 
 //-----------------------------------------------------------------------------
@@ -241,7 +259,7 @@ void MemoryGraphicsItemHandler::connectGraphicsItemSignals(MainMemoryGraphicsIte
 //-----------------------------------------------------------------------------
 void MemoryGraphicsItemHandler::createFieldOverlapItems()
 {
-    foreach (MemoryMapGraphicsItem* mapItem, memoryMapItems_)
+    for (MemoryMapGraphicsItem* mapItem : memoryMapItems_)
     {
         mapItem->createFieldOverlapItems();
     }

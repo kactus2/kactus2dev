@@ -28,11 +28,10 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignDocument::MemoryDesignDocument()
 //-----------------------------------------------------------------------------
-MemoryDesignDocument::MemoryDesignDocument(LibraryInterface* library, QWidget* parent):
-TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_PRINT_SUPPORT, 30, 300),
+MemoryDesignDocument::MemoryDesignDocument(LibraryInterface* libHandler, QWidget* parent):
+TabDocument(parent, libHandler, DOC_ZOOM_SUPPORT | DOC_PRINT_SUPPORT, 30, 300),
 view_(new QGraphicsView(this)),
-diagram_(new MemoryDesignerDiagram(library, this)),
-libraryHandler_(library),
+diagram_(new MemoryDesignerDiagram(libHandler, this)),
 identifyingVLNV_(),
 designViewName_()
 {
@@ -95,9 +94,9 @@ bool MemoryDesignDocument::setDesign(VLNV const& componentVLNV, QString const& v
         setDocumentName(QString("%1 (%2)").
             arg(getIdentifyingVLNV().getName()).
             arg(getIdentifyingVLNV().getVersion()));
-        setDocumentType("Memory Design");
+        setDocumentType(DocumentType::MEMORY_DESIGN);
 
-        QSharedPointer<const Document> libraryDocument = libraryHandler_->getModelReadOnly(componentVLNV);
+        QSharedPointer<const Document> libraryDocument = getLibHandler()->getModelReadOnly(componentVLNV);
         QSharedPointer<const Component> component = libraryDocument.dynamicCast<const Component>();
         if (component)
         {
@@ -204,9 +203,9 @@ void MemoryDesignDocument::centerViewTo(QPointF const& centerPoint)
 //-----------------------------------------------------------------------------
 void MemoryDesignDocument::onVerticalScroll(int y)
 {
-    QPointF pt(0.0, y);
-    QTransform mat = view_->transform().inverted();
-    diagram_->onVerticalScroll(mat.map(pt).y());
+//     QPointF pt(0.0, y);
+//     QTransform mat = view_->transform().inverted();
+//     diagram_->onVerticalScroll(mat.map(pt).y());
 }
 
 //-----------------------------------------------------------------------------
@@ -362,10 +361,26 @@ void MemoryDesignDocument::filterUnconnectedMemoryItems(bool filterUnconnected)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::filterMemoryOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::filterMemoryOverlapItems(bool filterOverlap)
+{
+    diagram_->filterMemoryOverlapItems(filterOverlap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::memoryOverlapItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDocument::memoryOverlapItemsAreFiltered() const
+{
+    return diagram_->memoryOverlapItemsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignDocument::exportImage()
 //-----------------------------------------------------------------------------
 bool MemoryDesignDocument::exportImage()
 {
-    QString libraryPath = libraryHandler_->getDirectoryPath(identifyingVLNV_);
+    QString libraryPath = getLibHandler()->getDirectoryPath(identifyingVLNV_);
     return ImageExporter::exportImage(libraryPath, identifyingVLNV_, diagram_, this);
 }

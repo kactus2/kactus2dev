@@ -36,6 +36,7 @@ FieldValidator::FieldValidator(QSharedPointer<ExpressionParser> expressionParser
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator,
     QSharedPointer<ParameterValidator> parameterValidator,
     Document::Revision docRevision):
+HierarchicalValidator(),
 expressionParser_(expressionParser),
 enumeratedValueValidator_(enumeratedValueValidator),
 parameterValidator_(parameterValidator),
@@ -73,7 +74,7 @@ bool FieldValidator::validate(QSharedPointer<Field> field) const
 {
     if (docRevision_ == Document::Revision::Std14)
     {
-        return hasValidName(field) && hasValidIsPresent(field) && 
+        return validComparedToSiblings(field) && hasValidName(field) && hasValidIsPresent(field) && 
             hasValidBitOffset(field) && hasValidResets(field) &&
             hasValidWriteValueConstraint(field) && hasValidReserved(field) && hasValidBitWidth(field) &&
             hasValidEnumeratedValues(field) && hasValidParameters(field) && hasValidAccess(field);
@@ -97,7 +98,8 @@ bool FieldValidator::validate(QSharedPointer<Field> field) const
             return false;
         }
 
-        return hasValidName(field) && hasValidMemoryArray(field) && hasValidBitOffset(field) && hasValidResets(field) &&
+        return validComparedToSiblings(field) && hasValidName(field) && hasValidMemoryArray(field) && 
+            hasValidBitOffset(field) && hasValidResets(field) &&
             hasValidWriteValueConstraint(field) && hasValidReserved(field) && hasValidBitWidth(field) &&
             hasValidEnumeratedValues(field) && hasValidParameters(field) && hasValidAccess(field) &&
             hasValidStructure(field);

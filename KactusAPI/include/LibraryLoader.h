@@ -40,13 +40,13 @@ public:
 
 	/*! Cleans the directory structure.
 	*
-	*      @param [in] changedDirectories	Changed directories (e.g. after a remove).
+	*    @param [in] changedDirectories	Changed directories (e.g. after a remove).
 	*/
     void clean(QStringList const& changedDirectories) const;
 
 	/*! Searches for IP-XACT files and returns any found targets.
 	*
-	*      @return The found IP-XACT targets.
+	*    @return The found IP-XACT targets.
 	*/
     QVector<LoadTarget> parseLibrary(MessageMediator const* messageChannel) const;
 
@@ -54,24 +54,24 @@ private:
 
     /*! Finds the VLNV in the given file.
     *
-    *      @param [in]		path	The file path to search.
+    *    @param [in]		path	The file path to search.
     *
-    *      @return The VLNV found in the given file.
+    *    @return The VLNV found in the given file.
     */
     VLNV getDocumentVLNV(QString const& path, MessageMediator const* messageChannel) const;
 
     /*! Clear the empty directories from the disk within given path.
      *
-     *      @param [in] dirPath The path that is removed until one of the base library locations is reached.
-     *      @param [in] libraryLocations Contains the base library locations user has defined.
+     *    @param [in] dirPath The path that is removed until one of the base library locations is reached.
+     *    @param [in] libraryLocations Contains the base library locations user has defined.
      *
     */
     void clearDirectoryStructure(QString const& dirPath, QStringList const& libraryLocations) const;
 
     /*! Check if the path contains one of the given paths.
      *
-     *      @param [in] path The path to a directory.
-     *      @param [in] pathsToSearch Paths that are checked if they are contained in the given path.
+     *    @param [in] path The path to a directory.
+     *    @param [in] pathsToSearch Paths that are checked if they are contained in the given path.
      *
     */
     bool containsPath(QString const& path, QStringList const& pathsToSearch) const;

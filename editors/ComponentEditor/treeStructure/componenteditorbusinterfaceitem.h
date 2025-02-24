@@ -41,19 +41,19 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] busif                   The bus interface being edited.
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] referenceCounter        The reference counter.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-	 *      @param [in] expressionParser        The expression parser.
-	 *      @param [in] validator               The validator for bus interfaces.
-	 *      @param [in] busInterface            Interface for accessing bus interfaces.
-	 *      @param [in] portMapInterface        Interface for accessing port maps.
-	 *      @param [in] parent                  The owner of this item.
-	 *      @param [in] parentWnd               The parent window.
+	 *    @param [in] busif                   The bus interface being edited.
+	 *    @param [in] model                   The model that owns the items.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] referenceCounter        The reference counter.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+	 *    @param [in] expressionParser        The expression parser.
+	 *    @param [in] validator               The validator for bus interfaces.
+	 *    @param [in] busInterface            Interface for accessing bus interfaces.
+	 *    @param [in] portMapInterface        Interface for accessing port maps.
+	 *    @param [in] parent                  The owner of this item.
+	 *    @param [in] parentWnd               The parent window.
 	 */
 	ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
 		ComponentEditorTreeModel* model,
@@ -72,32 +72,32 @@ public:
 
 	/*! Get the tool tip for the item.
 	 *
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
 	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	*/
 	virtual QString text() const;
 
 	/*! Check the validity of this item and sub items.
 	 *
-	 *      @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	*/
 	virtual bool isValid() const;
 
 	/*! Get The editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
 	/*!
 	 *  Returns the possible actions for opening the item.
 	 *
-	 *      @return The actions to open the item.
+	 *    @return The actions to open the item.
 	 */
 	virtual QList<QAction*> actions();
 

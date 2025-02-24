@@ -45,9 +45,9 @@ public:
 	/*!
      *  Constructor.
 	 *
-	 *      @param [in] parent      The parent widget.
-     *      @param [in] libHandler  The library interface.
-     *      @param [in] comDef      The COM definition.
+	 *    @param [in] parent      The parent widget.
+     *    @param [in] libHandler  The library interface.
+     *    @param [in] comDef      The COM definition.
 	 */
 	ComDefinitionEditor(QWidget* parent, LibraryInterface* libHandler, QSharedPointer<ComDefinition> comDef);
 	
@@ -62,14 +62,14 @@ public:
 
 	/*! Get the VLNV that can be used to identify the COM definition.
 	 *
-	 *      @return The VLNV of the COM definition
+	 *    @return The VLNV of the COM definition
 	*/
 	virtual VLNV getIdentifyingVLNV() const;
 
     /*!
      *  Sets the protection state of the document.
      *
-     *      @param [in] locked True for locked state; false for unlocked.
+     *    @param [in] locked True for locked state; false for unlocked.
      */
     virtual void setProtection(bool locked);
 
@@ -87,9 +87,9 @@ public slots:
     /*!
      *  Validates the document against the IP-XACT standard.
      *
-     *      @param [out] errorList Error message list for reporting standard violations.
+     *    @param [out] errorList Error message list for reporting standard violations.
      *
-     *      @return True if the document is valid. False if there were any violations.
+     *    @return True if the document is valid. False if there were any violations.
      */
     virtual bool validate(QVector<QString>& errorList);
 
@@ -113,9 +113,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! The instance that handles the library.
-	LibraryInterface* libHandler_;
 
 	//! The COM definition being edited.
 	QSharedPointer<ComDefinition> comDef_;

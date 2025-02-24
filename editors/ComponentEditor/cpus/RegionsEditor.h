@@ -26,11 +26,11 @@ public:
     /*!
      *  The constructor
      *
-     *      @param [in] regions                 The edited regions.
-     *      @param [in] regionValidator			The validator for regions.
-     *      @param [in] componentPath           The path to component xml file.
-     *      @param [in] expressions				The collection of objects for expression handling.
-     *      @param [in] parent                  Pointer to the owner of this editor.
+     *    @param [in] regions                 The edited regions.
+     *    @param [in] regionValidator			The validator for regions.
+     *    @param [in] componentPath           The path to component xml file.
+     *    @param [in] expressions				The collection of objects for expression handling.
+     *    @param [in] parent                  Pointer to the owner of this editor.
 	 */
 	RegionsEditor(QSharedPointer<QList<QSharedPointer<Region> > > regions,
 		QSharedPointer<RegionValidator> regionValidator,
@@ -77,14 +77,14 @@ signals:
     /*!
      *  Increase the amount of references to a parameter with a matching id.
      *
-     *      @param [in] id      Id of the parameter, whose references are being increased.
+     *    @param [in] id      Id of the parameter, whose references are being increased.
      */
     void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the amount of references to a parameter with a matching id.
      *
-     *      @param [in] id      Id of the parameter, whose references are being increased.
+     *    @param [in] id      Id of the parameter, whose references are being increased.
      */
     void decreaseReferences(QString const& id);
 

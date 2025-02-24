@@ -29,9 +29,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component   Pointer to the component instance that is being edited.
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] parent      Pointer to the owner of this widget.
+	 *    @param [in] component   Pointer to the component instance that is being edited.
+	 *    @param [in] handler     Pointer to the instance that manages the library.
+	 *    @param [in] parent      Pointer to the owner of this widget.
 	 */
 	ParameterItemEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget *parent = 0);
 
@@ -50,16 +50,16 @@ signals:
     /*!
      *  Open the reference tree of the selected parameter.
      *
-     *      @param [in] id              Id of the selected parameter.
-     *      @param [in] parameterName   Name of the selected parameter.
+     *    @param [in] id              Id of the selected parameter.
+     *    @param [in] parameterName   Name of the selected parameter.
      */
     void openReferenceTree(QString const& id, QString const& parameterName) const;
 
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameterList       The selected parameters.
-     *      @param [in] parameterInterface  Interface for accessing parameters.
+     *    @param [in] parameterList       The selected parameters.
+     *    @param [in] parameterInterface  Interface for accessing parameters.
      */
     void recalculateReferencesToParameters(QVector<QString> const& parameterList,
         AbstractParameterInterface* parameterInterface);

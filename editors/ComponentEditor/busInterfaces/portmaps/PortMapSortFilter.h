@@ -28,8 +28,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] portMapInterface    Interface for accessing port maps.
-     *      @param [in] parent              Pointer to the owner of this model.
+     *    @param [in] portMapInterface    Interface for accessing port maps.
+     *    @param [in] parent              Pointer to the owner of this model.
      */
     PortMapSortFilter(PortMapInterface* portMapInterface, QObject *parent);
 
@@ -41,10 +41,10 @@ public:
     /*!
      *  Get the data for the specified item.
      *
-     *      @param [in] index   Specifies the item that's data is requested.
-     *      @param [in] role    The role that defines what kind of data is requested.
+     *    @param [in] index   Specifies the item that's data is requested.
+     *    @param [in] role    The role that defines what kind of data is requested.
      *
-     *      @return QVariant contains the data for the item.
+     *    @return QVariant contains the data for the item.
      */
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
@@ -53,9 +53,9 @@ protected:
     /*!
      *  Get the background color for the selected index.
      *
-     *      @param [in] index   Index of the selected item.
+     *    @param [in] index   Index of the selected item.
      *
-     *      @return Background color for the selected index.
+     *    @return Background color for the selected index.
      */
     virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
 
@@ -67,10 +67,10 @@ private:
     /*!
      *  Get the background colour on the previous row of the selected index.
      *
-     *      @param [in] previousRow     The previous row.
-     *      @param [in] index           The selected index.
+     *    @param [in] previousRow     The previous row.
+     *    @param [in] index           The selected index.
      *
-     *      @return Background colour of the previous row.
+     *    @return Background colour of the previous row.
      */
     QColor getPreviousColor(int const& previousRow, QModelIndex const& index) const;
 

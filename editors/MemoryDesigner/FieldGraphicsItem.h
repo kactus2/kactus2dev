@@ -38,18 +38,18 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] fieldName           Name of the field.
-     *      @param [in] displayName         Display name of the field.
-     *      @param [in] fieldOffset         Offset of the field.
-     *      @param [in] fieldLastBit        Last bit used by the field.
-     *      @param [in] fieldWidth          Width of the field.
-     *      @param [in] fieldHeight         Height of the field.
-     *      @param [in] isEmptyField        Value for empty fields.
-     *      @param [in] identifierChain     Chain of strings identifying this item.
-     *      @param [in] labelFont           Font for the field labels.
-     *      @param [in] containingInstance  Name of the containing component instance.
-     *      @param [in] isOutsideRegister   Holds whether the field is out of bounds of the register or not.
-     *      @param [in] parentItem          The parent graphics item.
+     *    @param [in] fieldName           Name of the field.
+     *    @param [in] displayName         Display name of the field.
+     *    @param [in] fieldOffset         Offset of the field.
+     *    @param [in] fieldLastBit        Last bit used by the field.
+     *    @param [in] fieldWidth          Width of the field.
+     *    @param [in] fieldHeight         Height of the field.
+     *    @param [in] isEmptyField        Value for empty fields.
+     *    @param [in] identifierChain     Chain of strings identifying this item.
+     *    @param [in] labelFont           Font for the field labels.
+     *    @param [in] containingInstance  Name of the containing component instance.
+     *    @param [in] isOutsideRegister   Holds whether the field is out of bounds of the register or not.
+     *    @param [in] parentItem          The parent graphics item.
      */
     FieldGraphicsItem(QSharedPointer<MemoryItem const> fieldItem, quint64 fieldOffset, quint64 fieldLastBit,
         qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QVector<QString> identifierChain,
@@ -69,30 +69,30 @@ public:
     /*!
      *  Condense this graphics item.
      *
-     *      @param [in] newItemHeight   The new height.
+     *    @param [in] newItemHeight   The new height.
      */
     virtual void condense(qreal newItemHeight);
 
     /*!
      *  Change the width.
      *
-     *      @param [in] widthChange     Change in width..
+     *    @param [in] widthChange     Change in width..
      */
     void changeWidth(qreal widthChange);
 
     /*!
      *  Get the needed change in width to fully display the name label within this item.
      *
-     *      @return The needed change in width to fully display the name label within this item.
+     *    @return The needed change in width to fully display the name label within this item.
      */
     qreal getNeededWithChangeToDisplayFullName() const;
 
     /*!
      *  Add an overlap field item from the overlapping field graphics item.
      *
-     *      @param [in] overlappingFieldItem    The overlapping field graphics item.
-     *      @param [in] overlapBrush            Brush used to draw the overlap item.
-     *      @param [in] containingScene         Scene containing the overlapping field item.
+     *    @param [in] overlappingFieldItem    The overlapping field graphics item.
+     *    @param [in] overlapBrush            Brush used to draw the overlap item.
+     *    @param [in] containingScene         Scene containing the overlapping field item.
      */
     void addOverlappingFieldItem(FieldGraphicsItem* overlappingFieldItem, QBrush overlapBrush,
         QGraphicsScene* containingScene);
@@ -100,7 +100,7 @@ public:
     /*!
      *  Get the text from the combined range label.
      *
-     *      @return The text contained within the combined range label.
+     *    @return The text contained within the combined range label.
      */
     QString getCombinedRangeText() const;
 
@@ -114,14 +114,14 @@ protected:
     /*!
      *  Handler for the mouse press event.
      *
-     *      @param [in] event   The mouse press event.
+     *    @param [in] event   The mouse press event.
      */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
     /*!
      *  Handler for the hover leave event.
      *
-     *      @param [in] event   The hover leave event.
+     *    @param [in] event   The hover leave event.
      */
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
@@ -133,7 +133,7 @@ private:
     /*!
      *  Set colors for ranges in an empty field graphics item.
      *
-     *      @param [in] emptyItemRangeColour    The color for the empty field item ranges.
+     *    @param [in] emptyItemRangeColour    The color for the empty field item ranges.
      */
     virtual void setEmptyItemRangeColors(QColor emptyItemRangeColour);
 
@@ -145,24 +145,24 @@ private:
     /*!
      *  Fit the name label to the boundaries of the item.
      *
-     *      @param [in] nameLabel   The selected name label.
+     *    @param [in] nameLabel   The selected name label.
      */
     void fitNameToBoundaries(QGraphicsTextItem* nameLabel);
 
     /*!
      *  Create the rectangle for containing the overlapping field items.
      *
-     *      @param [in] rectanglePositionY  Y coordinate of the rectangle.
-     *      @param [in] fieldRectangle      The field bounding rectangle.
-     *      @param [in] containingScene     Scene containing the field item.
+     *    @param [in] rectanglePositionY  Y coordinate of the rectangle.
+     *    @param [in] fieldRectangle      The field bounding rectangle.
+     *    @param [in] containingScene     Scene containing the field item.
      */
     void createOverlapRectangle(qreal rectanglePositionY, QRectF fieldRectangle, QGraphicsScene* containingScene);
 
     /*!
      *  Setup the rectangle containing the overlapping field items.
      *
-     *      @param [in] currentOverlapHeight    Current height of the overlapping rectangle.
-     *      @param [in] newOverlapItem          The new overlapping field item.
+     *    @param [in] currentOverlapHeight    Current height of the overlapping rectangle.
+     *    @param [in] newOverlapItem          The new overlapping field item.
      */
     void setupOverlapRectangle(qreal currentOverlapHeight, FieldGraphicsItem* newOverlapItem);
 

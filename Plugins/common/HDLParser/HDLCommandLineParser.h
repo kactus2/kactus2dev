@@ -26,9 +26,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] command   The command used to run the generator for the parser.
+     *    @param [in] command   The command used to run the generator for the parser.
      *
-     *      @return <Description>.
+     *    @return <Description>.
      */
     HDLCommandLineParser(QString const& command);
 
@@ -49,9 +49,9 @@ public:
     /*!
      *  Parse the given arguments.
      *
-     *      @param [in] arguments   The arguments to parse.
+     *    @param [in] arguments   The arguments to parse.
      *
-     *      @return Collection of parse results.
+     *    @return Collection of parse results.
      */
     ParseResults parseArguments(QStringList const& arguments);
 

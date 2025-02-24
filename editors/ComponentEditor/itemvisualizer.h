@@ -26,7 +26,7 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] parent  The parent widget of the visualizer. 
+	 *    @param [in] parent  The parent widget of the visualizer. 
 	*/
 	ItemVisualizer(QWidget* parent = 0);
 	

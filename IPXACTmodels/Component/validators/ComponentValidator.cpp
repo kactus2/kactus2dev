@@ -12,6 +12,7 @@
 #include "ComponentValidator.h"
 
 #include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/ModeConditionParserInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -67,7 +68,9 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::ComponentValidator()
 //-----------------------------------------------------------------------------
-ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library, Document::Revision docRevision) :
+ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser,
+    QSharedPointer<ModeConditionParserBaseInterface> modeConditionParserInterface,
+    LibraryInterface* library, Document::Revision docRevision) :
 component_(),
 busInterfaceValidator_(),
 indirectInterfaceValidator_(),
@@ -85,7 +88,8 @@ fileSetValidator_(),
 cpuValidator_(),
 otherClockDriverValidator_(),
 parameterValidator_(),
-assertionValidator_()
+assertionValidator_(),
+modeConditionParserInterface_(modeConditionParserInterface)
 {
     parameterValidator_ = QSharedPointer<ParameterValidator>(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > (), docRevision));
@@ -112,7 +116,8 @@ assertionValidator_()
     remapStateValidator_ = QSharedPointer<RemapStateValidator>(
         new RemapStateValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > ()));
   
-    modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(component_, parser));
+    modeConditionParser_ = modeConditionParserInterface_->createParser();
+    modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(component_, modeConditionParser_));
 
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_, docRevision));
@@ -158,6 +163,26 @@ assertionValidator_()
         parser, parameterValidator_));
 
     assertionValidator_ = QSharedPointer<AssertionValidator>(new AssertionValidator(parser));
+
+    memoryMapsValidator_ = QSharedPointer<MemoryMapsValidator>(new MemoryMapsValidator(memoryMapValidator_));
+
+    fileSetsValidator_ = QSharedPointer<FileSetsValidator>(new FileSetsValidator(fileSetValidator_));
+
+    addressSpacesValidator_ = QSharedPointer<AddressSpacesValidator>(new AddressSpacesValidator(addressSpaceValidator_));
+
+    allInstantiationsValidator_ = QSharedPointer<AllInstantiationsValidator>(new AllInstantiationsValidator(instantiationsValidator_));
+
+    viewsValidator_ = QSharedPointer<ViewsValidator>(new ViewsValidator(viewValidator_));
+
+    portsValidator_ = QSharedPointer<PortsValidator>(new PortsValidator(portValidator_));
+
+    busIfsValidator_ = QSharedPointer<BusInterfacesValidator>(new BusInterfacesValidator(busInterfaceValidator_));
+
+    indirectInterfacesValidator_ = QSharedPointer<IndirectInterfacesValidator>(new IndirectInterfacesValidator(indirectInterfaceValidator_));
+
+    cpusValidator_ = QSharedPointer<CPUsValidator>(new CPUsValidator(cpuValidator_));
+
+    powerDomainsValidator_ = QSharedPointer<PowerDomainsValidator>(new PowerDomainsValidator(powerDomainValidator_));
 }
 
 //-----------------------------------------------------------------------------
@@ -171,8 +196,7 @@ bool ComponentValidator::validate(QSharedPointer<Component> component)
         hasValidIndirectInterfaces(component) && hasValidChannels(component) &&
         hasValidRemapStates(component) && hasValidModes(component) &&
         hasValidAddressSpaces(component) && hasValidMemoryMaps(component) &&
-        hasValidViews(component) && hasValidComponentInstantiations(component) &&
-        hasValidDesignInstantiations(component) && hasValidDesignConfigurationInstantiations(component) &&
+        hasValidViews(component) && hasValidInstantiations(component) &&
         hasValidPorts(component) && hasValidComponentGenerators(component) && hasValidChoices(component) &&
         hasValidFileSets(component) && hasValidCPUs(component) && hasValidOtherClockDrivers(component) &&
         hasValidPowerDomains(component) &&
@@ -193,22 +217,8 @@ bool ComponentValidator::hasValidVLNV(QSharedPointer<Component> component) const
 bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    QVector<QString> busInterfaceNames;
-    for (QSharedPointer<BusInterface> bus : *component->getBusInterfaces())
-    {
-        if (busInterfaceNames.contains(bus->name()) || 
-            busInterfaceValidator_->validate(bus, component->getRevision()) == false)
-        {
-            return false;
-        }
-        
-        busInterfaceNames.append(bus->name());
-    }
-
-    return true;
+    return busIfsValidator_->validate(component->getBusInterfaces(), component->getRevision());
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidIndirectInterfaces()
@@ -216,20 +226,7 @@ bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> compone
 bool ComponentValidator::hasValidIndirectInterfaces(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    QVector<QString> interfaceNames;
-    for (QSharedPointer<IndirectInterface> indirectInterface : *component->getIndirectInterfaces())
-    {
-        if (interfaceNames.contains(indirectInterface->name()) || 
-            !indirectInterfaceValidator_->validate(indirectInterface))
-        {
-            return false;
-        }
-
-        interfaceNames.append(indirectInterface->name());
-    }
-
-    return true;
+    return indirectInterfacesValidator_->validate(component->getIndirectInterfaces());
 }
 
 //-----------------------------------------------------------------------------
@@ -301,15 +298,20 @@ bool ComponentValidator::hasValidModes(QSharedPointer<Component> component)
 {
     changeComponent(component);
 
-    QVector<QString> modeNames;
+    modeConditionParserInterface_->setModes(modeConditionParser_, component->getModes());
+
+    QSet<QString> modeNames;
     for (QSharedPointer<Mode> mode : *component->getModes())
     {
+        modeConditionParserInterface_->setFieldSlices(modeConditionParser_, mode->getFieldSlices());
+        modeConditionParserInterface_->setPortSlices(modeConditionParser_, mode->getPortSlices());
+
         if (modeNames.contains(mode->name()) || !modeValidator_->validate(mode))
         {
             return false;
         }
 
-        modeNames.append(mode->name());
+        modeNames.insert(mode->name());
     }
 
     return true;
@@ -321,24 +323,7 @@ bool ComponentValidator::hasValidModes(QSharedPointer<Component> component)
 bool ComponentValidator::hasValidAddressSpaces(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getAddressSpaces()->isEmpty())
-    {
-        QVector<QString> spaceNames;
-        for (QSharedPointer<AddressSpace> space : *component->getAddressSpaces())
-        {
-            if (spaceNames.contains(space->name()) || !addressSpaceValidator_->validate(space))
-            {
-                return false;
-            }
-            else
-            {
-                spaceNames.append(space->name());
-            }
-        }
-    }
-
-    return true;
+    return addressSpacesValidator_->validate(component->getAddressSpaces());
 }
 
 //-----------------------------------------------------------------------------
@@ -347,24 +332,7 @@ bool ComponentValidator::hasValidAddressSpaces(QSharedPointer<Component> compone
 bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getMemoryMaps()->isEmpty())
-    {
-        QVector<QString> mapNames;
-        for (QSharedPointer<MemoryMap> memoryMap : *component->getMemoryMaps())
-        {
-            if (mapNames.contains(memoryMap->name()) || !memoryMapValidator_->validate(memoryMap))
-            {
-                return false;
-            }
-            else
-            {
-                mapNames.append(memoryMap->name());
-            }
-        }
-    }
-
-    return true;
+    return memoryMapsValidator_->validate(component->getMemoryMaps());
 }
 
 //-----------------------------------------------------------------------------
@@ -373,106 +341,16 @@ bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component)
 bool ComponentValidator::hasValidViews(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getViews()->isEmpty())
-    {
-        QVector<QString> viewNames;
-        for (QSharedPointer<View> view : *component->getViews())
-        {
-            if (viewNames.contains(view->name()) || !viewValidator_->validate(view))
-            {
-                return false;
-            }
-            else
-            {
-                viewNames.append(view->name());
-            }
-        }
-    }
-
-    return true;
+    return viewsValidator_->validate(component->getViews());
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentValidator::hasValidComponentInstantiations()
+// Function: ComponentValidator::hasValidInstantiations()
 //-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Component> component)
+bool ComponentValidator::hasValidInstantiations(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getComponentInstantiations()->isEmpty())
-    {
-        QVector<QString> instantiationNames;
-        for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
-        {
-            if (instantiationNames.contains(instantiation->name()) ||
-                !instantiationsValidator_->validateComponentInstantiation(instantiation, component->getRevision()))
-            {
-                return false;
-            }
-            else
-            {
-                instantiationNames.append(instantiation->name());
-            }
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentValidator::hasValidDesignInstantiations()
-//-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidDesignInstantiations(QSharedPointer<Component> component)
-{
-    changeComponent(component);
-
-    if (!component->getDesignInstantiations()->isEmpty())
-    {
-        QVector<QString> instantiationNames;
-        for (QSharedPointer<DesignInstantiation> instantiation : *component->getDesignInstantiations())
-        {
-            if (instantiationNames.contains(instantiation->name()) ||
-                !instantiationsValidator_->validateDesignInstantiation(instantiation))
-            {
-                return false;
-            }
-            else
-            {
-                instantiationNames.append(instantiation->name());
-            }
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentValidator::hasValidDesignConfigurationInstantiations()
-//-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component)
-{
-    changeComponent(component);
-
-    if (!component->getDesignConfigurationInstantiations()->isEmpty())
-    {
-        QVector<QString> instantiationNames;
-        for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
-            *component->getDesignConfigurationInstantiations())
-        {
-            if (instantiationNames.contains(instantiation->name()) ||
-                !instantiationsValidator_->validateDesignConfigurationInstantiation(instantiation))
-            {
-                return false;
-            }
-            else
-            {
-                instantiationNames.append(instantiation->name());
-            }
-        }
-    }
-
-    return true;
+    return allInstantiationsValidator_->validate(component);
 }
 
 //-----------------------------------------------------------------------------
@@ -481,24 +359,7 @@ bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointe
 bool ComponentValidator::hasValidPorts(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getPorts()->isEmpty())
-    {
-        QVector<QString> portNames;
-        for (QSharedPointer<Port> port : *component->getPorts())
-        {
-            if (portNames.contains(port->name()) || !portValidator_->validate(port))
-            {
-                return false;
-            }
-            else
-            {
-                portNames.append(port->name());
-            }
-        }
-    }
-
-    return true;
+    return portsValidator_->validate(component->getPorts());
 }
 
 //-----------------------------------------------------------------------------
@@ -558,23 +419,7 @@ bool ComponentValidator::hasValidChoices(QSharedPointer<Component> component)
 bool ComponentValidator::hasValidFileSets(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getFileSets()->isEmpty())
-    {
-        QVector<QString> fileSetNames;
-        for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
-        {
-            if (fileSetNames.contains(fileSet->name()) || !fileSetValidator_->validate(fileSet))
-            {
-                return false;
-            }
-            else
-            {
-                fileSetNames.append(fileSet->name());
-            }
-        }
-    }
-    return true;
+    return fileSetsValidator_->validate(component->getFileSets());
 }
 
 //-----------------------------------------------------------------------------
@@ -583,23 +428,7 @@ bool ComponentValidator::hasValidFileSets(QSharedPointer<Component> component)
 bool ComponentValidator::hasValidCPUs(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getCpus()->isEmpty())
-    {
-        QVector<QString> cpuNames;
-        for (QSharedPointer<Cpu> cpu : *component->getCpus())
-        {
-            if (cpuNames.contains(cpu->name()) || !cpuValidator_->validate(cpu))
-            {
-                return false;
-            }
-            else
-            {
-                cpuNames.append(cpu->name());
-            }
-        }
-    }
-    return true;
+    return cpusValidator_->validate(component->getCpus());
 }
 
 //-----------------------------------------------------------------------------
@@ -634,22 +463,7 @@ bool ComponentValidator::hasValidOtherClockDrivers(QSharedPointer<Component> com
 bool ComponentValidator::hasValidPowerDomains(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    QVector<QString> domainNames;
-    for (QSharedPointer<PowerDomain> domain : *component->getPowerDomains())
-    {
-        if (domainNames.contains(domain->name()) ||
-            !powerDomainValidator_->validate(domain))
-        {
-            return false;
-        }
-        else
-        {
-            domainNames.append(domain->name());
-        }
-    }
-
-    return true;
+    return powerDomainsValidator_->validate(component->getPowerDomains());
 }
 
 //-----------------------------------------------------------------------------
@@ -905,8 +719,13 @@ void ComponentValidator::findErrorsInModes(QVector<QString>& errors, QSharedPoin
 {
     QStringList modeNames;
     QStringList duplicateNames;
+    modeConditionParserInterface_->setModes(modeConditionParser_, component->getModes());
+
     for (auto const& mode : *component->getModes())
     {
+        modeConditionParserInterface_->setFieldSlices(modeConditionParser_, mode->getFieldSlices());
+        modeConditionParserInterface_->setPortSlices(modeConditionParser_, mode->getPortSlices());
+
         if (modeNames.contains(mode->name()) && !duplicateNames.contains(mode->name()))
         {
             errors.append(QObject::tr("Mode name %1 within %2 is not unique.")

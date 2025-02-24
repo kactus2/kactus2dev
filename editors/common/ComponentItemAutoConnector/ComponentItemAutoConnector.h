@@ -65,13 +65,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] firstContainer      Data for the first container.
-     *      @param [in] secondContainer     Data for the second container.
-     *      @param [in] busTableTools       Auto connector tools for the bus interface item connector.
-     *      @param [in] portTableTools      Auto connector tools for the port item connector.
-     *      @param [in] secondItemType      Type of the second item container.
-     *      @param [in] design              The design containing the items to connect.
-     *      @param [in] parent              The parent of this widget.
+     *    @param [in] firstContainer      Data for the first container.
+     *    @param [in] secondContainer     Data for the second container.
+     *    @param [in] busTableTools       Auto connector tools for the bus interface item connector.
+     *    @param [in] portTableTools      Auto connector tools for the port item connector.
+     *    @param [in] secondItemType      Type of the second item container.
+     *    @param [in] design              The design containing the items to connect.
+     *    @param [in] parent              The parent of this widget.
      */
     ComponentItemAutoConnector(AutoContainer const& firstContainer, AutoContainer const& secondContainer, 
         TableTools const& busTableTools, TableTools const& portTableTools, 
@@ -85,7 +85,7 @@ public:
     /*!
      *  Get the list of connected items.
      *
-     *      @return A list of item pairs.
+     *    @return A list of item pairs.
      */
     QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > getConnectedItems() const;
 
@@ -122,10 +122,10 @@ private:
     /*!
      *  Create connected item pairs from the selected connector table.
      *
-     *      @param [in] connector   The selected connector table.
-     *      @param [in] itemType    Type for the items.
+     *    @param [in] connector   The selected connector table.
+     *    @param [in] itemType    Type for the items.
      *
-     *      @return List of connected item pairs.
+     *    @return List of connected item pairs.
      */
     QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > createItemPairs(AutoConnector* connector,
         AutoConnectorItem::ItemType itemType) const;
@@ -133,10 +133,10 @@ private:
     /*!
      *  Create the intro widget.
      *
-     *      @param [in] introName   Header for the intro.
-     *      @param [in] introText   Text body for the intro.
+     *    @param [in] introName   Header for the intro.
+     *    @param [in] introText   Text body for the intro.
      *
-     *      @return The intro widget.
+     *    @return The intro widget.
      */
     QWidget* setupIntroWidget(QString const& introName, QString const& introText) const;
 

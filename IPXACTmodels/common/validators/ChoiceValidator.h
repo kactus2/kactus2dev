@@ -30,7 +30,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] expressionParser    The parser to use for solving expressions.
+     *    @param [in] expressionParser    The parser to use for solving expressions.
      */
     ChoiceValidator(QSharedPointer<ExpressionParser> expressionParser);
 
@@ -44,36 +44,36 @@ public:
     /*!
      *  Validates the given choice.
      *
-     *      @param [in] choice  The selected choice.
+     *    @param [in] choice  The selected choice.
      *
-     *      @return True, if the choice is valid IP-XACT, otherwise false.
+     *    @return True, if the choice is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<Choice> choice) const;
 
     /*!
      *  Check if the name is valid.
      *
-     *      @param [in] choice  The selected choice.
+     *    @param [in] choice  The selected choice.
      *
-     *      @return True, if the name is valid, otherwise false.
+     *    @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QSharedPointer<Choice> choice) const;
 
     /*!
      *  Check if the enumerations are valid.
      *
-     *      @param [in] choice  The selected choice.
+     *    @param [in] choice  The selected choice.
      *
-     *      @return True, if the enumerations are valid, otherwise false.
+     *    @return True, if the enumerations are valid, otherwise false.
      */
     bool hasValidEnumerations(QSharedPointer<Choice> choice) const;
 
     /*!
      *  Locate errors within a choice.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] choice      The selected choice.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] choice      The selected choice.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Choice> choice, QString const& context) const;
 
@@ -82,18 +82,18 @@ private:
     /*!
      *  Find errors within name.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] choice      The selected choice.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] choice      The selected choice.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInName(QVector<QString>& errors, QSharedPointer<Choice> choice, QString const& context) const;
 
     /*!
      *  Find errors within enumerations.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] choice      The selected choice.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] choice      The selected choice.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInEnumerations(QVector<QString>& errors, QSharedPointer<Choice> choice, QString const& context)
         const;

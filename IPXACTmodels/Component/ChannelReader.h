@@ -28,8 +28,8 @@ namespace  ChannelReader
     /*!
      *  Creates a new channel from a given channel node.
      *
-     *      @param [in] channelNode    XML description of the channel.
-     *      @param [in] docRevision    The applied IP-XACT standard revision.
+     *    @param [in] channelNode    XML description of the channel.
+     *    @param [in] docRevision    The applied IP-XACT standard revision.
      */
     IPXACTMODELS_EXPORT QSharedPointer<Channel> createChannelFrom(QDomNode const& channelNode,
         Document::Revision docRevision);
@@ -40,9 +40,9 @@ namespace  ChannelReader
         /*!
          *  Parses the local interface references for the channel. 
          *
-         *      @param [in] channelNode     XML description of the channel.
-         *      @param [in] newChannel      The channel to add the references to.
-         *      @param [in] docRevision     The applied IP-XACT standard revision.
+         *    @param [in] channelNode     XML description of the channel.
+         *    @param [in] newChannel      The channel to add the references to.
+         *    @param [in] docRevision     The applied IP-XACT standard revision.
          */
         void parseInterfaceReferences(QDomNode const& channelNode, QSharedPointer<Channel> newChannel,
             Document::Revision docRevision);

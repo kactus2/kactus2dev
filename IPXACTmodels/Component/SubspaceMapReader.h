@@ -29,10 +29,10 @@ namespace SubspaceMapReader
     /*!
      *  Creates a new subspace map from a given subspace map node.
      *
-     *      @param [in] subspaceMapNode     XML description of the subspace map.
-     *      @param [in] docRevision         The IP-XACT standard revision to comply to.
+     *    @param [in] subspaceMapNode     XML description of the subspace map.
+     *    @param [in] docRevision         The IP-XACT standard revision to comply to.
      *
-     *      @return The created subspace map.
+     *    @return The created subspace map.
      */
     IPXACTMODELS_EXPORT QSharedPointer<SubSpaceMap> createSubspaceMapFrom(QDomNode const& subspaceMapNode,
         Document::Revision docRevision);
@@ -42,9 +42,9 @@ namespace SubspaceMapReader
         /*!
          *  Reads the attributes from XML to a subspace map.
          *
-         *      @param [in] subspaceMapNode     The XML description of the subspace map.
-         *      @param [in/out] newSubspaceMap  The subspace map to insert the attributes into.
-         *      @param [in] docRevision         The IP-XACT standard revision to comply to.
+         *    @param [in] subspaceMapNode     The XML description of the subspace map.
+         *    @param [in/out] newSubspaceMap  The subspace map to insert the attributes into.
+         *    @param [in] docRevision         The IP-XACT standard revision to comply to.
          */
         void parseAttributes(QDomNode const& subspaceMapNode, QSharedPointer<SubSpaceMap> newSubspaceMap, 
             Document::Revision docRevision);

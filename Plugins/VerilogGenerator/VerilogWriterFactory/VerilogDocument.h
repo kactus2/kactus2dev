@@ -72,27 +72,27 @@ struct VerilogDocument : public GenerationOutput
     /*!
      *  Writes the content. 
      *
-     *      @param [in] outputDirectory         The possible output directory.
+     *    @param [in] outputDirectory         The possible output directory.
      */
 	virtual void write(QString const& outputDirectory) override;
     
     /*!
      *  Finds position for body text highlight in document, if any exists.
      *
-	 *      @param [out] begin                  The position where the highlight begins, if successful.
-     *      @param [out] end                    The position where the highlight ends, if successful.
+	 *    @param [out] begin                  The position where the highlight begins, if successful.
+     *    @param [out] end                    The position where the highlight ends, if successful.
      */
     virtual void getBodyHighlight(int& begin, int& end) const override;
 
     /*!
      *  Finds the module implementation in Verilog code.
      *
-     *      @param [in] code		            The code that will be inspected.
-	 *      @param [out] implementation         The found module implementation, if successful.
-     *      @param [out] postModule		        Anything that exists after the module declaration.
-     *      @param [out] error                  If fails, this will contain an error message.
+     *    @param [in] code		            The code that will be inspected.
+	 *    @param [out] implementation         The found module implementation, if successful.
+     *    @param [out] postModule		        Anything that exists after the module declaration.
+     *    @param [out] error                  If fails, this will contain an error message.
      *
-     *      @return True, if a single implementation could be found, else false.
+     *    @return True, if a single implementation could be found, else false.
      */
 	bool selectImplementation(QString const& code, QString& implementation,
         QString& postModule, QString& error);

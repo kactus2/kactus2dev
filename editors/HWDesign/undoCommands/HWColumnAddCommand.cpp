@@ -72,7 +72,7 @@ QVector<QSharedPointer<Port> > HWColumnAddCommand::getMissingAdHocPorts() const
 {
     QVector<QSharedPointer<Port> > missingPorts;
 
-    foreach (QSharedPointer<Port> adhocPort, *getDiagram()->getEditedComponent()->getPorts())
+    for (auto const& adhocPort : *getDiagram()->getEditedComponent()->getPorts())
     {
         if (adhocPort->isAdHocVisible() && !portExistsInDiagram(adhocPort))
         {
@@ -104,7 +104,7 @@ bool HWColumnAddCommand::portExistsInDiagram(QSharedPointer<Port> adHocPort) con
 QSharedPointer<Kactus2Placeholder> HWColumnAddCommand::getAdHocPositionExtension(
     QSharedPointer<Kactus2Group> positionGroup, QSharedPointer<Port> adhocPort) const
 {
-    foreach (QSharedPointer<VendorExtension> extension, positionGroup->getByType("kactus2:adHocVisible"))
+    for (auto const& extension : positionGroup->getByType("kactus2:adHocVisible"))
     {
         QSharedPointer<Kactus2Placeholder> adhocPosition = extension.dynamicCast<Kactus2Placeholder>();
         if (adhocPosition && adhocPosition->getAttributeValue(QString("portName")) == adhocPort->name())
@@ -154,7 +154,7 @@ void HWColumnAddCommand::removeMissingPortsFromDesign()
     QSharedPointer<VendorExtension> adhocExtension = getDiagram()->getDesign()->getAdHocPortPositions();
     QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
     
-    foreach (HierarchicalPortItem* adHocItem, missingAdHocPortItems_)
+    for (HierarchicalPortItem* adHocItem : missingAdHocPortItems_)
     {
         getColumn()->removeItem(adHocItem);
 
@@ -201,7 +201,7 @@ void HWColumnAddCommand::addMissingPortsToNewColumn()
         getDiagram()->getDesign()->getVendorExtensions()->append(adhocGroup);
     }
 
-    foreach (HierarchicalPortItem* adhocItem, missingAdHocPortItems_)
+    for (HierarchicalPortItem* adhocItem : missingAdHocPortItems_)
     {
         getColumn()->addItem(adhocItem);
 

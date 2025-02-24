@@ -43,12 +43,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in]  parameters             The list containing the parameters.
-	 *      @param [in]  choices                The available choices for the parameters.
-	 *      @param [in]  parameterFinder        The parameter finder used to search the components parameters.
-	 *      @param [in]  expressionFormatter    The expression formatter.
-	 *      @param [in]  docRevision            The IP-XACT standard revision to use.
-	 *      @param [in]  parent                 The owner of this editor.
+	 *    @param [in]  parameters             The list containing the parameters.
+	 *    @param [in]  choices                The available choices for the parameters.
+	 *    @param [in]  parameterFinder        The parameter finder used to search the components parameters.
+	 *    @param [in]  expressionFormatter    The expression formatter.
+	 *    @param [in]  docRevision            The IP-XACT standard revision to use.
+	 *    @param [in]  parent                 The owner of this editor.
 	 */
 	ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         QSharedPointer<QList<QSharedPointer<Choice> > > choices, QSharedPointer<ParameterFinder> parameterFinder,
@@ -67,9 +67,10 @@ public:
     /*!
      *  Setup a list of new parameters.
      *
-     *      @param [in] newParameters   New parameter list.
+     *    @param [in] newParameters   New parameter list.
      */
-    void setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters, Document::Revision docRevision);
+    void setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > newChoices, Document::Revision docRevision);
 
 signals:
 
@@ -85,30 +86,30 @@ signals:
     /*!
      *  Increase the amount of references to the parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the amount of references to the parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void decreaseReferences(QString id);
 
     /*!
      *  Open the reference tree of the parameter with the id.
      *
-     *      @param [in] id              The id of the parameter.
-     *      @param [in] parameterName   Name of the selected parameter.
+     *    @param [in] id              The id of the parameter.
+     *    @param [in] parameterName   Name of the selected parameter.
      */
     void openReferenceTree(QString const& id, QString const& parameterName) const;
 
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameterList       The selected parameters.
-     *      @param [in] parameterInterface  Interface for accessing parameters.
+     *    @param [in] parameterList       The selected parameters.
+     *    @param [in] parameterInterface  Interface for accessing parameters.
      */
     void recalculateReferencesToParameters(QVector<QString> const& parameterList,
         AbstractParameterInterface* parameterInterface);

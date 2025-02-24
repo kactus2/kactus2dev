@@ -65,19 +65,19 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent      The parent widget.
-     *      @param [in] margin      Margin around the layout.
-     *      @param [in] hSpacing    Horizontal spacing of the items.
-     *      @param [in] vSpacing    Vertical spacing of the items.
+     *    @param [in] parent      The parent widget.
+     *    @param [in] margin      Margin around the layout.
+     *    @param [in] hSpacing    Horizontal spacing of the items.
+     *    @param [in] vSpacing    Vertical spacing of the items.
      */
     explicit FlowLayout(QWidget *parent, int margin = -1, int hSpacing = -1, int vSpacing = -1);
 
     /*!
      *  The constructor.
      *
-     *      @param [in] margin      Margin around the layout.
-     *      @param [in] hSpacing    Horizontal spacing of the items.
-     *      @param [in] vSpacing    Vertical spacing of the items.
+     *    @param [in] margin      Margin around the layout.
+     *    @param [in] hSpacing    Horizontal spacing of the items.
+     *    @param [in] vSpacing    Vertical spacing of the items.
      */
     explicit FlowLayout(int margin = -1, int hSpacing = -1, int vSpacing = -1);
 
@@ -89,90 +89,90 @@ public:
     /*!
      *  Add a layout item to the layout.
      *
-     *      @param [in] item    The selected layout item.
+     *    @param [in] item    The selected layout item.
      */
     void addItem(QLayoutItem *item) override;
 
     /*!
      *  Get the current horizontal spacing.
      *
-     *      @return The current horizontal spacing.
+     *    @return The current horizontal spacing.
      */
     int horizontalSpacing() const;
 
     /*!
      *  Get the current vertical spacing.
      *
-     *      @return The current vertical spacing.
+     *    @return The current vertical spacing.
      */
     int verticalSpacing() const;
 
     /*!
      *  Returns the direction in which the layout can use more space than allocated.
      *
-     *      @return 0.
+     *    @return 0.
      */
     Qt::Orientations expandingDirections() const override;
 
     /*!
      *  Checks whether the layouts preferred height depends on width.
      *
-     *      @return True.
+     *    @return True.
      */
     bool hasHeightForWidth() const override;
 
     /*!
      *  Returns the preferred height for the selected width.
      *
-     *      @param [in] width   The selected width.
+     *    @param [in] width   The selected width.
      *
-     *      @return The preferred height for the selected width.
+     *    @return The preferred height for the selected width.
      */
     int heightForWidth(int width) const override;
 
     /*!
      *  Get the number of items in the layout.
      *
-     *      @return The number of items in the layout.
+     *    @return The number of items in the layout.
      */
     int count() const override;
 
     /*!
      *  Get the item at the selected index.
      *
-     *      @param [in] index   Index of the selected item.
+     *    @param [in] index   Index of the selected item.
      *
-     *      @return Item at the selected index.
+     *    @return Item at the selected index.
      */
     QLayoutItem *itemAt(int index) const override;
 
     /*!
      *  Get the minimum size of this layout.
      *
-     *      @return The minimum size of this layout.
+     *    @return The minimum size of this layout.
      */
     QSize minimumSize() const override;
 
     /*!
      *  Calculates the geometry of the layouts items.
      *
-     *      @param [in] rect    Rectangle of the available area.
+     *    @param [in] rect    Rectangle of the available area.
      */
     void setGeometry(const QRect &rect) override;
 
     /*!
      *  Get the preferred size of the layout.
      *
-     *      @return The preferred size of the layout.
+     *    @return The preferred size of the layout.
      */
     QSize sizeHint() const override;
 
     /*!
      *  Remove the selected item from the layout.
      *
-     *      @param [in] index   Index of the selected item.
+     *    @param [in] index   Index of the selected item.
      *
-     *      @return The removed item.
+     *    @return The removed item.
      */
     QLayoutItem *takeAt(int index) override;
 
@@ -181,15 +181,15 @@ private:
     /*!
      *  Handles the layout.
      *
-     *      @param [in] rect        Rectangle containing the layout.
-     *      @param [in] testOnly    Holds whether the placement is being tested.
+     *    @param [in] rect        Rectangle containing the layout.
+     *    @param [in] testOnly    Holds whether the placement is being tested.
      */
     int doLayout(const QRect &rect, bool testOnly) const;
 
     /*!
      *  Get the default spacing.
      *
-     *      @param [in] pm  The selected pixel metric.
+     *    @param [in] pm  The selected pixel metric.
      */
     int smartSpacing(QStyle::PixelMetric pm) const;
 

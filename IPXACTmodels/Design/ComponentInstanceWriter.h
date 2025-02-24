@@ -28,9 +28,9 @@ namespace  ComponentInstanceWriter
     /*!
      *  Write the component instance.
      *
-     *      @param [in] writer      The used XML writer.
-     *      @param [in] design      The selected component instance.
-     *      @param [in] docRevision The IP-XACT standard revision to apply.
+     *    @param [in] writer      The used XML writer.
+     *    @param [in] design      The selected component instance.
+     *    @param [in] docRevision The IP-XACT standard revision to apply.
      */
     IPXACTMODELS_EXPORT void writeComponentInstance(QXmlStreamWriter& writer, 
         QSharedPointer<ComponentInstance> instance, Document::Revision docRevision);
@@ -40,9 +40,9 @@ namespace  ComponentInstanceWriter
         /*!
          *  Write a configurable VLNV.
          *
-         *      @param [in] writer          The used XML writer.
-         *      @param [in] VLNVreference   The configurable VLNV.
-         *      @param [in] xmlElementName  The name of the XML element.
+         *    @param [in] writer          The used XML writer.
+         *    @param [in] VLNVreference   The configurable VLNV.
+         *    @param [in] xmlElementName  The name of the XML element.
          */
         void writeConfigurableVLNVReference(QXmlStreamWriter& writer,
             QSharedPointer<ConfigurableVLNVReference> VLNVreference, QString const& xmlElementName);
@@ -50,8 +50,8 @@ namespace  ComponentInstanceWriter
         /*!
          * Write the power domain links of the component instance
          *
-         *     @param [in] writer       The used XML writer.
-         *     @param [in] instance     The instance whose power domain links to write.
+         *    @param [in] writer       The used XML writer.
+         *    @param [in] instance     The instance whose power domain links to write.
          */
          void writePowerDomainLinks(QXmlStreamWriter& writer, QSharedPointer<ComponentInstance> instance);
     }

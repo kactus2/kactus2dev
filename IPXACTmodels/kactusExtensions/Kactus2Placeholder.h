@@ -26,7 +26,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name   The name of the placeholder.
+	 *    @param [in] name   The name of the placeholder.
 	 */
     Kactus2Placeholder(QString name);
 
@@ -41,38 +41,38 @@ public:
     /*!
      *  Clones the vendor extension.
      *
-     *      @return The clone copy of the vendor extension.
+     *    @return The clone copy of the vendor extension.
      */
     virtual Kactus2Placeholder* clone() const;
 
     /*!
      *  Returns a type identifier for the vendor extension.
      *
-     *      @return A type identifier of the vendor extension.
+     *    @return A type identifier of the vendor extension.
      */
     virtual QString type() const;
 
     /*!
      *  Writes the vendor extension to XML.
      *
-     *      @param [in] writer   The writer used for writing the XML.
+     *    @param [in] writer   The writer used for writing the XML.
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Sets a value of an attribute. If the attribute does not exist, it is created.
      *
-     *      @param [in] attributeName   The name of the attribute.
-     *      @param [in] attributeValue  The value to set.
+     *    @param [in] attributeName   The name of the attribute.
+     *    @param [in] attributeValue  The value to set.
      */
     void setAttribute(QString const& attributeName, QString const& attributeValue);
 
     /*!
      *  Gets the value of a given attribute.
      *
-     *      @param [in] attributeName   The name of the attribute whose value to get.
+     *    @param [in] attributeName   The name of the attribute whose value to get.
      *
-     *      @return The value of the attribute or empty string if the given attribute is not found.
+     *    @return The value of the attribute or empty string if the given attribute is not found.
      */
     QString getAttributeValue(QString const& attributeName);
 

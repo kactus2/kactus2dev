@@ -33,21 +33,21 @@ public:
     /*!
      *  Add new tags from the selected list.
      *
-     *      @param [in] newTags     The selected list of new tags.
+     *    @param [in] newTags     The selected list of new tags.
      */
     void addNewTags(QVector<TagData> newTags);
 
     /*!
      *  Set new tags.
      *
-     *      @param [in] newTags     The selected list of new tags.
+     *    @param [in] newTags     The selected list of new tags.
      */
     void setTags(QVector<TagData> newTags);
 
     /*!
      *  Get a list of the active tags.
      *
-     *      @return List of the active tags.
+     *    @return List of the active tags.
      */
     QVector<TagData> getTags() const;
 
@@ -59,7 +59,7 @@ public:
     /*!
      *  Get the singleton instance of the tag manager.
      *
-     *      @return The tag manager instance.
+     *    @return The tag manager instance.
      */
     static TagManager& getInstance();
 
@@ -76,9 +76,9 @@ private:
     /*!
      *  Check if the selected tag exists in the list.
      *
-     *      @param [in] tag     The selected tag.
+     *    @param [in] tag     The selected tag.
      *
-     *      @return True, if the selected tag exists in the list, false otherwise.
+     *    @return True, if the selected tag exists in the list, false otherwise.
      */
     bool tagExists(TagData const& tag) const;
 

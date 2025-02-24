@@ -40,56 +40,56 @@ public:
     /*!
      *  Get the data type attribute.
      *
-     *      @return The data type.
+     *    @return The data type.
      */
     QString getDataType() const;
 
     /*!
      *  Set the data type attribute.
      *
-     *      @param [in] newDataType     The new data type.
+     *    @param [in] newDataType     The new data type.
      */
     void setDataType(QString const& newDataType);
 
     /*!
      *  Get the usage type attribute.
      *
-     *      @return The usage type.
+     *    @return The usage type.
      */
     QString getUsageType() const;
 
     /*!
      *  Set the usage type attribute.
      *
-     *      @param [in] newUsageType    The new usaget type.
+     *    @param [in] newUsageType    The new usaget type.
      */
     void setUsageType(QString const& newUsageType);
 
     /*!
      *  Get the data type definition attribute.
      *
-     *      @return The data type definition.
+     *    @return The data type definition.
      */
     QString getDataTypeDefinition() const;
 
     /*!
      *  Set the data type definition attribute.
      *
-     *      @param [in] dataTypeDef    The new data type definition.
+     *    @param [in] dataTypeDef    The new data type definition.
      */
     void setDataTypeDefinition(QString const& dataTypeDef);
 
     /*!
      *  Get the presence.
      *
-     *      @return The presence.
+     *    @return The presence.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new presence expression.
+     *    @param [in] newIsPresent    The new presence expression.
      */
     void setIsPresent(QString const& newIsPresent);
 

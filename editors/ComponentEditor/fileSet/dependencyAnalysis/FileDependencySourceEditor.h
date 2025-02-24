@@ -34,10 +34,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] xmlPath     The directory path where the parent component is located.
+     *    @param [in] xmlPath     The directory path where the parent component is located.
      *                              Source directories are saved relative to this path.
-     *      @param [in] sourceDirs  The current list of source directories.
-     *      @param [in] parent      The parent widget.
+     *    @param [in] sourceDirs  The current list of source directories.
+     *    @param [in] parent      The parent widget.
      */
     FileDependencySourceEditor(QString const& basePath, QStringList const& sourceDirs, QWidget* parent = 0);
 
@@ -49,14 +49,14 @@ public:
     /*!
      *  Retrieves the new list of source directories.
      *
-     *      @return The list of source directories.
+     *    @return The list of source directories.
      */
     QStringList getSourceDirectories() const;
     	
     /*!
      *  Initializes the editor.
 	 * 
-	 *      @param [in] items   QStringList that contains the items to add to the widget.
+	 *    @param [in] items   QStringList that contains the items to add to the widget.
      *
      *      @remark FileDependencySourceEditor calls initialize() in constructor.
 	 */
@@ -82,7 +82,7 @@ private:
     /*!
      *  Returns the currently selected directories in absolute paths.
      *
-     *      @return The absolute paths for the directories.
+     *    @return The absolute paths for the directories.
      */
     QStringList getAbsoluteDirectories();
 

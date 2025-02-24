@@ -34,9 +34,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent  The parent widget.
-     *      @param [in] sw      If true, the dialog shows only options valid for SW designs.
-     *      @param [in] column  The existing column to edit.
+     *    @param [in] parent  The parent widget.
+     *    @param [in] sw      If true, the dialog shows only options valid for SW designs.
+     *    @param [in] column  The existing column to edit.
      */
     ColumnEditDialog(QWidget* parent, bool sw, GraphicsColumn const* column = 0);
 
@@ -83,21 +83,21 @@ private:
     /*!
      *  Initializes the selectable types.
      *
-     *      @param [in] sw   True if editing sw columns.     
+     *    @param [in] sw   True if editing sw columns.     
      */
     void initializeTypes(bool sw);
 
     /*!
      *  Sets the dialog layout.
      *
-     *      @param [in] sw   True if editing sw columns.     
+     *    @param [in] sw   True if editing sw columns.     
      */
     void setupLayout(bool sw);
 
     /*!
      *  Sets the allowed items in the dialog.
      *
-     *      @param [in] allowedItems The allowed items. See ComponentItemType for possible values.
+     *    @param [in] allowedItems The allowed items. See ComponentItemType for possible values.
      */
     void setAllowedItems(unsigned int allowedItems);
 

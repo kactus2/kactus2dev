@@ -51,7 +51,7 @@ public:
     /*!
      *  Constructor which reads the COM interface from an XML node.
      *
-     *      @param [in] node The source XML node.
+     *    @param [in] node The source XML node.
      */
     ComInterface(QDomNode& node);
 
@@ -63,14 +63,14 @@ public:
     /*!
      *  Copies the com interface.
      *
-     *      @return The copied com interface.
+     *    @return The copied com interface.
      */
     virtual ComInterface* clone() const;
 
     /*!
      *  Get the type of the com interface.
      *
-     *      @return The com interface type.
+     *    @return The com interface type.
      */
     virtual QString type() const;
 
@@ -82,8 +82,8 @@ public:
     /*!
      *  Returns true if the contents of the COM interface are valid.
      *
-     *      @param [out] errorList Error list which is appended with errors if found while validating.
-     *      @param [in]  parentId  The identifier of the containing component.
+     *    @param [out] errorList Error list which is appended with errors if found while validating.
+     *    @param [in]  parentId  The identifier of the containing component.
      */
     bool isValid(QStringList& errorList, QString const& parentId) const;
 
@@ -95,35 +95,35 @@ public:
     /*!
      *  Sets the COM type.
      *
-     *      @param [in] vlnv The COM definition VLNV.
+     *    @param [in] vlnv The COM definition VLNV.
      */
     void setComType(VLNV const& vlnv, QList< QSharedPointer<ComProperty> > const* properties = NULL);
 
     /*!
      *  Sets the transfer type.
      *
-     *      @param [in] transferType The transfer type to set.
+     *    @param [in] transferType The transfer type to set.
      */
     void setTransferType(QString const& transferType);
 
     /*!
      *  Sets the direction.
      *
-     *      @param [in] dir The direction.
+     *    @param [in] dir The direction.
      */
     void setDirection(DirectionTypes::Direction dir);
 
     /*!
      *  Sets the property values.
      *
-     *      @param [in] values The property values.
+     *    @param [in] values The property values.
      */
     void setPropertyValues(QMap<QString, QString> const& values);
 
     /*!
      *  Sets the default position in the parent component's graphical representation.
      *
-     *      @param [in] pos The position to set.
+     *    @param [in] pos The position to set.
      */
     void setDefaultPos(QPointF const& pos);
 
@@ -160,14 +160,14 @@ public:
 	/*!
      *  Get reference to the COM interface implementation driver.
 	 *
-     *      @return VLNV identifying the implementation driver.
+     *    @return VLNV identifying the implementation driver.
 	 */
 	const VLNV& getComImplementation() const;
 
 	/*!
      *  Set the COM interface implementation driver.
      *
-	 *      @param [in] implementationVLNV  Reference to the driver which implements the COM interface.
+	 *    @param [in] implementationVLNV  Reference to the driver which implements the COM interface.
 	 */
 	void setComImplementation(const VLNV& implementationVLNV);
 
@@ -175,7 +175,7 @@ private:
     /*!
      *  Parses the property values from the given XML node.
      *
-     *      @param [in] node The source XML node.
+     *    @param [in] node The source XML node.
      */
     void parsePropertyValues(QDomNode& node);
 

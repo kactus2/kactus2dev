@@ -28,7 +28,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
     SnippetTextEdit(QWidget* parent);
 
@@ -40,8 +40,8 @@ public:
     /*!
      *  Adds the given magic words available for use.
      *
-     *      @param [in] magicWords  The magic words to add.
-     *      @param [in] category    The category name for the words. Empty if uncategorized.
+     *    @param [in] magicWords  The magic words to add.
+     *    @param [in] category    The category name for the words. Empty if uncategorized.
      */
     void addMagicWords(QStringList const& magicWords, QString const& category = QString(""));
 
@@ -54,7 +54,7 @@ private slots:
     /*!
      *  Shows a custom context menu.
      *
-     *      @param [in] pt The upper-left corner coordinate for the context menu.
+     *    @param [in] pt The upper-left corner coordinate for the context menu.
      */
     void showContextMenu(QPoint const& pt);
 

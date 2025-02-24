@@ -66,23 +66,23 @@ public:
 
 	/*! The assignment operator
 	 *
-	 *      @param [in] other   The PortMap to assign.
+	 *    @param [in] other   The PortMap to assign.
 	 *
-	 *      @return Reference to this PortMap.
+	 *    @return Reference to this PortMap.
 	*/
 	PortMap& operator=(PortMap const& other);
     
     /*!
      *  Get the invert value.
      *
-     *      @return The invert value as either true, false or empty.
+     *    @return The invert value as either true, false or empty.
      */
     BooleanValue getInvert() const;
 
     /*!
      *  Set the invert value.
      *
-     *      @param [in] newInvert   The new invert value.
+     *    @param [in] newInvert   The new invert value.
      */
     void setInvert(bool newInvert);
 
@@ -94,28 +94,28 @@ public:
     /*!
      *  Get the presence.
      *
-     *      @return The value defining the presence.
+     *    @return The value defining the presence.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence value.
      *
-     *      @param [in] newIsPresent    The new value for presence.
+     *    @param [in] newIsPresent    The new value for presence.
      */
     void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Get the is informative value.
      *
-     *      @return The isInformative value.
+     *    @return The isInformative value.
      */
     BooleanValue getIsInformative() const;
 
     /*!
      *  Set the is informative value.
      *
-     *      @param [in] newInformative  The new is informative value.
+     *    @param [in] newInformative  The new is informative value.
      */
     void setIsInformative(bool newInformative);
 
@@ -127,42 +127,42 @@ public:
     /*!
      *  Gets the logical port in the port map.
      *
-     *      @return The name of the logical port.
+     *    @return The name of the logical port.
      */
     QSharedPointer<LogicalPort> getLogicalPort() const;
 
     /*!
      *  Sets the logical port in the port map.
      *
-     *      @param [in] logicalPort   The logical port to set.
+     *    @param [in] logicalPort   The logical port to set.
      */
     void setLogicalPort(QSharedPointer<LogicalPort> logicalPort);
 
     /*!
      *  Gets the physical port in the port map.
      *
-     *      @return The name of the physical port.
+     *    @return The name of the physical port.
      */
     QSharedPointer<PhysicalPort> getPhysicalPort() const;
 
     /*!
      *  Sets the physical port in the port map.
      *
-     *      @param [in] physical   The physical port to set.
+     *    @param [in] physical   The physical port to set.
      */
     void setPhysicalPort(QSharedPointer<PhysicalPort> physicalPort);
 	
     /*!
      *  Gets the logical tie off.
      *
-     *     @return    The logical tie off value.
+     *    @return    The logical tie off value.
      */
 	QString getLogicalTieOff() const;
 	
     /*!
      *  Sets the logical tie off.
      *
-     *      @param [in] logicalTieOff   The new logical tie off.
+     *    @param [in] logicalTieOff   The new logical tie off.
      */
 	void setLogicalTieOff(QString const& logicalTieOff);
 

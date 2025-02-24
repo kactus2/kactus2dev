@@ -30,10 +30,10 @@ namespace BusDefinitionUtils
     /*!
      *  Get a list of the system groups from the selected bus definition.
      *
-     *      @param [in] bus             The selected bus definition.
-     *      @param [in] libraryAccess   Interface to the library.
+     *    @param [in] bus             The selected bus definition.
+     *    @param [in] libraryAccess   Interface to the library.
      *
-     *      @return List of bus definition system groups.
+     *    @return List of bus definition system groups.
      */
     IPXACTMODELS_EXPORT QStringList getSystemGroups(QSharedPointer<const BusDefinition> bus,
         LibraryInterface* libraryAccess);
@@ -41,10 +41,10 @@ namespace BusDefinitionUtils
     /*!
      *  Get a list of the extended port abstractions of the selected abstraction definition.
      *
-     *      @param [in] abstraction     The selected abstraction definition.
-     *      @param [in] libraryAccess   Interface to the library.
+     *    @param [in] abstraction     The selected abstraction definition.
+     *    @param [in] libraryAccess   Interface to the library.
      *
-     *      @return List of extended port abstractions.
+     *    @return List of extended port abstractions.
      */
     IPXACTMODELS_EXPORT QList<QSharedPointer<PortAbstraction> > getExtendedLogicalSignals(
         QSharedPointer<const AbstractionDefinition> abstraction, LibraryInterface* libraryAccess);

@@ -28,9 +28,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] containingDesign    The design containing the ad hoc tie off connection.
-     *      @param [in] connection          The deleted ad hoc connection containing a tie off value.
-     *      @param [in] parent              The parent undo command.
+     *    @param [in] containingDesign    The design containing the ad hoc tie off connection.
+     *    @param [in] connection          The deleted ad hoc connection containing a tie off value.
+     *    @param [in] parent              The parent undo command.
      */
     AdHocTieOffConnectionDeleteCommand(QSharedPointer<Design> containingDesign,
         QSharedPointer<AdHocConnection> connection, QUndoCommand* parent = 0);

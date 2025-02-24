@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 #include <KactusAPI/include/ComponentInstantiationParameterFinder.h>
 #include <KactusAPI/include/MultipleParameterFinder.h>
@@ -35,6 +36,7 @@ ComponentEditorItem(model, libHandler, component, parent),
 views_(component->getViews()),
 expressionParser_(expressionParser),
 viewValidator_(new ViewValidator(expressionParser, component->getModel())),
+viewsValidator_(new ViewsValidator(viewValidator_)),
 moduleParameterInterface_(0)
 {
     setParameterFinder(parameterFinder);
@@ -46,7 +48,7 @@ moduleParameterInterface_(0)
 
     setReferenceCounter(referenceCounter);
 
-	foreach (QSharedPointer<View> view, *views_)
+	for (QSharedPointer<View> view : *views_)
     {
 		QSharedPointer<ComponentEditorViewItem> viewItem(new ComponentEditorViewItem(view, model, libHandler,
             component, parameterFinder_, expressionFormatter_, expressionParser, viewValidator_,
@@ -113,6 +115,16 @@ void ComponentEditorViewsItem::createChild( int index )
 
     viewItem->setReferenceCounter(referenceCounter_);
 	childItems_.insert(index, viewItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorViewsItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorViewsItem::isValid() const
+{
+    auto viewsAsNameGroups = CollectionValidators::itemListToNameGroupList(views_);
+    viewsValidator_->childrenHaveUniqueNames(viewsAsNameGroups);
+    return ComponentEditorItem::isValid();
 }
 
 //-----------------------------------------------------------------------------

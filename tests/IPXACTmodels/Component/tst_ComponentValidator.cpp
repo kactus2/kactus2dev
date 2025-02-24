@@ -10,6 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/ModeConditionParserInterface.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
@@ -107,14 +109,8 @@ private slots:
     void testHasValidViews();
     void testHasValidViews_data();
 
-    void testHasValidComponentInstantiations();
-    void testHasValidComponentInstantiations_data();
-
-    void testHasValidDesignInstantiations();
-    void testHasValidDesignInstantiations_data();
-
-    void testHasValidDesignConfigurationInstantiations();
-    void testHasValidDesignConfigurationInstantiations_data();
+    void testHasValidInstantiations();
+    void testHasValidInstantiations_data();
 
     void testHasValidPorts();
     void testHasValidPorts_data();
@@ -147,6 +143,13 @@ private slots:
     void testHasValidAssertions_data();
 
 private:
+
+    enum InstantiationType
+    {
+        COMPONENT,
+        DESIGN,
+        DESIGNCFG
+    };
 
     bool errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList);
 
@@ -740,235 +743,174 @@ void tst_ComponentValidator::testHasValidViews_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ComponentValidator::testHasValidComponentInstantiations()
+// Function: tst_ComponentValidator::testHasValidInstantiations()
 //-----------------------------------------------------------------------------
-void tst_ComponentValidator::testHasValidComponentInstantiations()
+void tst_ComponentValidator::testHasValidInstantiations()
 {
     QFETCH(QString, instantiationName);
-    QFETCH(bool, copyInstantiation);
-    QFETCH(bool, isValid);
-
-    QSharedPointer<ComponentInstantiation> testInstantiation (new ComponentInstantiation(instantiationName));
-
-    QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
-    testComponent->getComponentInstantiations()->append(testInstantiation);
-
-    if (copyInstantiation)
-    {
-        QSharedPointer<ComponentInstantiation> otherInstantiation (
-            new ComponentInstantiation(*testInstantiation.data()));
-        testComponent->getComponentInstantiations()->append(otherInstantiation);
-    }
-
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
-    QCOMPARE(validator->hasValidComponentInstantiations(testComponent), isValid);
-
-    if (!isValid)
-    {
-        QVector<QString> foundErrors;
-        validator->findErrorsIn(foundErrors, testComponent);
-
-        QString expectedError = QObject::tr("Invalid name set for component instantiation %1 within "
-            "component %2").arg(instantiationName).arg(testComponent->getVlnv().toString());
-
-        if (copyInstantiation)
-        {
-            expectedError = QObject::tr("Component instantiation name %1 within component %2 is not unique.")
-                .arg(instantiationName).arg(testComponent->getVlnv().toString());
-        }
-
-        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
-        {
-            QFAIL("No error message found");
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentValidator::testHasValidComponentInstantiations_data()
-//-----------------------------------------------------------------------------
-void tst_ComponentValidator::testHasValidComponentInstantiations_data()
-{
-    QTest::addColumn<QString>("instantiationName");
-    QTest::addColumn<bool>("copyInstantiation");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("Component instantiation with name is valid") << "Soulafein" << false << true;
-    QTest::newRow("Component instantiation without name is not valid") << "" << false << false;
-    QTest::newRow("Component instantiations with the same name is not valid") << "Soulafein" << true << false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentValidator::testHasValidDesignInstantiations()
-//-----------------------------------------------------------------------------
-void tst_ComponentValidator::testHasValidDesignInstantiations()
-{
-    QFETCH(QString, instantiationName);
+    QFETCH(InstantiationType, instantiationType);
     QFETCH(bool, hasReference);
     QFETCH(bool, copyInstantiation);
     QFETCH(bool, isValid);
 
-    LibraryMock* mockLibrary (new LibraryMock(this));
-
-    QSharedPointer<DesignInstantiation> testInstantiation (new DesignInstantiation(instantiationName));
-
-    if (hasReference)
-    {
-        QSharedPointer<ConfigurableVLNVReference> designReference( new
-            ConfigurableVLNVReference( VLNV::DESIGN, "Shiki", "No", "Uta", "0.3") );
-
-        QSharedPointer<Design> testDesign (new Design(*designReference.data(), Document::Revision::Std14));
-        mockLibrary->addComponent(testDesign);
-
-        testInstantiation->setDesignReference(designReference);
-    }
-
-
-    QSharedPointer<Component> testComponent (new Component(
+    QSharedPointer<Component> testComponent(new Component(
         VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
-    testComponent->getDesignInstantiations()->append(testInstantiation);
 
-    if (copyInstantiation)
+    QSharedPointer<ComponentValidator> validator;
+    QVector<QString> foundErrors;
+    QString expectedError;
+
+    switch (instantiationType)
     {
-        QSharedPointer<DesignInstantiation> otherInstantiation (
-            new DesignInstantiation(*testInstantiation.data()));
-        testComponent->getDesignInstantiations()->append(otherInstantiation);
-    }
-
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(mockLibrary);
-    QCOMPARE(validator->hasValidDesignInstantiations(testComponent), isValid);
-
-    if (!isValid)
+    case InstantiationType::COMPONENT:
     {
-        QVector<QString> foundErrors;
-        validator->findErrorsIn(foundErrors, testComponent);
-
-        QString expectedError = QObject::tr("Invalid name set for design instantiation %1 within component %2")
-            .arg(instantiationName).arg(testComponent->getVlnv().toString());
+        QSharedPointer<ComponentInstantiation> testInstantiation(new ComponentInstantiation(instantiationName));
+        testComponent->getComponentInstantiations()->append(testInstantiation);
 
         if (copyInstantiation)
         {
-            expectedError = QObject::tr("Design instantiation name %1 within component %2 is not unique.")
+            QSharedPointer<ComponentInstantiation> otherInstantiation(new ComponentInstantiation(*testInstantiation.data()));
+            testComponent->getComponentInstantiations()->append(otherInstantiation);
+        }
+
+        validator = createComponentValidator(0);
+        QCOMPARE(validator->hasValidInstantiations(testComponent), isValid);
+
+        if (!isValid)
+        {
+            validator->findErrorsIn(foundErrors, testComponent);
+            expectedError = QObject::tr("Invalid name set for component instantiation %1 within component %2")
                 .arg(instantiationName).arg(testComponent->getVlnv().toString());
+
+            if (copyInstantiation)
+            {
+                expectedError = QObject::tr("Component instantiation name %1 within component %2 is not unique.")
+                    .arg(instantiationName).arg(testComponent->getVlnv().toString());
+            }
         }
-        else if (!hasReference)
+        break;
+    }
+    case InstantiationType::DESIGN:
+    {
+        LibraryMock* mockLibrary = new LibraryMock(this);
+        QSharedPointer<DesignInstantiation> testInstantiation(new DesignInstantiation(instantiationName));
+
+        if (hasReference)
         {
-            expectedError = QObject::tr("Invalid design reference %1 set for design instantiation %2")
-                .arg(testInstantiation->getDesignReference()->toString()).arg(testInstantiation->name());
+            QSharedPointer<ConfigurableVLNVReference> designReference(new ConfigurableVLNVReference(VLNV::DESIGN, "Shiki", "No", "Uta", "0.3"));
+            QSharedPointer<Design> testDesign(new Design(*designReference.data(), Document::Revision::Std14));
+            mockLibrary->addComponent(testDesign);
+            testInstantiation->setDesignReference(designReference);
         }
 
-        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
-        {
-            QFAIL("No error message found");
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentValidator::testHasValidDesignInstantiations_data()
-//-----------------------------------------------------------------------------
-void tst_ComponentValidator::testHasValidDesignInstantiations_data()
-{
-    QTest::addColumn<QString>("instantiationName");
-    QTest::addColumn<bool>("hasReference");
-    QTest::addColumn<bool>("copyInstantiation");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("Design instantiation with name and design reference is valid") <<
-        "Balduran" << true << false << true;
-    QTest::newRow("Design instantiation without name is not valid") << "" << true << false << false;
-    QTest::newRow("Design instantiation without design reference is not valid") <<
-        "Balduran" << false << false << false;
-    QTest::newRow("Design instantiations with the same name is not valid") << "Balduran" << true << true << false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentValidator::testHasValidDesignConfigurationInstantiations()
-//-----------------------------------------------------------------------------
-void tst_ComponentValidator::testHasValidDesignConfigurationInstantiations()
-{
-    QFETCH(QString, instantiationName);
-    QFETCH(bool, hasReference);
-    QFETCH(bool, copyInstantiation);
-    QFETCH(bool, isValid);
-
-    LibraryMock* mockLibrary (new LibraryMock(this));
-
-    QSharedPointer<DesignConfigurationInstantiation> testInstantiation (
-        new DesignConfigurationInstantiation(instantiationName));
-
-    if (hasReference)
-    {
-        QSharedPointer<ConfigurableVLNVReference> designConfigurationReference( new
-            ConfigurableVLNVReference( VLNV::DESIGNCONFIGURATION, "Shiki", "No", "Uta", "0.3") );
-
-        QSharedPointer<DesignConfiguration> testDesignConfiguration (
-            new DesignConfiguration(*designConfigurationReference.data(), Document::Revision::Std14));
-        mockLibrary->addComponent(testDesignConfiguration);
-
-        testInstantiation->setDesignConfigurationReference(designConfigurationReference);
-    }
-
-
-    QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
-    testComponent->getDesignConfigurationInstantiations()->append(testInstantiation);
-
-    if (copyInstantiation)
-    {
-        QSharedPointer<DesignConfigurationInstantiation> otherInstantiation (
-            new DesignConfigurationInstantiation(*testInstantiation.data()));
-        testComponent->getDesignConfigurationInstantiations()->append(otherInstantiation);
-    }
-
-    QSharedPointer<ComponentValidator> validator = createComponentValidator(mockLibrary);
-    QCOMPARE(validator->hasValidDesignConfigurationInstantiations(testComponent), isValid);
-
-    if (!isValid)
-    {
-        QVector<QString> foundErrors;
-        validator->findErrorsIn(foundErrors, testComponent);
-
-        QString expectedError = QObject::tr("Invalid name set for design configuration instantiation %1 within "
-            "component %2").arg(instantiationName).arg(testComponent->getVlnv().toString());
+        testComponent->getDesignInstantiations()->append(testInstantiation);
 
         if (copyInstantiation)
         {
-            expectedError = QObject::tr("Design configuration instantiation name %1 within component %2 is not "
-                "unique.").arg(instantiationName).arg(testComponent->getVlnv().toString());
-        }
-        else if (!hasReference)
-        {
-            expectedError = QObject::tr("Invalid design configuration reference %1 set for design configuration "
-                "instantiation %2").arg(testInstantiation->getDesignConfigurationReference()->toString())
-                .arg(testInstantiation->name());
+            QSharedPointer<DesignInstantiation> otherInstantiation(new DesignInstantiation(*testInstantiation.data()));
+            testComponent->getDesignInstantiations()->append(otherInstantiation);
         }
 
-        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        validator = createComponentValidator(mockLibrary);
+        QCOMPARE(validator->hasValidInstantiations(testComponent), isValid);
+
+        if (!isValid)
         {
-            QFAIL("No error message found");
+            validator->findErrorsIn(foundErrors, testComponent);
+            expectedError = QObject::tr("Invalid name set for design instantiation %1 within component %2")
+                .arg(instantiationName).arg(testComponent->getVlnv().toString());
+
+            if (copyInstantiation)
+            {
+                expectedError = QObject::tr("Design instantiation name %1 within component %2 is not unique.")
+                    .arg(instantiationName).arg(testComponent->getVlnv().toString());
+            }
+            else if (!hasReference)
+            {
+                expectedError = QObject::tr("Invalid design reference %1 set for design instantiation %2")
+                    .arg(testInstantiation->getDesignReference()->toString()).arg(testInstantiation->name());
+            }
         }
+        break;
+    }
+    case InstantiationType::DESIGNCFG:
+    {
+        LibraryMock* mockLibrary = new LibraryMock(this);
+        QSharedPointer<DesignConfigurationInstantiation> testInstantiation(new DesignConfigurationInstantiation(instantiationName));
+
+        if (hasReference)
+        {
+            QSharedPointer<ConfigurableVLNVReference> designConfigurationReference(new ConfigurableVLNVReference(VLNV::DESIGNCONFIGURATION, "Shiki", "No", "Uta", "0.3"));
+            QSharedPointer<DesignConfiguration> testDesignConfiguration(new DesignConfiguration(*designConfigurationReference.data(), Document::Revision::Std14));
+            mockLibrary->addComponent(testDesignConfiguration);
+            testInstantiation->setDesignConfigurationReference(designConfigurationReference);
+        }
+
+        testComponent->getDesignConfigurationInstantiations()->append(testInstantiation);
+
+        if (copyInstantiation)
+        {
+            QSharedPointer<DesignConfigurationInstantiation> otherInstantiation(new DesignConfigurationInstantiation(*testInstantiation.data()));
+            testComponent->getDesignConfigurationInstantiations()->append(otherInstantiation);
+        }
+
+        validator = createComponentValidator(mockLibrary);
+        QCOMPARE(validator->hasValidInstantiations(testComponent), isValid);
+
+        if (!isValid)
+        {
+            validator->findErrorsIn(foundErrors, testComponent);
+            expectedError = QObject::tr("Invalid name set for design configuration instantiation %1 within component %2")
+                .arg(instantiationName).arg(testComponent->getVlnv().toString());
+
+            if (copyInstantiation)
+            {
+                expectedError = QObject::tr("Design configuration instantiation name %1 within component %2 is not unique.")
+                    .arg(instantiationName).arg(testComponent->getVlnv().toString());
+            }
+            else if (!hasReference)
+            {
+                expectedError = QObject::tr("Invalid design configuration reference %1 set for design configuration instantiation %2")
+                    .arg(testInstantiation->getDesignConfigurationReference()->toString()).arg(testInstantiation->name());
+            }
+        }
+        break;
+    }
+    }
+
+    if (!isValid && errorIsNotFoundInErrorList(expectedError, foundErrors))
+    {
+        QFAIL("No error message found");
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ComponentValidator::testHasValidDesignConfigurationInstantiations_data()
+// Function: tst_ComponentValidator::testHasValidInstantiations_data()
 //-----------------------------------------------------------------------------
-void tst_ComponentValidator::testHasValidDesignConfigurationInstantiations_data()
+void tst_ComponentValidator::testHasValidInstantiations_data()
 {
     QTest::addColumn<QString>("instantiationName");
+    QTest::addColumn<InstantiationType>("instantiationType");
     QTest::addColumn<bool>("hasReference");
     QTest::addColumn<bool>("copyInstantiation");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("Design configuration instantiation with name and design configuration reference is valid") <<
-        "Balduran" << true << false << true;
-    QTest::newRow("Design configuration instantiation without name is not valid") << "" << true << false << false;
-    QTest::newRow("Design configuration instantiation without design configuration reference is not valid") <<
-        "Balduran" << false << false << false;
-    QTest::newRow("Design configuration instantiations with the same name is not valid") <<
-        "Balduran" << true << true << false;
+    // Component instantiations, no refrence for them
+    QTest::newRow("Component instantiation with name is valid") << "Soulafein" << InstantiationType::COMPONENT << false << false << true;
+    QTest::newRow("Component instantiation without name is not valid") << "" << InstantiationType::COMPONENT << false << false << false;
+    QTest::newRow("Component instantiations with the same name is not valid") << "Soulafein" << InstantiationType::COMPONENT << false << true << false;
+
+    // Design instantiations
+    QTest::newRow("Design instantiation with name and design reference is valid") << "Balduran" << InstantiationType::DESIGN << true << false << true;
+    QTest::newRow("Design instantiation without name is not valid") << "" << InstantiationType::DESIGN <<true << false << false;
+    QTest::newRow("Design instantiation without design reference is not valid") << "Balduran" << InstantiationType::DESIGN << false << false << false;
+    QTest::newRow("Design instantiations with the same name is not valid") << "Balduran" << InstantiationType::DESIGN << true << true << false;
+
+    // Design config instantiations
+    QTest::newRow("Design configuration instantiation with name and design configuration reference is valid") << "Balduran" << InstantiationType::DESIGNCFG << true << false << true;
+    QTest::newRow("Design configuration instantiation without name is not valid") << "" << InstantiationType::DESIGNCFG << true << false << false;
+    QTest::newRow("Design configuration instantiation without design configuration reference is not valid") << "Balduran" << InstantiationType::DESIGNCFG << false << false << false;
+    QTest::newRow("Design configuration instantiations with the same name is not valid") << "Balduran" << InstantiationType::DESIGNCFG << true << true << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1696,7 +1638,12 @@ bool tst_ComponentValidator::errorIsNotFoundInErrorList(QString const& expectedE
 QSharedPointer<ComponentValidator> tst_ComponentValidator::createComponentValidator(LibraryMock* mockLibrary)
 {
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(parser, mockLibrary, Document::Revision::Std14));
+
+    QSharedPointer<ComponentParameterFinder> componentParameterFinder(new ComponentParameterFinder(nullptr));
+
+    QSharedPointer<ModeConditionParserInterface> modeConditionParserIf(new ModeConditionParserInterface(componentParameterFinder));
+
+    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(parser, modeConditionParserIf, mockLibrary, Document::Revision::Std14));
 
     return componentValidator;
 }

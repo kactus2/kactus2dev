@@ -27,7 +27,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent   The parent object.
+     *    @param [in] parent   The parent object.
      */
     ProtocolReader();
 
@@ -41,7 +41,7 @@ public:
     /*!
      *  Creates a protocol from XML description.
      *
-     *      @param [in] protocolNode    The XML description of the protocol.
+     *    @param [in] protocolNode    The XML description of the protocol.
      */
     QSharedPointer<Protocol> createProtocolFrom(QDomNode const& protocolNode) const;
 

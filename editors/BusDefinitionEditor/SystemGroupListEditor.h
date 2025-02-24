@@ -30,8 +30,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] library     Interface to the library.
-	 *      @param [in] parent      The owner of this widget.
+     *    @param [in] library     Interface to the library.
+	 *    @param [in] parent      The owner of this widget.
 	 */
 	SystemGroupListEditor(LibraryInterface* library, QWidget *parent);
 
@@ -43,7 +43,7 @@ public:
 	/*!
      *  Set the bus definition that is being edited.
 	 *
-	 *      @param [in] busDefinition   The bus definition
+	 *    @param [in] busDefinition   The bus definition
 	 */
     void setItems(QSharedPointer<BusDefinition> busDefinition);
 
@@ -59,14 +59,14 @@ protected:
     /*!
      *  Handles the context menu events.
      *
-     *      @param [in] event   The current context menu event.
+     *    @param [in] event   The current context menu event.
      */
     virtual void contextMenuEvent(QContextMenuEvent* event);
 
     /*!
      *  Handles the double click events.
      *
-     *      @param [in] event   The current double click event.
+     *    @param [in] event   The current double click event.
      */
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
@@ -90,9 +90,9 @@ private:
     /*!
      *  Get the system group names from the extended bus definitions.
      *
-     *      @param [in] busDefinition   The selected bus definition.
+     *    @param [in] busDefinition   The selected bus definition.
      *
-     *      @return List of the extended bus definition system group names.
+     *    @return List of the extended bus definition system group names.
      */
     QStringList getExtendedSystemGroupNames(QSharedPointer<BusDefinition> busDefinition) const;
 

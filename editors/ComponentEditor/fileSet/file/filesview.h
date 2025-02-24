@@ -33,9 +33,9 @@ public:
 	/*!
      *  The constructor.
 	 * 
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the owner of this view.
+	 *    @param [in] handler     Pointer to the instance that manages the library.
+	 *    @param [in] component   Pointer to the component being edited.
+	 *    @param [in] parent      Pointer to the owner of this view.
 	 */
 	FilesView(LibraryInterface* handler, QSharedPointer<Component> component, QWidget *parent);
 	

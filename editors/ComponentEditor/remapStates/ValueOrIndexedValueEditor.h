@@ -35,10 +35,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] finder      The used parameter finder.
-     *      @param [in] parser      The used expression parser.
-     *      @param [in] formatter   The used expression formatter.
-     *      @param [in] parent      The parent widget of this table.
+     *    @param [in] finder      The used parameter finder.
+     *    @param [in] parser      The used expression parser.
+     *    @param [in] formatter   The used expression formatter.
+     *    @param [in] parent      The parent widget of this table.
      */
     ValueOrIndexedValueEditor(QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionParser> parser, QSharedPointer<ExpressionFormatter> formatter, Document::Revision docRevision, QWidget* parent);
 
@@ -50,24 +50,24 @@ public:
     /*!
      *  Setup the array editor.
      *
-     *      @param [in] value       The current value of the remap condition.
-     *      @param [in] leftBound   The left bound of the array.
-     *      @param [in] rightBound  The right bound of the array.
+     *    @param [in] value       The current value of the remap condition.
+     *    @param [in] leftBound   The left bound of the array.
+     *    @param [in] rightBound  The right bound of the array.
      */
     void setupArrayEditor(QString const& value, int const& leftBound, int const& rightBound);
 
     /*!
      *  Get the value of the editor.
      *
-     *      @return A single value, if the single editor was edited. An array if the array was edited.
+     *    @return A single value, if the single editor was edited. An array if the array was edited.
      */
     QString getValueData() const;
     
     /*!
      *  The event filter for this widget.
      *
-     *      @param [in] filterObject    The object to be filtered.
-     *      @param [in] filterEvent     The event to be filtered.
+     *    @param [in] filterObject    The object to be filtered.
+     *    @param [in] filterEvent     The event to be filtered.
      */
     virtual bool eventFilter(QObject* filterObject, QEvent* filterEvent);
 
@@ -76,14 +76,14 @@ signals:
     /*!
      *  Increase the amount of references to a parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the amount of references to a parameter corresponding to the id.
      *
-     *      @param [in] id      The id of the parameter being searched for.
+     *    @param [in] id      The id of the parameter being searched for.
      */
     void decreaseReferences(QString id);
 
@@ -117,9 +117,9 @@ private:
     /*!
      *  Create a parameter name completer.
      *
-     *      @param [in] completerParent     The parent for the completer.
+     *    @param [in] completerParent     The parent for the completer.
      *
-     *      @return The created parameter name completer.
+     *    @return The created parameter name completer.
      */
     QCompleter* createParameterNameCompleter(QObject* completerParent) const;
 
@@ -131,25 +131,25 @@ private:
     /*!
      *  Calculate the formatted value for the selected expression.
      *
-     *      @param [in] expression  The selected expression.
+     *    @param [in] expression  The selected expression.
      *
-     *      @return The formatted value of the selected expression.
+     *    @return The formatted value of the selected expression.
      */
     QString formattedValueFor(QString const& expression) const;
 
     /*!
      *  Set the value for the single value editor.
      *
-     *      @param [in] value   The new value.
+     *    @param [in] value   The new value.
      */
     void setValueToSingleEditor(QString const& value);
 
     /*!
      *  Check if the array contains values.
      *
-     *      @param [in] arrayContents   The contents of the array.
+     *    @param [in] arrayContents   The contents of the array.
      *
-     *      @return True, if the array contains any values, false otherwise.
+     *    @return True, if the array contains any values, false otherwise.
      */
     bool arrayContainsValues(QString const& arrayContents) const;
 

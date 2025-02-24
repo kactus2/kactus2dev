@@ -33,7 +33,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] scene The parent graphics scene.
+     *    @param [in] scene The parent graphics scene.
      */
     GraphicsColumnLayout(QGraphicsScene* scene = 0);
 
@@ -45,52 +45,52 @@ public:
     /*!
      *  Adds an item to the first column where it is allowed to be placed.
      *
-     *      @param [in] item The item to add.
+     *    @param [in] item The item to add.
      */
     void addItem(QGraphicsItem* item);
 
     /*!
      *  Adds a column to the layout.
      *
-     *      @param [in] column  The column to add.
-     *      @param [in] append  If true, the column is appended to the end of the layout.
+     *    @param [in] column  The column to add.
+     *    @param [in] append  If true, the column is appended to the end of the layout.
      */
     void addColumn(GraphicsColumn* column, bool append = false);
 
     /*!
      *  Add the selected column to the end of the layout.
      *
-     *      @param [in] column  The selected column.
+     *    @param [in] column  The selected column.
      */
     void appendColumn(GraphicsColumn* column);
 
     /*!
      *  Removes a column from the layout.
      *
-     *      @param [in] column The column to remove.
+     *    @param [in] column The column to remove.
      */
     void removeColumn(GraphicsColumn* column);
 
     /*!
      *  Searches for a column containing the given point.
      *
-     *      @param [in] pt The point.
+     *    @param [in] pt The point.
      *
-     *      @return The column containing the given point, if found. Otherwise null.
+     *    @return The column containing the given point, if found. Otherwise null.
      */
     GraphicsColumn* findColumnAt(QPointF pt);
 
     /*!
      *  Called when a column is moved within the layout.
      *
-     *      @param [in] column The column that has been moved.
+     *    @param [in] column The column that has been moved.
      */
     void onMoveColumn(GraphicsColumn* column);
 
     /*!
      *  Called when a column is released from being moved by mouse.
      *
-     *      @param [in] column The column that has been released.
+     *    @param [in] column The column that has been released.
      */
     void onReleaseColumn(GraphicsColumn* column);
 
@@ -102,7 +102,7 @@ public:
     /*!
      *  Sets auto-reorganize on/off.
      *
-     *      @param [in] autoReorganized If true, auto-reorganize is set on.
+     *    @param [in] autoReorganized If true, auto-reorganize is set on.
      */
     void setAutoReorganized(bool autoReorganized);
 
@@ -119,7 +119,7 @@ public:
     /*!
      *  Sets the drawing offset for the title bars.
      *
-     *      @param [in] y The y coordinate offset.
+     *    @param [in] y The y coordinate offset.
      */
     void setOffsetY(qreal y);
 

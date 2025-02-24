@@ -38,10 +38,10 @@ public:
 
     /*! The constructor
      *
-     *      @param [in] component           The component being edited.
-     *      @param [in] libInterface        The library interface.
-     *      @param [in] parameterFinder     Finder used to identify parameters.
-     *      @param [in] fileSetInterface    Interface for accessing file sets.
+     *    @param [in] component           The component being edited.
+     *    @param [in] libInterface        The library interface.
+     *    @param [in] parameterFinder     Finder used to identify parameters.
+     *    @param [in] fileSetInterface    Interface for accessing file sets.
      */
     FileSetsEditor(QSharedPointer<Component> component,
         LibraryInterface* libInterface,

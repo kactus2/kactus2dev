@@ -42,28 +42,28 @@ public:
     /*!
      *  Get the target name.
      *
-     *      @return The target name.
+     *    @return The target name.
      */
     QString getTargetName() const;
 
 	/*!
 	 *  Set the target name.
 	 *
-	 *      @param [in] targetName  The new name of the target.
+	 *    @param [in] targetName  The new name of the target.
 	 */
 	void setTargetName(const QString &targetName);
 
     /*!
      *  Get the flags append value.
      *
-     *      @return QString containing true for boolean true, false for false and empty for an unspecified.
+     *    @return QString containing true for boolean true, false for false and empty for an unspecified.
      */
     QString getFlagsAppend() const;
 
     /*!
      *  Set a new boolean value for the flags append.
      *
-     *      @param [in] newAppend   The new flags append value.
+     *    @param [in] newAppend   The new flags append value.
      */
     void setFlagsAppend(bool newAppend);
 

@@ -31,21 +31,21 @@ public:
     /*!
      *  Create a copy of the Protocol.
      *
-     *      @return A Protocol identical to this.
+     *    @return A Protocol identical to this.
      */
     Protocol* clone() const;
 
     /*!
      *  Sets the protocol type.
      *
-     *      @param [in] type   The type to set.
+     *    @param [in] type   The type to set.
      */
     void setProtocolType(QString const& type);
 
     /*!
      *  Gets the protocol type.
      *
-     *      @return The protocol type.
+     *    @return The protocol type.
      */
     QString getProtocolType() const;
     
@@ -54,57 +54,57 @@ public:
     /*!
      *  Checks if the protocol has payload defined.
      *
-     *      @return True, if payload is defined, otherwise false.
+     *    @return True, if payload is defined, otherwise false.
      */
     bool hasPayload() const;
 
     /*!
      *  Sets the name for the payload.
      *
-     *      @param [in] payloadName   The name to set.
+     *    @param [in] payloadName   The name to set.
      */
     void setPayloadName(QString const& payloadName);
    
     /*!
      *  Gets the name of the payload.
      *
-     *      @return The name of the payload.
+     *    @return The name of the payload.
      */
     QString getPayloadName() const;
 
     /*!
      *  Sets the type for the payload.
      *
-     *      @param [in] payloadType   The type to set.
+     *    @param [in] payloadType   The type to set.
      */
     void setPayloadType(QString const& payloadType);
 
     /*!
      *  Gets the payload type.
      *
-     *      @return The payload type.
+     *    @return The payload type.
      */
     QString getPayloadType() const;
 
     /*!
      *  Sets the extension for the payload.
      *
-     *      @param [in] extension   The extension to set.
-     *      @param [in] mandatory   Specifies if the extension is mandatory or not.
+     *    @param [in] extension   The extension to set.
+     *    @param [in] mandatory   Specifies if the extension is mandatory or not.
      */
     void setPayloadExtension(QString const& extension, bool mandatory);
 
     /*!
      *  Gets the payload extension.
      *
-     *      @return The payload extension.
+     *    @return The payload extension.
      */
     QString getPayloadExtension() const;
 
     /*!
      *  Checks if the payload extension is mandatory or not.
      *
-     *      @return True, if the extension is mandatory, otherwise false.
+     *    @return True, if the extension is mandatory, otherwise false.
      */
     bool hasMandatoryPayloadExtension() const;
 

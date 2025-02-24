@@ -26,9 +26,9 @@ public:
     /*!
      * The constructor.
      *
-     *     @param [in] parent  <Description>
+     *    @param [in] parent  <Description>
      *
-     *     @return 
+     *    @return 
      */
      ComponentEditorTreeDelegate(QObject* parent = nullptr);
     
@@ -44,9 +44,9 @@ public:
     /*!
      * Renders the item indicated by index.
      *
-     *     @param [in] painter  The painter to use for rendering.
-     *     @param [in] option   Options to guide the rendering.
-     *     @param [in] index    The index of the item to render.
+     *    @param [in] painter  The painter to use for rendering.
+     *    @param [in] option   Options to guide the rendering.
+     *    @param [in] index    The index of the item to render.
      */
      void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
 

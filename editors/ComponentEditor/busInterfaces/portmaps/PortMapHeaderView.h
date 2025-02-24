@@ -24,8 +24,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] orientation     The headers orientation.
-     *      @param [in] parent          The parent of the header.
+     *    @param [in] orientation     The headers orientation.
+     *    @param [in] parent          The parent of the header.
      */
     PortMapHeaderView(Qt::Orientation orientation, QWidget* parent = 0);
 
@@ -39,9 +39,9 @@ protected:
     /*!
      *  The re-implemented paint section.
      *
-     *      @param [in] painter         The given painter.
-     *      @param [in] rect            The given rectangle.
-     *      @param [in] logicalIndex    Specifies the section.
+     *    @param [in] painter         The given painter.
+     *    @param [in] rect            The given rectangle.
+     *    @param [in] logicalIndex    Specifies the section.
      */
     virtual void paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const;
 

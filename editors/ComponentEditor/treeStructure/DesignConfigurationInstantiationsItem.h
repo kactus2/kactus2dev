@@ -22,6 +22,8 @@ class View;
 class ExpressionParser;
 class ViewValidator;
 class InstantiationsValidator;
+class ParameterValidator;
+class AllInstantiationsValidator;
 
 //-----------------------------------------------------------------------------
 //! The design configuration instantiations-item in the component editor's navigation tree.
@@ -35,24 +37,23 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] referenceCounter        The reference counter.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The used expression parser.
-	 *      @param [in] parent                  The parent item.
+	 *    @param [in] model                   The model that owns the items.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] validator				The instantiation validator to use.
+	 *    @param [in] parameterValidator		The parameter validator to use.
+	 *    @param [in] referenceCounter        The reference counter.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] expressionParser        The used expression parser.
+	 *    @param [in] parent                  The parent item.
 	 */
-	DesignConfigurationInstantiationsItem(ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler,
-        QSharedPointer<Component> component,
-        QSharedPointer<InstantiationsValidator> validator,
-        QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        ComponentEditorItem* parent);
+	DesignConfigurationInstantiationsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+		QSharedPointer<Component> component, QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator,
+		QSharedPointer<InstantiationsValidator> validator,
+		QSharedPointer<ParameterValidator> parameterValidator, QSharedPointer<ReferenceCounter> referenceCounter,
+		QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+		QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~DesignConfigurationInstantiationsItem();
@@ -60,28 +61,28 @@ public:
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const;
 
 	/*!
      *  Get The editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*!
      *  Add a new child to the item.
 	 * 
-	 *      @param [in] index   The index to add the child into.
+	 *    @param [in] index   The index to add the child into.
 	 */
 	virtual void createChild(int index);
 
@@ -93,6 +94,16 @@ private:
 
     //! The validator for design configuration instantiations.
     QSharedPointer<InstantiationsValidator> validator_;
+
+    //! ParameterValidator to use.
+    QSharedPointer<ParameterValidator> parameterValidator_;
+
+	//! Expression parser to use.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+	//! Validator used to validate all instantiations together.
+	QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator_;
+
 };
 
 #endif // DESIGNCONFIGURATIONINSTANTIATIONSITEM_H

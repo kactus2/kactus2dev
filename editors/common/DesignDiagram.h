@@ -56,9 +56,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] lh            The library interface.
-     *      @param [in] editProvider  The edit provider.
-     *      @param [in] parent        The parent widget.
+     *    @param [in] lh            The library interface.
+     *    @param [in] editProvider  The edit provider.
+     *    @param [in] parent        The parent widget.
      */
     DesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, DesignWidget* parent = 0);
 
@@ -75,10 +75,10 @@ public:
     /*!
      *  Opens a design for editing.
      *
-     *      @param [in] component       The component whose design to edit.
-     *      @param [in] selectedView    The selected view of the top component.
-     *      @param [in] design          The design to edit.
-     *      @param [in] designConf      The design configuration if one exists.
+     *    @param [in] component       The component whose design to edit.
+     *    @param [in] selectedView    The selected view of the top component.
+     *    @param [in] design          The design to edit.
+     *    @param [in] designConf      The design configuration if one exists.
      */
     bool setDesign(QSharedPointer<Component> component, QString const& selectedView, QSharedPointer<Design> design,
                    QSharedPointer<DesignConfiguration> designConf = QSharedPointer<DesignConfiguration>());
@@ -109,7 +109,7 @@ public:
     /*!
      *  Adds an instance name to the list of used instance names.
      *
-     *      @param [in] name The name of the instance.
+     *    @param [in] name The name of the instance.
      *
      *      @remarks This function should be called when a component instance is added to the diagram.
      */
@@ -118,7 +118,7 @@ public:
     /*!
      *  Removes the instance name from the list so the name can be used again in the design.
 	 *
-	 *      @param name The name of the removed instance.
+	 *    @param name The name of the removed instance.
 	 *
      *      @remarks This function should be called when user removes component instance.
 	 */
@@ -127,37 +127,37 @@ public:
 	/*!
      *  Updates the list of instance names.
 	 *
-	 *      @param oldName The old name of the component instance.
-	 *      @param newName The new name of the component instance.
+	 *    @param oldName The old name of the component instance.
+	 *    @param newName The new name of the component instance.
 	 */
 	void updateInstanceName(const QString& oldName, const QString& newName);
 
     /*!
      *  Changes the state of a visibility control.
      *
-     *      @param [in] name   The name of the visibility control.
-     *      @param [in] state  The new state for the visibility control.
+     *    @param [in] name   The name of the visibility control.
+     *    @param [in] state  The new state for the visibility control.
      */
     virtual void setVisibilityControlState(QString const& name, bool state);
 
     /*!
      *  Sets the draw mode of the diagram.
      *
-     *      @param [in] mode The draw mode.
+     *    @param [in] mode The draw mode.
      */
     virtual void setMode(DrawMode mode);
 
     /*!
      *  Sets the block diagram locked/unlocked.
      *
-     *      @param [in] locked If true, the diagram is locked. Otherwise it is unlocked.
+     *    @param [in] locked If true, the diagram is locked. Otherwise it is unlocked.
      */
     void setProtection(bool locked);
 
     /*!
      *  Adds a column to the diagram's layout.
      *
-     *      @param [in] desc The column description.
+     *    @param [in] desc The column description.
      */
     virtual void addColumn(QSharedPointer<ColumnDesc> desc) = 0;
 
@@ -214,14 +214,14 @@ public:
     /*!
      *  Ensures that all items in a given list have the same type. Items with different type are unselected.
      *
-     *      @param [in] items   The list to check.
+     *    @param [in] items   The list to check.
      */
     void ensureOneTypeSelected(QList<QGraphicsItem*> const& items);
 
     /*!
      *  Returns the type of the given items if they all are of the same type.
      *
-     *      @return The common type, or -1 if the items are of different type.
+     *    @return The common type, or -1 if the items are of different type.
      */
     static int getCommonItemType(QList<QGraphicsItem*> const& items);
 
@@ -233,21 +233,21 @@ public:
      /*!
       *  Gets the graphics column layout of the design.
       *
-      *      @return The column layout of the design.
+      *    @return The column layout of the design.
       */
      QSharedPointer<GraphicsColumnLayout> getLayout() const;
      
     /*!
      *  Creates a unique instance name with the given base name.
      *
-     *      @param [in] baseName The base name for the instance.
+     *    @param [in] baseName The base name for the instance.
      */
     QString createInstanceName(QString const& baseName);
 
     /*!
      *  Get the currently active top component view.
      *
-     *      @return The currently active top component view.
+     *    @return The currently active top component view.
      */
     QString getTopView() const;
 
@@ -278,14 +278,14 @@ public slots:
     /*!
      *  Called when an association creation is requested.
      *
-     *      @param [in] startingPoint   The item requesting the new association.
+     *    @param [in] startingPoint   The item requesting the new association.
      */
     void onBeginAssociation(Associable* startingPoint);
 
     /*!
      *  Called when an item has been modified.
      *
-     *      @param [in] undoCommand   The undo command to undo/redo the modification.
+     *    @param [in] undoCommand   The undo command to undo/redo the modification.
      */
     void onItemModified(QUndoCommand* undoCommand);
 
@@ -350,9 +350,9 @@ protected:
     /*!
      *  Picks the top-most component at the given position.
      *
-     *      @param [in] pos The picking positions.
+     *    @param [in] pos The picking positions.
      *
-     *      @return The top-most component at the given positions, or 0 if there is no component.
+     *    @return The top-most component at the given positions, or 0 if there is no component.
      */
     ComponentItem* getTopmostComponent(QPointF const& pos);
 
@@ -362,39 +362,39 @@ protected:
      *  This fixes the problem when the user click above a text label or a pixmap but
      *  actually wants to select the parent item (such as the actual component, not its label).
      *
-     *      @param [in] item   The item whose base item to find.
+     *    @param [in] item   The item whose base item to find.
      *
-     *      @return The bottom-most item.
+     *    @return The bottom-most item.
      */
     QGraphicsItem* getBaseItemOf(QGraphicsItem* item) const;
 
     /*!
      *  Adds a new note to the design.
      *
-     *      @param [in] position   The initial position of the note.
+     *    @param [in] position   The initial position of the note.
      */
     virtual void createNoteAt(QPointF const& position);
 
      /*!
      *  Called when an item has been selected in the diagram.
      *
-     *      @param [in] newSelection The selected item.
+     *    @param [in] newSelection The selected item.
      */
     virtual void onSelected(QGraphicsItem* newSelection) = 0;
 
 	/*!
      *  Creates the context menu for function contextMenuEvent().
      *
-     *      @param [in] pos Mouse position when the menu is requested.
+     *    @param [in] pos Mouse position when the menu is requested.
 	 *
-	 *      @return The menu with allowed actions or 0 if no menu is allowed.
+	 *    @return The menu with allowed actions or 0 if no menu is allowed.
      */
 	virtual QMenu* createContextMenu(QPointF const& pos);
 
 	/*!
      *  Event handler for receiving context menu events (e.g. right mouse click).
      *
-     *      @param [in] event The triggering event.
+     *    @param [in] event The triggering event.
      */
 	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
 
@@ -403,14 +403,14 @@ protected:
     /*!
      *  Updates the association line.
      *
-     *      @param [in] cursorPosition   The current cursor position which becomes the ending point for the line.
+     *    @param [in] cursorPosition   The current cursor position which becomes the ending point for the line.
      */
     void updateAssociationLineDraw(QPointF const& cursorPosition);
 
     /*!
      *  Ends the creation of a new association.
      *
-     *      @param [in] endpoint   The ending point of the association.
+     *    @param [in] endpoint   The ending point of the association.
      */
     void endAssociation(QPointF const& endpoint);
 
@@ -420,20 +420,20 @@ protected:
     /*!
      *  Checks if two items can be associated with each other.
      *
-     *      @param [in] startItem       The first item.
-     *      @param [in] endItem         The second item.
+     *    @param [in] startItem       The first item.
+     *    @param [in] endItem         The second item.
      *
-     *      @return True, if the items can be associated, otherwise false.
+     *    @return True, if the items can be associated, otherwise false.
      */
     bool canAssociateItems(Associable* startItem, Associable* endItem);
 
     /*!
      *  Creates a command for adding an association to the diagram.
      *
-     *      @param [in] startItem           The item at the starting end of the association.
-     *      @param [in] endPointExtension   The vendor extension describing the ending point position.
+     *    @param [in] startItem           The item at the starting end of the association.
+     *    @param [in] endPointExtension   The vendor extension describing the ending point position.
      *
-     *      @return A command for creating an association.
+     *    @return A command for creating an association.
      */
     QSharedPointer<QUndoCommand> createAssociationAddCommand(Associable* startItem, 
         QSharedPointer<Kactus2Position> endPointExtension);
@@ -441,35 +441,35 @@ protected:
     /*!
      *  Checks if the user is currently creating a new association.
      *
-     *      @return True, if an association is being created, otherwise false.
+     *    @return True, if an association is being created, otherwise false.
      */
     bool inAssociationMode() const;
 
     /*!
      *  Checks if the association can end.
      *
-     *      @return True, if an association can end, otherwise false.
+     *    @return True, if an association can end, otherwise false.
      */
     bool canEndAssociation() const;
 
     /*!
      *  Checks if context menu can be displayed.     
      *
-     *      @return True, if context menu can be displayed, otherwise false.
+     *    @return True, if context menu can be displayed, otherwise false.
      */
     bool contextMenuEnabled() const;
 
     /*!
      *  Checks if the user is currently replacing a component.
      *
-     *      @return True, if a replace is in progress, otherwise false.
+     *    @return True, if a replace is in progress, otherwise false.
      */
     bool inReplaceMode() const;
 
     /*!
      *  Checks if the user is currently creating connections in off page mode.
      *
-     *      @return True, if off page mode is set, otherwise false.
+     *    @return True, if off page mode is set, otherwise false.
      */
     bool inOffPageMode() const;
     
@@ -484,7 +484,7 @@ protected:
     /*!
      *  Sets the interaction mode.
      *
-     *      @param [in] mode   The mode to set.
+     *    @param [in] mode   The mode to set.
      *     
      */
     void setInteractionMode(interactionMode mode);
@@ -500,7 +500,7 @@ private:
     /*!
      *  Opens the given design for editing.
      *
-     *      @param [in] design The design to open.
+     *    @param [in] design The design to open.
      */
     virtual void loadDesign(QSharedPointer<Design> design) = 0;
 
@@ -516,16 +516,16 @@ private:
     /*!
      *  Creates a command for adding a sticky note to the diagram.
      *
-     *      @param [in] note   The note for which to create the command for.
+     *    @param [in] note   The note for which to create the command for.
      *
-     *      @return The command for adding the note to diagram.
+     *    @return The command for adding the note to diagram.
      */
     QSharedPointer<StickyNoteAddCommand> createNoteAddCommand(StickyNote* note);
 
     /*!
      *  Loads the associations from a sticky not from a vendor extension.
      *
-     *      @param [in] note                    The note for whose associations to load.
+     *    @param [in] note                    The note for whose associations to load.
      */
      void loadNoteAssociations(StickyNote* note);
 
@@ -535,7 +535,7 @@ private:
     /*!
      *  Get the names of the contained component instances.
      *
-     *      @return A list of instance names of the contained component instances.
+     *    @return A list of instance names of the contained component instances.
      */
     virtual QStringList getUsedInstanceNames() const;
 

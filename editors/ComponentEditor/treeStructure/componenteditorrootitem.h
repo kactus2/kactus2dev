@@ -79,7 +79,7 @@ public:
     /*!
      *  Adds a child item for the root item.
      *
-     *      @param [in] childItem   The child item to add.
+     *    @param [in] childItem   The child item to add.
      */
     void addChildItem(QSharedPointer<ComponentEditorItem> childItem);
 

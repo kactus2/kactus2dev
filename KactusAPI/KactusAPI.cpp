@@ -78,11 +78,19 @@ QString KactusAPI::getVersionFileString()
 //-----------------------------------------------------------------------------
 // Function: KactusAPI::getLibraryPaths()
 //-----------------------------------------------------------------------------
-QStringList KactusAPI::getLibraryPaths()
+QStringList KactusAPI::getActiveLibraryPaths()
 {
     QSettings settings;
+    return settings.value(QStringLiteral("Library/ActiveLocations")).toStringList();
+}
 
-    return  settings.value(QStringLiteral("Library/ActiveLocations")).toStringList();
+//-----------------------------------------------------------------------------
+// Function: KactusAPI::getAllLibraryPaths()
+//-----------------------------------------------------------------------------
+QStringList KactusAPI::getAllLibraryPaths()
+{
+    QSettings settings;
+    return settings.value(QStringLiteral("Library/Locations")).toStringList();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,8 +123,104 @@ void KactusAPI::setLibraryPaths(QStringList const& activeLocations, QStringList 
     {
         settings.setValue(QStringLiteral("Library/Locations"), newLocations);
         settings.setValue(QStringLiteral("Library/ActiveLocations"), newActives);
+        settings.setValue(QStringLiteral("Library/DefaultLocation"), newActives.first());
         library_->searchForIPXactFiles();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: KactusAPI::setLibraryPathActive()
+//-----------------------------------------------------------------------------
+void KactusAPI::setLibraryPathActive(QString const& path, bool isActive)
+{
+    QSettings settings;
+
+    QStringList activePaths = settings.value(QStringLiteral("Library/ActiveLocations")).toStringList();
+    QStringList allPaths = settings.value(QStringLiteral("Library/Locations")).toStringList();
+
+    if (isActive)
+    {
+        if (activePaths.contains(path))
+        {
+            return;
+        }
+
+        activePaths.append(path);
+        settings.setValue(QStringLiteral("Library/ActiveLocations"), activePaths);
+
+        // Add path also if it doesn't exist at all
+        if (!allPaths.contains(path))
+        {
+            allPaths.append(path);
+            settings.setValue(QStringLiteral("Library/Locations"), allPaths);
+        }
+    }
+    else
+    {
+        if (activePaths.contains(path))
+        {
+            activePaths.removeOne(path);
+            settings.setValue(QStringLiteral("Library/ActiveLocations"), activePaths);
+        }
+    }
+
+    library_->searchForIPXactFiles();
+}
+
+//-----------------------------------------------------------------------------
+// Function: KactusAPI::addLibraryPath()
+//-----------------------------------------------------------------------------
+void KactusAPI::addLibraryPath(QString const& path, bool isActive)
+{
+    QSettings settings;
+
+    QStringList activePaths = settings.value(QStringLiteral("Library/ActiveLocations")).toStringList();
+    QStringList allPaths = settings.value(QStringLiteral("Library/Locations")).toStringList();
+    
+    if (!allPaths.contains(path))
+    {
+        allPaths.append(path);
+        settings.setValue(QStringLiteral("Library/Locations"), allPaths);
+    }
+
+    if (isActive)
+    {
+        activePaths.append(path);
+        settings.setValue(QStringLiteral("Library/ActiveLocations"), activePaths);
+    }
+
+    library_->searchForIPXactFiles();
+}
+
+//-----------------------------------------------------------------------------
+// Function: KactusAPI::removeLibraryPath()
+//-----------------------------------------------------------------------------
+bool KactusAPI::removeLibraryPath(QString const& path)
+{
+    QSettings settings;
+    QString defaultPath = settings.value(QStringLiteral("Library/DefaultLocation")).toString();
+    QStringList activePaths = settings.value(QStringLiteral("Library/ActiveLocations")).toStringList();
+    QStringList allPaths = settings.value(QStringLiteral("Library/Locations")).toStringList();
+
+    if (path.compare(defaultPath) == 0)
+    {
+        return false;
+    }
+
+    if (activePaths.contains(path))
+    {
+        activePaths.removeOne(path);
+        settings.setValue(QStringLiteral("Library/ActiveLocations"), activePaths);
+    }
+
+    if (allPaths.contains(path))
+    {
+        allPaths.removeOne(path);
+        settings.setValue(QStringLiteral("Library/Locations"), allPaths);
+    }
+
+    library_->searchForIPXactFiles();
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -201,8 +305,8 @@ int KactusAPI::importFile(QString const& filePath, VLNV const& targetVLNV, bool 
 // Function: KactusAPI::runGenerator()
 //-----------------------------------------------------------------------------
 void KactusAPI::runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV, QString const& viewName,
-    QString const& outputDirectory, QWidget* parentWidget)
-{    
+    QString const& outputDirectory, KactusAttribute::Implementation implementation, QWidget* parentWidget)
+{
     QSharedPointer<Component> component = library_->getModel<Component>(componentVLNV);
     if (component == nullptr)
     {
@@ -212,9 +316,17 @@ void KactusAPI::runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV
     VLNV designVLNV; 
     QSharedPointer<Design> design;
     
-    VLNV configVLNV = component->getHierRef(viewName);
-    QSharedPointer<DesignConfiguration> designConfiguration;    
+    VLNV configVLNV;
+    if (implementation == KactusAttribute::SYSTEM)
+    {
+        configVLNV = component->getHierSystemRef(viewName);
+    }
+    else
+    {
+        configVLNV = component->getHierRef(viewName);
+    }
 
+    QSharedPointer<DesignConfiguration> designConfiguration;
     if (configVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {        
         designConfiguration = library_->getModel<DesignConfiguration>(configVLNV);

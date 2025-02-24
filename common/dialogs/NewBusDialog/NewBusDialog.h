@@ -37,8 +37,8 @@ public:
     /*!
     *  Constructor.
     *
-    *      @param [in] lh     The library interface.
-    *      @param [in] parent The parent wizard.
+    *    @param [in] lh     The library interface.
+    *    @param [in] parent The parent wizard.
     */
     NewBusDialog(LibraryInterface* lh, QWidget* parent);
 
@@ -50,7 +50,7 @@ public:
     /*!
      *  Gets the selected source for logical signal name genertaion.
      *
-     *      @return The selected source that is either name or description.
+     *    @return The selected source that is either name or description.
      */
     Signal_selection getSignalSelection() const;
 

@@ -33,17 +33,17 @@ public:
 
 	/*!
 	 *  Return the length of the given text.
-	 *      @param [in] text   The text used.
-	 *      @param [in] font   The font used in the text.
+	 *    @param [in] text   The text used.
+	 *    @param [in] font   The font used in the text.
 	 */
 	static qreal getTextLength (QString text, QFont font );
 
 	/*!
 	 *  Shortens the given label name according to the given width.
 	 *
-	 *      @param [in] labelName   The text in the label.
-	 *      @param [in] font        The font used in the label.
-	 *      @param [in] width       The width to which the label will be shortened.
+	 *    @param [in] labelName   The text in the label.
+	 *    @param [in] font        The font used in the label.
+	 *    @param [in] width       The width to which the label will be shortened.
 	 */
 	static QString setNameLabel (QString labelName, QFont font, qreal width);
 

@@ -21,9 +21,10 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsDelegate::AbstractionWirePortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionWirePortsDelegate::AbstractionWirePortsDelegate(LibraryInterface* libraryAccess, 
+AbstractionWirePortsDelegate::AbstractionWirePortsDelegate(QAbstractItemModel* parametersModel, 
+    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* libraryAccess,
     Document::Revision stdRevision, QObject *parent):
-AbstractionPortsDelegate(libraryAccess, stdRevision, parent)
+AbstractionPortsDelegate(parametersModel, parameterFinder, libraryAccess, stdRevision, parent)
 {
 
 }
@@ -73,18 +74,14 @@ QWidget* AbstractionWirePortsDelegate::createEditor(QWidget* parent, QStyleOptio
 QStringList AbstractionWirePortsDelegate::getQualifierList() const
 {
     QStringList qualifierList = AbstractionPortsDelegate::getQualifierList();
-    qualifierList.append(getExclusiveItems());
+    
+    // In 1685-2014 clock and reset are only for wires
+    if (stdRevision_ != Document::Revision::Std22)
+    {
+        qualifierList << QStringLiteral("clock") << QStringLiteral("reset");
+    }
 
     return qualifierList;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsDelegate::editorIsLineEditor()
-//-----------------------------------------------------------------------------
-bool AbstractionWirePortsDelegate::editorIsLineEditor(int indexColumn) const
-{
-    return AbstractionPortsDelegate::editorIsLineEditor(indexColumn) ||
-        indexColumn == LogicalPortColumns::DEFAULT_VALUE;
 }
 
 //-----------------------------------------------------------------------------
@@ -97,15 +94,9 @@ bool AbstractionWirePortsDelegate::editorIsComboBox(int indexColumn) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsDelegate::getExclusiveItems()
+// Function: AbstractionWirePortsDelegate::columnAcceptsExpression()
 //-----------------------------------------------------------------------------
-QStringList AbstractionWirePortsDelegate::getExclusiveItems() const
+bool AbstractionWirePortsDelegate::columnAcceptsExpression(int column) const
 {
-    QStringList list;
-    if (stdRevision_ != Document::Revision::Std22)
-    {
-        list << QStringLiteral("clock") << QStringLiteral("reset");
-    }
-
-    return list;
+    return column == LogicalPortColumns::DEFAULT_VALUE || column == LogicalPortColumns::WIDTH;
 }

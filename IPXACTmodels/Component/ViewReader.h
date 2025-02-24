@@ -30,10 +30,10 @@ namespace ViewReader
     /*!
      *  Creates a new view from a given view node.
      *
-     *      @param [in] viewNode    XML description of the view.
-     *      @param [in] docRevision The IP-XACT standard revision to comply to.
+     *    @param [in] viewNode    XML description of the view.
+     *    @param [in] docRevision The IP-XACT standard revision to comply to.
      *
-     *      @return The created view.
+     *    @return The created view.
      */
     IPXACTMODELS_EXPORT QSharedPointer<View> createViewFrom(QDomNode const& viewNode, Document::Revision docRevision);
 
@@ -43,24 +43,24 @@ namespace ViewReader
         /*!
          *  Reads the presence.
          *
-         *      @param [in] viewNode    XML description of the view.
-         *      @param [in] newView     The new view item.
+         *    @param [in] viewNode    XML description of the view.
+         *    @param [in] newView     The new view item.
          */
         void parseIsPresent(QDomNode const& viewNode, QSharedPointer<View> newView);
 
         /*!
          *  Reads the envIdentifiers.
          *
-         *      @param [in] viewNode    XML description of the view.
-         *      @param [in] newView     The new view item.
+         *    @param [in] viewNode    XML description of the view.
+         *    @param [in] newView     The new view item.
          */
         void parseEnvIdentifiers(QDomNode const& viewNode, QSharedPointer<View> newView);
 
         /*!
          *  Reads the instantiation references.
          *
-         *      @param [in] viewNode    XML description of the view.
-         *      @param [in] newView     The new view item.
+         *    @param [in] viewNode    XML description of the view.
+         *    @param [in] newView     The new view item.
          */
         void parseInstantiationRefs(QDomNode const& viewNode, QSharedPointer<View> newView);
     }

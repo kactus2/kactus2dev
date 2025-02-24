@@ -35,9 +35,9 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component           The component being edited.
-	 *      @param [in] validator			The validator for items.
-	 *      @param [in] parent              The owner of this model.
+	 *    @param [in] component           The component being edited.
+	 *    @param [in] validator			The validator for items.
+	 *    @param [in] parent              The owner of this model.
 	 */
 	IndirectInterfacesModel(QSharedPointer<Component> component,
         QSharedPointer<IndirectInterfaceValidator> validator,
@@ -52,54 +52,54 @@ public:
 
 	/*! Get the number of rows an item contains.
 	 *
-	 *      @param [in] parent Identifies the parent that's row count is requested.
+	 *    @param [in] parent Identifies the parent that's row count is requested.
 	 *
-	 *      @return Number of rows the item has.
+	 *    @return Number of rows the item has.
 	*/
 	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*! Get the number of columns the item has to be displayed.
 	 *
-	 *      @param [in] parent Identifies the parent that's column count is requested.
+	 *    @param [in] parent Identifies the parent that's column count is requested.
 	 *
-	 *      @return The number of columns to be displayed.
+	 *    @return The number of columns to be displayed.
 	*/
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
 	/*! Get the item flags that defines the possible operations for the item.
 	 *
-	 *      @param [in] index Model index that identifies the item.
+	 *    @param [in] index Model index that identifies the item.
 	 *
-	 *      @return Qt::ItemFlags specify the possible operations for the item.
+	 *    @return Qt::ItemFlags specify the possible operations for the item.
 	*/
 	Qt::ItemFlags flags(QModelIndex const& index) const;
 
 	/*! Get the header data for specified header.
 	 *
-	 *      @param [in] section The section specifies the row/column number for the header.
-	 *      @param [in] orientation Specified if horizontal or vertical header is wanted.
-	 *      @param [in] role Specifies the type of the requested data.
+	 *    @param [in] section The section specifies the row/column number for the header.
+	 *    @param [in] orientation Specified if horizontal or vertical header is wanted.
+	 *    @param [in] role Specifies the type of the requested data.
 	 *
-	 *      @return QVariant Contains the requested data.
+	 *    @return QVariant Contains the requested data.
 	*/
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	/*! Get the data for specified item.
 	 *
-	 *      @param [in] index Specifies the item that's data is requested.
-	 *      @param [in] role The role that defines what kind of data is requested.
+	 *    @param [in] index Specifies the item that's data is requested.
+	 *    @param [in] role The role that defines what kind of data is requested.
 	 *
-	 *      @return QVariant Contains the data for the item.
+	 *    @return QVariant Contains the data for the item.
 	*/
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
 	/*! Save the data to the model for specified item
 	 *
-	 *      @param [in] index The model index of the item that's data is to be saved.
-	 *      @param [in] value The data that is to be saved.
-	 *      @param [in] role The role specifies what kind of data should be saved.
+	 *    @param [in] index The model index of the item that's data is to be saved.
+	 *    @param [in] value The data that is to be saved.
+	 *    @param [in] role The role specifies what kind of data should be saved.
 	 *
-	 *      @return True if saving happened successfully.
+	 *    @return True if saving happened successfully.
 	*/
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
 
@@ -107,14 +107,14 @@ public slots:
 
 	/*! Add a new item to the given index.
 	 *
-	 *      @param [in] index The index identifying the position for new item.
+	 *    @param [in] index The index identifying the position for new item.
 	 *
 	*/
 	void onAddItem(QModelIndex const& index);
 
 	/*! Remove the item in the given index.
 	 *
-	 *      @param [in] index The index identifying the item to remove.
+	 *    @param [in] index The index identifying the item to remove.
 	 *
 	*/
 	void onRemoveItem(QModelIndex const& index);
@@ -126,14 +126,14 @@ signals:
 
 	/*! Emitted when a new bus interface is added to the model.
 	 *
-	 *      @param [in] index The index of the added bus interface.
+	 *    @param [in] index The index of the added bus interface.
 	 *
 	*/
 	void interfaceAdded(int index);
 
 	/*! Emitted when a bus interface is removed from the model.
 	 *
-	 *      @param [in] index The index of the bus interface to remove.
+	 *    @param [in] index The index of the bus interface to remove.
 	 *
 	*/
 	void interfaceRemoved(int index);
@@ -141,14 +141,14 @@ signals:
     /*!
      *  Increase the number of references made to the specified parameter.
      *
-     *      @param [in] id  Id of the parameter whose reference count is increased.
+     *    @param [in] id  Id of the parameter whose reference count is increased.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the number of references made to the specified parameter.
      *
-     *      @param [in] id  Id of the parameter whose reference count is decreased.
+     *    @param [in] id  Id of the parameter whose reference count is decreased.
      */
     void decreaseReferences(QString id);
 

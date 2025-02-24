@@ -28,9 +28,9 @@ public:
 	 /*!
       *  Constructor.
       *
-      *      @param [in] itemTable       Table containing the connected items.
-      *      @param [in] tableColumn     Column in the connection table.
-      *      @param [in] parent          The parent object.
+      *    @param [in] itemTable       Table containing the connected items.
+      *    @param [in] tableColumn     Column in the connection table.
+      *    @param [in] parent          The parent object.
       */
     AutoConnectorListFilter(QTableWidget* itemTable, int const& tableColumn, QCheckBox* hideConnectedBox,
         QObject* parent = 0);
@@ -49,10 +49,10 @@ protected:
     /*!
 	 *  Implementation of the row filtering.
 	 *
-	 *      @param [in] source_row      The row to check for filtering.
-     *      @param [in] source_parent   The parent index of the row.
+	 *    @param [in] source_row      The row to check for filtering.
+     *    @param [in] source_parent   The parent index of the row.
      *
-     *      @return True, if the row passes the filters, otherwise false.
+     *    @return True, if the row passes the filters, otherwise false.
 	 */
     virtual bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
 
@@ -61,9 +61,9 @@ private:
     /*!
      *  Check if the selected item exists in the connection table.
      *
-     *      @param [in] itemName    Name of the selected item.
+     *    @param [in] itemName    Name of the selected item.
      *
-     *      @return True, if the item has been connected, false otherwise.
+     *    @return True, if the item has been connected, false otherwise.
      */
     bool itemIsConnected(QString const& itemName) const;
 

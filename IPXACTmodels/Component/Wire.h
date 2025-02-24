@@ -52,7 +52,7 @@ public:
 	/*!
 	 *  Create a copy of the Wire.
 	 *
-	 *      @return A Wire identical to this.
+	 *    @return A Wire identical to this.
 	 */
 	Wire* clone() const;
 
@@ -63,98 +63,98 @@ public:
 	/*!
 	 *  Get the value of all logical directions allowed element.
 	 *
-     *      @return True if all the logical directions are allowed, false otherwise.
+     *    @return True if all the logical directions are allowed, false otherwise.
 	 */
 	bool getAllLogicalDirectionsAllowed() const;
 
 	/*!
 	 *  Get the direction of the port.
 	 *
-     *      @return Enum direction specifying the port direction.
+     *    @return Enum direction specifying the port direction.
 	 */
 	DirectionTypes::Direction getDirection() const;
 
 	/*!
 	 *  Get the qualifier of the port.
 	 *
-	 *      @return The wire port qualifier.
+	 *    @return The wire port qualifier.
 	 */
 	QSharedPointer<Qualifier> getQualifier() const;
 
 	/*!
      *  Get the vectors element of this port.
      *
-     *      @return The vectors of the wire.
+     *    @return The vectors of the wire.
      */
 	QSharedPointer<QList<Vector> > getVectors() const;
 
     /*!
      *  Get the list of this port's wire type definitions.
      *
-     *      @return Pointer to a list containing wire type definitions.
+     *    @return Pointer to a list containing wire type definitions.
      */
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getWireTypeDefs() const;
 
 	/*!
 	 *  Allow / disallow all logical directions allowed value for this port.
 	 *
-	 *      @param [in] allow     The allowed status.
+	 *    @param [in] allow     The allowed status.
 	 */
 	void setAllLogicalDirectionsAllowed(bool allow);
 
 	/*!
 	 *  Set the direction of this port.
 	 *
-	 *      @param [in] direction   The new direction.
+	 *    @param [in] direction   The new direction.
 	 */
 	void setDirection(DirectionTypes::Direction direction);
 
     /*!
      *  Set the wire type definitions.
      *
-     *      @param [in] newWireTypeDefs     The new wire type definitions.
+     *    @param [in] newWireTypeDefs     The new wire type definitions.
      */
     void setWireTypeDefs(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > newWireTypeDefs);
 
 	/*!
 	 *  Get the default driver value for the wire.
 	 *
-     *      @return The default value.
+     *    @return The default value.
 	 */
 	QString getDefaultDriverValue() const;
 
 	/*!
 	 *  Set the default driver value.
 	 *
-	 *      @param [in] defaultDriverValue  The new default value.
+	 *    @param [in] defaultDriverValue  The new default value.
 	 */
 	void setDefaultDriverValue(const QString& defaultDriverValue);
 
     /*!
      *  Set the left bound expression.
      *
-     *      @param [in] expression   The expression.
+     *    @param [in] expression   The expression.
      */
     void setVectorLeftBound(QString const& expression);
 
     /*!
      *  Set the right bound expression.
      *
-     *      @param [in] expression   The expression.
+     *    @param [in] expression   The expression.
      */
     void setVectorRightBound(QString const& expression);
 
     /*!
      *  Get the left bound expression.
      *
-     *      @return     The expression.
+     *    @return     The expression.
      */
     QString getVectorLeftBound() const;
 
     /*!
      *  Get the right bound expression.
      *
-     *      @return     The expression.
+     *    @return     The expression.
      */
     QString getVectorRightBound() const;
 
@@ -165,57 +165,57 @@ public:
 	/*!
 	 *  Get the type name of the port for a given view.
 	 *
-	 *      @param [in] viewName    The name of the used view.
+	 *    @param [in] viewName    The name of the used view.
      *
-     *      @return The required type name.
+     *    @return The required type name.
 	 */
 	QString getTypeName(const QString& viewName = QString()) const;
 
 	/*!
 	 *  Check if the wire has a type name in given view.
 	 *
-	 *      @param [in] viewName    The name of the view that's type is searched for.
+	 *    @param [in] viewName    The name of the view that's type is searched for.
      *
-     *      @return True, if a type is found, false otherwise.
+     *    @return True, if a type is found, false otherwise.
 	 */
 	bool hasType(const QString& viewName = QString()) const;
 
 	/*!
 	 *  Check if the port has a type or type definition.
      *
-	 *      @return True, if either the port type name or type definition are defined.
+	 *    @return True, if either the port type name or type definition are defined.
 	 */
 	bool hasTypeDefinition() const;
 
 	/*!
 	 *  Set the type name for the port in a given view.
 	 *
-	 *      @param [in] typeName    The name of the type.
-	 *      @param [in] viewName    The name of the view used for this type.
+	 *    @param [in] typeName    The name of the type.
+	 *    @param [in] viewName    The name of the view used for this type.
 	 */
 	void setTypeName(const QString& typeName, const QString& viewName = QString());
 
 	/*!
 	 *  Get the type definition of the given type name.
 	 *
-	 *      @param [in] typeName    The name of the type that's type definition is searched for.
+	 *    @param [in] typeName    The name of the type that's type definition is searched for.
      *
-     *      @return The required type definition.
+     *    @return The required type definition.
 	 */
 	QString getTypeDefinition(const QString& typeName) const;
 
 	/*!
 	 *  Get the type definition.
 	 *
-     *      @return A list containing the type definition.
+     *    @return A list containing the type definition.
 	 */
 	QStringList getTypeDefinitions() const;
 
 	/*!
 	 *  Set the type definition of the given type name.
 	 *
-	 *      @param [in] typeName        Identifies the type definition.
-	 *      @param [in] typeDefinition  The new type definition.
+	 *    @param [in] typeName        Identifies the type definition.
+	 *    @param [in] typeDefinition  The new type definition.
 	 */
 	void setTypeDefinition(const QString& typeName, const QString& typeDefinition);
 

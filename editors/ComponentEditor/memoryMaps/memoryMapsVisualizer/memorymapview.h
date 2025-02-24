@@ -26,7 +26,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  The pointer to the owner of the graphics view.
+	 *    @param [in] parent  The pointer to the owner of the graphics view.
 	 */
 	MemoryMapView(QWidget *parent);
 	

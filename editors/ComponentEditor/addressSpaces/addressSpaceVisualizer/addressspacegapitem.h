@@ -28,10 +28,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addrPos             Position of the address space.
-	 *      @param [in] addressSpaceWidth   Width of the address space.
-	 *      @param [in] expressionParser    The used expression parser.
-	 *      @param [in] parent              Pointer to the parent graph item.
+	 *    @param [in] addrPos             Position of the address space.
+	 *    @param [in] addressSpaceWidth   Width of the address space.
+	 *    @param [in] expressionParser    The used expression parser.
+	 *    @param [in] parent              Pointer to the parent graph item.
 	 */
 	AddressSpaceGapItem(VisualizerItem::LabelLayout addrPos,
         QString const& addressSpaceWidth,
@@ -53,22 +53,22 @@ public:
 	/*!
      *  Get the offset of the item. 
 	 *
-	 *      @return int The offset of the item.
+	 *    @return int The offset of the item.
 	 */
 	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
-	 *      @return The last address.
+	 *    @return The last address.
 	 */
 	virtual quint64 getLastAddress() const override final;
 
 	/*!
      *  Set start address for the gap.
 	 *
-	 *      @param [in] address     The address that limits the gap start.
-	 *      @param [in] contains    If true then the address is contained in the gap, otherwise the gap starts
+	 *    @param [in] address     The address that limits the gap start.
+	 *    @param [in] contains    If true then the address is contained in the gap, otherwise the gap starts
      *                              from next address.
 	 */
 	void setStartAddress(quint64 address, bool contains = true);
@@ -76,8 +76,8 @@ public:
 	/*!
      *  Set end address for the gap.
 	 *
-	 *      @param [in] address     The address that limits the gap end.
-	 *      @param [in] contains    If true then the address is contained in the gap, otherwise the gap ends
+	 *    @param [in] address     The address that limits the gap end.
+	 *    @param [in] contains    If true then the address is contained in the gap, otherwise the gap ends
      *                              before the specified address.
 	 */
 	void setEndAddress(quint64 address, bool contains = true);
@@ -85,14 +85,14 @@ public:
     /*!
      *  Sets the first non-overlapping address to display.
 	 *
-	 *      @param [in] address     The first address to set.
+	 *    @param [in] address     The first address to set.
 	 */
     virtual void setOverlappingTop(quint64 const& address) override final;
 
 	/*!
      *  Sets the last non-overlapping address to display.
 	 *
-	 *      @param [in] address     The last address to set.
+	 *    @param [in] address     The last address to set.
 	 */
     virtual void setOverlappingBottom(quint64 const& address) override final;
 

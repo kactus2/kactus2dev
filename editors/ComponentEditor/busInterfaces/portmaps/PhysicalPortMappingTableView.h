@@ -28,7 +28,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  The owner of this view.
+     *    @param [in] parent  The owner of this view.
      */
 	PhysicalPortMappingTableView(QWidget *parent);
 
@@ -42,7 +42,7 @@ public slots:
     /*!
      *  Handles changes in the name filter by selecting the best matching port from the list.
      *
-     *      @param [in] portName   Name given in filter.
+     *    @param [in] portName   Name given in filter.
      */
     virtual void onFilterNameChanged(QString const& portName);
 
@@ -51,21 +51,21 @@ protected:
 	/*
      *  Handler for drop events on drag & drop.
 	 *
-	 *      @param [in] event   Pointer to the event object.
+	 *    @param [in] event   Pointer to the event object.
 	 */
 	virtual void dropEvent(QDropEvent* event);
 
     /*!
      *  Handler for mouse move events.
 	 *
-	 *      @param [in] event   Pointer to the event object.
+	 *    @param [in] event   Pointer to the event object.
 	 */
     void mouseMoveEvent(QMouseEvent* event);
 	
     /*!
      *  Handler for mouse press events.
 	 *
-	 *      @param [in] event   Pointer to the event object.
+	 *    @param [in] event   Pointer to the event object.
 	 */
     void mousePressEvent(QMouseEvent* event);
 

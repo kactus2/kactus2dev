@@ -31,9 +31,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] title       Title to be set for the QGroupBox
-	 *      @param [in] basePath    Path to start relative paths from.
-	 *      @param [in] parent      The owner of this widget.
+	 *    @param [in] title       Title to be set for the QGroupBox
+	 *    @param [in] basePath    Path to start relative paths from.
+	 *    @param [in] parent      The owner of this widget.
 	 */
 	DirListManager(QString const& title, QString const& basePath, QWidget *parent = 0);
 
@@ -45,7 +45,7 @@ public:
 	 *
 	 *  This function must be called after creating the directory list manager and before using it.
 	 * 
-	 *      @param [in] items   QStringList that contains the items to add to the widget.
+	 *    @param [in] items   QStringList that contains the items to add to the widget.
 	 */
 	virtual void initialize(const QStringList& items = QStringList());
 

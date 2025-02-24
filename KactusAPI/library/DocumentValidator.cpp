@@ -16,6 +16,7 @@
 #include <KactusAPI/include/ListParameterFinder.h>
 #include <KactusAPI/include/ParameterCache.h>
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/ModeConditionParserInterface.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
@@ -29,7 +30,7 @@
 //-----------------------------------------------------------------------------
 DocumentValidator::DocumentValidator(LibraryInterface* library) :
     library_(library),
-    abstractionValidator_(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())),
+    abstractionValidator_(library_, QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(absDefParameterFinder_))),
     busValidator_(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())),
     designValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(designValidatorFinder_)), library_),
     designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), library_),
@@ -45,7 +46,8 @@ bool DocumentValidator::validate(QSharedPointer<Document> document)
 {
     VLNV::IPXactType documentType = document->getVlnv().getType();
     if (documentType == VLNV::ABSTRACTIONDEFINITION)
-    {        
+    {
+        absDefParameterFinder_->setParameterList(document->getParameters());
         return abstractionValidator_.validate(document.dynamicCast<AbstractionDefinition>());
     }
     else if (documentType == VLNV::BUSDEFINITION)
@@ -61,8 +63,10 @@ bool DocumentValidator::validate(QSharedPointer<Document> document)
         QSharedPointer<Component> currentComponent = document.dynamicCast<Component>();
         changeComponentValidatorParameterFinder(currentComponent);
 
+        QSharedPointer<ModeConditionParserInterface> modeConditionParserInterface(new ModeConditionParserInterface(componentValidatorFinder_));
+
         ComponentValidator componentValidator(QSharedPointer<ExpressionParser>(
-            new IPXactSystemVerilogParser(componentValidatorFinder_)), library_, currentComponent->getRevision());
+            new IPXactSystemVerilogParser(componentValidatorFinder_)), modeConditionParserInterface, library_, currentComponent->getRevision());
 
         return componentValidator.validate(currentComponent);
     }
@@ -159,8 +163,9 @@ void DocumentValidator::findErrorsInAbstractionDefinition(QSharedPointer<Abstrac
 void DocumentValidator::findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList)
 {
     changeComponentValidatorParameterFinder(component);
+    QSharedPointer<ModeConditionParserInterface> parserFactory(new ModeConditionParserInterface(componentValidatorFinder_));
     ComponentValidator componentValidator(QSharedPointer<ExpressionParser>(
-        new IPXactSystemVerilogParser(componentValidatorFinder_)), library_, component->getRevision());
+        new IPXactSystemVerilogParser(componentValidatorFinder_)), parserFactory, library_, component->getRevision());
     componentValidator.findErrorsIn(errorList, component);
 }
 

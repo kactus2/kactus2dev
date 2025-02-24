@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsItem::ComponentInstantiationsItem()
@@ -23,13 +24,17 @@ SingleDesignConfigurationInstantiationItem::SingleDesignConfigurationInstantiati
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<DesignConfigurationInstantiation> instantiation,
-    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent):
+    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ParameterValidator> parameterValidator,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, 
+    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent) :
 ParameterizableItem(model, libHandler, component, parent),
 instantiation_(instantiation),
 validator_(validator),
+parameterValidator_(parameterValidator),
 parameterFinder_(parameterFinder),
-expressionFormatter_(expressionFormatter)
+expressionFormatter_(expressionFormatter),
+expressionParser_(expressionParser)
 {
     setObjectName(tr("ComponentInstantiationsItem"));
     setReferenceCounter(referenceCounter);
@@ -56,6 +61,10 @@ QString SingleDesignConfigurationInstantiationItem::text() const
 //-----------------------------------------------------------------------------
 bool SingleDesignConfigurationInstantiationItem::isValid() const
 {
+    // Set the param validator and expression parser required for validating design config instantiations.
+    validator_->setParameterValidator(parameterValidator_);
+    validator_->setExpressionParser(expressionParser_);
+
     return validator_->validateDesignConfigurationInstantiation(instantiation_);
 }
 

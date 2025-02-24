@@ -36,9 +36,9 @@ public:
 	 *  Constructs the library tree view and the filter model for the tree view
 	 *  and connects the view and filter model to the dataModel.
 	 * 
-	 *       @param [in] handler    The instance that manages the library.
-	 *       @param [in] dataModel  The dataModel instance that holds the data to be displayed in the view.
-	 *       @param [in] parent     The owner of this widget.
+	 *    @param [in] handler    The instance that manages the library.
+	 *    @param [in] dataModel  The dataModel instance that holds the data to be displayed in the view.
+	 *    @param [in] parent     The owner of this widget.
 	 */
     LibraryTreeWidget(LibraryInterface* handler, LibraryTreeModel* dataModel, QWidget* parent);
 
@@ -47,14 +47,14 @@ public:
 
 	/*! Select the library item that is identified by the vlnv.
 	 *
-	 *      @param [in] vlnv The vlnv that identifies the libraryItem to select.
+	 *    @param [in] vlnv The vlnv that identifies the libraryItem to select.
 	*/
 	void selectItem(VLNV const& vlnv);
 
     /*!
      *  Gets the filter for the tree model.
      *
-     *      @return The filter in use.
+     *    @return The filter in use.
      */
     LibraryFilter* getFilter() const;
 

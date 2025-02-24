@@ -37,8 +37,8 @@ public:
     /*!
      *  Writes the given protocol description into XML.
      *
-     *      @param [in] writer      The XML writer to use.
-     *      @param [in] protocol    The protocol to write.
+     *    @param [in] writer      The XML writer to use.
+     *    @param [in] protocol    The protocol to write.
      */
     void writeProtocol(QXmlStreamWriter& writer, QSharedPointer<Protocol> protocol) const;
 
@@ -48,16 +48,16 @@ private:
     /*!
      *  Writes the transactional port protocol type on system/master/slave into XML.
      *
-     *      @param [in] writer          The XML writer to use.
-     *      @param [in] portProtocol    The protocol whose type to write.
+     *    @param [in] writer          The XML writer to use.
+     *    @param [in] portProtocol    The protocol whose type to write.
      */
     void writeProtocolType(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const;
        
     /*!
      *  Writes the transactional port protocol payload on system/master/slave into XML.
      *
-     *      @param [in] writer          The XML writer to use.
-     *      @param [in] portProtocol    The protocol whose payload to write.
+     *    @param [in] writer          The XML writer to use.
+     *    @param [in] portProtocol    The protocol whose payload to write.
      */
     void writePayload(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const;
 

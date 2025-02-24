@@ -34,7 +34,7 @@ public:
     /*!
      *  Apply the language style rules on the given highlighter.
      *
-     *      @param [in] highlighter     The highlighter to apply the highlight style rules to.
+     *    @param [in] highlighter     The highlighter to apply the highlight style rules to.
      */
     void apply(LanguageHighlighter* highlighter) const;
 
@@ -43,21 +43,21 @@ protected:
     /*!
      *  Get the language specific keywords.
      *
-     *      @return The language keywords.
+     *    @return The language keywords.
      */
     virtual QStringList keywords() const = 0;
        
     /*!
      *  Get the language specific preprocessor directives.
      *
-     *      @return The preprocessor directives.
+     *    @return The preprocessor directives.
      */
     virtual QStringList preprocessorDirectives() const = 0;
 
     /*!
      *  Apply other language specific rules to highlighting.
      *
-     *      @param [in] highlighter   The highlighter to apply the rules to.
+     *    @param [in] highlighter   The highlighter to apply the rules to.
      */
     virtual void applyLanguageSpecificRules(LanguageHighlighter* highlighter) const; 
 

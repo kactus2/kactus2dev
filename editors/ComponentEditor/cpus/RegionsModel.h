@@ -39,10 +39,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] regions			The regions being edited.
-     *      @param [in] validator		The validator to use to check regions.
-     *      @param [in] expressions		The collection of objects for expression handling.
-	 *      @param [in] parent          The owner of this model.
+     *    @param [in] regions			The regions being edited.
+     *    @param [in] validator		The validator to use to check regions.
+     *    @param [in] expressions		The collection of objects for expression handling.
+	 *    @param [in] parent          The owner of this model.
 	 */
 	RegionsModel(QSharedPointer<QList<QSharedPointer<Region> > > regions,
 		QSharedPointer<RegionValidator> validator,
@@ -61,66 +61,66 @@ public:
 	/*!
      *  Get the number of rows an item contains.
 	 *
-	 *      @param [in] parent Identifies the parent that's row count is requested.
+	 *    @param [in] parent Identifies the parent that's row count is requested.
 	 *
-	 *      @return Number of rows the item has.
+	 *    @return Number of rows the item has.
 	 */
 	int rowCount(const QModelIndex& parent = QModelIndex()) const final;
 
 	/*!
      *  Get the number of columns the item has to be displayed.
 	 *
-	 *      @param [in] parent Identifies the parent that's column count is requested.
+	 *    @param [in] parent Identifies the parent that's column count is requested.
 	 *
-	 *      @return The number of columns to be displayed (always 4).
+	 *    @return The number of columns to be displayed (always 4).
 	 */
 	int columnCount(const QModelIndex& parent = QModelIndex()) const final;
 
 	/*!
      *  Get the header data for specified header.
 	 *
-	 *      @param [in] section The section specifies the row/column number for the header.
-	 *      @param [in] orientation Specified if horizontal or vertical header is wanted.
-	 *      @param [in] role Specifies the type of the requested data.
+	 *    @param [in] section The section specifies the row/column number for the header.
+	 *    @param [in] orientation Specified if horizontal or vertical header is wanted.
+	 *    @param [in] role Specifies the type of the requested data.
 	 *
-	 *      @return QVariant Contains the requested data.
+	 *    @return QVariant Contains the requested data.
 	 */
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const final;
 
 	/*!
      *  Get the data for specified item.
 	 *
-	 *      @param [in] index Specifies the item that's data is requested.
-	 *      @param [in] role The role that defines what kind of data is requested.
+	 *    @param [in] index Specifies the item that's data is requested.
+	 *    @param [in] role The role that defines what kind of data is requested.
 	 *
-	 *      @return QVariant Contains the data for the item.
+	 *    @return QVariant Contains the data for the item.
 	 */
 	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const final;
 
 	/*!
      *  Save the data to the model for specified item
 	 *
-	 *      @param [in] index The model index of the item that's data is to be saved.
-	 *      @param [in] value The data that is to be saved.
-	 *      @param [in] role The role specifies what kind of data should be saved.
+	 *    @param [in] index The model index of the item that's data is to be saved.
+	 *    @param [in] value The data that is to be saved.
+	 *    @param [in] role The role specifies what kind of data should be saved.
 	 *
-	 *      @return True if saving happened successfully.
+	 *    @return True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) final;
 
 	/*!
      *  Get the item flags that defines the possible operations for the item.
 	 *
-	 *      @param [in] index Model index that identifies the item.
+	 *    @param [in] index Model index that identifies the item.
 	 *
-	 *      @return Qt::ItemFlags specify the possible operations for the item.
+	 *    @return Qt::ItemFlags specify the possible operations for the item.
 	 */
 	Qt::ItemFlags flags(const QModelIndex& index) const final;
 
     /*!
      *  Get the list of acceptable mime types.
      *
-     *      @return The list of acceptable mime types.
+     *    @return The list of acceptable mime types.
      */
     QStringList mimeTypes() const final;
 
@@ -129,21 +129,21 @@ public slots:
 	/*!
      *  A new item should be added to given index.
 	 *
-	 *      @param [in] index The position where new item should be added at.
+	 *    @param [in] index The position where new item should be added at.
 	 */
 	void onAddItem(const QModelIndex& index);
 
 	/*!
      *  An item should be removed from the model.
 	 * 
-	 *      @param [in] index Identifies the item that should be removed.
+	 *    @param [in] index Identifies the item that should be removed.
 	 */
 	void onRemoveItem(const QModelIndex& index);
     
     /*!
      *  Copy the items in the selected rows.
      *
-     *      @param [in] indexList   List of indexes pointing to the selected rows.
+     *    @param [in] indexList   List of indexes pointing to the selected rows.
      */
     void onCopyRows(QModelIndexList indexList);
 
@@ -157,37 +157,37 @@ protected:
     /*!
      *  Check if the column index is valid for containing expressions.
      *
-     *      @param [in] index   The index being evaluated.
+     *    @param [in] index   The index being evaluated.
      *
-     *      @return     True, if column can have expressions, false otherwise.
+     *    @return     True, if column can have expressions, false otherwise.
      */
     bool isValidExpressionColumn(QModelIndex const& index) const final;
 
     /*!
      *  Gets the expression for the given index or the plain value if expression is not available.
      *
-     *      @param [in] index   The index whose expression to get.
+     *    @param [in] index   The index whose expression to get.
      *
-     *      @return The expression for the index if available, otherwise the value for the given index.
+     *    @return The expression for the index if available, otherwise the value for the given index.
      */
     QVariant expressionOrValueForIndex(QModelIndex const& index) const final;
     
     /*!
      *  Validates the data in an index.
      *
-     *      @param [in] index   The index whose data to validate
+     *    @param [in] index   The index whose data to validate
      *
-     *      @return True, if the data in the index is valid, otherwise false.
+     *    @return True, if the data in the index is valid, otherwise false.
      */
     bool validateIndex(QModelIndex const& index) const final;
 
     /*!
      *  Gets the number of all the references made to a selected id on the selected row.
      *
-     *      @param [in] row         The row of the selected item.
-     *      @param [in] valueID     The id of the referenced parameter.
+     *    @param [in] row         The row of the selected item.
+     *    @param [in] valueID     The id of the referenced parameter.
      *
-     *      @return The amount of references made to the selected id on the selected row.
+     *    @return The amount of references made to the selected id on the selected row.
      */
     int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const final;
 
@@ -220,22 +220,22 @@ private:
 	 * 
 	 * If there are no Regions defined then 0 is returned.
 	 * 
-	 *      @return The last address contained in a Region.
+	 *    @return The last address contained in a Region.
 	*/
 	quint64 getLastRegionedAddress() const;
 
     /*!
      *  Get the names of the contained address blocks.
      *
-     *      @return The names of the contained address blocks.
+     *    @return The names of the contained address blocks.
      */
     QStringList getCurrentItemNames();
 
     /*!
      *  Increase the number of references made in the copied address space Region.
      *
-     *      @param [in] pastedRegion           The copied address space Region.
-     *      @param [in] referenceCalculator     The reference calculator.
+     *    @param [in] pastedRegion           The copied address space Region.
+     *    @param [in] referenceCalculator     The reference calculator.
      */
     void increaseReferencesInPastedRegion(QSharedPointer<Region> pastedRegion,
         ReferenceCalculator& referenceCalculator);

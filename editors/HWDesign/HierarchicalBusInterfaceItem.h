@@ -43,12 +43,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component   The component containing the bus interface this item represents.
-     *      @param [in] busIf       The bus interface this item represents.
-     *      @param [in] dataGroup   The container for the item data.
-     *      @param [in] library     Access to the library.
-     *      @param [in] parent      The parent object.
-     *      @param [in] isDraft     Determines if Bus Interface is draft or not.
+     *    @param [in] component   The component containing the bus interface this item represents.
+     *    @param [in] busIf       The bus interface this item represents.
+     *    @param [in] dataGroup   The container for the item data.
+     *    @param [in] library     Access to the library.
+     *    @param [in] parent      The parent object.
+     *    @param [in] isDraft     Determines if Bus Interface is draft or not.
      */
     HierarchicalBusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
         QSharedPointer<InterfaceGraphicsData> dataGroup, LibraryInterface* library, QGraphicsItem *parent = 0, bool isDraft=false);
@@ -65,7 +65,7 @@ public:
     /*!
      *  Get the graphics item type of this item.
      *
-     *      @return The graphics item type of this item.
+     *    @return The graphics item type of this item.
      */
     int type() const final { return Type; }
 
@@ -81,7 +81,7 @@ public:
     /*!
      *  Set the direction for the bus interface item.
      *
-     *      @param [in] dir     The new direction.
+     *    @param [in] dir     The new direction.
      */
     void setDirection(QVector2D const& dir);
 
@@ -93,7 +93,7 @@ public:
     /*!
      *  Gets the data extension for the bus interface.
      *
-     *      @return The data vendor extension.
+     *    @return The data vendor extension.
      */
     QSharedPointer<VendorExtension> getDataExtension() const;
 
@@ -102,15 +102,15 @@ protected:
     /*!
      *  Notifies item state changes.
      *
-     *      @param [in] change  The change.
-     *      @param [in] value   The new value.
+     *    @param [in] change  The change.
+     *    @param [in] value   The new value.
      */
     QVariant itemChange(GraphicsItemChange change, QVariant const& value) final;
 
     /*!
      *  Event for mouse press.
      *
-     *      @param [in] event   The pressed mouse button.
+     *    @param [in] event   The pressed mouse button.
      */
     void mousePressEvent(QGraphicsSceneMouseEvent *event) final;
 
@@ -119,8 +119,8 @@ private:
     /*!
      *  Update the name change to the relevant contained variables.
      *
-     *      @param [in] previousName    The previous name of the bus interface.
-     *      @param [in] newName         The new name of the bus interface.
+     *    @param [in] previousName    The previous name of the bus interface.
+     *    @param [in] newName         The new name of the bus interface.
      */
     void updateName(QString const& previousName, QString const& newName) final;
 
@@ -132,19 +132,19 @@ private:
     /*!
      *  Create a move command for this end point item.
      *
-     *      @param [in] diagram     The containing design diagram.
+     *    @param [in] diagram     The containing design diagram.
      *
-     *      @return The created move command.
+     *    @return The created move command.
      */
     QSharedPointer<QUndoCommand> createMouseMoveCommand(DesignDiagram* diagram) final;
 
     /*!
      *  Create move command for an end point that has been moved by the movement of this end point.
      *
-     *      @param [in] endPoint            The selected end point.
-     *      @param [in] endPointPosition    The new position of the end point.
-     *      @param [in] diagram             Design diagram containing the end point.
-     *      @param [in] parentCommand       Parent command.
+     *    @param [in] endPoint            The selected end point.
+     *    @param [in] endPointPosition    The new position of the end point.
+     *    @param [in] diagram             Design diagram containing the end point.
+     *    @param [in] parentCommand       Parent command.
      */
     void createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
         DesignDiagram* diagram, QSharedPointer<QUndoCommand> parentCommand) final;
@@ -152,16 +152,16 @@ private:
     /*!
      *  Check if a connection can be made to the selected connection end point.
      *
-     *      @param [in] otherEndPoint   The selected connection end point.
+     *    @param [in] otherEndPoint   The selected connection end point.
      *
-     *      @return True, if the connection can be made, false otherwise.
+     *    @return True, if the connection can be made, false otherwise.
      */
     bool canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const final;
 
     /*!
      *  Get the current position of the end point.
      *
-     *      @return The current position of the end point.
+     *    @return The current position of the end point.
      */
     QPointF getCurrentPosition() const final;
 

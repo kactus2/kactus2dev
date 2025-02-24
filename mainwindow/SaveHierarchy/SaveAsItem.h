@@ -24,7 +24,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent   The parent item.
+     *    @param [in] parent   The parent item.
      */
     SaveAsItem(QTreeWidgetItem* parent);
     
@@ -34,9 +34,9 @@ public:
     /*!
      *  Sets the data in the item.
      *
-     *      @param [in] column      The column whose data to set.
-     *      @param [in] role        The data role to set.
-     *      @param [in] value       The value to set.
+     *    @param [in] column      The column whose data to set.
+     *    @param [in] role        The data role to set.
+     *    @param [in] value       The value to set.
      */
     virtual void setData(int column, int role, QVariant const& value);
 

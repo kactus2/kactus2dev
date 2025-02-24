@@ -51,10 +51,10 @@ protected:
     /*!
      *  Create a table item.
      *
-     *      @param [in] itemName                Name for the table item.
-     *      @param [in] containingComponent     Component containing the selected item.
+     *    @param [in] itemName                Name for the table item.
+     *    @param [in] containingComponent     Component containing the selected item.
      *
-     *      @return The new table item.
+     *    @return The new table item.
      */
     virtual QTableWidgetItem* createTableWidgetItem(QString const& itemName,
         QSharedPointer<Component> containingComponent) const;
@@ -64,10 +64,10 @@ private:
     /*!
      *  Find the possible item connections from the selected components.
      *
-     *      @param [in] firstComponent      The first component.
-     *      @param [in] secondComponent     The second component.
+     *    @param [in] firstComponent      The first component.
+     *    @param [in] secondComponent     The second component.
      *
-     *      @return List of item / possible connected items pairs.
+     *    @return List of item / possible connected items pairs.
      */
     virtual QVector<QPair<QString, QVector<QString> > > findPossibleCombinations(
         QSharedPointer<Component> firstComponent, QSharedPointer<Component> secondComponent) const;
@@ -75,9 +75,9 @@ private:
     /*!
      *	Find items that are already connected to populate the connection table with.
      *  
-     *      @param [in] firstInstanceName   The first component.
-     *      @param [in] secondInstanceName  The second component.
-     *      @param [in] design              The containing design.
+     *    @param [in] firstInstanceName   The first component.
+     *    @param [in] secondInstanceName  The second component.
+     *    @param [in] design              The containing design.
      *	    
      * 	    @return List of item connected item pairs.
      */
@@ -88,10 +88,10 @@ private:
     /*!
      *  Get the names of the connectible bus interfaces for the selected bus interface.
      *
-     *      @param [in] currentBus                  The selected bus interface.
-     *      @param [in] secondItemBusInterfaces     List of the available bus interfaces.
+     *    @param [in] currentBus                  The selected bus interface.
+     *    @param [in] secondItemBusInterfaces     List of the available bus interfaces.
      *
-     *      @return A list of bus interface names connectible to the selected bus interface.
+     *    @return A list of bus interface names connectible to the selected bus interface.
      */
     QVector<QString> getConnectableBusInterfaceNames(QSharedPointer<BusInterface> currentBus,
         QSharedPointer<QList<QSharedPointer<BusInterface> > > secondItemBusInterfaces) const;
@@ -99,10 +99,10 @@ private:
     /*!
      *  Check if the selected bus interface can be connected to the selected mode.
      *
-     *      @param [in] comparisonBus       The bus interface being compared to.
-     *      @param [in] comparibleModes     List of connectible bus interface modes.
+     *    @param [in] comparisonBus       The bus interface being compared to.
+     *    @param [in] comparibleModes     List of connectible bus interface modes.
      *
-     *      @return True, if the selected bus interface can be connected to the selected mode, false otherwise.
+     *    @return True, if the selected bus interface can be connected to the selected mode, false otherwise.
      */
     bool interfacesAreCompatible(QSharedPointer<BusInterface> comparisonBus,
         QVector<General::InterfaceMode> compatibleModes) const;
@@ -110,9 +110,9 @@ private:
     /*!
      *  Get connectible bus interface modes for the selected interface mode.
      *
-     *      @param [in] busMode     The selected bus interface mode.
+     *    @param [in] busMode     The selected bus interface mode.
      *
-     *      @return List of connectible interface modes.
+     *    @return List of connectible interface modes.
      */
     virtual QVector<General::InterfaceMode> getCompatibleInterfaceModes(General::InterfaceMode const& busMode)
         const;

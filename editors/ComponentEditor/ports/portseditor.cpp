@@ -64,7 +64,7 @@ ItemEditor(component, handler, parent),
         expressions, 
         portValidator,
         portsInterface_, 
-        QSharedPointer<PortAbstractionInterface>(new PortAbstractionInterface()),
+        QSharedPointer<PortAbstractionInterface>(new PortAbstractionInterface(expressions.parser, expressions.formatter)),
         busInterface,
         QString());
 

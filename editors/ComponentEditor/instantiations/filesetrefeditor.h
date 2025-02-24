@@ -31,9 +31,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] fileSetInterface    Interface for accessing file sets.
-	 *      @param [in] title               Title for the QGroupBox.
-	 *      @param [in] parent              The owner of this editor.
+	 *    @param [in] fileSetInterface    Interface for accessing file sets.
+	 *    @param [in] title               Title for the QGroupBox.
+	 *    @param [in] parent              The owner of this editor.
 	 */
     FileSetRefEditor(FileSetInterface* fileSetInterface, const QString title = tr("List"), QWidget *parent = 0);
 
@@ -45,7 +45,7 @@ public:
 	/*!
      *  Initialize the file set reference editor.
 	 *
-	 *      @param [in] items   QStringList that contains the items to add to the widget.
+	 *    @param [in] items   QStringList that contains the items to add to the widget.
 	 */
 	virtual void initialize(QStringList const& items = QStringList());
 

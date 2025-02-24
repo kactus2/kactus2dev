@@ -44,7 +44,7 @@ ConfigurableElementChangeCommand::~ConfigurableElementChangeCommand()
 QSharedPointer<ConfigurableElementValue> ConfigurableElementChangeCommand::setupConfigurableElement(
     QString const& elementID)
 {
-    foreach (QSharedPointer<ConfigurableElementValue> singleElement, *configurableElements_)
+    for (auto const& singleElement : *configurableElements_)
     {
         if (singleElement->getReferenceId() == elementID)
         {

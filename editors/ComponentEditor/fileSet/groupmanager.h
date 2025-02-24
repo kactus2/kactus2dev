@@ -25,8 +25,8 @@ public:
 
 	/*! The constructor.
 	 *
-	 *      @param [in] title   The title for the QGroupBox.
-	 *      @param [in] parent  The owner of this widget.
+	 *    @param [in] title   The title for the QGroupBox.
+	 *    @param [in] parent  The owner of this widget.
 	 */
 	GroupManager(QString const& title = tr("Group identifiers"), QWidget* parent = 0);
 
@@ -37,7 +37,7 @@ public:
 	 *
 	 * This function must be called after creating the group manager and before using it.
 	 * 
-	 *      @param [in] items   The items to add to the widget.
+	 *    @param [in] items   The items to add to the widget.
 	*/
 	virtual void initialize(QStringList const& items = QStringList());
 

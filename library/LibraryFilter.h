@@ -36,10 +36,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] libraryAccess   Access to the library.
-     *      @param [in] parent          The parent object.
+     *    @param [in] libraryAccess   Access to the library.
+     *    @param [in] parent          The parent object.
      *
-     *      @return <Description>.
+     *    @return <Description>.
      */
     LibraryFilter(LibraryInterface* libraryAccess, QObject *parent = 0);
 
@@ -78,7 +78,7 @@ public slots:
     /*!
      *  Handler for changing the filtered tags.
      *
-     *      @param [in] filteredTags    The new visible tags.
+     *    @param [in] filteredTags    The new visible tags.
      */
     void onTagFilterChanged(QVector<TagData> filteredTags);
 
@@ -86,31 +86,31 @@ protected:
 
 	/*! Checks if the row should be shown in the view or not.
 	 *
-	 *     @param [in]  sourceRow       Specifies the row number of the item
-	 *     @param [in]  sourceParent    Specifies the parent of the item.
+	 *    @param [in]  sourceRow       Specifies the row number of the item
+	 *    @param [in]  sourceParent    Specifies the parent of the item.
 	 *
-	 *     @return True if item is shown.
+	 *    @return True if item is shown.
 	*/
 	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const = 0;
     
     /*!
      *  Gets the current firmness filter.
      *
-     *      @return The firmness filter.
+     *    @return The firmness filter.
      */
     Utils::FirmnessOptions firmness() const;
     
     /*!
      *  Gets the current implementation filter.
      *
-     *      @return The implementation filter.
+     *    @return The implementation filter.
      */
     Utils::ImplementationOptions implementation() const;
          
     /*!
      *  Gets the current VLNV type filter.
      *
-     *      @return The VLNV type filter.
+     *    @return The VLNV type filter.
      */   
     Utils::TypeOptions type() const;
 
@@ -129,25 +129,25 @@ protected:
      * 
      *  Check the validity of the selected document.
      *
-     *      @param [in] document    The selected document.
+     *    @param [in] document    The selected document.
      *
-     *      @return True, if the document is valid, false otherwise.
+     *    @return True, if the document is valid, false otherwise.
      */
     bool checkValidity(bool isValid) const;
 
     /*!
      *  Check the tag matching of the selected document.
      *
-     *      @param [in] document    The selected document.
+     *    @param [in] document    The selected document.
      *
-     *      @return True, if the tags match the visible tags, false otherwise.
+     *    @return True, if the tags match the visible tags, false otherwise.
      */
     bool checkTags(QSharedPointer<Document const> document) const;
 
     /*!
      *  Get the access to the library.
      *
-     *      @return Access to the library.
+     *    @return Access to the library.
      */
     LibraryInterface* getLibraryInterface() const;
 
@@ -156,10 +156,10 @@ private:
     /*!
      *  Check if a document contains the selected tag.
      *
-     *      @param [in] document    The selected document.
-     *      @param [in] tag         The selected tag.
+     *    @param [in] document    The selected document.
+     *    @param [in] tag         The selected tag.
      *
-     *      @return True, if the selected document contains the selected tag, false otherwise.
+     *    @return True, if the selected document contains the selected tag, false otherwise.
      */
     bool documentContainsTag(QSharedPointer<Document const> document, TagData const& tag) const;
 

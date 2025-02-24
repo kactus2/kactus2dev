@@ -33,9 +33,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent          Pointer to the owner of this widget
-	 *      @param [in] fileName        Name of the file being edited
-     *      @param [in] fileInterface   Interface for accessing files.
+	 *    @param [in] parent          Pointer to the owner of this widget
+	 *    @param [in] fileName        Name of the file being edited
+     *    @param [in] fileInterface   Interface for accessing files.
 	 */
     FileTypeEditor(Document::Revision docRevision, QWidget *parent, std::string const& fileName, FileInterface* fileInterface);
 
@@ -49,7 +49,7 @@ public:
 	 *
 	 * This function must be called after creating the file type editor and before using it.
 	 * 
-	 *      @param [in] items   QStringList that contains the items to add to the widget.
+	 *    @param [in] items   QStringList that contains the items to add to the widget.
 	 */
 	virtual void initialize(const QStringList& items = QStringList());
 
@@ -66,14 +66,14 @@ public:
 	/*!
      *  Check if the editor is in a valid state or not.
 	 *
-	 *      @return True if the editor is in valid state
+	 *    @return True if the editor is in valid state
 	 */
 	bool isValid() const;
 
     /*!
      *  Handle the name change of the containing file.
      *
-     *      @param [in] newName     The new name of the file.
+     *    @param [in] newName     The new name of the file.
      */
     void fileRenamed(std::string const& newName);
 

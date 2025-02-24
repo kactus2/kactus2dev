@@ -124,6 +124,23 @@ void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer
     // Fill the rest of the editors based on the interface type.
     if (interface_->isBus())
     {
+        disconnect(&modeSelector_, SIGNAL(currentTextChanged(QString const&)),
+            this, SLOT(onInterfaceModeChanged(QString const&)));
+        modeSelector_.clear();
+
+        // set the possible modes to the mode editor
+        if (containingDesign->getRevision() == Document::Revision::Std22)
+        {
+            modeSelector_.addItems(General::INTERFACE_MODES_2022.values());
+        }
+        else
+        {
+            modeSelector_.addItems(General::INTERFACE_MODES.values());
+        }
+
+        connect(&modeSelector_, SIGNAL(currentTextChanged(QString const&)),
+            this, SLOT(onInterfaceModeChanged(QString const&)), Qt::UniqueConnection);
+
         setBusInterface();
     }
     else if (interface_->isApi())
@@ -545,9 +562,6 @@ void InterfaceEditor::setupBusEditor()
 
     absType_.setTitle(tr("Abstraction type VLNV"));
     absType_.setFlat(true);
-
-    // set the possible modes to the mode editor
-    modeSelector_.addItems(General::INTERFACE_MODES.values());
 
     portMapsView_.setSortingEnabled(true);
     portMapsView_.setSelectionMode(QAbstractItemView::SingleSelection);

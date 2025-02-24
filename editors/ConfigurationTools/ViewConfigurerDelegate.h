@@ -27,8 +27,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] libraryHandler  The library manager.
-     *      @param [in] parent          The parent of this delegate.
+     *    @param [in] libraryHandler  The library manager.
+     *    @param [in] parent          The parent of this delegate.
      */
     ViewConfigurerDelegate(LibraryHandler* libraryHandler, QObject* parent);
 
@@ -40,11 +40,11 @@ public:
     /*!
 	 *  Create a new editor for the given item.
 	 *
-	 *      @param [in] parent  Owner of the editor.
-	 *      @param [in] option  Contains options for the editor.
-	 *      @param [in] index   Model index identifying the item.
+	 *    @param [in] parent  Owner of the editor.
+	 *    @param [in] option  Contains options for the editor.
+	 *    @param [in] index   Model index identifying the item.
      *
-     *      @return Pointer to the editor to be used to edit the item.
+     *    @return Pointer to the editor to be used to edit the item.
 	 */
 	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index)
         const;
@@ -52,36 +52,36 @@ public:
 	/*!
 	 *  Set the data for the editor.
 	 *
-	 *      @param [in] editor  Pointer to the editor where the data is to be set.
-	 *      @param [in] index   Model index identifying the item that's data is to be set.
+	 *    @param [in] editor  Pointer to the editor where the data is to be set.
+	 *    @param [in] index   Model index identifying the item that's data is to be set.
 	 */
 	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
 
     /*!
 	 *  Save the data from the editor to the model.
 	 *
-	 *      @param [in] editor  Pointer to the editor that contains the data to store.
-	 *      @param [in] model   Model that contains the data structure where data is to be saved to.
-	 *      @param [in] index   Model index identifying the item thats data is to be saved.
+	 *    @param [in] editor  Pointer to the editor that contains the data to store.
+	 *    @param [in] model   Model that contains the data structure where data is to be saved to.
+	 *    @param [in] index   Model index identifying the item thats data is to be saved.
 	 */
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
     /*!
      *  Paints the delegate.
      *
-     *      @param [in] painter     The painter used.
-     *      @param [in] option      Options for the painter.
-     *      @param [in] index       Model index identifying the item thats data is to be saved.
+     *    @param [in] painter     The painter used.
+     *    @param [in] option      Options for the painter.
+     *    @param [in] index       Model index identifying the item thats data is to be saved.
      */
     virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
     /*!
      *  Gets the modified size hint for the item of this delegate.
      *
-     *      @param [in] option  The used style option.
-     *      @param [in] index   The current index.
+     *    @param [in] option  The used style option.
+     *    @param [in] index   The current index.
      *
-     *      @return The size hint of the item at the given index.
+     *    @return The size hint of the item at the given index.
      */
     virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
@@ -93,10 +93,10 @@ private:
     /*!
      *  Create the view selector the selected item.
      *
-     *      @param [in] currentIndex    Model Index of the item.
-     *      @param [in] parent          The owner of the item.
+     *    @param [in] currentIndex    Model Index of the item.
+     *    @param [in] parent          The owner of the item.
      *
-     *      @return View selector for the selected item.
+     *    @return View selector for the selected item.
      */
     QWidget* createViewSelector(QModelIndex const& currentIndex, QWidget* parent) const;
 

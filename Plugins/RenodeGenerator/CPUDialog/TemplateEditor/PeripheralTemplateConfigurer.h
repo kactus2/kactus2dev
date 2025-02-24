@@ -28,7 +28,7 @@ public:
     /*!
      *  Constructor.
      * 
-     *      @param [in] settingsModel   Container for Renode generator settings.
+     *    @param [in] settingsModel   Container for Renode generator settings.
      */
     PeripheralTemplateConfigurer(RenodeSettingsModel* settingsModel);
 
@@ -40,14 +40,14 @@ public:
     /*!
      *  Get the list of available peripheral templates.
      *	
-     *      @return List of available peripheral templates.
+     *    @return List of available peripheral templates.
      */
     QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > getTemplates() const;
 
     /*!
      *  Set a new list of peripheral templates.
      *	
-     *      @param [in] newTemplates    The new peripheral templates.
+     *    @param [in] newTemplates    The new peripheral templates.
      */
     void setTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates);
 

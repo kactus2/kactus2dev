@@ -31,10 +31,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] stack       The stack to which to add the item.
-     *      @param [in] item        The item to add.
-     *      @param [in] diagram     Diagram containing the scene of the added item.
-     *      @param [in] parent      The parent command.
+     *    @param [in] stack       The stack to which to add the item.
+     *    @param [in] item        The item to add.
+     *    @param [in] diagram     Diagram containing the scene of the added item.
+     *    @param [in] parent      The parent command.
      */
     ItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, DesignDiagram* diagram,
         QUndoCommand* parent = 0);
@@ -85,11 +85,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item        The item to move.
-     *      @param [in] oldPos      The item's old position.
-     *      @param [in] oldStack    The item's old stack.
-     *      @param [in] diagram     Diagram containing the scene of the moved item.
-     *      @param [in] parent      The parent command.
+     *    @param [in] item        The item to move.
+     *    @param [in] oldPos      The item's old position.
+     *    @param [in] oldStack    The item's old stack.
+     *    @param [in] diagram     Diagram containing the scene of the moved item.
+     *    @param [in] parent      The parent command.
      */
     ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
         DesignDiagram* diagram, QUndoCommand* parent = 0);
@@ -97,13 +97,13 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item        The item to move.
-     *      @param [in] oldPos      The item's old position.
-     *      @param [in] oldStack    The item's old stack.
-     *      @param [in] newPos      The item's new position.
-     *      @param [in] newStacke   The item's new stack.
-     *      @param [in] diagram     Diagram containing the scene of the moved item.
-     *      @param [in] parent      The parent command.
+     *    @param [in] item        The item to move.
+     *    @param [in] oldPos      The item's old position.
+     *    @param [in] oldStack    The item's old stack.
+     *    @param [in] newPos      The item's new position.
+     *    @param [in] newStacke   The item's new stack.
+     *    @param [in] diagram     Diagram containing the scene of the moved item.
+     *    @param [in] parent      The parent command.
      */
     ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
         QPointF const& newPos, IGraphicsItemStack* newStack, DesignDiagram* diagram, QUndoCommand* parent = 0);

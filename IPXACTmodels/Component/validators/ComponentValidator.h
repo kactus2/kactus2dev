@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/common/Document.h>
 
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
+
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
@@ -44,6 +46,7 @@ class AssertionValidator;
 
 class ExpressionParser;
 class LibraryInterface;
+class ModeConditionParserBaseInterface;
 
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:component.
@@ -55,10 +58,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parser      The used expression parser.
-     *      @param [in] library     The used library interface.
+     *    @param [in] parser                       The used expression parser.
+     *    @param [in] modeConditionParserInterface The interface used to create and manage the mode condition parser.
+     *    @param [in] library                      The used library interface.
      */
-    ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library, Document::Revision docRevision);
+    ComponentValidator(QSharedPointer<ExpressionParser> parser, 
+        QSharedPointer<ModeConditionParserBaseInterface> modeConditionParserInterface,
+        LibraryInterface* library, Document::Revision docRevision);
 
 	//! The destructor.
 	~ComponentValidator() = default;
@@ -70,199 +76,181 @@ public:
     /*!
      *  Validates the given component.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the component is valid IP-XACT, otherwise false.
+     *    @return True, if the component is valid IP-XACT, otherwise false.
      */
     bool validate(QSharedPointer<Component> component);
 
     /*!
      *  Check if the component vlnv is valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the vlnv is valid, otherwise false.
+     *    @return True, if the vlnv is valid, otherwise false.
      */
     bool hasValidVLNV(QSharedPointer<Component> component) const;
 
     /*!
      *  Check if the contained bus interfaces are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the bus interfaces are valid, otherwise false.
+     *    @return True, if the bus interfaces are valid, otherwise false.
      */
     bool hasValidBusInterfaces(QSharedPointer<Component> component);
    
     /*!
      *  Check if the contained indirect interfaces are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the indirect interfaces are valid, otherwise false.
+     *    @return True, if the indirect interfaces are valid, otherwise false.
      */     
     bool hasValidIndirectInterfaces(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained channels are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the channels are valid, otherwise false.
+     *    @return True, if the channels are valid, otherwise false.
      */
     bool hasValidChannels(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained remap states are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the remap states are valid, otherwise false.
+     *    @return True, if the remap states are valid, otherwise false.
      */
     bool hasValidRemapStates(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained modes are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the modes are valid, otherwise false.
+     *    @return True, if the modes are valid, otherwise false.
      */
     bool hasValidModes(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained address spaces are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the address spaces are valid, otherwise false.
+     *    @return True, if the address spaces are valid, otherwise false.
      */
     bool hasValidAddressSpaces(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained memory maps are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the memory maps are valid, otherwise false.
+     *    @return True, if the memory maps are valid, otherwise false.
      */
     bool hasValidMemoryMaps(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained views are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the views are valid, otherwise false.
+     *    @return True, if the views are valid, otherwise false.
      */
     bool hasValidViews(QSharedPointer<Component> component);
 
     /*!
-     *  Check if the contained component instantiations are valid.
+     *  Check if the contained instantiations are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the component instantiations are valid, otherwise false.
+     *    @return True, if the instantiations of the selected component are valid, otherwise false.
      */
-    bool hasValidComponentInstantiations(QSharedPointer<Component> component);
-
-    /*!
-     *  Check if the contained design instantiations are valid.
-     *
-     *      @param [in] component   The selected component.
-     *
-     *      @return True, if the design instantiations are valid, otherwise false.
-     */
-    bool hasValidDesignInstantiations(QSharedPointer<Component> component);
-
-    /*!
-     *  Check if the contained design configuration instantiations are valid.
-     *
-     *      @param [in] component   The selected component.
-     *
-     *      @return True, if the design configuration instantiations are valid, otherwise false.
-     */
-    bool hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component);
+    bool hasValidInstantiations(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained ports are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the ports are valid, otherwise false.
+     *    @return True, if the ports are valid, otherwise false.
      */
     bool hasValidPorts(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained component generators are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the component generators are valid, otherwise false.
+     *    @return True, if the component generators are valid, otherwise false.
      */
     bool hasValidComponentGenerators(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained choices are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the choices are valid, otherwise false.
+     *    @return True, if the choices are valid, otherwise false.
      */
     bool hasValidChoices(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained file sets are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the file sets are valid, otherwise false.
+     *    @return True, if the file sets are valid, otherwise false.
      */
     bool hasValidFileSets(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained CPUs are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the CPUs are valid, otherwise false.
+     *    @return True, if the CPUs are valid, otherwise false.
      */
     bool hasValidCPUs(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained other clock drivers are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the other clock drivers are valid, otherwise false.
+     *    @return True, if the other clock drivers are valid, otherwise false.
      */
     bool hasValidOtherClockDrivers(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained power domains are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the power domains are valid, otherwise false.
+     *    @return True, if the power domains are valid, otherwise false.
      */
     bool hasValidPowerDomains(QSharedPointer<Component> component);
 
     /*!
      *  Check if the reset types of the selected component are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the reset types are valid, otherwise false.
+     *    @return True, if the reset types are valid, otherwise false.
      */
     bool hasValidResetTypes(QSharedPointer<Component> component);
 
     /*!
      *  Check if a single reset type is valid.
      *
-     *      @param [in] resetType   The selected reset type.
-     *      @param [in] resetTypes  The reset types of the containing component.
+     *    @param [in] resetType   The selected reset type.
+     *    @param [in] resetTypes  The reset types of the containing component.
      *
-     *      @return True, if the reset type is valid, otherwise false.
+     *    @return True, if the reset type is valid, otherwise false.
      */
     bool singleResetTypeIsValid(QSharedPointer<ResetType> resetType,
         QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes) const;
@@ -270,26 +258,26 @@ public:
     /*!
      *  Check if the contained parameters are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the parameters are valid, otherwise false.
+     *    @return True, if the parameters are valid, otherwise false.
      */
     bool hasValidParameters(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained assertions are valid.
      *
-     *      @param [in] component   The selected component.
+     *    @param [in] component   The selected component.
      *
-     *      @return True, if the assertions are valid, otherwise false.
+     *    @return True, if the assertions are valid, otherwise false.
      */
     bool hasValidAssertions(QSharedPointer<Component> component);
 
     /*!
      *  Locate errors within a component.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Component> component);
 
@@ -298,17 +286,17 @@ private:
     /*!
      *  Find errors in component VLNV.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
      */
     void findErrorsInVLNV(QVector<QString>& errors, QSharedPointer<Component> component) const;
 
     /*!
      *  Find errors in bus interfaces.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInBusInterface(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -316,18 +304,18 @@ private:
     /*!
      *  Find errors in indirect interfaces.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInIndirectInterfaces(QVector<QString>& errors, QSharedPointer<Component> component, QString const& context);
 
     /*!
      *  Find errors in channels.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInChannels(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -335,9 +323,9 @@ private:
     /*!
      *  Find errors in remap states.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInRemapStates(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -345,9 +333,9 @@ private:
     /*!
      *  Find errors in modes.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInModes(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -355,9 +343,9 @@ private:
     /*!
      *  Find errors in address spaces.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInAddressSpaces(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -365,9 +353,9 @@ private:
     /*!
      *  Find errors in memory maps.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInMemoryMaps(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -375,9 +363,9 @@ private:
     /*!
      *  Find errors in views.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInViews(QVector<QString>& errors, QSharedPointer<Component> component, QString const& context)
         const;
@@ -385,9 +373,9 @@ private:
     /*!
      *  Find errors in component instantiations.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInComponentInstantiations(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -395,9 +383,9 @@ private:
     /*!
      *  Find errors in design instantiations.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInDesignInstantiations(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -405,9 +393,9 @@ private:
     /*!
      *  Find errors in design configuration instantiations.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInDesignConfigurationInstantiations(QVector<QString>& errors,
         QSharedPointer<Component> component, QString const& context) const;
@@ -415,9 +403,9 @@ private:
     /*!
      *  Find errors in ports.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInPorts(QVector<QString>& errors, QSharedPointer<Component> component, QString const& context)
         const;
@@ -425,9 +413,9 @@ private:
     /*!
      *  Find errors in component generators.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInComponentGenerators(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -435,9 +423,9 @@ private:
     /*!
      *  Find errors in choices.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInChoices(QVector<QString>& errors, QSharedPointer<Component> component, QString const& context)
         const;
@@ -445,9 +433,9 @@ private:
     /*!
      *  Find errors in file sets.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInFileSets(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -455,9 +443,9 @@ private:
     /*!
      *  Find errors in CPUs.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInCPUs(QVector<QString>& errors, QSharedPointer<Component> component, QString const& context)
         const;
@@ -465,9 +453,9 @@ private:
     /*!
      *  Find errors in other clock drivers.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInOtherClockDrivers(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -475,18 +463,18 @@ private:
     /*!
      *  Find errors in power domains.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInPowerDomains(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
     /*!
      *  Find errors in reset types.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInResetTypes(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -494,9 +482,9 @@ private:
     /*!
      *  Find errors in parameters.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInParameters(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -504,9 +492,9 @@ private:
     /*!
      *  Find errors in assertions.
      *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] component   The selected component.
-     *      @param [in] context     Context to help locate the error.
+     *    @param [in] errors      List of found errors.
+     *    @param [in] component   The selected component.
+     *    @param [in] context     Context to help locate the error.
      */
     void findErrorsInAssertions(QVector<QString>& errors, QSharedPointer<Component> component,
         QString const& context) const;
@@ -514,7 +502,7 @@ private:
     /*!
      *  Change the used component.
      *
-     *      @param [in] newComponent    The new component.
+     *    @param [in] newComponent    The new component.
      */
     void changeComponent(QSharedPointer<Component> newComponent);
     
@@ -578,6 +566,44 @@ private:
 
     //! The used assertion validator.
     QSharedPointer<AssertionValidator> assertionValidator_;
+
+    //! Top-level validators
+    
+    //! The memory maps validator.
+    QSharedPointer<MemoryMapsValidator> memoryMapsValidator_;
+
+    //! The file sets validator.
+    QSharedPointer<FileSetsValidator> fileSetsValidator_;
+
+    //! THe address spaces validator.
+    QSharedPointer<AddressSpacesValidator> addressSpacesValidator_;
+
+    //! Validator for validating all instantiations together.
+    QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator_;
+
+    //! Validator for validating all component views together.
+    QSharedPointer<ViewsValidator> viewsValidator_;
+
+    //! Validator for validating all ports together.
+    QSharedPointer<PortsValidator> portsValidator_;
+
+    //! Validator for validating all bus interfaces together.
+    QSharedPointer<BusInterfacesValidator> busIfsValidator_;
+
+    //! Validator for validating all indirect interfaces together.
+    QSharedPointer<IndirectInterfacesValidator> indirectInterfacesValidator_;
+
+    //! Interface for creating and managing mode condition parser.
+    QSharedPointer<ModeConditionParserBaseInterface> modeConditionParserInterface_;
+
+    //! The mode condition parser to use.
+    QSharedPointer<ExpressionParser> modeConditionParser_;
+
+    //! Validator for validating all cpus together.
+    QSharedPointer<CPUsValidator> cpusValidator_;
+
+    //! Validator for validating all power domains together.
+    QSharedPointer<PowerDomainsValidator> powerDomainsValidator_;
 };
 
 #endif // COMPONENTVALIDATOR_H

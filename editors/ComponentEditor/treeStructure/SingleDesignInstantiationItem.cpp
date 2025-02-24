@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: SingleDesignInstantiationItem::SingleDesignInstantiationItem()
@@ -22,12 +23,15 @@
 SingleDesignInstantiationItem::SingleDesignInstantiationItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<DesignInstantiation> instantiation, QSharedPointer<InstantiationsValidator> validator,
+    QSharedPointer<ParameterValidator> parameterValidator, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> componentParameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 instantiation_(instantiation),
 validator_(validator),
-componentParameterFinder_(componentParameterFinder)
+componentParameterFinder_(componentParameterFinder),
+parameterValidator_(parameterValidator),
+expressionParser_(expressionParser)
 {
     setObjectName(tr("ComponentInstantiationsItem"));
     setReferenceCounter(referenceCounter);
@@ -62,6 +66,9 @@ QString SingleDesignInstantiationItem::text() const
 //-----------------------------------------------------------------------------
 bool SingleDesignInstantiationItem::isValid() const
 {
+    validator_->setExpressionParser(expressionParser_);
+    validator_->setParameterValidator(parameterValidator_);
+
     return validator_->validateDesignInstantiation(instantiation_);
 }
 

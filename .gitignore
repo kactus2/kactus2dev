@@ -2,17 +2,22 @@
 tests/**/*.vcxproj
 tests/**/*.vcxproj.filters
 tests/**/*.vcxproj.user
-
 tests/**/debug/
 tests/**/.vs
 tests/**/release
 
 Plugins/**/Debug
+Plugins/**/Release
+Plugins/**/x64
 Plugins/**/*.vcxproj.user
-KactusAPI/x64/Debug
-IPXACTmodels/x64/Debug
+
+x64/
+KactusAPI/x64/
+IPXACTmodels/x64/
 IPXACTmodels/GeneratedFiles
+PythonAPI/x64/
 GeneratedFiles/
 .vs
-x64/Debug
-PythonAPI/x64/Debug
+
+*.obj
+*.tlog

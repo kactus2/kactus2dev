@@ -33,10 +33,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component       The component being edited.
-	 *      @param [in] handler         The instance managing the library.
-     *      @param [in] validator       The validator used for design configuration instantiations.
-	 *      @param [in] parent          The parent of this editor.
+	 *    @param [in] component       The component being edited.
+	 *    @param [in] handler         The instance managing the library.
+     *    @param [in] validator       The validator used for design configuration instantiations.
+	 *    @param [in] parent          The parent of this editor.
 	 */
 	DesignConfigurationInstantiationsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
         QSharedPointer<InstantiationsValidator> validator, QWidget* parent = 0);

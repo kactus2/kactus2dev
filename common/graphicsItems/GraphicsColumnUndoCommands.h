@@ -32,10 +32,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] layout  The column layout.
-     *      @param [in] column  The column to move.
-     *      @param [in] oldPos  The column's old position.
-     *      @param [in] parent  The parent command.
+     *    @param [in] layout  The column layout.
+     *    @param [in] column  The column to move.
+     *    @param [in] oldPos  The column's old position.
+     *    @param [in] parent  The parent command.
      */
     GraphicsColumnMoveCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
                               QPointF const& oldPos, QUndoCommand* parent = 0);
@@ -86,9 +86,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] column      The column.
-     *      @param [in] newDesc     The column's new description.
-     *      @param [in] diagram     Diagram containing the scene of the column.
+     *    @param [in] column      The column.
+     *    @param [in] newDesc     The column's new description.
+     *    @param [in] diagram     Diagram containing the scene of the column.
      */
     GraphicsColumnChangeCommand(GraphicsColumn* column, QSharedPointer<ColumnDesc> newDesc,
         DesignDiagram* diagram, QUndoCommand* parent = 0);
@@ -147,9 +147,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] column      The column.
-     *      @param [in] oldWidth    The column's old width.
-     *      @param [in] diagram     Diagram containing the scene of the column.
+     *    @param [in] column      The column.
+     *    @param [in] oldWidth    The column's old width.
+     *    @param [in] diagram     Diagram containing the scene of the column.
      */
     GraphicsColumnResizeCommand(GraphicsColumn* column, unsigned int oldWidth, DesignDiagram* diagram,
         QUndoCommand* parent = 0);
@@ -177,7 +177,7 @@ private:
     /*!
      *  Change the width of the column.
      *
-     *      @param [in] selectedWidth   The new width for the column.
+     *    @param [in] selectedWidth   The new width for the column.
      */
     void changeWidth(unsigned int selectedWidth);
 

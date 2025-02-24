@@ -29,7 +29,7 @@ public:
 	/*!
      *  The constructor.
      *
-     *      @param [in] mPort           The port, which default value assignment will be written, if applicable.
+     *    @param [in] mPort           The port, which default value assignment will be written, if applicable.
      */
     VerilogTopDefaultWriter(QSharedPointer<MetaPort> mPort);
 
@@ -41,7 +41,7 @@ public:
     /*!
      *  Writes the assignments to the given output.
      *
-     *      @param [in] output   The output to write to.
+     *    @param [in] output   The output to write to.
      */
     virtual void write(QTextStream& output) const;
 

@@ -40,7 +40,7 @@ public:
     /*!
      *  Constructor which reads the function from an XML node.
      *
-     *      @param [in] node The source XML node.
+     *    @param [in] node The source XML node.
      */
     ApiFunction(QDomNode& node);
 
@@ -52,15 +52,15 @@ public:
     /*!
      *  Writes the contents to an XML stream.
      *
-     *      @param [in] writer The XML stream writer.
+     *    @param [in] writer The XML stream writer.
      */
     void write(QXmlStreamWriter& writer);
 
     /*!
      *  Returns true if the function contents are valid.
      *
-     *      @param [out] errorList  The list of errors found in the contents.
-     *      @param [in]  parentId   The identifier of the containing API definition.
+     *    @param [out] errorList  The list of errors found in the contents.
+     *    @param [in]  parentId   The identifier of the containing API definition.
      */
     void findErrors(QVector<QString>& errorList, QString const& parentId) const;
 
@@ -72,43 +72,43 @@ public:
     /*!
      *  Sets the name of the function.
      *
-     *      @param [in] name The name to set.
+     *    @param [in] name The name to set.
      */
     void setName(QString const& name);
 
     /*!
      *  Sets the return value type.
      *
-     *      @param [in] type The name of the return value type.
+     *    @param [in] type The name of the return value type.
      */
     void setReturnValueType(QString const& type);
 
     /*!
      *  Sets the return value description.
      *
-     *      @param [in] desc The return value description to set.
+     *    @param [in] desc The return value description to set.
      */
     void setReturnValueDescription(QString const& desc);
 
     /*!
      *  Sets the function description.
      *
-     *      @param [in] desc The description.
+     *    @param [in] desc The description.
      */
     void setDescription(QString const& desc);
 
     /*!
      *  Adds a new parameter to the function.
      *
-     *      @param [in] param  The parameter object.
-     *      @param [in] index  The index of the parameter. If -1, the parameter is added as the last one.
+     *    @param [in] param  The parameter object.
+     *    @param [in] index  The index of the parameter. If -1, the parameter is added as the last one.
      */
     void addParam(QSharedPointer<ApiFunctionParameter> param, int index = -1);
 
     /*!
      *  Removes a parameter from the function.
      *
-     *      @param [in] index The index of the parameter.
+     *    @param [in] index The index of the parameter.
      */
     void removeParam(int index);
 
@@ -135,14 +135,14 @@ public:
     /*!
      *  Returns the parameter at the given index.
      *
-     *      @param [in] index The parameter index.
+     *    @param [in] index The parameter index.
      */
     QSharedPointer<ApiFunctionParameter> getParam(int index);
 
     /*!
      *  Returns the parameter at the given index.
      *
-     *      @param [in] index The parameter index.
+     *    @param [in] index The parameter index.
      */
     QSharedPointer<ApiFunctionParameter const> getParam(int index) const;
 
@@ -154,8 +154,8 @@ public:
     /*!
      *  Generates a tooltip text for the function prototype.
      *
-     *      @param [in]  paramIndex  The index of the parameter to highlight.
-     *      @param [out] text        The tool tip text.
+     *    @param [in]  paramIndex  The index of the parameter to highlight.
+     *    @param [out] text        The tool tip text.
      */
     void generateToolTipText(int paramIndex, QString& text) const;
 

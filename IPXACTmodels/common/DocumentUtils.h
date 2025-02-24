@@ -25,9 +25,9 @@ namespace DocumentUtils
     /*!
      *	Checks if two documents of same type are using the same IP-XACT standard revision.
      *  
-     *      @param [in] firstVlnv        The VLNV of the first document to check.
-     *      @param [in] secondVlnv       The VLNV of the second document to check.
-     *      @param [in] library          The library handler.
+     *    @param [in] firstVlnv        The VLNV of the first document to check.
+     *    @param [in] secondVlnv       The VLNV of the second document to check.
+     *    @param [in] library          The library handler.
      *	    
      * 	    @return True, if the revisions are the same, false if not or if either document couldn't be found.
      */

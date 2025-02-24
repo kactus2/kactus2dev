@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/Mode.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ModeConditionParser.h>
 
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
@@ -117,6 +118,18 @@ void SingleModeEditor::onConditionChanged()
     if (newCondition != prevCondition)
     {
         mode_->setCondition(newCondition);
+
+        auto parser = validator_->getConditionParser();
+        auto parserCast = parser.dynamicCast<ModeConditionParser>();
+
+        Q_ASSERT_X(parserCast, "SingleModeEditor::onConditionChanged()", "Could not cast mode condition parser");
+        if (!parserCast)
+        {
+            return;
+        }
+
+        parserCast->setFieldSlices(mode_->getFieldSlices());
+        parserCast->setPortSlices(mode_->getPortSlices());
 
         conditionStatus_.setHidden(validator_->hasValidCondition(mode_));
         emit contentChanged();

@@ -30,8 +30,8 @@ namespace  RemapStateWriter
     /*!
      *  Write a remap state to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] view    The remap state to be written.
+     *    @param [in] writer  The used xml writer.
+     *    @param [in] view    The remap state to be written.
      */
     IPXACTMODELS_EXPORT void writeRemapState(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState);
 
@@ -40,24 +40,24 @@ namespace  RemapStateWriter
         /*!
          *  Write the name group.
          *
-         *      @param [in] writer      Used XML writer.
-         *      @param [in] remapState  The selected remap state.
+         *    @param [in] writer      Used XML writer.
+         *    @param [in] remapState  The selected remap state.
          */
         void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState);
 
         /*!
          *  Write the remap ports.
          *
-         *      @param [in] writer      Used XML writer.
-         *      @param [in] remapState  The selected remap state.
+         *    @param [in] writer      Used XML writer.
+         *    @param [in] remapState  The selected remap state.
          */
         void writeRemapPorts(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState);
 
         /*!
          *  Write a single remap port.
          *
-         *      @param [in] writer      Used XML writer.
-         *      @param [in] remapPort   The selected remap port.
+         *    @param [in] writer      Used XML writer.
+         *    @param [in] remapPort   The selected remap port.
          */
         void writeSingleRemapPort(QXmlStreamWriter& writer, QSharedPointer<RemapPort> remapPort);
     };

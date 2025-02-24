@@ -40,7 +40,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] fileType    The type of the file.
+	 *    @param [in] fileType    The type of the file.
 	 */
 	FileBuilder(QString const& fileType);
 
@@ -62,31 +62,31 @@ public:
 	/*!
 	 *  Get the type of the file.
 	 *
-     *      @return The type of the file.
+     *    @return The type of the file.
 	 */
 	FileType getFileType() const;
 
 	/*!
 	 *  Set a file type.
 	 *
-	 *      @param [in] newFileType     The new file type.
-	 *      @param [in] libext		    The new libext attribute for the type.
+	 *    @param [in] newFileType     The new file type.
+	 *    @param [in] libext		    The new libext attribute for the type.
 	 */
 	void setFileType(QString const& newFileType, QString const& libext = QString());
 
 	/*!
 	 *  Set a file type.
 	 *
-	 *      @param [in] fileType     The new file type.
+	 *    @param [in] fileType     The new file type.
 	 */
 	void setFileType(FileType const& fileType);
 
 	/*!
 	 *  Check if the file builde is meant for a given file type.
 	 *
-	 *      @param [in] fileType    The file type to be searched for.
+	 *    @param [in] fileType    The file type to be searched for.
      *
-     *      @return True, if the file type is contained within the file builder, false otherwise.
+     *    @return True, if the file type is contained within the file builder, false otherwise.
 	 */
 	bool hasFileType(QString const& fileType) const;
 

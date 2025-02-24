@@ -41,41 +41,41 @@ public:
     /*!
      *  Reserve an area.
      *
-     *      @param [in] newId       Id of the reserved area.
-     *      @param [in] newBegin    Start point of the area.
-     *      @param [in] newEnd      End point of the area.
+     *    @param [in] newId       Id of the reserved area.
+     *    @param [in] newBegin    Start point of the area.
+     *    @param [in] newEnd      End point of the area.
      */
     void addArea(QString const& newId, qint64 newBegin, qint64 newEnd);
 
     /*!
      *  Check if reserved areas overlap.
      *
-     *      @return True, if overlap exists, otherwise false.
+     *    @return True, if overlap exists, otherwise false.
      */
     bool hasOverlap();
 
     /*!
      *  Check if the reserved ares with the same identifier overlap.
      *
-     *      @return True, if overlap exists, otherwise false.
+     *    @return True, if overlap exists, otherwise false.
      */
     bool hasIdDependantOverlap();
 
     /*!
      *  Find errors related to overlapping.
      *
-     *      @param [in] errors          The error list.
-     *      @param [in] itemIdentifier  Identifier for the overlapping items.
-     *      @param [in] context         Context used to help find the error.
+     *    @param [in] errors          The error list.
+     *    @param [in] itemIdentifier  Identifier for the overlapping items.
+     *    @param [in] context         Context used to help find the error.
      */
     void findErrorsInOverlap(QVector<QString>& errors, QString const& itemIdentifier, QString const& context);
 
     /*!
      *  Find errors related to overlapping with same identifiers.
      *
-     *      @param [in] errors          The error list.
-     *      @param [in] itemIdentifier  Identifier for the overlapping items.
-     *      @param [in] context         Context used to help find the errors.
+     *    @param [in] errors          The error list.
+     *    @param [in] itemIdentifier  Identifier for the overlapping items.
+     *    @param [in] context         Context used to help find the errors.
      */
     void findErrorsInIdDependantOverlap(QVector<QString>& errors, QString const& itemIdentifier,
         QString const& context);
@@ -102,16 +102,16 @@ private:
         /*!
          *  Assignment operator for MemoryArea.
          *
-         *      @param [in] other   Memory area to be assigned.
+         *    @param [in] other   Memory area to be assigned.
          *
-         *      @return The newly assigned memory area.
+         *    @return The newly assigned memory area.
          */
         MemoryArea& operator=(const MemoryArea& other) = default;
         
         /*!
          *  Check if a memory area has lower start point than another memory area.
          *
-         *      @param [in] other   Memory area being compared to.
+         *    @param [in] other   Memory area being compared to.
          */
         bool operator<(const MemoryArea& other) const;
     };

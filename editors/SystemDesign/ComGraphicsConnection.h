@@ -38,11 +38,11 @@ public:
     /*!
      *  Constructor which creates an open-ended diagram interconnection.
      *
-     *      @param [in] p1              The start point.
-     *      @param [in] dir1            Direction of the start point.
-     *      @param [in] p2              The end point.
-     *      @param [in] dir2            Direction of the end point.
-     *      @param [in] parent          The design diagram containing the connection.
+     *    @param [in] p1              The start point.
+     *    @param [in] dir1            Direction of the start point.
+     *    @param [in] p2              The end point.
+     *    @param [in] dir2            Direction of the end point.
+     *    @param [in] parent          The design diagram containing the connection.
      */
     ComGraphicsConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
                           DesignDiagram* parent);
@@ -50,12 +50,12 @@ public:
     /*!
      *  The constructor containing the connected COM interconnection.
      *
-     *      @param [in] endpoint1           The start point of the connection.
-     *      @param [in] endpoint2           The end point of the connection.
-     *      @param [in] comInterconnection  The connected COM interconnection.
-     *      @param [in] route               Route of the interconnection.
-     *      @param [in] autoConnect         If true, the end points are automatically connected.
-     *      @param [in] parent              The containing design diagram.
+     *    @param [in] endpoint1           The start point of the connection.
+     *    @param [in] endpoint2           The end point of the connection.
+     *    @param [in] comInterconnection  The connected COM interconnection.
+     *    @param [in] route               Route of the interconnection.
+     *    @param [in] autoConnect         If true, the end points are automatically connected.
+     *    @param [in] parent              The containing design diagram.
      */
     ComGraphicsConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
                           QSharedPointer<ComInterconnection> comInterconnection,
@@ -69,7 +69,7 @@ public:
     /*!
      *  Get the type of the graphical COM connection.
      *
-     *      @return The type of the COM connection item.
+     *    @return The type of the COM connection item.
      */
     int type() const { return Type; }
 

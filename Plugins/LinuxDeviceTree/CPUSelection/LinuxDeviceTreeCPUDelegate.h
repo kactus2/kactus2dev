@@ -36,9 +36,9 @@ public:
 	/*!
 	 *  Renders an item in the given index.
 	 *
-	 *      @param [in] painter     The painter to use for rendering.
-	 *      @param [in] option      The style options for the rendering.
-	 *      @param [in] index       The index to the data being rendered.
+	 *    @param [in] painter     The painter to use for rendering.
+	 *    @param [in] option      The style options for the rendering.
+	 *    @param [in] index       The index to the data being rendered.
 	 */
 	virtual void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
 
@@ -51,12 +51,12 @@ protected:
     /*!
      *  Handler for preprocessing events that starts editing.
      *
-     *      @param [in] event   The event that triggered the editing.
-     *      @param [in] model   The underlying model to edit.
-     *      @param [in] option  Style options for rendering the item.
-     *      @param [in] index   The index being edited.
+     *    @param [in] event   The event that triggered the editing.
+     *    @param [in] model   The underlying model to edit.
+     *    @param [in] option  Style options for rendering the item.
+     *    @param [in] index   The index being edited.
      *
-     *      @return True, if the delegate handles the event, otherwise false.
+     *    @return True, if the delegate handles the event, otherwise false.
      */
     virtual bool editorEvent(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option, 
         QModelIndex const& index);

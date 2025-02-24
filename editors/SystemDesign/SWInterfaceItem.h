@@ -37,10 +37,10 @@ public:
     /*!
      *  Constructor which creates a graphics item for an undefined interface.
      *
-     *      @param [in] component           The selected component.
-     *      @param [in] name                The name of the item.
-     *      @param [in] interfaceGraphics   Container for the interface graphics data.
-     *      @param [in] parent              Owner of this item.
+     *    @param [in] component           The selected component.
+     *    @param [in] name                The name of the item.
+     *    @param [in] interfaceGraphics   Container for the interface graphics data.
+     *    @param [in] parent              Owner of this item.
      */
     SWInterfaceItem(QSharedPointer<Component> component, QString const& name,
         QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent);
@@ -48,10 +48,10 @@ public:
     /*!
      *  Constructor which creates a graphics item for an API interface.
      *
-     *      @param [in] component           The selected component.
-     *      @param [in] apiIf               The API interface.
-     *      @param [in] interfaceGraphics   Container for the interface graphics data.
-     *      @param [in] parent              Owner of this item.
+     *    @param [in] component           The selected component.
+     *    @param [in] apiIf               The API interface.
+     *    @param [in] interfaceGraphics   Container for the interface graphics data.
+     *    @param [in] parent              Owner of this item.
      */
     SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
         QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent = 0);
@@ -59,10 +59,10 @@ public:
     /*!
      *  Constructor which creates a graphics item for a COM interface.
      *
-     *      @param [in] component           The selected component.
-     *      @param [in] comIf               The COM interface.
-     *      @param [in] interfaceGraphics   Container for the interface graphics data.
-     *      @param [in] parent              Owner of this item.
+     *    @param [in] component           The selected component.
+     *    @param [in] comIf               The COM interface.
+     *    @param [in] interfaceGraphics   Container for the interface graphics data.
+     *    @param [in] parent              Owner of this item.
      */
     SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
         QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent = 0);
@@ -85,7 +85,7 @@ public:
     /*!
      *  Defines the interface as an API interface.
      *
-     *      @param [in] apiIf The API interface to set.
+     *    @param [in] apiIf The API interface to set.
      */
     void define(QSharedPointer<ApiInterface> apiIf);
 
@@ -102,7 +102,7 @@ public:
     /*!
      *  Sets the COM/API type. The type of the VLNV determines the type of the endpoint.
      *
-     *      @param [in] type The VLNV of the COM/API definition.
+     *    @param [in] type The VLNV of the COM/API definition.
      */
     virtual void setTypeDefinition(VLNV const& type);
 
@@ -114,7 +114,7 @@ public:
     /*!
      *  Sets the draw direction of the endpoint.
      *
-     *      @param [in] dir The draw direction to set.
+     *    @param [in] dir The draw direction to set.
      *
      *      @remarks The direction can be changed only if isDirectionFixed() returns false.
      */
@@ -144,7 +144,7 @@ public:
 	/*!
      *  Sets the name for the interface.
 	 *
-	 *      @param [in] name The name to set for the interface.
+	 *    @param [in] name The name to set for the interface.
 	 */
 	virtual void setName(QString const& name);
 
@@ -156,16 +156,16 @@ public:
 	/*! 
      *  Sets the description for the interface.
 	 *
-	 *      @param [in] description The description to set.
+	 *    @param [in] description The description to set.
 	 */
 	virtual void setDescription(QString const& description);
 
     /*!
      *  Called when a connection between this and another end point is done.
      *
-     *      @param [in] other The other end point of the connection.
+     *    @param [in] other The other end point of the connection.
      *
-     *      @return False if there was an error in the connection. Otherwise true.
+     *    @return False if there was an error in the connection. Otherwise true.
      */
     virtual bool onConnect(ConnectionEndpoint const* other);
 
@@ -177,7 +177,7 @@ public:
     /*!
      *  Returns true if a connection is valid between the two endpoints.
      *
-     *      @param [in] other The other endpoint.
+     *    @param [in] other The other endpoint.
      *
      *      @remarks Does not take existing connections into account but simply
      *               validates whether a connection between the endpoints would be valid
@@ -219,7 +219,7 @@ public:
     /*!
      *  Get the graphics data.
      *
-     *      @return The container containing graphical data.
+     *    @return The container containing graphical data.
      */
     QSharedPointer<InterfaceGraphicsData> getInterfaceGraphicsData() const;
 
@@ -238,31 +238,31 @@ protected:
     /*!
      *  Handles item changes.
      *
-     *      @param [in] change  The change.
-     *      @param [in] value   Value for change.
+     *    @param [in] change  The change.
+     *    @param [in] value   Value for change.
      *
-     *      @return The item change.
+     *    @return The item change.
      */
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
     /*!
      *  Handles mouse press events.
      *
-     *      @param [in] event   The mouse press event.
+     *    @param [in] event   The mouse press event.
      */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
     /*!
      *  Handles mouse move events.
      *
-     *      @param [in] event   The mouse move event.
+     *    @param [in] event   The mouse move event.
      */
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
     /*!
      *  Handles mouse release events.
      *
-     *      @param [in] event   The mouse release event.
+     *    @param [in] event   The mouse release event.
      */
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     

@@ -34,8 +34,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] portInterface   Interface for accessing ports.
-	 *      @param [in] parent          The owner of this model.
+	 *    @param [in] portInterface   Interface for accessing ports.
+	 *    @param [in] parent          The owner of this model.
 	 */
     PhysicalPortMappingTableModel(PortsInterface* portInterface, QObject *parent);
 
@@ -52,20 +52,20 @@ public:
     /*!
      *  Get the number of rows in the model.
 	 *
-	 *      @param [in] parent      Model index of the parent of the item. Must be invalid because this is not
+	 *    @param [in] parent      Model index of the parent of the item. Must be invalid because this is not
      *                              a hierarchical model.
 	 *
-	 *      @return Number of rows currently in the model.
+	 *    @return Number of rows currently in the model.
 	 */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
 
 	/*!
      *  Get the data for the specified item for specified role.
 	 *
-	 *      @param [in] index   Identifies the item that's data is wanted.
-	 *      @param [in] role    Specifies what kind of data is wanted
+	 *    @param [in] index   Identifies the item that's data is wanted.
+	 *    @param [in] role    Specifies what kind of data is wanted
 	 *
-	 *      @return The requested data.
+	 *    @return The requested data.
 	 */
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 

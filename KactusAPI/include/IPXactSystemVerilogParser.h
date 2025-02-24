@@ -32,7 +32,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] finder   The finder for parameters available in the SystemVerilog expressions.
+     *    @param [in] finder   The finder for parameters available in the SystemVerilog expressions.
      */
     explicit IPXactSystemVerilogParser(QSharedPointer<ParameterFinder> finder);
     
@@ -46,27 +46,27 @@ public:
     /*!
      *  Checks if the given expression is a symbol e.g. reference.
      *
-     *      @param [in] expression   The expression to check.
+     *    @param [in] expression   The expression to check.
      *
-     *      @return True, if the expression is a symbol, otherwise false.
+     *    @return True, if the expression is a symbol, otherwise false.
      */
     bool isSymbol(QStringView expression) const override;
 
     /*!
      *  Finds the value for given symbol.
      *
-     *      @param [in] symbol  The symbol whose value to find.
+     *    @param [in] symbol  The symbol whose value to find.
      *
-     *      @return The found symbol value.
+     *    @return The found symbol value.
      */
     QString findSymbolValue(QStringView symbol) const override;
 
     /*!
      *  Finds the base in the symbol.
      *
-     *      @param [in] symbol   The symbol whose base to find.
+     *    @param [in] symbol   The symbol whose base to find.
      *
-     *      @return The base for the symbol.
+     *    @return The base for the symbol.
      */
     int getBaseForSymbol(QStringView symbol) const final;
 

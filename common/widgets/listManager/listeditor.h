@@ -30,7 +30,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this editor.
+	 *    @param [in] parent  Pointer to the owner of this editor.
 	 */
 	ListEditor(QWidget *parent);
 	
@@ -42,28 +42,28 @@ public:
 	/*!
      *  Get the string items currently stored in the editor.
      *
-     *      @return QStringList that contains the strings.
+     *    @return QStringList that contains the strings.
      */
 	const QStringList& items() const;
 
 	/*!
      *  Set the items for the editor.
      *
-     *      @param [in] items   QStringList containing the strings to edit.
+     *    @param [in] items   QStringList containing the strings to edit.
      */
 	void setItems(const QStringList& items);
 
 	/*!
      *  Get the number of items stored in the list.
 	 *
-	 *      @return Number of items in the list.
+	 *    @return Number of items in the list.
      */
 	int size() const;
 
 	/*!
      *  Set delegate for the view.
 	 *
-     *      @param [in] delegate    Pointer to the delegate that provides editor for view.
+     *    @param [in] delegate    Pointer to the delegate that provides editor for view.
      */
 	virtual void setItemDelegate(QStyledItemDelegate* delegate);
 

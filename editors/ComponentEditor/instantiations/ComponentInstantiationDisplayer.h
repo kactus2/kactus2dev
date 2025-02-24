@@ -28,7 +28,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent          The parent widget.
+     *    @param [in] parent          The parent widget.
      */
 	ComponentInstantiationDisplayer(QWidget* parent);
 

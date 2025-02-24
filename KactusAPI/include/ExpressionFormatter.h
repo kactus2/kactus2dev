@@ -31,7 +31,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parameterFinder     Parameter finder used to search the components parameters.
+     *    @param [in] parameterFinder     Parameter finder used to search the components parameters.
      */
     ExpressionFormatter(QSharedPointer<ParameterFinder> parameterFinder);
 
@@ -43,9 +43,9 @@ public:
     /*!
      *  Format an expression containing a reference to another parameter.
      *
-     *      @param [in] expression  The expression being worked on.
+     *    @param [in] expression  The expression being worked on.
      *
-     *      @return Formatted expression.
+     *    @return Formatted expression.
      */
     QString formatReferringExpression(QString const& expression) const;
 

@@ -46,7 +46,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] name    Name of the bit field.
+	 *    @param [in] name    Name of the bit field.
 	 */
 	Field(QString const& name = QString());
 
@@ -68,14 +68,14 @@ public:
 	/*!
 	 *  Get the id of the field.
 	 *
-	 *      @return The field's id.
+	 *    @return The field's id.
 	 */
 	QString getId() const;
 
 	/*!
 	 *  Set the id for the field.
 	 *
-	 *      @param [in] newId   The id to set for the field.
+	 *    @param [in] newId   The id to set for the field.
 	 *
 	 */
 	void setId(QString const& newId);
@@ -83,14 +83,14 @@ public:
 	/*!
 	 *  Get the isPresent value of the field.
 	 *
-	 *       @return The is present value.
+	 *    @return The is present value.
 	 */
 	QString getIsPresent() const;
 
 	/*!
 	 *  Set the is present value for the field.
 	 *
-	 *      @param [in] newIsPresent    The new is present value.
+	 *    @param [in] newIsPresent    The new is present value.
 	 */
 	void setIsPresent(QString const& newIsPresent);
 
@@ -104,98 +104,98 @@ public:
 	/*!
 	 *	Set the field's memory array.
 	 *  
-	 *      @param [in] memArray     Description
+	 *    @param [in] memArray     Description
 	 */
 	void setMemoryArray(QSharedPointer<MemoryArray> memArray);
 
 	/*!
 	 *  Get the bit offset.
 	 *
-	 *      @return Bit offset.
+	 *    @return Bit offset.
 	 */
 	QString getBitOffset() const;
 
 	/*!
 	 *  Set the bit offset.
 	 *
-	 *      @param [in] newBitOffset    The new bit offset.
+	 *    @param [in] newBitOffset    The new bit offset.
 	 */
 	void setBitOffset(QString const& newBitOffset);
 
     /*!
      *  Get the field definition reference.
      *        
-     *      @return The field definition reference.
+     *    @return The field definition reference.
      */
     QString getFieldDefinitionRef() const;
 
     /*!
      *  Set the field definition reference.
      *  
-     *      @param [in] newFieldDefRef     Description
+     *    @param [in] newFieldDefRef     Description
      */
     void setFieldDefinitionRef(QString const& newFieldDefRef);
 
     /*!
      *  Get the type definitions reference.
      *
-     *      @return The type definitions reference.
+     *    @return The type definitions reference.
      */
     QString getTypeDefinitionsRef() const;
 
     /*!
      *  Set the type definitions reference.
      *  
-     *      @param [in] newTypeDefRef     Description
+     *    @param [in] newTypeDefRef     Description
      */
     void setTypeDefinitionsRef(QString const& newTypeDefRef);
     
 	/*!
 	 *  Get a list of the reset for the field.
 	 *
-	 *      @return Pointer to a list containing the resets.
+	 *    @return Pointer to a list containing the resets.
 	 */
     QSharedPointer<QList<QSharedPointer<FieldReset> > > getResets() const;
 
 	/*!
 	 *  Set the reset for the field.
 	 *
-	 *      @param [in] newResets   Pointer to a list containing the new resets.
+	 *    @param [in] newResets   Pointer to a list containing the new resets.
 	 */
 	void setResets(QSharedPointer<QList<QSharedPointer<FieldReset> > > newResets);
 
 	/*!
 	 *  Get the typeIdentifier.
 	 *
-	 *      @return The typeIdentifier.
+	 *    @return The typeIdentifier.
 	 */
 	QString getTypeIdentifier() const;
 
 	/*!
 	 *  Set the typeIdentifier for the field.
 	 *
-	 *      @param [in] newTypeIdentifier   The new typeIdentifier.
+	 *    @param [in] newTypeIdentifier   The new typeIdentifier.
 	 */
 	void setTypeIdentifier(QString const& newTypeIdentifier);
 
 	/*!
 	 *  Get the bit width.
 	 *
-	 *       @return Bit width.
+	 *    @return Bit width.
 	 */
 	QString getBitWidth() const;
 
 	/*!
 	 *  Set the bit width for the field.
 	 *
-	 *      @param [in] newBitwidth     The new bit width.
+	 *    @param [in] newBitwidth     The new bit width.
 	 */
 	void setBitWidth(QString const& newBitWidth);
 
 	/*!
 	 *  Get the volatile state of the field.
 	 *
-	 *      @return The volatile state.
+	 *    @return The volatile state.
 	 */
 	BooleanValue getVolatile() const;
 
@@ -207,7 +207,7 @@ public:
 	/*!
 	 *  Set the volatile state for the field.
 	 *
-	 *      @param [in] volatileValue   The new volatile state to set.
+	 *    @param [in] volatileValue   The new volatile state to set.
 	 */
 	void setVolatile(bool volatileValue);
 
@@ -221,49 +221,49 @@ public:
 	/*!
 	 *	Set the field reference.
 	 *  
-	 *      @param [in] fieldRef     The new field reference.
+	 *    @param [in] fieldRef     The new field reference.
 	 */
 	void setFieldReference(QSharedPointer<FieldReference> fieldRef);
 
 	/*!
 	 *  Get the access type of the field.
 	 *
-	 *      @return The access type of the field.
+	 *    @return The access type of the field.
 	 */
 	AccessTypes::Access getAccess() const;
 
 	/*!
 	 *  Set the access type for the field.
 	 *
-	 *      @param [in] access  The access type to set.
+	 *    @param [in] access  The access type to set.
 	 */
 	void setAccess(AccessTypes::Access access);
 
 	/*!
 	 *  Get the list of the enumeratedValues.
 	 *
-	 *      @return Pointer to a list containing the enumerated values.
+	 *    @return Pointer to a list containing the enumerated values.
 	 */
 	QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > getEnumeratedValues() const;
 
 	/*!
 	 *  Set the enumerated values for the field.
 	 *
-	 *      @param [in] newEnumeratedValues     Pointer to a list containing the enumerated values.
+	 *    @param [in] newEnumeratedValues     Pointer to a list containing the enumerated values.
 	 */
 	void setEnumeratedValues(QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > newEnumeratedValues);
 
 	/*!
 	 *  Get the modified write value setting of the field.
 	 *
-	 *      @return The modified write value setting.
+	 *    @return The modified write value setting.
 	 */
 	General::ModifiedWrite getModifiedWrite() const;
 
 	/*!
 	 *  Set the modified write value setting for the field.
 	 *
-	 *      @param [in] newModWriteValue    The value to set.
+	 *    @param [in] newModWriteValue    The value to set.
 	 *
 	 */
 	void setModifiedWrite(General::ModifiedWrite const& newModifiedWriteValue);
@@ -271,70 +271,70 @@ public:
 	/*!
 	 *  Get the modify attribute of the modified write value.
 	 *
-	 *      @return The modify attribute of the modified write value.
+	 *    @return The modify attribute of the modified write value.
 	 */
 	QString getModifiedWriteModify() const;
 
 	/*!
 	 *  Set the modify attribute of the modified write value.
 	 *
-	 *      @param [in] newModify   The new modified attribute.
+	 *    @param [in] newModify   The new modified attribute.
 	 */
 	void setModifiedWriteModify(QString const& newModify);
 
 	/*!
 	 *  Get the write constraint of the field.
 	 *
-	 *      @return Pointer to the write constraint.
+	 *    @return Pointer to the write constraint.
 	 */
 	QSharedPointer<WriteValueConstraint> getWriteConstraint() const;
 
 	/*!
 	 *  Set the write value constraint.
 	 *
-	 *      @param [in] newWriteValueConstraint     Pointer to the new write value constraint.
+	 *    @param [in] newWriteValueConstraint     Pointer to the new write value constraint.
 	 */
 	void setWriteConstraint(QSharedPointer<WriteValueConstraint> newWriteValueConstraint);
 
 	/*!
 	 *  Get the read action setting of the field.
 	 *
-	 *      @return The read action setting.
+	 *    @return The read action setting.
 	 */
 	General::ReadAction getReadAction() const;
 
 	/*!
 	 *  Set the read action setting for the field.
 	 *
-	 *      @param [in] readAction  The new read action -value.
+	 *    @param [in] readAction  The new read action -value.
 	 */
 	void setReadAction(General::ReadAction const& readAction);
 
 	/*!
 	 *  Get the read action modify attribute.
 	 *
-	 *      @return The read action modify attribute.
+	 *    @return The read action modify attribute.
 	 */
 	QString getReadActionModify() const;
 
 	/*!
 	 *  Set the read action modify attribute.
 	 *
-	 *      @param [in] newModify   The new modify attribute.
+	 *    @param [in] newModify   The new modify attribute.
 	 */
 	void setReadActionModify(QString const& newModify);
 
 	/*!
 	 *  Get the testable setting of the field.
 	 *
-	 *      @return The testable setting.
+	 *    @return The testable setting.
 	 */
 	BooleanValue getTestable() const;
 
 	/*!
 	 *  Set the testable setting for the field.
 	 *
-	 *      @param [in] newTestable     The new testable value.
+	 *    @param [in] newTestable     The new testable value.
 	 */
 	void setTestable(bool newTestable);
 
@@ -346,42 +346,42 @@ public:
 	/*!
 	 *  Get the test constraint setting of the field.
 	 *
-	 *      @return The test constraint of the field.
+	 *    @return The test constraint of the field.
 	 */
 	General::TestConstraint getTestConstraint() const;
 
 	/*!
 	 *  Set the test constraint for the field.
 	 *
-	 *      @param [in] testContraint   The new test constraint.
+	 *    @param [in] testContraint   The new test constraint.
 	 */
 	void setTestConstraint(General::TestConstraint const& newTestContraint);
 
 	/*!
 	 *  Get the reserved value.
 	 *
-	 *      @return The reserved value.
+	 *    @return The reserved value.
 	 */
 	QString getReserved() const;
 
 	/*!
 	 *  Set the reserved value.
 	 *
-	 *      @param [in] newReserved     The new reserved value.
+	 *    @param [in] newReserved     The new reserved value.
 	 */
 	void setReserved(QString const& newReserved);
 
 	/*!
 	 *  Get a list of the parameters for the field.
 	 *
-	 *      @return Pointer to a list containing the parameters.
+	 *    @return Pointer to a list containing the parameters.
 	 */
 	QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
 
 	/*!
 	 *  Set the parameters for the field.
 	 *
-	 *      @param [in] newParameters   Pointer to a list containing the new parameters.
+	 *    @param [in] newParameters   Pointer to a list containing the new parameters.
 	 */
 	void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
 
@@ -395,7 +395,7 @@ public:
 	/*!
 	 *	Set the field access policies for the field.
 	 *  
-	 *      @param [in] newFieldAccessPolicies     The new field access policies.
+	 *    @param [in] newFieldAccessPolicies     The new field access policies.
 	 */
 	void setFieldAccessPolicies(QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > newFieldAccessPolicies);
 
@@ -404,7 +404,7 @@ private:
 	/*!
 	 *  Copy the write value constraint.
 	 *
-	 *      @param [in] other   The copied field.
+	 *    @param [in] other   The copied field.
 	 */
 	void copyWriteValueConstraint(const Field& other);
 

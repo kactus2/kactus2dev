@@ -32,9 +32,9 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] fileName        Name of to the file being edited.
-     *      @param [in] fileInterface   Interface for accessing files.
-     *      @param [in] parent          Pointer to the owner of this widget     
+	 *    @param [in] fileName        Name of to the file being edited.
+     *    @param [in] fileInterface   Interface for accessing files.
+     *    @param [in] parent          Pointer to the owner of this widget     
 	 */
     FileNameEditor(std::string const& fileName, FileInterface* fileInterface, QWidget *parent);
 
@@ -55,7 +55,7 @@ public:
     /*!
      *  Handle the name change of the containing file.
      *
-     *      @param [in] newName     The new name of the file.
+     *    @param [in] newName     The new name of the file.
      */
     void fileRenamed(std::string const& newName);
 

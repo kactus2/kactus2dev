@@ -40,10 +40,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] type        The VLNV type which to edit.
-     *      @param [in] libHandler  The library handler.
-     *      @param [in] parentWnd   The parent window (having a title bar).
-     *      @param [in] parent      The parent widget.
+     *    @param [in] type        The VLNV type which to edit.
+     *    @param [in] libHandler  The library handler.
+     *    @param [in] parentWnd   The parent window (having a title bar).
+     *    @param [in] parent      The parent widget.
      */
     VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd = 0, QWidget* parent = 0);
 
@@ -60,24 +60,24 @@ public:
     /*!
      *  Sets the firmness filter on/off.
      *
-     *      @param [in] on        If true, the filter is turned on; otherwise it is turned off.
-     *      @param [in] firmness  The allowed firmness.
+     *    @param [in] on        If true, the filter is turned on; otherwise it is turned off.
+     *    @param [in] firmness  The allowed firmness.
      */
     void setFirmnessFilter(bool on, KactusAttribute::Firmness firmness = KactusAttribute::TEMPLATE);
 
     /*!
      *  Sets the product hierarchy filter on/off.
      *
-     *      @param [in] on           If true, the filter is turned on; otherwise it is turned off.
-     *      @param [in] productHier  The allowed product hierarchy.
+     *    @param [in] on           If true, the filter is turned on; otherwise it is turned off.
+     *    @param [in] productHier  The allowed product hierarchy.
      */
     void setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier = KactusAttribute::IP);
 
     /*!
      *  Sets the implementation filter on/off.
      *
-     *      @param [in] on              If true, the filter is turned on; otherwise it is turned off.
-     *      @param [in] implementation  The allowed implementation.
+     *    @param [in] on              If true, the filter is turned on; otherwise it is turned off.
+     *    @param [in] implementation  The allowed implementation.
      */
     void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::HW);
 
@@ -86,7 +86,7 @@ public:
     /*!
      *  Adds a new name extension that will be shown in the dialog.
      *
-     *      @param [in] extension The extension to add.
+     *    @param [in] extension The extension to add.
      */
     void addNameExtension(QString const& extension);
 
@@ -120,7 +120,7 @@ signals:
 	/*!
      *  Emitted when a vlnv for abstraction definition is dropped to this editor.
 	 *
-	 *        @param [in] busDefVLNV The vlnv of the matching bus definition.
+	 *    @param [in] busDefVLNV The vlnv of the matching bus definition.
 	 */
 	void setBusDef(const VLNV& busDefVLNV);
 
@@ -128,7 +128,7 @@ signals:
      *  Emitted when a vlnv for bus definition is dropped to this editor. If there are several matching
      *  abstraction definitions then this is not emitted.
 	 * 
-     *      @param [in] absDefVLNV  Identifies the vlnv of matching abstraction definition.
+     *    @param [in] absDefVLNV  Identifies the vlnv of matching abstraction definition.
 	 */
 	void setAbsDef(const VLNV& absDefVLNV);
 
@@ -137,7 +137,7 @@ public slots:
     /*!
      *  Set the widget to be mandatory or not. The default setting is mandatory on.
 	 *
-	 *      @param [in] mandatory   If true then all 4 vlnv fields are displayed as mandatory fields.
+	 *    @param [in] mandatory   If true then all 4 vlnv fields are displayed as mandatory fields.
 	 */
 	void setMandatory(bool mandatory);
 
@@ -198,21 +198,21 @@ protected:
     /*!
      *  Handler for drop events on drag & drop
 	 *
-	 *      @param [in] event   Pointer to the drop event.
+	 *    @param [in] event   Pointer to the drop event.
 	 */
 	virtual void dropEvent(QDropEvent* event);
 
 	/*!
      *  Handler for drag enter events in drag & drop.
 	 *
-	 *      @param [in] event   Pointer to the event.
+	 *    @param [in] event   Pointer to the event.
 	 */
 	virtual void dragEnterEvent(QDragEnterEvent* event);
     
     /*!
      *  Handler for the show event.
      *
-     *      @param [in] event   Pointer to the show event.
+     *    @param [in] event   Pointer to the show event.
      */
     virtual void showEvent(QShowEvent* event);
 
@@ -236,7 +236,7 @@ private:
     /*!
      *  Initializes the widgets of the vlnv editor.
      *
-     *      @param [in] parentWnd   The parent window.
+     *    @param [in] parentWnd   The parent window.
      */
     void initWidgets(QWidget* parentWnd);
 

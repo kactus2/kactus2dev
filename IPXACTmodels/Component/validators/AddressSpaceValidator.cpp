@@ -30,7 +30,8 @@
 //-----------------------------------------------------------------------------
 AddressSpaceValidator::AddressSpaceValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
-    QSharedPointer<ParameterValidator> parameterValidator):
+    QSharedPointer<ParameterValidator> parameterValidator) :
+HierarchicalValidator(),
 expressionParser_(expressionParser),
 localMemoryMapValidator_(memoryMapBaseValidator),
 parameterValidator_(parameterValidator)
@@ -51,10 +52,11 @@ QSharedPointer<MemoryMapBaseValidator> AddressSpaceValidator::getLocalMemoryMapV
 //-----------------------------------------------------------------------------
 bool AddressSpaceValidator::validate(QSharedPointer<AddressSpace> addressSpace) const
 {
-    return hasValidName(addressSpace->name()) && hasValidIsPresent(addressSpace->getIsPresent()) &&
+    return hasValidName(addressSpace->name()) && 
+        hasValidIsPresent(addressSpace->getIsPresent()) &&
         hasValidRange(addressSpace) && hasValidWidth(addressSpace) && hasValidSegments(addressSpace) &&
         hasValidAddressUnitBits(addressSpace) && hasValidLocalMemoryMap(addressSpace) &&
-        hasValidParameters(addressSpace);
+        hasValidParameters(addressSpace) && validComparedToSiblings(addressSpace);
 }
 
 //-----------------------------------------------------------------------------

@@ -19,6 +19,7 @@
 #include <KactusAPI/include/LibraryInterface.h>
 #include <KactusAPI/include/ParameterCache.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ModeConditionParserInterface.h>
 
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
@@ -45,7 +46,8 @@ GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Compon
     headerEditor_(new QPlainTextEdit(this)),
     finder_(new ParameterCache(component)),
     parser_(new IPXactSystemVerilogParser(finder_)),
-    validator_(new ComponentValidator(parser_, libHandler, component->getRevision())),
+    modeConditionParserInterface_(new ModeConditionParserInterface(finder_)),
+    validator_(new ComponentValidator(parser_, modeConditionParserInterface_, libHandler, component->getRevision())),
     library_(libHandler)
 {
     Q_ASSERT(libHandler != 0);

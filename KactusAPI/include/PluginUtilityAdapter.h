@@ -30,11 +30,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] libraryInterface    The available library of IP-XACT objects.
-     *      @param [in] messageChannel      The channel for displaying messages to the user.
-     *      @param [in] versionString       The current version of the Kactus2 build.
-     *      @param [in] parentWidget        The parent widget.
-     *      @param [in] parent              The parent object.
+     *    @param [in] libraryInterface    The available library of IP-XACT objects.
+     *    @param [in] messageChannel      The channel for displaying messages to the user.
+     *    @param [in] versionString       The current version of the Kactus2 build.
+     *    @param [in] parentWidget        The parent widget.
+     *    @param [in] parent              The parent object.
 	 */
 	PluginUtilityAdapter(LibraryInterface* libraryInterface, MessageMediator* messageChannel,
         QString const& versionString, QWidget* parentWidget = 0);
@@ -62,7 +62,7 @@ public:
     /*!
      *  Prints an error message to the console window.
      *
-     *      @param [in] message The error message to print.
+     *    @param [in] message The error message to print.
      *
      *      @remark  Requires signal errorMessage to be connected by the user.
      */
@@ -71,7 +71,7 @@ public:
     /*!
      *  Prints an info message to the console window.
      *
-     *      @param [in] message The info message to print.
+     *    @param [in] message The info message to print.
      *
      *      @remark  Requires signal infoMessage to be connected by the user.
      */

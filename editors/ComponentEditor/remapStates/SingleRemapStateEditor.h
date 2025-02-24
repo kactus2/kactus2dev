@@ -30,12 +30,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               Pointer to the component that contains the view.
-	 *      @param [in] remapState              Pointer to the remap state being edited.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-     *      @param [in] parameterFinder         The finder for the parameter references.
-     *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
-	 *      @param [in] parent                  Pointer to the owner of this editor.
+	 *    @param [in] component               Pointer to the component that contains the view.
+	 *    @param [in] remapState              Pointer to the remap state being edited.
+	 *    @param [in] libHandler              Pointer to the instance that manages the library.
+     *    @param [in] parameterFinder         The finder for the parameter references.
+     *    @param [in] expressionFormatter     Changes the referenced ids to parameter names.
+	 *    @param [in] parent                  Pointer to the owner of this editor.
 	 */
     SingleRemapStateEditor(QSharedPointer<Component> component,
         QSharedPointer<RemapState> remapState,
@@ -63,7 +63,7 @@ protected:
     /*!
      *  The show event for this editor.
      *
-     *      @param [in] event   The show event.
+     *    @param [in] event   The show event.
      */
     virtual void showEvent(QShowEvent * event);
 

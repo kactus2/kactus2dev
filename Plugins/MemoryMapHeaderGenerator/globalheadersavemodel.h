@@ -65,8 +65,8 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] parent      Pointer to the owner of the model.
+	 *    @param [in] handler     Pointer to the instance that manages the library.
+	 *    @param [in] parent      Pointer to the owner of the model.
 	 */
 	GlobalHeaderSaveModel(LibraryInterface* handler, QObject *parent);
 	
@@ -76,74 +76,74 @@ public:
 	/*!
      *  Set the design for which the global headers are generated.
 	 *
-	 *      @param [in] topComp     Pointer to the component which contains the design.
-	 *      @param [in] design      Pointer to the design which instantiates the components.
+	 *    @param [in] topComp     Pointer to the component which contains the design.
+	 *    @param [in] design      Pointer to the design which instantiates the components.
 	 */
 	void setDesign(QSharedPointer<Component> topComp, QSharedPointer<Design> design);
 
 	/*!
      *  Get the number of rows an item contains.
 	 *
-	 *      @param [in] parent  Identifies the parent that's row count is requested.
+	 *    @param [in] parent  Identifies the parent that's row count is requested.
 	 *
-	 *      @return Number of rows the item has.
+	 *    @return Number of rows the item has.
 	 */
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
 	/*!
      *  Get the number of columns the item has to be displayed.
 	 *
-	 *      @param [in] parent  Identifies the parent that's column count is requested.
+	 *    @param [in] parent  Identifies the parent that's column count is requested.
 	 *
-	 *      @return The number of columns to be displayed.
+	 *    @return The number of columns to be displayed.
 	 */
 	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
 	/*!
      *  Get the item flags that defines the possible operations for the item.
 	 *
-	 *      @param [in] index   Model index that identifies the item.
+	 *    @param [in] index   Model index that identifies the item.
 	 *
-	 *      @return Qt::ItemFlags specify the possible operations for the item.
+	 *    @return Qt::ItemFlags specify the possible operations for the item.
 	 */
 	Qt::ItemFlags flags(const QModelIndex& index) const;
 
 	/*!
      *  Get the header data for specified header.
 	 *
-	 *      @param [in] section         The section specifies the row/column number for the header.
-	 *      @param [in] orientation     Specified if horizontal or vertical header is wanted.
-	 *      @param [in] role            Specifies the type of the requested data.
+	 *    @param [in] section         The section specifies the row/column number for the header.
+	 *    @param [in] orientation     Specified if horizontal or vertical header is wanted.
+	 *    @param [in] role            Specifies the type of the requested data.
 	 *
-	 *      @return QVariant Contains the requested data.
+	 *    @return QVariant Contains the requested data.
 	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 	/*!
      *  Get the data for specified item.
 	 *
-	 *      @param [in] index   Specifies the item that's data is requested.
-	 *      @param [in] role    The role that defines what kind of data is requested.
+	 *    @param [in] index   Specifies the item that's data is requested.
+	 *    @param [in] role    The role that defines what kind of data is requested.
 	 *
-	 *      @return QVariant Contains the data for the item.
+	 *    @return QVariant Contains the data for the item.
 	 */
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
 	/*!
      *  Save the data to the model for specified item
 	 *
-	 *      @param [in] index   The model index of the item that's data is to be saved.
-	 *      @param [in] value   The data that is to be saved.
-	 *      @param [in] role    The role specifies what kind of data should be saved.
+	 *    @param [in] index   The model index of the item that's data is to be saved.
+	 *    @param [in] value   The data that is to be saved.
+	 *    @param [in] role    The role specifies what kind of data should be saved.
 	 *
-	 *      @return True if saving happened successfully.
+	 *    @return True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
 	/*!
      *  Get the options defining locations for headers to generate.
 	 *
-	 *      @return QList containing the save options.
+	 *    @return QList containing the save options.
 	 */
 	const QList<SaveFileOptions*>& getHeaderOptions() const;
 

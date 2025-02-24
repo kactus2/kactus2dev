@@ -103,29 +103,29 @@ namespace FileTypes
 	/*!
 	 *  Checks if the file type belongs to the specified file types.
 	 *
-	 *      @param [in] fileType    The file type to check.
+	 *    @param [in] fileType    The file type to check.
      *
-     *      @return True if the file type is one of the specified ones, false otherwise.
+     *    @return True if the file type is one of the specified ones, false otherwise.
 	 */
 	IPXACTMODELS_EXPORT bool isIpXactFileType(QString const& fileType, Document::Revision docRevision);
 
 	/*!
 	 *  Get the file types which are associated with the given file suffix.
 	 *
-	 *      @param [in] settings    The settings instance used to manage Kactus2 settings.
-	 *      @param [in] fileSuffix  The file suffix to identify the file type.
+	 *    @param [in] settings    The settings instance used to manage Kactus2 settings.
+	 *    @param [in] fileSuffix  The file suffix to identify the file type.
      *
-     *      @return QStringlist containing the file types.
+     *    @return QStringlist containing the file types.
 	 */
 	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, QString const& fileSuffix);
 
     /*!
 	 *  Get the file types which are associated with the given file suffix.
 	 *
-	 *      @param [in] settings    The settings instance used to manage the Kactus2 settings.
-	 *      @param [in] file        Represents the file which file types are searched.
+	 *    @param [in] settings    The settings instance used to manage the Kactus2 settings.
+	 *    @param [in] file        Represents the file which file types are searched.
      *
-     *      @return The file types.
+     *    @return The file types.
 	 */
 	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, QFileInfo const& file);
 

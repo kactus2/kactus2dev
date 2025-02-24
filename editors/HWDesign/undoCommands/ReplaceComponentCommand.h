@@ -39,11 +39,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] diagram     The containing design diagram.
-	 *      @param [in] oldComp     The replaced component.
-	 *      @param [in] newComp     The new component.
-     *      @param [in] diagram     Diagram containing the scene of the component items.
-	 *      @param [in] parent      Owner of this command.
+	 *    @param [in] diagram     The containing design diagram.
+	 *    @param [in] oldComp     The replaced component.
+	 *    @param [in] newComp     The new component.
+     *    @param [in] diagram     Diagram containing the scene of the component items.
+	 *    @param [in] parent      Owner of this command.
 	 */
     ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp, DesignDiagram* diagram,
         QUndoCommand* parent = 0);
@@ -78,11 +78,11 @@ private:
     /*!
      *  Change connections.
      *
-     *      @param [in] keepExistingComponent   Flag for existence checking.
-     *      @param [in] connectionNames         Names of the changed connections.
-     *      @param [in] oldComponentItem        The replaced component.
-     *      @param [in] newComponentItem        The new component.
-     *      @param [in] diagram                 The containing design diagram.
+     *    @param [in] keepExistingComponent   Flag for existence checking.
+     *    @param [in] connectionNames         Names of the changed connections.
+     *    @param [in] oldComponentItem        The replaced component.
+     *    @param [in] newComponentItem        The new component.
+     *    @param [in] diagram                 The containing design diagram.
      */
     void changeConnections(HWComponentItem* oldComponentItem, HWComponentItem* newComponentItem, 
         QVector<QString>& connectionNames);
@@ -90,9 +90,9 @@ private:
     /*!
      *  Create exchange commands for connections between the end points.
      *
-     *      @param [in] connectionNames     Names of the changed connections.
-     *      @param [in] oldEndpoint         The replaced end point.
-     *      @param [in] newEndpoint         The new end point.
+     *    @param [in] connectionNames     Names of the changed connections.
+     *    @param [in] oldEndpoint         The replaced end point.
+     *    @param [in] newEndpoint         The new end point.
      */
     void createConnectionExchangeCommands(ConnectionEndpoint* oldEndpoint,
         HWConnectionEndpoint* newEndpoint, QVector<QString>& connectionNames);

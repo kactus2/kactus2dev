@@ -19,6 +19,7 @@
 #include <KactusAPI/include/PortMapInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
@@ -35,7 +36,6 @@ ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
 parentWnd_(parentWnd),
 expressions_(expressions),
-validator_(),
 busInterface_(busInterface),
 portMapInterface_(portMapInterface)
 {
@@ -49,7 +49,7 @@ portMapInterface_(portMapInterface)
     {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
             busif, model, libHandler, component, referenceCounter_, expressions,
-            validator_, busInterface_, portMapInterface_, this, parentWnd));
+            busInterfaceValidator_, busInterface_, portMapInterface_, this, parentWnd));
 
         connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
             this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
@@ -69,10 +69,12 @@ void ComponentEditorBusInterfacesItem::createBusInterfaceValidator()
     QSharedPointer<ParameterValidator> parameterValidator(
         new ParameterValidator(expressions_.parser, component_->getChoices(), component_->getRevision()));
 
-    validator_ = QSharedPointer<BusInterfaceValidator>(new BusInterfaceValidator(expressions_.parser,
+    busInterfaceValidator_ = QSharedPointer<BusInterfaceValidator>(new BusInterfaceValidator(expressions_.parser,
         component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
         component_->getMemoryMaps(), component_->getBusInterfaces(), component_->getFileSets(),
         component_->getRemapStates(), component_->getModes(), portMapValidator, parameterValidator, libHandler_));
+    
+    busInterfacesValidator_ = QSharedPointer<BusInterfacesValidator>(new BusInterfacesValidator(busInterfaceValidator_));
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +130,7 @@ void ComponentEditorBusInterfacesItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
         busifs_->at(index), model_, libHandler_, component_, referenceCounter_, expressions_,
-        validator_, busInterface_, portMapInterface_, this, parentWnd_));
+        busInterfaceValidator_, busInterface_, portMapInterface_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
     connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
@@ -154,4 +156,14 @@ QSharedPointer<ComponentEditorItem> ComponentEditorBusInterfacesItem::getBusInte
 
 	// if child was not found
 	return QSharedPointer<ComponentEditorItem>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfacesItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorBusInterfacesItem::isValid() const
+{
+    auto interfacesAsNameGroup = CollectionValidators::itemListToNameGroupList(busifs_);
+    busInterfacesValidator_->childrenHaveUniqueNames(interfacesAsNameGroup);
+    return ComponentEditorItem::isValid();
 }

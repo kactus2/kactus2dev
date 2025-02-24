@@ -26,7 +26,7 @@ public:
 	/*!
      *  The constructor. 
 	 * 
-	 *      @param [in] parent  Pointer to the owner of the delegate.
+	 *    @param [in] parent  Pointer to the owner of the delegate.
      */
 	LibrarySettingsDelegate(QObject *parent);
 	
@@ -38,9 +38,9 @@ public:
 	/*!
 	 *  Paint the check marks in the middle of the active and default columns.
 	 *
-	 *      @param [in] painter     The selected painter.
-	 *      @param [in] option      Options of the painter.
-	 *      @param [in] index       Current table index.
+	 *    @param [in] painter     The selected painter.
+	 *    @param [in] option      Options of the painter.
+	 *    @param [in] index       Current table index.
 	 */
 	virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 

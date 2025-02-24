@@ -29,9 +29,9 @@ namespace MemoryArrayReader
     /*!
      *	Creates a new memory array from a given memory array node.
      *  
-     *      @param [in] arrayNode     XML description of the memory array.
-     *      @param [in] docRevision   The IP-XACT standard revision to comply to.
-     *      @param [in] isField       Flag indicating if array is within a field element.
+     *    @param [in] arrayNode     XML description of the memory array.
+     *    @param [in] docRevision   The IP-XACT standard revision to comply to.
+     *    @param [in] isField       Flag indicating if array is within a field element.
      *	    
      * 	    @return The created memory array.
      */
@@ -43,18 +43,18 @@ namespace MemoryArrayReader
         /*!
          *	Parse the array dimensions.
          *  
-         *      @param [in] arrayNode     XML description of the memory array.
-         *      @param [in] newArray      The new memory array.
-         *      @param [in] docRevision   The IP-XACT standard revision to comply to.
+         *    @param [in] arrayNode     XML description of the memory array.
+         *    @param [in] newArray      The new memory array.
+         *    @param [in] docRevision   The IP-XACT standard revision to comply to.
          */
         void parseDimensions(QDomNode const& arrayNode, QSharedPointer<MemoryArray> newArray, Document::Revision docRevision);
 
         /*!
          *	Parse the array stride.
          *  
-         *      @param [in] arrayNode     XML description of the memory array.
-         *      @param [in] newArray      The new memory array.
-         *      @param [in] isField       Flag indicating if array is within a field element.
+         *    @param [in] arrayNode     XML description of the memory array.
+         *    @param [in] newArray      The new memory array.
+         *    @param [in] isField       Flag indicating if array is within a field element.
          */
         void parseStride(QDomNode const& arrayNode, QSharedPointer<MemoryArray> newArray, bool isField);
     }

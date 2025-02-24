@@ -26,7 +26,7 @@
 // Function: ResetTypesEditor::ResetTypesEditor()
 //-----------------------------------------------------------------------------
 ResetTypesEditor::ResetTypesEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    ComponentValidator& validator, QWidget* parent):
+    QSharedPointer<ComponentValidator> validator, QWidget* parent):
 ItemEditor(component, handler, parent),
 view_(this),
 proxy_(this),

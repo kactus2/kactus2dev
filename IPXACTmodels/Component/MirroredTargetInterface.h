@@ -46,7 +46,7 @@ public:
 
 		/*! The constructor.
 		 *
-		 *      @param [in] remapAddress The remap address to set.
+		 *    @param [in] remapAddress The remap address to set.
 		*/
 		IPXACTMODELS_EXPORT explicit RemapAddress(QString const& remapAddress);
 	};
@@ -67,27 +67,27 @@ public:
 
 	/*! Get the range of the mirrored target interface.
 	 *
-	 *      @return The range.
+	 *    @return The range.
 	 */
 	QString getRange() const;
 
 	/*! Set the range for this mirrored target interface.
 	 *
-	 *      @param [in] range The range of the mirrored target interface.
+	 *    @param [in] range The range of the mirrored target interface.
 	 */
 	void setRange(QString const& range);
 
 	/*!
 	 *  Get the remap addresses for the mirrored target interface.
 	 *
-	 *      @return The remap addresses.
+	 *    @return The remap addresses.
 	 */
 	QSharedPointer<QList<QSharedPointer<RemapAddress> > > getRemapAddresses() const;
 
     /*!
      *  Set the remap address.
      *
-     *      @param [in] newRemapAddress     The new remap address.
+     *    @param [in] newRemapAddress     The new remap address.
      */
     void setRemapAddress(QString const& newRemapAddress);
 

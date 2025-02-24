@@ -28,7 +28,7 @@ namespace CPUReader
     /*!
      *  Creates a new CPU from a given CPU node.
      *
-     *      @param [in] cpuNode    XML description of the CPU.
+     *    @param [in] cpuNode    XML description of the CPU.
      */
     IPXACTMODELS_EXPORT QSharedPointer<Cpu> createCPUFrom(QDomNode const& cpuNode, Document::Revision docRevision);
 
@@ -37,16 +37,16 @@ namespace CPUReader
         /*!
          *  Reads the presence.
          *
-         *      @param [in] cpuNode    XML description of the cpu.
-         *      @param [in] newCPU     The new cpu item.
+         *    @param [in] cpuNode    XML description of the cpu.
+         *    @param [in] newCPU     The new cpu item.
          */
         void parseIsPresent(QDomNode const& cpuNode, QSharedPointer<Cpu> newCPU);
 
         /*!
          *  Reads the address space references.
          *
-         *      @param [in] cpuNode    XML description of the cpu.
-         *      @param [in] newCPU     The new cpu item.
+         *    @param [in] cpuNode    XML description of the cpu.
+         *    @param [in] newCPU     The new cpu item.
          */
         void parseAddressSpaceRefs(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu);
 
@@ -68,8 +68,8 @@ namespace CPUReader
         /*!
          *  Reads the parameters.
          *
-         *      @param [in] cpuNode    XML description of the cpu.
-         *      @param [in] newCPU     The new cpu item.
+         *    @param [in] cpuNode    XML description of the cpu.
+         *    @param [in] newCPU     The new cpu item.
          */
         void parseParameters(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu);
     }

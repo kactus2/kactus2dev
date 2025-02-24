@@ -26,9 +26,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] tagName     Name of the tag.
-     *      @param [in] parent      The parent widget.
-     *      @param [in] labelColor  Color of the tag.
+     *    @param [in] tagName     Name of the tag.
+     *    @param [in] parent      The parent widget.
+     *    @param [in] labelColor  Color of the tag.
      */
     TagLabel(QString const& tagName, QWidget* parent = 0, QString const& labelColor = QLatin1String("#DAE1DF"));
 
@@ -42,7 +42,7 @@ signals:
     /*!
      *  Signal for informing tag label click.
      *
-     *      @param [in] labelItem   This label.
+     *    @param [in] labelItem   This label.
      */
     void clicked(TagLabel* labelItem);
 
@@ -51,7 +51,7 @@ protected:
     /*!
      *  Event handling for mouse release.
      *
-     *      @param [in] ev  The mouse event.
+     *    @param [in] ev  The mouse event.
      */
     virtual void mouseReleaseEvent(QMouseEvent *ev) final;
 

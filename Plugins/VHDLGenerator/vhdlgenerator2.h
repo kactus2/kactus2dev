@@ -54,8 +54,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] parent      Pointer to the owner of this generator.
+	 *    @param [in] handler     Pointer to the instance that manages the library.
+	 *    @param [in] parent      Pointer to the owner of this generator.
 	 */
 	VhdlGenerator2(QSharedPointer<ExpressionParser> parser, LibraryInterface* handler,
         QObject* parent);
@@ -66,17 +66,17 @@ public:
 	/*!
      *  Get pointer to the instance that manages the library.
 	 *
-	 *      @return LibraryInterface* Pointer to the instance that manages the library.
+	 *    @return LibraryInterface* Pointer to the instance that manages the library.
 	 */
 	LibraryInterface* handler() const;
 
 	/*!
      *  Parse the data needed to create the top-level vhdl entity.
 	 *
-	 *      @param [in] topLevelComponent   Pointer to the component that's entity is created.
-	 *      @param [in] viewName            The name of the view on the top component to generate the vhdl to.
+	 *    @param [in] topLevelComponent   Pointer to the component that's entity is created.
+	 *    @param [in] viewName            The name of the view on the top component to generate the vhdl to.
 	 *
-	 *      @return bool True if the parsing was successful and the vhdl can be generated.
+	 *    @return bool True if the parsing was successful and the vhdl can be generated.
 	 */
 	bool parse(QSharedPointer<Component> topLevelComponent, const QString& viewName);
 
@@ -85,7 +85,7 @@ public:
 	 * 
 	 *  NOTE: Before calling this function the parse() function MUST be called so there is something to generate.
 	 *
-	 *      @param [in] outputFileName  The absolute file path of the vhdl file to be created.
+	 *    @param [in] outputFileName  The absolute file path of the vhdl file to be created.
      *                                  If file exists it is overwritten.
 	 */
 	void generate(const QString& outputFileName);
@@ -96,18 +96,18 @@ public:
 	 *  NOTE: Before calling this function the parse() function must be called and usually the generateVhdl() also.
      *  If generateVhdl() is not called then the architecture name must be set other way.
 	 * 
-	 *      @param [in] vhdlFileName    Absolute file path to the vhdl file to add to the metadata. This is 
+	 *    @param [in] vhdlFileName    Absolute file path to the vhdl file to add to the metadata. This is 
      *                                  usually the same file that was set as output file when calling
      *                                  generateVhdl().
 	 *
-	 *      @return bool True if the view was added successfully.
+	 *    @return bool True if the view was added successfully.
 	 */
     bool addRTLView(QString const& fileSetName, const QString& vhdlFileName );
 
     /*!
      *  Check if the generator is able to generate and architecture for top entity.
 	 *
-	 *      @return True if component contains a design and is able to create an architecture for the entity.
+	 *    @return True if component contains a design and is able to create an architecture for the entity.
 	 */
 	bool containsArchitecture() const;
 
@@ -145,10 +145,10 @@ private:
 		/*!
          *  The constructor
 		 *
-		 *      @param [in] instance    Pointer to the instance to connect.
-		 *      @param [in] portName    The name of the port on the instance.
-		 *      @param [in] left        The left bound of the port.
-		 *      @param [in] right       The right bound of the port.
+		 *    @param [in] instance    Pointer to the instance to connect.
+		 *    @param [in] portName    The name of the port on the instance.
+		 *    @param [in] left        The left bound of the port.
+		 *    @param [in] right       The right bound of the port.
 		 */
         PortConnection(QSharedPointer<VhdlComponentInstance> instance, const QString& portName,
             int left = -1, int right = -1);
@@ -166,14 +166,14 @@ private:
 	/*!
      *  Parse the design and configuration used.
 	 * 
-	 *      @return True if the design and configuration were parsed successfully.
+	 *    @return True if the design and configuration were parsed successfully.
 	 */
 	bool parseDesignAndConfiguration();
 
 	/*!
      *  Parse the generics for the top entity to create.
      *
-     *      @param [in] viewName    Name of the selected view.
+     *    @param [in] viewName    Name of the selected view.
 	 */
 	void parseTopGenerics( QString const& viewName );
 
@@ -207,12 +207,12 @@ private:
 	/*!
      *  Connect the two interfaces together with signals.
 	 *
-	 *      @param [in] connectionName  The name of the connection between the interfaces.
-	 *      @param [in] description     The description of the interconnection.
-	 *      @param [in] instance1       Pointer to the instance 1.
-	 *      @param [in] interface1      Pointer to the bus interface of instance 1.
-	 *      @param [in] instance2       Pointer to the instance 2.
-	 *      @param [in] interface2      Pointer to the bus interface of instance 2.
+	 *    @param [in] connectionName  The name of the connection between the interfaces.
+	 *    @param [in] description     The description of the interconnection.
+	 *    @param [in] instance1       Pointer to the instance 1.
+	 *    @param [in] interface1      Pointer to the bus interface of instance 1.
+	 *    @param [in] instance2       Pointer to the instance 2.
+	 *    @param [in] interface2      Pointer to the bus interface of instance 2.
 	 */
 	void connectInterfaces(const QString& connectionName, const QString& description,
         QSharedPointer<VhdlComponentInstance> instance1, QSharedPointer<BusInterface> interface1,
@@ -221,9 +221,9 @@ private:
 	/*!
      *  Connect the specified ports together.
 	 *
-	 *      @param [in] connectionName  The name of the connection.
-	 *      @param [in] description     Description for the connection.
-	 *      @param [in] ports           Contains the ports to connect.
+	 *    @param [in] connectionName  The name of the connection.
+	 *    @param [in] description     Description for the connection.
+	 *    @param [in] ports           Contains the ports to connect.
 	 */
 	void connectPorts(const QString& connectionName, const QString& description,
         const QList<VhdlGenerator2::PortConnection>& ports);
@@ -231,10 +231,10 @@ private:
 	/*!
      *  Connect the specified top port to specified instance ports.
 	 *
-	 *      @param [in] topPort     The name of the port on top component.
-	 *      @param [in] leftBound   The left bound of the port on top component.
-	 *      @param [in] rightBound  The right bound of the port on top component.
-	 *      @param [in] ports       List of ports to connect to the top port
+	 *    @param [in] topPort     The name of the port on top component.
+	 *    @param [in] leftBound   The left bound of the port on top component.
+	 *    @param [in] rightBound  The right bound of the port on top component.
+	 *    @param [in] ports       List of ports to connect to the top port
 	 */
 	void connectHierPort(const QString& topPortName, QString leftBound, QString rightBound,
         const QList<VhdlGenerator2::PortConnection>& ports);
@@ -242,17 +242,17 @@ private:
 	/*!
      *  Connect the given endpoint with the signal.
 	 *
-	 *      @param [in] endpoint    The end point that specified the port to connect.
-	 *      @param [in] signal      The signal the port is connected to.
+	 *    @param [in] endpoint    The end point that specified the port to connect.
+	 *    @param [in] signal      The signal the port is connected to.
 	 */
 	void connectEndPoint(const VhdlConnectionEndPoint& endpoint, const QSharedPointer<VhdlSignal> signal);
 
 	/*!
      *  Connect the hierarchical interface to the instance interface.
 	 *
-	 *      @param [in] instance            Pointer to the instance that's interface is connected.
-	 *      @param [in] instanceInterface   Pointer to the interface of the instance.
-	 *      @param [in] topInterface        Pointer to the interface of the top component.
+	 *    @param [in] instance            Pointer to the instance that's interface is connected.
+	 *    @param [in] instanceInterface   Pointer to the interface of the instance.
+	 *    @param [in] topInterface        Pointer to the interface of the top component.
 	 */
 	void connectHierInterface( QSharedPointer<VhdlComponentInstance> instance,
         QSharedPointer<BusInterface> instanceInterface, QSharedPointer<BusInterface> topInterface );
@@ -267,76 +267,76 @@ private:
 	/*!
      *  Write the header of a vhdl file to be created.
 	 *
-	 *      @param [in] vhdlStream  The text stream to write into.
-	 *      @param [in] fileName    The name of the file that is being written.
+	 *    @param [in] vhdlStream  The text stream to write into.
+	 *    @param [in] fileName    The name of the file that is being written.
 	 */
 	void writeVhdlHeader( QTextStream& vhdlStream, const QString& fileName );
 	
 	/*!
      *  Write the generics of the top entity.
 	 *
-	 *      @param [in] vhdlStream  The text stream to write into.
+	 *    @param [in] vhdlStream  The text stream to write into.
 	 */
 	void writeGenerics( QTextStream& vhdlStream );
 	
 	/*!
      *  Write the ports of the top entity.
 	 *
-	 *      @param [in] vhdlStream  The text stream to write into.
+	 *    @param [in] vhdlStream  The text stream to write into.
 	 */
 	void writePorts( QTextStream& vhdlStream );
 	
 	/*!
      *  Write the declarations of the signals.
 	 * 
-	 *      @param [in] vhdlStream  The text stream to write into.
+	 *    @param [in] vhdlStream  The text stream to write into.
 	 */
 	void writeSignalDeclarations( QTextStream& vhdlStream );
 	
 	/*!
      *  Write the declarations of components.
 	 *
-	 *      @param [in] vhdlStream  The text stream to write into.
+	 *    @param [in] vhdlStream  The text stream to write into.
 	 */
 	void writeComponentDeclarations( QTextStream& vhdlStream );
 	
 	/*!
      *  Write the instances of components.
 	 *
-	 *      @param [in] vhdlStream  The text stream to write into.
+	 *    @param [in] vhdlStream  The text stream to write into.
 	 */
 	void writeComponentInstances( QTextStream& vhdlStream );
 
 	/*!
      *  Read an old vhdl file and read the user modifiable parts from it.
 	 *
-	 *      @param [in] previousFile    The file to read.
+	 *    @param [in] previousFile    The file to read.
 	 */
 	void readUserModifiablePart(QFile& previousFile);
 
 	/*!
      *  Write the user modified declarations read from the previous file.
 	 *
-	 *      @param [in] stream  The text stream to write into.
+	 *    @param [in] stream  The text stream to write into.
 	 */
 	void writeUserModifiedDeclarations(QTextStream& stream);
 
 	/*!
      *  Write the user modified assignments read from the previous file.
 	 *
-	 *      @param [in] stream  The text stream to write into.
+	 *    @param [in] stream  The text stream to write into.
 	 */
 	void writeUserModifiedAssignments(QTextStream& stream);
 	
     /*!
      *  Calculate the port alignment.
      *
-     *      @param [in] portMap1            First port map.
-     *      @param [in] phys1LeftBound      Physical left bound of the first port.
-     *      @param [in] phys1RightBound     Physical right bound of the first port.
-     *      @param [in] portMap2            The second port map.
-     *      @param [in] phys2LeftBound      Physical left bound of the second port.
-     *      @param [in] phys2RightBound     Physical right bound of the second port.
+     *    @param [in] portMap1            First port map.
+     *    @param [in] phys1LeftBound      Physical left bound of the first port.
+     *    @param [in] phys1RightBound     Physical right bound of the first port.
+     *    @param [in] portMap2            The second port map.
+     *    @param [in] phys2LeftBound      Physical left bound of the second port.
+     *    @param [in] phys2RightBound     Physical right bound of the second port.
      */
     General::PortAlignment calculatePortAlignment(const PortMap* portMap1, QString const& phys1LeftBound,
         QString const& phys1RightBound, QSharedPointer<ExpressionParser> firstParser, const PortMap* portMap2,
@@ -345,12 +345,12 @@ private:
     /*!
      *  Get the alignment of the physical port mapping.
      *
-     *      @param [in] portmap         The containing port map.
-     *      @param [in] portLeftBound   The left bound of the selected port.
-     *      @param [in] portRightBound  The right bound of the selected port.
-     *      @param [in] parser          Expression parser for the containing component.
+     *    @param [in] portmap         The containing port map.
+     *    @param [in] portLeftBound   The left bound of the selected port.
+     *    @param [in] portRightBound  The right bound of the selected port.
+     *    @param [in] parser          Expression parser for the containing component.
      *
-     *      @return The alignment of the physical port mapping.
+     *    @return The alignment of the physical port mapping.
      */
     QSharedPointer<PortAlignment> getPhysicalAlignment(const PortMap* portmap, QString const& portLeftBound,
         QString const& portRightBound, QSharedPointer<ExpressionParser> parser) const;
@@ -358,21 +358,21 @@ private:
     /*!
      *  Get the logical minimum or maximum port mapping value.
      *
-     *      @param [in] portMap     Port map containing the logical port.
-     *      @param [in] parser      Expression parser for the containing component.
-     *      @param [in] isMaximum   Flag value for determining whether the maximum of minimum value is wanted.
+     *    @param [in] portMap     Port map containing the logical port.
+     *    @param [in] parser      Expression parser for the containing component.
+     *    @param [in] isMaximum   Flag value for determining whether the maximum of minimum value is wanted.
      *
-     *      @return A logical bound of the logical port mapping.
+     *    @return A logical bound of the logical port mapping.
      */
     int getLogicalValue(const PortMap* portMap, QSharedPointer<ExpressionParser> parser, bool isMaximum) const;
 
     /*!
      *  Get the name of the containing bus interface.
      *
-     *      @param [in] containingComponent     The component containing the port and the bus interface.
-     *      @param [in] portName                The name of the selected port.
+     *    @param [in] containingComponent     The component containing the port and the bus interface.
+     *    @param [in] portName                The name of the selected port.
      *
-     *      @return The name of the containing bus interface, or "none" if one is not found.
+     *    @return The name of the containing bus interface, or "none" if one is not found.
      */
     QString getContainingBusInterfaceName(QSharedPointer<Component> containingComponent, QString const& portName)
         const;

@@ -59,63 +59,63 @@ public:
     /*!
      *  Get the name.
      *
-     *      @return Name of the CPU.
+     *    @return Name of the CPU.
      */
     QString getFileName() const;
 
     /*!
      *  Set a new name.
      *
-     *      @param [in] newName     The new name for the CPU.
+     *    @param [in] newName     The new name for the CPU.
      */
     void setFileName(QString const& newName);
 
     /*!
      *  Get the ID.
      *
-     *      @return ID of the CPU.
+     *    @return ID of the CPU.
      */
     QString getFileID() const;
 
     /*!
      *  Set a new ID.
      *
-     *      @param [in] newID   The new ID.
+     *    @param [in] newID   The new ID.
      */
     void setFileID(QString const& newID);
 
     /*!
      *  Flag for creating a file from this CPU.
      *
-     *      @return True, if a file should be created, false otherwise.
+     *    @return True, if a file should be created, false otherwise.
      */
     bool shouldCreateFile() const;
 
     /*!
      *  Set the flag fro creating a file from this CPU.
      *
-     *      @param [in] newFlag     The new flag.
+     *    @param [in] newFlag     The new flag.
      */
     void setCreateFileFlag(bool newFlag);
 
     /*!
      *  Get a list of the interface routes connected to this CPU.
      *
-     *      @return List of interface routes connected to this CPU.
+     *    @return List of interface routes connected to this CPU.
      */
     QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > getRoutes() const;
 
     /*!
      *  Set new interface routes.
      *
-     *      @param [in] newRoutes   The selected interface routes.
+     *    @param [in] newRoutes   The selected interface routes.
      */
     virtual void setRoutes(QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > newRoutes);
 
     /*!
      *  Add a new CPU route.
      *
-     *      @param [in] newRoute    The selected interface route.
+     *    @param [in] newRoute    The selected interface route.
      */
     virtual void addRoute(QSharedPointer<CpuRouteStructs::CpuRoute> newRoute);
 

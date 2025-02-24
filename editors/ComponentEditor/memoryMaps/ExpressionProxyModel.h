@@ -28,7 +28,7 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] parent  The parent object.
+	 *    @param [in] parent  The parent object.
 	*/
 	ExpressionProxyModel(QSharedPointer<ExpressionParser> expressionParser, QObject *parent);
 	
@@ -38,7 +38,7 @@ public:
     /*!
      *  Sets a column to accept expressions and to be compared by the expression value.
      *
-     *      @param [in] column   The column to set as expression column.
+     *    @param [in] column   The column to set as expression column.
      */
     void setColumnToAcceptExpressions(int column);
 
@@ -46,10 +46,10 @@ protected:
 
 	/*! Compares two items by value.
 	 *
-	 *      @param left [in]    Index identifying the left item.
-	 *      @param right [in]   Index identifying the right item.
+	 *    @param left [in]    Index identifying the left item.
+	 *    @param right [in]   Index identifying the right item.
 	 *
-	 *      @return True, if left < right, otherwise false.
+	 *    @return True, if left < right, otherwise false.
 	*/
 	virtual bool lessThan(QModelIndex const& left, QModelIndex const& right) const;
 

@@ -26,7 +26,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent      The parent object.
+     *    @param [in] parent      The parent object.
      */
 	DesignInstantiationsDelegate(QObject* parent);
 	

@@ -65,26 +65,26 @@ namespace General
     /*!
      *  Check if the selected bus interface mode is compatible with IP-XACT revision 1685-2022.
      *	
-     *      @param [in] mode    The selected bus interface mode.
+     *    @param [in] mode    The selected bus interface mode.
      *
-     *      @return True, if the mode is compatible with revision 1685-2022, false otherwise.
+     *    @return True, if the mode is compatible with revision 1685-2022, false otherwise.
      */
     IPXACTMODELS_EXPORT bool modeIsRevision2022(General::InterfaceMode mode);
 
     /*! Convert QString into boolean value
     *
-    *      @param [in] str QString containing the string to be converted
-    *      @param [in] defaultValue InterfaceMode value that is returned if str is none of the defined values
+    *    @param [in] str QString containing the string to be converted
+    *    @param [in] defaultValue InterfaceMode value that is returned if str is none of the defined values
     *
-    *      @return InterfaceMode matching the str or default value
+    *    @return InterfaceMode matching the str or default value
     */
     IPXACTMODELS_EXPORT InterfaceMode str2Interfacemode(const QString& str, InterfaceMode defaultValue);
 
     /*! Convert InterfaceMode to QString
     *
-    *      @param [in] mode InterfaceMode value that is converted to QString
+    *    @param [in] mode InterfaceMode value that is converted to QString
     *
-    *      @return QString that matches the enum value.
+    *    @return QString that matches the enum value.
     */
     IPXACTMODELS_EXPORT QString interfaceMode2Str(const General::InterfaceMode mode);
 
@@ -96,9 +96,9 @@ namespace General
     /*!
      *  Get the compatible active bus interface modes for the selected bus interface mode.
      *
-     *      @param [in] mode    The selected bus interface mode.
+     *    @param [in] mode    The selected bus interface mode.
      *
-     *      @return List of compatible bus interface modes.
+     *    @return List of compatible bus interface modes.
      */
     IPXACTMODELS_EXPORT QVector<InterfaceMode> getCompatibleInterfaceModesForActiveInterface(
         General::InterfaceMode mode);
@@ -106,9 +106,9 @@ namespace General
     /*!
      *  Get the compatible hierarchical bus interface modes for the selected bus interface mode.
      *
-     *      @param [in] mode    The selected bus interface mode.
+     *    @param [in] mode    The selected bus interface mode.
      *
-     *      @return The connectible bus interface modes.
+     *    @return The connectible bus interface modes.
      */
     IPXACTMODELS_EXPORT QVector<InterfaceMode> getCompatibleInterfaceModeForHierarchicalInterface(
         General::InterfaceMode mode);
@@ -128,17 +128,17 @@ namespace General
     * if The str does not match any of the enum values the default value
     * specifies as parameter will be returned
     *
-    *      @param [in] str QString containing the string to be converted
-    *      @param [in] defaultValue The value that will be returned if no match is found
-    *      @return General::DriverType that matches the str or default value.
+    *    @param [in] str QString containing the string to be converted
+    *    @param [in] defaultValue The value that will be returned if no match is found
+    *    @return General::DriverType that matches the str or default value.
     */
     IPXACTMODELS_EXPORT General::DriverType str2DriverType(QString str, General::DriverType defaultValue);
 
     /*! Convert the value of the DriverType into QString.
     *
-    *      @param [in] type The DriverType to be converted.
+    *    @param [in] type The DriverType to be converted.
     *
-    *      @return QString matching the driver type.
+    *    @return QString matching the driver type.
     */
     IPXACTMODELS_EXPORT QString driverType2Str(General::DriverType type);
 
@@ -159,17 +159,17 @@ namespace General
     * if The str does not match any of the enum values the default value
     * specifies as parameter will be returned
     *
-    *      @param [in] str QString containing the string to be converted
-    *      @param [in] defaultValue The value that will be returned if no match is found
-    *      @return General::Usage that matches the str or default value.
+    *    @param [in] str QString containing the string to be converted
+    *    @param [in] defaultValue The value that will be returned if no match is found
+    *    @return General::Usage that matches the str or default value.
     */
     IPXACTMODELS_EXPORT General::Usage str2Usage(QString str, General::Usage defaultValue);
 
     /*! Convert the Usage value to QString
     *
-    *      @param [in] usage Usage value to be converted to QString.
+    *    @param [in] usage Usage value to be converted to QString.
     *
-    *      @return QString that matches the enum value.
+    *    @return QString that matches the enum value.
     */
     IPXACTMODELS_EXPORT QString usage2Str(const General::Usage usage);
 
@@ -209,17 +209,17 @@ namespace General
     * If the string does not match any of the enum values then General::MODIFIED_WRITE_COUNT
     * is returned.
     *
-    *      @param [in] str contains the string to be converted.
+    *    @param [in] str contains the string to be converted.
     *
-    *      @return The enum value that matches the string.
+    *    @return The enum value that matches the string.
     */
     IPXACTMODELS_EXPORT General::ModifiedWrite str2ModifiedWrite(const QString& str);
 
     /*! Convert the enum value to a matching string.
     *
-    *      @param [in] modWrite The enum value to be converted to a string.
+    *    @param [in] modWrite The enum value to be converted to a string.
     *
-    *      @return QString that matches the enum value.
+    *    @return QString that matches the enum value.
     */
     IPXACTMODELS_EXPORT QString modifiedWrite2Str(const General::ModifiedWrite modWrite);
 
@@ -244,9 +244,9 @@ namespace General
 
     /*! Convert the enum value to a matching string.
     *
-    *      @param [in] readAction The enum value to be converted to a string.
+    *    @param [in] readAction The enum value to be converted to a string.
     *
-    *      @return QString that matches the enum value.
+    *    @return QString that matches the enum value.
     */
     IPXACTMODELS_EXPORT QString readAction2Str(const General::ReadAction readAction);
 
@@ -255,9 +255,9 @@ namespace General
     * If the string does not match any of the defined enum values then
     * General::READ_ACTION_COUNT is returned.
     *
-    *      @param [in] str Contains the string to be converted.
+    *    @param [in] str Contains the string to be converted.
     *
-    *      @return The enum value that matches the string.
+    *    @return The enum value that matches the string.
     */
     IPXACTMODELS_EXPORT General::ReadAction str2ReadAction(const QString& str);
 
@@ -284,9 +284,9 @@ namespace General
 
     /*! Convert the enum value to a matching string.
     *
-    *      @param [in] testConstraint The enum value to be converted to a string.
+    *    @param [in] testConstraint The enum value to be converted to a string.
     *
-    *      @return QString that matches the enum value.
+    *    @return QString that matches the enum value.
     */
     IPXACTMODELS_EXPORT QString testConstraint2Str(const General::TestConstraint testConstraint);
 
@@ -295,9 +295,9 @@ namespace General
     * If the string does not match any of the defined enum values then
     * General::TESTCONSTRAINT_COUNT is returned.
     *
-    *      @param [in] str Contains the string to be converted.
+    *    @param [in] str Contains the string to be converted.
     *
-    *      @return The enum value that matches the string.
+    *    @return The enum value that matches the string.
     */
     IPXACTMODELS_EXPORT General::TestConstraint str2TestConstraint(const QString& str);
 
@@ -323,9 +323,9 @@ namespace General
 
         /*! The constructor
         *
-        *      @param [in] portName The name of the port.
-        *      @param [in] left     The left bound of the port.
-        *      @param [in] right    The right bound of the port.
+        *    @param [in] portName The name of the port.
+        *    @param [in] left     The left bound of the port.
+        *    @param [in] right    The right bound of the port.
         *
         */
         PortBounds(const QString& portName, const int left = 0, const int right = 0);
@@ -379,19 +379,19 @@ namespace General
 
     /*! Convert a boolean value into QString
     *
-    *      @param [in] value The variable to convert into QString
-    *      @return if value = true, returns "true"
+    *    @param [in] value The variable to convert into QString
+    *    @return if value = true, returns "true"
     * 			if value = false, returns "false"
     */
     IPXACTMODELS_EXPORT QString bool2Str(bool value);
 
     /*! Convert QString into boolean value
     *
-    *      @param [in] str QString containing the string to be converted
-    *      @param [in] defaultValue boolean value that is returned if str is neither
+    *    @param [in] str QString containing the string to be converted
+    *    @param [in] defaultValue boolean value that is returned if str is neither
     * "true" or "false"
     *
-    *      @return if str = "true" returns true
+    *    @return if str = "true" returns true
     * 			if str = "false" returns false
     * 			if str is something else returns defaultValue
     */
@@ -411,8 +411,8 @@ namespace General
 
         /*! The constructor for the struct
         *
-        *      @param [in] filePath the path of the file
-        *      @param [in] libraryName Name of the library
+        *    @param [in] filePath the path of the file
+        *    @param [in] libraryName Name of the library
         */
         LibraryFilePair(const QString filePath, const QString libraryName);
 
@@ -421,24 +421,24 @@ namespace General
         
         /*! The == operator
         *
-        *      @param [in] other The other LibaryFilePair to check
+        *    @param [in] other The other LibaryFilePair to check
         *
-        *      @return bool True if they have the same file path and library name.
+        *    @return bool True if they have the same file path and library name.
         */
         bool operator==(const LibraryFilePair& other) const;
 
         /*! The copy constructor
         *
-        *      @param [in] other Reference to the LibraryFilePair to copy
+        *    @param [in] other Reference to the LibraryFilePair to copy
         *
         */
         LibraryFilePair(const LibraryFilePair& other) = default;
 
         /*! The assignment operator
         *
-        *      @param [in] other Reference to the LibraryFilePair to assign
+        *    @param [in] other Reference to the LibraryFilePair to assign
         *
-        *      @return Reference to this LibraryFilePair.
+        *    @return Reference to this LibraryFilePair.
         */
         LibraryFilePair& operator=(const LibraryFilePair& other) = default;
     };
@@ -449,12 +449,12 @@ namespace General
     * file path from a directory to a single file. If either of the parameters
     * doesn't exist in the file system a null string is returned.
     *
-    *      @param [in] from Path to the directory that is the base where the path is
+    *    @param [in] from Path to the directory that is the base where the path is
     * generated to.
-    *      @param [in] to The path to a file which is the target of the generated relative
+    *    @param [in] to The path to a file which is the target of the generated relative
     * path.
     *
-    *      @return QString containing the relative path.
+    *    @return QString containing the relative path.
     */
     IPXACTMODELS_EXPORT QString getRelativePath(QString from, QString to);
 
@@ -464,12 +464,12 @@ namespace General
     * file path from a directory to a single file. This function can be used to get
     * relative path to a file that does not exist. The source file must exist.
     *
-    *      @param [in] from Path to the directory that is the base where the path is
+    *    @param [in] from Path to the directory that is the base where the path is
     * generated to.
-    *      @param [in] to The path to a file which is the target of the generated relative
+    *    @param [in] to The path to a file which is the target of the generated relative
     * path.
     *
-    *      @return QString containing the relative path.
+    *    @return QString containing the relative path.
     */
     IPXACTMODELS_EXPORT QString getRelativeSavePath(const QString& from, const QString& to);
 
@@ -481,11 +481,11 @@ namespace General
     * file but it is not found null string is returned. Original path may contain
     * a file path or only a directory path but only directory path is used.
     *
-    *      @param [in] originalPath The absolute path that is used as base for relative path
-    *      @param [in] relativePath The relative path that is used to find the file or
+    *    @param [in] originalPath The absolute path that is used as base for relative path
+    *    @param [in] relativePath The relative path that is used to find the file or
     * directory.
     *
-    *      @return The absolute path of the target directory/file
+    *    @return The absolute path of the target directory/file
     */
     IPXACTMODELS_EXPORT QString getAbsolutePath(const QString& originalPath, const QString& relativePath);
 

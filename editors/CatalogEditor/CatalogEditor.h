@@ -36,11 +36,11 @@ public:
 	/*!
      *  Constructor.
 	 *
-	 *      @param [in] library     The library of available IP-XACT documents.
-     *      @param [in] catalog     The catalog to edit.
-     *      @param [in] parent      The parent widget.
+	 *    @param [in] library     The library of available IP-XACT documents.
+     *    @param [in] catalog     The catalog to edit.
+     *    @param [in] parent      The parent widget.
 	 */
-	CatalogEditor(LibraryInterface* library, QSharedPointer<Catalog> catalog, QWidget* parent);
+	CatalogEditor(LibraryInterface* libHandler, QSharedPointer<Catalog> catalog, QWidget* parent);
 	
 	/*!
      *  Destructor.
@@ -49,7 +49,7 @@ public:
 
 	/*! Get the VLNV that can be used to identify the catalog.
 	 *
-	 *      @return The VLNV of the catalog.
+	 *    @return The VLNV of the catalog.
 	*/
 	virtual VLNV getIdentifyingVLNV() const;
 
@@ -66,7 +66,7 @@ public:
     /*!
      *  Sets the protection state of the document.
      *
-     *      @param [in] locked True for locked state; false for unlocked.
+     *    @param [in] locked True for locked state; false for unlocked.
      */
     virtual void setProtection(bool locked);
 
@@ -82,9 +82,9 @@ public slots:
     /*!
      *  Validates the document against the IP-XACT standard.
      *
-     *      @param [out] errorList Error message list for reporting standard violations.
+     *    @param [out] errorList Error message list for reporting standard violations.
      *
-     *      @return True if the document is valid. False if there were any violations.
+     *    @return True if the document is valid. False if there were any violations.
      */
     virtual bool validate(QVector<QString>& errorList);
 
@@ -115,9 +115,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! The instance that handles the library.
-	LibraryInterface* library_;
 
     //! The catalog being edited.
     QSharedPointer<Catalog> catalog_;

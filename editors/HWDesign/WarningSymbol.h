@@ -26,11 +26,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] busIf       The bus interface this item represents.
-     *      @param [in] component   Component containing the bus interface.
-     *      @param [in] library     Access to the library.
-     *      @param [in] parent      The parent object.
-     *      @param [in] dir         Direction for the end point graphics.
+     *    @param [in] busIf       The bus interface this item represents.
+     *    @param [in] component   Component containing the bus interface.
+     *    @param [in] library     Access to the library.
+     *    @param [in] parent      The parent object.
+     *    @param [in] dir         Direction for the end point graphics.
      */
     WarningSymbol(QGraphicsItem* parent);
 
@@ -42,7 +42,7 @@ public:
     /*!
      *  Move the warning symbol in the design according to direction.
      *
-     *      @param [in] dir     The selected direction.
+     *    @param [in] dir     The selected direction.
      */
     void moveSymbol(QVector2D const& dir);
 

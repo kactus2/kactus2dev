@@ -29,8 +29,8 @@ namespace ComDefinitionWriter
     /*!
      *  Write a view to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] ComDefinition		The ComDefinition to be written.
+     *    @param [in] writer  The used xml writer.
+     *    @param [in] ComDefinition		The ComDefinition to be written.
      */
     IPXACTMODELS_EXPORT void writeComDefinition(QXmlStreamWriter& writer,
         QSharedPointer<ComDefinition> ComDefinition);

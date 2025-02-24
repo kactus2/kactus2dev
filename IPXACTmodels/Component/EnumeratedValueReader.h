@@ -39,9 +39,9 @@ public:
     /*!
      *  Creates a new enumerated value from a given enumerated value node.
      *
-     *      @param [in] enumeratedValueNode     XML description of the enumerated value.
+     *    @param [in] enumeratedValueNode     XML description of the enumerated value.
      *
-     *      @return The created enumerated value.
+     *    @return The created enumerated value.
      */
     QSharedPointer<EnumeratedValue> createEnumeratedValueFrom(QDomNode const& enumeratedValueNode) const;
 
@@ -54,24 +54,24 @@ private:
     /*!
      *  Reads the usage.
      *
-     *      @param [in] enumerationNode     XML description of the enumerated value.
-     *      @param [in] newEnumeration      The new enumerated item.
+     *    @param [in] enumerationNode     XML description of the enumerated value.
+     *    @param [in] newEnumeration      The new enumerated item.
      */
     void parseUsage(QDomNode const& enumerationNode, QSharedPointer<EnumeratedValue> newEnumeration) const;
 
     /*!
      *  Reads the name group.
      *
-     *      @param [in] enumerationNode     XML description of the enumerated value.
-     *      @param [in] newEnumeration      The new enumerated item.
+     *    @param [in] enumerationNode     XML description of the enumerated value.
+     *    @param [in] newEnumeration      The new enumerated item.
      */
     void parseNameGroup(QDomNode const& enumerationNode, QSharedPointer<EnumeratedValue> newEnumeration) const;
 
     /*!
      *  Reads the value.
      *
-     *      @param [in] enumerationNode     XML description of the enumerated value.
-     *      @param [in] newEnumeration      The new enumerated item.
+     *    @param [in] enumerationNode     XML description of the enumerated value.
+     *    @param [in] newEnumeration      The new enumerated item.
      */
     void parseValue(QDomNode const& enumerationNode, QSharedPointer<EnumeratedValue> newEnumeration) const;
 };

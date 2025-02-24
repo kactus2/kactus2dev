@@ -43,10 +43,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] lh                                  The library interface.
-     *      @param [in] designAndInstancesParameterFinder   Parameter finder for design parameter reference tree.
-     *      @param [in] designParameterFinder               Design parameter finder.
-     *      @param [in] parent                              Owner of this object.
+     *    @param [in] lh                                  The library interface.
+     *    @param [in] designAndInstancesParameterFinder   Parameter finder for design parameter reference tree.
+     *    @param [in] designParameterFinder               Design parameter finder.
+     *    @param [in] parent                              Owner of this object.
      */
     HWDesignWidget(LibraryInterface *lh, QSharedPointer<MultipleParameterFinder> designAndIsntancesParameterFinder,
         QSharedPointer<ListParameterFinder> designParameterFinder, QWidget *parent = 0);
@@ -63,8 +63,8 @@ public:
 	/*!
      *  Set the design to be displayed in the block diagram
 	 *
-	 *      @param [in] vlnv        VLNV of the design to open
-	 *      @param [in] viewName    Name of the view to open within component.
+	 *    @param [in] vlnv        VLNV of the design to open
+	 *    @param [in] viewName    Name of the view to open within component.
 	 */
 	bool setDesign(VLNV const& vlnv, QString const& viewName) final;
     
@@ -88,7 +88,7 @@ signals:
     /*!
      *  Emitted when user wants to refresh this widget
 	 *
-	 *      @param [in] designWidget    Pointer to this HWDesignWidget instance
+	 *    @param [in] designWidget    Pointer to this HWDesignWidget instance
 	 */
 	void refresh(const HWDesignWidget* designWidget);
 
@@ -107,7 +107,7 @@ protected:
     /*!
      *  Handler for key press event.
      *
-     *      @param [in] event   The selected key event.
+     *    @param [in] event   The selected key event.
      */
     void keyPressEvent(QKeyEvent *event);
 
@@ -117,93 +117,112 @@ private:
     /*!
      *  Delete the selected component items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedComponentItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected bus interface items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected bus port items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedBusPortItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected HW connection items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedHWConnectionItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected ad hoc connection items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedAdHocConnectionItems(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected HW column items.
      *
-     *      @param [in] selectedItems   The selected graphics items.
+     *    @param [in] selectedItems   The selected graphics items.
      */
     void deleteSelectedHWColumns(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected ad hoc interface items. Only invalid interfaces can be deleted.
      *
-     *      @param [in] selectedItems   A list of the selected items.
+     *    @param [in] selectedItems   A list of the selected items.
      */
     void deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Delete the selected ad hoc port items. Only invalid ports can be deleted.
      *
-     *      @param [in] selectedItems   A list of the selected items.
+     *    @param [in] selectedItems   A list of the selected items.
      */
     void deleteSelectedAdHocPorts(QList<QGraphicsItem*> selectedItems);
 
     /*!
      *  Create an empty hierarchical component.
      *
-     *      @return Pointer to the created component.
+     *    @return Pointer to the created component.
      */
     QSharedPointer<Component> createEmptyDesign(VLNV const& prevlnv);
 
     /*!
      *  Set a design to be edited.
      *
-     *      @param [in] comp        The selected component.
-     *      @param [in] viewName    The name of the view containing the design.
+     *    @param [in] comp        The selected component.
+     *    @param [in] viewName    The name of the view containing the design.
      *
-     *      @return True, if the design is set correctly, false if an error occurred.
+     *    @return True, if the design is set correctly, false if an error occurred.
      */
     bool setDesign(QSharedPointer<Component> comp, const QString& viewName);
 
 	/*!
      *  Create an empty design and configuration for a component.
 	 *
-	 *      @param [in] component   Pointer to the component to create the design for.
-	 *      @param [in] dirPath     File path to the directory to create the design and configuration to.
+	 *    @param [in] component   Pointer to the component to create the design for.
+	 *    @param [in] dirPath     File path to the directory to create the design and configuration to.
 	 */
 	void createDesignForComponent(QSharedPointer<Component> component, const QString& dirPath);
 
     /*!
      *  Update the files.
      *
-     *      @param [in] topComponent        The top component of the design.
-     *      @param [in] sourcePath          The source path.
-     *      @param [in] targetPath          The target directory.
+     *    @param [in] topComponent        The top component of the design.
+     *    @param [in] sourcePath          The source path.
+     *    @param [in] targetPath          The target directory.
      */
     void updateFiles(QSharedPointer<Component> topComponent, QString const& sourcePath,
         QString const& targetPath) const;
+
+    /*!
+     *	Load changes made in component editor to be applied to design before refresh and save.
+     */
+    void loadChangesFromRelatedTab() override;
+
+    /*!
+     *	Load bus interface changes made in the component editor. Checks for removed and added bus interfaces.
+     *  
+     *    @param [in] libraryComponent     The component loaded from disk.
+     */
+    void loadBusInterfaceChanges(QSharedPointer<Component const> libraryComponent);
+
+    /*!
+     *	Load adhoc port changes made in the component editor. Checks for removed and added ports.
+     *
+     *    @param [in] libraryComponent     The component loaded from disk.
+     */
+    void loadPortChanges(QSharedPointer<Component const> libraryComponent);
 
     //-----------------------------------------------------------------------------
     // Data.

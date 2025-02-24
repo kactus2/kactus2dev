@@ -30,10 +30,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] connection      The selected API graphics connection.
-     *      @param [in] oldEndpoint     The old endpoint from which to disconnect the connection.
-     *      @param [in] newEndpoint     The new endpoint to which to connect the connection.
-     *      @param [in] parent          The parent command.
+     *    @param [in] connection      The selected API graphics connection.
+     *    @param [in] oldEndpoint     The old endpoint from which to disconnect the connection.
+     *    @param [in] newEndpoint     The new endpoint to which to connect the connection.
+     *    @param [in] parent          The parent command.
      */
     ApiConnectionExchangeCommand(ApiGraphicsConnection* connection, ConnectionEndpoint* oldEndpoint,
         ConnectionEndpoint* newEndpoint, QUndoCommand* parent = 0);
@@ -67,9 +67,9 @@ private:
     /*!
      *  Create an interface from the selected connection end point.
      *
-     *      @param [in] endPoint    The selected connection end point.
+     *    @param [in] endPoint    The selected connection end point.
      *
-     *      @return The created interface.
+     *    @return The created interface.
      */
     QSharedPointer<HierInterface> createConnectionInterface(ConnectionEndpoint* endPoint);
 

@@ -30,7 +30,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent          The parent widget.
+     *    @param [in] parent          The parent widget.
      */
     FramedTreeItemEditor(MemoryTreeFactory const* factory, QWidget* parent);
 

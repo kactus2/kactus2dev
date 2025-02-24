@@ -74,7 +74,7 @@ GraphicsItemLabel* SWConnectionEndpoint::getNameLabel() const
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint::getOffPageConnector()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint* SWConnectionEndpoint::getOffPageConnector()
+ConnectionEndpoint* SWConnectionEndpoint::getOffPageConnector() const
 {
     return offPageConnector_;
 }

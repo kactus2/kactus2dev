@@ -34,8 +34,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] templateConfigurer  Handles configuration of peripheral templates.
-     *      @param [in] parent              Pointer to the owner of this widget.
+     *    @param [in] templateConfigurer  Handles configuration of peripheral templates.
+     *    @param [in] parent              Pointer to the owner of this widget.
      */
     RenodePeripheralsEditor(PeripheralTemplateConfigurer* templateConfigurer, QWidget* parent = 0);
 
@@ -47,14 +47,14 @@ public:
     /*!
      *  Setup the selected peripherals.
      *
-     *      @param [in] peripherals     The selected peripherals.
+     *    @param [in] peripherals     The selected peripherals.
      */
     void setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > peripherals);
 
     /*!
      *  Setup the folder path.
      *
-     *      @param [in] newFolderPath   The new folder path.
+     *    @param [in] newFolderPath   The new folder path.
      */
     void setupFolderPath(QString const& newFolderPath);
 
@@ -74,7 +74,7 @@ private:
     /*!
      *  Setup the peripheral templates.
      *	
-     *      @param [in] templates   List of new peripheral templates.
+     *    @param [in] templates   List of new peripheral templates.
      */
     void setupPeripheralTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates);
 

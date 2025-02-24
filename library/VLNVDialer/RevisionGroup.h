@@ -31,7 +31,7 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] parent The owner of this widget.
+	 *    @param [in] parent The owner of this widget.
      */
 	explicit RevisionGroup(QWidget *parent);
 	
@@ -43,21 +43,21 @@ public:
     /*!
      *  Sets new validity options.
      *
-     *      @param [in] options   The options to set.
+     *    @param [in] options   The options to set.
      */
     void setRevision(Utils::RevisionOptions options);
 
     /*!
      *  Gets the selected validity options.
      *
-     *      @return Selected validity options.
+     *    @return Selected validity options.
      */
     [[nodiscard]] Utils::RevisionOptions getRevision() const;
 
     /*!
      *  Select/clear all filters.
      *
-     *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+     *    @param [in] select     If true, all filters are set, otherwise all filters are cleared.
      */
 	void selectAll(bool select) final;
 

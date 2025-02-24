@@ -57,10 +57,10 @@ public:
     /*!
      *	Draws complex control for the group box with alert sign.
      *
-     *      @param [in] cc         The complex control to draw.
-     *      @param [in] opt        The style options for drawing.
-     *      @param [in] p          The painter object for drawing.
-     *      @param [in] widget     The widget to draw on.
+     *    @param [in] cc         The complex control to draw.
+     *    @param [in] opt        The style options for drawing.
+     *    @param [in] p          The painter object for drawing.
+     *    @param [in] widget     The widget to draw on.
      * 
      *      @remarks    The function is slightly altered to incorporate vertical offset.
      *                  To better understand structure of the funcition refer  to the source 

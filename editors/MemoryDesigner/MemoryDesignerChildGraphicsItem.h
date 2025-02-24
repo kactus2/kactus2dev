@@ -28,14 +28,14 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] subMemoryItem       The sub memory item.
-     *      @param [in] toolTipType         The type of the memory item.
-     *      @param [in] baseAddress         Base address of the memory item.
-     *      @param [in] range               Range of the memory item.
-     *      @param [in] blockWidth          Width of the memory item.
-     *      @param [in] identifierChain     List of strings to identify the component item.
-     *      @param [in] containingInstance  Component instance containing the sub memory item.
-     *      @param [in] parent              The parent item.
+     *    @param [in] subMemoryItem       The sub memory item.
+     *    @param [in] toolTipType         The type of the memory item.
+     *    @param [in] baseAddress         Base address of the memory item.
+     *    @param [in] range               Range of the memory item.
+     *    @param [in] blockWidth          Width of the memory item.
+     *    @param [in] identifierChain     List of strings to identify the component item.
+     *    @param [in] containingInstance  Component instance containing the sub memory item.
+     *    @param [in] parent              The parent item.
      */
     MemoryDesignerChildGraphicsItem(QSharedPointer<MemoryItem const> subMemoryItem, QString const& toolTipType,
         quint64 baseAddress, quint64 range, qreal blockWidth, QVector<QString> identifierChain,
@@ -61,8 +61,8 @@ protected:
     /*!
      *  Set the colors for the memory item.
      *
-     *      @param [in] itemColor       The main color for the memory item.
-     *      @param [in] itemIsEmpty     Boolean for determining empty memory item.
+     *    @param [in] itemColor       The main color for the memory item.
+     *    @param [in] itemIsEmpty     Boolean for determining empty memory item.
      */
     void setColors(QColor itemColor, bool itemIsEmpty);
 
@@ -74,14 +74,14 @@ private:
     /*!
      *  Set colors for ranges in an empty sub graphics item.
      *
-     *      @param [in] emptyItemRangeColour    The color for the empty sub graphics item ranges.
+     *    @param [in] emptyItemRangeColour    The color for the empty sub graphics item ranges.
      */
     virtual void setEmptyItemRangeColors(QColor emptyItemRangeColour);
 
     /*!
      *  Get the width of the available area used by the memory sub item.
      *
-     *      @return The width of the available area used by the memory sub item.
+     *    @return The width of the available area used by the memory sub item.
      */
     virtual qreal getItemWidth() const;
 };

@@ -52,7 +52,7 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] parent Pointer to the owner of this widget.
+	 *    @param [in] parent Pointer to the owner of this widget.
 	 */
 	ComponentInstanceEditor(QWidget *parent);
 	
@@ -68,9 +68,9 @@ public:
 	/*!
      *  Set the component to be edited.
 	 *
-	 *      @param [in] component       Pointer to the component instance being edited.
-     *      @param [in] editProvider    Interface for providing editing capabilities (undo & redo).
-     *      @param [in] design          Design containing the component instance.
+	 *    @param [in] component       Pointer to the component instance being edited.
+     *    @param [in] editProvider    Interface for providing editing capabilities (undo & redo).
+     *    @param [in] design          Design containing the component instance.
 	 */
     void setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider,
         QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, QString const& activeViewName);
@@ -78,15 +78,15 @@ public:
     /*!
      *  Sets the top component for the instances.
      *
-     *      @param [in] topComponent            The top component.
-     *      @param [in] editProvider            The generic edit provider.
+     *    @param [in] topComponent            The top component.
+     *    @param [in] editProvider            The generic edit provider.
      */
     void setContext(QSharedPointer<Component> topComponent, QSharedPointer<IEditProvider> editProvider);
 
     /*!
      *  Sets the protection state for the instance editor.
      *
-     *      @param [in] locked   Locks/unlock the editor.
+     *    @param [in] locked   Locks/unlock the editor.
      */
     void setProtection(bool locked);
 
@@ -95,7 +95,7 @@ public slots:
     /*!
      *  Sets the active view to use for the top component.
      *
-     *      @param [in] activeView   The name of the active view.
+     *    @param [in] activeView   The name of the active view.
      */
     void setTopComponentActiveView(QSharedPointer<View> activeView);
 
@@ -114,14 +114,14 @@ signals:
     /*!
      *  Increase the amount of references to a parameter with the matching ID.
      *
-     *      @param [in] id  ID of the parameter, whose references are being increased.
+     *    @param [in] id  ID of the parameter, whose references are being increased.
      */
     void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the amount of references to a parameter with a matching ID.
      *
-     *      @param [in] id  ID of the parameter, whose references are being decreased.
+     *    @param [in] id  ID of the parameter, whose references are being decreased.
      */
     void decreaseReferences(QString const& id);
 

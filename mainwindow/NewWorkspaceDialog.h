@@ -27,7 +27,7 @@ public:
     /*!
      *  Constructor which initializes the dialog.
      *
-     *      @param [in] parent   The parent widget.
+     *    @param [in] parent   The parent widget.
      */
     NewWorkspaceDialog(QWidget* parent = 0);
 

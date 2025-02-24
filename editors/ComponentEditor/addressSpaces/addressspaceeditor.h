@@ -42,14 +42,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance managing the library.
-	 *      @param [in] addrSpace               The address space being edited.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The expression parser to use.
-     *      @param [in] blockInterface          Interface for address blocks.
-	 *      @param [in] parent                  The owner of this editor.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] handler                 The instance managing the library.
+	 *    @param [in] addrSpace               The address space being edited.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] expressionParser        The expression parser to use.
+     *    @param [in] blockInterface          Interface for address blocks.
+	 *    @param [in] parent                  The owner of this editor.
 	 */
     AddressSpaceEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
@@ -73,7 +73,7 @@ signals:
     /*!
      *  Assign new address unit bits for address blocks.
      *
-     *      @param [in] newAddressUnitBits  The new address unit bits.
+     *    @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 

@@ -56,54 +56,54 @@ public:
 	/*!
      *  Write the instance to the text stream.
 	 *
-	 *      @param [in] stream  The text stream to write the instance into.
+	 *    @param [in] stream  The text stream to write the instance into.
 	 */
 	virtual void write(QTextStream& stream) const override final;
 
 	/*!
      *  Get the name of the component instance.
 	 *
-	 *      @return QString contains the name of the instance.
+	 *    @return QString contains the name of the instance.
 	 */
 	QString name() const;
 
 	/*!
      *  Get the type name of the instance.
 	 *
-	 *      @return QString contains the type name.
+	 *    @return QString contains the type name.
 	 */
 	QString typeName() const;
 
 	/*!
      *  Add a new port map for the instance.
 	 *
-	 *      @param [in] endpoint    The end point that specifies the port and signal bounds.
-	 *      @param [in] signalName  The name of the signal/top port to map the port to.
+	 *    @param [in] endpoint    The end point that specifies the port and signal bounds.
+	 *    @param [in] signalName  The name of the signal/top port to map the port to.
 	 */
 	void addPortMap(const VhdlConnectionEndPoint& endpoint, const QString& signalName);
 
 	/*!
      *  Add a new port map for the instance.
 	 *
-	 *      @param [in] left        The left side of the port map connection.
-	 *      @param [in] right       The right side fo the port map connection.
+	 *    @param [in] left        The left side of the port map connection.
+	 *    @param [in] right       The right side fo the port map connection.
 	 */
     void addPortMap(VhdlPortMap const& left, VhdlPortMap const& right);
 
 	/*!
      *  Add a new generic map to the instance.
 	 *
-	 *      @param [in] genericName     The name of the generic on this instance.
-	 *      @param [in] genericValue    The value to map the generic to.
+	 *    @param [in] genericName     The name of the generic on this instance.
+	 *    @param [in] genericValue    The value to map the generic to.
 	 */
 	void addGenericMap(const QString& genericName, const QString& genericValue);
 
 	/*!
      *  Check if the specified port is connected within this instance.
 	 *
-	 *      @param [in] portName    The name of the port to check to connection for.
+	 *    @param [in] portName    The name of the port to check to connection for.
 	 *
-	 *      @return bool True if connection is found.
+	 *    @return bool True if connection is found.
 	 */
 	bool hasConnection(const QString& portName);
 
@@ -117,75 +117,75 @@ public:
 	/*!
      *  Get the bus interface with given name.
 	 *
-	 *      @param [in] interfaceName   The name of the bus interface on the IP-Xact component model.
+	 *    @param [in] interfaceName   The name of the bus interface on the IP-Xact component model.
 	 *
-	 *      @return BusInterface* Pointer to the bus interface.
+	 *    @return BusInterface* Pointer to the bus interface.
 	 */
 	QSharedPointer<BusInterface> interface(const QString& interfaceName) const;
 
 	/*!
      *  Get the vlnv of the instance's IP-Xact model.
 	 *
-	 *      @return VLNV Identifies the IP-Xact model of the instance's type.
+	 *    @return VLNV Identifies the IP-Xact model of the instance's type.
 	 */
 	VLNV vlnv() const;
 
 	/*!
      *  Get pointer to the IP-Xact model of the component type.
 	 *
-	 *      @return QSharedPointer<Component> Pointer to the IP-Xact model.
+	 *    @return QSharedPointer<Component> Pointer to the IP-Xact model.
 	 */
 	QSharedPointer<Component> componentModel() const;
 
 	/*!
      *  Get the type of the specified port.
 	 *
-	 *      @param [in] portName    The name of the port on the component.
+	 *    @param [in] portName    The name of the port on the component.
 	 *
-	 *      @return QString The type of the port.
+	 *    @return QString The type of the port.
 	 */
 	QString portType(const QString& portName) const;
 
 	/*!
      *  Check if the instance has a specified port.
 	 *
-	 *      @param [in] portName    The name of the port to check.
+	 *    @param [in] portName    The name of the port to check.
 	 *
-	 *      @return bool True if the port is found.
+	 *    @return bool True if the port is found.
 	 */
 	bool hasPort(const QString& portName) const;
 
 	/*!
      *  Check if the type of the port is scalar.
 	 *
-	 *      @param [in] portName    Specifies the port to check.
+	 *    @param [in] portName    Specifies the port to check.
 	 *
-	 *      @return bool True if port is scalar.
+	 *    @return bool True if port is scalar.
 	 */
 	bool isScalarPort(const QString& portName) const;
 
 	/*!
      *  Get the direction of the specified port on this instance.
 	 *
-	 *      @param [in] portName    The name of the port that's direction is requested.
+	 *    @param [in] portName    The name of the port that's direction is requested.
 	 *
-	 *      @return General::Direction Specifies the direction of the port.
+	 *    @return General::Direction Specifies the direction of the port.
 	 */
 	DirectionTypes::Direction portDirection(const QString& portName) const;
 
 	/*!
      *  Get the physical left bound of the port.
 	 *
-	 *      @param [in] portName    The name of the port that's bound is wanted.
+	 *    @param [in] portName    The name of the port that's bound is wanted.
 	 *
-	 *      @return int The left bound.
+	 *    @return int The left bound.
 	 */
 	QString getPortPhysLeftBound(const QString& portName) const;
 
 	/*!
      *  Get the physical right bound of the port.
 	 *
-	 *      @param [in] portName    The name of the port that's bound is wanted.
+	 *    @param [in] portName    The name of the port that's bound is wanted.
 	 *
 	 *      return int The right bound.
 	 */
@@ -210,8 +210,8 @@ private:
 	/*!
 	 *  Add port mapping.
 	 *
-	 *      @param [in] instancePort    Selected VHDL port map object.
-	 *      @param [in] signalMapping   The VHDL mapped signal.
+	 *    @param [in] instancePort    Selected VHDL port map object.
+	 *    @param [in] signalMapping   The VHDL mapped signal.
 	 */
 	void addMapping(const VhdlPortMap& instancePort, const VhdlPortMap& signalMapping );
 

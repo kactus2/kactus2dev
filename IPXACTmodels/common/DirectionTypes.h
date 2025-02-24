@@ -35,9 +35,9 @@ namespace DirectionTypes
     /*!
      *  Convert the given direction to mirrored.
      *
-     *      @param [in] originalDirection   The direction to convert.
+     *    @param [in] originalDirection   The direction to convert.
      *
-     *      @return The mirrored direction.
+     *    @return The mirrored direction.
      */
     IPXACTMODELS_EXPORT DirectionTypes::Direction convert2Mirrored(
          DirectionTypes::Direction originalDirection);
@@ -45,10 +45,10 @@ namespace DirectionTypes
     /*!
      *  Convert a given qstring to direction.
      *
-     *      @param [in] str             The string to be converted.
-     *      @param [in] defaultValue    The value that will be returned if no match is found.
+     *    @param [in] str             The string to be converted.
+     *    @param [in] defaultValue    The value that will be returned if no match is found.
      *
-     *      @return Direction that matches the string or default value.
+     *    @return Direction that matches the string or default value.
      */
     IPXACTMODELS_EXPORT DirectionTypes::Direction str2Direction(
         QString const& str, DirectionTypes::Direction defaultValue = Direction::DIRECTION_INVALID);
@@ -61,9 +61,9 @@ namespace DirectionTypes
     /*!
      *  Convert a given direction to a qstring.
      *
-     *      @param [in] direction   Direction value to be converted to QString.
+     *    @param [in] direction   Direction value to be converted to QString.
      *
-     *      @return QString matching the given direction.
+     *    @return QString matching the given direction.
      */
     IPXACTMODELS_EXPORT QString direction2Str(const DirectionTypes::Direction direction);
 

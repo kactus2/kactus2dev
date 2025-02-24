@@ -71,6 +71,8 @@
     <ClInclude Include="include\MemoryRemapExpressionGatherer.h" />
     <ClInclude Include="include\MessageMediator.h" />
     <ClInclude Include="include\ModeConditionParser.h" />
+    <ClInclude Include="include\ExpressionParserInterface.h" />
+    <ClInclude Include="include\ModeConditionParserInterface.h" />
     <ClInclude Include="include\ModelParameterSource.h" />
     <ClInclude Include="include\ModelParameterVisualizer.h" />
     <ClInclude Include="include\ModeReferenceInterface.h" />
@@ -119,6 +121,7 @@
     <ClCompile Include="expressions\MemoryMapExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\MemoryRemapExpressionGatherer.cpp" />
     <ClCompile Include="expressions\ModeConditionParser.cpp" />
+    <ClCompile Include="expressions\ModeConditionParserInterface.cpp" />
     <ClCompile Include="expressions\MultipleParameterFinder.cpp" />
     <ClCompile Include="expressions\NullParser.cpp" />
     <ClCompile Include="expressions\ParameterCache.cpp" />

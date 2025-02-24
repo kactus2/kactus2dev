@@ -41,7 +41,7 @@ public:
     /*!
      *  Checks if the view configuration is valid.
      *
-     *      @param [out] warning   The stated reason for not accepting.
+     *    @param [out] warning   The stated reason for not accepting.
      */
     bool validSelections(QString &warning);
 	
@@ -63,7 +63,7 @@ public:
     /*!
      *  Sets the view for the top component in generation, if it exists.
      *
-	 *      @param [in] viewName   The name of the active view.
+	 *    @param [in] viewName   The name of the active view.
 	 */
     void setView(QString const& viewName);
 
@@ -90,14 +90,14 @@ public:
     /*!
      *  Sets the file set referred by the instantiation.
      *
-     *      @param [in] fileSetRef   The fileSetRef to set.
+     *    @param [in] fileSetRef   The fileSetRef to set.
      */
     bool setFileSet(QString const& fileSetRef);
 	
     /*!
      *  Gets the file set referred by the instantiation.
      *
-     *      @return The fileSetRef.
+     *    @return The fileSetRef.
      */
 	QSharedPointer<FileSet> getFileSet() const;
 	
@@ -109,14 +109,14 @@ public:
     /*!
      *  Sets whether the output file should be added to top component file sets or not.
      *
-     *      @param [in] shouldSave   True for saving, false for not saving.
+     *    @param [in] shouldSave   True for saving, false for not saving.
      */
     void setSaveToFileset(bool shouldSave);
 
     /*!
      *  Checks if the output file should be added to top component file sets.
      *
-     *      @return True, if file should be saved, false otherwise.
+     *    @return True, if file should be saved, false otherwise.
      */
     bool getSaveToFileset() const;
 	

@@ -40,9 +40,9 @@ public:
     /*!
      *  Get the expressions from the given address block.
      *
-     *      @param [in] currentAddressBlock     The given address block.
+     *    @param [in] currentAddressBlock     The given address block.
      *
-     *      @return A list of all the expressions used in address block.
+     *    @return A list of all the expressions used in address block.
      */
     QStringList getExpressions(QSharedPointer<AddressBlock> currentAddressBlock) const;
 

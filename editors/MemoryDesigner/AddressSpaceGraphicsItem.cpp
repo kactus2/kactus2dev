@@ -44,7 +44,7 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/settings-code_e
     setBrush(addressSpaceBrush);
 
     quint64 spaceRangeInt = memoryItem->getRange().toULongLong();
-    int spaceWidth = 250;
+    int spaceWidth = MemoryDesignerConstants::ITEMWIDTH;
 
     setGraphicsRectangle(spaceWidth + 1, spaceRangeInt);
 
@@ -53,7 +53,7 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/settings-code_e
     cpuIcon_->setPos(spaceWidth / 2 - cpuIcon_->pixmap().width() - GridSize, GridSize * 3);
     cpuIcon_->setVisible(false);
 
-    qreal segmentPositionX = - boundingRect().width() / 4;
+    qreal segmentPositionX = - MemoryDesignerConstants::MAPSUBITEMPOSITIONX - 1;
     setupSubItems(segmentPositionX, getSubItemType(), memoryItem);
 
     setLabelPositions();

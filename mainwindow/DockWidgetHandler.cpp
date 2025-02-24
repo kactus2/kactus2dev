@@ -709,11 +709,10 @@ void DockWidgetHandler::updateWindowAndControlVisibility(QWidget* currentTabWidg
 
     bool allowedToShow = isSupportedWindowType(currentTabWidget, windowType);
     bool wantedToShow = visibilities_.value(windowType);
-    bool selected = showAction->isChecked();
 
     visibilityControls_[windowType]->setVisible(allowedToShow);
     showAction->setVisible(allowedToShow && wantedToShow);
-    showAction->setChecked(selected && allowedToShow && wantedToShow);
+    showAction->setChecked(allowedToShow && wantedToShow);
 }
 
 //-----------------------------------------------------------------------------
@@ -804,7 +803,7 @@ void DockWidgetHandler::documentChanged(TabDocument* doc)
 
             QSharedPointer<Design> design = designwidget->getDiagram()->getDesign();
             designParametersEditor_->setDisabled(designwidget->isProtected());
-            designParametersEditor_->setNewParameters(design->getParameters(), design->getRevision());
+            designParametersEditor_->setNewParameters(design->getParameters(), nullptr, design->getRevision());
             designParameterTree_->setDesign(design);
             designParameterReferenceCounter_->setDesign(design);
 
@@ -1137,7 +1136,7 @@ void DockWidgetHandler::refreshDesignDocument(QWidget* currentTabWidget)
         instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getEditProvider());
 
         QSharedPointer<Design> design = designWidget->getDiagram()->getDesign();
-        designParametersEditor_->setNewParameters(design->getParameters(), design->getRevision());
+        designParametersEditor_->setNewParameters(design->getParameters(), nullptr, design->getRevision());
         designParameterTree_->setDesign(design);
         designParameterReferenceCounter_->setDesign(design);
 

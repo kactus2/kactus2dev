@@ -47,8 +47,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] element     The identifier for the IP-XACT element.
-     *      @param [in] name        The name of the element.
+     *    @param [in] element     The identifier for the IP-XACT element.
+     *    @param [in] name        The name of the element.
      */
     IPXactDiff(QString const& element, QString const& name = "");
 
@@ -58,44 +58,44 @@ public:
     /*!
      *  Returns the identifier for the element.
      *
-     *      @return The identifier for the element.
+     *    @return The identifier for the element.
      */
     QString element() const;
 
     /*!
      *  Returns the name of the element.
      *
-     *      @return The name of the element.
+     *    @return The name of the element.
      */
     QString name() const;
 
     /*!
      *  Returns the change type.
      *
-     *      @return The change type.
+     *    @return The change type.
      */
     IPXactDiff::DiffType changeType() const;
 
     /*!
      *  Sets the change type.
      *
-     *      @param [in] type   The type to set.
+     *    @param [in] type   The type to set.
      */
     void setChangeType(DiffType type);
 
     /*!
      *  Gets the modifications in the contained elements.
      *
-     *      @return The modifications to contained elements.
+     *    @return The modifications to contained elements.
      */
     QList<Modification> getChangeList() const;
 
     /*!
      *  Checks if the given element has changed. If the element has changed, stores the modification.
      *
-     *      @param [in] element         The name of the contained element.
-     *      @param [in] referenceValue  The value in the reference element.
-     *      @param [in] subjectValue    The value in the subject element.
+     *    @param [in] element         The name of the contained element.
+     *    @param [in] referenceValue  The value in the reference element.
+     *    @param [in] subjectValue    The value in the subject element.
      */
     void checkForChange(QString const& element, QString const& referenceValue, QString const& subjectValue);
 

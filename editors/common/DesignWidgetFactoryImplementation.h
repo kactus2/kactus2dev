@@ -31,9 +31,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] libInterface                        Enables access to the library.
-     *      @param [in] designAndInstanceParameterFinder    Parameter finder for design parameter reference tree.
-     *      @param [in] designParameterFinder               Locates the design parameters.
+     *    @param [in] libInterface                        Enables access to the library.
+     *    @param [in] designAndInstanceParameterFinder    Parameter finder for design parameter reference tree.
+     *    @param [in] designParameterFinder               Locates the design parameters.
      */
     DesignWidgetFactoryImplementation(LibraryInterface* libInterface,
         QSharedPointer<MultipleParameterFinder> designAndInstanceParameterFinder,

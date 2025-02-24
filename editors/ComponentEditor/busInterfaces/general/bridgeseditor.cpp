@@ -30,7 +30,7 @@ BridgesEditor::BridgesEditor(BusInterfaceInterface* busInterface,
 QGroupBox(tr("Transparent bridge(s)"), parent),
 view_(this),
 proxy_(this),
-model_(busInterface->getBridgeInterface(), this),
+model_(busInterface->getBridgeInterface(), currentRevision, this),
 bridgeInterface_(busInterface->getBridgeInterface()),
 bridges_(bridges)
 {

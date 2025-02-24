@@ -39,11 +39,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] type        The ipxact type.
-     *      @param [in] vendor      The vendor.
-     *      @param [in] library     The library.
-     *      @param [in] name        The name.
-     *      @param [in] version     The version.
+     *    @param [in] type        The ipxact type.
+     *    @param [in] vendor      The vendor.
+     *    @param [in] library     The library.
+     *    @param [in] name        The name.
+     *    @param [in] version     The version.
      */
     ConfigurableVLNVReference(const IPXactType& type, const QString& vendor, const QString& library,
         const QString& name, const QString& version);
@@ -51,7 +51,7 @@ public:
     /*!
      *  Constructor with VLNV information.
      *
-     *      @param [in] configurableVLNV    The configurable VLNV.
+     *    @param [in] configurableVLNV    The configurable VLNV.
      */
     ConfigurableVLNVReference(const VLNV& configurableVLNV);
 
@@ -68,21 +68,21 @@ public:
     /*!
      *  Sets the VLNV reference.
      *
-     *      @param [in] vlnv   The VLNV to set.
+     *    @param [in] vlnv   The VLNV to set.
      */
     void setVLNV(VLNV const& vlnv);
 
     /*!
      *  Get the list of configurable element values.
      *
-     *      @return A pointer to the list of configurable element values.
+     *    @return A pointer to the list of configurable element values.
      */
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > getConfigurableElementValues();
 
     /*!
      *  Set the configurable element values.
      *
-     *      @param [in] newConfigurableElementValues    The new list of configurable element values.
+     *    @param [in] newConfigurableElementValues    The new list of configurable element values.
      */
     void setConfigurableElementValues(
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > newConfigurableElementValues);
@@ -90,18 +90,18 @@ public:
     /*!
      *  Check if the configurable vlnv contains the given configurable element.
      *
-     *      @param [in] referenceId     The ID of the configurable element.
+     *    @param [in] referenceId     The ID of the configurable element.
      *
-     *      @return True, if the configurable element is found, false otherwise.
+     *    @return True, if the configurable element is found, false otherwise.
      */
     bool hasConfigurableElementValue(QString const& referenceId) const;
 
     /*!
      *  Get a single configurable element value.
      *
-     *      @param [in] referenceId     The id of the configurable element value.
+     *    @param [in] referenceId     The id of the configurable element value.
      *
-     *      @return The value of the configurable element.
+     *    @return The value of the configurable element.
      */
     QString getSingleConfigurableElementValue(QString const& referenceId) const;
     

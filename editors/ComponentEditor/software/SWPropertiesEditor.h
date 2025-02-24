@@ -37,9 +37,9 @@ public:
 	
 	/*! The constructor
 	 *
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] handler     The instance managing the library.
-	 *      @param [in] parent      The owner of the editor.
+	 *    @param [in] component   The component being edited.
+	 *    @param [in] handler     The instance managing the library.
+	 *    @param [in] parent      The owner of the editor.
 	*/
 	SWPropertiesEditor(QSharedPointer<Component> component,	LibraryInterface* handler, QWidget *parent = 0);
 	
@@ -51,7 +51,7 @@ public:
 	/*!
      *  Checks for the validity of the edited parameters.
 	 *
-	 *      @return True if all parameters are in valid state.
+	 *    @return True if all parameters are in valid state.
 	 */
 	virtual bool isValid() const;
 

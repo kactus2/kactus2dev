@@ -88,9 +88,9 @@ public:
     /*!
      *  Calculates a language-dependent hash for the given file.
      *
-     *      @param [in] filename  The name of the file.
+     *    @param [in] filename  The name of the file.
      *
-     *      @return The hash value for the file.
+     *    @return The hash value for the file.
      *
      *      @remarks Comments and whitespace are ignored and do not affect the hash value.
      */
@@ -99,8 +99,8 @@ public:
     /*!
      *  Begins the analysis for the given component.
      *
-     *      @param [in] component       The component to which the dependency scan is being run.
-     *      @param [in] componentPath  The path to the directory where the component is located.
+     *    @param [in] component       The component to which the dependency scan is being run.
+     *    @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any preparations needed for the file dependency analysis should be made here.
      */
@@ -109,8 +109,8 @@ public:
     /*!
      *  Ends the analysis for the given component.
      *
-     *      @param [in] component       The component to which the dependency scan is being run.
-     *      @param [in] componentPath  The path to the directory where the component is located.
+     *    @param [in] component       The component to which the dependency scan is being run.
+     *    @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any cleanups needed should be made here.
      */
@@ -119,10 +119,10 @@ public:
     /*!
      *  Retrieves all file dependencies the given file has.
      *
-     *      @param [in]  component      The component to which the dependency scan is being run.
-     *      @param [in]  componentPath  The path to the directory where the component is located.
-     *      @param [in]  filename       The name of the file to which the analysis is run.
-     *      @param [out] dependencies   The list of found dependencies.
+     *    @param [in]  component      The component to which the dependency scan is being run.
+     *    @param [in]  componentPath  The path to the directory where the component is located.
+     *    @param [in]  filename       The name of the file to which the analysis is run.
+     *    @param [out] dependencies   The list of found dependencies.
      */
     virtual QList<FileDependencyDesc> getFileDependencies(Component const* component,
                                      QString const& componentPath,
@@ -135,9 +135,9 @@ public:
      *
      * Reads source file data from given file. Used by calulateHash and getFileDependencies.
      *
-     *      @param [in] file    The file that is read.
+     *    @param [in] file    The file that is read.
      *
-     *      @return The meaningful source data of the file, with comments and empty lines removed.
+     *    @return The meaningful source data of the file, with comments and empty lines removed.
      */
     QString getSourceData(QFile& file);
 
@@ -148,9 +148,9 @@ private:
      *
      * Removes comments from a string that consists of a C/C++ source code
      *
-     *      @param [inout] data    The input source code with comments.
+     *    @param [inout] data    The input source code with comments.
      *
-     *      @return The meaningful source data of the file, with comments removed.
+     *    @return The meaningful source data of the file, with comments removed.
      */
     QString removeComments(QString const& source);
     

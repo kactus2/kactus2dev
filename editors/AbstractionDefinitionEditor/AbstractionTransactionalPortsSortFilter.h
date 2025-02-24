@@ -28,8 +28,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] portInterface   Interface for accessing port abstractions.
-     *      @param [in] parent          Pointer to the owner of this model.
+     *    @param [in] portInterface   Interface for accessing port abstractions.
+     *    @param [in] parent          Pointer to the owner of this model.
 	 */
     AbstractionTransactionalPortsSortFilter(
         PortAbstractionInterface* portInterface, QObject *parent);
@@ -44,19 +44,19 @@ protected:
     /*!
      *  Get the background color for the selected index.
      *
-     *      @param [in] index   Index of the selected item.
+     *    @param [in] index   Index of the selected item.
      *
-     *      @return Background color for the selected index.
+     *    @return Background color for the selected index.
      */
     virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
 
     /*!
      *  Check if the filter should accept the selected row.
      *
-     *      @param [in] source_row      Row of the selected item.
-     *      @param [in] source_parent   Parent index of the item.
+     *    @param [in] source_row      Row of the selected item.
+     *    @param [in] source_parent   Parent index of the item.
      *
-     *      @return True, if the row is accepted, false otherwise.
+     *    @return True, if the row is accepted, false otherwise.
      */
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override final;
 
@@ -68,9 +68,9 @@ private:
     /*!
      *  Check if the indexed row contains a protocol payload.
      *
-     *      @param [in] index   Index of the selected row.
+     *    @param [in] index   Index of the selected row.
      *
-     *      @return True, if the indexed row contains a protocol payload, false otherwise.
+     *    @return True, if the indexed row contains a protocol payload, false otherwise.
      */
     bool indexedRowContainsPayload(QModelIndex const& index) const;
 };

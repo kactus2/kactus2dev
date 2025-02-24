@@ -30,7 +30,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] expressionParser    The expression parser to use.
+     *    @param [in] expressionParser    The expression parser to use.
 	 */
     ApiDefinitionValidator();
 
@@ -40,17 +40,17 @@ public:
     /*!
      *  Validates the given ApiDefinition.
      *
-     *      @param [in] ApiDefinition           The ApiDefinition to validate.
+     *    @param [in] ApiDefinition           The ApiDefinition to validate.
      *
-     *      @return True, if the ApiDefinition is valid IP-XACT, otherwise false.
+     *    @return True, if the ApiDefinition is valid IP-XACT, otherwise false.
      */
     virtual bool validate(QSharedPointer<const ApiDefinition> apiDefinition) const;
 
     /*!
      *  Finds possible errors in a ApiDefinition and creates a list of them.
      *
-     *      @param [out] errors         List of found errors.
-     *      @param [in] ApiDefinition   The ApiDefinition whose errors to find.
+     *    @param [out] errors         List of found errors.
+     *    @param [in] ApiDefinition   The ApiDefinition whose errors to find.
      */
     virtual void findErrorsIn(QVector<QString>& errorList, QSharedPointer<const ApiDefinition> apiDefinition) const;
 

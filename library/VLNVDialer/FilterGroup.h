@@ -27,7 +27,7 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] parent The owner of this widget.
+	 *    @param [in] parent The owner of this widget.
 	 */
 	FilterGroup(QString const& title, QWidget *parent);
 
@@ -43,7 +43,7 @@ public:
 	/*!
 	 *  Select/clear all filters.
 	 *
-	 *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+	 *    @param [in] select     If true, all filters are set, otherwise all filters are cleared.
 	 */
 	virtual void selectAll(bool select) = 0;
 

@@ -98,6 +98,8 @@ parameterInterface_()
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     connect(view_->itemDelegate(), SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
@@ -150,9 +152,10 @@ void ParameterGroupBox::refresh()
 // Function: parametergroupbox::setNewParameters()
 //-----------------------------------------------------------------------------
 void ParameterGroupBox::setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters, 
-    Document::Revision docRevision)
+    QSharedPointer<QList<QSharedPointer<Choice> > > newChoices, Document::Revision docRevision)
 {
     parameterInterface_->setParameters(newParameters);
+    parameterInterface_->setChoices(newChoices);
     model_->resetModelItems();
     delegate_->setStdRevision(docRevision);
     parameterValidator_->setStdRevision(docRevision);

@@ -27,9 +27,9 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] referenceParameter      Parameter referenced by the configurable element.
-	 *      @param [in] evaluatedDefaultValue   Evaluated default value of the referenced parameter.
-	 *      @param [in] configuratedValue       The configurable value.
+	 *    @param [in] referenceParameter      Parameter referenced by the configurable element.
+	 *    @param [in] evaluatedDefaultValue   Evaluated default value of the referenced parameter.
+	 *    @param [in] configuratedValue       The configurable value.
 	 */
     EditorConfigurableElement(QSharedPointer<Parameter> referencedParameter, QString const& evaluatedDefaultValue,
         QString const& configuratedValue);
@@ -46,42 +46,42 @@ public:
     /*!
      *  Get the referenced parameter.
      *
-     *      @return The referenced parameter.
+     *    @return The referenced parameter.
      */
     QSharedPointer<Parameter> getReferencedParameter() const;
 
     /*!
      *  Set a new parameter reference.
      *
-     *      @param [in] parameter   The new parameter.
+     *    @param [in] parameter   The new parameter.
      */
     void setParameterReference(QSharedPointer<Parameter> parameter);
 
     /*!
      *  Get the evaluated parameter default value.
      *
-     *      @return The evaluated parameter default value.
+     *    @return The evaluated parameter default value.
      */
     QString const& getEvaluatedDefaultValue() const;
 
     /*!
      *  Set a new evaluated default value.
      *
-     *      @param [in] newEvaluatedDefaultValue    The new evaluated default value.
+     *    @param [in] newEvaluatedDefaultValue    The new evaluated default value.
      */
     void setEvaluatedDefaultValue(QString const& newEvaluatedDefaultValue);
 
     /*!
      *  Get the configurable element value.
      *
-     *      @return The configurable element value.
+     *    @return The configurable element value.
      */
     QString const& getConfiguratedValue() const;
 
     /*!
      *  Set a new value for configurable value.
      *
-     *      @param [in] newConfiguratedValue    The new configurable element value.
+     *    @param [in] newConfiguratedValue    The new configurable element value.
      */
     void setConfiguratedValue(QString const& newConfiguratedValue);
 

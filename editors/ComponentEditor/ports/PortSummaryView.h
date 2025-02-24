@@ -30,9 +30,9 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] nameColumn      Name column index of.
-     *      @param [in] busInterface    Interface for accessing bus interfaces.
-	 *      @param [in] parent          The parent widget.
+     *    @param [in] nameColumn      Name column index of.
+     *    @param [in] busInterface    Interface for accessing bus interfaces.
+	 *    @param [in] parent          The parent widget.
 	 */
     PortSummaryView(int nameColumn, BusInterfaceInterface* busInterface, QWidget *parent);
 

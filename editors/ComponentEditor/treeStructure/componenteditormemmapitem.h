@@ -37,17 +37,17 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] memoryMap               The memory map being edited.
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-     *      @param [in] referenceCounter        The instance for counting references to parameters.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The expression parser to use.
-     *      @param [in] memoryMapValidator      Validator used for memory maps.
-     *      @param [in] mapInterface            Interface for accessing memory maps.
-	 *      @param [in] parent                  The parent item.
+	 *    @param [in] memoryMap               The memory map being edited.
+	 *    @param [in] model                   The model that owns the items.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] component               The component being edited.
+     *    @param [in] referenceCounter        The instance for counting references to parameters.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] expressionParser        The expression parser to use.
+     *    @param [in] memoryMapValidator      Validator used for memory maps.
+     *    @param [in] mapInterface            Interface for accessing memory maps.
+	 *    @param [in] parent                  The parent item.
 	 */
 	ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap,
 		ComponentEditorTreeModel* model,
@@ -71,56 +71,56 @@ public:
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const;
 
 	/*!
      *  Check the validity of this item and sub items.
 	 *
-	 *      @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	 */
 	virtual bool isValid() const;
 
 	/*!
      *  Get pointer to the editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*!
      *  Add a new child to the item.
 	 * 
-	 *      @param [in] index The index to add the child into.
+	 *    @param [in] index The index to add the child into.
 	 */
 	virtual void createChild(int index);
 
 	/*!
      *  Get pointer to the visualizer of this item.
 	 * 
-	 *      @return The visualizer to use for this item.
+	 *    @return The visualizer to use for this item.
 	 */
 	virtual ItemVisualizer* visualizer();
 
 	/*!
      *  Set the visualizer for this item.
 	 *
-	 *      @param [in] visualizer The visualizer.
+	 *    @param [in] visualizer The visualizer.
 	 */
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*!
      *  Get the visualizer graphics item for the memory map.
 	 *
-	 *      @return QGraphicsItem* The graphics item.
+	 *    @return QGraphicsItem* The graphics item.
 	 */
 	virtual QGraphicsItem* getGraphicsItem();
 
@@ -144,16 +144,16 @@ public slots:
     /*!
      *  Add a memory remap item to the tree.
      *
-     *      @param [in] memoryRemapIndex    The index of the new memory remap item.
-     *      @param [in] mapName             Name of the parent of the new memory remap item.
+     *    @param [in] memoryRemapIndex    The index of the new memory remap item.
+     *    @param [in] mapName             Name of the parent of the new memory remap item.
      */
     void onMemoryRemapAdded(int memoryRemapIndex, QString const& mapName);
 
     /*!
      *  Remove a memory remap item from the tree.
      *
-     *      @param [in] memoryRemapIndex    The index of the removed memory remap item.
-     *      @param [in] mapName             Name of the parent of the removed memory remap item.
+     *    @param [in] memoryRemapIndex    The index of the removed memory remap item.
+     *    @param [in] mapName             Name of the parent of the removed memory remap item.
      */
     void onMemoryRemapRemoved(int memoryRemapIndex, QString const& mapName);
 
@@ -162,16 +162,16 @@ signals:
     /*
      *  Informs of memory map name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void memoryMapNameChanged(QString const& oldName, QString const& newName);
 
     /*
      *  Informs of memory remap name change.
      *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
+     *    @param [in] oldName     The old name.
+     *    @param [in] newName     The new name.
      */
     void memoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
 

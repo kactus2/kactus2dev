@@ -35,10 +35,10 @@ namespace ConnectivityGraphUtilities
     /*!
      *  Get the component contained within the connectivity component.
      *
-     *      @param [in] library             Interface for accessing the library.
-     *      @param [in] masterComponent     The connectivity component.
+     *    @param [in] library             Interface for accessing the library.
+     *    @param [in] masterComponent     The connectivity component.
      *
-     *      @return Component contained within the connectivity component.
+     *    @return Component contained within the connectivity component.
      */
     QSharedPointer<const Component> getInterfacedComponent(LibraryInterface* library,
         QSharedPointer<const ConnectivityComponent> masterComponent);
@@ -46,11 +46,11 @@ namespace ConnectivityGraphUtilities
     /*!
      *  Get the CPUs of the selected component.
      *
-     *      @param [in] library     The library interface containing the selected component.
-     *      @param [in] component   The selected component.
-     *      @param [in] viewName    Name of the selected view.
+     *    @param [in] library     The library interface containing the selected component.
+     *    @param [in] component   The selected component.
+     *    @param [in] viewName    Name of the selected view.
      *
-     *      @return List of the component CPU routes.
+     *    @return List of the component CPU routes.
      */
     QVector<QSharedPointer<SingleCpuRoutesContainer> > getDefaultCPUs(LibraryInterface* library, QSharedPointer<Component> component, QString const& viewName);
 };

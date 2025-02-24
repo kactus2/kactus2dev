@@ -56,14 +56,14 @@ public:
     /*!
      *  Get the modified write value setting of the field.
      *
-     *      @return The modified write value setting.
+     *    @return The modified write value setting.
      */
     General::ModifiedWrite getModifiedWrite() const;
 
     /*!
      *  Set the modified write value setting for the field.
      *
-     *      @param [in] modifiedWrite    The value to set.
+     *    @param [in] modifiedWrite    The value to set.
      *
      */
     void setModifiedWrite(General::ModifiedWrite modifiedWrite);
@@ -71,70 +71,70 @@ public:
     /*!
      *  Get the modify attribute of the modified write value.
      *
-     *      @return The modify attribute of the modified write value.
+     *    @return The modify attribute of the modified write value.
      */
     QString getModifiedWriteModify() const;
 
     /*!
      *  Set the modify attribute of the modified write value.
      *
-     *      @param [in] modify   The new modified attribute.
+     *    @param [in] modify   The new modified attribute.
      */
     void setModifiedWriteModify(QString const& modify);
 
     /*!
      *  Get the write constraint of the field.
      *
-     *      @return Pointer to the write constraint.
+     *    @return Pointer to the write constraint.
      */
     QSharedPointer<WriteValueConstraint> getWriteValueConstraint() const;
 
     /*!
      *  Set the write value constraint.
      *
-     *      @param [in] constraint     Pointer to the new write value constraint.
+     *    @param [in] constraint     Pointer to the new write value constraint.
      */
     void setWriteValueConstraint(QSharedPointer<WriteValueConstraint> constraint);
 
     /*!
      *  Get the read action setting of the field.
      *
-     *      @return The read action setting.
+     *    @return The read action setting.
      */
     General::ReadAction getReadAction() const;
 
     /*!
      *  Set the read action setting for the field.
      *
-     *      @param [in] readAction  The new read action -value.
+     *    @param [in] readAction  The new read action -value.
      */
     void setReadAction(General::ReadAction readAction);
 
     /*!
      *  Get the read action modify attribute.
      *
-     *      @return The read action modify attribute.
+     *    @return The read action modify attribute.
      */
     QString getReadActionModify() const;
 
     /*!
      *  Set the read action modify attribute.
      *
-     *      @param [in] readActionModify   The new modify attribute.
+     *    @param [in] readActionModify   The new modify attribute.
      */
     void setReadActionModify(QString const& readActionModify);
 
     /*!
      *  Get the testable setting of the field.
      *
-     *      @return The testable setting.
+     *    @return The testable setting.
      */
     BooleanValue getTestable() const;
 
     /*!
      *  Set the testable setting for the field.
      *
-     *      @param [in] newTestable     The new testable value.
+     *    @param [in] newTestable     The new testable value.
      */
     void setTestable(bool newTestable);
 
@@ -153,7 +153,7 @@ public:
     /*!
      *	Set the read response of the field.
      *  
-     *      @param [in] response     Description
+     *    @param [in] response     Description
      */
     void setReadResponse(QString const& response);
 
@@ -167,35 +167,35 @@ public:
     /*!
      *	Set the broadcasts of the field.
      *  
-     *      @param [in] broadcasts     Description
+     *    @param [in] broadcasts     Description
      */
     void setBroadcasts(QSharedPointer<QList<QSharedPointer<FieldReference> > > broadcasts);
 
     /*!
      *  Get the test constraint setting of the field.
      *
-     *      @return The test constraint of the field.
+     *    @return The test constraint of the field.
      */
     General::TestConstraint getTestConstraint() const;
 
     /*!
      *  Set the test constraint for the field.
      *
-     *      @param [in] testContraint   The new test constraint.
+     *    @param [in] testContraint   The new test constraint.
      */
     void setTestConstraint(General::TestConstraint constraint);
 
     /*!
      *  Get the reserved value.
      *
-     *      @return The reserved value.
+     *    @return The reserved value.
      */
     QString getReserved() const;
 
     /*!
      *  Set the reserved value.
      *
-     *      @param [in] newReserved     The new reserved value.
+     *    @param [in] newReserved     The new reserved value.
      */
     void setReserved(QString const& reserved);
 
@@ -209,7 +209,7 @@ public:
     /*!
      *	Set the field access policy definition reference.
      *  
-     *      @param [in] definitionRef     The definition reference to set.
+     *    @param [in] definitionRef     The definition reference to set.
      */
     void setFieldAccessPolicyDefinitionRef(QString const& definitionRef);
 
@@ -223,7 +223,7 @@ public:
     /*!
      *	Set the field access policy type definitions reference.
      *  
-     *      @param [in] typeDefRef     The type definitions reference to set.
+     *    @param [in] typeDefRef     The type definitions reference to set.
      */
     void setFieldAccessPolicyTypeDefinitionRef(QString const& typeDefRef);
 
@@ -237,7 +237,7 @@ public:
     /*!
      *	Set the access restrictions of the field access policy.
      *  
-     *      @param [in] newAccessRestrictions     The access restrictions to set.
+     *    @param [in] newAccessRestrictions     The access restrictions to set.
      */
     void setAccessRestrictions(QSharedPointer<QList<QSharedPointer<AccessRestriction> > > newAccessRestrictions);
 

@@ -26,9 +26,10 @@
 PowerDomainValidator::PowerDomainValidator(QSharedPointer<QList<QSharedPointer<PowerDomain> > > availableDomains,
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterValidator> parameterValidator):
+HierarchicalValidator(),
 availableDomains_(availableDomains),
-    expressionParser_(expressionParser),
-    parameterValidator_(parameterValidator)
+expressionParser_(expressionParser),
+parameterValidator_(parameterValidator)
 {
 
 }
@@ -49,7 +50,8 @@ bool PowerDomainValidator::validate(QSharedPointer<PowerDomain> powerDomain) con
     return hasValidName(powerDomain->name()) &&
         hasValidAlwaysOn(powerDomain) &&
         hasValidSubDomainOf(powerDomain) &&
-        hasValidParameters(powerDomain);
+        hasValidParameters(powerDomain) &&
+        validComparedToSiblings(powerDomain);
 }
 
 //-----------------------------------------------------------------------------

@@ -31,10 +31,10 @@ public:
 	/*!
      *  The constructor.
      *
-     *      @param [in] docRevision     The IP-XACT version to comply to.
-	 *      @param [in] showMonitor     If this is true then also "monitor" option is shown.
-	 *      @param [in] mode            The interface mode that is selected at start.
-	 *      @param [in] parent          The owner of the editor.
+     *    @param [in] docRevision     The IP-XACT version to comply to.
+	 *    @param [in] showMonitor     If this is true then also "monitor" option is shown.
+	 *    @param [in] mode            The interface mode that is selected at start.
+	 *    @param [in] parent          The owner of the editor.
      */
     InterfaceModeSelector(Document::Revision docRevision, 
 		General::InterfaceMode mode = General::INTERFACE_MODE_COUNT,
@@ -54,7 +54,7 @@ public:
 	/*!
      *  Get the currently selected mode.
 	 *
-	 *      @return The selected interface mode.
+	 *    @return The selected interface mode.
      */
 	General::InterfaceMode selected() const;
 
@@ -64,7 +64,7 @@ public slots:
 	 * 
 	 * This slot does not emit any signals when it is called. 
 	 *
-	 *      @param [in] mode The mode to set selected.
+	 *    @param [in] mode The mode to set selected.
 	*/
 	void setMode(const General::InterfaceMode mode);
 
@@ -72,7 +72,7 @@ public slots:
 	 *
 	 * Calling this slot emits the modeSelected(mode) signal.
 	 * 
-	 *      @param [in] modeName The name of the mode. This should be one of the defined in General::INTERFACE_MODE_NAMES
+	 *    @param [in] modeName The name of the mode. This should be one of the defined in General::INTERFACE_MODE_NAMES
 	*/
 	void setMode(QString const& modeName);
 

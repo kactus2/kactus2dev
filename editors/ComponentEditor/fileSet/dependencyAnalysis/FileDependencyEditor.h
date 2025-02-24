@@ -42,9 +42,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component     The component being edited.
-     *      @param [in] basePath      The component's base path.
-     *      @param [in] parent        The parent widget.
+     *    @param [in] component     The component being edited.
+     *    @param [in] basePath      The component's base path.
+     *    @param [in] parent        The parent widget.
      */
     FileDependencyEditor(QSharedPointer<Component> component, QString const& basePath,
          QWidget* parent);
@@ -57,7 +57,7 @@ public:
     /*!
      *  Sets the editor in compact mode.
      *
-     *      @param [in] compact If true, the editor is set compact with only the table-graph in view.
+     *    @param [in] compact If true, the editor is set compact with only the table-graph in view.
      *                          If false, the full editor is shown.
      */
     void setCompact(bool compact);
@@ -116,14 +116,14 @@ private slots:
     /*!
      *  Updates the progress bar with the given value.
      *
-     *      @param [in] value The value to set to the progress bar.
+     *    @param [in] value The value to set to the progress bar.
      */
     void updateProgressBar(int value);
 
     /*!
      *  Sends filters to the dependency graph.
      *
-     *      @param [in] the filter being toggled.
+     *    @param [in] the filter being toggled.
      */
     void filterToggle(QAction* action);
 
@@ -148,14 +148,14 @@ private:
     /*!
      *  Scans recursively files in the given path and adds them to the component file sets.
      *
-     *      @param [in] path The path to scan.
+     *    @param [in] path The path to scan.
      */
     void scanFiles(QString const& path);
 
     /*!
      *  Returns true if the given file is IP-XACT.
      *
-     *      @param [in] filename The name of the file to check.
+     *    @param [in] filename The name of the file to check.
      */
     bool isFileIPXact(QString const& filename) const;
 
@@ -165,9 +165,9 @@ private:
     /*
      *  Adds a filter button to the toolbar.
      *
-     *      @param [in] icon        The icon for the button.
-     *      @param [in] iconText    The text displayed for the icon.
-     *      @param [in] filter      The filter value for the button.
+     *    @param [in] icon        The icon for the button.
+     *    @param [in] iconText    The text displayed for the icon.
+     *    @param [in] filter      The filter value for the button.
      */
     void addFilterButton(QIcon const& icon, QString const& iconText, FileDependencyGraphView::DependencyFilter filter);
 

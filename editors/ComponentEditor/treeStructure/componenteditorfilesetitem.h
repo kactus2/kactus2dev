@@ -39,18 +39,18 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] fileSet                 The file set being edited.
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-     *      @param [in] referenceCounter        The counter for parameter references.
-     *      @param [in] parameterFinder         Finder used to identify parameters.
-     *      @param [in] expressionParser        Parser used to calculate expressions.
-     *      @param [in] expressionFormatter     Formatter used to format expressions.
-     *      @param [in] validator               The validator for checking file set validity.
-     *      @param [in] fileValidator           The validator for checking child item (file) validity.
-     *      @param [in] fileSetInterface        Interface for accessing file sets.
-	 *      @param [in] parent                  The parent item.
+	 *    @param [in] fileSet                 The file set being edited.
+	 *    @param [in] model                   The model that owns the items.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] component               The component being edited.
+     *    @param [in] referenceCounter        The counter for parameter references.
+     *    @param [in] parameterFinder         Finder used to identify parameters.
+     *    @param [in] expressionParser        Parser used to calculate expressions.
+     *    @param [in] expressionFormatter     Formatter used to format expressions.
+     *    @param [in] validator               The validator for checking file set validity.
+     *    @param [in] fileValidator           The validator for checking child item (file) validity.
+     *    @param [in] fileSetInterface        Interface for accessing file sets.
+	 *    @param [in] parent                  The parent item.
      */
     ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet,
         ComponentEditorTreeModel* model,
@@ -75,35 +75,35 @@ public:
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	QString getTooltip() const final;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	QString text() const final;
 
 	/*!
      *  Check the validity of this item and sub items.
 	 *
-	 *      @return bool True if item is in valid state.
+	 *    @return bool True if item is in valid state.
 	 */
 	bool isValid() const final;
 
 	/*!
      *  Get The editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	ItemEditor* editor() final;
 
 	/*!
      *  Add a new child to the item.
 	 *
-	 *      @param [in] index   The index to add the child into.
+	 *    @param [in] index   The index to add the child into.
 	 */
 	void createChild(int index) final;
 
@@ -122,15 +122,15 @@ signals:
     /*!
      *  Indicates the removal of an item.
      *
-     *      @param [in] index   The index of the removed item.
+     *    @param [in] index   The index of the removed item.
      */
     void childRemoved(int index);
 
     /*!
      *  Handle the name change of a file.
      *
-     *      @param [in] oldName     Old name of the selected file.
-     *      @param [in] newName     The new name for the selected file.
+     *    @param [in] oldName     Old name of the selected file.
+     *    @param [in] newName     The new name for the selected file.
      */
     void fileRenamed(std::string const& oldName, std::string const& newName);
 

@@ -18,8 +18,14 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/PortAbstractionInterface.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+
+#include "AbsDefParameterReferenceCounter.h"
+#include "AbsDefParameterReferenceTree.h"
+
+#include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
 
 #include <QApplication>
 #include <QFile>
@@ -33,14 +39,19 @@
 // Function: AbstractionDefinitionEditor::AbstractionDefinitionEditor()
 //-----------------------------------------------------------------------------
 AbstractionDefinitionEditor::AbstractionDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<AbstractionDefinition> absDef, Document::Revision revision):
-TabDocument(parent, DOC_PROTECTION_SUPPORT),
-libHandler_(libHandler),
+TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
 absDef_(absDef),
-absDefGroup_(revision, absDef, libHandler, createPortAbstractionInterface(), createPortAbstractionInterface(), this),
-expressionParser_(new SystemVerilogExpressionParser()),
-absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
+expressionFormatter_(new ExpressionFormatter(absDefParameterFinder_)),
+expressionParser_(new IPXactSystemVerilogParser(absDefParameterFinder_)),
+portValidator_(new PortAbstractionValidator(libHandler, expressionParser_)),
+absDefGroup_(revision, absDef, expressionFormatter_, expressionParser_, absDefParameterFinder_, libHandler,
+    createPortAbstractionInterface(), createPortAbstractionInterface(), this),
+absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_)),
+referenceCounter_(new AbsDefParameterReferenceCounter(absDefParameterFinder_, absDef)),
+parameterReferenceTree_(new AbsDefParameterReferenceTree(absDef, referenceCounter_, expressionFormatter_)),
+referenceTreeWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_))
 {
-    setDocumentType(tr("Abstration Definition"));
+    setDocumentType(DocumentType::ABSTRACTION_DEFINITION);
 
     if (absDef_)
     {
@@ -67,6 +78,18 @@ absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressio
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
     connect(&absDefGroup_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), 
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
+
+    connect(&absDefGroup_, SIGNAL(increaseReferences(QString)),
+        referenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+
+    connect(&absDefGroup_, SIGNAL(decreaseReferences(QString)),
+        referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
+
+    connect(&absDefGroup_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        this, SLOT(onOpenReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(&absDefGroup_, SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        referenceCounter_.data(), SLOT(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,8 +109,10 @@ void AbstractionDefinitionEditor::refresh()
 
     if (absDef_)
     {
-        absDef_ = libHandler_->getModel(absDef_->getVlnv()).dynamicCast<AbstractionDefinition>();
+        absDef_ = getLibHandler()->getModel(absDef_->getVlnv()).dynamicCast<AbstractionDefinition>();
         absDefGroup_.setAbsDef(absDef_);
+        referenceCounter_->setAbstractionDefinition(absDef_);
+        parameterReferenceTree_->setAbsDef(absDef_);
     }
 
     // The document is no longer modified.
@@ -132,6 +157,8 @@ void AbstractionDefinitionEditor::setAbsDef(QSharedPointer<AbstractionDefinition
     if (absDef_) 
     {
         absDefGroup_.setAbsDef(absDef_);
+        referenceCounter_->setAbstractionDefinition(absDef_);
+        parameterReferenceTree_->setAbsDef(absDef_);
     }
 
     absDefGroup_.setDisabled(!absDef_);
@@ -155,7 +182,7 @@ bool AbstractionDefinitionEditor::validate(QVector<QString>& errorList)
 bool AbstractionDefinitionEditor::save()
 {  
     absDefGroup_.save();
-    libHandler_->writeModelToFile(absDef_);
+    getLibHandler()->writeModelToFile(absDef_);
 
 	return TabDocument::save();
 }
@@ -171,7 +198,7 @@ bool AbstractionDefinitionEditor::saveAs()
     VLNV absDefVLNV;
     QString absDirectory;
 
-    if (!NewObjectDialog::saveAsDialog(this, libHandler_, absDef_->getVlnv(), vlnv, absDirectory))
+    if (!NewObjectDialog::saveAsDialog(this, getLibHandler(), absDef_->getVlnv(), vlnv, absDirectory))
     {
         return false;
     }
@@ -183,7 +210,7 @@ bool AbstractionDefinitionEditor::saveAs()
 
     absDefGroup_.save();
   
-    libHandler_->writeModelToFile(absDirectory, absDef_);
+    getLibHandler()->writeModelToFile(absDirectory, absDef_);
 
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     return TabDocument::saveAs();
@@ -207,6 +234,16 @@ void AbstractionDefinitionEditor::showEvent(QShowEvent* event)
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionEditor::onOpenReferenceTree()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionEditor::onOpenReferenceTree(QString const& parameterID, QString const& parameterName)
+{
+    // Refresh references before opening window.
+    parameterReferenceTree_->setAbsDef(absDef_);
+    referenceTreeWindow_->openReferenceTree(parameterID, parameterName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionEditor::setupLayout()
@@ -226,6 +263,7 @@ void AbstractionDefinitionEditor::setupLayout()
 //-----------------------------------------------------------------------------
 PortAbstractionInterface* AbstractionDefinitionEditor::createPortAbstractionInterface()
 {
-    PortAbstractionInterface* portInterface(new PortAbstractionInterface());
+    PortAbstractionInterface* portInterface(new PortAbstractionInterface(expressionParser_, expressionFormatter_));
+    portInterface->setPortAbstractionValidator(portValidator_);
     return portInterface;
 }

@@ -22,6 +22,7 @@
 
 #include <QGraphicsScene>
 #include <QPen>
+#include "editors/HWDesign/OffPageConnectorItem.h"
 
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::ConnectionEndpoint()
@@ -306,7 +307,15 @@ ConnectionEndpoint::EndpointType ConnectionEndpoint::getType() const noexcept
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::getOffPageConnector()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint* ConnectionEndpoint::getOffPageConnector()
+ConnectionEndpoint* ConnectionEndpoint::getOffPageConnector() const
+{
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::getParentConnector()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* ConnectionEndpoint::getParentConnector() const
 {
     return nullptr;
 }
@@ -364,11 +373,38 @@ bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) cons
     }
 
     // Prevent double connections
-    return std::none_of(other->getConnections().cbegin(), other->getConnections().cend(),
-        [this](GraphicsConnection const* connection)
+    ConnectionEndpoint* thisOffPage = this->getOffPageConnector();
+    ConnectionEndpoint* otherOffPage = other->getOffPageConnector();
+    ConnectionEndpoint* thisParent = this->getParentConnector();
+    ConnectionEndpoint* otherParent = other->getParentConnector();
+
+    // All possible combinations are handled below.
+    if (!other->isOffPage())
+    {
+        if (!this->isOffPage())
         {
-            return connection->endpoint1() == this || connection->endpoint2() == this;
-        });
+            return !(isConnectionBetweenPointsExist(other)||
+                (thisOffPage && otherOffPage && thisOffPage->isConnectionBetweenPointsExist(otherOffPage)));
+        }
+        else 
+        {
+            return !((otherOffPage && isConnectionBetweenPointsExist(otherOffPage) ||
+                thisParent->isConnectionBetweenPointsExist(other)));
+        }
+    }
+    else 
+    {
+        if (!this->isOffPage())
+        {
+            return !(isConnectionBetweenPointsExist(otherParent) ||
+                (thisOffPage && thisOffPage->isConnectionBetweenPointsExist(other)));
+        }
+        else
+        {
+            return !(isConnectionBetweenPointsExist(other) ||
+                (thisParent->isConnectionBetweenPointsExist(otherParent)));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -428,6 +464,18 @@ void ConnectionEndpoint::endUpdateConnectionNames()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::isConnectionBetweenPointsExist()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isConnectionBetweenPointsExist(ConnectionEndpoint const* other) const
+{
+    return std::any_of(other->getConnections().cbegin(), other->getConnections().cend(),
+        [this](GraphicsConnection const* connection)
+        {
+            return connection->endpoint1() == this || connection->endpoint2() == this;
+        });
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::getInterfaceMode()
 //-----------------------------------------------------------------------------
 General::InterfaceMode ConnectionEndpoint::getInterfaceMode() const
@@ -449,4 +497,12 @@ qreal ConnectionEndpoint::getNameLength()
 void ConnectionEndpoint::shortenNameLabel( qreal /*width */)
 {
     // Intentionally empty.
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::isOffPage()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isOffPage() const
+{
+    return type() == OffPageConnectorItem::Type;
 }

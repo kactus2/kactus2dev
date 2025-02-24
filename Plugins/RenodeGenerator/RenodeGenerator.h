@@ -36,7 +36,7 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library     Interface for accessing libraries.
+     *    @param [in] library     Interface for accessing libraries.
      */
     explicit RenodeGenerator(LibraryInterface* library);
 
@@ -52,14 +52,14 @@ public:
     /*!
      *  Generates slave memory listing for the given component.
      *
-     *      @param [in] componentPath           Path to the component folder.
-     *      @param [in] cpuContainer            CPU and its connected routes.
-     *      @param [in] createCpuFile           Flag for creating a CPU file.
-     *      @param [in] cpuFileName             Name of the CPU file.
-     *      @param [in] createMemoryFile        Flag for creating a memory file.
-     *      @param [in] memoryFileName          Name of the memory file.
-     *      @param [in] createPeripheralFile    Flag for creating a peripherals file.
-     *      @param [in] peripheralFileName      Name of the peripherals file.
+     *    @param [in] componentPath           Path to the component folder.
+     *    @param [in] cpuContainer            CPU and its connected routes.
+     *    @param [in] createCpuFile           Flag for creating a CPU file.
+     *    @param [in] cpuFileName             Name of the CPU file.
+     *    @param [in] createMemoryFile        Flag for creating a memory file.
+     *    @param [in] memoryFileName          Name of the memory file.
+     *    @param [in] createPeripheralFile    Flag for creating a peripherals file.
+     *    @param [in] peripheralFileName      Name of the peripherals file.
      */
     void generate(QString const& componentPath,
         QSharedPointer<RenodeCpuRoutesContainer> const& cpuContainer,
@@ -73,7 +73,7 @@ public:
     /*!
      *  Get the generated files.
      *
-     *      @return The generated files.
+     *    @return The generated files.
      */
     QStringList getGeneratedFiles() const;
 
@@ -82,15 +82,15 @@ private:
     /*!
      *  Writes the CPU listing into Renode platform files.
      *
-     *      @param [in] componentPath           Path to the component folder.
-     *      @param [in] cpuRoute                The selected CPU route container.
-     *      @param [in] fileNames               Names of the generated Renode files.
-     *      @param [in] createCpuFile           Flag for creating a CPU file.
-     *      @param [in] cpuFileName             Name of the CPU file.
-     *      @param [in] createMemoryFile        Flag for creating a memory file.
-     *      @param [in] memoryFileName          Name of the memory file.
-     *      @param [in] createPeripheralFile    Flag for creating a peripherals file.
-     *      @param [in] peripheralFileName      Name of the peripherals file.
+     *    @param [in] componentPath           Path to the component folder.
+     *    @param [in] cpuRoute                The selected CPU route container.
+     *    @param [in] fileNames               Names of the generated Renode files.
+     *    @param [in] createCpuFile           Flag for creating a CPU file.
+     *    @param [in] cpuFileName             Name of the CPU file.
+     *    @param [in] createMemoryFile        Flag for creating a memory file.
+     *    @param [in] memoryFileName          Name of the memory file.
+     *    @param [in] createPeripheralFile    Flag for creating a peripherals file.
+     *    @param [in] peripheralFileName      Name of the peripherals file.
      */
     void writeFiles(QString const& componentPath,
         QSharedPointer<RenodeCpuRoutesContainer> cpuRoute,
@@ -104,29 +104,29 @@ private:
     /*!
      *  Get a unique file name using the selected file name.
      *
-     *      @param [in] fileNames           List of used file names.
-     *      @param [in] currentFileName     The selected file name.
+     *    @param [in] fileNames           List of used file names.
+     *    @param [in] currentFileName     The selected file name.
      *
-     *      @return Unique file name.
+     *    @return Unique file name.
      */
     QString getUniqueFileName(QStringList& fileNames, QString const& currentFileName) const;
 
     /*!
      *  Get the number of files containing the selected name.
      *
-     *      @param [in] fileNames   List of the generated files.
-     *      @param [in] fileName    The selected file name.
+     *    @param [in] fileNames   List of the generated files.
+     *    @param [in] fileName    The selected file name.
      *
-     *      @return Number of files containing the same name.
+     *    @return Number of files containing the same name.
      */
     int getFileNumberExtension(QStringList const& fileNames, QString const& fileName) const;
 
     /*!
      *  Write the selected CPU.
      *
-     *      @param [in] filePath        File path for the renode files.
-     *      @param [in] cpuContainer    The CPU data container.
-     *      @param [in] fileName        Name for the CPU file.
+     *    @param [in] filePath        File path for the renode files.
+     *    @param [in] cpuContainer    The CPU data container.
+     *    @param [in] fileName        Name for the CPU file.
      */
     void writeCPU(QString const& filePath,
         QSharedPointer<RenodeCpuRoutesContainer> cpuContainer,
@@ -135,10 +135,10 @@ private:
     /*!
      *  Write the peripherals of the selected CPU route container.
      *
-     *      @param [in] filePath            File path for the renode files.
-     *      @param [in] peripheralPath      Path for the renode platform files.
-     *      @param [in] renodeCollection    The selected CPU route container.
-     *      @param [in] fileName            Name for the peripherals file.
+     *    @param [in] filePath            File path for the renode files.
+     *    @param [in] peripheralPath      Path for the renode platform files.
+     *    @param [in] renodeCollection    The selected CPU route container.
+     *    @param [in] fileName            Name for the peripherals file.
      */
     void writePeripherals(QString const& filePath,
         QString const& peripheralPath,
@@ -148,10 +148,10 @@ private:
     /*!
      *  Write a single peripheral.
      *
-     *      @param [in] stream          The text stream.
-     *      @param [in] peripheral      The selected peripheral item.
-     *      @param [in] tab             Current tab.
-     *      @param [in] renodeFilePath  The file path to the Renode platform files.
+     *    @param [in] stream          The text stream.
+     *    @param [in] peripheral      The selected peripheral item.
+     *    @param [in] tab             Current tab.
+     *    @param [in] renodeFilePath  The file path to the Renode platform files.
      */
     void writePeripheral(QTextStream& stream,
         QSharedPointer<RenodeStructs::cpuPeripheral> peripheral,
@@ -161,9 +161,9 @@ private:
     /*!
      *  Write the memory of the selected CPU.
      *
-     *      @param [in] filePath            File path for the Renode platform files.
-     *      @param [in] renodeCollection    The selected CPU route container.
-     *      @param [in] fileName            Name of the memory file.
+     *    @param [in] filePath            File path for the Renode platform files.
+     *    @param [in] renodeCollection    The selected CPU route container.
+     *    @param [in] fileName            Name of the memory file.
      */
     void writeMemories(QString const& filePath,
         QSharedPointer<RenodeCpuRoutesContainer> renodeCollection,
@@ -172,9 +172,9 @@ private:
     /*!
      *  Write a single memory item.
      *
-     *      @param [in] stream      The text stream.
-     *      @param [in] memory      The selected memory item.
-     *      @param [in] tab         Current tab.
+     *    @param [in] stream      The text stream.
+     *    @param [in] memory      The selected memory item.
+     *    @param [in] tab         Current tab.
      */
     void writeMemory(QTextStream& stream, QSharedPointer<RenodeStructs::cpuMemories> memory, 
         QString const& tab) const;

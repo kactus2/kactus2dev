@@ -33,14 +33,14 @@ public:
     /*!
      *  Loads plugin settings from the given settings store. Is called when Kactus2 loads the plugin.
      *
-     *      @param [in] settings The settings store.
+     *    @param [in] settings The settings store.
      */
     virtual void loadSettings(QSettings& settings) override final;
 
     /*!
      *  Saves plugin settings to the given settings store. Is called when Kactus2 applies changes to settings.
      *
-     *      @param [in,out] settings The settings store.
+     *    @param [in,out] settings The settings store.
      */
     virtual void saveSettings(QSettings& settings) override final;
 
@@ -52,14 +52,14 @@ public:
     /*!
      *  Get the path to the current peripheral template configuration.
      *	
-     *      @return Path to the current peripheral template configuration.
+     *    @return Path to the current peripheral template configuration.
      */
     QString getFilePath() const;
 
     /*!
      *  Set a new path for peripheral template configuration file.
      *	
-     *      @param [in] newFolderPath   The new path to peripheral template configuration file.
+     *    @param [in] newFolderPath   The new path to peripheral template configuration file.
      */
     void setFilePath(QString const& newFolderPath);
 

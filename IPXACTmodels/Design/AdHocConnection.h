@@ -31,10 +31,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name            The name of the adHocConnection.
-     *      @param [in] tiedValue       Fixed logic value for the connection.
-     *      @param [in] route           The route of the connection.
-     *      @param [in] offPage         Specifies whether the connection is off page or not.
+     *    @param [in] name            The name of the adHocConnection.
+     *    @param [in] tiedValue       Fixed logic value for the connection.
+     *    @param [in] route           The route of the connection.
+     *    @param [in] offPage         Specifies whether the connection is off page or not.
      */
     AdHocConnection(QString name,
         QString tiedValue = QString(),
@@ -59,92 +59,92 @@ public:
     /*!
      *  Gets the internal port references of the connection.
      *
-     *      @return A pointer to a list of internal port references.
+     *    @return A pointer to a list of internal port references.
      */
     QSharedPointer<QList<QSharedPointer<PortReference> > > getInternalPortReferences() const;
 
     /*!
      *  Gets the external port references of the connection.     
      *
-     *      @return A pointer to a list of external port references.
+     *    @return A pointer to a list of external port references.
      */
     QSharedPointer<QList<QSharedPointer<PortReference> > > getExternalPortReferences() const;
 
     /*!
      *  Sets the route of the connection.
      *
-     *      @param [in] route   The route to set.
+     *    @param [in] route   The route to set.
      */
     void setRoute(QList<QPointF> const& route) const;
 
     /*!
      *  Gets the route of the connection.     
      *
-     *      @return The route of the connection.
+     *    @return The route of the connection.
      */
     QList<QPointF> getRoute() const;
 
     /*!
      *  Checks if the connection is treated as an off-page connection.
      *
-     *      @return True if off-page connection, otherwise false.
+     *    @return True if off-page connection, otherwise false.
      */
     bool isOffPage() const;
 
     /*!
      *  Set/unset the connection to off-page connection.
      *
-     *      @param [in] offPage   True if set to off-page, otherwise false.
+     *    @param [in] offPage   True if set to off-page, otherwise false.
      */
     void setOffPage(bool offPage);
 
     /*!
      *  Set a new list of internal port references.
      *
-     *      @param [in] newInternals    The new list of internal port references.
+     *    @param [in] newInternals    The new list of internal port references.
      */
     void setInternalPortReferences(QSharedPointer<QList<QSharedPointer<PortReference> > > newInternals);
 
     /*!
      *  Set a new list of external port references.
      *
-     *      @param [in] newExternals    The new list of external port references.
+     *    @param [in] newExternals    The new list of external port references.
      */
     void setExternalPortReferences(QSharedPointer<QList<QSharedPointer<PortReference> > > newExternals);
 
     /*!
      *  Get the presence of the connection.
      *
-     *      @return The presence value of the connection.
+     *    @return The presence value of the connection.
      */
     QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
-     *      @param [in] newIsPresent    The new value for presence.
+     *    @param [in] newIsPresent    The new value for presence.
      */
     void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Get the tied value of the connection.
      *
-     *      @return The tied value.
+     *    @return The tied value.
      */
     QString getTiedValue() const;
 
     /*!
      *  Set the tied value.
      *
-     *      @param [in] newTiedValue    The new tied value.
+     *    @param [in] newTiedValue    The new tied value.
      */
     void setTiedValue(QString const& newTiedValue);
 
     /*!
      *  Change the component reference of contained interfaces.
      *
-     *      @param [in] oldName     The old component reference.
-     *      @param [in] newName     The new component reference.
+     *    @param [in] oldName     The old component reference.
+     *    @param [in] newName     The new component reference.
      */
     void changeInterfaceComponentReferences(QString const& oldName, QString const& newName) const;
 

@@ -35,10 +35,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] diagram     Diagram containing the scene of the component item.
-     *      @param [in] stack       The stack to which to add the item.
-     *      @param [in] item        The item to add.
-     *      @param [in] parent      The parent command.
+     *    @param [in] diagram     Diagram containing the scene of the component item.
+     *    @param [in] stack       The stack to which to add the item.
+     *    @param [in] item        The item to add.
+     *    @param [in] parent      The parent command.
      */
     HWComponentAddCommand(DesignDiagram* diagram, IGraphicsItemStack* stack, ComponentItem* item,
         QUndoCommand* parent = 0);

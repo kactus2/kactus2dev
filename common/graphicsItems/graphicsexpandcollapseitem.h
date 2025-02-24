@@ -37,7 +37,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this graphics item.
+	 *    @param [in] parent  Pointer to the owner of this graphics item.
 	 */
 	GraphicsExpandCollapseItem(QGraphicsItem* parent = 0);
 	
@@ -56,7 +56,7 @@ public:
 	/*!
      *  Check if the item is in expanded state.
 	 *
-	 *      @return True if the item is in expanded state.
+	 *    @return True if the item is in expanded state.
 	 */
 	virtual bool isExpanded() const;
 
@@ -66,7 +66,7 @@ public:
 	/*!
      *  Check if the item is in collapsed state.
 	 *
-	 *      @return True if the item is in collapsed state.
+	 *    @return True if the item is in collapsed state.
 	 */
 	virtual bool isCollapsed() const;
 
@@ -83,7 +83,7 @@ signals:
 	 *  This is emitted only when user clicks on the item.
 	 *  The expand() and collapse() functions do not emit this signal.
 	 * 
-	 *      @param [in] expanded    True if the item changed to expanded state.
+	 *    @param [in] expanded    True if the item changed to expanded state.
 	 */
 	void stateChanged(bool expanded);
 

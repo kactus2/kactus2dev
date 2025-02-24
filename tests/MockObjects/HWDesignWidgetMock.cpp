@@ -67,7 +67,7 @@ bool HWDesignWidgetMock::setDesign(VLNV const& vlnv, QString const& viewName)
 		if (vlnv.isValid() && vlnv.getType() == VLNV::COMPONENT) {
 
 			// create model 
-            QSharedPointer<Component> comp = getLibraryInterface()->getModel(vlnv).staticCast<Component>();
+            QSharedPointer<Component> comp = getLibHandler()->getModel(vlnv).staticCast<Component>();
 
 			if (comp == 0)
             {
@@ -83,13 +83,13 @@ bool HWDesignWidgetMock::setDesign(VLNV const& vlnv, QString const& viewName)
 
 	// if vlnv was writeSucceeded but view is empty then should create a new design for the component
 	else if (vlnv.isValid() && viewName.isEmpty()) {
-		Q_ASSERT(getLibraryInterface()->contains(vlnv));
-		Q_ASSERT(getLibraryInterface()->getDocumentType(vlnv) == VLNV::COMPONENT);
+		Q_ASSERT(getLibHandler()->contains(vlnv));
+		Q_ASSERT(getLibHandler()->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-		QSharedPointer<Component> comp = getLibraryInterface()->getModel(vlnv).staticCast<Component>();
+		QSharedPointer<Component> comp = getLibHandler()->getModel(vlnv).staticCast<Component>();
 
 		// get the directory path where the component's xml file is located
-		const QString xmlPath = getLibraryInterface()->getPath(vlnv);
+		const QString xmlPath = getLibHandler()->getPath(vlnv);
 		QFileInfo xmlInfo(xmlPath);
 		const QString dirPath = xmlInfo.absolutePath();
 
@@ -111,7 +111,7 @@ bool HWDesignWidgetMock::setDesign(VLNV const& vlnv, QString const& viewName)
 		    this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
 	setModified(false);
 	
-	setDocumentType("HW Design");
+	setDocumentType(TabDocument::DocumentType::HW_DESIGN);
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 
 	emit clearItemSelection();
@@ -142,7 +142,7 @@ bool HWDesignWidgetMock::setDesign(QSharedPointer<Component> comp, const QString
     VLNV designVLNV = comp->getHierRef(viewName);
 
     // Check for a valid VLNV type.
-    designVLNV.setType(getLibraryInterface()->getDocumentType(designVLNV));
+    designVLNV.setType(getLibHandler()->getDocumentType(designVLNV));
 
     if (!designVLNV.isValid())
     {
@@ -156,18 +156,18 @@ bool HWDesignWidgetMock::setDesign(QSharedPointer<Component> comp, const QString
     // if the component contains a direct reference to a design
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        design = getLibraryInterface()->getModel(designVLNV).staticCast<Design>();
+        design = getLibHandler()->getModel(designVLNV).staticCast<Design>();
     }
     // if component had reference to a design configuration
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        designConf = getLibraryInterface()->getModel(designVLNV).staticCast<DesignConfiguration>();
+        designConf = getLibHandler()->getModel(designVLNV).staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
 
         if (designVLNV.isValid())
         {
-            design = getLibraryInterface()->getModel(designVLNV).staticCast<Design>();
+            design = getLibHandler()->getModel(designVLNV).staticCast<Design>();
         }
 
         // if design configuration did not contain a reference to a design.
@@ -205,9 +205,9 @@ QSharedPointer<Component> HWDesignWidgetMock::createEmptyDesign(VLNV const& prev
 	VLNV vlnv;
 	QString path;
 
-	if (prevlnv.isValid() && getLibraryInterface()->contains(prevlnv)) {
+	if (prevlnv.isValid() && getLibHandler()->contains(prevlnv)) {
 		vlnv = prevlnv;
-		path = getLibraryInterface()->getPath(prevlnv);
+		path = getLibHandler()->getPath(prevlnv);
 		QFileInfo info(path);
 		path = info.absolutePath();
 	}
@@ -217,10 +217,10 @@ QSharedPointer<Component> HWDesignWidgetMock::createEmptyDesign(VLNV const& prev
 
 	QSharedPointer<Component> newComponent;
 	
-	if (getLibraryInterface()->contains(prevlnv))
+	if (getLibHandler()->contains(prevlnv))
     {
 		// find the component
-		newComponent = getLibraryInterface()->getModel(prevlnv).staticCast<Component>();
+		newComponent = getLibHandler()->getModel(prevlnv).staticCast<Component>();
 
 		Q_ASSERT_X(newComponent, "HWDesignWidgetMock::createEmptyDesign",
 			"The selected library item has to be component");
@@ -230,7 +230,7 @@ QSharedPointer<Component> HWDesignWidgetMock::createEmptyDesign(VLNV const& prev
 		newComponent = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
 	}
 
-    getLibraryInterface()->writeModelToFile(path, newComponent);
+    getLibHandler()->writeModelToFile(path, newComponent);
 
 	createDesignForComponent(newComponent, path);
 
@@ -247,7 +247,7 @@ void HWDesignWidgetMock::createDesignForComponent(QSharedPointer<Component> comp
 	int runningNumber = 1;
 	QString version = designVLNV.getVersion();
 	// if vlnv is reserved then add "(<number>)" to end of version field
-	while (getLibraryInterface()->contains(designVLNV)) {
+	while (getLibHandler()->contains(designVLNV)) {
 		++runningNumber;
 		designVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
 	}
@@ -258,7 +258,7 @@ void HWDesignWidgetMock::createDesignForComponent(QSharedPointer<Component> comp
 	runningNumber = 1;
 	version = desConfVLNV.getVersion();
 	// if vlnv is reserved then add "(<number>)" to end of version field
-	while (getLibraryInterface()->contains(desConfVLNV)) {
+	while (getLibHandler()->contains(desConfVLNV)) {
 		++runningNumber;
 		desConfVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
 	}
@@ -283,9 +283,9 @@ void HWDesignWidgetMock::createDesignForComponent(QSharedPointer<Component> comp
 
 	QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std14));
 
-	getLibraryInterface()->writeModelToFile(dirPath, newDesign);
-	getLibraryInterface()->writeModelToFile(dirPath, designConf);
-    getLibraryInterface()->writeModelToFile(component);
+	getLibHandler()->writeModelToFile(dirPath, newDesign);
+	getLibHandler()->writeModelToFile(dirPath, designConf);
+    getLibHandler()->writeModelToFile(component);
 
 	setDesign(component, viewName);
 }

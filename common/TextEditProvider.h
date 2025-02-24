@@ -25,7 +25,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] textEdit The text editor to which the provider applies.
+     *    @param [in] textEdit The text editor to which the provider applies.
      */
     explicit TextEditProvider(QPlainTextEdit& textEdit);
 
@@ -41,7 +41,7 @@ public:
     /*!
      *  Stores a new command to the edit stack.
      *
-     *      @param [in] command   The command to add.
+     *    @param [in] command   The command to add.
      */   
     virtual void addCommand(QSharedPointer<QUndoCommand> command) override final;
 

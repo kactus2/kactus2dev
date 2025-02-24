@@ -26,10 +26,10 @@ public:
     /*!
      *  <Description>.
      *
-     *      @param [in] plugin   The plugin whose information to display.
-     *      @param [in] parent   The parent widget.
+     *    @param [in] plugin   The plugin whose information to display.
+     *    @param [in] parent   The parent widget.
      *
-     *      @return 
+     *    @return 
      */
     PluginInfoWidget(IPlugin* plugin = nullptr, QWidget *parent = nullptr);
 

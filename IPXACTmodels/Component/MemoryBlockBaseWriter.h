@@ -29,8 +29,8 @@ namespace  MemoryBlockBaseWriter
     /*!
      *  Write the name group.
      *
-     *      @param [in] writer          Used XML writer.
-     *      @param [in] memoryBlock     Selected memory block.
+     *    @param [in] writer          Used XML writer.
+     *    @param [in] memoryBlock     Selected memory block.
      */
     IPXACTMODELS_EXPORT void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryBlockBase> memoryBlock, 
         Document::Revision docRevision);
@@ -38,8 +38,8 @@ namespace  MemoryBlockBaseWriter
     /*!
      *  Write the base address.
      *
-     *      @param [in] writer          Used XML writer.
-     *      @param [in] memoryBlock     Selected memory block.
+     *    @param [in] writer          Used XML writer.
+     *    @param [in] memoryBlock     Selected memory block.
      */
     IPXACTMODELS_EXPORT void writeBaseAddress(QXmlStreamWriter& writer, QSharedPointer<MemoryBlockBase> memoryBlock);
 };

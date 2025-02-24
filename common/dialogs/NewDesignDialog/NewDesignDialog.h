@@ -38,10 +38,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] libInterface  The library interface.
-     *      @param [in] component     The component for which the design will be created.
-     *      @param [in] designType    The type of design to create.
-     *      @param [in] parent        The parent widget.
+     *    @param [in] libInterface  The library interface.
+     *    @param [in] component     The component for which the design will be created.
+     *    @param [in] designType    The type of design to create.
+     *    @param [in] parent        The parent widget.
      */
     NewDesignDialog(LibraryInterface* libInterface, QSharedPointer<Component> component,
                     KactusAttribute::Implementation designType, QWidget *parent = 0);
@@ -50,7 +50,7 @@ public:
     /*!
      *  Sets the pre-filled view name.
      *
-     *      @param [in] viewName The view name to set.
+     *    @param [in] viewName The view name to set.
      */
     void setViewName(QString const& viewName);
 
@@ -62,7 +62,7 @@ public:
 	/*!
      *  Sets the pre-filled VLNV.
      *
-     *      @param [in] vlnv The VLNV to set.
+     *    @param [in] vlnv The VLNV to set.
      */
 	void setVLNV(const VLNV& vlnv);
 

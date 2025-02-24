@@ -28,9 +28,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] basePath    Path to start the relative paths from.
-	 *      @param [in] items       QStringList which contains the items to add.
-     *      @param [in] parent      The owner of the model.
+	 *    @param [in] basePath    Path to start the relative paths from.
+	 *    @param [in] items       QStringList which contains the items to add.
+     *    @param [in] parent      The owner of the model.
 	 */
 	DirListManagerModel(QString const& basePath, QStringList const& items = QStringList(), QObject* parent = 0);
 	
@@ -40,8 +40,8 @@ public:
 	/*!
      *  Get the data stored for the specified item.
 	 *
-	 *      @param [in] index   ModelIndex of the wanted item.
-	 *      @param [in] role    Specifies what kind of data is requested.
+	 *    @param [in] index   ModelIndex of the wanted item.
+	 *    @param [in] role    Specifies what kind of data is requested.
 	 */
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 

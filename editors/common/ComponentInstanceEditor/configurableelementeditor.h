@@ -46,10 +46,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] parameterExpressions            The expressions for selecting parameter references.
-     *      @param [in] defaultExpressions              The expressions for resolving default values.
-	 *      @param [in] completionModel                 The completion model for selecting parameter references.
-	 *      @param [in] parent                          The parent widget.
+     *    @param [in] parameterExpressions            The expressions for selecting parameter references.
+     *    @param [in] defaultExpressions              The expressions for resolving default values.
+	 *    @param [in] completionModel                 The completion model for selecting parameter references.
+	 *    @param [in] parent                          The parent widget.
 	 */
     ConfigurableElementEditor( ExpressionSet parameterExpressions, ExpressionSet defaultExpressions, 
         QAbstractItemModel* completionModel, QWidget *parent);
@@ -84,14 +84,14 @@ signals:
     /*!
      *  Increase the amount of references to a parameter corresponding to the ID.
      *
-     *      @param [in] id      The ID of the parameter being searched for.
+     *    @param [in] id      The ID of the parameter being searched for.
      */
     void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the amount of references to a parameter corresponding to the ID.
      *
-     *      @param [in] id      The ID of the parameter being searched for.
+     *    @param [in] id      The ID of the parameter being searched for.
      */
     void decreaseReferences(QString const& id);
 

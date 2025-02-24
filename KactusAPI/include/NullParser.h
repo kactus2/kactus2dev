@@ -36,27 +36,27 @@ public:
     /*!
      *  Parses an expression to decimal number.
      *
-     *      @param [in] expression   The expression to parse.
+     *    @param [in] expression   The expression to parse.
      *
-     *      @return The decimal value of the constant.
+     *    @return The decimal value of the constant.
      */
     QString parseExpression(QStringView expression, bool* isValidExpression) const final;
 
     /*!
      *  Checks if the given expression is a plain value and does not need evaluation.
      *
-     *      @param [in] expression   The expression to check.
+     *    @param [in] expression   The expression to check.
      *
-     *      @return True, if the expression is a plain value, otherwise false.
+     *    @return True, if the expression is a plain value, otherwise false.
      */
     bool isPlainValue(QStringView expression) const final;
     
     /*!
      *  Finds the common base in the expression.
      *
-     *      @param [in] expression   The expression to search in.
+     *    @param [in] expression   The expression to search in.
      *
-     *      @return The common base for the expression.
+     *    @return The common base for the expression.
      */
     int baseForExpression(QStringView expression) const final;
 

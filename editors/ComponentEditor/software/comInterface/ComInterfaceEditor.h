@@ -38,10 +38,10 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] libHandler      The instance that manages the library.
-	 *      @param [in] component       The component being edited.
-	 *      @param [in] comInterface    The COM interface being edited.
-	 *      @param [in] parent          The parent widget.
+	 *    @param [in] libHandler      The instance that manages the library.
+	 *    @param [in] component       The component being edited.
+	 *    @param [in] comInterface    The COM interface being edited.
+	 *    @param [in] parent          The parent widget.
 	 *
 	*/
 	ComInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, 
@@ -59,7 +59,7 @@ public:
     /*!
      *  Checks for the validity of the edited COM interface.
      *
-	 *      @return True if the COM interface is in valid state.
+	 *    @return True if the COM interface is in valid state.
 	 */
 	bool isValid() const;
 
@@ -96,7 +96,7 @@ private:
     /*!
      *  Updates the editors for showing values associated with the given COM definition.
      *
-     *      @param [in] comDefinitionVLNV   The COM definition to update the editors for.
+     *    @param [in] comDefinitionVLNV   The COM definition to update the editors for.
      */
     void updateEditorsForComDefinition(VLNV const& comDefinitionVLNV);
     

@@ -41,8 +41,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] enumerationName     Name of the enumerated value.
-	 *      @param [in] value               The enumerated value.
+	 *    @param [in] enumerationName     Name of the enumerated value.
+	 *    @param [in] value               The enumerated value.
 	 */
 	EnumeratedValue(QString const& enumerationName = QString(), QString const& value = QString());
 
@@ -58,47 +58,47 @@ public:
     /*!
      *  Get the usage.
      *
-     *      @return     The usage.
+     *    @return     The usage.
      */
     EnumeratedUsage getUsage() const;
 
     /*!
      *  Set the usage.
      *
-     *      @param [in] usage   The new usage value.
+     *    @param [in] usage   The new usage value.
      */
     void setUsage(EnumeratedUsage usage);
 
     /*!
      *  Get the value of the enumeratedValue.
      *
-     *      @return The value.
+     *    @return The value.
      */
 	QString getValue() const;
 
     /*!
      *  Set the value of the enumeratedValue.
      *
-     *      @param [in] value   The new value.
+     *    @param [in] value   The new value.
      */
 	void setValue(QString const& value);
 
     /*!
      *  Static function that translates enumeratedUsage to QString.
      *
-     *      @param [in] usage   The usage to be translated to QString
+     *    @param [in] usage   The usage to be translated to QString
      *
-     *      @return String form of the usage.
+     *    @return String form of the usage.
      */
     static QString usage2Str(EnumeratedValue::EnumeratedUsage usage);
 
     /*!
      *  Static function that translates QString to enumeratedUsage.
      *
-     *      @param [in] usage           QString that is translated into enumeratedUsage.
-     *      @param [in] defaultValue    The value that is returned if the string doesn't match any usage.
+     *    @param [in] usage           QString that is translated into enumeratedUsage.
+     *    @param [in] defaultValue    The value that is returned if the string doesn't match any usage.
      *
-     *      @return EnumeratedValue that matches the string of defaultValue.
+     *    @return EnumeratedValue that matches the string of defaultValue.
      */
     static EnumeratedValue::EnumeratedUsage str2Usage(const QString& usage, EnumeratedUsage defaultValue);
 

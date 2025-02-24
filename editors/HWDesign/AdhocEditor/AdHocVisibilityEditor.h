@@ -40,7 +40,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *    @param [in] parent The parent widget.
      */
 	AdHocVisibilityEditor(QWidget *parent);
 	
@@ -52,10 +52,10 @@ public:
 	/*!
 	 *  Sets the ad-hoc ports visibility data source.
 	 *
-	 *      @param [in] dataSource      The data source.
-     *      @param [in] design          The design containing the data source.
-	 *      @param [in] editProvider    The edit provider to use for undo/redo.
-	 *      @param [in] lockEditor      If true, the contents cannot be edited.
+	 *    @param [in] dataSource      The data source.
+     *    @param [in] design          The design containing the data source.
+	 *    @param [in] editProvider    The edit provider to use for undo/redo.
+	 *    @param [in] lockEditor      If true, the contents cannot be edited.
 	 */
 	void setDataSource(AdHocEnabled* dataSource, QSharedPointer<Design> design,
         QSharedPointer<IEditProvider> editProvider, bool lockEditor);

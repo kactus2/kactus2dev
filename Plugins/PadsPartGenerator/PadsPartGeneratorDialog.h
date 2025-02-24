@@ -47,14 +47,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] libIf               The library interface.
-	 *      @param [in] component           The component for which generation is done.
-     *      @param [in] expressionParser    The parser for expressions.
-	 *      @param [in] generatorName       The utilizing generator name.
-     *      @param [in] generatorVersion    The utilizing generator version.
-	 *      @param [in] parent              The parent widget.
+	 *    @param [in] libIf               The library interface.
+	 *    @param [in] component           The component for which generation is done.
+     *    @param [in] expressionParser    The parser for expressions.
+	 *    @param [in] generatorName       The utilizing generator name.
+     *    @param [in] generatorVersion    The utilizing generator version.
+	 *    @param [in] parent              The parent widget.
 	 *
-	 *      @return 
+	 *    @return 
 	 */
 	PadsPartGeneratorDialog(LibraryInterface* libIf, QSharedPointer<const Component> component, 
         QSharedPointer<ExpressionParser> expressionParser,
@@ -68,28 +68,28 @@ public:
     /*!
      *  Returns the name for the generated part.
      *
-     *      @return The name of the part.
+     *    @return The name of the part.
      */
     QString getPartName() const;
 
     /*!
      *  Returns the name of the target fileset.
      *
-     *      @return Name of the selected fileset.
+     *    @return Name of the selected fileset.
      */
     QString getFileSetName() const;
 
     /*!
      *  Returns the text in the preview.     
      *
-     *      @return the preview text.
+     *    @return the preview text.
      */
     QString getPreviewText();
 
     /*!
      *  Returns the selected gate generation type (single/multiple).
      *     
-     *      @return The selected type.
+     *    @return The selected type.
      */
     gateGenerationType getGategenerationType() const;
 
@@ -108,18 +108,18 @@ public slots:
     /*!
      *  Count the number of physical pins in a bus interface.
      *
-     *      @param [in] busInterface   The bus interface whose physical pins to count.
+     *    @param [in] busInterface   The bus interface whose physical pins to count.
      *
-     *      @return The number of physical pins in the interface.
+     *    @return The number of physical pins in the interface.
      */
     int countInterfacePins(QSharedPointer<BusInterface> busInterface);
 
     /*!
      *  Count the number of physical pins in a port map.
      *
-     *      @param [in] portMap     The port map whose physical pins to count.
+     *    @param [in] portMap     The port map whose physical pins to count.
      *
-     *      @return The number of physical pins in the port map.
+     *    @return The number of physical pins in the port map.
      */
     int countPortMapPins(QSharedPointer<PortMap> portMap);
 
@@ -170,35 +170,35 @@ private:
     /*!
      *  Adds pin declarations for interface ports.
      *
-     *      @param [in] busInterface    The interface whose ports to add.
-     *      @param [in] cursor          Cursor to the correct position in preview.
+     *    @param [in] busInterface    The interface whose ports to add.
+     *    @param [in] cursor          Cursor to the correct position in preview.
      */
     void insertPins(QSharedPointer<BusInterface> busInterface, QTextCursor &cursor); 
 
     /*!
      *  Adds a gate declaration.
      *
-     *      @param [in] name        The name of the gate.
-     *      @param [in] decals      Number of decals for the gate.
-     *      @param [in] pins        Number of pins in the gate.
-     *      @param [in] gateswap    Gate swap type.
-     *      @param [in] cursor      Cursor to the correct position in preview.
+     *    @param [in] name        The name of the gate.
+     *    @param [in] decals      Number of decals for the gate.
+     *    @param [in] pins        Number of pins in the gate.
+     *    @param [in] gateswap    Gate swap type.
+     *    @param [in] cursor      Cursor to the correct position in preview.
      */
     void insertGate(QString const& name, int decals, int pins, int gateswap, QTextCursor &cursor); 
 
     /*!
      *  Inserts a line of text to the preview.
      *
-     *      @param [in] line            The line to insert.
-     *      @param [in] cursor          Cursor to the correct position in preview.
-     *      @param [in] validatingExp   RegExp for checking the line correctness.
+     *    @param [in] line            The line to insert.
+     *    @param [in] cursor          Cursor to the correct position in preview.
+     *    @param [in] validatingExp   RegExp for checking the line correctness.
      */
     void insertLine(QString const& line,  QTextCursor cursor, QRegularExpression const& validatingExp = QRegularExpression() );
 
     /*!
      *  Inserts part attributes to the preview.
      *
-     *      @param [in] cursor   Cursor to the correct position in preview.
+     *    @param [in] cursor   Cursor to the correct position in preview.
      */
     void insertAttributes( QTextCursor& cursor );
     

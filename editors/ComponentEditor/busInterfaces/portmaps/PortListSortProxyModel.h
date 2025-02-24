@@ -53,10 +53,10 @@ public:
 	 /*!
       *  Constructor.
       *
-      *     @param [in] abstractionIndex        Index of the containing abstraction type.
-      *     @param [in] portMapInterface        Interface for accessing port maps.
-      *     @param [in] abstractionInterface    Interface for accessing abstraction types.
-      *     @param [in] parent                  The parent object.
+      *    @param [in] abstractionIndex        Index of the containing abstraction type.
+      *    @param [in] portMapInterface        Interface for accessing port maps.
+      *    @param [in] abstractionInterface    Interface for accessing abstraction types.
+      *    @param [in] parent                  The parent object.
       */
     PortListSortProxyModel(int const& abstractionIndex,
         PortMapInterface* portMapInterface,
@@ -71,28 +71,28 @@ public:
     /*!
 	 *  Gets the filter for direction of the ports.
 	 *
-	 *      @return The accepted direction.
+	 *    @return The accepted direction.
 	 */
     DirectionFilter filterDirection() const;
 
     /*!
 	 *  Gets the filter for hiding connected ports.
 	 *
-	 *      @return True, if ports are hidden, otherwise false.
+	 *    @return True, if ports are hidden, otherwise false.
 	 */
     bool filterHideConnected() const;
 
     /*!
      *  Gets the filter for allowed port names.
      *
-     *      @return The allowed port names.
+     *    @return The allowed port names.
      */
     QStringList filterPortNames() const;
 
     /*!
      *  Setup a new abstraction type for sorting.
      *
-     *      @param [in] newAbstractionIndex     Index of the selected abstraction type.
+     *    @param [in] newAbstractionIndex     Index of the selected abstraction type.
      */
     void setNewAbstractionType(int const& newAbstractionIndex);
 
@@ -101,35 +101,35 @@ public slots:
     /*!
      *  Sets the filter for port name(s).
      *
-     *      @param [in] portName   The allowed port name.
+     *    @param [in] portName   The allowed port name.
      */
     virtual void setFilterPortName(QString const& portName);
 
     /*!
      *  Sets the filter for port names.
      *
-     *      @param [in] ports   Allowed port names.
+     *    @param [in] ports   Allowed port names.
      */
     virtual void setFilterPorts( QStringList const& ports );
 
     /*!
      *  Sets the filter for in-direction.
      *
-     *      @param [in] enabled   If true, filter using in-direction.
+     *    @param [in] enabled   If true, filter using in-direction.
      */
     virtual void setFilterInDirection(bool enabled);
 
     /*!
      *  Sets the filter for out-direction.
      *
-     *      @param [in] filterOutDirection   If true, filter using out-direction.
+     *    @param [in] filterOutDirection   If true, filter using out-direction.
      */
     virtual void setFilterOutDirection(bool filterOutDirection);
 
     /*!
 	 *  Sets to show or hide already connected ports.
 	 *
-	 *      @param [in] hide  True, if ports are hidden, otherwise false.
+	 *    @param [in] hide  True, if ports are hidden, otherwise false.
 	 */
     virtual void setFilterHideConnected(bool hide = true);
 
@@ -141,21 +141,21 @@ public slots:
     /*!
      *  Called to update filtering when a port has been connected in a port map.
      *
-     *      @param [in] portName   The name of the connected port.
+     *    @param [in] portName   The name of the connected port.
      */
     virtual void onPortConnected(QString const& portName);
 
     /*!
      *  Called to update filtering when a port has been disconnected from all port maps.
      *
-     *      @param [in] portName   The name of the disconnected port.
+     *    @param [in] portName   The name of the disconnected port.
      */
     virtual void onPortDisconnected(QString const& portName);
 
     /*!
      *  Called to change the filtered port type.
      *
-     *      @param [in] newVisibleType  The new visible port type.
+     *    @param [in] newVisibleType  The new visible port type.
      */
     virtual void onChangeFilteredType(QString const& newVisibleType);
 
@@ -164,20 +164,20 @@ protected:
     /*!
 	 *  Implementation of the row filtering.
 	 *
-	 *      @param [in] source_row      The row to check for filtering.
-     *      @param [in] source_parent   The parent index of the row.
+	 *    @param [in] source_row      The row to check for filtering.
+     *    @param [in] source_parent   The parent index of the row.
      *
-     *      @return True, if the row passes the filters, otherwise false.
+     *    @return True, if the row passes the filters, otherwise false.
 	 */
     virtual bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
 
     /*!
      *  Implementation of the column filtering.
      *
-     *      @param [in] source_column   The column to check for filtering.
-     *      @param [in] source_parent   Parent index of the row.
+     *    @param [in] source_column   The column to check for filtering.
+     *    @param [in] source_parent   Parent index of the row.
      *
-     *      @return True, if the column passes the filters, otherwise false.
+     *    @return True, if the column passes the filters, otherwise false.
      */
     virtual bool filterAcceptsColumn(int source_column, const QModelIndex &source_parent) const override;
 

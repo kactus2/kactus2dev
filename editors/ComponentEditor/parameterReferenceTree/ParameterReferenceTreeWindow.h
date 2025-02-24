@@ -30,8 +30,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parameterReferenceTree  Tree containing the references made to the selected parameter.
-     *      @param [in] parent                  Parent widget.
+     *    @param [in] parameterReferenceTree  Tree containing the references made to the selected parameter.
+     *    @param [in] parent                  Parent widget.
      */
     ParameterReferenceTreeWindow(ParameterReferenceTree* parameterReferenceTree, QWidget* parent = 0);
 
@@ -45,8 +45,8 @@ public slots:
     /*!
      *  Handles the creation and opening of the parameter reference tree.
      *
-     *      @param [in] parameterID     ID of the selected parameter.
-     *      @param [in] parameterName   Name of the selected parameter.
+     *    @param [in] parameterID     ID of the selected parameter.
+     *    @param [in] parameterName   Name of the selected parameter.
      */
     void openReferenceTree(QString const& parameterID, QString const& parameterName);
 

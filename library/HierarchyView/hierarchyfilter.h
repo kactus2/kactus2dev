@@ -33,8 +33,8 @@ public:
 
 	/*! The constructor
 	 *
-     *      @param [in] libraryAccess   Access interface to the library.
-	 *      @param [in] parent          Pointer to the owner of this filter.
+     *    @param [in] libraryAccess   Access interface to the library.
+	 *    @param [in] parent          Pointer to the owner of this filter.
      */
     HierarchyFilter(LibraryInterface* libraryAccess, QObject *parent);
 
@@ -51,10 +51,10 @@ protected:
 
 	/*! Validate the given row on a parent and check if item should be shown.
 	 *
-	 *      @param [in]  source_row     The row number of the child on the parent.
-	 *      @param [in]  source_parent  Model index that identifies the parent object.
+	 *    @param [in]  source_row     The row number of the child on the parent.
+	 *    @param [in]  source_parent  Model index that identifies the parent object.
 	 *
-	 *      @return bool True if object should be displayed.
+	 *    @return bool True if object should be displayed.
 	*/
 	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const override final;
 

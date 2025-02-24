@@ -44,23 +44,23 @@ public:
 	/*!
      *  Get the name of the choice.
 	 *
-	 *      @return QString containing the name.
+	 *    @return QString containing the name.
 	 */
 	QString name() const;
 
 	/*!
      *  Set the name of the choice.
 	 *
-	 *      @param [in] name QString containing the name.
+	 *    @param [in] name QString containing the name.
 	 */
 	void setName(const QString& name);
     
     /*!
      *  Finds if the choice has an enumeration with the given value.
      *
-     *      @param [in] enumerationValue   The enumeration value to search for.
+     *    @param [in] enumerationValue   The enumeration value to search for.
      *
-     *      @return True, if the choice has an enumeration with the given value, otherwise false.
+     *    @return True, if the choice has an enumeration with the given value, otherwise false.
      */
     bool hasEnumeration(QString const& enumerationValue) const;
 
@@ -68,14 +68,14 @@ public:
      *  Gets the enumeration values of the choice. If a text has been specified for the enumeration,
      *  it is returned instead of the value.
      *
-     *      @return The enumeration values.
+     *    @return The enumeration values.
      */
     QStringList getEnumerationValues() const;
 
     /*!
      *  Get the enumerations of the choice.
      *
-     *      @return The enumerations of the choice.
+     *    @return The enumerations of the choice.
      */
     QSharedPointer<QList<QSharedPointer<Enumeration> > > enumerations() const;
 

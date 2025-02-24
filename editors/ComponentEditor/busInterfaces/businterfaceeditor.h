@@ -44,16 +44,16 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] libHandler              The library handler instance.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] busif                   The bus interface being edited.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The expression parser.
-     *      @param [in] busInterface            Interface for accessing bus interfaces.
-     *      @param [in] portMapInterface        Interface for accessing port maps.
-     *      @param [in] parent                  The owner of this container.
-	 *      @param [in] parentWnd               The parent window.
+	 *    @param [in] libHandler              The library handler instance.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] busif                   The bus interface being edited.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+     *    @param [in] expressionParser        The expression parser.
+     *    @param [in] busInterface            Interface for accessing bus interfaces.
+     *    @param [in] portMapInterface        Interface for accessing port maps.
+     *    @param [in] parent                  The owner of this container.
+	 *    @param [in] parentWnd               The parent window.
 	 */
     BusInterfaceEditor(LibraryInterface* libHandler,
         QSharedPointer<Component> component,
@@ -74,7 +74,7 @@ public:
     /*!
      *  Sets the protection state of the editor.
      *
-     *      @param [in] locked  True for locked state; false for unlocked.
+     *    @param [in] locked  True for locked state; false for unlocked.
      */
     virtual void setProtection(bool locked);
 

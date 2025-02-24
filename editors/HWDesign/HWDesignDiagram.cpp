@@ -243,13 +243,15 @@ void HWDesignDiagram::updateHierComponent()
     QList<QSharedPointer<BusInterface> > busIfs;
 
     // Search all graphics items in the scene.
-    for (QGraphicsItem *item : items())
+    for (QGraphicsItem* item : items())
     {
         // Check if the item is a diagram interface and its bus interface is defined.
-        auto diagIf = dynamic_cast<HierarchicalBusInterfaceItem*>(item);
-        if (diagIf != nullptr && diagIf->getBusInterface() != nullptr && !diagIf->isInvalid())
+        if (auto diagIf = dynamic_cast<HierarchicalBusInterfaceItem*>(item))
         {
-			busIfs.append(diagIf->getBusInterface());
+            if (diagIf->getBusInterface() != nullptr && !diagIf->isInvalid())
+            {
+                busIfs.append(diagIf->getBusInterface());
+            }
         }
     }
 
@@ -258,20 +260,41 @@ void HWDesignDiagram::updateHierComponent()
     // Add any new interfaces in the component.
     for (auto diagramInterface : busIfs)
     {
-        if (componentInterfaces->contains(diagramInterface) == false)
+        bool busExists = std::find_if(componentInterfaces->cbegin(), componentInterfaces->cend(), [&diagramInterface](auto componentBusIf)
+            {
+                return componentBusIf->name() == diagramInterface->name();
+            }) != componentInterfaces->cend();
+
+        if (!busExists)
         {
             componentInterfaces->append(diagramInterface);
         }
     }
 
-    // Remove interfaces deleted in the design from the component.
-    for (auto componentInterface : *componentInterfaces)
+    if (manuallyDeletedInterfaces_)
     {
-        if (busIfs.contains(componentInterface) == false)
+        QList<QSharedPointer<BusInterface> > toRemove;
+        // Remove interfaces deleted in the design from the component.
+        for (auto componentInterface : *componentInterfaces)
         {
-            componentInterfaces->removeAll(componentInterface);
+            bool busExists = std::find_if(busIfs.cbegin(), busIfs.cend(), [&componentInterface](auto diagramInterface)
+                {
+                    return componentInterface->name() == diagramInterface->name();
+                }) != busIfs.cend();
+
+            if (!busExists)
+            {
+                toRemove.append(componentInterface);
+            }
+        }
+
+        for (auto interfaceToRemove : toRemove)
+        {
+            componentInterfaces->removeAll(interfaceToRemove);
         }
     }
+
+    manuallyDeletedInterfaces_ = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -372,6 +395,31 @@ HWConnectionEndpoint* HWDesignDiagram::getDiagramAdHocPort(QString const& portNa
     }
 
     return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::getHierarchicalInterface()
+//-----------------------------------------------------------------------------
+HWConnectionEndpoint* HWDesignDiagram::getHierarchicalInterface(QString const& busRef) const
+{
+    for (QGraphicsItem* item : items())
+    {
+        if (item->type() == HierarchicalBusInterfaceItem::Type &&
+            static_cast<HierarchicalBusInterfaceItem*>(item)->name().compare(busRef) == 0)
+        {
+            return static_cast<HWConnectionEndpoint*>(item);
+        }
+    }
+
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::getInterfacesToDelete()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::setInterfacesHaveBeenDeleted()
+{
+    manuallyDeletedInterfaces_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1294,7 +1342,7 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createConnection()
 //-----------------------------------------------------------------------------
-GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint)
+GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint, bool isOffPage)
 {    
     QSharedPointer<ConnectionRoute> route(new ConnectionRoute(""));
     
@@ -1373,7 +1421,11 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
         auto connectionName = connection->createDefaultName();
         connection->setName(connectionName);
     }
-    
+
+    // The code below ensures that the connection will be displayed 
+    // with an off-page style after reloading the design
+    connection->getRouteExtension()->setOffpage(isOffPage);
+
     return connection;
 }
 
@@ -1439,6 +1491,9 @@ QUndoCommand* HWDesignDiagram::createAddCommandForConnection(GraphicsConnection*
                 connectionCommand->undo();
                 return nullptr;
             }
+
+            // Set correct name for interconnection, replacing old draft interface name
+            hwConnection->getInterconnection()->setName(hwConnection->createDefaultName());
         }
                         
         return connectionCommand;
@@ -1682,7 +1737,7 @@ void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sou
         }
     }
 
-    QUndoCommand* portMapCreationCommand = new EndPointPortMapCommand(target, newPortMaps, copyCommand);
+    QUndoCommand* portMapCreationCommand = new EndPointPortMapCommand(target, newPortMaps, getEditedComponent(), copyCommand);
     portMapCreationCommand->redo();
 }
 
@@ -1728,14 +1783,16 @@ bool HWDesignDiagram::createPortMapsManually(ConnectionEndpoint* sourcePoint, Co
     PortmapDialog dialog(getLibraryInterface(), targetPoint->getOwnerComponent(), 
         targetPoint->getBusInterface(), sourcePoint->getBusInterface(), getParent());
 
-    int accepted = dialog.exec() == QDialog::Accepted;
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return false;
+    }
 
     QList<QSharedPointer<PortMap> > newMaps = *targetPoint->getBusInterface()->getAllPortMaps();
-    sourcePoint->getBusInterface()->clearAllPortMaps();
+    targetPoint->getBusInterface()->clearAllPortMaps(); // clear temprorary portmaps so that undo works
 
-    new EndPointPortMapCommand(targetPoint, newMaps, parentCommand);
-
-    return accepted;
+    new EndPointPortMapCommand(targetPoint, newMaps, getEditedComponent(), parentCommand);
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -2303,8 +2360,24 @@ ConnectionEndpoint* HWDesignDiagram::findOrCreateHierarchicalInterface(QString c
         busIf = QSharedPointer<BusInterface>(new BusInterface());
         busIf->setName(busRef);
 
-        QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busIf->name()));
-        getDesign()->getVendorExtensions()->append(dataGroup);
+        // Check if there already is data for interface with this name (interface was deleted or renamed)
+        auto designInterfaceGraphicsData = getDesign()->getInterfaceGraphicsData();
+        auto interfaceGraphicsDataIter = std::find_if(designInterfaceGraphicsData.cbegin(), designInterfaceGraphicsData.cend(),
+            [&busIf](QSharedPointer<InterfaceGraphicsData> graphicsData)
+            {
+                return graphicsData->getName() == busIf->name();
+            });
+
+        QSharedPointer<InterfaceGraphicsData> dataGroup;
+        if (interfaceGraphicsDataIter != designInterfaceGraphicsData.cend())
+        {
+            dataGroup = *interfaceGraphicsDataIter;
+        }
+        else
+        {
+            dataGroup = QSharedPointer<InterfaceGraphicsData>(new InterfaceGraphicsData(busIf->name()));
+            getDesign()->getVendorExtensions()->append(dataGroup);
+        }
 
         auto hierarchicalInterface = new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup, nullptr);
         hierarchicalInterface->setTemporary(true);

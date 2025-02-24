@@ -40,10 +40,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] busInterface    Interface for accessing bus interfaces.
-     *      @param [in] busName         Name of the edited bus interface.
-	 *      @param [in] libHandler      The library handler instance.
-	 *      @param [in] parent          The owner of this editor.
+	 *    @param [in] busInterface    Interface for accessing bus interfaces.
+     *    @param [in] busName         Name of the edited bus interface.
+	 *    @param [in] libHandler      The library handler instance.
+	 *    @param [in] parent          The owner of this editor.
 	 *
      */
     MonitorModeEditor(BusInterfaceInterface* busInterface,
@@ -67,7 +67,7 @@ public:
 	/*!
      *  Check for the validity of the edited item.
      *
-     *      @return True if item is valid.
+     *    @return True if item is valid.
      */
 	bool isValid() const final;
 
@@ -79,7 +79,7 @@ public:
 	/*!
      *  Get the interface mode of the editor.
 	 *
-     *      @return General::InterfaceMode Specifies the interface mode.
+     *    @return General::InterfaceMode Specifies the interface mode.
      */
 	General::InterfaceMode getInterfaceMode() const final;
 
@@ -93,14 +93,14 @@ private slots:
 	/*!
      *  Handles the monitor interface mode change.
      *
-     *      @param [in] mode    New interface mode.
+     *    @param [in] mode    New interface mode.
      */
 	void onInterfaceModeChange(General::InterfaceMode mode);
 
 	/*!
      *  Handler for monitor system group changes.
      *
-     *      @param [in] groupName   New system group.
+     *    @param [in] groupName   New system group.
      */
 	void onSystemGroupChange(QString const& groupName);
 

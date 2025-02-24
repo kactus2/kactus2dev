@@ -299,26 +299,34 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
 void MainWindow::setupActions()
 {
     // the action to create a new hierarchical component
-    actNew_ = new QAction(QIcon(":/icons/common/graphics/file-new.png"), tr("New"), this);
+    actNew_ = new QAction(QIcon(":/icons/common/graphics/file-new.png"), QString(), this);
     actNew_->setShortcut(QKeySequence::New);
+    QString tooltipNew = tr("New (%1)").arg(actNew_->shortcut().toString(QKeySequence::NativeText));
+    actNew_->setToolTip(tooltipNew);
     connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
 
-    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), tr("Save"), this);
+    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), QString(), this);
     actSave_->setShortcut(QKeySequence::Save);
+    QString tooltipSave = tr("Save (%1)").arg(actSave_->shortcut().toString(QKeySequence::NativeText));
+    actSave_->setToolTip(tooltipSave);
     actSave_->setEnabled(false);
     connect(actSave_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocument()));
     connect(designTabs_, SIGNAL(documentModifiedChanged(bool)),
         actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
-
-    actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), tr("Save As"), this);
+    actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), QString(), this);
     actSaveAs_->setShortcut(QKeySequence::SaveAs);
+    QString tooltipSaveAs = tr("Save As");
+    actSaveAs_->setToolTip(tooltipSaveAs);
     actSaveAs_->setEnabled(false);
     connect(actSaveAs_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocumentAs()));
 
     actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"),
-        tr("Save All"), this);
+        QString("Save all"), this);
     actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
+    QString tooltipSaveAll = tr("Save All (%1)").arg(actSaveAll_->shortcut().toString(QKeySequence::NativeText));
+    actSaveAll_->setToolTip(tooltipSaveAll);
+    actSaveAll_->setStatusTip(tooltipSaveAll);
     connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
 
     actSaveHierarchy_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"),
@@ -331,8 +339,11 @@ void MainWindow::setupActions()
     saveMenu->addAction(actSaveHierarchy_);
     actSaveAs_->setMenu(saveMenu);
 
-    actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), tr("Print"), this);
+    actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), QString(), this);
     actPrint_->setShortcut(QKeySequence::Print);
+    QString tooltipPrint = tr("Print (%1)").arg(actPrint_->shortcut().toString(QKeySequence::NativeText));
+    actPrint_->setToolTip(tooltipPrint);
+    actPrint_->setStatusTip(tooltipPrint);
     actPrint_->setEnabled(false);
     connect(actPrint_, SIGNAL(triggered()), designTabs_, SLOT(printCurrentDocument()));
 
@@ -340,13 +351,18 @@ void MainWindow::setupActions()
     actImageExport_->setEnabled(false);
     connect(actImageExport_, SIGNAL(triggered()), designTabs_, SLOT(exportCurrentDocumentAsImage()));
 
-    actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), tr("Undo"), this);
+    actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), QString(), this);
     actUndo_->setShortcut(QKeySequence::Undo);
+    QString tooltipUndo = tr("Undo (%1)").arg(actUndo_->shortcut().toString(QKeySequence::NativeText));
+    actUndo_->setToolTip(tooltipUndo);
+    actUndo_->setStatusTip(tooltipUndo);
     connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
 
-    actRedo_ = new QAction(QIcon(":/icons/common/graphics/edit-redo.png"),
-        tr("Redo"), this);
+    actRedo_ = new QAction(QIcon(":/icons/common/graphics/edit-redo.png"), QString(), this);
     actRedo_->setShortcut(QKeySequence::Redo);
+    QString tooltipRedo = tr("Redo (%1)").arg(actRedo_->shortcut().toString(QKeySequence::NativeText));
+    actRedo_->setToolTip(tooltipRedo);
+    actRedo_->setStatusTip(tooltipRedo);
     connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
 
     actLibraryLocations_ = new QAction(QIcon(":/icons/common/graphics/library-config.png"),
@@ -392,22 +408,38 @@ void MainWindow::setupActions()
 
     // Initialize the action to set draw mode to connection mode.
     actToolConnect_ = new QAction(QIcon(":/icons/common/graphics/tool-interconnection.png"),
-        tr("Interconnection Tool"), this);
+        QString(), this);
     actToolConnect_->setCheckable(true);
+    actToolConnect_->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Space));
+    QString tooltipToolConnect = tr("Interconnection Tool (%1)").arg(actToolConnect_->shortcut().toString(QKeySequence::NativeText));
+    actToolConnect_->setToolTip(tooltipToolConnect);
+    actToolConnect_->setStatusTip(tooltipToolConnect);
 
     // Initialize the action to set draw mode to interface mode.
     actToolInterface_ = new QAction(QIcon(":/icons/common/graphics/tool-interface.png"), tr("Interface Tool"), this);
     actToolInterface_->setCheckable(true);
 
-    actToolDraft_ = new QAction(QIcon(":/icons/common/graphics/tool-drafting.png"), tr("Drafting Tool"), this);
+    actToolDraft_ = new QAction(QIcon(":/icons/common/graphics/tool-drafting.png"), QString(), this);
     actToolDraft_->setCheckable(true);
+    actToolDraft_->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
+    QString tooltipToolDraft = tr("Drafting Tool (%1)").arg(actToolDraft_->shortcut().toString(QKeySequence::NativeText));
+    actToolDraft_->setToolTip(tooltipToolDraft);
+    actToolDraft_->setStatusTip(tooltipToolDraft);
 
     actToolToggleOffPage_ = new QAction(QIcon(":/icons/common/graphics/tool-toggle_offpage.png"),
-        tr("Toggle Off-Page Tool"), this);
+        QString(), this);
     actToolToggleOffPage_->setCheckable(true);
+    actToolToggleOffPage_->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
+    QString tooltipToolToggleOffPage = tr("Toggle Off-Page Tool (%1)").arg(actToolToggleOffPage_->shortcut().toString(QKeySequence::NativeText));
+    actToolToggleOffPage_->setToolTip(tooltipToolToggleOffPage);
+    actToolToggleOffPage_->setStatusTip(tooltipToolToggleOffPage);
 
-    actToolLabel_ = new QAction(QIcon(":/icons/common/graphics/balloon.png"), tr("Sticky Note Tool"), this);
+    actToolLabel_ = new QAction(QIcon(":/icons/common/graphics/balloon.png"), QString(), this);
     actToolLabel_->setCheckable(true);
+    actToolLabel_->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+    QString tooltipToolLabel = tr("Sticky Note Tool (%1)").arg(actToolLabel_->shortcut().toString(QKeySequence::NativeText));
+    actToolLabel_->setToolTip(tooltipToolLabel);
+    actToolLabel_->setStatusTip(tooltipToolLabel);
 
     modeActionGroup_ = new QActionGroup(this);
     modeActionGroup_->setExclusive(true);
@@ -477,6 +509,13 @@ void MainWindow::setupActions()
     connect(actionFilterUnconnectedMemoryItems_, SIGNAL(triggered(bool)),
         this, SLOT(onFilterUnconnectedMemoryItems(bool)), Qt::UniqueConnection);
 
+    //! Initialize the action to filter memory overlap items.
+    actionFilterMemoryOverlap_ = new QAction(QIcon(":icons/common/graphics/filterMemoryOverlap.png"),
+        tr("Filter memory overlap markers"), this);
+    actionFilterMemoryOverlap_->setCheckable(true);
+    connect(actionFilterMemoryOverlap_, SIGNAL(triggered(bool)), 
+        this, SLOT(onFilterMemoryOverlapItems(bool)), Qt::UniqueConnection);
+
     // Initialize the action to zoom in.
     actZoomIn_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_in.png"), tr("Zoom In"), this);
     actZoomIn_->setEnabled(false);
@@ -532,14 +571,20 @@ void MainWindow::setupActions()
     connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
     actWorkspaces_->setMenu(&workspaceMenu_);
 
-    actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this);
+    actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), QString(), this);
     actRefresh_->setShortcut(QKeySequence("F5"));
+    QString tooltipRefresh = tr("Refresh (%1)").arg(actRefresh_->shortcut().toString(QKeySequence::NativeText));
+    actRefresh_->setToolTip(tooltipRefresh);
+    actRefresh_->setStatusTip(tooltipRefresh);
     connect(actRefresh_, SIGNAL(triggered(bool)), designTabs_, SLOT(refreshCurrentDocument()));
 
-    actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), tr("Unlocked"), this);
+    actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), QString(), this);
     actProtect_->setCheckable(true);
     actProtect_->setEnabled(false);
     actProtect_->setShortcut(QKeySequence("Ctrl+L"));
+    QString tooltipProtect = tr("Unlocked (%1)").arg(actProtect_->shortcut().toString(QKeySequence::NativeText));
+    actProtect_->setToolTip(tooltipProtect);
+    actProtect_->setStatusTip(tooltipProtect);
     connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
 
     // Initialize the action to open Kactus2 settings.
@@ -547,12 +592,15 @@ void MainWindow::setupActions()
     connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
 
     // Initialize the action to open the about box.
-    actAbout_= new QAction(QIcon(":/icons/common/graphics/system-about.png"), tr("About"), this);
+    actAbout_ = new QAction(QIcon(":/icons/common/graphics/system-about.png"), tr("About"), this);
     connect(actAbout_, SIGNAL(triggered()), this, SLOT(showAbout()), Qt::UniqueConnection);
 
     // Initialize the action to open the help window.
-    actHelp_= new QAction(QIcon(":/icons/common/graphics/system-help.png"), tr("Help"), this);
+    actHelp_ = new QAction(QIcon(":/icons/common/graphics/system-help.png"), QString(), this);
     actHelp_->setShortcut(QKeySequence::HelpContents);
+    QString tooltipHelp = tr("Help (%1)").arg(actHelp_->shortcut().toString(QKeySequence::NativeText));
+    actHelp_->setToolTip(tooltipHelp);
+    actHelp_->setStatusTip(tooltipHelp);
     connect(actHelp_, SIGNAL(triggered()), dockHandler_, SLOT(showHelp()), Qt::UniqueConnection);
 
     // Initialize the action to exit the program.
@@ -663,6 +711,7 @@ void MainWindow::setupMenus()
     filteringGroup_->addAction(actionCondenseMemoryItems_);
     filteringGroup_->addAction(actionCondenseFieldItems_);
     filteringGroup_->addAction(actionExtendFieldItems_);
+    filteringGroup_->addAction(actionFilterMemoryOverlap_);
 
     filteringAction_ = ribbon_->addGroup(filteringGroup_);
     filteringAction_->setVisible(false);
@@ -790,7 +839,7 @@ void MainWindow::connectDockHandler()
 void MainWindow::setupAndConnectLibraryHandler()
 {
     connect(libraryHandler_, SIGNAL(openDesign(const VLNV&, const QString&)),
-        this, SLOT(openDesign(const VLNV&, const QString&)));
+        this, SLOT(openHWDesign(const VLNV&, const QString&)));
     connect(libraryHandler_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(openMemoryDesign(const VLNV&, const QString&)));
 
@@ -987,6 +1036,7 @@ void MainWindow::updateMenuStrip()
         actionFilterRegisters_->setChecked(memoryDocument->addressBlockRegistersAreFiltered());
         actionFilterFields_->setChecked(memoryDocument->fieldsAreFiltered());
         actionFilterUnconnectedMemoryItems_->setChecked(memoryDocument->unconnectedMemoryItemsAreFiltered());
+        actionFilterMemoryOverlap_->setChecked(memoryDocument->memoryOverlapItemsAreFiltered());
     }
 
     filteringAction_->setVisible(isMemoryDesign);
@@ -1044,6 +1094,7 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     QString viewName;
 
     // if the design is supported by the document type
+    KactusAttribute::Implementation implementation = KactusAttribute::HW;
     DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
     if (desWidget)
     {
@@ -1052,13 +1103,14 @@ void MainWindow::runGeneratorPlugin(QAction* action)
 
         // find the design config is one exists
         viewName = desWidget->getOpenViewName();
+        implementation = desWidget->getImplementation();
     }
 
     // Retrieve the plugin pointer from the action.
     IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
     Q_ASSERT(plugin != 0);
 
-    KactusAPI::runGenerator(plugin, compVLNV, viewName, QString(), this);
+    KactusAPI::runGenerator(plugin, compVLNV, viewName, QString(), implementation, this);
 
     // Refresh the document.
     doc->refresh();
@@ -1501,7 +1553,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
     if (success)
     {
         // Open the design.
-        openDesign(vlnv, viewNames.first());
+        openHWDesign(vlnv, viewNames.first());
 
         unlockNewlyCreatedDocument(vlnv);
     }
@@ -1616,7 +1668,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     if (success)
     {
         // Open the design.
-        openDesign(vlnv, view->name());
+        openHWDesign(vlnv, view->name());
 
         unlockNewlyCreatedDocument(vlnv);
 
@@ -2299,21 +2351,9 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, Document::Revision revisi
 //-----------------------------------------------------------------------------
 void MainWindow::openBus(const VLNV& busDefVLNV)
 {
-    if (isOpen(busDefVLNV) || !busDefVLNV.isValid())
+    if (isOpen(busDefVLNV, TabDocument::DocumentType::BUS_DEFINITION) || !busDefVLNV.isValid())
     {
         return;
-    }
-
-    // Check if the bus editor is already open and activate it.
-    for (int i = 0; i < designTabs_->count(); i++)
-    {
-        TabDocument* editor = dynamic_cast<TabDocument*>(designTabs_->widget(i));
-
-        if (editor && editor->getDocumentVLNV() == busDefVLNV)
-        {
-            designTabs_->setCurrentIndex(i);
-            return;
-        }
     }
 
     // Editor for given vlnv was not yet open so create one for it
@@ -2341,7 +2381,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV)
 //-----------------------------------------------------------------------------
 void MainWindow::openAbsDef(const VLNV& absDefVLNV)
 {
-    if (isOpen(absDefVLNV) || !absDefVLNV.isValid())
+    if (isOpen(absDefVLNV, TabDocument::DocumentType::ABSTRACTION_DEFINITION) || !absDefVLNV.isValid())
     {
         return;
     }
@@ -2386,7 +2426,7 @@ void MainWindow::openAbsDef(const VLNV& absDefVLNV)
 //-----------------------------------------------------------------------------
 void MainWindow::openCatalog(const VLNV& vlnv)
 {
-    if (isOpen(vlnv))
+    if (isOpen(vlnv, TabDocument::DocumentType::CATALOG))
     {
         return;
     }
@@ -2424,7 +2464,7 @@ void MainWindow::openCatalog(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 // Function: openDesign()
 //-----------------------------------------------------------------------------
-void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
+void MainWindow::openHWDesign(VLNV const& vlnv, QString const& viewName)
 {
     // The vlnv must always be for a component.
     Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
@@ -2434,7 +2474,7 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
     // Check if the design is already open.
     VLNV refVLNV = comp->getHierRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV) || hasInvalidReferences(comp->getHierRefs(), vlnv))
+    if (isOpen(designVLNV, TabDocument::DocumentType::HW_DESIGN) || hasInvalidReferences(comp->getHierRefs(), vlnv))
     {
         return;
     }
@@ -2463,7 +2503,7 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
     connect(designWidget, SIGNAL(destroyed(QObject*)), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
-        this, SLOT(openDesign(const VLNV&, const QString&)));
+        this, SLOT(openHWDesign(const VLNV&, const QString&)));
     connect(designWidget, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(openBus(VLNV const&)),
@@ -2512,16 +2552,7 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
     QSharedPointer<Component> comp = libraryHandler_->getModel(vlnv).staticCast<Component>();
 
     // check if the design is already open
-    VLNV refVLNV = comp->getHierRef(viewName);
-    VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-
-    QString memoryDesignName = designVLNV.getName();
-
-    int extensionBegin = memoryDesignName.size() - 7;
-    memoryDesignName.replace(extensionBegin, 7, ".memoryDesign");
-    designVLNV.setName(memoryDesignName);
-
-    if (isOpen(designVLNV))
+    if (isOpen(vlnv, TabDocument::DocumentType::MEMORY_DESIGN))
     {
         return;
     }
@@ -2598,7 +2629,7 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName)
     // check if the design is already open
     VLNV refVLNV = comp->getHierRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV))
+    if (isOpen(designVLNV, TabDocument::DocumentType::SW_DESIGN))
     {
         return;
     }
@@ -2661,7 +2692,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
     // check if the design is already open
     VLNV refVLNV = comp->getHierSystemRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV))
+    if (isOpen(designVLNV, TabDocument::DocumentType::SYSTEM_DESIGN))
     {
         return;
     }
@@ -2724,10 +2755,6 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
 //-----------------------------------------------------------------------------
 void MainWindow::openComponent(VLNV const& vlnv)
 {
-    if (isOpen(vlnv))
-    {
-        return;
-    }
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -2753,10 +2780,16 @@ void MainWindow::openComponent(VLNV const& vlnv)
 
     ComponentEditor* editor = new ComponentEditor(libraryHandler_, component, this);
 
+    if (isOpen(vlnv, editor->getDocType()))
+    {
+        QApplication::restoreOverrideCursor();
+        return;
+    }
+
     connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openDesign(const VLNV&, const QString&)),
-        this, SLOT(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+        this, SLOT(openHWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openBus(const VLNV&)),
         this, SLOT(openBus(const VLNV&)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openAbsDef(const VLNV&)),
@@ -2778,7 +2811,7 @@ void MainWindow::openComponent(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void MainWindow::openComDefinition(VLNV const& vlnv)
 {
-    if (isOpen(vlnv))
+    if (isOpen(vlnv, TabDocument::DocumentType::COM_DEFINITION))
     {
         return;
     }
@@ -2813,7 +2846,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void MainWindow::openApiDefinition(VLNV const& vlnv)
 {
-    if (isOpen(vlnv))
+    if (isOpen(vlnv, TabDocument::DocumentType::API_DEFINITION))
     {
         return;
     }
@@ -2845,7 +2878,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: MainWindow::isOpen()
 //-----------------------------------------------------------------------------
-bool MainWindow::isOpen(VLNV const& vlnv) const
+bool MainWindow::isOpen(VLNV const& vlnv, TabDocument::DocumentType const& type) const
 {
     if (!vlnv.isValid())
     {
@@ -2857,7 +2890,7 @@ bool MainWindow::isOpen(VLNV const& vlnv) const
         TabDocument* document = dynamic_cast<TabDocument*>(designTabs_->widget(i));
 
         // if the document is already open is some tab
-        if (document && document->getIdentifyingVLNV() == vlnv)
+        if (document && document->getIdentifyingVLNV() == vlnv && document->getDocType() == type)
         {
             designTabs_->setCurrentIndex(i);
             return true;
@@ -3823,5 +3856,17 @@ void MainWindow::onFilterUnconnectedMemoryItems(bool filterUnconnected)
     if (memoryDocument && !memoryDocument->isProtected())
     {
         memoryDocument->filterUnconnectedMemoryItems(filterUnconnected);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::onFilterMemoryOverlapItems()
+//-----------------------------------------------------------------------------
+void MainWindow::onFilterMemoryOverlapItems(bool filterOverlap)
+{
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
+    {
+        memoryDocument->filterMemoryOverlapItems(filterOverlap);
     }
 }

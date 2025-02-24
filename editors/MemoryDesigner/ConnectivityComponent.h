@@ -28,7 +28,7 @@ public:
 	/*!
      *  The constructor.
      *
-     *      @param [in] name    Name for the component instance.
+     *    @param [in] name    Name for the component instance.
      */
 	ConnectivityComponent(QString const& name);
 
@@ -40,63 +40,63 @@ public:
     /*!
      *  Set a new name for the component instance.
      *
-     *      @param [in] newName     The new name.
+     *    @param [in] newName     The new name.
      */
     void setName(QString const& newName);
 
     /*!
      *  Gets the name of the instance.
      *
-     *      @return The instance name.
+     *    @return The instance name.
      */
     QString getName() const;
 
     /*!
      *  Sets the identifier for the instance.
      *
-     *      @param [in] uuid   The identifier to set.
+     *    @param [in] uuid   The identifier to set.
      */
     void setInstanceUuid(QString const& uuid);
 
     /*!
      *  Gets the identifier for the component instance.
      *
-     *      @return The identifier for the instance.
+     *    @return The identifier for the instance.
      */
     QString getInstanceUuid() const;
 
     /*!
      *  Sets the instance VLNV identifier.
      *
-     *      @param [in] vlnv   The VLNV to set.
+     *    @param [in] vlnv   The VLNV to set.
      */
     void setVlnv(QString const& vlnv);
 
     /*!
      *  Gets the instance VLNV identifier.
      *
-     *      @return The instance VLNV identifier.
+     *    @return The instance VLNV identifier.
      */
     QString getVlnv() const;
 
     /*!
      *  Sets the active view for the instance.
      *
-     *      @param [in] viewName   The name of the active view to set.
+     *    @param [in] viewName   The name of the active view to set.
      */
     void setActiveView(QString const& viewName);
 
     /*!
      *  Adds a memory associated with the instance.
      *
-     *      @param [in] memory      The memory to add.
+     *    @param [in] memory      The memory to add.
      */
     void addMemory(QSharedPointer<MemoryItem> memory);
 
     /*!
      *  Gets the associated memories for the instance.
      *
-     *      @return The associated memories.
+     *    @return The associated memories.
      */
     QVector<QSharedPointer<MemoryItem> > getMemories() const;
 
@@ -108,7 +108,7 @@ public:
     /*!
      *  Checks if the component is a channel.
      *
-     *      @return True, if the component is a channel, otherwise false.
+     *    @return True, if the component is a channel, otherwise false.
      */
     bool isChanneled() const;
 

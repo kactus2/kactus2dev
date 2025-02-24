@@ -50,13 +50,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component       The component whose bus interface is being edited.
-     *      @param [in] busIf           The bus interface being edited.
-     *      @param [in] lh              The component library handler.
-     *      @param [in] physicalPorts   Physical ports used in logical signal generation.
-     *      @param [in] parent          The parent wizard.
-     *      @param [in] absDefVLNV      VLNV of the editable abstraction defintion.
-     *      @param [in] namingPolicy    Policy for naming generated logical signals.
+     *    @param [in] component       The component whose bus interface is being edited.
+     *    @param [in] busIf           The bus interface being edited.
+     *    @param [in] lh              The component library handler.
+     *    @param [in] physicalPorts   Physical ports used in logical signal generation.
+     *    @param [in] parent          The parent wizard.
+     *    @param [in] absDefVLNV      VLNV of the editable abstraction defintion.
+     *    @param [in] namingPolicy    Policy for naming generated logical signals.
      */
     BusInterfaceWizardAbsDefinitionPage(QSharedPointer<Component> component,
         QSharedPointer<BusInterface> busIf, LibraryInterface* lh, 
@@ -109,17 +109,17 @@ private:
      *  Creates the logical ports to the abstraction definition and initial mapping of physical ports to the
      *  created logical ports. 
      *
-     *      @param [in] physPorts   The physical ports from which the logical ports are generated. 
-     *      @param [in] absDef      The abstraction definition to create the ports to.
+     *    @param [in] physPorts   The physical ports from which the logical ports are generated. 
+     *    @param [in] absDef      The abstraction definition to create the ports to.
      */
     void createLogicalPortsAndMappings(QStringList const& physPorts, QSharedPointer<AbstractionDefinition> absDef);
 
     /*!
      *  Creates initial mapping of physical ports to a single logical port.
      *
-     *      @param [in] physPorts       The physical ports to map.
-     *      @param [in] logicalPort     The logical port to map to.
-     *      @param [in] logicalPort     The direction of the logical port.
+     *    @param [in] physPorts       The physical ports to map.
+     *    @param [in] logicalPort     The logical port to map to.
+     *    @param [in] logicalPort     The direction of the logical port.
      */
     void createLogicalMappings(QStringList const& physPorts, QString const& logicalPort, 
         DirectionTypes::Direction logicalDirection);
@@ -132,10 +132,10 @@ private:
     /*!
      *  Finds a logical port by name.
      *
-     *      @param [in] portName    The name of the port to find.
-     *      @param [in] ports       The group of ports to search.
+     *    @param [in] portName    The name of the port to find.
+     *    @param [in] ports       The group of ports to search.
      *
-     *      @return The searched port or 0 if port was not found in the group.
+     *    @return The searched port or 0 if port was not found in the group.
      */
     QSharedPointer<PortAbstraction> findPortByName(QString const& portName, 
         QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports);
@@ -144,11 +144,11 @@ private:
     /*!
      *  Creates a port abstraction.
      *
-     *      @param [in] portName        Name of the port.
-     *      @param [in] portDirection   Direction of the port.
-     *      @param [in] portWidth       Width of the port.
+     *    @param [in] portName        Name of the port.
+     *    @param [in] portDirection   Direction of the port.
+     *    @param [in] portWidth       Width of the port.
      *
-     *      @return The created port.
+     *    @return The created port.
      */
     QSharedPointer<PortAbstraction> createAbsPort(QString const& portName, DirectionTypes::Direction portDirection,
         int portWidth );
@@ -156,9 +156,9 @@ private:
     /*!
      *  Get the size of a port.
      *
-     *      @param [in] targetPort  The port whose size is being searched for.
+     *    @param [in] targetPort  The port whose size is being searched for.
      *
-     *      @return The size of the port.
+     *    @return The size of the port.
      */
     int getPortSize(QSharedPointer<Port> targetPort) const;
 

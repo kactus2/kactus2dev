@@ -42,7 +42,7 @@ public:
     /*!
      *  Sets syntax highlighter for the generation preview.
      *
-     *      @param [in] highlighter   The highlighter to use for preview.
+     *    @param [in] highlighter   The highlighter to use for preview.
      */
     void setPreviewHighlighter(QSyntaxHighlighter* highlighter);
 
@@ -62,7 +62,7 @@ private slots:
     /*!
      *  Handle the file name change.
      *
-     *      @param [in] itemIndex   Index of the changed file.
+     *    @param [in] itemIndex   Index of the changed file.
      */
     void onFileNameChanged(int const& itemIndex);
 

@@ -59,7 +59,7 @@ design_(diagram->getDesign())
         targetColumn = 0;
 
         // Find the first column that accepts it.
-        foreach (GraphicsColumn* otherColumn, diagram->getLayout()->getColumns())
+        for (GraphicsColumn* otherColumn : diagram->getLayout()->getColumns())
         {
             if (otherColumn->isItemAllowed(componentItem))
             {

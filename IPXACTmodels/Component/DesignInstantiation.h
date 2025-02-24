@@ -33,9 +33,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] name            Name of the instantiation.
-     *      @param [in] displayName     Display name of the instantiation.
-     *      @param [in] description     Description of the instantiation.
+     *    @param [in] name            Name of the instantiation.
+     *    @param [in] displayName     Display name of the instantiation.
+     *    @param [in] description     Description of the instantiation.
      */
     DesignInstantiation(QString const& name = QString(), QString const& displayName = QString(),
         QString const& description = QString());
@@ -58,14 +58,14 @@ public:
     /*!
      *  Get the design reference.
      *
-     *      @return Pointer to the design referenced by the instantiation.
+     *    @return Pointer to the design referenced by the instantiation.
      */
     QSharedPointer<ConfigurableVLNVReference> getDesignReference() const;
 
     /*!
      *  Set the design reference.
      *
-     *      @param [in] newDesignReference  The referenced design.
+     *    @param [in] newDesignReference  The referenced design.
      */
     void setDesignReference(QSharedPointer<ConfigurableVLNVReference> newDesignReference);
 

@@ -31,8 +31,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] docRevision   The standard revision of the document.
-     *      @param [in] parent        The parent object.
+     *    @param [in] docRevision   The standard revision of the document.
+     *    @param [in] parent        The parent object.
      */
     CatalogFileFilter(Document::Revision docRevision, QObject *parent = 0);
 
@@ -65,10 +65,10 @@ protected:
     /*!
      *  Implementation of the row filtering.
      *
-     *      @param [in] source_row      The row to check for filtering.
-     *      @param [in] source_parent   The parent index of the row.
+     *    @param [in] source_row      The row to check for filtering.
+     *    @param [in] source_parent   The parent index of the row.
      *
-     *      @return True, if the row passes the filters, otherwise false.
+     *    @return True, if the row passes the filters, otherwise false.
      */
     bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 

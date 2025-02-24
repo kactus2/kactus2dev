@@ -38,14 +38,14 @@ public:
 	/*!
      *  Get the currently selected value on the combo box.
 	 *
-	 *      @return The selected usage value.
+	 *    @return The selected usage value.
 	 */
 	General::Usage getCurrentValue() const;
 
 	/*!
      *  Set the given usage value as the selected value.
 	 *
-	 *      @param [in] usage   The value to select.
+	 *    @param [in] usage   The value to select.
 	 */
 	void setCurrentValue(General::Usage usage);
 

@@ -26,7 +26,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] parent  Pointer to the owner of this view.
+     *    @param [in] parent  Pointer to the owner of this view.
 	 */
 	ParametersView(QWidget* parent);
 
@@ -40,9 +40,17 @@ signals:
     /*!
      *  Recalculate references made to the parameters contained in the selected indexes.
      *
-     *      @param [in] selectedIndexes     The selected indexes.
+     *    @param [in] selectedIndexes     The selected indexes.
      */
     void recalculateReferenceToIndexes(QModelIndexList selectedIndexes);
+
+    /*!
+     *  Open the reference tree of the selected parameter.
+     *
+     *    @param [in] id      The ID of the selected parameter.
+     *    @param [in] name    Name of the selected parameter.
+     */
+    void openReferenceTree(QString const& id, QString const& name);
 
 protected:
 
@@ -63,6 +71,10 @@ private slots:
      */
     void onRecalculateReferencesAction();
 
+    /*!
+     *  Handles the action for opening the reference tree of the selected parameter.
+     */
+    void onOpenReferenceTreeAction();
 private:
 
 	//! No copying. No assignment.
@@ -72,9 +84,16 @@ private:
     /*!
      *  Add the recalculate references action to the context menu.
      *
-     *      @param [in] menu    The context menu for the actions.
+     *    @param [in] menu    The context menu for the actions.
      */
     void addRecalculateReferencesActionForContextMenu(QMenu& menu);
+
+    /*!
+     *  Add the open reference tree to the context menu.
+     *
+     *    @param [in] menu    The context menu for the actions.
+     */
+    void addOpenReferenceTreeActionForContextMenu(QMenu& menu);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -82,6 +101,9 @@ private:
 
     //! Action for recalculating references made to the selected parameter.
     QAction recalculateReferencesAction_;
+
+    //! Action for opening the reference tree of the selected parameter.
+    QAction openReferenceTreeAction_;
 };
 
 #endif // PARAMETERSVIEW_H

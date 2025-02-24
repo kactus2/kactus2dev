@@ -34,7 +34,7 @@ public:
     /*!
      *  Sets the color of the text of the current text.
      *
-     *      @param [in] color   The color to set.
+     *    @param [in] color   The color to set.
      */
     void setTextColor(QColor const& color);
 
@@ -55,7 +55,7 @@ protected:
     /*!
      *  Handles the change events and changes the text colour depengin on the enabled state of the component.
      *
-     *      @param [in] currentEvent    The current change event.
+     *    @param [in] currentEvent    The current change event.
      */
     virtual void changeEvent(QEvent *currentEvent);
 

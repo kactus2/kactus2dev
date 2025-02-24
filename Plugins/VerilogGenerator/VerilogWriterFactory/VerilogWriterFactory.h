@@ -29,11 +29,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] library                 The component library.
-     *      @param [in] messages                For message output.
-     *      @param [in] settings                Points to the settings to be used within the generation.
-	 *      @param [in] kactusVersion		    The version of the current Kactus build.
-	 *      @param [in] generatorVersion	    The current version of the generator.
+     *    @param [in] library                 The component library.
+     *    @param [in] messages                For message output.
+     *    @param [in] settings                Points to the settings to be used within the generation.
+	 *    @param [in] kactusVersion		    The version of the current Kactus build.
+	 *    @param [in] generatorVersion	    The current version of the generator.
 	 */
     VerilogWriterFactory(LibraryInterface* library, 
         MessageMediator* messages, GenerationSettings* settings,
@@ -45,10 +45,10 @@ public:
     /*!
      *  Creates writers for the given formatted HDL component.
      *
-     *      @param [in] outputPath			The path to the output file.
-     *      @param [in] component           The component which is needs writing.
+     *    @param [in] outputPath			The path to the output file.
+     *    @param [in] component           The component which is needs writing.
      *
-     *      @return The objects that bundles the writers. Will be null, if could not be created.
+     *    @return The objects that bundles the writers. Will be null, if could not be created.
      */
     virtual QSharedPointer<GenerationOutput> prepareComponent(QString const& outputPath,
         QSharedPointer<MetaComponent> component) override final;
@@ -56,9 +56,9 @@ public:
     /*!
      *  Creates writers for the given meta designs.
      *
-     *      @param [in] designs             The designs that will yield documents.
+     *    @param [in] designs             The designs that will yield documents.
      *
-     *      @return The objects that bundles the writers. Will be null, if could not be created.
+     *    @return The objects that bundles the writers. Will be null, if could not be created.
      */
     virtual QList<QSharedPointer<GenerationOutput> > prepareDesign(QList<QSharedPointer<MetaDesign> >& designs)
         override final;
@@ -87,26 +87,26 @@ private:
     /*!
      *  Checks if given file exists, and tries to parse its existing implementation.
      *
-     *      @param [in] document        	    The document, which will get writers for writing design.
-     *      @param [in] outputPath        	    The path of the potentially the existing file.
+     *    @param [in] document        	    The document, which will get writers for writing design.
+     *    @param [in] outputPath        	    The path of the potentially the existing file.
 	 *
-	 *      @return False, if the file exists, but could not be opened or parsed properly. Else true.
+	 *    @return False, if the file exists, but could not be opened or parsed properly. Else true.
      */
     bool readImplementation(QSharedPointer<VerilogDocument> document, QString const& outputPath);
 
     /*!
      *  Initializes writers for component.
      *
-     *      @param [in] document        	    The document, which will get writers for writing component.
-     *      @param [in] component		        The component, which data will be written.
+     *    @param [in] document        	    The document, which will get writers for writing component.
+     *    @param [in] component		        The component, which data will be written.
      */
     void initializeComponentWriters(QSharedPointer<VerilogDocument> document, QSharedPointer<MetaComponent> component);
     
     /*!
      *  Initializes writers for the given design.
      *
-     *      @param [in] document        	The document, which will get writers for writing design.
-	 *      @param [in] design		        The design, which data will be written.
+     *    @param [in] document        	The document, which will get writers for writing design.
+	 *    @param [in] design		        The design, which data will be written.
      */
     void initializeDesignWriters(QSharedPointer<VerilogDocument> document, QSharedPointer<MetaDesign> design);
    
@@ -118,9 +118,9 @@ private:
     /*!
      *  Creates a writer for writing a preceding header for a component instance.
      *
-     *      @param [in] instanceName   The name of the component instance to create the writer for.
+     *    @param [in] instanceName   The name of the component instance to create the writer for.
      *
-     *      @return A writer for the header.
+     *    @return A writer for the header.
      */
     QSharedPointer<Writer> createHeaderWriterForInstance(QSharedPointer<MetaInstance> instance) const;
 

@@ -159,9 +159,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] lh            The library interface.
-     *      @param [in] editProvider  The edit provider.
-     *      @param [in] parent        The parent widget.
+     *    @param [in] lh            The library interface.
+     *    @param [in] editProvider  The edit provider.
+     *    @param [in] parent        The parent widget.
      */
     SystemDesignDiagram(bool onlySW, LibraryInterface* lh,
                         QSharedPointer<IEditProvider> editProvider, SystemDesignWidget* parent = 0);
@@ -179,7 +179,7 @@ public:
     /*!
      *  Adds a new column to the diagram.
      *
-     *      @param [in] desc The column description.
+     *    @param [in] desc The column description.
      */
     void addColumn(QSharedPointer<ColumnDesc> desc);
 
@@ -205,8 +205,8 @@ protected:
     /*!
      *  Opens a design for a given component.
      *
-     *      @param [in] component   The component whose design to open.
-     *      @param [in] viewName    The name of the view to open.
+     *    @param [in] component   The component whose design to open.
+     *    @param [in] viewName    The name of the view to open.
      */
     virtual void openDesignForComponent(ComponentItem* component, QString const& viewName);
 
@@ -230,74 +230,74 @@ protected:
     /*!
      *  Checks if open component action should be enabled.
      *
-     *      @return True, if action should be enabled, otherwise false.
+     *    @return True, if action should be enabled, otherwise false.
      */
     virtual bool openComponentActionEnabled() const;
 
     /*!
      *  Check if the selected items are of a type used in the system design.
      *
-     *      @return True, if the items are used in system design, false otherwise.
+     *    @return True, if the items are used in system design, false otherwise.
      */
     virtual bool selectedItemIsCorrectType() const;
 
     /*!
      *  Checks if the given item is a hierarchical component.
      *
-     *      @param [in] item   The item to check.
+     *    @param [in] item   The item to check.
      *
-     *      @return True, if item is a hierarchical component, otherwise false.
+     *    @return True, if item is a hierarchical component, otherwise false.
      */
     virtual bool isHierarchicalComponent(QGraphicsItem* item) const;
 
     /*!
      *  Checks if copy action should be enabled.
      *
-     *      @return True, if action should be enabled, otherwise false.
+     *    @return True, if action should be enabled, otherwise false.
      */
     virtual bool copyActionEnabled() const;
 
     /*!
      *  Checks if paste action should be enabled.
      *
-     *      @return True, if action should be enabled, otherwise false.
+     *    @return True, if action should be enabled, otherwise false.
      */
     virtual bool pasteActionEnabled() const;
 
     /*!
      *  Opens the given component according to the active view of the component.
      *
-     *      @param [in] comp   The component to open.
+     *    @param [in] comp   The component to open.
      */
     virtual void openComponentByActiveView(ComponentItem* comp);
 
    /*!
     *  Gets the names of hierarchical views of a component.
     *
-    *      @param [in] component   The component whose hierarchical views to get.
+    *    @param [in] component   The component whose hierarchical views to get.
     *
-    *      @return The names of the hierarchical views.
+    *    @return The names of the hierarchical views.
     */
     virtual QStringList hierarchicalViewsOf(ComponentItem* component) const;
 
     /*!
      *  Gets the graphics item type of the components in the diagram.
      *     
-     *      @return The type of the components.
+     *    @return The type of the components.
      */
     virtual int componentType() const;
 
     /*!
      *  Gets the graphics item type of the off page connectors in the diagram.
      *     
-     *      @return The type of the components.
+     *    @return The type of the components.
      */
     virtual int offpageConnectorType() const;
 
     /*!
      *  Gets the graphics item type of the connections in the diagram.
      *     
-     *      @return The type of the components.
+     *    @return The type of the components.
      */
     virtual int connectionType() const;
 
@@ -309,7 +309,7 @@ private:
     /*!
      *  Called when an item has been selected in the diagram.
      *
-     *      @param [in] newSelection The selected item.
+     *    @param [in] newSelection The selected item.
      */
     virtual void onSelected(QGraphicsItem* newSelection);
 
@@ -321,17 +321,17 @@ private:
     /*!
      *  Load interfaces from the component containing the design.
      *
-     *      @param [in] design  The selected design.
+     *    @param [in] design  The selected design.
      */
     void loadInterfaces(QSharedPointer<Design> design);
 
     /*!
      *  Get the interface graphics data.
      *
-     *      @param [in] design          Design containing the interface.
-     *      @param [in] interfaceName   The name of the interface.
+     *    @param [in] design          Design containing the interface.
+     *    @param [in] interfaceName   The name of the interface.
      *
-     *      @return Graphics data of the interface.
+     *    @return Graphics data of the interface.
      */
     QSharedPointer<InterfaceGraphicsData> findOrCreateInterfaceGraphicsData(QSharedPointer<Design> design,
         QString const& interfaceName);
@@ -339,7 +339,7 @@ private:
     /*!
      *  Add the interface item to the layout.
      *
-     *      @param [in] item    The selected interface item.
+     *    @param [in] item    The selected interface item.
      */
     void addInterfaceItemToLayout(SWInterfaceItem* item);
 
@@ -351,12 +351,12 @@ private:
     /*!
      *  Find or create an endpoint item for the interface.
      *
-     *      @param [in] endpointInterface   The selected end point interface.
-     *      @param [in] type                The type of the selected end point.
-     *      @param [in] connectionName      Name of the connection containing the end point.
-     *      @param [in] containingDesign    The containing design.
+     *    @param [in] endpointInterface   The selected end point interface.
+     *    @param [in] type                The type of the selected end point.
+     *    @param [in] connectionName      Name of the connection containing the end point.
+     *    @param [in] containingDesign    The containing design.
      *
-     *      @return The endpoint item corresponding to the selected interface.
+     *    @return The endpoint item corresponding to the selected interface.
      */
     ConnectionEndpoint* findOrCreateEndpointItem(QSharedPointer<HierInterface> endpointInterface,
         SWConnectionEndpoint::EndpointType type, QString const& connectionName,
@@ -365,31 +365,31 @@ private:
     /*!
      *  Get the SW interface item.
      *
-     *      @param [in] interfaceName   The name of the SW interface item.
+     *    @param [in] interfaceName   The name of the SW interface item.
      *
-     *      @return The SW interface item matching the selected interface name.
+     *    @return The SW interface item matching the selected interface name.
      */
     SWInterfaceItem* getSWInterfaceItem(QString const& interfaceName) const;
 
     /*!
      *  Create a dummy interface.
      *
-     *      @param [in] itemType            Type of the interface in string format.
-     *      @param [in] interfaceReference  The name of the interface.
+     *    @param [in] itemType            Type of the interface in string format.
+     *    @param [in] interfaceReference  The name of the interface.
      *
-     *      @return The created dummy interface.
+     *    @return The created dummy interface.
      */
     ConnectionEndpoint* createDummyInterface(QString const& itemType, QString const& interfaceReference);
 
     /*!
      *  Find or create a SW port item.
      *
-     *      @param [in] containingItem      The item containing the port item.
-     *      @param [in] interfaceReference  The name of the port.
-     *      @param [in] type                The type of the port.
-     *      @param [in] containingDesign    The design containing the port item.
+     *    @param [in] containingItem      The item containing the port item.
+     *    @param [in] interfaceReference  The name of the port.
+     *    @param [in] type                The type of the port.
+     *    @param [in] containingDesign    The design containing the port item.
      *
-     *      @return The found SW port item.
+     *    @return The found SW port item.
      */
     ConnectionEndpoint* findOrCreateSWPortItem(SystemComponentItem* containingItem,
         QString const& interfaceReference, SWConnectionEndpoint::EndpointType type,
@@ -403,9 +403,9 @@ private:
     /*!
      *  Get the route used by the interconnection.
      *
-     *      @param [in] interconnectionName     Name of the selected interconnection.
+     *    @param [in] interconnectionName     Name of the selected interconnection.
      *
-     *      @return The route used by the selected interconnection.
+     *    @return The route used by the selected interconnection.
      */
     QSharedPointer<ConnectionRoute> getInterconnectionRoute(QString const& interconnectionName) const;
 
@@ -422,19 +422,19 @@ private:
     /*!
      *  Returns the component with the given name (either HW or SW).
      *
-     *      @param [in] instanceName The name of the instance to search for.
+     *    @param [in] instanceName The name of the instance to search for.
      *
-     *      @return The corresponding component, or null if not found.
+     *    @return The corresponding component, or null if not found.
      */
     SystemComponentItem* getComponent(QString const& instanceName);
 
     /*!
      *  Creates a missing port to the given component item.
      *
-     *      @param [in] portName   The name of the port to create.
-     *      @param [in] type       The port endpoint type.
-     *      @param [in] component  The parent component.
-     *      @param [in] design     The design containing related information.
+     *    @param [in] portName   The name of the port to create.
+     *    @param [in] type       The port endpoint type.
+     *    @param [in] component  The parent component.
+     *    @param [in] design     The design containing related information.
      */
     SWPortItem* createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
                                   SystemComponentItem* component, QSharedPointer<Design> design);
@@ -442,66 +442,67 @@ private:
     /*!
      *  Imports SW instances and related connections from the given design to the diagram.
      *
-     *      @param [in] design    The design to import.
-     *      @param [in] stack     The stack where to place the imported elements.
-     *      @param [in] guidePos  Position used as a guide where to place the imported instances.
+     *    @param [in] design    The design to import.
+     *    @param [in] stack     The stack where to place the imported elements.
+     *    @param [in] guidePos  Position used as a guide where to place the imported instances.
      */
     void importDesign(QSharedPointer<Design> design, IGraphicsItemStack* stack, QPointF const& guidePos);
 
     /*!
      *  Creates a connection between the given two endpoints.
      *
-     *      @param [in] startPoint  The starting connection end point.
-     *      @param [in] endPoint    The ending connection end point.
+     *    @param [in] startPoint  The starting connection end point.
+     *    @param [in] endPoint    The ending connection end point.
+     *    @param [in] isOffPage   Doesn't do anything in SystemDesignDiagram and is present because of inheritance
      *
-     *      @return The created connection.
+     *    @return The created connection.
      */
-    virtual  GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
+    virtual  GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint, bool isOffPage = false);
 
     /*!
      *  Create an interface for an end point.
      *
-     *      @param [in] connectionPoint     The selected connection end point.
+     *    @param [in] connectionPoint     The selected connection end point.
      *
-     *      @return Interface created for the selected end point.
+     *    @return Interface created for the selected end point.
      */
     QSharedPointer<HierInterface> createEndpointInterface(ConnectionEndpoint* connectionPoint);
 
     /*!
      *  Creates a connection between the given endpoint and a coordinate point.
      *
-     *      @param [in] startPoint  The starting connection end point.
-     *      @param [in] endPoint    The ending coordinate point.
+     *    @param [in] startPoint  The starting connection end point.
+     *    @param [in] endPoint    The ending coordinate point.
      *
-     *      @return The created connection.
+     *    @return The created connection.
      */
     virtual GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, QPointF const& endPoint);
 
     /*!
      *  Creates an add command for a given connection.
      *
-     *      @param [in] connection          The connection to create a command for.     
-     *      @param [in] parentUndoCommand   Optional undocommand to set as parent for created child commands.
+     *    @param [in] connection          The connection to create a command for.     
+     *    @param [in] parentUndoCommand   Optional undocommand to set as parent for created child commands.
      *
-     *      @return The created add command.
+     *    @return The created add command.
      */
     virtual QUndoCommand* createAddCommandForConnection(GraphicsConnection* connection, QUndoCommand* parentCommand = nullptr);
 
     /*!
      *  Adds a new top-level interface to the given diagram column.
      *
-     *      @param [in] column      The column where to add the interface.
-     *      @param [in] pos         The interface position.
-     *      @param [in] isDraft     Determines if Bus Interface is draft or not.
+     *    @param [in] column      The column where to add the interface.
+     *    @param [in] pos         The interface position.
+     *    @param [in] isDraft     Determines if Bus Interface is draft or not.
      */
     virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos, bool isDraft = false);
 
     /*!
      *  Create a unique name for the interface.
      *
-     *      @param [in] baseName    The name from which to create the unique name.
+     *    @param [in] baseName    The name from which to create the unique name.
      *
-     *      @return A unique name for the interface.
+     *    @return A unique name for the interface.
      */
     QString createDraftInterfaceName(QString const& baseName) const;
 
@@ -509,41 +510,41 @@ private:
      *  Handler for draft tool clicks. Creates a draft component instance or a draft interface according to the
      *  clicked position.
      *
-     *      @param [in] clickedPosition   The position to create the draft item to.     
+     *    @param [in] clickedPosition   The position to create the draft item to.     
      */
     virtual void draftAt(QPointF const& clickedPosition);
 
     /*!
      *  Performs the replacing of destination component with source component.
      *
-     *      @param [in] destComp        The component to replace.
-     *      @param [in] sourceComp      The replacing component.     
+     *    @param [in] destComp        The component to replace.
+     *    @param [in] sourceComp      The replacing component.     
      */
     virtual void replace(ComponentItem* destComp, ComponentItem* sourceComp);
 
     /*!
      *  Copies SW component instances in a format which can be saved to clipboard.
      *
-     *      @param [in]  items       The component instance items to copy.
-     *      @param [out] collection  The resulted collection of component instance copy data.
+     *    @param [in]  items       The component instance items to copy.
+     *    @param [out] collection  The resulted collection of component instance copy data.
      */
     void copySWInstances(QList<QGraphicsItem*> const& items, ComponentCollectionCopyData &collection);
 
     /*!
      *  Copies interfaces in a format which can be saved to clipboard.
      *
-     *      @param [in]  items       The interface items to copy.
-     *      @param [out] collection  The resulted collection of interface copy data.
+     *    @param [in]  items       The interface items to copy.
+     *    @param [out] collection  The resulted collection of interface copy data.
      */
     void copyInterfaces(QList<QGraphicsItem*> const& items, PortCollectionCopyData& collection);
 
     /*!
      *  Pastes component instances from a copy data collection.
      *
-     *      @param [in] collection     The collection of component instance copy data.
-     *      @param [in] column         The item stack where to place the instances.
-     *      @param [in] cmd            The parent undo command for the paste undo commands.
-     *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
+     *    @param [in] collection     The collection of component instance copy data.
+     *    @param [in] column         The item stack where to place the instances.
+     *    @param [in] cmd            The parent undo command for the paste undo commands.
+     *    @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
      *                                 Otherwise the original positions are used.
      */
     void pasteSWInstances(ComponentCollectionCopyData const collection,
@@ -552,19 +553,19 @@ private:
     /*!
      *  Pastes interfaces from a copy data collection.
      *
-     *      @param [in] collection  The collection of interface copy data.
-     *      @param [in] targetComp  The target component. If null, the interfaces are pasted to the top level component.
-     *      @param [in] cmd         The parent undo command for the paste undo commands.
+     *    @param [in] collection  The collection of interface copy data.
+     *    @param [in] targetComp  The target component. If null, the interfaces are pasted to the top level component.
+     *    @param [in] cmd         The parent undo command for the paste undo commands.
      */
     void pasteInterfaces(PortCollectionCopyData const& collection, SWComponentItem* targetComp, QUndoCommand* cmd);
 
     /*!
      *  Pastes interfaces from a copy data collection to a top-level item stack.
      *
-     *      @param [in] collection     The collection of interface copy data.
-     *      @param [in] stack          The target item tack.
-     *      @param [in] cmd            The parent undo command for the paste undo commands.
-     *      @param [in] userCursorPos  If true, the interfaces are placed close to the cursor position.
+     *    @param [in] collection     The collection of interface copy data.
+     *    @param [in] stack          The target item tack.
+     *    @param [in] cmd            The parent undo command for the paste undo commands.
+     *    @param [in] userCursorPos  If true, the interfaces are placed close to the cursor position.
      *                                 Otherwise the original positions are used.
      */
     void pasteInterfaces(PortCollectionCopyData const& collection, IGraphicsItemStack* stack, QUndoCommand* cmd,
@@ -573,16 +574,16 @@ private:
     /*!
      *  Pastes columns from a copy data collection.
      *
-     *      @param [in] collection  The collection of column copy data.
+     *    @param [in] collection  The collection of column copy data.
      */
     void pasteColumns(ColumnCollectionCopyData const collection);
 
     /*!
      *  Create a unique name for a column with the given base name.
      *
-     *      @param [in] baseName    The base name of the column.
+     *    @param [in] baseName    The base name of the column.
      *
-     *      @return A unique column name.
+     *    @return A unique column name.
      */
     QString createColumnName(QString const& baseName);
 
@@ -601,34 +602,34 @@ private:
     /*!
      *  Get the names of the contained component instances.
      *
-     *      @return A list of the contained component instance names.
+     *    @return A list of the contained component instance names.
      */
     virtual QStringList getUsedInstanceNames() const;
 
     /*!
      *  Create auto connection dialog.
      *
-     *      @param [in] firstItem   The first item for the auto connector.
+     *    @param [in] firstItem   The first item for the auto connector.
      *
-     *      @return The auto connector dialog.
+     *    @return The auto connector dialog.
      */
     virtual ComponentItemAutoConnector* createAutoConnector(ComponentItem* firstItem) const;
 
     /*!
      *  Get the connection end point for the selected auto connector item.
      *
-     *      @param [in] connectorItem       The selected auto connector item.
-     *      @param [in] parentUndoCommand   Optional undocommand to set as parent for created child commands.
+     *    @param [in] connectorItem       The selected auto connector item.
+     *    @param [in] parentUndoCommand   Optional undocommand to set as parent for created child commands.
      *
-     *      @return The end point item for the selected auto connector item.
+     *    @return The end point item for the selected auto connector item.
      */
     virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem, QUndoCommand* parentCommand = nullptr);
 
     /*!
      *  Create connection between the selected end points.
      *
-     *      @param [in] startPoint  Start point for the connection.
-     *      @param [in] endPoint    End point for the connection.
+     *    @param [in] startPoint  Start point for the connection.
+     *    @param [in] endPoint    End point for the connection.
      */
     virtual void createConnectionBetweenEndPoints(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
 

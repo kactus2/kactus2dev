@@ -92,41 +92,41 @@ public:
     /*!
      *  Returns the supported import file types.
      *
-     *      @return The file types the import plugin supports.
+     *    @return The file types the import plugin supports.
      */
     virtual QStringList getSupportedFileTypes() const;
 
     /*!
      *  Gets any compatibility warnings for the plugin.
      *
-     *      @return The warning text.
+     *    @return The warning text.
      */
     virtual QString getCompatibilityWarnings() const;
 
     /*!
      *  Get component declarations from the selected input file.
      *
-     *      @param [in] input   The selected input file.
+     *    @param [in] input   The selected input file.
      *
-     *      @return List of component declarations found in the selected input.
+     *    @return List of component declarations found in the selected input.
      */
     virtual QStringList getFileComponents(QString const& input) const override final;
 
     /*!
      *  Get the name of the selected component declaration.
      *
-     *      @param [in] componentDeclaration    The selected component declaration.
+     *    @param [in] componentDeclaration    The selected component declaration.
      *
-     *      @return Name of the selected component declaration.
+     *    @return Name of the selected component declaration.
      */
     virtual QString getComponentName(QString const& componentDeclaration) const override final;
 
     /*!
      *  Parses the given input and creates parameters from Verilog defines.
      *
-     *      @param [in] input                   The input text to parse.
-     *      @param [in] componentDeclaration    Declaration of the selected component.
-     *      @param [in] targetComponent         The component to apply all imported changes to.
+     *    @param [in] input                   The input text to parse.
+     *    @param [in] componentDeclaration    Declaration of the selected component.
+     *    @param [in] targetComponent         The component to apply all imported changes to.
      */
     virtual void import(QString const& input, QString const& componentDeclaration,
         QSharedPointer<Component> targetComponent) override final;
@@ -134,7 +134,7 @@ public:
     /*!
      *  Sets the given highlighter to be used by the plugin.
      *
-     *      @param [in] highlighter   The highlighter to use.          
+     *    @param [in] highlighter   The highlighter to use.          
      */
     virtual void setHighlighter(Highlighter* highlighter);
 
@@ -147,7 +147,7 @@ private:
     /*!
      *  Highlights the given definition.
      *
-     *      @param [in] definition   The definition to highlight.
+     *    @param [in] definition   The definition to highlight.
      */
     void highlightDefinition(QString const& definition);
 
@@ -155,18 +155,18 @@ private:
      *  Creates a parameter from the given definition and adds it to the component.
      *  Existing parameter with the same name will be updated and no new parameter is added.
      *
-     *      @param [in] definition          The definition to create the parameter from.
-     *      @param [in] targetComponent     The component to add the parameter to.
+     *    @param [in] definition          The definition to create the parameter from.
+     *    @param [in] targetComponent     The component to add the parameter to.
      */
     void createParameterFromDefinition(QString const& definition, QSharedPointer<Component> targetComponent);
 
     /*!
      *  Finds a parameter in the given component by the given name.
      *
-     *      @param [in] targetComponent     The component the search in.
-     *      @param [in] name                The name of the model parameter to find.
+     *    @param [in] targetComponent     The component the search in.
+     *    @param [in] name                The name of the model parameter to find.
      *
-     *      @return The parameter with the given name or null if no parameter matches the name.
+     *    @return The parameter with the given name or null if no parameter matches the name.
      */
     QSharedPointer<Parameter> findParameterByName(QSharedPointer<Component> targetComponent, 
         QString const& name) const;
@@ -174,17 +174,17 @@ private:
     /*!
      *  Parse the included verilog parameters.
      *
-     *      @param [in] input               The input text to parse.
-     *      @param [in] targetComponent     The component to add the parameter to.
+     *    @param [in] input               The input text to parse.
+     *    @param [in] targetComponent     The component to add the parameter to.
      */
     void parseParameters(QString const& input, QSharedPointer<Component> targetComponent);
 
     /*!
      *  Get the areas from the input text that do not contain verilog modules.
      *
-     *      @param [in] input   The selected input.
+     *    @param [in] input   The selected input.
      *
-     *      @return List of non module text areas.
+     *    @return List of non module text areas.
      */
     QStringList getNonModuleAreas(QString const& input) const;
 

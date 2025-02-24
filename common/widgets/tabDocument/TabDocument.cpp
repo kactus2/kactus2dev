@@ -12,15 +12,20 @@
 #include "TabDocument.h"
 
 #include <QApplication>
-#include <QMessageBox>
 #include <QCoreApplication>
-#include <QTimer>
+#include <QMessageBox>
 #include <QPushButton>
+#include <QTimer>
+
+#include <KactusAPI/include/LibraryInterface.h>
+#include "IPXACTmodels/common/Document.h"
+
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 // Function: TabDocument::TabDocument()
 //-----------------------------------------------------------------------------
-TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, int maxZoomLevel) : 
+TabDocument::TabDocument(QWidget* parent, LibraryInterface* libHandler, unsigned int flags, int minZoomLevel, int maxZoomLevel) :
     QWidget(parent),
     supportedWindows_(OUTPUTWINDOW | LIBRARYWINDOW | CONTEXT_HELP_WINDOW ),
     flags_(flags),
@@ -33,7 +38,9 @@ TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, 
     docName_(""),
     previouslyUnlocked_(false),
     relatedVLNVs_(),
-    refreshRequested_(false)
+    refreshRequested_(false),
+    docType_(DocumentType::EMPTY),
+    libHandler_(libHandler)
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
 }
@@ -68,17 +75,9 @@ void TabDocument::setDocumentName(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: TabDocument::setDocumentType()
 //-----------------------------------------------------------------------------
-void TabDocument::setDocumentType(QString const& type)
+void TabDocument::setDocumentType(DocumentType const& type)
 {
-    if (type.isEmpty())
-    {
-        docType_ = "";
-    }
-    else
-    {
-        docType_ = " [" + type + "]";
-    }
-
+    docType_ = type;
     updateTabTitle();
 }
 
@@ -134,16 +133,9 @@ void TabDocument::setModified(bool modified)
 		return;
     }
 
-    if (modified)
-    {
-        setTabTitle(docName_ + docType_ + "*");
-    }
-    else
-    {
-        setTabTitle(docName_ + docType_);
-    }
-
     modified_ = modified;
+    updateTabTitle();
+
 	emit modifiedChanged(modified_);
 }
 
@@ -269,18 +261,39 @@ bool TabDocument::askSaveFile() const {
 }
 
 //-----------------------------------------------------------------------------
+// Function: TabDocument::loadChangesFromSibling()
+//-----------------------------------------------------------------------------
+void TabDocument::loadChangesFromRelatedTab()
+{
+    // Implementation left for derived classes, if needed
+}
+
+//-----------------------------------------------------------------------------
 // Function: TabDocument::updateTabTitle()
 //-----------------------------------------------------------------------------
 void TabDocument::updateTabTitle()
 {
-    // Update also the title.
     if (isModified())
     {
-        setTabTitle(docName_ + docType_ + "*");
+        if (docType_!=DocumentType::EMPTY)
+        {
+            setTabTitle(docName_ + " [" + documentTypetoString(docType_) + "]" + "*");
+        }
+        else 
+        {
+            setTabTitle(docName_ + "*");
+        }
     }
     else
     {
-        setTabTitle(docName_ + docType_);
+        if (docType_ != DocumentType::EMPTY)
+        {
+            setTabTitle(docName_ + " [" + documentTypetoString(docType_) + "]");
+        }
+        else
+        {
+            setTabTitle(docName_);
+        }        
     }
 }
 
@@ -369,6 +382,68 @@ QMap<QString, bool> const& TabDocument::getVisibilityControls() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: TabDocument::getDocType()
+//-----------------------------------------------------------------------------
+TabDocument::DocumentType TabDocument::getDocType() const
+{
+    return docType_;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::fileExists()
+//-----------------------------------------------------------------------------
+bool TabDocument::fileExists()
+{
+    if (!libHandler_)
+    {
+        return false;
+    }
+    return libHandler_->getModel<Document>(getIdentifyingVLNV())!=nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::documentTypetoString()
+//-----------------------------------------------------------------------------
+QString TabDocument::documentTypetoString(DocumentType documentType)
+{
+    switch (documentType)
+    {
+    case DocumentType::ABSTRACTION_DEFINITION:
+        return QStringLiteral("Abstraction Definition");
+    case DocumentType::API_DEFINITION:
+        return QStringLiteral("API Definition");
+    case DocumentType::BUS_DEFINITION:
+        return QStringLiteral("Bus Definition");
+    case DocumentType::CATALOG:
+        return QStringLiteral("Catalog");
+    case DocumentType::COM_DEFINITION:
+        return QStringLiteral("COM Definition");
+    case DocumentType::HW_COMPONENT:
+        return QStringLiteral("HW Component");
+    case DocumentType::SW_COMPONENT:
+        return QStringLiteral("SW Component");
+    case DocumentType::UNMAPPED_SYSTEM:
+        return QStringLiteral("Unmapped System");
+    case DocumentType::CODE:
+        return QStringLiteral("Code");
+    case DocumentType::HW_DESIGN:
+        return QStringLiteral("HW Design");
+    case DocumentType::MEMORY_DESIGN:
+        return QStringLiteral("Memory Design");
+    case DocumentType::SW_DESIGN:
+        return QStringLiteral("SW Design");
+    case DocumentType::SYSTEM_DESIGN:
+        return QStringLiteral("System Design");
+    case DocumentType::EMPTY:
+        return QStringLiteral("");
+    default:
+        Q_ASSERT(false); //please handle ToString conversion for every new document type you add.
+        return QStringLiteral("");
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: TabDocument::addRelatedVLNV()
 //-----------------------------------------------------------------------------
 void TabDocument::addRelatedVLNV(VLNV const& vlnv)
@@ -432,6 +507,11 @@ void TabDocument::showEvent(QShowEvent* event)
     }
 }
 
+LibraryInterface* TabDocument::getLibHandler() const
+{
+    return libHandler_;
+}
+
 //-----------------------------------------------------------------------------
 // Function: TabDocument::clearRelatedVLNVs()
 //-----------------------------------------------------------------------------
@@ -454,6 +534,7 @@ void TabDocument::handleRefreshRequest()
 
         if (msgBox.exec() == QMessageBox::Yes)
         {
+            loadChangesFromRelatedTab();
             save();
             refresh();
         }

@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
@@ -31,9 +32,10 @@ ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model
     ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
     cpus_(component->getCpus()),
-    validator_(new CPUValidator(
+    singleCpuValidator_(new CPUValidator(
         QSharedPointer<ParameterValidator>(new ParameterValidator(expressions.parser, component->getChoices(), component->getRevision())),
         expressions.parser, component->getAddressSpaces(), component->getMemoryMaps(), component->getRevision())),
+    cpusValidator_(new CPUsValidator(singleCpuValidator_)),
     expressions_(expressions)
 {
     setParameterFinder(expressions.finder);
@@ -72,7 +74,7 @@ ItemEditor* ComponentEditorCpusItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new CpusEditor(component_, libHandler_, validator_, expressions_);
+		editor_ = new CpusEditor(component_, libHandler_, singleCpuValidator_, expressions_);
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
@@ -98,19 +100,9 @@ QString ComponentEditorCpusItem::getTooltip() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorCpusItem::isValid() const
 {
-    QVector<QString> cpuNames;
-
-    for (QSharedPointer<Cpu> cpu : *cpus_) 
-    {
-        if (cpuNames.contains(cpu->name()) || !validator_->validate(cpu))
-        {
-            return false;
-        }
-
-        cpuNames.append(cpu->name());
-    }
-
-	return true;
+    auto cpusNameGroup = CollectionValidators::itemListToNameGroupList(cpus_);
+    cpusValidator_->childrenHaveUniqueNames(cpusNameGroup);
+    return ComponentEditorItem::isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +111,7 @@ bool ComponentEditorCpusItem::isValid() const
 void ComponentEditorCpusItem::createChild(int index)
 {
     QSharedPointer<SingleCpuItem> cpuItem(new SingleCpuItem(cpus_->at(index), model_, libHandler_,
-        component_, referenceCounter_, expressions_, validator_, this));
+        component_, referenceCounter_, expressions_, singleCpuValidator_, this));
 
     cpuItem->setLocked(locked_);
 

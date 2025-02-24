@@ -38,10 +38,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] library             The IP library.
-	 *      @param [in] component           The component being edited.
-	 *      @param [in] validator			The validator for indirect interfaces.
-	 *      @param [in] parent              The owner of this editor.
+	 *    @param [in] library             The IP library.
+	 *    @param [in] component           The component being edited.
+	 *    @param [in] validator			The validator for indirect interfaces.
+	 *    @param [in] parent              The owner of this editor.
 	 */
 	IndirectInterfacesEditor(LibraryInterface* library, QSharedPointer<Component> component,
         QSharedPointer<IndirectInterfaceValidator> validator,

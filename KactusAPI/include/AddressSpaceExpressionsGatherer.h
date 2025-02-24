@@ -41,9 +41,9 @@ public:
     /*!
      *  Get the expressions from a given address space.
      *
-     *      @param [in] addressSpace    The given address space.
+     *    @param [in] addressSpace    The given address space.
      *
-     *      @return A list containing all the expressions used in an address space.
+     *    @return A list containing all the expressions used in an address space.
      */
     QStringList getExpressions(QSharedPointer<AddressSpace> addressSpace) const;
 
@@ -52,9 +52,9 @@ private:
     /*!
      *  Get the expressions from segments.
      *
-     *      @param [in] segmentList     A list of the selected segments.
+     *    @param [in] segmentList     A list of the selected segments.
      *
-     *      @return A list of expressions contained within the segments.
+     *    @return A list of expressions contained within the segments.
      */
     QStringList getExpressionsFromSegments(QSharedPointer<QList<QSharedPointer<Segment> > > segmentList) const;
 

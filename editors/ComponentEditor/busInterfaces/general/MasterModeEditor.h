@@ -41,12 +41,12 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] busInterface        Interface for accessing bud interfaces.
-     *      @param [in] busName             Name of the edited bus interface.
-	 *      @param [in] component           The component being edited.
-	 *      @param [in] parameterFinder     The parameter finder.
-	 *      @param [in] expressionParser    The expression parser.
-	 *      @param [in] parent              The owner of this editor.
+	 *    @param [in] busInterface        Interface for accessing bud interfaces.
+     *    @param [in] busName             Name of the edited bus interface.
+	 *    @param [in] component           The component being edited.
+	 *    @param [in] parameterFinder     The parameter finder.
+	 *    @param [in] expressionParser    The expression parser.
+	 *    @param [in] parent              The owner of this editor.
 	 */
     MasterModeEditor(
         BusInterfaceInterface* busInterface,
@@ -65,7 +65,7 @@ public:
 
 	/*! Check for the validity of the edited item.
 	*
-	*       @return True if item is valid.
+	*    @return True if item is valid.
 	*/
 	bool isValid() const final;
 
@@ -76,7 +76,7 @@ public:
 
 	/*! Get the interface mode of the editor
 	 * 
-	 *      @return General::InterfaceMode Specifies the interface mode.
+	 *    @return General::InterfaceMode Specifies the interface mode.
 	*/
 	General::InterfaceMode getInterfaceMode() const final;
 
@@ -93,14 +93,14 @@ signals:
     /*!
      *  Increase the number of references to the given parameter.
      *
-     *      @param [in] id  The id of the target parameter.
+     *    @param [in] id  The id of the target parameter.
      */
     void increaseReferences(QString id);
 
     /*!
      *  Decrease the number of references to the given parameter.
      *
-     *      @param [in] id  The id of the target parameter.
+     *    @param [in] id  The id of the target parameter.
      */
     void decreaseReferences(QString id);
 
@@ -109,7 +109,7 @@ private slots:
 	/*!
 	 *  Handler for changes in address space reference.
 	 *
-	 *      @param [in] addrSpaceName   The name of the referenced address space.
+	 *    @param [in] addrSpaceName   The name of the referenced address space.
 	 */
 	void onAddressSpaceChange(QString const& addrSpaceName);
 

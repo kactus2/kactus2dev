@@ -63,7 +63,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent     The parent graphics item.
+     *    @param [in] parent     The parent graphics item.
      */
     ConnectionEndpoint(QGraphicsItem* parent = 0);
 
@@ -80,28 +80,28 @@ public:
     /*!
      *  Sets the highlighting mode.
      *
-     *      @param [in] mode The highlight mode.
+     *    @param [in] mode The highlight mode.
      */
     void setHighlight(HighlightMode mode);
 
     /*!
      *  Sets the selection highlight on/off.
      *
-     *      @param [in] on If true, the selection highlight is turned on. Otherwise it is turned off.
+     *    @param [in] on If true, the selection highlight is turned on. Otherwise it is turned off.
      */
     virtual void setSelectionHighlight(bool on);
 
     /*!
      *  Attaches the endpoint to a connection.
      *
-     *      @param [in] connection The connection.
+     *    @param [in] connection The connection.
      */
     virtual void addConnection(GraphicsConnection* connection);
 
     /*!
      *  Unattaches the endpoint from a connection.
      *
-     *      @param [in] connection The connection.
+     *    @param [in] connection The connection.
      */
     virtual void removeConnection(GraphicsConnection* connection);
 
@@ -133,16 +133,16 @@ public:
     /*!
      *  Called when a connection between this and another endpoint is done.
      *
-     *      @param [in] other The other endpoint of the connection.
+     *    @param [in] other The other endpoint of the connection.
      *
-     *      @return False if there was an error in the connection. Otherwise true.
+     *    @return False if there was an error in the connection. Otherwise true.
      */
     virtual bool onConnect(ConnectionEndpoint const* other) = 0;
 
     /*!
      *  Called when a connection has been removed from between this and another endpoint.
      *
-     *      @param [in] other The other endpoint of the connection.
+     *    @param [in] other The other endpoint of the connection.
      */
     virtual void onDisconnect();
 
@@ -150,17 +150,21 @@ public:
      *  Returns true if this endpoint can be connected to the given endpoint, taking existing
      *  connections into account.
      *
-     *      @param [in] other The endpoint to which to connect.
+     *    @param [in] other The endpoint to which to connect.
      */
     virtual bool canConnect(ConnectionEndpoint const* other) const;
 
     /*!
      *  Returns true if a connection is valid between the two endpoints.
      *
-     *      @param [in] other The other endpoint.
+     *    @param      [in]    other The other endpoint.
      *
-     *      @remarks Does not take existing connections into account but simply validates whether a 
-     *               connection between the endpoints would be valid in a general case.
+     *      @remarks            The function checks all possible connections between
+     *                          two endpoint, including there off-page connectors
+     *                          and parent connectors. Does not take into account 
+     *                          if endpoint is exclusive. 
+     * 
+     *    @return             Boolean true if two endpoints can be connected, otherwise false.
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
@@ -172,7 +176,7 @@ public:
     /*!
      *  Sets the draw direction of the endpoint.
      *
-     *      @param [in] dir The draw direction to set.
+     *    @param [in] dir The draw direction to set.
      *
      *      @remarks The direction can be changed only if isDirectionFixed() returns false.
      */
@@ -181,7 +185,7 @@ public:
     /*!
 	 *	Returns the draw direction of the endpoint.
 	 */
-	QVector2D getDirection() const;
+	virtual QVector2D getDirection() const;
 
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
@@ -264,7 +268,12 @@ public:
     /*!
      *  Returns the corresponding off-page connector or a null pointer if the endpoint does not have one.
      */
-    virtual ConnectionEndpoint* getOffPageConnector();
+    virtual ConnectionEndpoint* getOffPageConnector() const;
+
+    /*!
+     *  Returns the corresponding parent connector or a null pointer if the endpoint is not off-page.
+     */
+    virtual ConnectionEndpoint* getParentConnector() const;
 
     /*!
      *  Returns true if the endpoint represents a hierarchical connection.
@@ -299,7 +308,7 @@ public:
     /*!
      *  Sets the endpoint temporary or not temporary. Temporary endpoints can be deleted.
      *
-     *      @param [in] temp True if temporary; false if not temporary.
+     *    @param [in] temp True if temporary; false if not temporary.
      */
     virtual void setTemporary(bool temp);
 
@@ -317,7 +326,7 @@ public:
      *  Sets the endpoint type locked or not. A locked endpoint has a strict type, while a non-locked
      *  endpoint automatically adjusts its type when connections are added/removed.
      *
-     *      @param [in] typed If true, the endpoint is set as typed.
+     *    @param [in] typed If true, the endpoint is set as typed.
      */
     void setTypeLocked(bool typed);
 
@@ -329,7 +338,7 @@ public:
     /*!
      *  Get the interface mode of the connected bus interface.
      *
-     *      @return The interface mode of the end point.
+     *    @return The interface mode of the end point.
      */
     virtual General::InterfaceMode getInterfaceMode() const;
     
@@ -341,9 +350,16 @@ public:
 	/*!
 	 *  Shorten the name label to better fit the component.
 	 *  
-	 *      @param [in] width   The width of the shortened name.
+	 *    @param [in] width   The width of the shortened name.
 	 */
 	virtual void shortenNameLabel( qreal width );
+
+    /*!
+     *  Checks if the endpoint is off-page.
+     *
+     *    @return     Boolean true if endpoint is off-page, otherwise false.
+     */
+    bool isOffPage() const;
 
 signals:
     //! Signals that the contents of the interface have been changed.
@@ -367,6 +383,18 @@ protected:
     void endUpdateConnectionNames();
 
 private:
+
+    /*!
+     *  Checks if points are connected
+     *
+     *    @param [in] other The other endpoint.
+     * 
+     *    @return     Boolean true is the points are connected, otherwise false.
+     *
+     *      @remarks    Does  not take into account weather points are off-page
+                        or not, thus checking two points directly.
+     */
+    bool isConnectionBetweenPointsExist(ConnectionEndpoint const* other) const;
 
     //-----------------------------------------------------------------------------
     // Data.

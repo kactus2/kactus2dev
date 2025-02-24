@@ -29,10 +29,10 @@ public:
     /*!
      *  Formats the given value.
      *
-     *      @param [in] value   The value to format.
-     *      @param [in] base    The base to use in formatting.
+     *    @param [in] value   The value to format.
+     *    @param [in] base    The base to use in formatting.
      *
-     *      @return The formatted value.
+     *    @return The formatted value.
      */
     virtual QString format(QString const& value, int base) const;
 
@@ -45,8 +45,8 @@ private:
     /*!
      *  Format the given array.
      *
-     *      @param [in] arrayValue  The array to be formatted.
-     *      @param [in] base        The base to use in formatting.
+     *    @param [in] arrayValue  The array to be formatted.
+     *    @param [in] base        The base to use in formatting.
      */
     QString formatArray(QString const& arrayValue, int& base) const;
 };

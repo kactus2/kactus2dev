@@ -36,8 +36,8 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] configurationObject     Object containing the SVD configurations.
-     *      @param [in] parent                  Pointer to the owner of this widget.
+     *    @param [in] configurationObject     Object containing the SVD configurations.
+     *    @param [in] parent                  Pointer to the owner of this widget.
      */
     SVDCPUEditor(QJsonObject const& configurationObject, QWidget *parent = 0);
 
@@ -49,16 +49,16 @@ public:
     /*!
      *  Setup the selected CPUs.
      *
-     *      @param [in] library     Interface for accessing the library.
-     *      @param [in] component   The top component of the design.
-     *      @param [in] activeView  Active view of the design.
+     *    @param [in] library     Interface for accessing the library.
+     *    @param [in] component   The top component of the design.
+     *    @param [in] activeView  Active view of the design.
      */
     virtual void setupCPUDetails(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView) override final;
 
     /*!
      *  Get a list of the selected CPU routes.
      *
-     *      @return List of the selected CPU routes.
+     *    @return List of the selected CPU routes.
      */
     virtual QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs() const override final;
 
@@ -71,11 +71,11 @@ private:
     /*!
      *  Create SVD CPU routes from the selected design.
      *
-     *      @param [in] library     Interface for accessing the library.
-     *      @param [in] component   The top component of the design.
-     *      @param [in] activeView  Active view of the design.
+     *    @param [in] library     Interface for accessing the library.
+     *    @param [in] component   The top component of the design.
+     *    @param [in] activeView  Active view of the design.
      *
-     *      @return The SVD CPU routes of the selected design.
+     *    @return The SVD CPU routes of the selected design.
      */
     QVector<QSharedPointer<SVDCpuRoutesContainer> > getSVDCPURoutes(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView);
 

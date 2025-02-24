@@ -31,9 +31,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent              Pointer to the owner of this model.
-	 *      @param [in] fileSetInterface    Interface for accessing file sets.
-	 *      @param [in] items               QStringList that contains the items to add.
+	 *    @param [in] parent              Pointer to the owner of this model.
+	 *    @param [in] fileSetInterface    Interface for accessing file sets.
+	 *    @param [in] items               QStringList that contains the items to add.
 	 */
     FileSetRefModel(QObject *parent, FileSetInterface* fileSetInterface, const QStringList& items = QStringList());
 
@@ -45,8 +45,8 @@ public:
 	/*!
      *  Get the data stored for the specified item.
 	 *
-	 *      @param [in] index   ModelIndex of the wanted item.
-	 *      @param [in] role    Specifies what kind of data is requested.
+	 *    @param [in] index   ModelIndex of the wanted item.
+	 *    @param [in] role    Specifies what kind of data is requested.
 	 */
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 

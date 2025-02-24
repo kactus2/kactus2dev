@@ -38,28 +38,28 @@ public:
 	/*!
 	 *  Get the packet endianness.
 	 *
-	 *      @return The packet endianness.
+	 *    @return The packet endianness.
 	 */
 	QString getEndianness() const;
 
 	/*!
 	 *  Set the packet endianness.
 	 *
-	 *      @param [in] endianness	The new packet endianness.
+	 *    @param [in] endianness	The new packet endianness.
 	 */
 	void setEndianness(QString const& endianness);
 
 	/*!
 	 *  Get the packet fields.
 	 *
-	 *      @return The packet fields.
+	 *    @return The packet fields.
 	 */
 	QSharedPointer<QList<QSharedPointer<PacketField> > > getPacketFields() const;
 
 	/*!
 	 *  Set the packet fields.
 	 *
-	 *      @param [in] packetFields	The new packet fields.
+	 *    @param [in] packetFields	The new packet fields.
 	 */
 	void setPacketFields(QSharedPointer<QList<QSharedPointer<PacketField> > > packetFields);
 

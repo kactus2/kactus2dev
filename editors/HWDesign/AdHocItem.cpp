@@ -222,6 +222,14 @@ QSharedPointer<Port> AdHocItem::getPort() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: AdHocItem::setPort()
+//-----------------------------------------------------------------------------
+void AdHocItem::setPort(QSharedPointer<Port> newPort)
+{
+    port_ = newPort;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AdHocItem::changeTieOffLabel()
 //-----------------------------------------------------------------------------
 void AdHocItem::changeTieOffLabel(QString const& tieOffExpression, QString const& tieOffValue,

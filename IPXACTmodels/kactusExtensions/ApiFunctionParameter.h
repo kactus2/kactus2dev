@@ -39,7 +39,7 @@ public:
     /*!
      *  Constructor which read the function parameter from an XML node.
      *
-     *      @param [in] node The source XML node.
+     *    @param [in] node The source XML node.
      */
     ApiFunctionParameter(QDomNode& node);
 
@@ -51,15 +51,15 @@ public:
     /*!
      *  Writes the function parameter to an XML stream.
      *
-     *      @param [in] writer The XML stream writer.
+     *    @param [in] writer The XML stream writer.
      */
     void write(QXmlStreamWriter& writer);
 
     /*!
      *  Returns true if the function parameter is valid.
      *
-     *      @param [out] errorList  The list of errors found in the contents.
-     *      @param [in]  parentId   The identifier of the containing API function.
+     *    @param [out] errorList  The list of errors found in the contents.
+     *    @param [in]  parentId   The identifier of the containing API function.
      */
     void findErrors(QVector<QString>& errorList, QString const& parentId) const;
 
@@ -71,35 +71,35 @@ public:
     /*!
      *  Sets the name of the parameter.
      *
-     *      @param [in] name The name to set.
+     *    @param [in] name The name to set.
      */
     void setName(QString const& name);
 
     /*!
      *  Sets the type of the parameter.
      *
-     *      @param [in] type The type name to set.
+     *    @param [in] type The type name to set.
      */
     void setType(QString const& type);
 
     /*!
      *  Sets the allowed COM transfer type.
      *
-     *      @param [in] comTransferType The COM transfer type to set.
+     *    @param [in] comTransferType The COM transfer type to set.
      */
     void setComTransferType(QString const& comTransferType);
 
     /*!
      *  Sets the allowed COM direction.
      *
-     *      @param [in] comDirection The COM direction to set.
+     *    @param [in] comDirection The COM direction to set.
      */
     void setComDirection(DirectionTypes::Direction comDirection);
 
     /*!
      *  Sets the COM content source.
      *
-     *      @param [in] contentSource The name of the content source.
+     *    @param [in] contentSource The name of the content source.
      *                                "name" = name of a COM interface, otherwise any name of a COM property
      */
     void setContentSource(QString const& contentSource);
@@ -107,14 +107,14 @@ public:
     /*!
      *  Sets the dependent parameter index.
      *
-     *      @param [in] index The dependent parameter index. -1 if not set.
+     *    @param [in] index The dependent parameter index. -1 if not set.
      */
     void setDependentParameterIndex(int index);
 
     /*!
      *  Sets the parameter description.
      *
-     *      @param [in] desc The description.
+     *    @param [in] desc The description.
      */
     void setDescription(QString const& desc);
 

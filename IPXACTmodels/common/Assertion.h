@@ -44,14 +44,14 @@ public:
     /*!
      *  Get the assert associated with this assertion.
      *
-     *      @return The assert.
+     *    @return The assert.
      */
     QString getAssert() const;
 
     /*!
      *  Set the assert associated with this assertion.
      *
-     *      @param [in] newAssert   The new assert value.
+     *    @param [in] newAssert   The new assert value.
      */
     void setAssert(QString const& newAssert);
 

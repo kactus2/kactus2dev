@@ -412,7 +412,7 @@ ColumnTypes::ColumnContentType GraphicsColumn::getContentType() const
 //-----------------------------------------------------------------------------
 void GraphicsColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    if (static_cast<DesignDiagram*>(scene())->isProtected())
+    if (auto designDiagram = dynamic_cast<DesignDiagram*>(scene()); designDiagram && designDiagram->isProtected())
     {
         return;
     }
@@ -438,7 +438,7 @@ void GraphicsColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
 void GraphicsColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Discard mouse move if the diagram is protected.
-    if (static_cast<DesignDiagram*>(scene())->isProtected())
+    if (auto designDiagram = dynamic_cast<DesignDiagram*>(scene()); designDiagram && designDiagram->isProtected())
     {
         return;
     }
@@ -504,7 +504,9 @@ void GraphicsColumn::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     QGraphicsRectItem::hoverEnterEvent(event);
 
-    if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
+    if (auto designDiagram = dynamic_cast<DesignDiagram*>(scene()); 
+        designDiagram &&
+        designDiagram->isProtected() &&
         qAbs(event->pos().x() - boundingRect().right()) <= 10 &&
         !mouseNearResizeArea_)
     {
@@ -520,7 +522,8 @@ void GraphicsColumn::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
 {
     QGraphicsRectItem::hoverMoveEvent(event);
 
-    if (static_cast<DesignDiagram*>(scene())->isProtected())
+    if (auto designDiagram = dynamic_cast<DesignDiagram*>(scene()); 
+        designDiagram && designDiagram->isProtected())
     {
         return;
     }

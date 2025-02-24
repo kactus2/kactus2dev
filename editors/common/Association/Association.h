@@ -38,9 +38,9 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] startItem   The item at the starting end of the association.
-	 *      @param [in] endItem     The item at the end of the association.
-	 *      @param [in] parent      The parent item.
+	 *    @param [in] startItem   The item at the starting end of the association.
+	 *    @param [in] endItem     The item at the end of the association.
+	 *    @param [in] parent      The parent item.
 	 */
 	Association(Associable* startItem, Associable* endItem, QSharedPointer<Kactus2Position> endpointExtension, 
         QGraphicsItem* parent = 0);
@@ -53,9 +53,9 @@ public:
     /*!
      *  Draws the item.
      *
-     *      @param [in] painter     The painter to use.
-     *      @param [in] option      Painting style options.
-     *      @param [in] widget      The widget to paint on.
+     *    @param [in] painter     The painter to use.
+     *    @param [in] option      Painting style options.
+     *    @param [in] widget      The widget to paint on.
      */
     void paint(QPainter* painter,  QStyleOptionGraphicsItem const* option, QWidget* widget);
 
@@ -74,14 +74,14 @@ public:
     /*!
      *  Changes the item at the end of the association.
      *
-     *      @param [in] endItem   The item to set as the new end item.
+     *    @param [in] endItem   The item to set as the new end item.
      */
     void setEndItem(Associable* endItem);
 
     /*!
      *  Gets the vendor extension representing the endpoint position.
      *
-     *      @return The endpoint vendor extension.
+     *    @return The endpoint vendor extension.
      */
     QSharedPointer<Kactus2Position> getEndpointExtension() const;
 

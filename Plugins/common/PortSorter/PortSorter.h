@@ -31,18 +31,18 @@ public:
     /*!
      *  Gets the sorted port names of a component.
      *
-     *      @param [in] component   The component whose port names to find.
+     *    @param [in] component   The component whose port names to find.
      *
-     *      @return The sorted port names of a given component.
+     *    @return The sorted port names of a given component.
      */
     virtual QStringList sortedPortNames(QSharedPointer<Component const> component) const = 0;
 
     /*!
      *  Gets the sorted ports of a component.
      *
-     *      @param [in] component   The component whose ports to find.
+     *    @param [in] component   The component whose ports to find.
      *
-     *      @return The sorted ports of a given component.
+     *    @return The sorted ports of a given component.
      */
     virtual QList<QSharedPointer<Port> > sortedPorts(QSharedPointer<Component const> component) const = 0;
 };

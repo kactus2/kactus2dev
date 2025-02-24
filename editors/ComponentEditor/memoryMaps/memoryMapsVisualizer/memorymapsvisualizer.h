@@ -37,7 +37,7 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] parent    Pointer to the owner of the visualizer widget.
+	 *    @param [in] parent    Pointer to the owner of the visualizer widget.
 	 *
 	*/
 	explicit MemoryMapsVisualizer(QWidget *parent = 0);
@@ -53,25 +53,25 @@ public:
 
 	/*! Add a new memory map graphics item to the scene.
 	 *
-	 *      @param [in] memMapItem    Pointer to the graphics item.
+	 *    @param [in] memMapItem    Pointer to the graphics item.
 	*/
 	void addMemoryMapItem(MemoryMapGraphItem* memMapItem);
 
 	/*! Remove a memory map graphics item from the scene.
 	 *
-	 *      @param [in] memMapItem    Pointer to the graphics item.
+	 *    @param [in] memMapItem    Pointer to the graphics item.
 	*/
 	void removeMemoryMapItem(MemoryMapGraphItem* memMapItem);
 
 	/*! The minimum size hint for the visualizer.
 	 *
-	 *      @return  The minimum size hint.
+	 *    @return  The minimum size hint.
 	*/
 	virtual QSize minimumSizeHint() const;
 
 	/*! The size hint for the visualizer.
 	 *
-	 *      @return The size hint.
+	 *    @return The size hint.
 	*/
 	virtual QSize sizeHint() const;
 

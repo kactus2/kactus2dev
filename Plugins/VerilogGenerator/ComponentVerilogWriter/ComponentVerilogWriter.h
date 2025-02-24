@@ -42,8 +42,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component to write to Verilog.
-     *      @param [in] useInterfaces           True, if interfaces are utilized separately from physical ports, else false.
+	 *    @param [in] component               The component to write to Verilog.
+     *    @param [in] useInterfaces           True, if interfaces are utilized separately from physical ports, else false.
 	 */
 	ComponentVerilogWriter(QSharedPointer<MetaComponent> component, bool useInterfaces);
 
@@ -52,7 +52,7 @@ public:
 
 	/*! Writes the Verilog module into a text stream.
 	 *
-     *      @param [in] output   The output to write to.
+     *    @param [in] output   The output to write to.
 	 */
     virtual void write(QTextStream& outputStream) const;
 
@@ -74,55 +74,55 @@ private:
      /*!
       *  Checks if the writer should write nothing.
       *
-      *      @return True, if the writer has nothing to write, otherwise false.
+      *    @return True, if the writer has nothing to write, otherwise false.
       */
     bool nothingToWrite() const;
 
     /*!
      *  Writes the module declaration.
      *
-     *      @param [in] outputStream   The output to write to.
+     *    @param [in] outputStream   The output to write to.
      */
     void writeModuleDeclaration( QTextStream& outputStream ) const;
 
      /*!
       *  Writes the module parameter declaration.
       *
-      *      @param [in] outputStream   The output to write to.
+      *    @param [in] outputStream   The output to write to.
       */
     void writeParameterDeclarations(QTextStream& outputStream) const;
 
     /*!
      *  Writes a single parameter declaration.
      *
-     *      @param [in] outputStream    The output to write to.
-     *      @param [in] parameter       The parameter to write.
-     *      @param [in] isLast          Indicates if the parameter is the last to write.
+     *    @param [in] outputStream    The output to write to.
+     *    @param [in] parameter       The parameter to write.
+     *    @param [in] isLast          Indicates if the parameter is the last to write.
      */
     void writeParameter(QTextStream& outputStream, QSharedPointer<Parameter> parameter, bool isLast) const;
 
     /*!
      *  Writes the module port declaration.
      *
-     *      @param [in] outputStream   The output to write to.
+     *    @param [in] outputStream   The output to write to.
      */
     void writePortDeclarations(QTextStream& outputStream) const;
     
     /*!
      *  Writes a single port declaration.
      *
-     *      @param [in] outputStream    The output to write to.
-     *      @param [in] port            The port to write.
-     *      @param [in] isLast          Indicates if the port is the last to write.
+     *    @param [in] outputStream    The output to write to.
+     *    @param [in] port            The port to write.
+     *    @param [in] isLast          Indicates if the port is the last to write.
      */
     void writePort(QTextStream& outputStream, QSharedPointer<MetaPort> port, bool isLast) const;
 
     /*!
      *  Writes a bus interface introduction.
      *
-     *      @param [in] interfaceName           The name of the bus interface to introduce.
-     *      @param [in] previousInterfaceName   The name of the previously introduced bus interface.
-     *      @param [in] outputStream            The output to write to.
+     *    @param [in] interfaceName           The name of the bus interface to introduce.
+     *    @param [in] previousInterfaceName   The name of the previously introduced bus interface.
+     *    @param [in] outputStream            The output to write to.
      */
     void writeInterfaceIntroduction(QString const& interfaceName, QString const& interfaceDescription, QString& previousInterfaceName,
         QTextStream& outputStream ) const;
@@ -130,35 +130,35 @@ private:
     /*!
      *  Writes the inserted wires and component instances of the top-level component.
      *
-     *      @param [in] outputStream   The output to write to.
+     *    @param [in] outputStream   The output to write to.
      */
     void writeInternalWiresAndComponentInstances(QTextStream& outputStream) const;
     
     /*!
      *  Writes the defined conditions of the remap states.
      *
-     *      @param [in] outputStream   The output to write to.
+     *    @param [in] outputStream   The output to write to.
      */
     void writeRemapSates(QTextStream& outputStream) const;
 
     /*!
      *  Writes the module port declaration.
      *
-     *      @param [in] outputStream   The output to write to.
+     *    @param [in] outputStream   The output to write to.
      */
     void writeRegisters(QTextStream& outputStream) const;
 
     /*!
      *  Writes the ending clause for the module.
      *
-     *      @param [in] outputStream   The output to write to.
+     *    @param [in] outputStream   The output to write to.
      */
     void writeModuleEnd(QTextStream& outputStream) const;
 
     /*!
      *  Gets the indentation to use.
      *
-     *      @return The indentation to use.
+     *    @return The indentation to use.
      */
     QString indentation(int depth = 1) const;
 

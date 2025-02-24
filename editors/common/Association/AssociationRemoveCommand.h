@@ -28,9 +28,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] association     The association to remove.
-     *      @param [in] scene           The scene from which to remove the association from.
-     *      @param [in] parent          The parent command.
+     *    @param [in] association     The association to remove.
+     *    @param [in] scene           The scene from which to remove the association from.
+     *    @param [in] parent          The parent command.
      */
     AssociationRemoveCommand(Association* association, QGraphicsScene* scene, QUndoCommand* parent = 0);
 

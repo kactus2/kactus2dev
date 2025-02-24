@@ -21,14 +21,16 @@
 //-----------------------------------------------------------------------------
 // Function: QualifierEditor::QualifierEditor()
 //-----------------------------------------------------------------------------
-QualifierEditor::QualifierEditor(QWidget* parent):
+QualifierEditor::QualifierEditor(Document::Revision stdRevision, QWidget *parent) :
     QFrame(parent),
+    qualifierAndAttributelayout_(new QGridLayout()),
     powerDomainLineEdit_(new QLineEdit()),
     userDefinedLineEdit_(new QLineEdit()),
     resetLevelSelector_(new QComboBox()),
     clockEnableLevelSelector_(new QComboBox()),
     powerEnableLevelSelector_(new QComboBox()),
-    flowTypeSelector_(new QComboBox())
+    flowTypeSelector_(new QComboBox()),
+    stdRevision_(stdRevision)
 {
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
@@ -56,35 +58,65 @@ QualifierEditor::QualifierEditor(QWidget* parent):
     flowTypeSelector_->lineEdit()->setPlaceholderText(QStringLiteral("Flow type"));
     userDefinedLineEdit_->setPlaceholderText(QStringLiteral("User defined attribute"));
 
-    populateCheckBoxes();
     setupLayout();
 }
 
 //-----------------------------------------------------------------------------
 // Function: QualifierEditor::setupEditor()
 //-----------------------------------------------------------------------------
-void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers,
-    QMap<QString, QString> const& attributes)
-{
-    for (auto const& qualifier : allQualifiers)
+void QualifierEditor::setupEditor(QStringList const& qualifierOptions)
+{    
+    for (auto const& qualifier : qualifierOptions)
     {
-        bool selected = activeQualifiers.contains(qualifier);
+        auto qualifierAsType = Qualifier::stringToType(qualifier);
+        auto attributeEditor = getAttributeEditor(qualifierAsType);
 
-        for (auto box : qualifierBoxes_)
+        QCheckBox* qualifierBox = new QCheckBox(qualifier, this);
+        qualifierBoxes_.insert(qualifierAsType, qualifierBox);
+
+        connect(qualifierBox, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
+        
+        qualifierAndAttributelayout_->addWidget(qualifierBox, qualifierAndAttributelayout_->rowCount(), 0);
+
+        if (attributeEditor)
         {
-            if (box->text() == qualifier)
-            {
-                box->setChecked(selected);
-            }
+            qualifierAndAttributelayout_->addWidget(attributeEditor, qualifierAndAttributelayout_->rowCount() - 1, 1);
         }
+    }
+}
 
-        setQualifierAttributesVisible(Qualifier::stringToType(qualifier), selected);
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::setupEditorData()
+//-----------------------------------------------------------------------------
+void QualifierEditor::setupEditorData(QStringList const& activeQualifiers, QMap<QString, QString> const& attributes)
+{
+    for (auto const& qualifier : activeQualifiers)
+    {
+        auto qualifierAsType = Qualifier::stringToType(qualifier);
+
+        if (qualifierBoxes_.contains(qualifierAsType))
+        {
+            qualifierBoxes_[qualifierAsType]->setChecked(true);            
+            setQualifierAttributesVisible(qualifierAsType, true);
+        }
     }
 
     for (auto const& attributeName : attributes.keys())
     {
         setQualifierAttribute(Qualifier::stringToAttributeName(attributeName), attributes[attributeName]);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::hideAllAttributes()
+//-----------------------------------------------------------------------------
+void QualifierEditor::hideAllAttributes()
+{
+    setQualifierAttributesVisible(Qualifier::Type::ClockEnable, false);
+    setQualifierAttributesVisible(Qualifier::Type::FlowControl, false);
+    setQualifierAttributesVisible(Qualifier::Type::PowerEnable, false);
+    setQualifierAttributesVisible(Qualifier::Type::Reset, false);
+    setQualifierAttributesVisible(Qualifier::Type::User, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -159,39 +191,10 @@ void QualifierEditor::onItemClicked(bool isChecked)
         return;
     }
 
-    auto qualifier = Qualifier::stringToType(sender->text());
-    setQualifierAttributesVisible(qualifier, isChecked);
-}
-
-//-----------------------------------------------------------------------------
-// Function: QualifierEditor::populateCheckBoxes()
-//-----------------------------------------------------------------------------
-void QualifierEditor::populateCheckBoxes()
-{
-    static constexpr std::array<Qualifier::Type, Qualifier::TYPE_COUNT> qualifierOrder =
+    if (stdRevision_ == Document::Revision::Std22)
     {
-        Qualifier::Type::Address,
-        Qualifier::Type::Data,
-        Qualifier::Type::Interrupt,
-        Qualifier::Type::Opcode,
-        Qualifier::Type::Clock,
-        Qualifier::Type::ClockEnable,
-        Qualifier::Type::Reset,
-        Qualifier::Type::PowerEnable,
-        Qualifier::Type::Protection,
-        Qualifier::Type::FlowControl,
-        Qualifier::Type::Request,
-        Qualifier::Type::Response,
-        Qualifier::Type::Valid,
-        Qualifier::Type::User
-    };
-
-    for (auto const& qualifier : qualifierOrder)
-    {
-        QCheckBox* qualifierBox = new QCheckBox(Qualifier::typeToString(qualifier), this);
-        qualifierBoxes_.append(qualifierBox);
-
-        connect(qualifierBox, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
+        auto qualifier = Qualifier::stringToType(sender->text());
+        setQualifierAttributesVisible(qualifier, isChecked);
     }
 }
 
@@ -204,24 +207,11 @@ void QualifierEditor::setupLayout()
 
     QWidget* qualifiersAndAttributes = new QWidget();
 
-    QGridLayout* qualifierAndAttributelayout = new QGridLayout();
-
     QScrollArea* scrollingWidget = new QScrollArea();
     scrollingWidget->setWidgetResizable(true);
     scrollingWidget->setWidget(qualifiersAndAttributes);
     scrollingWidget->setFrameShape(QFrame::NoFrame);
     scrollingWidget->setContentsMargins(0, 0, 0, 0);
-    
-    for (int i = 0; i < qualifierBoxes_.size(); ++i)
-    {
-        qualifierAndAttributelayout->addWidget(qualifierBoxes_.at(i), i, 0);
-    }
-
-    qualifierAndAttributelayout->addWidget(resetLevelSelector_, 6, 1);
-    qualifierAndAttributelayout->addWidget(clockEnableLevelSelector_, 5, 1);
-    qualifierAndAttributelayout->addWidget(powerEnableLevelSelector_, 7, 1);
-    qualifierAndAttributelayout->addWidget(flowTypeSelector_, 9, 1);
-    qualifierAndAttributelayout->addWidget(userDefinedLineEdit_, 13, 1);
     
     QPushButton* okButton = new QPushButton();
     okButton->setIcon(QIcon(":/icons/common/graphics/checkMark.png"));
@@ -239,7 +229,7 @@ void QualifierEditor::setupLayout()
     buttonLayout->addWidget(okButton);
     buttonLayout->addWidget(cancelButton);
 
-    qualifiersAndAttributes->setLayout(qualifierAndAttributelayout);
+    qualifiersAndAttributes->setLayout(qualifierAndAttributelayout_);
     qualifiersAndAttributes->setContentsMargins(0, 0, 0, 0);
     setMinimumHeight(sizeHint().height());
     editorLayout->addWidget(scrollingWidget);
@@ -290,6 +280,37 @@ QComboBox* QualifierEditor::getAttributeEditor(Qualifier::Attribute attribute)
     else if (attribute == Qualifier::Attribute::FlowType)
     {
         return flowTypeSelector_;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::getAttributeEditor()
+//-----------------------------------------------------------------------------
+QWidget* QualifierEditor::getAttributeEditor(Qualifier::Type qualifierType)
+{
+    if (qualifierType == Qualifier::Type::Reset)
+    {
+        return resetLevelSelector_;
+    }
+    else if (qualifierType == Qualifier::Type::ClockEnable)
+    {
+        return clockEnableLevelSelector_;
+    }
+    else if (qualifierType == Qualifier::Type::PowerEnable)
+    {
+        return powerEnableLevelSelector_;
+    }
+    else if (qualifierType == Qualifier::Type::FlowControl)
+    {
+        return flowTypeSelector_;
+    }
+    else if (qualifierType == Qualifier::Type::User)
+    {
+        return userDefinedLineEdit_;
     }
     else
     {

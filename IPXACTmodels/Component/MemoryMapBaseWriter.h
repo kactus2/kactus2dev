@@ -30,9 +30,9 @@ namespace MemoryMapBaseWriter
     /*!
      *  Write a memory map to an XML file.
      *
-     *      @param [in] writer          The used XML writer.
-     *      @param [in] MemoryMapBase   The memory map to be written.
-     *      @param [in] docRevision     The standard revision in use.
+     *    @param [in] writer          The used XML writer.
+     *    @param [in] MemoryMapBase   The memory map to be written.
+     *    @param [in] docRevision     The standard revision in use.
      */
     IPXACTMODELS_EXPORT void writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase,
         Document::Revision docRevision);
@@ -43,9 +43,9 @@ namespace MemoryMapBaseWriter
         /*!
          *  Write the name group.
          *
-         *      @param [in] writer              Used XML writer.
-         *      @param [in] MemoryMapBaseBase   The selected memory map base.
-         *      @param [in] docRevision         The standard revision in use.
+         *    @param [in] writer              Used XML writer.
+         *    @param [in] MemoryMapBaseBase   The selected memory map base.
+         *    @param [in] docRevision         The standard revision in use.
          */
         void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase,
             Document::Revision docRevision);
@@ -53,8 +53,8 @@ namespace MemoryMapBaseWriter
         /*!
          *  Write the memory blocks.
          *
-         *      @param [in] writer              Used XML writer.
-         *      @param [in] MemoryMapBaseBase   The selected memory map base.
+         *    @param [in] writer              Used XML writer.
+         *    @param [in] MemoryMapBaseBase   The selected memory map base.
          */
         void writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase, Document::Revision docRevision);
     }

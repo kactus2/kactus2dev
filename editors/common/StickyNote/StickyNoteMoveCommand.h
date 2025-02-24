@@ -27,9 +27,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item      The item to move.
-     *      @param [in] oldPos    The item's old position.
-     *      @param [in] parent    The parent command.
+     *    @param [in] item      The item to move.
+     *    @param [in] oldPos    The item's old position.
+     *    @param [in] parent    The parent command.
      */
     StickyNoteMoveCommand(QGraphicsItem* item, QPointF const& oldPos,  QUndoCommand* parent = 0);
 

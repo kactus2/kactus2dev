@@ -73,6 +73,9 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/TreeItemSelector/TreeItemEditor.h \
     ./common/widgets/TreeItemSelector/TreeItemModel.h \
     ./common/widgets/TreeItemSelector/FramedTreeItemEditor.h \
+    ./common/widgets/GroupBoxWithAlertSign/StyleOptionGroupBoxWithAlertSign.h \
+    ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.h \
+    ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
@@ -663,6 +666,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/BusDefinitionEditor/LogicalPortColumns.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
+    ./editors/BusDefinitionEditor/BusDefinitionParameterReferenceTree.h \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.h \
     ./editors/common/ColumnTypes.h \
     ./editors/common/DefaultRouting.h \
@@ -899,9 +903,8 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.h \
-    ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.h \
-    ./common/widgets/GroupBoxWithAlertSign/StyleOptionGroupBoxWithAlertSign.h
+    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceCounter.h \
+    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceTree.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -974,6 +977,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/TreeItemSelector/FramedTreeItemEditor.cpp \
     ./common/widgets/TreeItemSelector/TreeItemEditor.cpp \
     ./common/widgets/TreeItemSelector/TreeItemModel.cpp \
+    ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.cpp \
+    ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.cpp \
+    ./common/widgets/GroupBoxWithAlertSign/StyleOptionGroupBoxWithAlertSign.cpp \
     ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
@@ -1472,6 +1478,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
+    ./editors/BusDefinitionEditor/BusDefinitionParameterReferenceTree.cpp \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.cpp \
     ./editors/CatalogEditor/CatalogEditor.cpp \
     ./editors/CatalogEditor/CatalogFileDelegate.cpp \
@@ -1694,7 +1701,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.cpp \
-    ./common/widgets/GroupBoxWithAlertSign/StyleOptionGroupBoxWithAlertSign.cpp \
-    ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.cpp
+    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceCounter.cpp \
+    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceTree.cpp
 RESOURCES += kactus.qrc

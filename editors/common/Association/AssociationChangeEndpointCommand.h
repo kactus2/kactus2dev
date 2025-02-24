@@ -28,10 +28,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] association     The association whose end point to change.
-     *      @param [in] oldEndpoint     The previous end point item.
-     *      @param [in] newEndpoint     The end point item to set.
-     *      @param [in] parent          The parent command.
+     *    @param [in] association     The association whose end point to change.
+     *    @param [in] oldEndpoint     The previous end point item.
+     *    @param [in] newEndpoint     The end point item to set.
+     *    @param [in] parent          The parent command.
      */
     AssociationChangeEndpointCommand(Association* association, Associable* oldEndpoint, 
         Associable* newEndpoint, QUndoCommand* parent = 0);

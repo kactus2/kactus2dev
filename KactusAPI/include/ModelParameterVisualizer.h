@@ -29,7 +29,7 @@ public:
     /*!
      *  Called to receive future notifications of model parameter changes in the visualization.
      *
-     *      @param [in] listener   The the listener to receive notifications in.
+     *    @param [in] listener   The the listener to receive notifications in.
      */
     virtual void registerChangeListener(QObject const* listener) = 0;
 };

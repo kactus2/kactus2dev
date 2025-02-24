@@ -38,11 +38,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] memoryItem          Memory item containing address space data.
-     *      @param [in] identifierChain     Chain of strings identifying this item.
-     *      @param [in] containingInstance  Data of the containing component instance.
-     *      @param [in] filterSegments      Value for filtering address space segments.
-     *      @param [in] parent              The parent item.
+     *    @param [in] memoryItem          Memory item containing address space data.
+     *    @param [in] identifierChain     Chain of strings identifying this item.
+     *    @param [in] containingInstance  Data of the containing component instance.
+     *    @param [in] filterSegments      Value for filtering address space segments.
+     *    @param [in] parent              The parent item.
      */
     AddressSpaceGraphicsItem(QSharedPointer<MemoryItem const> memoryItem, QVector<QString> identifierChain,
         QSharedPointer<ConnectivityComponent const> containingInstance, bool filterSegments,
@@ -77,10 +77,10 @@ private:
     /*!
      *  Create a new address segment graphics item.
      *
-     *      @param [in] subMemoryItem   Memory item containing address segment data.
-     *      @param [in] isEmpty         Boolean value for an empty address segment.
+     *    @param [in] subMemoryItem   Memory item containing address segment data.
+     *    @param [in] isEmpty         Boolean value for an empty address segment.
      *
-     *      @return The created address segment graphics item.
+     *    @return The created address segment graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem const> subMemoryItem,
         bool isEmpty) override;
@@ -88,17 +88,17 @@ private:
     /*!
      *  Create an empty address segment graphics item.
      *
-     *      @param [in] beginAddress    Base address of the empty address segment graphics item.
-     *      @param [in] rangeEnd        End address of the empty address segment graphics item.
+     *    @param [in] beginAddress    Base address of the empty address segment graphics item.
+     *    @param [in] rangeEnd        End address of the empty address segment graphics item.
      *
-     *      @return The created address segment graphics item.
+     *    @return The created address segment graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd) override;
 
     /*!
      *  Get the minimum height required to display for the memory item.
      *	
-     *      @return The minimum height required to display the memory item.
+     *    @return The minimum height required to display the memory item.
      */
     virtual qreal getMinimumHeightForSubItems() const override final;
 

@@ -28,8 +28,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent   The target text editor. Must not be null.
-     *      @param [in] matcher  The content matcher to use. Must not be null.
+     *    @param [in] parent   The target text editor. Must not be null.
+     *    @param [in] matcher  The content matcher to use. Must not be null.
      */
     TextContentAssistWidget(QPlainTextEdit* target, QWidget* parentWnd,
                             QSharedPointer<ITextContentMatcher> matcher);
@@ -42,7 +42,7 @@ public:
     /*!
      *  Tries to handle the given key press fully, committing the selection if possible.
      *
-     *      @return True, if the key was handle fully and the editor should not handle it.
+     *    @return True, if the key was handle fully and the editor should not handle it.
      *              False, if the editor still needs to handle the key.
      *
      *      @remarks Assumes that the given key event has not yet been handled by the editor.
@@ -66,7 +66,7 @@ public:
     /*!
      *  Sets the maximum number of items to be visible at once.
      *
-     *      @param [in] count The maximum number of visible items at once.
+     *    @param [in] count The maximum number of visible items at once.
      */
     void setMaxVisibleItems(int count);
 
@@ -79,14 +79,14 @@ protected:
     /*!
      *  Handles the mouse press event.
      *
-     *      @param [in] event The mouse press event.
+     *    @param [in] event The mouse press event.
      */
     void mousePressEvent(QMouseEvent* event);
 
     /*!
      *  Handles the mouse double click event.
      *
-     *      @param [in] event The mouse double click event.
+     *    @param [in] event The mouse double click event.
      */
     void mouseDoubleClickEvent(QMouseEvent* event);
 
@@ -104,9 +104,9 @@ private:
     /*!
      *  Returns true if the content assist can currently commit with the given key.
      *
-     *      @param [in] key The commit key.
+     *    @param [in] key The commit key.
      *
-     *      @return True, if the content assist can currently commit.
+     *    @return True, if the content assist can currently commit.
      */
     bool canCommitWith(QKeyEvent* e) const;
 

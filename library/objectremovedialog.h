@@ -26,8 +26,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this dialog.
-	 *      @param [in] f       Widget flags for the dialog.
+	 *    @param [in] parent  Pointer to the owner of this dialog.
+	 *    @param [in] f       Widget flags for the dialog.
 	 *
 	 */
 	ObjectRemoveDialog(QWidget *parent = 0, Qt::WindowFlags f = Qt::WindowFlags());

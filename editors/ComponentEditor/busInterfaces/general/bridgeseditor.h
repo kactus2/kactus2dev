@@ -43,10 +43,10 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] busInterface        Interface for accessing bus interfaces.
-	 *      @param [in] bridges             The bridges to edit in the editor.
-     *      @param [in] currentRevision     Currently active IP-XACT revision.
-	 *      @param [in] parent              The parent of this editor.
+     *    @param [in] busInterface        Interface for accessing bus interfaces.
+	 *    @param [in] bridges             The bridges to edit in the editor.
+     *    @param [in] currentRevision     Currently active IP-XACT revision.
+	 *    @param [in] parent              The parent of this editor.
      */
     BridgesEditor(BusInterfaceInterface* busInterface,
         QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
@@ -66,7 +66,7 @@ public:
     /*!
      *  Setup the bridges for the editor.
      *
-     *      @param [in] newBridges  The new bridges.
+     *    @param [in] newBridges  The new bridges.
      */
     void setupBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > newBridges);
 

@@ -16,6 +16,7 @@
 
 class IndirectInterface;
 class IndirectInterfaceValidator;
+class IndirectInterfacesValidator;
 class ExpressionParser;
 class BusInterfaceInterface;
 
@@ -31,16 +32,16 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] referenceCounter        The reference counter.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-	 *      @param [in] expressionParser        The expression parser.
-     *      @param [in] busInterface            Interface for accessing bus interfaces.
-	 *      @param [in] parent                  The owner of this item.
-	 *      @param [in] parentWnd               The parent window.
+	 *    @param [in] model                   The model that owns the items.
+	 *    @param [in] libHandler              The instance that manages the library.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] referenceCounter        The reference counter.
+	 *    @param [in] parameterFinder         The parameter finder.
+	 *    @param [in] expressionFormatter     The expression formatter.
+	 *    @param [in] expressionParser        The expression parser.
+     *    @param [in] busInterface            Interface for accessing bus interfaces.
+	 *    @param [in] parent                  The owner of this item.
+	 *    @param [in] parentWnd               The parent window.
 	 */
     ComponentEditorIndirectInterfacesItem(ComponentEditorTreeModel* model,
         LibraryInterface* libHandler,
@@ -64,33 +65,40 @@ public:
 	*
 	* The font is bold, if bus interfaces exist, otherwise not bold.
 	*
-	*      @return QFont instance that defines the font to be used.
+	*    @return QFont instance that defines the font to be used.
 	*/
 	virtual QFont getFont() const override;
 
 	/*! Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const override;
 
 	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return The text to display.
+	 *    @return The text to display.
 	*/
 	virtual QString text() const override;
 
 	/*! Get The editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor() override;
 
 	/*! Add a new child to the item.
 	 *
-	 *      @param [in] index The index to add the child into.
+	 *    @param [in] index The index to add the child into.
 	*/
 	virtual void createChild(int index) override;
+
+	/*!
+	 *  Check the validity of this item.
+	 *
+	 *    @return bool True if item is in valid state.
+	 */
+	bool isValid() const override;
 
 private:
 
@@ -104,8 +112,11 @@ private:
     //! The expression parser used to define the results of expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! Validator for bus interfaces.
-    QSharedPointer<IndirectInterfaceValidator> validator_;
+    //! Validator for indirect interfaces.
+    QSharedPointer<IndirectInterfaceValidator> singleIndirectInterfaceValidator_;
+
+    //! Validator for validating indirect interfaces together.
+    QSharedPointer<IndirectInterfacesValidator> indirectInterfacesValidator_;
 
     //! The parent window.
     QWidget* parentWnd_;

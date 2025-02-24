@@ -55,49 +55,49 @@ public:
     /*!
      *  Get the name of the plugin.
      *
-     *      @return The name of the plugin.
+     *    @return The name of the plugin.
      */
     virtual QString getName() const;
 
     /*!
      *  Get the version of the plugin.
      *
-     *      @return The version of the plugin.
+     *    @return The version of the plugin.
      */
     virtual QString getVersion() const;
 
     /*!
      *  Get the description of the plugin.
      *
-     *      @return The description of the plugin.
+     *    @return The description of the plugin.
      */
     virtual QString getDescription() const;
 
     /*!
      *  Get the vendor of the plugin.
      *
-     *      @return The vendor of the plugin.
+     *    @return The vendor of the plugin.
      */
     virtual QString getVendor() const;
 
     /*!
      *  Get the license of the plugin.
      *
-     *      @return The license of the plugin.
+     *    @return The license of the plugin.
      */
     virtual QString getLicense() const;
 
     /*!
      *  Get the holder of the license of the plugin.
      *
-     *      @return The holder of the license of the plugin.
+     *    @return The holder of the license of the plugin.
      */
     virtual QString getLicenseHolder() const;
 
     /*!
      *  Get the settings widget for the plugin.
      *
-     *      @return The plugin settings widget.
+     *    @return The plugin settings widget.
      */
     virtual QWidget* getSettingsWidget();
 
@@ -109,19 +109,19 @@ public:
     /*!
      *  Get the icon for the generator.
      *
-     *      @return The icon for the generator.
+     *    @return The icon for the generator.
      */
     virtual QIcon getIcon() const;
 
 	 /*!
      *  Checks whether the generator may run for the given component or design. 
      *
-     *      @param [in] component	        The component for which to check support. If design is not null, component
+     *    @param [in] component	        The component for which to check support. If design is not null, component
 	 *                                      will refer to design or designConfiguration.
-     *      @param [in] design	            The design, if the generator is ran for a design.
-     *      @param [in] designConfiguration The design configuration for design, if it is not null.
+     *    @param [in] design	            The design, if the generator is ran for a design.
+     *    @param [in] designConfiguration The design configuration for design, if it is not null.
      *
-     *      @return True, if the generator may run the given component. Otherwise false.
+     *    @return True, if the generator may run the given component. Otherwise false.
      */
     virtual bool checkGeneratorSupport(QSharedPointer<Component const> component,
         QSharedPointer<Design const> design,
@@ -131,11 +131,11 @@ public:
      *  Runs the generation, creating new files and/or modifying the IP-XACT metadata. The function has
 	 *  also access to the parent window widget, so that it can show dialogs for the user to aid the generation.
      *
-     *      @param [in] utility			    The plugin utility interface.
-     *      @param [in] component	        The component for which to check support. If design is not null, component
+     *    @param [in] utility			    The plugin utility interface.
+     *    @param [in] component	        The component for which to check support. If design is not null, component
      *                                      will refer to design or designConfiguration.
-     *      @param [in] design	            The design, if the generator is ran for a design.
-     *      @param [in] designConfiguration The design configuration for design, if it is not null.
+     *    @param [in] design	            The design, if the generator is ran for a design.
+     *    @param [in] designConfiguration The design configuration for design, if it is not null.
      */
     virtual void runGenerator(IPluginUtility* utility, 
         QSharedPointer<Component> component,
@@ -145,27 +145,27 @@ public:
 	 /*!
 	  *  Get the external program requirements of the plugin.
 	  *
-      *     @return A list of external program requirements.
+      *    @return A list of external program requirements.
 	  */
 	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 
      /*!
       *  Set the save options for a local writer.
       *
-      *      @param [in] localMemoryMap     The local memory map of an address space.
-      *      @param [in] fileInfo           The file information for the header file.
-      *      @param [in] swViewName         The name of the sw view.
+      *    @param [in] localMemoryMap     The local memory map of an address space.
+      *    @param [in] fileInfo           The file information for the header file.
+      *    @param [in] swViewName         The name of the sw view.
       */
      void setLocalSaveFileOptions(QSharedPointer<MemoryMap> localMemoryMap, QFileInfo fileInfo, QString swViewName);
 
      /*!
       *  Set the save options for a global writer.
       *
-      *      @param [in] component              The top component of the design.
-      *      @param [in] instanceName           The name of the instance containing the interface.
-      *      @param [in] instanceId             The id of the instance.
-      *      @param [in] masterInterfaceName    The name of the master interface to create the header for.
-      *      @param [in] fileInfo               The file information for the header file.
+      *    @param [in] component              The top component of the design.
+      *    @param [in] instanceName           The name of the instance containing the interface.
+      *    @param [in] instanceId             The id of the instance.
+      *    @param [in] masterInterfaceName    The name of the master interface to create the header for.
+      *    @param [in] fileInfo               The file information for the header file.
       */
      void setGlobalSaveFileOptions(QSharedPointer<Component> component, QString const& instanceName,
          QString const& instanceId, QString const& masterInterfaceName, QFileInfo fileInfo);

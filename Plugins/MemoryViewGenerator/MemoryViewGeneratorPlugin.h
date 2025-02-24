@@ -76,12 +76,12 @@ public:
     /*!
      *  Checks whether the generator may run for the given component or design. 
      *
-     *      @param [in] component	        The component for which to check support. If design is not null, component
+     *    @param [in] component	        The component for which to check support. If design is not null, component
 	 *                                      will refer to design or designConfiguration.
-     *      @param [in] design	            The design, if the generator is ran for a design.
-     *      @param [in] designConfiguration The design configuration for design, if it is not null.
+     *    @param [in] design	            The design, if the generator is ran for a design.
+     *    @param [in] designConfiguration The design configuration for design, if it is not null.
      *
-     *      @return True, if the generator may run the given component. Otherwise false.
+     *    @return True, if the generator may run the given component. Otherwise false.
      */
     virtual bool checkGeneratorSupport(QSharedPointer<Component const> component,
         QSharedPointer<Design const> design,
@@ -91,11 +91,11 @@ public:
      *  Runs the generation, creating new files and/or modifying the IP-XACT metadata. The function has
 	 *  also access to the parent window widget, so that it can show dialogs for the user to aid the generation.
      *
-     *      @param [in] utility			    The plugin utility interface.
-     *      @param [in] component	        The component for which to check support. If design is not null, component
+     *    @param [in] utility			    The plugin utility interface.
+     *    @param [in] component	        The component for which to check support. If design is not null, component
      *                                      will refer to design or designConfiguration.
-     *      @param [in] design	            The design, if the generator is ran for a design.
-     *      @param [in] designConfiguration The design configuration for design, if it is not null.
+     *    @param [in] design	            The design, if the generator is ran for a design.
+     *    @param [in] designConfiguration The design configuration for design, if it is not null.
      */
     virtual void runGenerator(IPluginUtility* utility, 
         QSharedPointer<Component> component,
@@ -110,11 +110,11 @@ private:
     /*!
      *  Saves the generated file to top component fileset.
      *
-     *      @param [in] targetFile      The generated file path.
-     *      @param [in] component       The top level component.
-     *      @param [in] utility         The plugin utility interface.
+     *    @param [in] targetFile      The generated file path.
+     *    @param [in] component       The top level component.
+     *    @param [in] utility         The plugin utility interface.
      *
-     *      @return <Description>.
+     *    @return <Description>.
      */
     void saveToFileset(QString const& targetFile, QSharedPointer<Component> component, IPluginUtility* utility);
 };

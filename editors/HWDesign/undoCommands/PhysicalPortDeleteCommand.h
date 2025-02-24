@@ -29,9 +29,9 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component  The component from which to delete a physical port.
-	 *      @param [in] port       The port to delete.
-     *      @param [in] parent     The parent command.
+     *    @param [in] component  The component from which to delete a physical port.
+	 *    @param [in] port       The port to delete.
+     *    @param [in] parent     The parent command.
      */
    DeletePhysicalPortCommand(QSharedPointer<Component>, QSharedPointer<Port> port, QUndoCommand* parent = 0);
 

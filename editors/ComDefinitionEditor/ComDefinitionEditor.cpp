@@ -25,15 +25,14 @@
 //-----------------------------------------------------------------------------
 ComDefinitionEditor::ComDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
     QSharedPointer<ComDefinition> comDef):
-TabDocument(parent, DOC_PROTECTION_SUPPORT),
-    libHandler_(libHandler),
+TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
     comDef_(comDef),
     nameGroup_(this),
     dataTypeList_(tr("Transfer types"), this),
     propertyEditor_(this)
 {
     // Initialize the editors.
-    nameGroup_.setDocumentNameGroup(comDef_, libHandler_->getPath(comDef_->getVlnv()));
+    nameGroup_.setDocumentNameGroup(comDef_, getLibHandler()->getPath(comDef_->getVlnv()));
     nameGroup_.setTitle(tr("COM definition"));
     dataTypeList_.initialize(*comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
@@ -56,7 +55,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     // Set the document name and type.
     VLNV const vlnv = comDef_->getVlnv();
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
-    setDocumentType(tr("COM Definition"));
+    setDocumentType(DocumentType::COM_DEFINITION);
 
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv.getVersion() != "draft");
@@ -84,11 +83,11 @@ void ComDefinitionEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void ComDefinitionEditor::refresh()
 {
-    QSharedPointer<Document> libComp = libHandler_->getModel(comDef_->getVlnv());
+    QSharedPointer<Document> libComp = getLibHandler()->getModel(comDef_->getVlnv());
     comDef_ = libComp.staticCast<ComDefinition>();
 
     // Initialize the editors.
-    nameGroup_.setDocumentNameGroup(comDef_, libHandler_->getPath(comDef_->getVlnv()));
+    nameGroup_.setDocumentNameGroup(comDef_, getLibHandler()->getPath(comDef_->getVlnv()));
     dataTypeList_.initialize(*comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
 
@@ -123,7 +122,7 @@ bool ComDefinitionEditor::validate(QVector<QString>& errorList)
 bool ComDefinitionEditor::save()
 {
     applyChanges();
-    libHandler_->writeModelToFile(comDef_);
+    getLibHandler()->writeModelToFile(comDef_);
 
     return TabDocument::save();
 }
@@ -137,7 +136,7 @@ bool ComDefinitionEditor::saveAs()
     VLNV vlnv;
     QString directory;
 
-    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, comDef_->getVlnv(), vlnv, directory))
+    if (!NewObjectDialog::saveAsDialog(parentWidget(), getLibHandler(), comDef_->getVlnv(), vlnv, directory))
     {
         return false;
     }
@@ -151,7 +150,7 @@ bool ComDefinitionEditor::saveAs()
     // Apply changes to the copy.
     applyChanges();
 
-    if (libHandler_->writeModelToFile(directory, comDef_))
+    if (getLibHandler()->writeModelToFile(directory, comDef_))
     {
         setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
         return TabDocument::saveAs();

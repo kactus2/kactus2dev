@@ -34,7 +34,7 @@ public:
     /*!
      *  Constructor.
      *
-	 *      @param [in] component		The component which parameters are being searched for.
+	 *    @param [in] component		The component which parameters are being searched for.
      */
     ParameterCache(QSharedPointer<const Component> component);
 
@@ -51,44 +51,44 @@ public:
     /*!
      *  Get the parameter corresponding the id.
      *
-     *      @param [in] parameterId     The id of the parameter being searched for.
+     *    @param [in] parameterId     The id of the parameter being searched for.
      */
     QSharedPointer<Parameter> getParameterWithID(QStringView parameterId) const final;
 
     /*!
      *  Checks if a parameter with the given id exists.
      *
-     *      @param [in] id      The id to search for.
+     *    @param [in] id      The id to search for.
      *
-     *      @return True, if the parameter with the given id exists, otherwise false.
+     *    @return True, if the parameter with the given id exists, otherwise false.
      */
     bool hasId(QStringView id) const final;
 
     /*!
      *  Gets all of the ids of components parameters.
      *
-     *      @return A list containing all of the ids.
+     *    @return A list containing all of the ids.
      */
     QStringList getAllParameterIds() const final;
 
 	/*!
      *  Gets the number of parameters in the component.
      *
-     *      @return The number of parameters in the component.
+     *    @return The number of parameters in the component.
      */
     int getNumberOfParameters() const final;
 
     /*!
      *  Set a new component for the parameter finder.
      *
-     *      @param [in] component   The new component.
+     *    @param [in] component   The new component.
      */
     void setComponent(QSharedPointer<Component const> component) final;
     
     /*!
      *  Registers a parameter model that can modify parameters for the finder.
      *
-     *      @param [in] model   The model to register.
+     *    @param [in] model   The model to register.
      */
     void registerParameterModel(QAbstractItemModel const* model) final;
 

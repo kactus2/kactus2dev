@@ -37,10 +37,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] libInterface    The library interface.
-     *      @param [in] type            New object type.
-     *      @param [in] showAttributes  Flag for visible attributes.
-     *      @param [in] parent          Owner of this dialog.
+     *    @param [in] libInterface    The library interface.
+     *    @param [in] type            New object type.
+     *    @param [in] showAttributes  Flag for visible attributes.
+     *    @param [in] parent          Owner of this dialog.
      */
     NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactType type, bool showAttributes,
         QWidget *parent = 0);
@@ -52,16 +52,16 @@ public:
 	/*!
      *  Set the vlnv for the editor.
 	 *
-     *      @param [in] vlnv    Reference to the vlnv to set.
+     *    @param [in] vlnv    Reference to the vlnv to set.
 	 */
 	void setVLNV(const VLNV& vlnv);
 
     /*!
      *  Sets the Kactus attributes for the dialog.
      *
-     *      @param [in] prodHier    Product hierarchy.
-     *      @param [in] firmness    firmness.
-     *      @param [in] tags        Tags.
+     *    @param [in] prodHier    Product hierarchy.
+     *    @param [in] firmness    firmness.
+     *    @param [in] tags        Tags.
      */
     void setKactusAttributes(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
         QVector<TagData> tags);
@@ -84,7 +84,7 @@ public:
     /*!
      *  Get the document tags.
      *
-     *      @return Document tags.
+     *    @return Document tags.
      */
     QVector<TagData> getTags() const;
 
@@ -96,16 +96,16 @@ public:
     /*!
      *  Shows a pre-filled dialog with the version field set empty.
      *
-     *      @param [in] parent      The parent widget.
-     *      @param [in] lh          Interface to the library.
-     *      @param [in] oldVLNV     The old VLNV.
-     *      @param [in] prodHier    Product hierarchy.
-     *      @param [in] firmness    Firmness.
-     *      @param [in] tags        Document tags.
-     *      @param [in] vlnv        VLNV.
-     *      @param [in] directory   Directory.
+     *    @param [in] parent      The parent widget.
+     *    @param [in] lh          Interface to the library.
+     *    @param [in] oldVLNV     The old VLNV.
+     *    @param [in] prodHier    Product hierarchy.
+     *    @param [in] firmness    Firmness.
+     *    @param [in] tags        Document tags.
+     *    @param [in] vlnv        VLNV.
+     *    @param [in] directory   Directory.
      *
-     *      @return True, if the user pressed OK. False if the user pressed Cancel.
+     *    @return True, if the user pressed OK. False if the user pressed Cancel.
      */
     static bool saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV,
         KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness, QVector<TagData>& tags,
@@ -114,7 +114,7 @@ public:
     /*!
      *  Shows a pre-filled dialog with the version field set empty and attributes hidden.
      *
-     *      @return True, if the user pressed OK. False if the user pressed Cancel.
+     *    @return True, if the user pressed OK. False if the user pressed Cancel.
      */
     static bool saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV, VLNV& vlnv,
                              QString& directory, QString const& windowTitle = QString("Save As"));

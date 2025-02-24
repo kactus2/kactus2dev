@@ -30,10 +30,10 @@ namespace FileBuilderReader
     /*!
      *  Reads the default file builder.
      *
-     *      @param [in] fileBuilderNode     XML description of the default file builder.
-     *      @param [in] docRevision         The applied IP-XACT standard revision.
+     *    @param [in] fileBuilderNode     XML description of the default file builder.
+     *    @param [in] docRevision         The applied IP-XACT standard revision.
      *
-     *      @return The created default file builder.
+     *    @return The created default file builder.
      */
     IPXACTMODELS_EXPORT QSharedPointer<FileBuilder> createFileBuilderFrom(QDomNode const& fileBuilderNode,
         Document::Revision docRevision);
@@ -43,9 +43,9 @@ namespace FileBuilderReader
         /*!
          *  Reads the file builder file type.
          *
-         *      @param [in] filebuilderNode     XML description of the file builder.
-         *      @param [in] newFileBuilder      The selected file builder.
-         *      @param [in] docRevision         The applied IP-XACT standard revision.
+         *    @param [in] filebuilderNode     XML description of the file builder.
+         *    @param [in] newFileBuilder      The selected file builder.
+         *    @param [in] docRevision         The applied IP-XACT standard revision.
          */
         void parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder,
             Document::Revision docRevision);
@@ -53,8 +53,8 @@ namespace FileBuilderReader
         /*!
          *  Reads the file builder command, flags and replace default flags value.
          *
-         *      @param [in] filebuilderNode     XML description of the file builder.
-         *      @param [in] newFileBuilder      The selected file builder.
+         *    @param [in] filebuilderNode     XML description of the file builder.
+         *    @param [in] newFileBuilder      The selected file builder.
          */
         void parseBuildModel(QDomNode const& fileBuilderNode, QSharedPointer<FileBuilder> newFileBuilder);
     }

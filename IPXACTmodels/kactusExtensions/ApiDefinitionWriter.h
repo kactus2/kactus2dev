@@ -28,8 +28,8 @@ namespace ApiDefinitionWriter
     /*!
      *  Write a view to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] ApiDefinition		The ApiDefinition to be written.
+     *    @param [in] writer  The used xml writer.
+     *    @param [in] ApiDefinition		The ApiDefinition to be written.
      */
     IPXACTMODELS_EXPORT void writeApiDefinition(QXmlStreamWriter& writer, 
         QSharedPointer<ApiDefinition> apiDefinition);

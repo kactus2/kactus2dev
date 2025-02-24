@@ -32,7 +32,7 @@ public:
     /*!
      *  Gets the vendor extensions for the element.
      *
-     *      @return The vendor extensions for the element.
+     *    @return The vendor extensions for the element.
      */
     QSharedPointer<QList<QSharedPointer<VendorExtension> > > getVendorExtensions() const;
 
@@ -50,17 +50,17 @@ protected:
     /*!
      *  Copies vendor extensions from another element.
      *
-     *      @param [in] other   The element to copy extensions from.
+     *    @param [in] other   The element to copy extensions from.
      */
     void copyVendorExtensions(Extendable const& other);
 
     /*!
      *  Get a list of grouped extensions.
      *
-     *      @param [in] groupName       Identifier of the extension group.
-     *      @param [in] extensionType   Identifier of the extension item.
+     *    @param [in] groupName       Identifier of the extension group.
+     *    @param [in] extensionType   Identifier of the extension item.
      *
-     *      @return A list of extensions belonging to a group.
+     *    @return A list of extensions belonging to a group.
      */
     QList<QSharedPointer<VendorExtension> > getGroupedExtensionsByType(QString const& groupName,
         QString const& extensionType) const;
@@ -69,17 +69,17 @@ protected:
      * Creates a Kactus2 vendor extension with given type, if it does not exist already.
      * If value is false, the extension is removed.
      *
-     *     @param [in] value            The value to set.
-     *     @param [in] extensionType    The type of the vendor extension.
+     *    @param [in] value            The value to set.
+     *    @param [in] extensionType    The type of the vendor extension.
      */
     void setPlaceholderExtension(bool value, QString const& extensionType);
 
     /*!
      *  Find a vendor extension by given type.
      *
-     *      @param [in] type        The type of extension to find.
+     *    @param [in] type        The type of extension to find.
      *
-     *      @return The first found extension with the given type.
+     *    @return The first found extension with the given type.
      */
     QSharedPointer<VendorExtension> findVendorExtension(QString const& type) const;
 

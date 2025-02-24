@@ -37,11 +37,11 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] component                   Component containing the edited port.
-     *      @param [in] library                     Interface for the VLNV library.
-     *      @param [in] abstractionTypeInterface    Interface for accessing abstraction types.
-     *      @param [in] parentWindow                The main window.
-	 *      @param [in] parent                      The owner of the editor.
+     *    @param [in] component                   Component containing the edited port.
+     *    @param [in] library                     Interface for the VLNV library.
+     *    @param [in] abstractionTypeInterface    Interface for accessing abstraction types.
+     *    @param [in] parentWindow                The main window.
+	 *    @param [in] parent                      The owner of the editor.
 	 */
     AbstractionTypesEditor(QSharedPointer<Component> component,
         LibraryInterface* library,
@@ -61,7 +61,7 @@ public:
     /*!
      *  Set a new component.
      *
-     *      @param [in] newComponent    The selected component.
+     *    @param [in] newComponent    The selected component.
      */
     void setComponent(QSharedPointer<Component> newComponent);
 
@@ -73,7 +73,7 @@ public:
     /*!
      *  Add a new abstraction definition referencing the selected VLNV to the bus interface.
      *
-     *      @param [in] newAbstraction  The selected VLNV.
+     *    @param [in] newAbstraction  The selected VLNV.
      */
     void addNewAbstraction(VLNV const& newAbstraction);
 

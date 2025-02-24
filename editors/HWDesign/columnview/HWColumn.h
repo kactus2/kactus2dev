@@ -36,8 +36,8 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] desc    The column description.
-     *      @param [in] layout  The parent column layout.
+     *    @param [in] desc    The column description.
+     *    @param [in] layout  The parent column layout.
      */
     HWColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout);
 
@@ -52,8 +52,8 @@ protected:
     /*!
      *  Returns true if the given item is allowed to reside in the column based on the allowed items.
      *
-     *      @param [in] item          The item.
-     *      @param [in] allowedItems  The allowed items flags.
+     *    @param [in] item          The item.
+     *    @param [in] allowedItems  The allowed items flags.
      */
     virtual bool isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) const;
 
@@ -65,7 +65,7 @@ protected:
     /*!
      *  Creates an undo command for the column move.
      *
-     *      @return The created undo command.
+     *    @return The created undo command.
      */
     virtual QSharedPointer<QUndoCommand> createMoveUndoCommand();
 

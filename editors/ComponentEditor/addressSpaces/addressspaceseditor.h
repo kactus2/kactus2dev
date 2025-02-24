@@ -35,12 +35,12 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance managing the library.
-     *      @param [in] parameterFinder         Finder for parameter names.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        The expression parser to use.
-     *      @param [in] addressSpaceValidator   Validator used for address spaces.
+	 *    @param [in] component               The component being edited.
+	 *    @param [in] handler                 The instance managing the library.
+     *    @param [in] parameterFinder         Finder for parameter names.
+     *    @param [in] expressionFormatter     Formatter for expressions.
+     *    @param [in] expressionParser        The expression parser to use.
+     *    @param [in] addressSpaceValidator   Validator used for address spaces.
 	 */
 	AddressSpacesEditor(QSharedPointer<Component> component,
 		 LibraryInterface* handler,
@@ -65,7 +65,7 @@ signals:
     /*!
      *  Emitted when address unit bits change on the given row.
      *
-     *      @param [in] spaceIndex  The index of the address space where address unit bits were changed.
+     *    @param [in] spaceIndex  The index of the address space where address unit bits were changed.
      */
     void aubChangedOnRow(int spaceIndex) const;
 

@@ -196,6 +196,22 @@ bool MemoryDesignConstructor::unconnectedMemoryItemsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignConstructor::filterMemoryOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignConstructor::filterMemoryOverlapItems(bool filterOverlap)
+{
+    itemHandler_->filterMemoryOverlapItems(filterOverlap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignConstructor::memoryOverlapItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignConstructor::memoryOverlapItemsAreFiltered() const
+{
+    return itemHandler_->memoryOverlapItemsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignConstructor::constructMemoryDesignItems()
 //-----------------------------------------------------------------------------
 bool MemoryDesignConstructor::constructMemoryDesignItems(QSharedPointer<ConnectivityGraph> connectionGraph)
@@ -205,20 +221,22 @@ bool MemoryDesignConstructor::constructMemoryDesignItems(QSharedPointer<Connecti
 
     if (connectionGraph)
     {
+        int visibleMultiplier = 10;
+        int columnExtension = floor((MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 + visibleMultiplier / 2) / visibleMultiplier) * visibleMultiplier;
+
         if (itemHandler_->addressBlockRegistersAreFiltered() ||
             (itemHandler_->addressBlocksAreFiltered() && itemHandler_->fieldsAreFiltered()))
         {
             columnHandler_->setNewMemoryMapColumnWidth(MemoryDesignerConstants::SPACECOLUMNWIDTH);
         }
+
         else if (itemHandler_->fieldsAreFiltered())
         {
-            columnHandler_->setNewMemoryMapColumnWidth(MemoryDesignerConstants::SPACECOLUMNWIDTH +
-                (MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 - 5));
+            columnHandler_->setNewMemoryMapColumnWidth(MemoryDesignerConstants::SPACECOLUMNWIDTH + columnExtension);
         }
         else if (itemHandler_->addressBlocksAreFiltered())
         {
-            columnHandler_->setNewMemoryMapColumnWidth(MemoryDesignerConstants::MEMORYMAPCOLUMNWIDTH -
-                (MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 - 5));
+            columnHandler_->setNewMemoryMapColumnWidth(MemoryDesignerConstants::MEMORYMAPCOLUMNWIDTH - columnExtension);
         }
         else
         {

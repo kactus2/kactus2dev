@@ -96,9 +96,9 @@ public:
     /*!
      *  Calculates a language-dependent hash for the given file.
      *
-     *      @param [in] filename  The name of the file.
+     *    @param [in] filename  The name of the file.
      *
-     *      @return The hash value for the file.
+     *    @return The hash value for the file.
      *
      *      @remarks Comments and whitespace are ignored and do not affect the hash value.
      */
@@ -107,8 +107,8 @@ public:
     /*!
      *  Begins the analysis for the given component.
      *
-     *      @param [in] component      The component.
-     *      @param [in] componentPath  The path to the directory where the component is located.
+     *    @param [in] component      The component.
+     *    @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any preparations needed for the file dependency analysis should be made here.
      */
@@ -117,8 +117,8 @@ public:
     /*!
      *  Ends the analysis for the given component.
      *
-     *      @param [in] component      The component.
-     *      @param [in] componentPath  The path to the directory where the component is located.
+     *    @param [in] component      The component.
+     *    @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any cleanups needed should be made here.
      */
@@ -127,11 +127,11 @@ public:
     /*!
      *  Retrieves all file dependencies the given file has.
      *
-     *      @param [in]  component      The component to which the dependency scan is being run.
-     *      @param [in]  componentPath  The path to the directory where the component is located.
-     *      @param [in]  filename       The name of the file to which the analysis is run.
+     *    @param [in]  component      The component to which the dependency scan is being run.
+     *    @param [in]  componentPath  The path to the directory where the component is located.
+     *    @param [in]  filename       The name of the file to which the analysis is run.
      *
-     *      @return The list of found dependencies.
+     *    @return The list of found dependencies.
      */
     virtual QList<FileDependencyDesc> getFileDependencies(Component const* component, 
         QString const& componentPath, QString const& filename);
@@ -141,59 +141,59 @@ private:
     /*!
      *  Reads the given file and removes comments and extra whitespace in it.
      *
-     *      @param [in] filePath   The file to read.
+     *    @param [in] filePath   The file to read.
      *
-     *      @return The file content without comments and extra whitespace.
+     *    @return The file content without comments and extra whitespace.
      */
     QString readFileContentAndRemoveComments(QString const& filePath) const;
 
     /*!
      *  Finds the absolute path for a given file.
      *
-     *      @param [in] filename        The file whose absolute path to find.
-     *      @param [in] componentPath   The path to the containing component xml file.
+     *    @param [in] filename        The file whose absolute path to find.
+     *    @param [in] componentPath   The path to the containing component xml file.
      *
-     *      @return Absolute path to filename.
+     *    @return Absolute path to filename.
      */
     QString findAbsolutePathFor(QString const& filename, QString const& componentPath) const;
 	
 	/*!
 	 *  Finds the items (modules, include files) already available in the file sets.
 	 *
-	 *      @param [in] component       The component whose file sets to search.
-	 *      @param [in] componentPath   The path to the component xml file.
+	 *    @param [in] component       The component whose file sets to search.
+	 *    @param [in] componentPath   The path to the component xml file.
 	 *
-	 *      @return Found items in filesets where key is the item identifier and value the path to the file.
+	 *    @return Found items in filesets where key is the item identifier and value the path to the file.
 	 */
 	QMap<QString, QString> findItemsInFilesets(Component const* component, QString const& componentPath);
 
 	/*!
 	 *  Finds the items (modules, include files) already available in the file content.
 	 *
-	 *      @param [in] content		The file content.
-	 *      @param [in] filePath	The path to the given file.
+	 *    @param [in] content		The file content.
+	 *    @param [in] filePath	The path to the given file.
 	 *
-	 *      @return Found items in file content where key is the item identifier and value the path to the file.
+	 *    @return Found items in file content where key is the item identifier and value the path to the file.
 	 */
 	QMap<QString, QString> findItemsInFileContent(QString const& content, QString const& filePath);
 
 	/*!
 	 *  Check if the given file is of supported file type.
 	 *
-	 *      @param [in] file        The file to check.
+	 *    @param [in] file        The file to check.
 	 *
-	 *      @return True, if the file is of supported type, otherwise false.
+	 *    @return True, if the file is of supported type, otherwise false.
 	 */
 	bool isOfSupportedFileType(QSharedPointer<File> file);
 
 	/*!
     *  Finds the dependencies of a file from include directives.
     *
-    *      @param [in] fileContent         The file content to analyze.
-	*      @param [in] sourceFileInfo      The source file (being analyzed) information.
-	*      @param [in] itemsInFilesets     The available items in file sets.
+    *    @param [in] fileContent         The file content to analyze.
+	*    @param [in] sourceFileInfo      The source file (being analyzed) information.
+	*    @param [in] itemsInFilesets     The available items in file sets.
     *
-    *      @return The file dependencies for includes.
+    *    @return The file dependencies for includes.
     */
 	QList<FileDependencyDesc> findIncludeDependencies(QString const& fileContent,
 		QFileInfo const& sourceFileInfo, 
@@ -202,21 +202,21 @@ private:
 	/*!
 	*  Finds the dependencies of a file with given pattern.
 	*
-	*      @param [in] fileContent       The file content to analyze.
-	*      @param [in] matchPattern      The pattern for matching dependent items.
+	*    @param [in] fileContent       The file content to analyze.
+	*    @param [in] matchPattern      The pattern for matching dependent items.
 	*
-	*      @return The identifiers for items found with the given pattern.
+	*    @return The identifiers for items found with the given pattern.
 	*/
 	QStringList findDependencies(QString const& fileContent, QRegularExpression const& matchPattern) const;
 
 	/*!
 	 *  Finds the dependencies of a file from module instantiations.
 	 *
-	 *      @param [in] fileContent         The file content to analyze.
-	 *      @param [in] sourceFileInfo      The source file (being analyzed) information.
-	 *      @param [in] itemsInFilesets     The available items in file sets.
+	 *    @param [in] fileContent         The file content to analyze.
+	 *    @param [in] sourceFileInfo      The source file (being analyzed) information.
+	 *    @param [in] itemsInFilesets     The available items in file sets.
 	 *
-	 *      @return The file dependencies for instantiations.
+	 *    @return The file dependencies for instantiations.
  	*/
 	QList<FileDependencyDesc> findInstantiationDependencies(QString const& fileContent,
 		QFileInfo const& sourceFileInfo,

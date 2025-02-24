@@ -44,7 +44,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] utility     Interface which offers core utilities for plugins.
+	 *    @param [in] utility     Interface which offers core utilities for plugins.
 	 */
 	BaseMemoryMapHeaderWriter(IPluginUtility* utility);
 
@@ -58,24 +58,24 @@ protected:
     /*!
      *  Check that the directory structure exists for the file.
      *
-     *      @param [in] dir     The directory for the file.
+     *    @param [in] dir     The directory for the file.
      */
     void checkDirectoryStructure(QDir dir);
 
     /*!
      *  Display an error message when opening a file.
      *
-     *      @param [in] absoluteFilePath    The file path of the file that couldn't be opened.
+     *    @param [in] absoluteFilePath    The file path of the file that couldn't be opened.
      */
     void openFileErrorMessage(QString const& absoluteFilePath);
 
     /*!
      *  Write the top part of the header file.
      *
-     *      @param [in] stream          The text stream used for writing.
-     *      @param [in] fileName        The name of the file being written.
-     *      @param [in] header          The header guard of the file.
-     *      @param [in] description     The description of the file.
+     *    @param [in] stream          The text stream used for writing.
+     *    @param [in] fileName        The name of the file being written.
+     *    @param [in] header          The header guard of the file.
+     *    @param [in] description     The description of the file.
      */
     void writeTopOfHeaderFile(QTextStream& stream, QString const& fileName, QString const& header,
         QString const& description);
@@ -83,11 +83,11 @@ protected:
 	/*!
 	 *  Add a generated file to the file sets of a component.
 	 *
-	 *      @param [in] component       Pointer to the component where the file is added to.
-	 *      @param [in] fileInfo        Contains the info on the generated file.
-	 *      @param [in] filesetName     The name of the file set to add the header file to.
-	 *      @param [in] swViewNames     Contains the names of the sw views to add the file set reference to.
-	 *      @param [in] instanceId      The id of the instance which is used when generating global headers.
+	 *    @param [in] component       Pointer to the component where the file is added to.
+	 *    @param [in] fileInfo        Contains the info on the generated file.
+	 *    @param [in] filesetName     The name of the file set to add the header file to.
+	 *    @param [in] swViewNames     Contains the names of the sw views to add the file set reference to.
+	 *    @param [in] instanceId      The id of the instance which is used when generating global headers.
 	 */
 	void addHeaderFile(QSharedPointer<Component> component, const QFileInfo& fileInfo, const QString& filesetName,
 		const QStringList& swViewNames = QStringList(), const QString& instanceId = QString()) const;
@@ -95,19 +95,19 @@ protected:
     /*!
      *  Display the created memory map header file for the user.
      *
-     *      @param [in] filePath    The path to the created file.
+     *    @param [in] filePath    The path to the created file.
      */
     virtual void displayMemoryMapHeader(QString const& filePath) const;
 
     /*!
      *  Write the registers contained in a memory map.
      *
-     *      @param [in] finder                  The parameter finder containing the referenced parameters.
-     *      @param [in] containingMemoryMap     The base memory map containing the registers.
-     *      @param [in] stream                  The text stream to write into.
-     *      @param [in] useAddressBlockID       Tells if an address block id is needed for the register name.
-     *      @param [in] offset                  The current offset.
-     *      @param [in] idString                Helps to identify non-unique registers.
+     *    @param [in] finder                  The parameter finder containing the referenced parameters.
+     *    @param [in] containingMemoryMap     The base memory map containing the registers.
+     *    @param [in] stream                  The text stream to write into.
+     *    @param [in] useAddressBlockID       Tells if an address block id is needed for the register name.
+     *    @param [in] offset                  The current offset.
+     *    @param [in] idString                Helps to identify non-unique registers.
      */
     void writeRegisterFromMemoryMap(QSharedPointer<ParameterFinder> finder,
         QSharedPointer<MemoryMapBase> containingMemoryMap, QTextStream& stream, bool useAddressBlockID,
@@ -116,13 +116,13 @@ protected:
     /*!
      *  Write registers contained in an address block.
      *
-     *      @param [in] expressionParser        The expression parser.
-     *      @param [in] formatter               The expression formatter, for changing parameter ids into names.
-     *      @param [in] currentAddressBlock     Pointer to the address block.
-     *      @param [in] stream                  The text stream to write into.
-     *      @param [in] useAddressBlockID       Tells if an address block id is needed for the register name.
-     *      @param [in] offset                  The current offset.
-     *      @param [in] idString                Helps to identify non-unique registers.
+     *    @param [in] expressionParser        The expression parser.
+     *    @param [in] formatter               The expression formatter, for changing parameter ids into names.
+     *    @param [in] currentAddressBlock     Pointer to the address block.
+     *    @param [in] stream                  The text stream to write into.
+     *    @param [in] useAddressBlockID       Tells if an address block id is needed for the register name.
+     *    @param [in] offset                  The current offset.
+     *    @param [in] idString                Helps to identify non-unique registers.
      */
     void writeRegistersFromAddressBlock(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<AddressBlock> currentAddressBlock,
@@ -131,12 +131,12 @@ protected:
     /*!
      *  Write the register information to a text stream.
      *
-     *      @param [in] expressionParser    The expression parser.
-     *      @param [in] formatter           The expression formatter, used to change parameter ids into names.
-     *      @param [in] currentRegister     The current register.
-     *      @param [in] stream              The text stream to write into.
-     *      @param [in] addressBlockOffset  The current offset.
-     *      @param [in] idString            Helps to identify non-unique registers.
+     *    @param [in] expressionParser    The expression parser.
+     *    @param [in] formatter           The expression formatter, used to change parameter ids into names.
+     *    @param [in] currentRegister     The current register.
+     *    @param [in] stream              The text stream to write into.
+     *    @param [in] addressBlockOffset  The current offset.
+     *    @param [in] idString            Helps to identify non-unique registers.
      */
     void writeRegister(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<Register> currentRegister, QTextStream& stream,
@@ -145,11 +145,11 @@ protected:
     /*!
      *  Write the memory names and given addresses.
      *
-     *      @param [in] finder              The parameter finder containing the referenced parameters.
-     *      @param [in] targetMemoryMap     The used base memory map.
-     *      @param [in] stream              The text stream to write into.
-     *      @param [in] offset              The current offset.
-     *      @param [in] idString            Helps to identify non-unique elements.
+     *    @param [in] finder              The parameter finder containing the referenced parameters.
+     *    @param [in] targetMemoryMap     The used base memory map.
+     *    @param [in] stream              The text stream to write into.
+     *    @param [in] offset              The current offset.
+     *    @param [in] idString            Helps to identify non-unique elements.
      */
     void writeMemoryAddresses(QSharedPointer<ParameterFinder> finder,
         QSharedPointer<MemoryMapBase> targetMemoryMap, QTextStream& stream, quint64 offset,
@@ -158,10 +158,10 @@ protected:
     /*!
      *  Gets the ending address of an address block.
      *
-     *      @param [in] targetAddressBlock  The address block being examined.
-     *      @param [in] expressionParser    The expression parser.
+     *    @param [in] targetAddressBlock  The address block being examined.
+     *    @param [in] expressionParser    The expression parser.
      *
-     *      @return The ending address of the address block.
+     *    @return The ending address of the address block.
      */
     QString getAddressBlockLastAddress(QSharedPointer<AddressBlock> targetAddressBlock,
         QSharedPointer<ExpressionParser> expressionParser) const;
@@ -169,10 +169,10 @@ protected:
     /*!
      *  Get the parsed value for a given expression.
      *
-     *      @param [in] expression  The expression to be parsed.
-     *      @param [in] finder      The parameter finder used in the parser.
+     *    @param [in] expression  The expression to be parsed.
+     *    @param [in] finder      The parameter finder used in the parser.
      *
-     *      @return The parsed value for the given expression.
+     *    @return The parsed value for the given expression.
      */
     QString parsedValueFor(QString const& expression, QSharedPointer<ParameterFinder> finder) const;
 
@@ -184,7 +184,7 @@ protected:
     /*!
      *  Inform when the writing has been finished.
      *
-     *      @param [in] outputFile  The name of the output file.
+     *    @param [in] outputFile  The name of the output file.
      */
     void informWritingFinished(QString const& outputFile) const;
 

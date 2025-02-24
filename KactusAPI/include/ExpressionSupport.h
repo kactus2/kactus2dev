@@ -21,7 +21,7 @@ public:
     /*!
      *  Sets the expression parser to use for parsing expressions.
      *
-     *      @param [in] parser   The expression parser to use.
+     *    @param [in] parser   The expression parser to use.
      */
     virtual void setExpressionParser(QSharedPointer<ExpressionParser> parser) = 0;
 };

@@ -50,7 +50,7 @@ public:
 
     /*! Get the rectangle reserved by this item and it's sub-items recursively.
      *
-     *      @return The rectangle of this item and sub-items and their children recursively.
+     *    @return The rectangle of this item and sub-items and their children recursively.
     */
     virtual QRectF itemTotalRect() const = 0;
 
@@ -82,7 +82,7 @@ protected:
     /*!
      *  Sets the default coloring brush for the item.
      *
-     *      @param [in] brush   The brush to set.
+     *    @param [in] brush   The brush to set.
      */
     void setDefaultBrush(QBrush brush) final;
 
@@ -100,7 +100,7 @@ private:
     /*!
      * Update the expand arrow direction based on expansion state.
      *
-     *     @param [in] expanded     Indicates if the item is expanded or not.
+     *    @param [in] expanded     Indicates if the item is expanded or not.
      */
      void updateExpandArrow(bool expanded);
 

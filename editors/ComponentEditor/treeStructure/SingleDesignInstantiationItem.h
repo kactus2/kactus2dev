@@ -20,6 +20,8 @@ class Component;
 class DesignInstantiation;
 class ExpressionParser;
 class InstantiationsValidator;
+class ParameterValidator;
+
 //-----------------------------------------------------------------------------
 //! The item for one design instantiation-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -32,18 +34,19 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                       The model that owns the items.
-	 *      @param [in] libHandler                  The instance that manages the library.
-	 *      @param [in] component                   The component being edited.
-     *      @param [in] instantiation               The instantiation of the item.
-     *      @param [in] validator                   Handles the validation of the design instantiation.
-     *      @param [in] componentParameterFinder    Finder for component parameters.
-     *      @param [in] referenceCounter            Handles the usage count of parameters.
-	 *      @param [in] parent                      The parent item.
+	 *    @param [in] model                       The model that owns the items.
+	 *    @param [in] libHandler                  The instance that manages the library.
+	 *    @param [in] component                   The component being edited.
+     *    @param [in] instantiation               The instantiation of the item.
+     *    @param [in] validator                   Handles the validation of the design instantiation.
+     *    @param [in] componentParameterFinder    Finder for component parameters.
+     *    @param [in] referenceCounter            Handles the usage count of parameters.
+	 *    @param [in] parent                      The parent item.
 	 */
 	SingleDesignInstantiationItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
         QSharedPointer<Component> component, QSharedPointer<DesignInstantiation> instantiation,
         QSharedPointer<InstantiationsValidator> validator,
+		QSharedPointer<ParameterValidator> parameterValidator, QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> componentParameterFinder,
         QSharedPointer<ReferenceCounter> referenceCounter, ComponentEditorItem* parent);
 
@@ -53,14 +56,14 @@ public:
 	/*!
      *  Get the tool tip for the item.
 	 * 
-	 *      @return The text for the tool tip to print to user.
+	 *    @return The text for the tool tip to print to user.
 	 */
 	virtual QString getTooltip() const;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 *      @return QString Contains the text to display.
+	 *    @return QString Contains the text to display.
 	 */
 	virtual QString text() const;
 
@@ -70,14 +73,14 @@ public:
     /*!
      *  Get The editor of this item.
 	 *
-	 *      @return The editor to use for this item.
+	 *    @return The editor to use for this item.
 	 */
 	virtual ItemEditor* editor();
 
 	/*!
      *  Add a new child to the item.
 	 * 
-	 *      @param [in] index   The index to add the child into.
+	 *    @param [in] index   The index to add the child into.
 	 */
 	virtual void createChild(int index);
 
@@ -95,6 +98,13 @@ private:
 
     //! Finder for component parameters.
     QSharedPointer<ParameterFinder> componentParameterFinder_;
+
+    //! ParameterValidator to use in validation.
+    QSharedPointer<ParameterValidator> parameterValidator_;
+	
+	//! Expression parser to use in validation.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
 };
 
 #endif // SINGLEDESIGNINSTANTIATIONITEM_H

@@ -38,8 +38,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] expressionParser    The used expression parser.
-	 *      @param [in] parent              The owner of the item.
+     *    @param [in] expressionParser    The used expression parser.
+	 *    @param [in] parent              The owner of the item.
 	 */
 	MemoryVisualizationItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent = 0);
 	
@@ -59,28 +59,28 @@ public:
 	/*!
      *  Get the offset of the item. 
 	 *
-	 *      @return The offset of the item from the parent item's base address.
+	 *    @return The offset of the item from the parent item's base address.
 	 */
 	virtual quint64 getOffset() const = 0;
 
 	/*!
      *  Get the last address contained in the item.
 	 *
-	 *      @return The last address.
+	 *    @return The last address.
 	 */
 	virtual quint64 getLastAddress() const = 0;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
-	 *      @return The bit width of the item.
+	 *    @return The bit width of the item.
 	 */
 	virtual int getBitWidth() const = 0;
 
 	/*!
      *  Get number of bits the addressable unit contains.
 	 *
-	 *      @return The size of least addressable unit.
+	 *    @return The size of least addressable unit.
 	 */
 	virtual unsigned int getAddressUnitSize() const = 0;
 
@@ -90,14 +90,14 @@ public:
 	/*!
      *  Add a child visualization item for this item.
 	 *
-	 *       @param [in] childItem Pointer to the child to add.
+	 *    @param [in] childItem Pointer to the child to add.
 	 */
 	virtual void addChild(MemoryVisualizationItem* childItem);
 
     /*!
      *  Remove a child visualization item from this item.
 	 *
-	 *       @param [in] childItem Pointer to the child to remove.
+	 *    @param [in] childItem Pointer to the child to remove.
 	 */
 	virtual void removeChild(MemoryVisualizationItem* childItem);
 
@@ -106,14 +106,14 @@ public:
     /*!
      *  Set the width for the item.
 	 *
-	 *       @param [in] width The new width of the item.
+	 *    @param [in] width The new width of the item.
 	 */
 	virtual void setWidth(qreal width);
 
 	/*!
      *  The bounding rect of the item.
 	 *
-	 *      @return The rectangle that bounds the item and possible sub items.
+	 *    @return The rectangle that bounds the item and possible sub items.
 	 */
 	virtual QRectF boundingRect() const;
 
@@ -136,14 +136,14 @@ protected:
     /*!
      *  Parse a given expression.
      *
-     *      @param [in] expression  The expression to be parsed.
+     *    @param [in] expression  The expression to be parsed.
      */
     quint64 parseExpression(QString const& expression) const;
 
     /*!
      *  Get the used expression parser.
      *
-     *      @return Pointer to the expression parser.
+     *    @return Pointer to the expression parser.
      */
     QSharedPointer<ExpressionParser> getExpressionParser() const;
 
@@ -175,27 +175,27 @@ private:
     /*!
      *  Checks if there is empty memory space between the given child and the last known used address.
      *
-     *      @param [in] current             The currently iterated child.
-     *      @param [in] lastAddressInUse    The last known used address.
+     *    @param [in] current             The currently iterated child.
+     *    @param [in] lastAddressInUse    The last known used address.
      *
-     *      @return True, if there is empty space, otherwise false.
+     *    @return True, if there is empty space, otherwise false.
      */
     bool emptySpaceBeforeChild(MemoryVisualizationItem const* current, quint64 lastAddressInUse) const;
 
     /*!
      *	Mark child and its preceding children conflicting, if overlapping.
      *  
-     *      @param [in] child     The child to check.   
+     *    @param [in] child     The child to check.   
      */
     void markChildIfConflicting(MemoryVisualizationItem* child);
 
     /*!
      *  Creates a new child for representing a free memory slot.
      *
-     *      @param [in] offset          The offset of the free memory slot.
-     *      @param [in] lastAddress     The last address of the free memory slot.
+     *    @param [in] offset          The offset of the free memory slot.
+     *    @param [in] lastAddress     The last address of the free memory slot.
      *
-     *      @return The created child item.
+     *    @return The created child item.
      */
     QMultiMap<quint64, MemoryVisualizationItem*>::iterator createMemoryGap(quint64 offset, quint64 lastAddress);
 

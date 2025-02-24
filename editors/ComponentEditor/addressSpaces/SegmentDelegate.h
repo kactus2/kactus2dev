@@ -27,9 +27,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] completionModel     Model containing the completions used in expression editor.
-     *      @param [in] parameterFinder     The parameter finder to use for for expression editor.
-     *      @param [in] parent              The parent object.
+     *    @param [in] completionModel     Model containing the completions used in expression editor.
+     *    @param [in] parameterFinder     The parameter finder to use for for expression editor.
+     *    @param [in] parent              The parent object.
      */
     SegmentDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QObject* parent);
@@ -46,9 +46,9 @@ protected:
     /*!
      *  Checks if the given column supports expressions in the editor.
      *
-     *      @param [in] column   The column to check.
+     *    @param [in] column   The column to check.
      *
-     *      @return True, if the cells in the column allow expressions, otherwise false.
+     *    @return True, if the cells in the column allow expressions, otherwise false.
      */
     bool columnAcceptsExpression(int column) const final;
 

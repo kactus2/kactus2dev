@@ -18,6 +18,7 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 #include <QApplication>
 #include <QIcon>

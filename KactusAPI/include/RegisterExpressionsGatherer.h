@@ -38,9 +38,9 @@ public:
     /*!
      *  Get the expressions from a given register.
      *
-     *      @param [in] currentRegister     The given register.
+     *    @param [in] currentRegister     The given register.
      *
-     *      @return A list containing all the expressions used in a register.
+     *    @return A list containing all the expressions used in a register.
      */
     QStringList getExpressions(QSharedPointer<Register> currentRegister) const;
 
