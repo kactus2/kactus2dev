@@ -76,7 +76,7 @@
     <QtModules>core;gui;widgets;help;printsupport;svg;xml</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtInstall>6.2.4</QtInstall>
+    <QtInstall>qt6.6.3</QtInstall>
     <QtModules>core;gui;widgets;help;printsupport;svg;xml</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -199,7 +199,7 @@ CreateHelp
     </ResourceCompile>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>IPXACTmodels.lib;python310.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>IPXACTmodels.lib;Python312.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>executable\Kactus2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -274,6 +274,7 @@ CreateHelp
     <ClCompile Include="common\widgets\DirectoryListSelector\DirectoryListSelector.cpp" />
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.cpp" />
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumerationEditor.cpp" />
+    <ClCompile Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.cpp" />
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp" />
     <ClCompile Include="common\widgets\fileTypeSelector\filetypeselector.cpp" />
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.cpp" />
@@ -860,6 +861,11 @@ CreateHelp
     <ClCompile Include="editors\HWDesign\undoCommands\ReplaceComponentCommand.cpp" />
     <ClCompile Include="editors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp" />
     <ClCompile Include="editors\HWDesign\WarningSymbol.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\ConfigJsonParser.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InstanceWidgets.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectGenerator.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectRTLWriter.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressBlockGraphicsItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.cpp" />
@@ -1298,6 +1304,7 @@ CreateHelp
     <QtMoc Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.h" />
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.h" />
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.h" />
+    <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h" />
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h" />
     <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h" />
@@ -2100,6 +2107,11 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="editors\InterconnectGenerator\ConfigJsonParser.h" />
+    <QtMoc Include="editors\InterconnectGenerator\InstanceWidgets.h" />
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectGenerator.h" />
+    <QtMoc Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.h" />
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectRTLWriter.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressBlockGraphicsItem.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.h" />
@@ -2922,6 +2934,7 @@ CreateHelp
   </ItemGroup>
   <ItemGroup>
     <None Include="common\graphicsItems\ConnectionItem.inl" />
+    <None Include="editors\InterconnectGenerator\config.json" />
     <None Include="wizards\common\IPXactElementComparator.inl" />
     <None Include="wizards\common\ListComparator.inl" />
   </ItemGroup>

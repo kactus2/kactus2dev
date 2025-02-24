@@ -1,5 +1,4 @@
 #include "InterconnectGenerator.h"
-#include "ConfigJsonParser.h"
 #include "InterconnectRTLWriter.h"
 #include <KactusAPI/KactusAPI.h>
 
@@ -11,6 +10,7 @@ InterconnectGenerator::InterconnectGenerator(LibraryInterface* library,  Message
 {
     library_ = library;
     messager_ = messager;
+    config_ = nullptr;
 }
 
 VLNV InterconnectGenerator::generate()
@@ -23,7 +23,6 @@ VLNV InterconnectGenerator::generate()
     busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->BusVLNV);
     rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->RstVLNV);
     clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->ClkVLNV);
-
     openDesign(designVLNV);
     createInterconComponent(interconVLNV);
     findUnconnectedInterfaces();
@@ -39,15 +38,55 @@ VLNV InterconnectGenerator::generate()
     InterconnectRTLWriter writer(interconComponent_, library_, messager_, directory_,
                                  config_, clkPort_, rstPort_);
     writer.generateRTL();
-
     return interconVLNV;
+}
+
+void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
+    const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets)
+{
+    config_ = config;
+
+    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
+    VLNV interconVLNV(VLNV::COMPONENT, config_->InterconVLNV);
+
+    busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->BusVLNV);
+    rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->RstVLNV);
+    clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->ClkVLNV);
+    openDesign(designVLNV);
+    createInterconComponent(interconVLNV);
+    processInitiatorsAndTargets(initiators, targets);
+
+    directory_ = KactusAPI::getDefaultLibraryPath();
+    QString vlnvDir = "/" + interconComponent_->getVlnv().getVendor() + "/" + interconComponent_->getVlnv().getLibrary() + "/" +
+        interconComponent_->getVlnv().getName() + "/" + interconComponent_->getVlnv().getVersion();
+
+    directory_ += vlnvDir;
+    messager_->showMessage(QString("Writing component %1 to file").arg(interconComponent_->getVlnv().toString()));
+
+    bool writeSucceeded = true;
+    if (!library_->writeModelToFile(directory_, interconComponent_))
+    {
+        writeSucceeded = false;
+    }
+    
+    if (!library_->writeModelToFile(design_)) 
+    {
+        writeSucceeded = false;
+    }
+
+    if (!writeSucceeded) {
+        messager_->showError("Error saving design to disk.");
+    }
+
+    InterconnectRTLWriter writer(interconComponent_, library_, messager_, directory_, config_, clkPort_, rstPort_);
+    writer.generateRTL();
 }
 
 void InterconnectGenerator::openDesign(VLNV designVLNV)
 {
     QSharedPointer<Document> designCompDocument = library_->getModel(designVLNV);
+    
     QSharedPointer<Component> designComp = designCompDocument.dynamicCast<Component>();
-
     QSharedPointer<QList<QSharedPointer<DesignConfigurationInstantiation> > > list = designComp->getDesignConfigurationInstantiations();
     QSharedPointer<DesignConfigurationInstantiation> inst = list->at(0);
     QSharedPointer<ConfigurableVLNVReference> vlnv = inst->getDesignConfigurationReference();
@@ -81,13 +120,13 @@ void InterconnectGenerator::createInterconComponent(VLNV VLNV)
 
     busInfInterface_ = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_,
             expressionFormatter_, expressionParser_, interconComponent_, library_);
-
+  
     busInfInterface_->setBusInterfaces(interconComponent_);
     absTypeInf_ = busInfInterface_->getAbstractionTypeInterface();
 
-    //instanceInterface_->addComponentInstance("interconnect");
-    //instanceInterface_->setComponentReference("interconnect", VLNV.getVendor().toStdString(), VLNV.getLibrary().toStdString(),
-                                              //VLNV.getName().toStdString(), VLNV.getVersion().toStdString());
+    instanceInterface_->addComponentInstance(VLNV.getName().toStdString());
+    instanceInterface_->setComponentReference(VLNV.getName().toStdString(), VLNV.getVendor().toStdString(), VLNV.getLibrary().toStdString(),
+                                              VLNV.getName().toStdString(), VLNV.getVersion().toStdString());
 
     messager_->showMessage("Component created and linked");
 }
@@ -102,7 +141,7 @@ void InterconnectGenerator::findUnconnectedInterfaces()
     {
         messager_->showMessage(QString("Comp name %1").arg(QString::fromStdString(compName)));
         if(compName != "interconnect") {
-            auto compVLNV = instanceInterface_->getComponentReference(compName);
+            auto compVLNV = instanceInterface_->getComponentReference(compName);                                                                                                                                                               
             QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
             QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
             QStringList busNames = comp->getBusInterfaceNames();
@@ -134,9 +173,97 @@ void InterconnectGenerator::findUnconnectedInterfaces()
             }
         }
     }
-
     createRstorClkInterface("rst", index);
     createRstorClkInterface("clk", index+1);
+}
+
+void InterconnectGenerator::processInitiatorsAndTargets(
+    const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
+    const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets)
+{
+    messager_->showMessage("Processing initiators and targets...");
+    int index = 0;
+
+    for (auto it = targets.constBegin(); it != targets.constEnd(); ++it) {
+        QString instanceName = it.key();
+        auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
+        QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
+        QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
+
+        const QList<QSharedPointer<BusInterface>>& busInterfaces = it.value();
+
+        for (const QSharedPointer<BusInterface>& busInterface : busInterfaces) {
+            QString busName = busInterface->name();
+            VLNV busVLNV = busInterface->getBusType();
+
+            prefix_ = busName.toStdString() + "_";
+            std::string modeString = getInterfaceMode(busInterface, true, false);
+
+            std::string newBusName = createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
+            connectionInterface_->addInterconnection(
+                instanceName.toStdString(), busName.toStdString(), 
+                interconComponent_->getVlnv().getName().toStdString(), newBusName);
+
+            createPortMaps(modeString, busInterface);
+            createPhysPorts(comp, busName);
+
+            index++;
+        }
+    }
+
+    for (auto it = initiators.constBegin(); it != initiators.constEnd(); ++it) {
+        QString instanceName = it.key();
+        auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
+        QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
+        QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
+
+        const QList<QSharedPointer<BusInterface>>& busInterfaces = it.value();
+        
+        for (const QSharedPointer<BusInterface>& busInterface : busInterfaces) {
+            QString busName = busInterface->name();
+            VLNV busVLNV = busInterface->getBusType();
+
+            prefix_ = busName.toStdString() + "_";
+            std::string modeString = getInterfaceMode(busInterface, false, false);
+
+            std::string newBusName = createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
+            connectionInterface_->addInterconnection(
+                instanceName.toStdString(), busName.toStdString(),
+                interconComponent_->getVlnv().getName().toStdString(), newBusName);
+
+            createPortMaps(modeString, busInterface);
+            createPhysPorts(comp, busName);
+
+            index++;
+        }
+    }
+    if (config_->RstVLNV != "") {
+        createRstorClkInterface("rst", index);
+    }
+    if (config_->ClkVLNV != "") {
+        createRstorClkInterface("clk", index + 1);
+    }
+}
+
+std::string InterconnectGenerator::getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool isChannel)
+{
+    Document::Revision rev = design_->getRevision();
+
+    if (rev == Document::Revision::Std14)
+    {
+        if (!isTarget)
+            return isChannel ? "mirroredSlave" : "slave";
+        else
+            return isChannel ? "mirroredMaster" : "master";
+    }
+    else if (rev == Document::Revision::Std22)
+    {
+        if (!isTarget)
+            return isChannel ? "mirroredTarget" : "target";
+        else
+            return isChannel ? "mirroredInitiator" : "initiator";
+    }
+    return !isTarget ? "target" : "initiator";
 }
 
 void InterconnectGenerator::createBusInterface(std::string busName, std::string modeString, int index)
@@ -165,6 +292,56 @@ void InterconnectGenerator::createBusInterface(std::string busName, std::string 
                                          busDef.getName().toStdString()+".absDef", busDef.getVersion().toStdString());
 
     messager_->showMessage(QString("%1 interface created").arg(QString::fromStdString(newBusName)));
+}
+
+std::string InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index)
+{
+    VLNV busDef = busDefVLNV_;
+
+    std::string newBusName = getUniqueBusName(prefix_ + config_->BusType.toStdString());
+
+    messager_->showMessage(QString("Creating %1 interface").arg(QString::fromStdString(newBusName)));
+    busInfInterface_->addBusInterface(index, newBusName);
+    busInfInterface_->setMode(newBusName, modeString);
+
+    busInfInterface_->setBustype(newBusName, busVLNV.getVendor().toStdString(), busVLNV.getLibrary().toStdString(),
+        busVLNV.getName().toStdString(), busVLNV.getVersion().toStdString());
+
+    busInfInterface_->addAbstractionType(newBusName, busDef.getVendor().toStdString(), busDef.getLibrary().toStdString(),
+        busDef.getName().toStdString(), busDef.getVersion().toStdString());
+
+    if (modeString == "slave" || modeString == "target") {
+        busInfInterface_->setupSubInterfaces(newBusName);
+        TransparentBridgeInterface* bridgeInterface = busInfInterface_->getBridgeInterface();
+        if (!bridgeInterface) {
+            return "";
+        }
+        int index = bridgeInterface->itemCount();
+        for (std::string name : busInfInterface_->getItemNames()) {
+            std::string mode = busInfInterface_->getModeString(name);
+            if (mode != "master" && mode != "initiator") {
+                continue;
+            }
+            bridgeInterface->addBridge(index, name);
+            index++;
+        }
+    }
+    messager_->showMessage(QString("%1 interface created").arg(QString::fromStdString(newBusName)));
+
+    return newBusName;
+}
+
+std::string InterconnectGenerator::getUniqueBusName(std::string newBusName)
+{
+    int appendix = 0;
+    std::vector<std::string> names = busInfInterface_->getItemNames();
+    std::string uniqueName = newBusName;
+
+    while (std::find(names.begin(), names.end(), uniqueName) != names.end()) {
+        appendix++;
+        uniqueName = newBusName + "_" + std::to_string(appendix);
+    }
+    return uniqueName;
 }
 
 void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)
@@ -215,7 +392,6 @@ void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointe
         }
     }
     messager_->showMessage("All port maps created");
-
 }
 
 void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QString busName)
@@ -284,7 +460,7 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
 
         uint leftBound = 0;
         bool signalIntegerOk = false;
-        uint signalWidth = QString::fromStdString(portAbsInf->getWidth(portIndex)).toUInt(&signalIntegerOk);
+        uint signalWidth = QString::fromStdString(portAbsInf->getWidthFormattedExpression(portIndex)).toUInt(&signalIntegerOk);
 
         if (signalIntegerOk == true && signalWidth > 0)
         {
@@ -294,7 +470,7 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
         portInf->setLeftBound(portName, QString::number(leftBound).toStdString());
         portInf->setRightBound(portName, "0");
 
-        portInf->setDefaultValue(portName, portAbsInf->getDefaultValue(portIndex));
+        portInf->setDefaultValue(portName, portAbsInf->getDefaultValueExpression(portIndex));
         portInf->setDescription(portName, portAbsInf->getDescription(portName));
 
         portMapInf->addPortMap(portIndex);

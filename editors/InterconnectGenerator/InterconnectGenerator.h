@@ -2,14 +2,18 @@
 #define INTERCONNECTGENERATOR_H
 
 #include "ConfigJsonParser.h"
+#include "InterconnectGeneratorDialog.h"
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/Component/TransparentBridge.h>
 
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/TransparentBridgeInterface.h>
 #include <KactusAPI/include/LibraryInterface.h>
 #include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
@@ -19,6 +23,7 @@
 #include <KactusAPI/include/AdHocConnectionInterface.h>
 #include <KactusAPI/include/MessageMediator.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
+
 
 class InterconnectGenerator
 {
@@ -31,13 +36,22 @@ public:
 
     VLNV generate();
 
+    void generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
+        const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets);
+
     void openDesign(VLNV designVLNV);
 
     void createInterconComponent(VLNV VLNV);
 
     void findUnconnectedInterfaces();
 
+    void processInitiatorsAndTargets(
+        const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
+        const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets);
+
     void createBusInterface(std::string busName, std::string modeString, int index);
+
+    std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
 
     void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
 
@@ -50,6 +64,10 @@ public:
     InterconnectGenerator& operator=(const InterconnectGenerator& other) = delete;
 
 private:
+
+    std::string getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool useChannel);
+
+    std::string getUniqueBusName(std::string newBusName);
 
     //! Message handler.
     MessageMediator* messager_{ nullptr };
@@ -73,6 +91,8 @@ private:
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInfInterface_{ nullptr };
 
+    //TransparentBridgeInterface* bridgeInterface_{ nullptr };
+
     //! Validator for ports.
     QSharedPointer<PortValidator> portValidator_{ new PortValidator(expressionParser_,
         QSharedPointer<QList<QSharedPointer<View> > >()) };
@@ -92,7 +112,11 @@ private:
 
     AbstractionTypeInterface* absTypeInf_{ nullptr };
 
-    ConfigJsonParser::ConfigStruct* config_;
+    ConfigStruct* config_;
+
+    QList<QSharedPointer<BusInterface>> initiators_;
+
+    QList<QSharedPointer<BusInterface>> targets_;
 
     QString directory_;
 

@@ -4,7 +4,7 @@
 #include <IPXACTmodels/Design/Design.h>
 
 InterconnectRTLWriter::InterconnectRTLWriter(QSharedPointer<Component> component, LibraryInterface* library,
-                                             MessageMediator* messager, QString directory, ConfigJsonParser::ConfigStruct* config,
+                                             MessageMediator* messager, QString directory, ConfigStruct* config,
                                              QString clk, QString rst)
 {
     component_ = component;
@@ -102,7 +102,7 @@ void InterconnectRTLWriter::writeBus(QTextStream &stream, QString type)
 void InterconnectRTLWriter::writeAddrMap(QTextStream &stream)
 {
     int targetRegions = 0;
-    for(ConfigJsonParser::TargetStruct target : config_->TargetList){
+    for(TargetStruct target : config_->TargetList){
         if(target.AddressRegions.length() > 1){
             targetRegions += target.AddressRegions.length() - 1;
         }
@@ -117,8 +117,8 @@ void InterconnectRTLWriter::writeAddrMap(QTextStream &stream)
 
     int regionCounter = 0;
 
-    for(ConfigJsonParser::TargetStruct target : config_->TargetList){
-        for(ConfigJsonParser::AddressPair addrPair : target.AddressRegions){
+    for(TargetStruct target : config_->TargetList){
+        for(AddressPair addrPair : target.AddressRegions){
             regionCounter += 1;
             int start = std::stoul(addrPair.Start.toStdString(), nullptr, 16);
             int end = std::stoul(addrPair.End.toStdString(), nullptr, 16);
@@ -202,7 +202,7 @@ void InterconnectRTLWriter::writeAssign(QTextStream &stream, QString busName, in
 }
 
 void InterconnectRTLWriter::writeTargetAssign(QTextStream &stream) {
-    for(ConfigJsonParser::TargetStruct target : config_->TargetList){
+    for(TargetStruct target : config_->TargetList){
         QString busName = target.Name + "_" + config_->BusType;
         writeAssign(stream, busName, target.Index);
         stream << Qt::endl;
@@ -210,7 +210,7 @@ void InterconnectRTLWriter::writeTargetAssign(QTextStream &stream) {
 }
 
 void InterconnectRTLWriter::writeInitAssign(QTextStream &stream) {
-    for(ConfigJsonParser::InitStruct init : config_->InitList){
+    for(InitStruct init : config_->InitList){
         QString busName = init.Name + "_" + config_->BusType;
         writeAssign(stream, busName, init.Index);
         stream << Qt::endl;

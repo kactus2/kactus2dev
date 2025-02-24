@@ -19,7 +19,7 @@ class InterconnectRTLWriter
 {
 public:
     InterconnectRTLWriter(QSharedPointer<Component> component, LibraryInterface* library,
-                          MessageMediator* messager, QString directory, ConfigJsonParser::ConfigStruct* config,
+                          MessageMediator* messager, QString directory, ConfigStruct* config,
                           QString clk, QString rst);
 
     ~InterconnectRTLWriter() = default;
@@ -52,7 +52,7 @@ private:
 
     LibraryInterface* library_{ nullptr };
 
-    ConfigJsonParser::ConfigStruct* config_;
+    ConfigStruct* config_;
 
     QString directory_;
     QString clkPort_;

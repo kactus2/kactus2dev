@@ -4,48 +4,47 @@
 #include <QtCore>
 #include <QDir>
 
+struct AddressPair {
+    QString Start;
+    QString End;
+
+};
+
+struct InitStruct {
+    int Index;
+    QString Name;
+    int DataWidth;
+};
+
+struct TargetStruct {
+
+    int Index;
+    QString Name;
+    int DataWidth;
+    QList<AddressPair> AddressRegions;
+
+};
+
+// Currently used for CLI version
+struct ConfigStruct {
+
+    QString InterconVLNV;
+    QString DesignVLNV;
+    QString BusVLNV;
+    QString ClkVLNV;
+    QString RstVLNV;
+    QString BusType;
+    int AddressWidth;
+    int IDWidth;
+    int UserWidth;
+    QList<InitStruct> InitList;
+    QList<TargetStruct> TargetList;
+
+};
 
 class ConfigJsonParser
 {
 public:
-
-    struct AddressPair {
-
-        QString Start;
-        QString End;
-
-    };
-
-    struct InitStruct {
-        int Index;
-        QString Name;
-        int DataWidth;
-    };
-
-    struct TargetStruct {
-
-        int Index;
-        QString Name;
-        int DataWidth;
-        QList<AddressPair> AddressRegions;
-
-    };
-
-    struct ConfigStruct {
-
-        QString InterconVLNV;
-        QString DesignVLNV;
-        QString BusVLNV;
-        QString ClkVLNV;
-        QString RstVLNV;
-        QString BusType;
-        int AddressWidth;
-        int IDWidth;
-        int UserWidth;
-        QList<InitStruct> InitList;
-        QList<TargetStruct> TargetList;
-
-    };
 
     //! The constructor
     ConfigJsonParser();
