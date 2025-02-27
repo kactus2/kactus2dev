@@ -42,7 +42,7 @@ VLNV InterconnectGenerator::generate()
 }
 
 void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
-    const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets)
+    const QHash<QString, QList<QSharedPointer<TargetData>>>& targets)
 {
     config_ = config;
 
@@ -113,7 +113,7 @@ void InterconnectGenerator::createInterconComponent(VLNV VLNV)
     component->setHierarchy(KactusAttribute::FLAT);
     component->setFirmness(KactusAttribute::MUTABLE);
     component->setImplementation(KactusAttribute::HW);
-    component->setVersion("1.0");
+    component->setVersion(VLNV.getVersion());
     interconComponent_ = component;
 
     parameterFinder_->setComponent(interconComponent_);
@@ -179,7 +179,7 @@ void InterconnectGenerator::findUnconnectedInterfaces()
 
 void InterconnectGenerator::processInitiatorsAndTargets(
     const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
-    const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets)
+    const QHash<QString, QList<QSharedPointer<TargetData>>>& targets)
 {
     messager_->showMessage("Processing initiators and targets...");
     int index = 0;
@@ -190,10 +190,12 @@ void InterconnectGenerator::processInitiatorsAndTargets(
         QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
         QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
 
-        const QList<QSharedPointer<BusInterface>>& busInterfaces = it.value();
+        const QList<QSharedPointer<TargetData>>& busInterfaceDatas = it.value();
 
-        for (const QSharedPointer<BusInterface>& busInterface : busInterfaces) {
+        for (const QSharedPointer<TargetData>& busInterfaceData : busInterfaceDatas) {
+            QSharedPointer<BusInterface> busInterface = busInterfaceData->targetBus;
             QString busName = busInterface->name();
+            messager_->showMessage(QString("bus: %1, start: %2, range: %3").arg(busName, busInterfaceData->start, busInterfaceData->range));
             VLNV busVLNV = busInterface->getBusType();
 
             prefix_ = busName.toStdString() + "_";

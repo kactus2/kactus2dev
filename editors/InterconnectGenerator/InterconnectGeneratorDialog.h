@@ -44,6 +44,12 @@
 #include <QHash>
 #include <QList>
 
+struct TargetData {
+    QSharedPointer<BusInterface > targetBus;
+    QString start;
+    QString range;
+};
+
 class InterconnectGeneratorDialog : public QDialog
 {
     Q_OBJECT
@@ -55,7 +61,7 @@ public:
     ConfigStruct* getConfig();
 
     QHash<QString, QList<QSharedPointer<BusInterface > > > getSelectedInitiators();
-    QHash<QString, QList<QSharedPointer<BusInterface > > > getSelectedTargets();
+    QHash<QString, QList<QSharedPointer<TargetData > > > getSelectedTargets();
 
 protected:
     void accept() override;
@@ -98,7 +104,7 @@ private:
     QSet<QString> addedTargets_;
     QHash<QString, QSet<QSharedPointer<BusInterface > > > instanceBusesHash_;
     QHash<QString, QList<QSharedPointer<BusInterface > > > selectedInitiators_;
-    QHash<QString, QList<QSharedPointer<BusInterface > > > selectedTargets_;
+    QHash<QString, QList<QSharedPointer<TargetData > > > selectedTargets_;
     QHash<QSharedPointer<BusInterface >, QSet<QString > > interfaceAbsDefsHash_;
     const QSet<General::InterfaceMode > initiatorModes_ = { General::MASTER, General::INITIATOR };
     const QSet<General::InterfaceMode > targetModes_ = { General::SLAVE, General::TARGET };

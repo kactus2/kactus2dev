@@ -63,7 +63,7 @@ QHash<QString, QList<QSharedPointer<BusInterface > > > InterconnectGeneratorDial
     return selectedInitiators_;
 }
 
-QHash<QString, QList<QSharedPointer<BusInterface > > > InterconnectGeneratorDialog::getSelectedTargets()
+QHash<QString, QList<QSharedPointer<TargetData > > > InterconnectGeneratorDialog::getSelectedTargets()
 {
     return selectedTargets_;
 }
@@ -630,11 +630,15 @@ void InterconnectGeneratorDialog::collectTargets(
                 continue;
             }
             const QHash<QString, QSharedPointer<BusInterface>>& busLookup = instanceBusesLookup.value(instanceName);
-            QList<QSharedPointer<BusInterface>> matchedInterfaces;
+            QList<QSharedPointer<TargetData > > matchedInterfaces;
 
             for (const TargetInterfaceData& targetInterface : selectedInterfaces) {
                 if (busLookup.contains(targetInterface.name)) {
-                    matchedInterfaces.append(busLookup.value(targetInterface.name));
+                    QSharedPointer<TargetData > targetData = QSharedPointer<TargetData >(new TargetData);
+                    targetData->targetBus = busLookup.value(targetInterface.name);
+                    targetData->start = targetInterface.startValue;
+                    targetData->range = targetInterface.range;
+                    matchedInterfaces.append(targetData);
                 }
             }
             if (!matchedInterfaces.isEmpty()) {

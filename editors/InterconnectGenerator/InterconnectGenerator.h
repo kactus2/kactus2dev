@@ -37,7 +37,7 @@ public:
     VLNV generate();
 
     void generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
-        const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets);
+        const QHash<QString, QList<QSharedPointer<TargetData>>>& targets);
 
     void openDesign(VLNV designVLNV);
 
@@ -47,7 +47,7 @@ public:
 
     void processInitiatorsAndTargets(
         const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
-        const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets);
+        const QHash<QString, QList<QSharedPointer<TargetData>>>& targets);
 
     void createBusInterface(std::string busName, std::string modeString, int index);
 

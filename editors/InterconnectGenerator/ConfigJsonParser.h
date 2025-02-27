@@ -5,15 +5,18 @@
 #include <QDir>
 
 struct AddressPair {
+
     QString Start;
     QString End;
 
 };
 
 struct InitStruct {
+
     int Index;
     QString Name;
     int DataWidth;
+
 };
 
 struct TargetStruct {

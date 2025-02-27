@@ -2625,7 +2625,7 @@ void MainWindow::onInterconnectGenerate()
     if (interconnectDialog.exec() == QDialog::Accepted) {
         ConfigStruct* config = interconnectDialog.getConfig();
         QHash<QString, QList<QSharedPointer<BusInterface > > > initiators = interconnectDialog.getSelectedInitiators();
-        QHash<QString, QList<QSharedPointer<BusInterface > > > targets = interconnectDialog.getSelectedTargets();
+        QHash<QString, QList<QSharedPointer<TargetData > > > targets = interconnectDialog.getSelectedTargets();
 
         LibraryInterface* lib = KactusAPI::getLibrary();
         InterconnectGenerator interconGen = InterconnectGenerator(lib, messageChannel_);
