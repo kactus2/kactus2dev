@@ -15,14 +15,14 @@ struct InterfaceItem {
     QCheckBox* checkBox;
     QLabel* startLabel;
     QLineEdit* startEdit;
-    QLabel* endLabel;
-    QLineEdit* endEdit;
+    QLabel* rangeLabel;
+    QLineEdit* rangeEdit;
 };
 
 struct TargetInterfaceData {
     QString name;
     QString startValue; 
-    QString endValue;
+    QString range;
 };
 
 class InterfaceEnumEditor : public QFrame {

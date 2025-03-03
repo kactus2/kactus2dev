@@ -37,23 +37,23 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget) {
         itemLayout->addWidget(checkBox);
 
         QLineEdit* startEdit = nullptr;
-        QLineEdit* endEdit = nullptr;
+        QLineEdit* rangeEdit = nullptr;
         QLabel* startLabel = nullptr;
-        QLabel* endLabel = nullptr;
+        QLabel* rangeLabel = nullptr;
 
         if (isTarget) {
             startEdit = new QLineEdit();
-            endEdit = new QLineEdit();
+            rangeEdit = new QLineEdit();
 
             startLabel = new QLabel("Start:");
-            endLabel = new QLabel("End:");
+            rangeLabel = new QLabel("Range:");
 
             itemLayout->addWidget(startLabel);
             itemLayout->addWidget(startEdit);
-            itemLayout->addWidget(endLabel);
-            itemLayout->addWidget(endEdit);
+            itemLayout->addWidget(rangeLabel);
+            itemLayout->addWidget(rangeEdit);
         }
-        interfaceItems_.append({ checkBox, startLabel, startEdit, endLabel, endEdit });
+        interfaceItems_.append({ checkBox, startLabel, startEdit, rangeLabel, rangeEdit });
         scrollLayout_->addLayout(itemLayout);
     }
 }
@@ -62,9 +62,9 @@ void InterfaceEnumEditor::clearAll() {
     for (const InterfaceItem& item : interfaceItems_) {
         delete item.checkBox;
         delete item.startEdit;
-        delete item.endEdit;
+        delete item.rangeEdit;
         delete item.startLabel;
-        delete item.endLabel;
+        delete item.rangeLabel;
     }
     interfaceItems_.clear();
 }
@@ -73,7 +73,7 @@ QStringList InterfaceEnumEditor::getSelectedInitiatorInterfaces() const {
     QStringList selectedInitiators;
 
     for (const InterfaceItem& item : interfaceItems_) {
-        if (item.checkBox->isChecked() && !item.startEdit && !item.endEdit) {
+        if (item.checkBox->isChecked() && !item.startEdit && !item.rangeEdit) {
             selectedInitiators.append(item.checkBox->text());
         }
     }
@@ -84,11 +84,11 @@ QList<TargetInterfaceData> InterfaceEnumEditor::getSelectedTargetInterfaces() co
     QList<TargetInterfaceData> selectedTargets;
 
     for (const InterfaceItem& item : interfaceItems_) {
-        if (item.checkBox->isChecked() && item.startEdit && item.endEdit) {
+        if (item.checkBox->isChecked() && item.startEdit && item.rangeEdit) {
             TargetInterfaceData data;
             data.name = item.checkBox->text();
             data.startValue = item.startEdit->text();
-            data.endValue = item.endEdit->text();
+            data.range = item.rangeEdit->text();
             selectedTargets.append(data);
         }
     }

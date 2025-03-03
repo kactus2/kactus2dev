@@ -638,6 +638,7 @@ void InterconnectGeneratorDialog::collectTargets(
                     targetData->targetBus = busLookup.value(targetInterface.name);
                     targetData->start = targetInterface.startValue;
                     targetData->range = targetInterface.range;
+
                     matchedInterfaces.append(targetData);
                 }
             }

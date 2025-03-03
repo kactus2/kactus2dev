@@ -198,7 +198,7 @@ void InterconnectGenerator::processInitiatorsAndTargets(
             messager_->showMessage(QString("bus: %1, start: %2, range: %3").arg(busName, busInterfaceData->start, busInterfaceData->range));
             VLNV busVLNV = busInterface->getBusType();
 
-            prefix_ = busName.toStdString() + "_";
+            prefix_ = instanceName.toStdString() + "_" + busName.toStdString() + "_";
             std::string modeString = getInterfaceMode(busInterface, true, false);
 
             std::string newBusName = createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
@@ -225,7 +225,7 @@ void InterconnectGenerator::processInitiatorsAndTargets(
             QString busName = busInterface->name();
             VLNV busVLNV = busInterface->getBusType();
 
-            prefix_ = busName.toStdString() + "_";
+            prefix_ = instanceName.toStdString() + "_" + busName.toStdString() + "_";
             std::string modeString = getInterfaceMode(busInterface, false, false);
 
             std::string newBusName = createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
@@ -300,7 +300,8 @@ std::string InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string 
 {
     VLNV busDef = busDefVLNV_;
 
-    std::string newBusName = getUniqueBusName(prefix_ + config_->BusType.toStdString());
+    std::string newBusName = prefix_;
+    newBusName.pop_back();
 
     messager_->showMessage(QString("Creating %1 interface").arg(QString::fromStdString(newBusName)));
     busInfInterface_->addBusInterface(index, newBusName);
