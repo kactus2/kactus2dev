@@ -47,11 +47,12 @@ public:
     virtual ~SubMemoryLayout();
 
     /*!
-     *  Change the ranges of the child items.
+     *  Change the address ranges of the child items.
      *
-     *    @param [in] offset  The offset of the main item.
+     *    @param [in] previousAddress   Previous address of the memory item.
+     *    @param [in] newAddress        New address for the memory item.
      */
-    void changeChildItemRanges(quint64 offset);
+    void changeChildItemAddress(quint64 const& previousBaseAddress, quint64 const& newAddress);
 
     /*!
      *  Get the sub memory items.

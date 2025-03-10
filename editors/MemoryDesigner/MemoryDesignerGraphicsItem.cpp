@@ -114,7 +114,7 @@ void MemoryDesignerGraphicsItem::hideCollidingRangeLabels(quint64 connectionBase
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::hideStartRangeLabel()
 {
-    startRangeLabel_->hide();
+//     startRangeLabel_->hide();
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +122,7 @@ void MemoryDesignerGraphicsItem::hideStartRangeLabel()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::hideEndRangeLabel()
 {
-    endRangeLabel_->hide();
+//     endRangeLabel_->hide();
 }
 
 //-----------------------------------------------------------------------------
@@ -388,12 +388,12 @@ QSharedPointer<ConnectivityComponent const> MemoryDesignerGraphicsItem::getConta
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryDesignerGraphicsItem::changeAddressRange()
+// Function: MemoryDesignerGraphicsItem::changeAddress()
 //-----------------------------------------------------------------------------
-void MemoryDesignerGraphicsItem::changeAddressRange(quint64 offset)
+void MemoryDesignerGraphicsItem::changeAddress(quint64 const& newAddress)
 {
-    quint64 newBaseAddress = originalBaseAddress_ + offset;
-    quint64 newLastAddress = originalLastAddress_ + offset;
+    quint64 newBaseAddress = newAddress;
+    quint64 newLastAddress = newBaseAddress + originalLastAddress_ - originalBaseAddress_;
 
     setupLabels(newBaseAddress, newLastAddress);
 }

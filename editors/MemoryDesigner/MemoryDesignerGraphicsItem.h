@@ -168,9 +168,9 @@ public:
     /*!
      *  Change the address range of the memory item.
      *
-     *    @param [in] offset  The offset of the parent item.
+     *    @param [in] newAddress    New address for the memory item.
      */
-    virtual void changeAddressRange(quint64 offset);
+    virtual void changeAddress(quint64 const& newAddress);
 
     /*!
      *  Compress this item to contain the selected coordinates.

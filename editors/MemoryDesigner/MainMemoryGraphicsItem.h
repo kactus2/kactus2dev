@@ -174,9 +174,9 @@ public:
     /*!
      *  Change the address range of this item and its sub items.
      *
-     *    @param [in] offsetChange    The offset change of the item.
+     *    @param [in] newAddress    New base address for the item.
      */
-    virtual void changeAddressRange(quint64 offsetChange);
+    virtual void changeAddress(quint64 const& newAddress) override;
 
     /*!
      *  Get the lowest point of all the connected memory items.

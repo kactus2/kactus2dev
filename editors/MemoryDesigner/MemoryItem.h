@@ -283,57 +283,57 @@ public:
 
 private:
     //! The name of the memory element.
-    QString name_;
+    QString name_ = "";
 
     //! The display name of the memory element.
-    QString displayName_;
+    QString displayName_ = "";
 
     //! The type of the memory element.
-    QString type_;
+    QString type_ = "";
 
     //! The identifier for the memory.
-    QString identifier_;
+    QString identifier_ = "";
 
     //! The number of addressable unit bits in the memory.
-    QString aub_;
+    QString aub_ = "";
 
     //! The address for the memory.
-    QString address_;
+    QString address_ = "";
 
     //! The range for the memory.
-    QString range_;
+    QString range_ = "";
 
     //! The bit width for the memory.
-    QString width_;
+    QString width_ = "";
 
     //! The size of the memory.
-    QString size_;
+    QString size_ = "";
 
     //! The offset of the memory.
-    QString offset_;
+    QString offset_ = "";
 
-    QString value_;
+    QString value_ = "";
 
     //! The dimension for the memory.
-    QString dimension_;
+    QString dimension_ = "";
 
     //! The usage value of the memory item.
     General::Usage usage_{ General::USAGE_COUNT };
 
     //! Reset value of the memory item.
-    QString resetValue_;
+    QString resetValue_ = "";
 
     //! Reset mask of the memory item.
-    QString resetMask_;
+    QString resetMask_ = "";
 
     //! Presence of the memory item.
     QString isPresent_{ "1" };
 
     //! The initiator reference.
-    QString initiatorReference_;
+    QString initiatorReference_ = "";
 
     //! The segment reference.
-    QString segmentReference_;
+    QString segmentReference_ = "";
 
     //! The sub-elements of the memory.
     QVector<QSharedPointer<MemoryItem> > childItems_;

@@ -337,13 +337,13 @@ void MainMemoryGraphicsItem::compressToUnCutCoordinates(QVector<qreal> unCutCoor
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::changeAddressRange()
+// Function: MainMemoryGraphicsItem::changeAddress()
 //-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::changeAddressRange(quint64 offsetChange)
+void MainMemoryGraphicsItem::changeAddress(quint64 const& newAddress)
 {
-    MemoryDesignerGraphicsItem::changeAddressRange(offsetChange);
+    SubMemoryLayout::changeChildItemAddress(getBaseAddress(), newAddress);
 
-    SubMemoryLayout::changeChildItemRanges(offsetChange);
+    MemoryDesignerGraphicsItem::changeAddress(newAddress);
 }
 
 //-----------------------------------------------------------------------------

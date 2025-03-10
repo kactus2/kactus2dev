@@ -64,9 +64,9 @@ public:
     /*!
      *  Change the address block ranges.
      *
-     *    @param [in] offset  The new offset of the memory map.
+     *    @param [in] newAddress    New address for the address block.
      */
-    virtual void changeAddressRange(quint64 memoryMapOffset);
+    virtual void changeAddress(quint64 const& newAddress) override;
 
     /*!
      *  Add a memory connection to address block item and to the correct sub items.

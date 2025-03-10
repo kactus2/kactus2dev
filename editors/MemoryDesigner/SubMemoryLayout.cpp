@@ -152,18 +152,44 @@ void SubMemoryLayout::positionNewSubItem(qreal const& subItemXPosition, quint64 
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubMemoryLayout::changeChildItemRanges()
+// Function: SubMemoryLayout::changeChildItemAddress()
 //-----------------------------------------------------------------------------
-void SubMemoryLayout::changeChildItemRanges(quint64 offset)
+void SubMemoryLayout::changeChildItemAddress(quint64 const& previousBaseAddress, quint64 const& newAddress)
 {
-    QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subMemoryIterator(subMemoryItems_);
+    bool subtractFromPreviousAddress = true;
+    quint64 difference = 0;
+    if (newAddress < previousBaseAddress)
+    {
+        difference = previousBaseAddress - newAddress;
+    }
+    else
+    {
+        difference = newAddress - previousBaseAddress;
+        subtractFromPreviousAddress = false;
+    }
 
-    while(subMemoryIterator.hasNext())
+    QMultiMap<quint64, MemoryDesignerChildGraphicsItem*> newSubItems;
+
+    QMultiMapIterator subMemoryIterator(subMemoryItems_);
+    while (subMemoryIterator.hasNext())
     {
         subMemoryIterator.next();
 
-        subMemoryIterator.value()->changeAddressRange(offset);
+        quint64 newItemBaseAddress = 0;
+        if (subtractFromPreviousAddress)
+        {
+            newItemBaseAddress = subMemoryIterator.key() - difference;
+        }
+        else
+        {
+            newItemBaseAddress = subMemoryIterator.key() + difference;
+        }
+
+        subMemoryIterator.value()->changeAddress(newItemBaseAddress);
+        newSubItems.insertMulti(newItemBaseAddress, subMemoryIterator.value());
     }
+
+    subMemoryItems_ = newSubItems;
 }
 
 //-----------------------------------------------------------------------------

@@ -50,7 +50,7 @@ filterFields_(filterFields)
 //-----------------------------------------------------------------------------
 quint64 RegisterGraphicsItem::getRegisterEnd(unsigned int addressUnitBits, quint64 registerSize) const
 {
-    quint64 registerEnd = registerSize / addressUnitBits;
+    quint64 registerEnd = qMax(registerSize / addressUnitBits , qulonglong(1));
     return registerEnd;
 }
 

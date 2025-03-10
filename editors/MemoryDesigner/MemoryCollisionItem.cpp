@@ -42,7 +42,7 @@ secondRangeEnd_(secondItem->getRangeEndValue())
 
     setCollisionBrush();
 
-    setLabels();
+//     setLabels();
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +171,7 @@ void MemoryCollisionItem::reDrawCollision()
         delete childItem;
     }
 
-    setLabels();
+//     setLabels();
 }
 
 //-----------------------------------------------------------------------------

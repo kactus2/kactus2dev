@@ -132,13 +132,13 @@ MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createEmptySubItem(qu
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockGraphicsItem::changeAddressRange()
+// Function: AddressBlockGraphicsItem::changeAddress()
 //-----------------------------------------------------------------------------
-void AddressBlockGraphicsItem::changeAddressRange(quint64 memoryMapOffset)
+void AddressBlockGraphicsItem::changeAddress(quint64 const& newAddress)
 {
-    MemoryDesignerChildGraphicsItem::changeAddressRange(memoryMapOffset);
+    SubMemoryLayout::changeChildItemAddress(getBaseAddress(), newAddress);
 
-    SubMemoryLayout::changeChildItemRanges(memoryMapOffset);
+    MemoryDesignerChildGraphicsItem::changeAddress(newAddress);
 }
 
 //-----------------------------------------------------------------------------

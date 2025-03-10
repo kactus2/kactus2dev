@@ -19,7 +19,7 @@ name_(name),
 baseAddress_(),
 remapAddress_(),
 instance_(),
-memory_(),
+memory_(nullptr),
 hierarchical_(false),
 bridged_(false),
 childInterfaceNodes_()

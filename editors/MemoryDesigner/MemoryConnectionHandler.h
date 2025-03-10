@@ -112,7 +112,7 @@ private:
      *
      *    @return A list of combined path sets.
      */
-    QVector<QSharedPointer<QVector<Path> > > findPathSets(QVector<Path> masterSlavePaths) const;
+    QVector<QSharedPointer<QVector<Path> > > findPathSets(QVector<Path> const& masterSlavePaths) const;
 
     /*!
      *  Find the indexes of the path sets that the selected path belongs to.
@@ -122,8 +122,8 @@ private:
      *
      *    @return List of path set indexes.
      */
-    QQueue<int> findPathSetIndexes(Path currentPath,
-        QVector<QSharedPointer<QVector<Path> > > pathSets) const;
+    QQueue<int> findPathSetIndexes(Path const& currentPath,
+        QVector<QSharedPointer<QVector<Path> > > const& pathSets) const;
 
     /*!
      *  Check if an interface of the selected path is contained with the selected path set.
@@ -133,7 +133,7 @@ private:
      *
      *    @return True, if an interface is contained within the path set, false otherwise.
      */
-    bool pathIsContainedWithPathSet(Path currentPath, QSharedPointer<QVector<Path> > pathSet) const;
+    bool pathIsContainedWithPathSet(Path const& currentPath, QSharedPointer<QVector<Path> > pathSet) const;
 
     /*!
      *  Check if the selected interface is contained within the selected path.
@@ -144,7 +144,7 @@ private:
      *    @return True, if the interface is contained within the path, false otherwise.
      */
     bool interfacedItemIsWithinPath(QSharedPointer<const ConnectivityInterface> pathInterface,
-        MemoryConnectionHandler::Path comparisonPath) const;
+        Path const& comparisonPath) const;
 
     /*!
      *  Create a combined connection set from the selected path set.
@@ -154,7 +154,6 @@ private:
      *    @param [in] memoryMapColumn     The memory map column.
      *    @param [in] spaceYPlacement     Placement of the top item in the connection set.
      *    @param [in] placedSpaceItems    List of already placed address space items.
-     *    @param [in] spaceColumn         The address space column.
      *
      *    @return List of the created memory connections.
      */
@@ -162,24 +161,95 @@ private:
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
         MemoryColumn* memoryMapColumn,
         qreal& spaceYPlacement,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        MemoryColumn* spaceColumn);
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
 
     /*!
-     *  Create a connection from the set.
+     *  Create a connection displaying only the start and end items.
      *
      *    @param [in] connectionPath      The connection path.
      *    @param [in] placedMapItems      List of the already placed memory maps.
      *    @param [in] memoryMapColumn     The memory map column.
      *    @param [in] placedSpaceItems    List of the already placed address spaces.
-     *    @param [in] spaceColumn         The address space column.
      */
-    void createConnectionFromSet(Path const& connectionPath,
+    void createOnlyEndsConnection(Path const& connectionPath,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
         MemoryColumn* memoryMapColumn,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        MemoryColumn* spaceColumn,
-        qreal initialPlacementOffset);
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
+
+    /*!
+     *  Create a connection displaying the full connection.
+     *
+     *    @param [in] connectionPath      The connection path.
+     *    @param [in] placedMapItems      List of the already placed memory maps.
+     *    @param [in] memoryMapColumn     The memory map column.
+     *    @param [in] placedSpaceItems    List of the already placed address spaces.
+     */
+    void createFullConnection(Path const& connectionPath,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
+        MemoryColumn* memoryMapColumn,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
+
+    /*!
+     *  Create connection to a local memory map.
+     *
+     *    @param [in] localSpace            The space whose local memory map is being connected to.
+     *    @param [in] localMapInterface     Interface of the local memory map.
+     *    @param [in] placedMapItems        List of placed memory map items.
+     *    @param [in] mapColumn             The column for memory maps.
+     *
+     *    @return 
+     */
+    void createFullConnectionToLocalMap(MainMemoryGraphicsItem* localSpace,
+        QSharedPointer<const ConnectivityInterface> localMapInterface,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
+        MemoryColumn* mapColumn);
+
+    /*!
+     *  Create a connection to an address space item.
+     *
+     *    @param [in] spaceItem                 The connected address space item.
+     *    @param [in] previousItem              The item that is being connected to the address space item.
+     *    @param [in] calculatedBaseAddress     Base address of the connection.
+     *    @param [in] calculatedEndAddress      End address of the connection.
+     *    @param [in] yTransfer                 Value for moving the connection relative to the previous item.
+     *    @param [in] placedSpaceItems          List of placed address space items.
+     */
+    void createFullConnectionToSpace(MainMemoryGraphicsItem* spaceItem,
+        MainMemoryGraphicsItem* previousItem,
+        quint64 const& calculatedBaseAddress,
+        quint64 const& calculatedEndAddress,
+        qreal const& yTransfer,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
+
+    /*!
+     *  Create a connection to a memory map item.
+     *
+     *    @param [in] mapItem                   The connected memory map item.
+     *    @param [in] previousItem              The item that is being connected to the memory map item.
+     *    @param [in] calculatedBaseAddress     Calculated base address of the memory item.
+     *    @param [in] connectionBaseAddress     Base address of the connection.
+     *    @param [in] connectionEndAddress      End address of the connection.
+     *    @param [in] connectionTransfer        Value for moving the connection relative to the previous item.
+     *    @param [in] mapColumn                 Column for memory maps.
+     *    @param [in] placedMapItems            List of placed memory map items.
+     */
+    void createFullConnectionToMemoryMap(MainMemoryGraphicsItem* mapItem,
+        MainMemoryGraphicsItem* previousItem,
+        quint64 const& calculatedBaseAddress,
+        quint64 const& connectionBaseAddress,
+        quint64 const& connectionEndAddress,
+        qreal const& connectionTransfer,
+        MemoryColumn* mapColumn,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems);
+
+    /*!
+     *  Get the memory graphics item corresponding to an interface.
+     *
+     *    @param [in] pathInterface     The selected interface.
+     *
+     *    @return Memory graphics item of the selected interface.
+     */
+    MainMemoryGraphicsItem* getPathGraphicsItem(QSharedPointer<const ConnectivityInterface> pathInterface) const;
 
     /*!
      *  Get the main graphics item corresponding to the selected connection interface.
@@ -190,17 +260,16 @@ private:
      *    @return The found main graphics item.
      */
     MainMemoryGraphicsItem* getMainGraphicsItem(QSharedPointer<ConnectivityInterface const> connectionInterface,
-        QString columnType) const;
+        QString const& columnType) const;
 
     /*!
-     *  Get the starting interface that references an address space for the connection path.
+     *  Get the first initiator interface connected to an address space for the selected connection path.
      *
-     *    @param [in] connectionPath  The selected connection path.
+     *    @param [in] connectionPath    The selected connection path.
      *
-     *    @return The starting interface for the connection.
+     *    @return The first initiator interface for the selected connection path.
      */
-    QSharedPointer<ConnectivityInterface const> getStartInterface(
-        QVector<QSharedPointer<ConnectivityInterface const> > connectionPath);
+    QSharedPointer<ConnectivityInterface const> getFirstInitiatorInterface(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath) const;
 
     /*!
      *  Get the end item for the memory connection.
@@ -223,37 +292,22 @@ private:
     MainMemoryGraphicsItem* getLocalMemoryMapItem(QSharedPointer<ConnectivityInterface const> spaceInterface) const;
 
     /*!
-     *  Get the initial transfer in y-coordinate for the memory connection.
-     *
-     *    @param [in] baseAddressNumber                   Base address of the memory connection.
-     *    @param [in] mirroredSlaveAddressChange          Address change caused by the mirrored slave interfaces.
-     *    @param [in] hasRemapRange                       Flag for remapped connection range.
-     *    @param [in] memoryMapBaseAddress                Base address of the connected memory map item.
-     *    @param [in] spaceChainConnectionBaseAddress     Base address modified caused by the bridged interfaces.
-     *
-     *    @return The initial transfer value for the memory connection item.
-     */
-    qreal getConnectionInitialTransferY(quint64 baseAddressNumber,
-        quint64 mirroredSlaveAddressChange,
-        bool hasRemapRange,
-        quint64 memoryMapBaseAddress,
-        quint64 spaceChainConnectionBaseAddress) const;
-
-    /*!
      *  Place the memory map item.
      *	
-     *    @param [in] mapItem         The connected memory map item.
-     *    @param [in] startItem       The connection starting item.
-     *    @param [in] yTransfer       The initial position of the connection from the starting memory item.
-     *    @param [in] pathVariables   The calculated variables for the connection.
-     *    @param [in] placedMapItems  List of the placed memory map items.
-     *    @param [in] mapColumn       The memory map column.
+     *    @param [in] mapItem               The connected memory map item.
+     *    @param [in] startItem             The connection starting item.
+     *    @param [in] yTransfer             The initial position of the connection from the starting memory item.
+     *    @param [in] placedMapItems        List of the placed memory map items.
+     *    @param [in] remappedBaseAddress   Calculated base address of the memory map.
+     *    @param [in] remappedEndAddress    Calculated end address of the memory map.
+     *    @param [in] mapColumn             The memory map column.
      */
     void placeMemoryMap(MainMemoryGraphicsItem* mapItem,
         MainMemoryGraphicsItem* startItem,
-        qreal yTransfer,
-        MemoryConnectionAddressCalculator::ConnectionPathVariables const& pathVariables,
+        qreal const& yTransfer,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
+        quint64 const& remappedBaseAddress,
+        quint64 const& remappedEndAddress,
         MemoryColumn* mapColumn);
 
     /*!
@@ -304,30 +358,22 @@ private:
      *    @param [in] endItem                 The end item of the connection.
      *    @param [in] remappedAddress         Base address for the connection.
      *    @param [in] remappedEndAddress      End address for the connection.
-     *    @param [in] memoryMapBaseAddress    Base address of the connected memory map.
-     *    @param [in] hasRemapRange           Flag for the remap range.
      *    @param [in] yTransfer               Position of the connection relative to the starting item.
      */
     void createConnectionItem(MainMemoryGraphicsItem* startItem,
         MainMemoryGraphicsItem* endItem,
-        quint64 remappedAddress,
-        quint64 remappedEndAddress,
-        quint64 memoryMapBaseAddress,
-        bool hasRemapRange,
-        qreal yTransfer);
+        quint64 const& remappedAddress,
+        quint64 const& remappedEndAddress,
+        qreal const& yTransfer);
 
     /*!
      *  Change the address range of the selected memory graphics item.
      *
      *    @param [in] connectionEndItem       The selected memory graphics item.
      *    @param [in] remappedAddress         Remapped address of the memory connection.
-     *    @param [in] memoryMapBaseAddress    Base address of the memory graphics item.
-     *    @param [in] hasRemappedRange        Value for connections through mirrored slaves.
      */
     void changeConnectionEndItemRanges(MainMemoryGraphicsItem* connectionEndItem,
-        quint64 remappedAddress,
-        quint64 memoryMapBaseAddress,
-        bool hasRemappedRange) const;
+        quint64 const& remappedAddress) const;
 
     /*!
      *  Get the memory item in the highest position of the set.

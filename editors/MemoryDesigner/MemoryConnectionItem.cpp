@@ -356,8 +356,44 @@ void MemoryConnectionItem::createCollisionPath(QPointF highStartPoint, QPointF h
     }
     else
     {
+        QMultiMap<qreal, QPair<QPointF, QPointF> > newHighCollisions;
+        QMultiMapIterator highCollisionIterator(highCollisionPoints);
+        while (highCollisionIterator.hasNext())
+        {
+            highCollisionIterator.next();
+
+            QPointF newCollisionStartPoint = highCollisionIterator.value().first;
+            newCollisionStartPoint.setY(newCollisionStartPoint.y() + BRIDGEMODIFIER_);
+            QPointF newCollisionEndPoint = highCollisionIterator.value().second;
+            newCollisionEndPoint.setY(newCollisionEndPoint.y() + BRIDGEMODIFIER_);
+
+            QPair<QPointF, QPointF> collisionPoints;
+            collisionPoints.first = newCollisionStartPoint;
+            collisionPoints.second = newCollisionEndPoint;
+
+            newHighCollisions.insert(highCollisionIterator.key(), collisionPoints);
+        }
+
+        QMultiMap<qreal, QPair<QPointF, QPointF> > newLowCollisions;
+        QMultiMapIterator lowCollisionIterator(lowCollisionPoints);
+        while (lowCollisionIterator.hasNext())
+        {
+            lowCollisionIterator.next();
+
+            QPointF newCollisionStartPoint = lowCollisionIterator.value().first;
+            newCollisionStartPoint.setY(newCollisionStartPoint.y() - BRIDGEMODIFIER_);
+            QPointF newCollisionEndPoint = lowCollisionIterator.value().second;
+            newCollisionEndPoint.setY(newCollisionEndPoint.y() - BRIDGEMODIFIER_);
+
+            QPair<QPointF, QPointF> collisionPoints;
+            collisionPoints.first = newCollisionStartPoint;
+            collisionPoints.second = newCollisionEndPoint;
+
+            newLowCollisions.insert(lowCollisionIterator.key(), collisionPoints);
+        }
+
         collisionPath = createCollidingPathForUnusualConnection(isLocalMapConnection(), highStartPoint, highEndPoint,
-            lowStartPoint, lowEndPoint, highCollisionPoints, lowCollisionPoints);
+            lowStartPoint, lowEndPoint, newHighCollisions, newLowCollisions);
     }
 
     setPath(collisionPath);
@@ -377,9 +413,9 @@ QPainterPath MemoryConnectionItem::createCollidingPathForUnusualConnection(bool 
     qreal bridgeLowLineY = lowStartPoint.y();
     qreal bridgeHighY = highStartPoint.y() + BRIDGEMODIFIER_;
     qreal bridgeLowY = lowStartPoint.y() - BRIDGEMODIFIER_;
-    qreal bridgeStartX = highStartPoint.x() + BRIDGEMODIFIER_;
+    qreal bridgeStartX = highStartPoint.x() + firstItemStartLabel_->boundingRect().width();
     qreal bridgeFirstPillarX = bridgeStartX + BRIDGEMODIFIER_;
-    qreal bridgeEndX = highEndPoint.x() - BRIDGEMODIFIER_;
+    qreal bridgeEndX = highEndPoint.x() - secondItemStartLabel_->boundingRect().width();
     qreal bridgeLastPillarX = bridgeEndX - BRIDGEMODIFIER_;
 
     QPointF highCollisionStartPoint (bridgeFirstPillarX, bridgeHighY);
@@ -476,7 +512,7 @@ QPainterPath MemoryConnectionItem::eraseCollisionsFromPath(QPainterPath collisio
 void MemoryConnectionItem::repositionLabels()
 {
     QFont labelFont = firstItemStartLabel_->font();
-    labelFont.setWeight(QFont::Bold);
+//     labelFont.setWeight(QFont::Bold);
 
     firstItemStartLabel_->setFont(labelFont);
     firstItemEndLabel_->setFont(labelFont);
@@ -490,14 +526,11 @@ void MemoryConnectionItem::repositionLabels()
     QPointF lowerLeft = connectionRect.bottomLeft();
     QPointF lowerRight = connectionRect.bottomRight();
 
-    const int YCORRECTION = 20;
+    firstItemStartLabel_->setPos(topLeft);
+    firstItemEndLabel_->setPos(lowerLeft.x(), lowerLeft.y() - firstItemEndLabel_->boundingRect().height());
 
-    firstItemStartLabel_->setPos(topLeft.x() - firstItemStartLabel_->boundingRect().width(), topLeft.y());
-    firstItemEndLabel_->setPos(
-        lowerLeft.x() - firstItemStartLabel_->boundingRect().width(), lowerLeft.y() - YCORRECTION);
-
-    secondItemStartLabel_->setPos(topRight);
-    secondItemEndLabel_->setPos(lowerRight.x(), lowerRight.y() - YCORRECTION);
+    secondItemStartLabel_->setPos(topRight.x() - secondItemStartLabel_->boundingRect().width(), topRight.y());
+    secondItemEndLabel_->setPos(lowerRight.x() - secondItemStartLabel_->boundingRect().width(), lowerRight.y() - secondItemEndLabel_->boundingRect().height());
 }
 
 //-----------------------------------------------------------------------------
