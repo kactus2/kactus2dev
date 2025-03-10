@@ -10,6 +10,7 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Component/TransparentBridge.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
 
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
@@ -67,7 +68,7 @@ private:
 
     std::string getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool useChannel);
 
-    std::string getUniqueBusName(std::string newBusName);
+    void createAddressSpace(std::string busName, QString range, QString width = "32");
 
     //! Message handler.
     MessageMediator* messager_{ nullptr };

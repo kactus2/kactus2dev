@@ -50,6 +50,8 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
 
     getBusesFromInstances();
     getBusesFromTopComponent();
+    filterValidAbstractionReferences();
+
     setUpLayout();
 }
 
@@ -125,6 +127,42 @@ void InterconnectGeneratorDialog::getBusesFromTopComponent()
         instanceBusesHash_[name].insert(bus);
         getAbstractionDefinitions(bus, false);
     }
+}
+
+void InterconnectGeneratorDialog::filterValidAbstractionReferences()
+{
+    QSet<QSharedPointer<ConfigurableVLNVReference>> validAbsRefs;
+    for (const QSharedPointer<ConfigurableVLNVReference>& absRef : absRefs_) {
+        bool hasInitiator = false;
+        bool hasTarget = false;
+
+        for (auto it = instanceBusesHash_.begin(); it != instanceBusesHash_.end(); ++it) {
+            const QSet<QSharedPointer<BusInterface>>& busSet = it.value();
+
+            for (const QSharedPointer<BusInterface>& bus : busSet) {
+                // Check if this bus is associated with the current abstraction reference
+                if (interfaceAbsDefsHash_.contains(bus) && interfaceAbsDefsHash_.value(bus).contains(absRef->getName())) {
+                    General::InterfaceMode mode = bus->getInterfaceMode();
+
+                    if (initiatorModes_.contains(mode)) {
+                        hasInitiator = true;
+                    }
+                    if (targetModes_.contains(mode)) {
+                        hasTarget = true;
+                    }
+                }
+                // If both conditions are met, we can stop early
+                if (hasInitiator && hasTarget) {
+                    validAbsRefs.insert(absRef);
+                    break;
+                }
+            }
+            if (hasInitiator && hasTarget) {
+                break;
+            }
+        }
+    }
+    absRefs_ = validAbsRefs;
 }
 
 void InterconnectGeneratorDialog::populateParameters()

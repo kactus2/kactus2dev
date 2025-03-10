@@ -194,14 +194,18 @@ void InterconnectGenerator::processInitiatorsAndTargets(
 
         for (const QSharedPointer<TargetData>& busInterfaceData : busInterfaceDatas) {
             QSharedPointer<BusInterface> busInterface = busInterfaceData->targetBus;
+            QString start = busInterfaceData->start;
+            QString range = busInterfaceData->range;
+
             QString busName = busInterface->name();
-            messager_->showMessage(QString("bus: %1, start: %2, range: %3").arg(busName, busInterfaceData->start, busInterfaceData->range));
             VLNV busVLNV = busInterface->getBusType();
 
             prefix_ = instanceName.toStdString() + "_" + busName.toStdString() + "_";
             std::string modeString = getInterfaceMode(busInterface, true, false);
 
             std::string newBusName = createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
+            createAddressSpace(newBusName, range);
+
             connectionInterface_->addInterconnection(
                 instanceName.toStdString(), busName.toStdString(), 
                 interconComponent_->getVlnv().getName().toStdString(), newBusName);
@@ -334,17 +338,13 @@ std::string InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string 
     return newBusName;
 }
 
-std::string InterconnectGenerator::getUniqueBusName(std::string newBusName)
+void InterconnectGenerator::createAddressSpace(std::string busName, QString range, QString width)
 {
-    int appendix = 0;
-    std::vector<std::string> names = busInfInterface_->getItemNames();
-    std::string uniqueName = newBusName;
+    QSharedPointer<AddressSpace> addrSpace = QSharedPointer<AddressSpace>(
+        new AddressSpace(QString::fromStdString(busName + "_space"), range, width));
 
-    while (std::find(names.begin(), names.end(), uniqueName) != names.end()) {
-        appendix++;
-        uniqueName = newBusName + "_" + std::to_string(appendix);
-    }
-    return uniqueName;
+    interconComponent_->getAddressSpaces()->append(addrSpace);
+    busInfInterface_->setAddressSpaceReference(busName, addrSpace->name().toStdString());
 }
 
 void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)

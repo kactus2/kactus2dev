@@ -69,6 +69,7 @@ protected:
 private:
     void getBusesFromInstances();
     void getBusesFromTopComponent();
+    void filterValidAbstractionReferences();
     void getAbstractionDefinitions(QSharedPointer<BusInterface> bus, bool fromInstance = true);
     void addNewInitiator();
     void addNewTarget();
