@@ -370,10 +370,10 @@ QVector<QSharedPointer<RenodeCpuRoutesContainer> > RenodeUtilities::getRenodeCpu
 
                     if (interfaceMemory && interfaceMemory->getType().compare(MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
                     {
-                        MemoryConnectionAddressCalculator::ConnectionPathVariables pathAddresses =
+                        MemoryConnectionAddressCalculator::CalculatedPathAddresses pathAddresses =
                             MemoryConnectionAddressCalculator::calculatePathAddresses(cpuInterface, routeInterface, masterSlaveRoute);
 
-                        quint64 memoryBaseAddress = pathAddresses.remappedAddress_;
+                        quint64 memoryBaseAddress = pathAddresses.connectionBaseAddress_;
 
                         QVector<QPair<General::Usage, QVector<QSharedPointer<MemoryItem> > > > subItemBlocks;
 

@@ -91,9 +91,9 @@ std::string PythonAPI::getVersion() const
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::getLibraryPaths()
 //-----------------------------------------------------------------------------
-std::vector<std::string> PythonAPI::getLibraryPaths() const
+std::vector<std::string> PythonAPI::getAllLibraryPaths() const
 {
-    QStringList locations = KactusAPI::getLibraryPaths();
+    QStringList locations = KactusAPI::getAllLibraryPaths();
 
     std::vector<std::string> paths;
     for (auto const& path : locations)
@@ -101,6 +101,49 @@ std::vector<std::string> PythonAPI::getLibraryPaths() const
         paths.push_back(path.toStdString());
     }
   
+    return paths;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setLibraryPathActive()
+//-----------------------------------------------------------------------------
+void PythonAPI::setLibraryPathActive(std::string const& path, bool isActive)
+{
+    KactusAPI::setLibraryPathActive(QString::fromStdString(path), isActive);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::addLibraryPath()
+//-----------------------------------------------------------------------------
+void PythonAPI::addLibraryPath(std::string const& path, bool isActive /*= true*/)
+{
+    KactusAPI::addLibraryPath(QString::fromStdString(path), isActive);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeLibraryPath()
+//-----------------------------------------------------------------------------
+void PythonAPI::removeLibraryPath(std::string const& path)
+{
+    if (KactusAPI::removeLibraryPath(QString::fromStdString(path)) == false)
+    {
+        messager_->showError(QStringLiteral("Error: Cannot remove default library path"));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getActiveLibraryPaths()
+//-----------------------------------------------------------------------------
+std::vector<std::string> PythonAPI::getActiveLibraryPaths() const
+{
+    QStringList locations = KactusAPI::getActiveLibraryPaths();
+
+    std::vector<std::string> paths;
+    for (auto const& path : locations)
+    {
+        paths.push_back(path.toStdString());
+    }
+
     return paths;
 }
 
@@ -147,15 +190,13 @@ BusInterfaceInterface* PythonAPI::getBusInterface()
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::setLibraryPaths()
 //-----------------------------------------------------------------------------
-void PythonAPI::setLibraryPaths(std::vector<std::string> paths) const
+void PythonAPI::setLibraryPaths(std::vector<std::string> const& paths) const
 {
     QStringList libraryPaths;
     for (auto const& path : paths)
     {
-
         libraryPaths.append(QString::fromStdString(path));
     }
-
 
     KactusAPI::setLibraryPaths(libraryPaths);
 }
@@ -291,7 +332,7 @@ bool PythonAPI::vlnvExistsInLibrary(std::string const& vendor, std::string const
 // Function: PythonAPI::createComponent()
 //-----------------------------------------------------------------------------
 bool PythonAPI::createComponent(std::string const& vendor, std::string const& library, std::string const& name,
-    std::string const& version)
+    std::string const& version, StdRev revision /*= StdRev::Std22*/)
 {
     if (vendor.empty() || library.empty() || name.empty() || version.empty())
     {
@@ -311,7 +352,10 @@ bool PythonAPI::createComponent(std::string const& vendor, std::string const& li
         return false;
     }
 
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(newComponentVLNV, Document::Revision::Std14));
+    Document::Revision docRevision = revision == PythonAPI::StdRev::Std22 
+        ? Document::Revision::Std22 : Document::Revision::Std14;
+
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(newComponentVLNV, docRevision));
 
     component->setHierarchy(KactusAttribute::FLAT);
     component->setFirmness(KactusAttribute::MUTABLE);
@@ -474,6 +518,19 @@ std::string PythonAPI::getComponentDescription() const
     {
         return std::string();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getComponentStdRevision()
+//-----------------------------------------------------------------------------
+std::string PythonAPI::getComponentStdRevision() const
+{
+    if (activeComponent_)
+    {
+        return Document::toStdString(activeComponent_->getRevision());
+    }
+
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -840,7 +897,7 @@ void PythonAPI::setFileBuildersForInterface(std::string const& setName)
 // Function: PythonAPI::createDesign()
 //-----------------------------------------------------------------------------
 bool PythonAPI::createDesign(std::string const& vendor, std::string const& library, 
-    std::string const& name, std::string const& version)
+    std::string const& name, std::string const& version, StdRev revision /*= StdRev::Std22*/)
 {
     if (vendor.empty() || library.empty() || name.empty() || version.empty())
     {
@@ -854,7 +911,7 @@ bool PythonAPI::createDesign(std::string const& vendor, std::string const& libra
         QString::fromStdString(name),
         QString::fromStdString(version));
 
-    if (createComponent(vendor, library, name, version) == false)
+    if (createComponent(vendor, library, name, version, revision) == false)
     {
         messager_->showError("Error in creating containing component.");
         return false;
@@ -904,6 +961,19 @@ bool PythonAPI::createDesign(std::string const& vendor, std::string const& libra
     openDesign(designVLNV.toString().toStdString());
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getDesignStdRevision()
+//-----------------------------------------------------------------------------
+std::string PythonAPI::getDesignStdRevision() const
+{
+    if (activeDesign_)
+    {
+        return Document::toStdString(activeDesign_->getRevision());
+    }
+
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
