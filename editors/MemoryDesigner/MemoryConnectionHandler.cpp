@@ -363,7 +363,7 @@ void MemoryConnectionHandler::createFullConnection(Path const& connectionPath,
     //! The current base address of the memory connection.
     quint64 currentBaseAddress = startingInitiator->getBaseAddress().toULongLong();
     //! The base address of the memory connection relative to the previously connected item.
-    quint64 connectionBaseAddress = 0;
+    quint64 connectionBaseAddress = currentBaseAddress;
 
     QString remapValue("");
     QString remapRange("");
