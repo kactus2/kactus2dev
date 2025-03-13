@@ -420,9 +420,6 @@ void FileDependencyEditor::setupToolbar()
     addFilterButton(QIcon(":/icons/common/graphics/traffic-light_yellow.png"), 
         tr("Show Changed Files (Only Contents Changed)"),
         FileDependencyGraphView::FILTER_YELLOW);
-    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_red.png"), 
-        tr("Show Changed Files (Dependencies Changed)"),
-        FileDependencyGraphView::FILTER_RED);
     addFilterButton(QIcon(":/icons/common/graphics/dependency_twoway.png"),
         tr("Show Bidirectional Dependencies"),
         FileDependencyGraphView::FILTER_TWO_WAY);

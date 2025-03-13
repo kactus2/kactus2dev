@@ -822,6 +822,13 @@ void ComponentReader::parseFileDependencies(QDomNode const& fileNode, QSharedPoi
     for (int dependencyIndex = 0; dependencyIndex < dependencyNodeList.count(); ++dependencyIndex)
     {
         QDomElement dependencyElement = dependencyNodeList.at(dependencyIndex).toElement();
+        bool manual = dependencyElement.attribute(QStringLiteral("manual")) == QLatin1String("true");
+
+        // Parse only manually added dependencies
+        if (!manual)
+        {
+            continue;
+        }
 
         QString file1 = dependencyElement.firstChildElement(QStringLiteral("kactus2:fileRef1")).firstChild().nodeValue();
         QString file2 = dependencyElement.firstChildElement(QStringLiteral("kactus2:fileRef2")).firstChild().nodeValue();
@@ -829,7 +836,6 @@ void ComponentReader::parseFileDependencies(QDomNode const& fileNode, QSharedPoi
 
         bool locked = dependencyElement.attribute(QStringLiteral("locked")) == QLatin1String("true");
         bool biDirectional = dependencyElement.attribute(QStringLiteral("bidirectional")) == QLatin1String("true");
-        bool manual = dependencyElement.attribute(QStringLiteral("manual")) == QLatin1String("true");
 
         QSharedPointer<FileDependency> newDependency (new FileDependency());
         newDependency->setFile1(file1);

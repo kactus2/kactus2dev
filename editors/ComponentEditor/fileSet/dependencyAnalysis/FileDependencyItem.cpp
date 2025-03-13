@@ -212,14 +212,9 @@ void FileDependencyItem::updateStatus()
 {
     status_ = FILE_DEPENDENCY_STATUS_OK;
 
-    foreach (FileDependencyItem* item, children_)
+    for (FileDependencyItem* item : children_)
     {
-        if (item->getStatus() == FILE_DEPENDENCY_STATUS_CHANGED2)
-        {
-            status_ = FILE_DEPENDENCY_STATUS_CHANGED2;
-        }
-
-        else if (item->getStatus() == FILE_DEPENDENCY_STATUS_CHANGED)
+        if (item->getStatus() == FILE_DEPENDENCY_STATUS_CHANGED)
         {
             if (status_ == FILE_DEPENDENCY_STATUS_OK)
             {

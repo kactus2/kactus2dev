@@ -266,10 +266,6 @@ QVariant FileDependencyModel::data(QModelIndex const& index, int role) const
             {
                 return QIcon(":icons/common/graphics/traffic-light_yellow.png");
             }
-            else if (item->getStatus() == FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED2)
-            {
-                return QIcon(":icons/common/graphics/traffic-light_red.png");
-            }
         }
     }
     else if (role == Qt::SizeHintRole && index.column() == FileDependencyColumns::STATUS)
@@ -379,7 +375,7 @@ void FileDependencyModel::startAnalysis()
     progressValue_ = 0;
     emit analysisProgressChanged(progressValue_ + 1);
 
-    // Start the analysis timer.
+    // Start the analysis timer. Timer is used to scan files one at a time and allow user to cancel analysis.
     timer_ = new QTimer(this);
     connect(timer_, SIGNAL(timeout()), this, SLOT(performAnalysisStep()));
     timer_->start();
@@ -655,136 +651,78 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
     {
         currentHash = plugin->calculateHash(absPath);
 
-        // If the hash has changed, resolve the new dependencies.
-        if (currentHash != lastHash)
+        QList<FileDependency*> oldDependencies = findDependencies(fileItem->getPath());
+
+        // Scan the current dependencies.
+        QList<FileDependencyDesc> analyzedDependencies = plugin->getFileDependencies(component_.data(), 
+            basePath_, absPath);
+
+        QString file1 = fileItem->getPath();
+
+        // Go through all current dependencies.
+        for (FileDependencyDesc const& desc : analyzedDependencies)
         {
-            QList<FileDependency*> oldDependencies = findDependencies(fileItem->getPath());
+            QString file2 = General::getRelativePath(basePath_,
+                QFileInfo(QFileInfo(absPath).path() + "/" + desc.filename).canonicalFilePath());
 
-            // Scan the current dependencies.
-            QList<FileDependencyDesc> analyzedDependencies = plugin->getFileDependencies(component_.data(), 
-                basePath_, absPath);
-
-            QString file1 = fileItem->getPath();
-
-            // Go through all current dependencies.
-            for (FileDependencyDesc const& desc : analyzedDependencies)
-            {
-                QString file2 = General::getRelativePath(basePath_,
-                    QFileInfo(QFileInfo(absPath).path() + "/" + desc.filename).canonicalFilePath());
-
-                FileDependencyItem* fileItem2 = findFileItem(file2);
+            FileDependencyItem* fileItem2 = findFileItem(file2);
                 
-                // Check if the second file was an external (not found).
-                if (fileItem2 == 0)
-                {
-                    file2 = desc.filename;
-                    fileItem2 = findExternalFileItem(file2);
-                }
+            // Check if the second file was an external (not found).
+            if (fileItem2 == nullptr)
+            {
+                file2 = desc.filename;
+                fileItem2 = findExternalFileItem(file2);
+            }
 
-                // Check if the dependency already exists.
-                FileDependency* found = findDependency(oldDependencies, file1, file2);
+            // Check if the dependency already exists.
+            FileDependency* found = findDependency(oldDependencies, file1, file2);
 
-                if (found == nullptr)
+            if (found == nullptr)
+            {
+                // Create the item for external file if not found.
+                if (fileItem2 == nullptr)
                 {
-                    // Create the item for external file if not found.
-                    if (fileItem2 == nullptr)
+                    FileDependencyItem* folderItem = findFolderItem("$External$");
+                    if (folderItem == nullptr)
                     {
-                        FileDependencyItem* folderItem = findFolderItem("$External$");
-                        if (folderItem == 0)
-                        {
-                            beginInsertRows(getItemIndex(root_, 0), root_->getChildCount(), root_->getChildCount());
-                            folderItem = root_->addFolder(component_, "$External$");
-                            endInsertRows();
-                        }
-
-                        file2 = "$External$/" + desc.filename;
-
-                        beginInsertRows(getItemIndex(folderItem, 0), folderItem->getChildCount(),
-                            folderItem->getChildCount());
-                        folderItem->addFile(component_, file2, QList<QSharedPointer<File> >());
+                        beginInsertRows(getItemIndex(root_, 0), root_->getChildCount(), root_->getChildCount());
+                        folderItem = root_->addFolder(component_, "$External$");
                         endInsertRows();
                     }
 
-                    // Create a new dependency if not found.
-                    QSharedPointer<FileDependency> dependency(new FileDependency());
-                    dependency->setFile1(file1);
-                    dependency->setFile2(file2);
-                    dependency->setDescription(desc.description);
-                    dependency->setStatus(FileDependency::STATUS_ADDED);
+                    file2 = "$External$/" + desc.filename;
 
-                    addDependency(dependency);
-                    dependenciesChanged = true;
+                    beginInsertRows(getItemIndex(folderItem, 0), folderItem->getChildCount(),
+                        folderItem->getChildCount());
+                    folderItem->addFile(component_, file2, QList<QSharedPointer<File> >());
+                    endInsertRows();
                 }
-                else
-                {
-                    // Remove the dependency from the temporary list.
-                    oldDependencies.removeOne(found);
 
-                    // Check if the existing dependency needs updating to a bidirectional one.
-                    if (found->isBidirectional() == false && found->getFile1() != file1)
-                    {
-                        found->setBidirectional(true);
+                // Create a new dependency if not found.
+                QSharedPointer<FileDependency> dependency(new FileDependency());
+                dependency->setFile1(file1);
+                dependency->setFile2(file2);
+                dependency->setDescription(desc.description);
+                dependency->setStatus(FileDependency::STATUS_ADDED);
 
-                        // Combine the descriptions.
-                        found->setDescription(found->getDescription() + "\n" + desc.description);
-                        emit dependencyChanged(found);
-
-                        dependenciesChanged = true;
-                    }
-                }
+                addDependency(dependency);
+                dependenciesChanged = true;
             }
-
-            // Mark all existing old dependencies as removed.
-            for (FileDependency* dependency : oldDependencies)
+            else
             {
-                // If the dependency is a bidirectional one, change it to unidirectional one.
-                if (dependency->isBidirectional())
+                // Remove the dependency from the temporary list.
+                oldDependencies.removeOne(found);
+
+                // Check if the existing dependency needs updating to a bidirectional one.
+                if (found->isBidirectional() == false && found->getFile1() != file1)
                 {
-                    // Add the removed dependency to be able to make the diff view correctly. 
-                    QSharedPointer<FileDependency> removedDependency(new FileDependency());
+                    found->setBidirectional(true);
 
-                    if (dependency->getFile1() == file1)
-                    {
-                        removedDependency->setFile1(file1);
-                        removedDependency->setFile2(dependency->getFile2());
-                    }
-                    else
-                    {
-                        removedDependency->setFile1(dependency->getFile2());
-                        removedDependency->setFile2(file1);
-                    }
-                    
-                    removedDependency->setDescription("");
-                    removedDependency->setStatus(FileDependency::STATUS_REMOVED);
-
-                    addDependency(removedDependency);
-                    
-                    // Change the existing dependency into a unidirectional one.
-                    dependency->setBidirectional(false);
-
-                    // Change the direction if needed.
-                    if (dependency->getFile1() == file1)
-                    {
-                        dependency->reverse();
-                    }
+                    // Combine the descriptions.
+                    found->setDescription(found->getDescription() + "\n" + desc.description);
+                    emit dependencyChanged(found);
 
                     dependenciesChanged = true;
-                    emit dependencyChanged(dependency);
-                }
-                else if (dependency->getFile1() == file1)
-                {
-                    dependency->setStatus(FileDependency::STATUS_REMOVED);
-                    dependenciesChanged = true;
-                    emit dependencyChanged(dependency);
-                }
-                
-                // Remove old dependencies
-                for (auto const& dep : dependencies_)
-                {
-                    if (dep.data() == dependency)
-                    {
-                        removeDependency(dependency);
-                    }
                 }
             }
         }
@@ -795,18 +733,9 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
         currentHash = calculateMd5forFile(absPath);
     }
 
-    if (lastHash.isEmpty() == false && currentHash != lastHash)
+    if (lastHash.isEmpty() == false && currentHash != lastHash && !currentHash.isEmpty())
     {
-        if (dependenciesChanged)
-        {
-            fileItem->setStatus(FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED2);
-        }
-        else
-        {
-            fileItem->setStatus(FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED);
-        }
-
-        emit contentChanged();
+        fileItem->setStatus(FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED);   
     }
     else
     {

@@ -51,9 +51,7 @@ bool FileDependencySortFilter::filterAcceptsRow(int sourceRow, QModelIndex const
            ((filters_ & FileDependencyGraphView::FILTER_GREEN) && 
            status == FileDependencyItem::FILE_DEPENDENCY_STATUS_OK) ||
            ((filters_ & FileDependencyGraphView::FILTER_YELLOW) && status == 
-           FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED) ||
-           ((filters_ & FileDependencyGraphView::FILTER_RED) && status == 
-           FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED2);
+           FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED);
 }
 
 //-----------------------------------------------------------------------------

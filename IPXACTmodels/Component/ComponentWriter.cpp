@@ -32,6 +32,7 @@
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/common/ChoiceWriter.h>
+#include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWriter::ComponentWriter()
@@ -459,6 +460,17 @@ void ComponentWriter::writeComponentExtensions(QXmlStreamWriter& writer, QShared
         component->setFileDependendencies(component->getPendingFileDependencies());
     }
 
+    // Write only manual dependencies
+    QList<QSharedPointer<FileDependency> > dependenciesToAdd;
+    for (auto const& dependency : component->getFileDependencies())
+    {
+        if (dependency->isManual())
+        {
+            dependenciesToAdd.append(dependency);
+        }
+    }
+
+    component->setFileDependendencies(dependenciesToAdd);
     writeVendorExtensions(writer, component);
 }
 
