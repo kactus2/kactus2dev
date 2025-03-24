@@ -3409,6 +3409,9 @@
     <ClCompile Include="common\widgets\instanceWidgets\InstanceWidgets.cpp">
       <Filter>Source Files\common\widgets\instanceWidgets</Filter>
     </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectDataModel.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5850,6 +5853,9 @@
     </ClInclude>
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h">
       <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectDataModel.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
