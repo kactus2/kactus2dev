@@ -51,7 +51,7 @@
 #include <editors/MemoryDesigner/MemoryDesignDocument.h>
 
 #include <editors/InterconnectGenerator/InterconnectGeneratorDialog.h>
-#include <editors/InterconnectGenerator/InterconnectGenerator.h>
+#include <KactusAPI/include/InterconnectGenerator.h>
 
 #include <editors/AbstractionDefinitionEditor/AbstractionDefinitionEditor.h>
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>

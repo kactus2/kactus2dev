@@ -35,6 +35,7 @@
 #include <KactusAPI/include/AbstractionTypeInterface.h>
 #include <KactusAPI/include/PortMapInterface.h>
 #include <KactusAPI/include/LibraryHandler.h>
+#include <KactusAPI/include/InterconnectGenerator.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -66,8 +67,6 @@
 
 
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
-
-#include <editors/InterconnectGenerator/InterconnectGenerator.h>
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::PythonAPI()

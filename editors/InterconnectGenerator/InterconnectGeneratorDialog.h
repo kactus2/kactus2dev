@@ -1,8 +1,7 @@
 #ifndef INTERCONNECTGENERATORDIALOG_H
 #define INTERCONNECTGENERATORDIALOG_H
 
-#include "ConfigJsonParser.h"
-#include "InstanceWidgets.h"
+
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
 #include <editors/common/DesignWidget.h>
@@ -13,8 +12,11 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include "common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h"
+#include <common/widgets/EnumCollectionEditor/InterfaceEnumEditor.h>
+#include <common/widgets/instanceWidgets/InstanceWidgets.h>
 
+#include <KactusAPI/include/ConfigJsonParser.h>
+#include <KactusAPI/include/InterconnectGenerator.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/LibraryHandler.h>
 #include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
@@ -43,12 +45,6 @@
 #include <QSet>
 #include <QHash>
 #include <QList>
-
-struct TargetData {
-    QSharedPointer<BusInterface > targetBus;
-    QString start;
-    QString range;
-};
 
 class InterconnectGeneratorDialog : public QDialog
 {

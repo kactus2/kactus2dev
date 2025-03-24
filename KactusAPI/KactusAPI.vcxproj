@@ -29,6 +29,7 @@
     <ClInclude Include="include\ComponentInstantiationInterface.h" />
     <ClInclude Include="include\ComponentInstantiationParameterFinder.h" />
     <ClInclude Include="include\ComponentParameterFinder.h" />
+    <ClInclude Include="include\ConfigJsonParser.h" />
     <ClInclude Include="include\ConsoleMediator.h" />
     <ClInclude Include="include\DesignParameterFinder.h" />
     <ClInclude Include="include\DocumentFileAccess.h" />
@@ -53,7 +54,9 @@
     <ClInclude Include="include\ImportPlugin.h" />
     <QtMoc Include="include\ImportRunner.h" />
     <ClInclude Include="include\IncludeImportPlugin.h" />
+    <ClInclude Include="include\InterconnectGenerator.h" />
     <ClInclude Include="include\InterconnectionInterface.h" />
+    <ClInclude Include="include\InterconnectRTLWriter.h" />
     <ClInclude Include="include\IPlugin.h" />
     <ClInclude Include="include\IPluginUtility.h" />
     <ClInclude Include="include\IPXactSystemVerilogParser.h" />
@@ -171,6 +174,9 @@
     <ClCompile Include="library\TagManager.cpp" />
     <ClCompile Include="plugins\ImportHighlighter.cpp" />
     <ClCompile Include="plugins\ImportRunner.cpp" />
+    <ClCompile Include="plugins\InterconnectGenerator\ConfigJsonParser.cpp" />
+    <ClCompile Include="plugins\InterconnectGenerator\InterconnectGenerator.cpp" />
+    <ClCompile Include="plugins\InterconnectGenerator\InterconnectRTLWriter.cpp" />
     <ClCompile Include="plugins\PluginManager.cpp" />
     <ClCompile Include="plugins\PluginUtilityAdapter.cpp" />
     <ClCompile Include="utilities\ConsoleMediator.cpp" />

@@ -1,6 +1,6 @@
 #include "InterconnectGenerator.h"
-#include "InterconnectRTLWriter.h"
 #include <KactusAPI/KactusAPI.h>
+#include <KactusAPI/include/InterconnectRTLWriter.h>
 
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/PortMapInterface.h>

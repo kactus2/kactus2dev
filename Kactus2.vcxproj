@@ -280,6 +280,7 @@ CreateHelp
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.cpp" />
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.cpp" />
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.cpp" />
+    <ClCompile Include="common\widgets\instanceWidgets\InstanceWidgets.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.cpp" />
@@ -861,11 +862,7 @@ CreateHelp
     <ClCompile Include="editors\HWDesign\undoCommands\ReplaceComponentCommand.cpp" />
     <ClCompile Include="editors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp" />
     <ClCompile Include="editors\HWDesign\WarningSymbol.cpp" />
-    <ClCompile Include="editors\InterconnectGenerator\ConfigJsonParser.cpp" />
-    <ClCompile Include="editors\InterconnectGenerator\InstanceWidgets.cpp" />
-    <ClCompile Include="editors\InterconnectGenerator\InterconnectGenerator.cpp" />
     <ClCompile Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.cpp" />
-    <ClCompile Include="editors\InterconnectGenerator\InterconnectRTLWriter.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressBlockGraphicsItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.cpp" />
@@ -1306,6 +1303,7 @@ CreateHelp
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.h" />
     <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h" />
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h" />
+    <QtMoc Include="common\widgets\instanceWidgets\InstanceWidgets.h" />
     <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.h" />
@@ -2107,11 +2105,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
-    <ClInclude Include="editors\InterconnectGenerator\ConfigJsonParser.h" />
-    <QtMoc Include="editors\InterconnectGenerator\InstanceWidgets.h" />
-    <ClInclude Include="editors\InterconnectGenerator\InterconnectGenerator.h" />
     <QtMoc Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.h" />
-    <ClInclude Include="editors\InterconnectGenerator\InterconnectRTLWriter.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressBlockGraphicsItem.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.h" />
@@ -2934,7 +2928,6 @@ CreateHelp
   </ItemGroup>
   <ItemGroup>
     <None Include="common\graphicsItems\ConnectionItem.inl" />
-    <None Include="editors\InterconnectGenerator\config.json" />
     <None Include="wizards\common\IPXactElementComparator.inl" />
     <None Include="wizards\common\ListComparator.inl" />
   </ItemGroup>

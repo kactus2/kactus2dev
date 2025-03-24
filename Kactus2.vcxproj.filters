@@ -1010,6 +1010,9 @@
     <Filter Include="Source Files\editors\InterconnectGenerator">
       <UniqueIdentifier>{2de64eba-cd04-4c07-afc2-10efb43217fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common\widgets\instanceWidgets">
+      <UniqueIdentifier>{b0a2d456-f4eb-4af6-91e7-2ef4f1d68d6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3397,23 +3400,14 @@
     <ClCompile Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.cpp">
       <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\InterconnectGenerator\ConfigJsonParser.cpp">
-      <Filter>Source Files\editors\InterconnectGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\InterconnectGenerator\InterconnectGenerator.cpp">
-      <Filter>Source Files\editors\InterconnectGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\InterconnectGenerator\InterconnectRTLWriter.cpp">
-      <Filter>Source Files\editors\InterconnectGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\InterconnectGenerator\InstanceWidgets.cpp">
-      <Filter>Source Files\editors\InterconnectGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.cpp">
       <Filter>Source Files\editors\InterconnectGenerator</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.cpp">
       <Filter>Source Files\common\widgets\EnumCollectionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\instanceWidgets\InstanceWidgets.cpp">
+      <Filter>Source Files\common\widgets\instanceWidgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5857,15 +5851,6 @@
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h">
       <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </ClInclude>
-    <ClInclude Include="editors\InterconnectGenerator\ConfigJsonParser.h">
-      <Filter>Header Files\editors\InterconnectGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\InterconnectGenerator\InterconnectGenerator.h">
-      <Filter>Header Files\editors\InterconnectGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\InterconnectGenerator\InterconnectRTLWriter.h">
-      <Filter>Header Files\editors\InterconnectGenerator</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5876,9 +5861,6 @@
     </None>
     <None Include="common\graphicsItems\ConnectionItem.inl">
       <Filter>Source Files\common\graphicsItems</Filter>
-    </None>
-    <None Include="editors\InterconnectGenerator\config.json">
-      <Filter>Header Files\editors\InterconnectGenerator</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -6161,14 +6143,14 @@
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h">
       <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </QtMoc>
-    <QtMoc Include="editors\InterconnectGenerator\InstanceWidgets.h">
-      <Filter>Header Files\editors\InterconnectGenerator</Filter>
-    </QtMoc>
     <QtMoc Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.h">
       <Filter>Header Files\editors\InterconnectGenerator</Filter>
     </QtMoc>
     <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h">
       <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\instanceWidgets\InstanceWidgets.h">
+      <Filter>Source Files\common\widgets\instanceWidgets</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

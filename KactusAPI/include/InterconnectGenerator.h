@@ -1,8 +1,6 @@
 #ifndef INTERCONNECTGENERATOR_H
 #define INTERCONNECTGENERATOR_H
 
-#include "ConfigJsonParser.h"
-#include "InterconnectGeneratorDialog.h"
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -12,6 +10,8 @@
 #include <IPXACTmodels/Component/TransparentBridge.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 
+#include <KactusAPI/include/ConfigJsonParser.h>
+#include <kactusAPI/KactusAPIGlobal.h>
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/TransparentBridgeInterface.h>
@@ -25,8 +25,17 @@
 #include <KactusAPI/include/MessageMediator.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
 
+#include <QSharedPointer>
+#include <QHash>
+#include <QString>
 
-class InterconnectGenerator
+struct TargetData {
+    QSharedPointer<BusInterface> targetBus;
+    QString start;
+    QString range;
+};
+
+class KACTUS2_API InterconnectGenerator
 {
 public:
     //! The constructor
