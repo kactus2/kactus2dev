@@ -313,19 +313,23 @@ QList<FileDependencyDesc>  VerilogSourceAnalyzer::findInstantiationDependencies(
 	QList<FileDependencyDesc> dependencies;
 	for (auto const& moduleName : instanceFiles)
 	{
-		// Add only modules defined in files found in filesets to avoid potentially fake "module.v" dependencies
-		QString targetAbsolutePath = itemsInFilesets.value(moduleName);
+		// Add modules not found in filesets as external dependencies
+		auto const& targetAbsolutePath = itemsInFilesets.value(moduleName);
+		QString targetRelativePath;
+
 		if (targetAbsolutePath.isEmpty())
 		{
-			continue;
+			targetRelativePath = tr("%1 (Verilog module)").arg(moduleName);
+		}
+		else
+		{
+			targetRelativePath = sourceAbsoluteDir.relativeFilePath(targetAbsolutePath);
 		}
 
-		QString targetRelativePath = sourceAbsoluteDir.relativeFilePath(targetAbsolutePath);
-
-		FileDependencyDesc dependency;
-		dependency.description = tr("Submodule instantiation of module %1").arg(moduleName); 
-		dependency.filename = targetRelativePath;
-		dependencies.append(dependency);
+        FileDependencyDesc dependency;
+        dependency.description = tr("Submodule instantiation of module %1").arg(moduleName);
+        dependency.filename = targetRelativePath;
+        dependencies.append(dependency);
 	}
 
 	return dependencies;

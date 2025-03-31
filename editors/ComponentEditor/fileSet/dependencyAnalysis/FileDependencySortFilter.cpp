@@ -45,13 +45,15 @@ bool FileDependencySortFilter::filterAcceptsRow(int sourceRow, QModelIndex const
     FileDependencyItem* item = static_cast<FileDependencyItem*>(index.internalPointer());
     Q_ASSERT(item != 0);
 
-    FileDependencyItem::FileDependencyStatus status = item->getStatus();
+    //FileDependencyItem::FileDependencyStatus status = item->getStatus();
 
-    return (status == FileDependencyItem::FILE_DEPENDENCY_STATUS_UNKNOWN) ||
-           ((filters_ & FileDependencyGraphView::FILTER_GREEN) && 
-           status == FileDependencyItem::FILE_DEPENDENCY_STATUS_OK) ||
-           ((filters_ & FileDependencyGraphView::FILTER_YELLOW) && status == 
-           FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED);
+    //return (status == FileDependencyItem::FILE_DEPENDENCY_STATUS_UNKNOWN) ||
+    //    ((filters_ & FileDependencyGraphView::FILTER_GREEN) &&
+    //        status == FileDependencyItem::FILE_DEPENDENCY_STATUS_OK) ||
+    //    ((filters_ & FileDependencyGraphView::FILTER_YELLOW) && status ==
+    //        FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED);
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

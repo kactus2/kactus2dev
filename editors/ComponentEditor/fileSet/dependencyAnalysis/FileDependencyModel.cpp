@@ -41,11 +41,7 @@ component_(component),
     progressValue_(0),
     dependencies_()
 {
-    connect(this, SIGNAL(dependencyAdded(FileDependency*)),
-        this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
     connect(this, SIGNAL(dependencyChanged(FileDependency*)),
-        this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
-    connect(this, SIGNAL(dependencyRemoved(FileDependency*)),
         this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
 }
 
@@ -494,6 +490,15 @@ void FileDependencyModel::performAnalysisStep()
     {
         resolvePlugins();
 
+        // remove old dependencies, except manual ones
+        for (auto const& dep : dependencies_)
+        {
+            if (!dep->isManual())
+            {
+                removeDependency(dep.data());
+            }
+        }
+
         // Begin analysis for each plugin.
         for (ISourceAnalyzerPlugin* plugin : usedPlugins_)
         {
@@ -529,7 +534,7 @@ void FileDependencyModel::performAnalysisStep()
                 FileDependencyItem* folderItem = root_->getChild(curFolderIndex_);
                 folderItem->updateStatus();
 
-                emit dataChanged(getItemIndex(folderItem, 0), getItemIndex(folderItem, 
+                emit dataChanged(getItemIndex(folderItem, 0), getItemIndex(folderItem,
                     FileDependencyColumns::DEPENDENCIES));
 
                 curFolderIndex_++;
@@ -733,14 +738,14 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
         currentHash = calculateMd5forFile(absPath);
     }
 
-    if (lastHash.isEmpty() == false && currentHash != lastHash && !currentHash.isEmpty())
-    {
-        fileItem->setStatus(FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED);   
-    }
-    else
-    {
-        fileItem->setStatus(FileDependencyItem::FILE_DEPENDENCY_STATUS_OK);
-    }
+    //if (lastHash.isEmpty() == false && currentHash != lastHash && !currentHash.isEmpty())
+    //{
+    //    fileItem->setStatus(FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED);   
+    //}
+    //else
+    //{
+    //    fileItem->setStatus(FileDependencyItem::FILE_DEPENDENCY_STATUS_OK);
+    //}
 
     fileItem->setLastHash(currentHash);
 
@@ -897,12 +902,15 @@ FileDependency* FileDependencyModel::findDependency(QString const& file1, QStrin
 //-----------------------------------------------------------------------------
 // Function: FileDependencyModel::addDependency()
 //-----------------------------------------------------------------------------
-void FileDependencyModel::addDependency(QSharedPointer<FileDependency> dependency)
+void FileDependencyModel::addDependency(QSharedPointer<FileDependency> dependency, bool byUser /*= false*/)
 {
     dependencies_.append(dependency);
     component_->setFileDependendencies(dependencies_);
 
-    emit dependencyAdded(dependency.data());
+    if (byUser)
+    {
+        emit dependencyAdded(dependency.data(), true);
+    }
 }
 
 //-----------------------------------------------------------------------------

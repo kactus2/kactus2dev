@@ -47,6 +47,8 @@ public:
     //-----------------------------------------------------------------------------
     //! Dependency status enumeration.
     //-----------------------------------------------------------------------------
+    
+    // Unused, should probably be removed along with associated methods at some point
     enum FileDependencyStatus
     {
         FILE_DEPENDENCY_STATUS_UNKNOWN = 0,
