@@ -43,6 +43,16 @@ public:
         QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> containingInstance,
         AddressSpaceGraphicsItem* spaceItem);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other         The original address segment item.
+     *    @param [in] parentItem    The parent address space item.
+     *
+     *    @return Copy of the original address segment item.
+     */
+    AddressSegmentGraphicsItem(AddressSegmentGraphicsItem const& other, AddressSpaceGraphicsItem* parentItem);
+
 	/*!
      *  The destructor.
      */
@@ -59,6 +69,11 @@ private:
     AddressSegmentGraphicsItem& operator=(AddressSegmentGraphicsItem const& rhs);
 
     /*!
+     *  Setup the address segment item.
+     */
+    void setupSegment();
+
+    /*!
      *  Get the width of the address segment item.
      *
      *    @param [in] addressSpaceItem   [Description].
@@ -69,6 +84,13 @@ private:
      *  Set the positions for the labels.
      */
     virtual void setLabelPositions();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Flag for empty address segment.
+    bool isEmptySegment_ = false;
 };
 
 //-----------------------------------------------------------------------------

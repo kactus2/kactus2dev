@@ -41,7 +41,6 @@ originalBaseAddress_(0),
 originalLastAddress_(0),
 itemName_(itemName),
 displayName_(displayName),
-memoryConnections_(),
 containingInstance_(componentInstance),
 componentVLNV_(getVLNVFromContainingInstance()),
 openComponentAction_(new QAction(this)),
@@ -53,10 +52,10 @@ identifierChain_(identifierChain)
         identifierChain_.append(itemName);
     }
 
-    QString openComponentText = QStringLiteral("Open containing component");
+    auto openComponentText = QStringLiteral("Open containing component");
     openComponentAction_->setText(openComponentText);
 
-    QString openItemEditorText = QStringLiteral("Open editor for ") + itemName;
+    auto openItemEditorText = QStringLiteral("Open editor for ") + itemName;
     openItemEditorAction_->setText(openItemEditorText);
 
     connect(openComponentAction_, SIGNAL(triggered()),
@@ -75,6 +74,36 @@ identifierChain_(identifierChain)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem()
+//-----------------------------------------------------------------------------
+MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& other, QGraphicsItem* parentItem):
+QObject(),
+QGraphicsRectItem(parentItem),
+nameLabel_(new QGraphicsTextItem(other.itemName_, this)),
+startRangeLabel_(new QGraphicsTextItem(other.startRangeLabel_->toPlainText(), this)),
+endRangeLabel_(new QGraphicsTextItem(other.endRangeLabel_->toPlainText(), this)),
+baseAddress_(other.originalBaseAddress_),
+lastAddress_(other.originalLastAddress_),
+originalBaseAddress_(other.originalBaseAddress_),
+originalLastAddress_(other.originalLastAddress_),
+itemName_(other.itemName_),
+displayName_(other.displayName_),
+// memoryConnections_(),
+containingInstance_(other.containingInstance_),
+componentVLNV_(getVLNVFromContainingInstance()),
+openComponentAction_(new QAction(other.openComponentAction_->text(), this)),
+openItemEditorAction_(new QAction(other.openItemEditorAction_->text(), this)),
+identifierChain_(other.identifierChain_)
+{
+    connect(openComponentAction_, SIGNAL(triggered()), this, SLOT(openContainingComponent()), Qt::UniqueConnection);
+    connect(openItemEditorAction_, SIGNAL(triggered()), this, SLOT(openItemEditor()), Qt::UniqueConnection);
+
+    nameLabel_->setFont(other.nameLabel_->font());
+
+    setOpacity(0.7);
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::hideMemoryRangeLabels()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::hideMemoryRangeLabels()
@@ -89,6 +118,7 @@ void MemoryDesignerGraphicsItem::hideMemoryRangeLabels()
 void MemoryDesignerGraphicsItem::hideCollidingRangeLabels(quint64 connectionBaseAddress,
     quint64 connectionLastAddress)
 {
+/*
     quint64 itemBaseAddress = getBaseAddress();
     quint64 itemLastAddress = getLastAddress();
 
@@ -107,6 +137,7 @@ void MemoryDesignerGraphicsItem::hideCollidingRangeLabels(quint64 connectionBase
     {
         hideEndRangeLabel();
     }
+*/
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +145,7 @@ void MemoryDesignerGraphicsItem::hideCollidingRangeLabels(quint64 connectionBase
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::hideStartRangeLabel()
 {
-//     startRangeLabel_->hide();
+    startRangeLabel_->hide();
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +153,7 @@ void MemoryDesignerGraphicsItem::hideStartRangeLabel()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::hideEndRangeLabel()
 {
-//     endRangeLabel_->hide();
+    endRangeLabel_->hide();
 }
 
 //-----------------------------------------------------------------------------

@@ -51,6 +51,16 @@ public:
         bool isEmptyBlock, bool filterRegisters, bool filterFields, qreal addressBlockWidth,
         QSharedPointer<ConnectivityComponent const> containingInstance, MemoryMapGraphicsItem* memoryMapItem);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other             The original address block item.
+     *    @param [in] memoryMapItem     The parent memory map item.
+     *
+     *    @return Copy of the original address block item.
+     */
+    AddressBlockGraphicsItem(AddressBlockGraphicsItem const& other, MemoryMapGraphicsItem* memoryMapItem);
+
 	/*!
      *  The destructor.
      */
@@ -97,8 +107,12 @@ public:
 
 private:
     // Disable copying.
-    AddressBlockGraphicsItem(AddressBlockGraphicsItem const& rhs);
     AddressBlockGraphicsItem& operator=(AddressBlockGraphicsItem const& rhs);
+
+    /*!
+     *  Setup the address block item.
+     */
+    void setupAddressBlock();
 
     /*!
      *  Get the width of the block item.
@@ -123,6 +137,15 @@ private:
      */
     virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem const> subMemoryItem,
         bool isEmpty);
+
+    /*!
+     *  Create a copy of the selected sub item.
+     *
+     *    @param [in] subItem   The selected sub item.
+     *
+     *    @return Copy of the selected sub item.
+     */
+    virtual MemoryDesignerChildGraphicsItem* createCopyOfSubItem(MemoryDesignerChildGraphicsItem* subItem) override final;
 
     /*!
      *  Create an empty register graphics item.
@@ -157,6 +180,9 @@ private:
 
     //! Filtering value for register fields.
     bool filterFields_;
+
+    //! Flag for empty address blocks.
+    bool isEmpty_;
 };
 
 //-----------------------------------------------------------------------------

@@ -27,6 +27,7 @@ class MemoryConnectionItem;
 class MemoryCollisionItem;
 class MemoryColumnHandler;
 class MemoryItem;
+class MemoryGraphicsItemHandler;
 
 //-----------------------------------------------------------------------------
 //! Constructs the memory connections for the memory design diagram.
@@ -42,9 +43,10 @@ public:
     /*!
      *  The constructor.
      *
-     *    @param [in] columnHandler   Handler for memory columns.
+     *    @param [in] columnHandler     Handler for memory columns.
+     *    @param [in] itemHandler       Handler for graphics items.
      */
-    MemoryConnectionHandler(QSharedPointer<MemoryColumnHandler> columnHandler);
+    MemoryConnectionHandler(QSharedPointer<MemoryColumnHandler> columnHandler, QSharedPointer<MemoryGraphicsItemHandler> itemHandler);
 
     /*!
      *  The destructor.
@@ -104,6 +106,16 @@ private:
     // Disable copying.
     MemoryConnectionHandler(MemoryConnectionHandler const& rhs);
     MemoryConnectionHandler& operator=(MemoryConnectionHandler const& rhs);
+
+    //! Collection of memory items connected to each other.
+    struct ConnectedItemSet 
+    {
+        //! List of address space items connected to this set.
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > connectedSpaces_;
+
+        //! List of memory map items connected to this set.
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > connectedMaps_;
+    };
 
     /*!
      *  Combine paths containing the same memory items.
@@ -175,6 +187,60 @@ private:
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
         MemoryColumn* memoryMapColumn,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
+
+    /*!
+     *  Check if the selected memory connection already exists.
+     *
+     *    @param [in] startItem                 Start item of the connection.
+     *    @param [in] endItem                   End item of the connection.
+     *    @param [in] connectionBaseAddress     Base address of the connection.
+     *    @param [in] connectionEndAddress      Last address of the connection.
+     *
+     *    @return True, if the connection exists, false otherwise.
+     */
+    bool connectionExists(MainMemoryGraphicsItem* startItem,
+        MainMemoryGraphicsItem* endItem,
+        quint64 const& connectionBaseAddress,
+        quint64 const& connectionEndAddress) const;
+
+    /*!
+     *  Check if the connection start item should be moved, instead of the end item.
+     *
+     *    @param [in] endItem                   The connection end item.
+     *    @param [in] connectionBaseAddress     Base address of the connection.
+     *
+     *    @return True, if the start item should be moved, false otherwise.
+     */
+    bool moveStartItemNotEndItem(MainMemoryGraphicsItem* endItem,
+        quint64 const& connectionBaseAddress) const;
+
+    /*!
+     *  Create a set for each separate memory item group.
+     *
+     *    @param [in] placedSpaceItems  List of the available address spaces, used as starting points for checking.
+     *
+     *    @return List of grouped memory items.
+     */
+    QVector<QSharedPointer<ConnectedItemSet> > separateBrokenPathSet(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems) const;
+
+    /*!
+     *  Get connected items for the selected address space item.
+     *
+     *    @param [in] spaceItem     The selected address space item.
+     *    @param [in] visitedItems  List of already visited items.
+     *
+     *    @return A group of memory items connected to each other.
+     */
+    QSharedPointer<ConnectedItemSet> getConnectedItemsForSpaceItem(MainMemoryGraphicsItem* spaceItem, QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedItems) const;
+
+    /*!
+     *  Get connected items for the selected memory item.
+     *
+     *    @param [in] memoryItem            The selected memory item.
+     *    @param [in] itemsConnectedToItem  List of items connected to this item.
+     *    @param [in] visitedItems          List of already visited items.
+     */
+    void getConnectedItems(MainMemoryGraphicsItem* memoryItem, QVector<MainMemoryGraphicsItem*>& itemsConnectedToItem, QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedItems) const;
 
     /*!
      *  Create a connection displaying the full connection.
@@ -465,10 +531,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Value for displaying condensed memory connections.
-    bool condenseMemoryItems_;
+    bool condenseMemoryItems_ = true;
 
     //! Value for filtering the chained address space memory connections.
-    bool filterAddressSpaceChains_;
+    bool filterAddressSpaceChains_ = true;
 
     //! A list of memory connections made to memory maps.
     QVector<MemoryConnectionItem*> connectionsToMemoryMaps_;
@@ -478,6 +544,9 @@ private:
 
     //! Handler for memory columns.
     QSharedPointer<MemoryColumnHandler> columnHandler_;
+
+    //! Handler for memory items.
+    QSharedPointer<MemoryGraphicsItemHandler> itemHandler_;
 };
 
 //-----------------------------------------------------------------------------

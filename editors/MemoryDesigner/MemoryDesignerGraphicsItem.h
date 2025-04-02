@@ -51,8 +51,17 @@ public:
         QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> componentInstance,
         QGraphicsItem* parent = 0);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other         The original graphics item.
+     *    @param [in] parentItem    The parent item.
+     *
+     *    @return Copy of the original graphics item.
+     */
+    MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& other, QGraphicsItem* parentItem);
+
     // Disable copying.
-    MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& rhs) = delete;
     MemoryDesignerGraphicsItem& operator=(MemoryDesignerGraphicsItem const& rhs) = delete;
 
 	/*!

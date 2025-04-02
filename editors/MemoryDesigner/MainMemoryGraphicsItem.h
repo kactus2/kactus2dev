@@ -48,6 +48,15 @@ public:
         QSharedPointer<ConnectivityComponent const> containingInstance, QString const& subItemType,
         bool filterSubItems, QVector<QString> identifierChain, QGraphicsItem* parent = 0);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other     The original graphics item.
+     *
+     *    @return Copy of the original graphics item.
+     */
+    MainMemoryGraphicsItem(const MainMemoryGraphicsItem& other);
+
 	/*!
      *  The destructor.
      */
@@ -204,6 +213,20 @@ public:
      */
     void extendMemoryItem();
 
+    /*!
+     *  Check if this graphics item is original or a clone.
+     *
+     *    @return True, if the graphics item is original, false otherwise.
+     */
+    bool isOriginal() const;
+
+    /*!
+     *  Get a list of the memory items cloned from this item.
+     *
+     *    @return Pointer to a list of memory items cloned from this item.
+     */
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > getClones();
+
 protected:
 
     /*!
@@ -231,9 +254,14 @@ protected:
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems) const;
 
 private:
+
     // Disable copying.
-    MainMemoryGraphicsItem(MainMemoryGraphicsItem const& rhs);
     MainMemoryGraphicsItem& operator=(MainMemoryGraphicsItem const& rhs);
+
+    /*!
+     *  Setup the graphics item.
+     */
+    void setupDuringConstruction();
 
     /*!
      *  Get the available width for this item.
@@ -273,10 +301,16 @@ private:
     QVector<MemoryCollisionItem*> memoryCollisions_;
 
     //! Holds whether the graphics item has been compressed or not.
-    bool compressed_;
+    bool compressed_ = false;
 
     //! The memory extension item.
-    MemoryExtensionGraphicsItem* extensionItem_;
+    MemoryExtensionGraphicsItem* extensionItem_ = nullptr;
+
+    //! Flag for separating original and cloned items.
+    bool originalItem_;
+
+    //! List of clones created from this item.
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > clones_ = nullptr;
 };
 
 //-----------------------------------------------------------------------------

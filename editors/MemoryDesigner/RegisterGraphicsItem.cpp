@@ -30,7 +30,6 @@ RegisterGraphicsItem::RegisterGraphicsItem(QSharedPointer<MemoryItem const> regi
 MemoryDesignerChildGraphicsItem(registerItem, QStringLiteral("Register"), registerItem->getAddress().toULongLong(),
     getRegisterEnd(registerItem->getAUB().toUInt(), registerItem->getSize().toULongLong()), registerWidth,
     identifierChain, containingInstance, parentItem),
-fieldItems_(),
 isEmpty_(isEmptyRegister),
 registerSize_(registerItem->getSize().toULongLong()),
 addressUnitBits_(registerItem->getAUB().toUInt()),
@@ -42,6 +41,25 @@ filterFields_(filterFields)
     if (!isEmptyRegister && !filterFields)
     {
         setupFields(registerItem);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::RegisterGraphicsItem()
+//-----------------------------------------------------------------------------
+RegisterGraphicsItem::RegisterGraphicsItem(RegisterGraphicsItem const& other, MemoryDesignerGraphicsItem* parentItem):
+MemoryDesignerChildGraphicsItem(other, parentItem),
+isEmpty_(other.isEmpty_),
+registerSize_(other.registerSize_),
+addressUnitBits_(other.addressUnitBits_),
+filterFields_(other.filterFields_)
+{
+    setColors(KactusColors::REGISTER_COLOR, isEmpty_);
+    setLabelPositions();
+
+    if (!isEmpty_ && !filterFields_)
+    {
+        cloneFields(other);
     }
 }
 
@@ -174,10 +192,7 @@ QMultiMap<quint64, RegisterGraphicsItem::FieldMemoryItem> RegisterGraphicsItem::
     {
         if (fieldItem->getType().compare(MemoryDesignerConstants::FIELD_TYPE, Qt::CaseInsensitive) == 0)
         {
-            quint64 fieldAddress = fieldItem->getAddress().toULongLong();
-            quint64 fieldRegisteredOffset = fieldItem->getOffset().toULongLong();
-
-            quint64 fieldOffset = (fieldAddress - registerOffset) * addressUnitBits_ + fieldRegisteredOffset;
+            quint64 fieldOffset = fieldItem->getOffset().toULongLong();
 
             quint64 fieldWidth = fieldItem->getWidth().toULongLong();
             if (fieldWidth > 0)
@@ -245,6 +260,20 @@ void RegisterGraphicsItem::createFieldGraphicsItem(QSharedPointer<MemoryItem con
 }
 
 //-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::cloneFields()
+//-----------------------------------------------------------------------------
+void RegisterGraphicsItem::cloneFields(RegisterGraphicsItem const& other)
+{
+    for (auto otherRegisterFieldItem : other.fieldItems_)
+    {
+        auto newCloneFieldItem(new FieldGraphicsItem(*otherRegisterFieldItem, this));
+        newCloneFieldItem->setPos(otherRegisterFieldItem->pos());
+
+        fieldItems_.append(newCloneFieldItem);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::getModifiedFieldWidth()
 //-----------------------------------------------------------------------------
 quint64 RegisterGraphicsItem::getModifiedFieldWidth(quint64 fieldLastBit, quint64 fieldOffset) const
@@ -299,6 +328,7 @@ void RegisterGraphicsItem::createOverlappingMarkersForField(int fieldIndex, int 
     FieldGraphicsItem* fieldItem, QRectF fieldRectangle, int fieldLineWidth, QBrush overlapBrush,
     QGraphicsScene* containingScene)
 {
+/*
     for (int comparisonIndex = fieldIndex + 1; comparisonIndex < fieldCount; ++comparisonIndex)
     {
         FieldGraphicsItem* comparisonField = fieldItems_.at(comparisonIndex);
@@ -319,6 +349,7 @@ void RegisterGraphicsItem::createOverlappingMarkersForField(int fieldIndex, int 
             return;
         }
     }
+*/
 }
 
 //-----------------------------------------------------------------------------

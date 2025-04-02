@@ -91,6 +91,40 @@ private:
      */
     QVector<MasterSlavePathSearch::Path> findPaths(QSharedPointer<ConnectivityInterface > startVertex,
         QSharedPointer<const ConnectivityGraph> graph) const;
+
+    /*!
+     *  Find paths from the selected interface.
+     *
+     *    @param [in] currentVertex     The selected interface.
+     *    @param [in] visitedVertices   List of already visited interfaces.
+     *    @param [in] graph             The connectivity graph to find the paths from.
+     *
+     *    @return List of paths found from the selected interface.
+     */
+    QVector<MasterSlavePathSearch::Path> findPathsFromInterface(QSharedPointer<ConnectivityInterface> currentVertex,
+        QVector<QSharedPointer<ConnectivityInterface>> visitedVertices,
+        QSharedPointer<const ConnectivityGraph> graph) const;
+
+    /*!
+     *  Check if the direction from start to end is accepted.
+     *
+     *    @param [in] startVertex       Starting interface.
+     *    @param [in] connectedVertex   Ending interface.
+     *
+     *    @return True, if the direction is accepted, false otherwise.
+     */
+    bool pathDirectionIsAccepted(QSharedPointer<ConnectivityInterface> startVertex, QSharedPointer<ConnectivityInterface> connectedVertex) const;
+
+    /*!
+     *  Check if the selected interface is an ending point for the path.
+     *
+     *    @param [in] possibleLeaf  The selected interface.
+     *    @param [in] graph         The connectivity graph to find the paths from.
+     *
+     *    @return True, if the interface is an end point, false otherwise.
+     */
+    bool vertexIsLeaf(QSharedPointer<ConnectivityInterface> possibleLeaf, QSharedPointer<const ConnectivityGraph> graph) const;
+
     /*!
      *  Find the interface connected to the selected interface.
      *
@@ -113,15 +147,6 @@ private:
      */
     bool canConnectInterfaces(QSharedPointer<ConnectivityInterface const> startVertex,
         QSharedPointer<ConnectivityInterface const> endVertex) const;
-
-    /*!
-     *  Finds the path to the given vertex from the BFS tree root.
-     *
-     *    @param [in] endVertex   The final (leaf) vertex of the path.
-     *
-     *    @return The path from BFS tree root to the end vertex.
-     */
-    MasterSlavePathSearch::Path findPathFromRoot(QSharedPointer<ConnectivityInterface const> endVertex) const;
 
     /*!
      *  Finds the valid, longest paths in the given set of paths.

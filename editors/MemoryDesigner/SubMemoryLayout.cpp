@@ -26,7 +26,7 @@
 // Function: SubMemoryLayout::SubMemoryLayout()
 //-----------------------------------------------------------------------------
 SubMemoryLayout::SubMemoryLayout(QSharedPointer<MemoryItem const> memoryItem, QString const& subItemType,
-    bool filterSubItems, MemoryDesignerGraphicsItem* mainGraphicsItem):
+    bool filterSubItems, MemoryDesignerGraphicsItem const* mainGraphicsItem):
 subMemoryItems_(),
 itemType_(memoryItem->getType()),
 mainGraphicsItem_(mainGraphicsItem),
@@ -34,6 +34,38 @@ subItemType_(subItemType),
 filterSubItems_(filterSubItems)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::SubMemoryLayout()
+//-----------------------------------------------------------------------------
+SubMemoryLayout::SubMemoryLayout(SubMemoryLayout const& other, MemoryDesignerGraphicsItem const* mainGraphicsItem):
+subMemoryItems_(),
+itemType_(other.itemType_),
+mainGraphicsItem_(mainGraphicsItem),
+subItemType_(other.subItemType_),
+filterSubItems_(other.filterSubItems_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::cloneSubItems()
+//-----------------------------------------------------------------------------
+void SubMemoryLayout::cloneSubItems(SubMemoryLayout const& other)
+{
+    QMultiMapIterator itemIterator(other.subMemoryItems_);
+    while (itemIterator.hasNext())
+    {
+        itemIterator.next();
+
+        auto clonedSubItem = createCopyOfSubItem(itemIterator.value());
+        if (clonedSubItem)
+        {
+            subMemoryItems_.insert(clonedSubItem->getOriginalBaseAddress(), clonedSubItem);
+            clonedSubItem->setPos(itemIterator.value()->pos());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
