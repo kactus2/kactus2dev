@@ -19,11 +19,11 @@ InterfaceEnumEditor::InterfaceEnumEditor(QWidget* parent) : QFrame(parent) {
     mainLayout_->addWidget(scrollArea_);
 }
 
-void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget) {
+void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget, const QString& instanceName) {
     QList<QCheckBox*> checkBoxes;
     int maxCheckBoxWidth = 0;
 
-    foreach(const QString & item, items) {
+    for (const QString& item : items) {
         QCheckBox* checkBox = new QCheckBox(item);
         checkBox->adjustSize();
         maxCheckBoxWidth = std::max(maxCheckBoxWidth, checkBox->sizeHint().width());
@@ -42,17 +42,26 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget) {
         QLabel* rangeLabel = nullptr;
 
         if (isTarget) {
-            startEdit = new QLineEdit();
-            rangeEdit = new QLineEdit();
-
             startLabel = new QLabel("Start:");
             rangeLabel = new QLabel("Range:");
+            startEdit = new QLineEdit();
+            rangeEdit = new QLineEdit();
 
             itemLayout->addWidget(startLabel);
             itemLayout->addWidget(startEdit);
             itemLayout->addWidget(rangeLabel);
             itemLayout->addWidget(rangeEdit);
+
+            connect(checkBox, &QCheckBox::toggled, this, [=](bool checked) {
+                if (checked) {
+                    emit targetInterfaceChecked(checkBox->text(), instanceName);
+                }
+                else {
+                    emit targetInterfaceUnchecked(checkBox->text(), instanceName);
+                }
+                });
         }
+
         interfaceItems_.append({ checkBox, startLabel, startEdit, rangeLabel, rangeEdit });
         scrollLayout_->addLayout(itemLayout);
     }
@@ -93,4 +102,24 @@ QList<TargetInterfaceData> InterfaceEnumEditor::getSelectedTargetInterfaces() co
         }
     }
     return selectedTargets;
+}
+
+void InterfaceEnumEditor::setTargetInterfaceValues(const QString& interfaceName, quint64 start, quint64 range) {
+    for (InterfaceItem& item : interfaceItems_) {
+        if (item.checkBox->text() == interfaceName && item.startEdit && item.rangeEdit) {
+            item.startEdit->setText(QString("0x%1").arg(start, 8, 16, QLatin1Char('0')));
+            item.rangeEdit->setText(QString("0x%1").arg(range, 8, 16, QLatin1Char('0')));
+            break;
+        }
+    }
+}
+
+void InterfaceEnumEditor::clearTargetInterfaceValues(const QString& interfaceName) {
+    for (InterfaceItem& item : interfaceItems_) {
+        if (item.checkBox->text() == interfaceName && item.startEdit && item.rangeEdit) {
+            item.startEdit->clear();
+            item.rangeEdit->clear();
+            break;
+        }
+    }
 }

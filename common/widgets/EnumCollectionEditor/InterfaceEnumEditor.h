@@ -31,13 +31,23 @@ class InterfaceEnumEditor : public QFrame {
 public:
     explicit InterfaceEnumEditor(QWidget* parent = nullptr);
 
+    virtual ~InterfaceEnumEditor() = default;
+
     QStringList getSelectedInitiatorInterfaces() const;
 
     QList<TargetInterfaceData> getSelectedTargetInterfaces() const;
 
-    void addItems(const QStringList& items, bool isTarget);
+    void addItems(const QStringList& items, bool isTarget, const QString& instanceName);
+
+    void setTargetInterfaceValues(const QString& interfaceName, quint64 start, quint64 range);
+
+    void clearTargetInterfaceValues(const QString& interfaceName);
 
     void clearAll();
+
+signals:
+    void targetInterfaceChecked(const QString& interfaceName, const QString& instanceName);
+    void targetInterfaceUnchecked(const QString& interfaceName, const QString& instanceName);
 
 private:
     QVBoxLayout* mainLayout_;

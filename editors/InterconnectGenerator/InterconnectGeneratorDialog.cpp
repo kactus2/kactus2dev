@@ -36,6 +36,10 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
     dataModel_ = QSharedPointer<InterconnectDataModel>::create(designWidget_, library_);
     dataModel_->gatherBusAndAbstractionData(initiatorModes_, targetModes_);
 
+    addressHelper_ = QSharedPointer<InterconnectAddressHelper>::create(
+        designWidget->getEditedComponent()->getVlnv(), 
+        library_, messager_);
+
     absRefs_ = dataModel_->getValidAbstractionRefs();
     instanceBusesHash_ = dataModel_->getInstanceBusMap();
     interfaceAbsDefsHash_ = dataModel_->getInterfaceAbstractionHash();
@@ -80,7 +84,6 @@ void InterconnectGeneratorDialog::addNewInitiator() {
     }
 }
 
-// Updated addNewTarget
 void InterconnectGeneratorDialog::addNewTarget() {
     QFrame* instanceFrame = createInstanceEditorFrame("Target");
     if (instanceFrame) {
@@ -140,7 +143,7 @@ void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName
     }
     interfaceEditor->clearAll();
     bool isTargets = (type == "Target") ? true : false;
-    interfaceEditor->addItems(busInterfaceNames, isTargets);
+    interfaceEditor->addItems(busInterfaceNames, isTargets, instanceName);
 }
 
 void InterconnectGeneratorDialog::updateNameCombos()
@@ -170,6 +173,21 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ty
     instanceFrame->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
     InterfaceEnumEditor* interfaceEditor = new InterfaceEnumEditor(this);
+
+    connect(interfaceEditor, &InterfaceEnumEditor::targetInterfaceChecked,
+        this, [=](const QString& interfaceName, const QString& instanceName) {
+            messager_->showMessage("checkpoint");
+            quint64 start = 0;
+            quint64 range = 0;
+            if (addressHelper_->getTargetAddressRange(instanceName, interfaceName, start, range)) {
+                interfaceEditor->setTargetInterfaceValues(interfaceName, start, range);
+            }
+        });
+    connect(interfaceEditor, &InterfaceEnumEditor::targetInterfaceUnchecked,
+        this, [=](const QString& interfaceName) {
+            interfaceEditor->clearTargetInterfaceValues(interfaceName);
+        });
+
     QVBoxLayout* nameAndEditorLayout = createNameAndEnumerationEditorLayout(type, interfaceEditor, instanceFrame);
 
     QFormLayout* instanceLayout = new QFormLayout(instanceFrame);
@@ -303,7 +321,6 @@ QWidget* InterconnectGeneratorDialog::createTopConfigSection() {
     previousIndex_ = busInterfaceCombo_->currentIndex();
     populateParameters();
 
-    // Signal connections
     connect(busInterfaceCombo_, &QComboBox::activated, this, [this](int index) {
         previousIndex_ = busInterfaceCombo_->currentIndex();
         });
@@ -351,7 +368,6 @@ QWidget* InterconnectGeneratorDialog::createTopConfigSection() {
     return container;
 }
 
-// Helper to create initiator section
 QGroupBox* InterconnectGeneratorDialog::createInitiatorsSection() {
     QPushButton* addInitiatorButton = new QPushButton(QIcon(":/icons/common/graphics/add.png"), tr("Add New Initiator"));
     connect(addInitiatorButton, &QPushButton::clicked, this, &InterconnectGeneratorDialog::addNewInitiator);
@@ -373,7 +389,6 @@ QGroupBox* InterconnectGeneratorDialog::createInitiatorsSection() {
     return groupBox;
 }
 
-// Helper to create target section
 QGroupBox* InterconnectGeneratorDialog::createTargetsSection() {
     QPushButton* addTargetButton = new QPushButton(QIcon(":/icons/common/graphics/add.png"), tr("Add New Target"));
     connect(addTargetButton, &QPushButton::clicked, this, &InterconnectGeneratorDialog::addNewTarget);
@@ -395,7 +410,6 @@ QGroupBox* InterconnectGeneratorDialog::createTargetsSection() {
     return groupBox;
 }
 
-// Helper to create the bottom button row
 QDialogButtonBox* InterconnectGeneratorDialog::createButtonBox() {
     QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->addButton(tr("Generate"), QDialogButtonBox::AcceptRole);
@@ -407,7 +421,6 @@ QDialogButtonBox* InterconnectGeneratorDialog::createButtonBox() {
     return buttonBox;
 }
 
-// Updated setUpLayout
 void InterconnectGeneratorDialog::setUpLayout() {
     setWindowTitle("Interconnect Component Configuration");
 
@@ -503,7 +516,7 @@ void InterconnectGeneratorDialog::accept()
         .arg(config->AddressWidth)
         .arg(config->IDWidth);
 
-    // messager_->showMessage(message);
+    messager_->showMessage(message);
     collectInstances(config);
     config_ = config;
     QDialog::accept();
@@ -530,14 +543,12 @@ void InterconnectGeneratorDialog::collectInitiators(
             if (!nameCombo || !interfaceEditor) {
                 continue;
             }
-
             QString instanceName = nameCombo->currentText();
             QStringList selectedInterfaces = interfaceEditor->getSelectedInitiatorInterfaces();
 
             if (!instanceBusesLookup.contains(instanceName)) {
                 continue;
             }
-
             const QHash<QString, QSharedPointer<BusInterface>>& busLookup = instanceBusesLookup.value(instanceName);
             QList<QSharedPointer<BusInterface>> matchedInterfaces;
 
@@ -546,7 +557,6 @@ void InterconnectGeneratorDialog::collectInitiators(
                     matchedInterfaces.append(busLookup.value(selectedInterfaceName));
                 }
             }
-
             // Add to selectedInitiators_ only if there are matched interfaces
             if (!matchedInterfaces.isEmpty()) {
                 selectedInitiators_.insert(instanceName, matchedInterfaces);
@@ -566,7 +576,6 @@ void InterconnectGeneratorDialog::collectTargets(
             if (!nameCombo || !interfaceEditor) {
                 continue;
             }
-
             QString instanceName = nameCombo->currentText();
             QList<TargetInterfaceData> selectedInterfaces = interfaceEditor->getSelectedTargetInterfaces();
 

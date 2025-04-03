@@ -24,15 +24,16 @@
 #include <common/widgets/EnumCollectionEditor/InterfaceEnumEditor.h>
 #include <common/widgets/instanceWidgets/InstanceWidgets.h>
 #include <editors/common/DesignWidget.h>
+#include <editors/InterconnectGenerator/InterconnectAddressHelper.h>
 #include <common/graphicsItems/ComponentItem.h>
 
+#include <KactusAPI/include/ExpressionParser.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <KactusAPI/include/ConfigJsonParser.h>
 #include <KactusAPI/include/LibraryHandler.h>
 #include <KactusAPI/include/InterconnectGenerator.h>
 #include <KactusAPI/include/MessageMediator.h>
 
-// Forward declaration of new helper class
 class InterconnectDataModel;
 
 class InterconnectGeneratorDialog : public QDialog
@@ -82,6 +83,7 @@ private:
 
     // Shared logic class (NEW)
     QSharedPointer<InterconnectDataModel> dataModel_;
+    QSharedPointer<InterconnectAddressHelper> addressHelper_;
 
     // UI and state
     ConfigStruct* config_ = nullptr;

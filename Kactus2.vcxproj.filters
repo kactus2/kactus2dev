@@ -3412,6 +3412,9 @@
     <ClCompile Include="editors\InterconnectGenerator\InterconnectDataModel.cpp">
       <Filter>Source Files\editors\InterconnectGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectAddressHelper.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5855,6 +5858,9 @@
       <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </ClInclude>
     <ClInclude Include="editors\InterconnectGenerator\InterconnectDataModel.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectAddressHelper.h">
       <Filter>Header Files\editors\InterconnectGenerator</Filter>
     </ClInclude>
   </ItemGroup>
