@@ -677,6 +677,7 @@ void FileDependencyGraphView::createDependency(QMouseEvent* event)
                         reversedDependency->setBidirectional(true);
                         changeDependencySelection(reversedDependency);
                         emit warningMessage(tr("An existing manual dependency was changed to bidirectional."));
+                        emit dependencyChanged(existingDependency);
                     }
                 }
 

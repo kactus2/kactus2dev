@@ -22,7 +22,6 @@
 //-----------------------------------------------------------------------------
 FileDependencyItem::FileDependencyItem()
     : parent_(0),
-      status_(FILE_DEPENDENCY_STATUS_UNKNOWN),
       type_(ITEM_TYPE_ROOT),
       component_(),
       path_(),
@@ -96,14 +95,6 @@ int FileDependencyItem::getIndex()
     }
 
     return parent_->children_.indexOf(this);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyItem::getStatus()
-//-----------------------------------------------------------------------------
-FileDependencyItem::FileDependencyStatus FileDependencyItem::getStatus() const
-{
-    return status_;
 }
 
 //-----------------------------------------------------------------------------
@@ -206,25 +197,6 @@ FileDependencyItem* FileDependencyItem::addFolder(QSharedPointer<Component> comp
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyItem::updateStatus()
-//-----------------------------------------------------------------------------
-void FileDependencyItem::updateStatus()
-{
-    status_ = FILE_DEPENDENCY_STATUS_OK;
-
-    for (FileDependencyItem* item : children_)
-    {
-        if (item->getStatus() == FILE_DEPENDENCY_STATUS_CHANGED)
-        {
-            if (status_ == FILE_DEPENDENCY_STATUS_OK)
-            {
-                status_ = FILE_DEPENDENCY_STATUS_CHANGED;
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileDependencyItem::getFileTypes()
 //-----------------------------------------------------------------------------
 QStringList FileDependencyItem::getFileTypes() const
@@ -251,38 +223,6 @@ QStringList FileDependencyItem::getFileTypes() const
 QString FileDependencyItem::getPath() const
 {
     return path_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyItem::setStatus()
-//-----------------------------------------------------------------------------
-void FileDependencyItem::setStatus(FileDependencyStatus status)
-{
-    status_ = status;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyItem::getLastHash()
-//-----------------------------------------------------------------------------
-QString FileDependencyItem::getLastHash() const
-{
-    if (fileRefs_.empty())
-    {
-        return QString();
-    }
-
-    return fileRefs_.first()->getLastHash();
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyItem::setLastHash()
-//-----------------------------------------------------------------------------
-void FileDependencyItem::setLastHash(QString const& hash)
-{
-    foreach (QSharedPointer<File> file, fileRefs_)
-    {
-        file->setPendingHash(hash);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -443,7 +383,6 @@ void FileDependencyItem::refreshFileRefs()
 FileDependencyItem::FileDependencyItem(QSharedPointer<Component> component, QString const& path,
     QList<QSharedPointer<File> > const& fileRefs, FileDependencyItem* parent):
 parent_(parent),
-      status_(FILE_DEPENDENCY_STATUS_UNKNOWN),
       type_(ITEM_TYPE_FILE),
       component_(component),
       path_(path),
@@ -458,7 +397,6 @@ parent_(parent),
 //-----------------------------------------------------------------------------
 FileDependencyItem::FileDependencyItem(QSharedPointer<Component> component, QString const& path,
     FileDependencyItem* parent): parent_(parent),
-    status_(FILE_DEPENDENCY_STATUS_UNKNOWN),
     type_(ITEM_TYPE_FOLDER),
     component_(component),
     path_(path),

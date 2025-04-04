@@ -47,8 +47,7 @@ includeFile_(other.includeFile_),
 externalDeclarations_(other.externalDeclarations_),
 logicalName_(other.logicalName_),
 logicalNameDefault_(other.logicalNameDefault_),
-description_(other.description_),
-pendingHash_(other.pendingHash_)
+description_(other.description_)
 {
     copyBuildCommand(other);
     copyDefines(other);
@@ -73,7 +72,6 @@ File& File::operator=(const File &other)
         logicalName_ = other.logicalName_;
         logicalNameDefault_ = other.logicalNameDefault_;
         description_ = other.description_;
-        pendingHash_ = other.pendingHash_;
         
         buildCommand_.clear();
         copyBuildCommand(other);
@@ -391,61 +389,6 @@ QString File::getDescription() const
 void File::setDescription(QString const& description)
 {
     description_ = description;
-}
-
-//-----------------------------------------------------------------------------
-// Function: File::getLastHash()
-//-----------------------------------------------------------------------------
-QString File::getLastHash() const
-{
-    auto extension = findVendorExtension(QStringLiteral("kactus2:hash"));
-
-    if (extension != nullptr)
-    {
-        QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
-        return hashExtension->value();
-    }
-
-    return QString();
-}
-
-//-----------------------------------------------------------------------------
-// Function: File::setLastHash()
-//-----------------------------------------------------------------------------
-void File::setLastHash(QString const& newHash)
-{
-    auto extension = findVendorExtension(QStringLiteral("kactus2:hash")).dynamicCast<Kactus2Value>();
-
-    if (newHash.isEmpty())
-    {
-        getVendorExtensions()->removeAll(extension);
-    }
-    else
-    {
-        if (extension == nullptr)
-        {
-            extension = QSharedPointer<Kactus2Value>(new Kactus2Value(QStringLiteral("kactus2:hash"), QString()));
-            getVendorExtensions()->append(extension);
-        }
-
-        extension->setValue(newHash);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: File::getPendingHash()
-//-----------------------------------------------------------------------------
-QString File::getPendingHash() const
-{
-    return pendingHash_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: File::setPendingHash()
-//-----------------------------------------------------------------------------
-void File::setPendingHash(QString const& hash)
-{
-    pendingHash_ = hash;
 }
 
 //-----------------------------------------------------------------------------

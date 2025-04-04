@@ -416,11 +416,6 @@ void FileDependencyEditor::setupToolbar()
     toolbar_.setStyleSheet(QString("QToolBar { border: none; }"));
 
     // Create the filter buttons in the toolbar.
-    //addFilterButton(QIcon(":/icons/common/graphics/traffic-light_green.png"), tr("Show Unchanged Files"),
-    //    FileDependencyGraphView::FILTER_GREEN);
-    //addFilterButton(QIcon(":/icons/common/graphics/traffic-light_yellow.png"), 
-    //    tr("Show Changed Files (Only Contents Changed)"),
-    //    FileDependencyGraphView::FILTER_YELLOW);
     addFilterButton(QIcon(":/icons/common/graphics/dependency_twoway.png"),
         tr("Show Bidirectional Dependencies"),
         FileDependencyGraphView::FILTER_TWO_WAY);

@@ -241,29 +241,6 @@ QVariant FileDependencyModel::data(QModelIndex const& index, int role) const
             }
         }
     }
-    else if (role == Qt::DecorationRole)
-    {
-        if (index.column() == FileDependencyColumns::STATUS)
-        {
-            if (item->isExternal())
-            {
-                return QVariant();
-            }
-
-            if (item->getStatus() == FileDependencyItem::FILE_DEPENDENCY_STATUS_UNKNOWN)
-            {
-                return QIcon(":icons/common/graphics/traffic-light_gray.png");
-            }
-            else if (item->getStatus() == FileDependencyItem::FILE_DEPENDENCY_STATUS_OK)
-            {
-                return QIcon(":icons/common/graphics/traffic-light_green.png");
-            }
-            else if (item->getStatus() == FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED)
-            {
-                return QIcon(":icons/common/graphics/traffic-light_yellow.png");
-            }
-        }
-    }
     else if (role == Qt::SizeHintRole && index.column() == FileDependencyColumns::STATUS)
     {
             return QSize(16, 16);
@@ -532,7 +509,6 @@ void FileDependencyModel::performAnalysisStep()
             {
                 // Update the status of the folder and continue to the next folder.
                 FileDependencyItem* folderItem = root_->getChild(curFolderIndex_);
-                folderItem->updateStatus();
 
                 emit dataChanged(getItemIndex(folderItem, 0), getItemIndex(folderItem,
                     FileDependencyColumns::DEPENDENCIES));
@@ -647,15 +623,11 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
 
     // Check the file for modifications by calculating its hash and comparing to the saved value.
     QString absPath = General::getAbsolutePath(basePath_, FileHandler::resolvePath(fileItem->getPath()));
-    QString lastHash = fileItem->getLastHash();
-    QString currentHash = QString();
     bool dependenciesChanged = false;
 
     // If a corresponding plugin was found, let it calculate the hash.
     if (plugin != nullptr)
     {
-        currentHash = plugin->calculateHash(absPath);
-
         QList<FileDependency*> oldDependencies = findDependencies(fileItem->getPath());
 
         // Scan the current dependencies.
@@ -711,7 +683,6 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                 dependency->setStatus(FileDependency::STATUS_ADDED);
 
                 addDependency(dependency);
-                dependenciesChanged = true;
             }
             else
             {
@@ -726,28 +697,10 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                     // Combine the descriptions.
                     found->setDescription(found->getDescription() + "\n" + desc.description);
                     emit dependencyChanged(found);
-
-                    dependenciesChanged = true;
                 }
             }
         }
     }
-    else
-    {
-        // Calculate SHA-1 from the whole file.
-        currentHash = calculateMd5forFile(absPath);
-    }
-
-    //if (lastHash.isEmpty() == false && currentHash != lastHash && !currentHash.isEmpty())
-    //{
-    //    fileItem->setStatus(FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED);   
-    //}
-    //else
-    //{
-    //    fileItem->setStatus(FileDependencyItem::FILE_DEPENDENCY_STATUS_OK);
-    //}
-
-    fileItem->setLastHash(currentHash);
 
     emit dataChanged(getItemIndex(fileItem, FileDependencyColumns::STATUS),
                      getItemIndex(fileItem, FileDependencyColumns::STATUS));

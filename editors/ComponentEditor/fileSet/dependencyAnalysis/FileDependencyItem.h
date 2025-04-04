@@ -42,20 +42,7 @@ public:
         ITEM_TYPE_UNKNOWN_LOCATION,     //!< For files whose location is unknown.
         ITEM_TYPE_FILE                  //!< For any files.
     };
-
-
-    //-----------------------------------------------------------------------------
-    //! Dependency status enumeration.
-    //-----------------------------------------------------------------------------
     
-    // Unused, should probably be removed along with associated methods at some point
-    enum FileDependencyStatus
-    {
-        FILE_DEPENDENCY_STATUS_UNKNOWN = 0,
-        FILE_DEPENDENCY_STATUS_OK,
-        FILE_DEPENDENCY_STATUS_CHANGED
-    };
-
     /*!
      *  Default constructor which creates a root item.
      */
@@ -102,27 +89,6 @@ public:
     void removeItem(FileDependencyItem* item);
 
     /*!
-     *  Sets the status of the item.
-     *
-     *    @param [in] status The new status to set.
-     */
-    void setStatus(FileDependencyStatus status);
-
-    /*!
-     *  Updates the status based on the child items.
-     *
-     *      @remarks Only relevant to folder items.
-     */
-    void updateStatus();
-
-    /*!
-     *  Sets the latest hash to the metadata.
-     *
-     *    @param [in] hash The hash to set.
-     */
-    void setLastHash(QString const& hash);
-
-    /*!
      *  Assigns the file into the given file sets.
      *
      *    @param [in] fileSets          The file sets where the file is assigned.
@@ -164,11 +130,6 @@ public:
     int getIndex();
 
     /*!
-     *  Returns the status of the item.
-     */
-    FileDependencyStatus getStatus() const;
-
-    /*!
      *  Returns the item type.
      */
     ItemType getType() const;
@@ -199,11 +160,6 @@ public:
      *  Returns the name of the file (i.e. the packaged relative name).
      */
     QString getPath() const;
-
-    /*!
-     *  Returns the latest calculated hash or an empty string if the file is a new one.
-     */
-    QString getLastHash() const;
 
     /*!
      *  Returns true if the item is considered as external (not packaged).
@@ -252,9 +208,6 @@ private:
     //! The parent item.
     FileDependencyItem* parent_;
     
-    //! The current status.
-    FileDependencyStatus status_;
-
     //! The item type.
     ItemType type_;
 
