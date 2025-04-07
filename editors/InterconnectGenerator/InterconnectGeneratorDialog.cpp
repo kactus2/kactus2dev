@@ -206,7 +206,8 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ty
             }
         });
     connect(interfaceEditor, &InterfaceEnumEditor::targetInterfaceUnchecked,
-        this, [=](const QString& interfaceName) {
+        this, [=](const QString& interfaceName, const QString& instanceName) {
+            addressHelper_->releaseTargetAddress(instanceName);
             interfaceEditor->clearTargetInterfaceValues(interfaceName);
         });
 

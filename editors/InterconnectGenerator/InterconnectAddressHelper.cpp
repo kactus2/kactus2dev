@@ -57,7 +57,7 @@ InterconnectAddressHelper::InterconnectAddressHelper(VLNV designVLNV,
 }
 
 void InterconnectAddressHelper::reset() {
-    usedStartAddresses_.clear();
+    usedAddressRanges_.clear();
     nextAvailableAddress_ = 0;
 }
 
@@ -68,44 +68,66 @@ bool InterconnectAddressHelper::getTargetAddressRange(const QString& instanceNam
 {
     outStart = 0;
     outRange = 0;
+
+    QSharedPointer<Component> component = loadComponentForInstance(instanceName);
+    if (!component) return false;
+
+    QString matchingMap = findMatchingMemoryMap(component, interfaceName);
+    if (matchingMap.isEmpty()) return false;
+
+    quint64 totalRange = calculateTotalRange(component, matchingMap);
+    if (totalRange == 0) return false;
+
+    return assignAddressRange(instanceName, totalRange, outStart, outRange);
+}
+
+QSharedPointer<Component> InterconnectAddressHelper::loadComponentForInstance(const QString& instanceName)
+{
     QSharedPointer<VLNV> compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
-    if (!compVLNV) return false;
+    if (!compVLNV) return nullptr;
 
     QSharedPointer<Document> doc = library_->getModel(*compVLNV);
-    if (!doc) return false;
+    if (!doc) return nullptr;
 
     QSharedPointer<QList<QSharedPointer<Parameter>>> parameters = doc->getParameters();
     listParameterFinder_->setParameterList(parameters);
 
     QSharedPointer<Component> component = doc.dynamicCast<Component>();
-    if (!component) return false;
+    if (!component) return nullptr;
 
     initialize(component);
     memoryMapInterface_->setMemoryMaps(component);
 
+    return component;
+}
+
+QString InterconnectAddressHelper::findMatchingMemoryMap(QSharedPointer<Component> component, const QString& interfaceName)
+{
     std::vector<std::string> mapNames = memoryMapInterface_->getItemNames();
-    QString matchingMap;
+
     for (const std::string& nameStr : mapNames) {
         std::string boundIf = memoryMapInterface_->getInterfaceBinding(nameStr);
         if (boundIf == interfaceName.toStdString()) {
-            matchingMap = QString::fromStdString(nameStr);
-            break;
+            return QString::fromStdString(nameStr);
         }
     }
 
-    if (matchingMap.isEmpty()) return false;
+    return QString();
+}
 
-    MemoryMap* map = memoryMapInterface_->getMapPointer(matchingMap.toStdString());
-    if (!map || !map->getMemoryBlocks()) return false;
+quint64 InterconnectAddressHelper::calculateTotalRange(QSharedPointer<Component> component, const QString& mapName)
+{
+    MemoryMap* map = memoryMapInterface_->getMapPointer(mapName.toStdString());
+    if (!map || !map->getMemoryBlocks()) return 0;
+
     addressBlockInterface_->setMemoryBlocks(map->getMemoryBlocks());
-    addressBlockInterface_->setAddressUnitBits(memoryMapInterface_->getAddressUnitBitsValue(matchingMap.toStdString()));
+    addressBlockInterface_->setAddressUnitBits(memoryMapInterface_->getAddressUnitBitsValue(mapName.toStdString()));
     addressBlockInterface_->setupSubInterfaces(component);
 
     std::vector<std::string> blockNames = addressBlockInterface_->getItemNames();
     quint64 totalRange = 0;
 
     for (const std::string& blockName : blockNames) {
-        QString nameStr = QString::fromStdString(blockName);
         QString blockRangeStr = QString::fromStdString(addressBlockInterface_->getRangeValue(blockName));
 
         bool ok = false;
@@ -115,19 +137,76 @@ bool InterconnectAddressHelper::getTargetAddressRange(const QString& instanceNam
         }
     }
 
-    if (totalRange == 0) return false;
+    return totalRange;
+}
 
-    if (usedStartAddresses_.contains(instanceName)) {
-        outStart = usedStartAddresses_.value(instanceName);
-    }
-    else {
-        outStart = nextAvailableAddress_;
-        usedStartAddresses_.insert(instanceName, outStart);
-        nextAvailableAddress_ += totalRange;
+bool InterconnectAddressHelper::assignAddressRange(const QString& instanceName, quint64 totalRange,
+    quint64& outStart, quint64& outRange)
+{
+    if (usedAddressRanges_.contains(instanceName)) {
+        const auto& pair = usedAddressRanges_.value(instanceName);
+        outStart = pair.first;
+        outRange = pair.second;
+        return true;
     }
 
+    for (int i = 0; i < freeAddressSpaces_.size(); ++i) {
+        QPair<quint64, quint64> free = freeAddressSpaces_.at(i);
+        if (free.second >= totalRange) {
+            outStart = free.first;
+            outRange = totalRange;
+            usedAddressRanges_.insert(instanceName, qMakePair(outStart, outRange));
+
+            if (free.second == totalRange) {
+                freeAddressSpaces_.removeAt(i);
+            }
+            else {
+                freeAddressSpaces_[i].first += totalRange;
+                freeAddressSpaces_[i].second -= totalRange;
+            }
+            return true;
+        }
+    }
+
+    outStart = nextAvailableAddress_;
     outRange = totalRange;
+    usedAddressRanges_.insert(instanceName, qMakePair(outStart, outRange));
+    nextAvailableAddress_ += totalRange;
     return true;
+}
+
+
+void InterconnectAddressHelper::releaseTargetAddress(const QString& instanceName) {
+    if (!usedAddressRanges_.contains(instanceName)) return;
+
+    auto released = usedAddressRanges_.take(instanceName);
+    quint64 releasedStart = released.first;
+    quint64 releasedRange = released.second;
+
+    freeAddressSpaces_.append(qMakePair(releasedStart, releasedRange));
+
+    mergeFreeSpaces();
+}
+
+void InterconnectAddressHelper::mergeFreeSpaces() {
+    std::sort(freeAddressSpaces_.begin(), freeAddressSpaces_.end());
+
+    QList<QPair<quint64, quint64>> merged;
+    for (const auto& block : freeAddressSpaces_) {
+        if (merged.isEmpty()) {
+            merged.append(block);
+        }
+        else {
+            QPair<quint64, quint64>& last = merged.last();
+            if (last.first + last.second == block.first) {
+                last.second += block.second;
+            }
+            else {
+                merged.append(block);
+            }
+        }
+    }
+    freeAddressSpaces_ = merged;
 }
 
 void InterconnectAddressHelper::initialize(QSharedPointer<Component> component) {

@@ -42,19 +42,26 @@ public:
 
     virtual ~InterconnectAddressHelper() = default;
 
-    // Calculates the start address and range for a target interface.
     bool getTargetAddressRange(const QString& instanceName,
         const QString& interfaceName,
         quint64& outStart,
         quint64& outRange);
 
-    // Resets internal address allocation state.
+    void releaseTargetAddress(const QString& instanceName);
+
     void reset();
 
 private:
     void initialize(QSharedPointer<Component> component);
     void createValidators(QSharedPointer<Component> component);
     void createInterfaces(QSharedPointer<Component> component);
+
+    QSharedPointer<Component> loadComponentForInstance(const QString& instanceName);
+    QString findMatchingMemoryMap(QSharedPointer<Component> component, const QString& interfaceName);
+    quint64 calculateTotalRange(QSharedPointer<Component> component, const QString& mapName);
+    bool assignAddressRange(const QString& instanceName, quint64 totalRange,
+        quint64& outStart, quint64& outRange);
+    void mergeFreeSpaces();
 
     MessageMediator* messager_;
 
@@ -95,8 +102,9 @@ private:
         adhocConnectionInterface_) };
 
     QSharedPointer<Component> currentComponent_;
-    QHash<QString, quint64> usedStartAddresses_;
+    QHash<QString, QPair<quint64, quint64>> usedAddressRanges_;
     quint64 nextAvailableAddress_ = 0;
+    QList<QPair<quint64, quint64>> freeAddressSpaces_;
 };
 
 #endif // INTERCONNECTADDRESSHELPER_H
