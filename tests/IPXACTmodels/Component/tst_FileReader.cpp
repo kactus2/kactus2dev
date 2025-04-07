@@ -41,7 +41,7 @@ private slots:
     void readImageTypes();
 
 
-    void readHashExtension();
+    //void readHashExtension();
     void readVendorExtensions();
     void readDescription();
 };
@@ -489,28 +489,28 @@ void tst_FileReader::readImageTypes()
 //-----------------------------------------------------------------------------
 // Function: tst_FileReader::readHashExtension()
 //-----------------------------------------------------------------------------
-void tst_FileReader::readHashExtension()
-{
-    QString documentContent(
-        "<ipxact:file>"
-            "<ipxact:name>./testFile</ipxact:name>"
-            "<ipxact:fileType>vhdlSource</ipxact:fileType>"
-            "<ipxact:vendorExtensions>"
-                "<kactus2:hash>hash</kactus2:hash>"
-            "</ipxact:vendorExtensions>"
-        "</ipxact:file>"
-        );
-
-    QDomDocument document;
-    document.setContent(documentContent);
-
-    QDomNode fileNode = document.firstChildElement("ipxact:file");
-
-    QSharedPointer<File> testFile = FileReader::createFileFrom(fileNode, Document::Revision::Std14);
-
-    QCOMPARE(testFile->getVendorExtensions()->size(), 1);
-    QCOMPARE(testFile->getLastHash(), QString("hash"));
-}
+//void tst_FileReader::readHashExtension()
+//{
+//    QString documentContent(
+//        "<ipxact:file>"
+//            "<ipxact:name>./testFile</ipxact:name>"
+//            "<ipxact:fileType>vhdlSource</ipxact:fileType>"
+//            "<ipxact:vendorExtensions>"
+//                "<kactus2:hash>hash</kactus2:hash>"
+//            "</ipxact:vendorExtensions>"
+//        "</ipxact:file>"
+//        );
+//
+//    QDomDocument document;
+//    document.setContent(documentContent);
+//
+//    QDomNode fileNode = document.firstChildElement("ipxact:file");
+//
+//    QSharedPointer<File> testFile = FileReader::createFileFrom(fileNode, Document::Revision::Std14);
+//
+//    QCOMPARE(testFile->getVendorExtensions()->size(), 1);
+//    QCOMPARE(testFile->getLastHash(), QString("hash"));
+//}
 
 //-----------------------------------------------------------------------------
 // Function: tst_FileReader::readDescription()

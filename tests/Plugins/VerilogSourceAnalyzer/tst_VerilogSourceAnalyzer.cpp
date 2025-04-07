@@ -341,7 +341,8 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance()
 	for (auto& instantiationDependency : dependencies)
 	{
 		QString moduleName = instantiationDependency.filename;
-		moduleName.remove(QRegularExpression(".(s)?v$"));
+		//moduleName.remove(QRegularExpression(".(s)?v$"));
+		moduleName.remove(QRegularExpression("\\s*\\(Verilog module\\)$"));
 		QString error = "No instance " + moduleName + " found with file " + instantiationDependency.filename;		
 		QVERIFY2(fileNames.contains(instantiationDependency.filename), error.toLocal8Bit());
 		QCOMPARE(instantiationDependency.description, QString("Submodule instantiation of module " + moduleName));
@@ -363,14 +364,14 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance_data()
 		"\n"
 		"submodule sub_i();\n"		
 		"endmodule\n"
-		<< QStringList("submodule.v");
+		<< QStringList("submodule (Verilog module)");
 
 	QTest::newRow("Simple submodule, no port connections") <<
 		"module test(input clk);\n"
 		"\n"
 		"submodule sub_i;\n"
 		"endmodule\n"
-		<< QStringList("submodule.v");
+		<< QStringList("submodule (Verilog module)");
 
 	QTest::newRow("Simple submodule, one port") << 
 		"module test(input clk);\n"
@@ -379,7 +380,7 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance_data()
 		"    .clk(clk)\n"
 		");\n"
 		"endmodule\n"
-		<< QStringList("submodule.v");
+		<< QStringList("submodule (Verilog module)");
 
 	QTest::newRow("Simple submodule, multiple ports") <<
 		"module test(input clk, input rst, output enable);\n"
@@ -389,7 +390,7 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance_data()
 		"    .reset(rst)\n"
 		");\n"
 		"endmodule\n"
-		<< QStringList("submodule.v");
+		<< QStringList("submodule (Verilog module)");
 
 	QTest::newRow("Simple submodule with parameter and wire declarations") <<
 		"module test(input clk, input rst, output enable);\n"
@@ -406,7 +407,7 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance_data()
 		"    .reset(rst)\n"
 		");\n"
 		"endmodule\n"
-		<< QStringList("submodule.v");
+		<< QStringList("submodule (Verilog module)");
 
 	QTest::newRow("Simple submodule with preceding assignments") <<
 		"module test(input clk, output enable);\n"
@@ -422,7 +423,7 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance_data()
 		"    .enable(enable_carrier)\n"
 		");"
 		"endmodule\n"
-		<< QStringList("submodule.v");
+		<< QStringList("submodule (Verilog module)");
 
 	QTest::newRow("Multiple submodules with logic") <<
 		"module top(input logic clk, reset, enable,\n"
@@ -449,7 +450,8 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance_data()
 		"  assign en_data_gen_b = !en_data_gen;\n"
 		"\n"
 		"endmodule: top\n"
-		<< QStringList({ "intf.v", "data_gen.v", "master.v", "slave.v", "counter.v" });
+		<< QStringList({ "intf (Verilog module)", "data_gen (Verilog module)", 
+			"master (Verilog module)", "slave (Verilog module)", "counter (Verilog module)" });
 
 	QTest::newRow("Instantiating same submodule multiple times") <<
 		"module ripple_adder(X, Y, S, Co);\n"
@@ -464,7 +466,7 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance_data()
 		"fulladder u3(X[2], Y[2], w2, S[2], w3);\n"
 		"fulladder u4(X[3], Y[3], w3, S[3], Co);\n"
 		"endmodule"
-		<< QStringList("fulladder.v");
+		<< QStringList("fulladder (Verilog module)");
 }
 
 //-----------------------------------------------------------------------------
@@ -487,7 +489,7 @@ void tst_VerilogSourceAnalyzer::testSubmodulesAreSearchedInFilesets()
 		".", QFileInfo("top.v").absoluteFilePath());
 
 	QCOMPARE(dependencies.count(), 1);
-	QCOMPARE(dependencies.first().filename, "johnson.v");
+	QCOMPARE(dependencies.first().filename, "johnson (Verilog module)");
 
 	writeTestFile(
 		"module johnson();\n"

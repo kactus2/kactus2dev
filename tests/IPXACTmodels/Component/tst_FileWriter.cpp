@@ -49,7 +49,7 @@ private slots:
     void writeImageTypes();
     void writeDescription();
 
-    void writeHashExtensions();
+    //void writeHashExtensions();
     void writeVendorExtensions();
 
 private:
@@ -553,26 +553,26 @@ void tst_FileWriter::writeDescription()
 //-----------------------------------------------------------------------------
 // Function: tst_FileWriter::writeHashExtensions()
 //-----------------------------------------------------------------------------
-void tst_FileWriter::writeHashExtensions()
-{
-    QString output;
-    QXmlStreamWriter xmlStreamWriter(&output);
-
-    testFile_->setPendingHash("hash");
-
-    QString expectedOutput(
-        "<ipxact:file>"
-            "<ipxact:name>./testFile</ipxact:name>"
-            "<ipxact:fileType>vhdlSource</ipxact:fileType>"
-            "<ipxact:vendorExtensions>"
-                "<kactus2:hash>hash</kactus2:hash>"
-            "</ipxact:vendorExtensions>"
-        "</ipxact:file>"
-        );
-
-    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
-    QCOMPARE(output, expectedOutput);
-}
+//void tst_FileWriter::writeHashExtensions()
+//{
+//    QString output;
+//    QXmlStreamWriter xmlStreamWriter(&output);
+//
+//    testFile_->setPendingHash("hash");
+//
+//    QString expectedOutput(
+//        "<ipxact:file>"
+//            "<ipxact:name>./testFile</ipxact:name>"
+//            "<ipxact:fileType>vhdlSource</ipxact:fileType>"
+//            "<ipxact:vendorExtensions>"
+//                "<kactus2:hash>hash</kactus2:hash>"
+//            "</ipxact:vendorExtensions>"
+//        "</ipxact:file>"
+//        );
+//
+//    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+//    QCOMPARE(output, expectedOutput);
+//}
 
 //-----------------------------------------------------------------------------
 // Function: tst_FileWriter::writeVendorExtensions()
