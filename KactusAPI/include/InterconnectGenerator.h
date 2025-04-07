@@ -79,6 +79,8 @@ private:
 
     void createAddressSpace(std::string busName, QString range, QString width = "32");
 
+    void createGlobalAddressSpaceFromTargets(const QHash<QString, QList<QSharedPointer<TargetData>>>& targets);
+
     //! Message handler.
     MessageMediator* messager_{ nullptr };
 
@@ -131,6 +133,8 @@ private:
     QString directory_;
 
     std::string prefix_;
+
+    std::string globalAddressSpaceName_;
 
     VLNV busDefVLNV_;
     VLNV rstVLNV_;
