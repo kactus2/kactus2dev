@@ -73,6 +73,7 @@ private:
     void collectInitiators(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
     void collectTargets(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
 
+    void addNewInstance(const QString& type);
     void addNewInitiator();
     void addNewTarget();
 

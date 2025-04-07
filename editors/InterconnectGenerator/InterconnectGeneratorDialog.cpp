@@ -75,23 +75,46 @@ void InterconnectGeneratorDialog::populateParameters()
 }
 
 void InterconnectGeneratorDialog::addNewInitiator() {
-    QFrame* instanceFrame = createInstanceEditorFrame("Initiator");
-    if (instanceFrame) {
-        initiatorsContainerLayout_->addWidget(instanceFrame);
-        QComboBox* nameCombo = instanceFrame->findChild<QComboBox*>();
-        if (nameCombo) addedInitiators_.insert(nameCombo->currentText());
-        updateNameCombos();
-    }
+    addNewInstance("Initiator");
 }
 
 void InterconnectGeneratorDialog::addNewTarget() {
-    QFrame* instanceFrame = createInstanceEditorFrame("Target");
-    if (instanceFrame) {
-        targetsContainerLayout_->addWidget(instanceFrame);
-        QComboBox* nameCombo = instanceFrame->findChild<QComboBox*>();
-        if (nameCombo) addedTargets_.insert(nameCombo->currentText());
-        updateNameCombos();
+    addNewInstance("Target");
+}
+
+void InterconnectGeneratorDialog::addNewInstance(const QString& type) {
+    QFrame* instanceFrame = createInstanceEditorFrame(type);
+    if (!instanceFrame) return;
+    QComboBox* nameCombo = instanceFrame->findChild<QComboBox*>();
+    if (!nameCombo) return;
+
+    QString currentText = nameCombo->currentText();
+
+    if (type == "Initiator") {
+        initiatorsContainerLayout_->addWidget(instanceFrame);
+        addedInitiators_.insert(currentText);
     }
+    else {
+        targetsContainerLayout_->addWidget(instanceFrame);
+        addedTargets_.insert(currentText);
+    }
+
+    connect(nameCombo, &QComboBox::currentTextChanged, this,
+        [=](const QString& newText) mutable {
+            messager_->showMessage("checkpoint");
+            if (type == "Initiator") {
+                addedInitiators_.remove(currentText);
+                addedInitiators_.insert(newText);
+            }
+            else {
+                addedTargets_.remove(currentText);
+                addedTargets_.insert(newText);
+            }
+            currentText = newText;
+            updateNameCombos();
+        });
+
+    updateNameCombos();
 }
 
 void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, const QString& instanceType, QStringList& availableInstances)
@@ -176,7 +199,6 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ty
 
     connect(interfaceEditor, &InterfaceEnumEditor::targetInterfaceChecked,
         this, [=](const QString& interfaceName, const QString& instanceName) {
-            messager_->showMessage("checkpoint");
             quint64 start = 0;
             quint64 range = 0;
             if (addressHelper_->getTargetAddressRange(instanceName, interfaceName, start, range)) {
