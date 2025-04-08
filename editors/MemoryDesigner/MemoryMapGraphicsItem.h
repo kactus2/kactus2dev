@@ -48,6 +48,15 @@ public:
         bool filterAddressBlocks, bool filterRegisters, bool filterFields,
         QSharedPointer<ConnectivityComponent const> containingInstance, QGraphicsItem* parent = 0);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other     The original memory map item.
+     *
+     *    @return Copy of the original memory map item.
+     */
+    MemoryMapGraphicsItem(MemoryMapGraphicsItem const& other);
+
 	/*!
      *  The destructor.
      */
@@ -80,8 +89,24 @@ public:
 
 private:
     // Disable copying.
-    MemoryMapGraphicsItem(MemoryMapGraphicsItem const& rhs);
     MemoryMapGraphicsItem& operator=(MemoryMapGraphicsItem const& rhs);
+
+    /*!
+     *  Setup the memory item.
+     *
+     *    @param [in] baseAddress   Base address of the memory item.
+     *    @param [in] lastAddress   Last address of the memory item.
+     */
+    void setupMemoryMapItem(quint64 const& baseAddress, quint64 const& lastAddress);
+
+    /*!
+     *  Create a copy of the selected sub item.
+     *
+     *    @param [in] subItem   The selected sub item.
+     *
+     *    @return Copy of the selected sub item.
+     */
+    virtual MemoryDesignerChildGraphicsItem* createCopyOfSubItem(MemoryDesignerChildGraphicsItem* subItem) override final;
 
     /*!
      *  Set the label positions.
@@ -171,7 +196,7 @@ private:
     bool filterFields_;
 
     //! Width of the contained memory sub items.
-    qreal subItemWidth_;
+    qreal subItemWidth_ = 0;
 
     //! List of filtered address blocks.
     QVector<MemoryMapGraphicsItem::FilteredBlock> filteredBlocks_;

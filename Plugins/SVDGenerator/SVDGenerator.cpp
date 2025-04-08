@@ -296,10 +296,10 @@ void SVDGenerator::writePeripherals(QXmlStreamWriter& writer, QVector<QSharedPoi
                     QSharedPointer<const Component> component =
                         ConnectivityGraphUtilities::getInterfacedComponent(library_, interfacedComponent);
 
-                    MemoryConnectionAddressCalculator::ConnectionPathVariables pathAddresses =
+                    MemoryConnectionAddressCalculator::CalculatedPathAddresses pathAddresses =
                         MemoryConnectionAddressCalculator::calculatePathAddresses(singleRouteDetails->cpuInterface_, routeInterface, masterSlaveRoute);
 
-                    quint64 memoryBaseAddress = pathAddresses.remappedAddress_;
+                    quint64 memoryBaseAddress = pathAddresses.connectionBaseAddress_;
                     QString baseAddressInHexa = valueToHexa(memoryBaseAddress);
 
                     writePeripheral(writer, component, interfaceMemory, memoryBaseAddress, baseAddressInHexa);

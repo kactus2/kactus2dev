@@ -20,6 +20,7 @@
 #include <editors/MemoryDesigner/MemoryMapGraphicsItem.h>
 #include <editors/MemoryDesigner/MemoryColumn.h>
 #include <editors/MemoryDesigner/MemoryCollisionItem.h>
+#include <editors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryGraphicsItemHandler::MemoryGraphicsItemHandler()
@@ -263,4 +264,75 @@ void MemoryGraphicsItemHandler::createFieldOverlapItems()
     {
         mapItem->createFieldOverlapItems();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::cloneMemoryItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryGraphicsItemHandler::cloneMemoryItem(MainMemoryGraphicsItem* originalItem, MemoryColumn* containingColumn)
+{
+    MainMemoryGraphicsItem* clonedItem = nullptr;
+
+    if (containingColumn)
+    {
+        if (auto mapItem = dynamic_cast<MemoryMapGraphicsItem const*>(originalItem); mapItem)
+        {
+            auto clonedMap = new MemoryMapGraphicsItem(*mapItem);
+            memoryMapItems_.append(clonedMap);
+
+            connectGraphicsItemSignals(clonedMap);
+            containingColumn->addItem(clonedMap, true);
+
+            clonedItem = clonedMap;
+        }
+        else if (auto spaceItem = dynamic_cast<AddressSpaceGraphicsItem const*>(originalItem); spaceItem)
+        {
+            auto clonedSpace = new AddressSpaceGraphicsItem(*spaceItem);
+            spaceItems_.append(clonedSpace);
+
+            connectGraphicsItemSignals(clonedSpace);
+            containingColumn->addItem(clonedSpace, true);
+
+            clonedItem = clonedSpace;
+        }
+    }
+
+    if (clonedItem != nullptr)
+    {
+        originalItem->getClones()->append(clonedItem);
+    }
+
+    return clonedItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::itemHasCloneWithBaseAddress()
+//-----------------------------------------------------------------------------
+bool MemoryGraphicsItemHandler::itemHasCloneWithBaseAddress(MainMemoryGraphicsItem* originalItem, quint64 const& baseAddress) const
+{
+    for (auto cloneItem : *originalItem->getClones())
+    {
+        if (cloneItem->getBaseAddress() == baseAddress)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::getClonedItemWithBaseAddress()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryGraphicsItemHandler::getClonedItemWithBaseAddress(MainMemoryGraphicsItem* originalItem, quint64 const& baseAddress)
+{
+    for (auto cloneItem : *originalItem->getClones())
+    {
+        if (cloneItem->getBaseAddress() == baseAddress)
+        {
+            return cloneItem;
+        }
+    }
+
+    return nullptr;
 }

@@ -26,7 +26,7 @@ MemoryDesignConstructor::MemoryDesignConstructor(QSharedPointer<GraphicsColumnLa
 QObject(),
 columnHandler_(new MemoryColumnHandler(layout)),
 itemHandler_(new MemoryGraphicsItemHandler()),
-connectionHandler_(new MemoryConnectionHandler(columnHandler_)),
+connectionHandler_(new MemoryConnectionHandler(columnHandler_, itemHandler_)),
 widthBoundary_(0)
 {
     connect(itemHandler_.data(), SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),

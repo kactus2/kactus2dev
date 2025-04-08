@@ -144,6 +144,36 @@ public:
      */
     void createFieldOverlapItems();
 
+    /*!
+     *  Clone the selected memory item.
+     *
+     *    @param [in] originalItem      The selected memory item.
+     *    @param [in] containingColumn  Column containing the selected memory item.
+     *
+     *    @return The cloned memory item.
+     */
+    MainMemoryGraphicsItem* cloneMemoryItem(MainMemoryGraphicsItem* originalItem, MemoryColumn* containingColumn);
+
+    /*!
+     *  Check if the selected item has been cloned and has the selected base address.
+     *
+     *    @param [in] originalItem  The selected item.
+     *    @param [in] baseAddress   The selected base address.
+     *
+     *    @return True, if the item exists, false otherwise.
+     */
+    bool itemHasCloneWithBaseAddress(MainMemoryGraphicsItem* originalItem, quint64 const& baseAddress) const;
+
+    /*!
+     *  Get the cloned memory item of the selected item with the selected base address.
+     *
+     *    @param [in] originalItem  The selected item.
+     *    @param [in] baseAddress   The selected base address.
+     *
+     *    @return The cloned memory item.
+     */
+    MainMemoryGraphicsItem* getClonedItemWithBaseAddress(MainMemoryGraphicsItem* originalItem, quint64 const& baseAddress);
+
 signals:
 
     /*!

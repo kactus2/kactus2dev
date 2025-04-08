@@ -64,7 +64,7 @@ MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemByMemoryItem(
         foreach (QGraphicsItem* item, getItems())
         {
             auto memoryGraphicsItem = dynamic_cast<MainMemoryGraphicsItem*>(item);
-            if (memoryGraphicsItem && memoryGraphicsItem->getMemoryItem() == containedMemoryItem)
+            if (memoryGraphicsItem && memoryGraphicsItem->getMemoryItem() == containedMemoryItem && memoryGraphicsItem->isOriginal())
             {
                 return memoryGraphicsItem;
             }

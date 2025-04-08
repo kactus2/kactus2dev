@@ -39,7 +39,17 @@ public:
      *    @param [in] mainGraphicsItem    The main graphics item.
      */
     SubMemoryLayout(QSharedPointer<MemoryItem const> memoryItem, QString const& subItemType, bool filterSubItems,
-        MemoryDesignerGraphicsItem* mainGraphicsItem);
+        MemoryDesignerGraphicsItem const* mainGraphicsItem);
+
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other             The original sub layout.
+     *    @param [in] mainGraphicsItem  The owner of this layout.
+     *
+     *    @return Copy of the original sub layout.
+     */
+    SubMemoryLayout(SubMemoryLayout const& other, MemoryDesignerGraphicsItem const* mainGraphicsItem);
 
 	/*!
      *  The destructor.
@@ -47,11 +57,12 @@ public:
     virtual ~SubMemoryLayout();
 
     /*!
-     *  Change the ranges of the child items.
+     *  Change the address ranges of the child items.
      *
-     *    @param [in] offset  The offset of the main item.
+     *    @param [in] previousAddress   Previous address of the memory item.
+     *    @param [in] newAddress        New address for the memory item.
      */
-    void changeChildItemRanges(quint64 offset);
+    void changeChildItemAddress(quint64 const& previousBaseAddress, quint64 const& newAddress);
 
     /*!
      *  Get the sub memory items.
@@ -132,6 +143,13 @@ public:
 protected:
 
     /*!
+     *  Clone the sub memory items.
+     *
+     *    @param [in] other     The original sub memory layout.
+     */
+    void cloneSubItems(SubMemoryLayout const& other);
+
+    /*!
      *  Set a new value for filtering memory sub items.
      *
      *    @param [in] filterValue     New filtering value for the memory sub items.
@@ -181,7 +199,6 @@ protected:
 
 private:
     // Disable copying.
-    SubMemoryLayout(SubMemoryLayout const& rhs);
     SubMemoryLayout& operator=(SubMemoryLayout const& rhs);
 
     /*!
@@ -194,6 +211,15 @@ private:
      */
     virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem const> subMemoryItem,
         bool isEmpty) = 0;
+
+    /*!
+     *  Create a copy of the selected sub item.
+     *
+     *    @param [in] subItem   The selected sub item.
+     *
+     *    @return Copy of the selected sub item.
+     */
+    virtual MemoryDesignerChildGraphicsItem* createCopyOfSubItem(MemoryDesignerChildGraphicsItem* subItem) = 0;
 
     /*!
      *  Create an empty sub memory graphics item and position it.
@@ -245,7 +271,7 @@ private:
     QString itemType_;
 
     //! The main graphics memory item.
-    MemoryDesignerGraphicsItem* mainGraphicsItem_;
+    MemoryDesignerGraphicsItem const* mainGraphicsItem_;
 
     //! Type of the sub memory items.
     QString subItemType_;

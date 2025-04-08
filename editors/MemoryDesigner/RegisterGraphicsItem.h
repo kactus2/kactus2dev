@@ -47,6 +47,16 @@ public:
         QVector<QString> identifierChain, bool filterFields,
         QSharedPointer<ConnectivityComponent const> containingInstance, MemoryDesignerGraphicsItem* parentItem);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other         The original register item.
+     *    @param [in] parentItem    The parent item.
+     *
+     *    @return Copy of the original register item.
+     */
+    RegisterGraphicsItem(RegisterGraphicsItem const& other, MemoryDesignerGraphicsItem* parentItem);
+
 	/*!
      *  The destructor.
      */
@@ -92,7 +102,6 @@ public:
 
 private:
     // Disable copying.
-    RegisterGraphicsItem(RegisterGraphicsItem const& rhs);
     RegisterGraphicsItem& operator=(RegisterGraphicsItem const& rhs);
 
     //! Field memory items with calculated field offset and width.
@@ -129,6 +138,13 @@ private:
      *    @param [in] registerItem    The selected register memory item.
      */
     void setupFields(QSharedPointer<MemoryItem const> registerItem);
+
+    /*!
+     *  Clone the field items.
+     *
+     *    @param [in] other     The original register item
+     */
+    void cloneFields(RegisterGraphicsItem const& other);
 
     /*!
      *  Get the field items in last bit order.

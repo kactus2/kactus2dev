@@ -33,13 +33,36 @@ MemoryDesignerChildGraphicsItem(blockItem, QStringLiteral("Address Block"), bloc
     blockItem->getRange().toULongLong(), addressBlockWidth, identifierChain, containingInstance, memoryMapItem),
 SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, filterRegisters, this),
 addressUnitBits_(blockItem->getAUB()),
-filterFields_(filterFields)
+filterFields_(filterFields),
+isEmpty_(isEmptyBlock)
 {
-    setColors(KactusColors::ADDR_BLOCK_COLOR, isEmptyBlock);
-    setLabelPositions();
+    setupAddressBlock();
 
     qreal xPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX - 1;
     setupSubItems(xPosition, getSubItemType(), blockItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::AddressBlockGraphicsItem()
+//-----------------------------------------------------------------------------
+AddressBlockGraphicsItem::AddressBlockGraphicsItem(AddressBlockGraphicsItem const& other, MemoryMapGraphicsItem* memoryMapItem):
+MemoryDesignerChildGraphicsItem(other, memoryMapItem),
+SubMemoryLayout(other, this),
+addressUnitBits_(other.addressUnitBits_),
+filterFields_(other.filterFields_),
+isEmpty_(other.isEmpty_)
+{
+    setupAddressBlock();
+    cloneSubItems(other);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::setupAddressBlock()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphicsItem::setupAddressBlock()
+{
+    setColors(KactusColors::ADDR_BLOCK_COLOR, isEmpty_);
+    setLabelPositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -101,6 +124,24 @@ MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createNewSubItem(
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::createCopyOfSubItem()
+//-----------------------------------------------------------------------------
+MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createCopyOfSubItem(MemoryDesignerChildGraphicsItem* subItem)
+{
+    auto registerItem = dynamic_cast<RegisterGraphicsItem*>(subItem);
+    MemoryDesignerChildGraphicsItem* newSubItem = nullptr;
+    if (registerItem)
+    {
+        newSubItem = new RegisterGraphicsItem(*registerItem, this);
+
+        connect(newSubItem, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
+            this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
+    }
+
+    return newSubItem;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressBlockGraphicsItem::getRegisterWidth()
 //-----------------------------------------------------------------------------
 qreal AddressBlockGraphicsItem::getRegisterWidth() const
@@ -132,13 +173,13 @@ MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createEmptySubItem(qu
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockGraphicsItem::changeAddressRange()
+// Function: AddressBlockGraphicsItem::changeAddress()
 //-----------------------------------------------------------------------------
-void AddressBlockGraphicsItem::changeAddressRange(quint64 memoryMapOffset)
+void AddressBlockGraphicsItem::changeAddress(quint64 const& newAddress)
 {
-    MemoryDesignerChildGraphicsItem::changeAddressRange(memoryMapOffset);
+    SubMemoryLayout::changeChildItemAddress(getBaseAddress(), newAddress);
 
-    SubMemoryLayout::changeChildItemRanges(memoryMapOffset);
+    MemoryDesignerChildGraphicsItem::changeAddress(newAddress);
 }
 
 //-----------------------------------------------------------------------------

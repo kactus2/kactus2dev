@@ -43,12 +43,12 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/settings-code_e
     QBrush addressSpaceBrush(KactusColors::ADDRESS_SEGMENT);
     setBrush(addressSpaceBrush);
 
-    quint64 spaceRangeInt = memoryItem->getRange().toULongLong();
+    spaceRangeInt_ = memoryItem->getRange().toULongLong();
     int spaceWidth = MemoryDesignerConstants::ITEMWIDTH;
 
-    setGraphicsRectangle(spaceWidth + 1, spaceRangeInt);
+    setGraphicsRectangle(spaceWidth + 1, spaceRangeInt_);
 
-    setupGraphicsItem(0, spaceRangeInt - 1, QStringLiteral("Address Space"));
+    setupGraphicsItem(0, spaceRangeInt_ - 1, QStringLiteral("Address Space"));
 
     cpuIcon_->setPos(spaceWidth / 2 - cpuIcon_->pixmap().width() - GridSize, GridSize * 3);
     cpuIcon_->setVisible(false);
@@ -56,6 +56,28 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/settings-code_e
     qreal segmentPositionX = - MemoryDesignerConstants::MAPSUBITEMPOSITIONX - 1;
     setupSubItems(segmentPositionX, getSubItemType(), memoryItem);
 
+    setLabelPositions();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::AddressSpaceGraphicsItem()
+//-----------------------------------------------------------------------------
+AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(AddressSpaceGraphicsItem const& other):
+MainMemoryGraphicsItem(other),
+cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/settings-code_editor.png"), this)),
+spaceRangeInt_(other.spaceRangeInt_)
+{
+    setBrush(other.brush());
+
+    int spaceWidth = MemoryDesignerConstants::ITEMWIDTH;
+
+    setGraphicsRectangle(spaceWidth + 1, spaceRangeInt_);
+    setupGraphicsItem(0, spaceRangeInt_ - 1, QStringLiteral("Address Space"));
+
+    cpuIcon_->setPos(spaceWidth / 2 - cpuIcon_->pixmap().width() - GridSize, GridSize * 3);
+    cpuIcon_->setVisible(false);
+
+    cloneSubItems(other);
     setLabelPositions();
 }
 
@@ -116,6 +138,24 @@ MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createEmptySubItem(qu
     emptySegment->setRange(emptySegmentRange);
 
     return createNewSubItem(emptySegment, true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::createCopyOfSubItem()
+//-----------------------------------------------------------------------------
+MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createCopyOfSubItem(MemoryDesignerChildGraphicsItem* subItem)
+{
+    AddressSegmentGraphicsItem* clonedSegmentItem = nullptr;
+    auto segmentItem = dynamic_cast<AddressSegmentGraphicsItem*>(subItem);
+    if (segmentItem)
+    {
+        clonedSegmentItem = new AddressSegmentGraphicsItem(*segmentItem, this);
+
+        connect(clonedSegmentItem, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
+            this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
+    }
+
+    return clonedSegmentItem;
 }
 
 //-----------------------------------------------------------------------------
