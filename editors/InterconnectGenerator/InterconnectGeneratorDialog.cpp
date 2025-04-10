@@ -500,6 +500,7 @@ void InterconnectGeneratorDialog::accept()
     config->AddressWidth = 32;
     config->IDWidth = 8;
     config->UserWidth = 1;
+    config->isChannel = false;
 
     QList<InitStruct> initiators;
     InitStruct initiator;

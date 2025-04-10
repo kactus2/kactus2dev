@@ -150,6 +150,7 @@ bool InterconnectAddressHelper::assignAddressRange(const QString& instanceName, 
         return true;
     }
 
+    std::sort(freeAddressSpaces_.begin(), freeAddressSpaces_.end());
     for (int i = 0; i < freeAddressSpaces_.size(); ++i) {
         QPair<quint64, quint64> free = freeAddressSpaces_.at(i);
         if (free.second >= totalRange) {

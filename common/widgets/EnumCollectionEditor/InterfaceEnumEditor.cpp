@@ -105,10 +105,14 @@ QList<TargetInterfaceData> InterfaceEnumEditor::getSelectedTargetInterfaces() co
 }
 
 void InterfaceEnumEditor::setTargetInterfaceValues(const QString& interfaceName, quint64 start, quint64 range) {
+    auto formatToIpxactHex = [](quint64 value, int minDigits = 4) -> QString {
+        return "'h" + QString::number(value, 16).rightJustified(minDigits, '0').toUpper();
+        };
+
     for (InterfaceItem& item : interfaceItems_) {
         if (item.checkBox->text() == interfaceName && item.startEdit && item.rangeEdit) {
-            item.startEdit->setText(QString("0x%1").arg(start, 8, 16, QLatin1Char('0')));
-            item.rangeEdit->setText(QString("0x%1").arg(range, 8, 16, QLatin1Char('0')));
+            item.startEdit->setText(formatToIpxactHex(start));
+            item.rangeEdit->setText(formatToIpxactHex(range));
             break;
         }
     }
