@@ -394,12 +394,20 @@ public:
     bool memoryMapHasValidAddressUnitBits(std::string const& mapName) const;
 
     /*!
-     *  Add a new memory map.
+     *  Add a new memory map, inserting it to specific position given by row.
      *
      *    @param [in] row         Row of the new memory map.
      *    @param [in] newMapName  Name of the new memory map.
      */
     void addMemoryMap(int const& row, std::string const& newMapName = std::string(""));
+
+    /*!
+     *  Add a new memory map.
+     *  This overload should be preferred when using Python.
+     *
+     *    @param [in] newMapName  Name of the new memory map.
+     */
+    void addMemoryMap(std::string const& newMapName = std::string(""));
 
     /*!
      *  Add a new memory remap.

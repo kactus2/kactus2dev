@@ -158,12 +158,20 @@ public:
     bool setDependencies(std::string const& fileSetName, std::vector<std::string> const& newDependencies);
 
     /*!
-     *  Add a new file set.
+     *  Add a new file set, inserting it to a specified position given by row.
      *
      *    @param [in] row             Row of the new file set.
      *    @param [in] newFileSetName  Name of the new file set.
      */
     void addFileSet(int const& row, std::string const& newFileSetName = std::string(""));
+
+    /*!
+     *  Add a new file set.
+     *  This overload should be preferred when using Python.
+     *
+     *    @param [in] newFileSetName  Name of the new file set.
+     */
+    void addFileSet(std::string const& newFileSetName = std::string(""));
 
     /*!
      *  Remove the selected file set.

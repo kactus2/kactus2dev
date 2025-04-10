@@ -626,12 +626,20 @@ public:
     bool setMonitorGroup(std::string const& busName, std::string const& newGroup);
 
     /*!
-     *  Add a new bus interface.
+     *  Add a new bus interface, insert at specific position given by newBusIndex.
      *
      *    @param [in] newBusIndex     Index of the new bus interface.
      *    @param [in] busName         Name of the new bus interface.
      */
     void addBusInterface(int const& newBusIndex, std::string const& busName = "");
+    
+    /*!
+     *  Add a new bus interface.
+     *  This overload should be preferred when using Python.
+     *
+     *    @param [in] busName         Name of the new bus interface.
+     */
+    void addBusInterface(std::string const& busName = "");
 
     /*!
      *  Swap the selected bus interfaces.

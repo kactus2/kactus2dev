@@ -699,12 +699,20 @@ bool MemoryMapInterface::memoryMapHasValidAddressUnitBits(std::string const& map
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::addBlock()
 //-----------------------------------------------------------------------------
-void MemoryMapInterface::addMemoryMap(int const& row, std::string const& newMapName)
+void MemoryMapInterface::addMemoryMap(int const& row, std::string const& newMapName /*= std::string("")*/)
 {
     QSharedPointer<MemoryMap> newMap(new MemoryMap());
     newMap->setName(getUniqueName(newMapName, MEMORYMAP_TYPE));
 
     mapData_->insert(row, newMap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::addMemoryMap()
+//-----------------------------------------------------------------------------
+void MemoryMapInterface::addMemoryMap(std::string const& newMapName /*= std::string("")*/)
+{
+    addMemoryMap(mapData_->size(), newMapName);
 }
 
 //-----------------------------------------------------------------------------
@@ -719,7 +727,6 @@ void MemoryMapInterface::addMemoryRemap(std::string const& mapName, std::string 
     }
 
     QSharedPointer<MemoryRemap> newRemap(new MemoryRemap());
-//     newRemap->setName(getUniqueName(newRemapName, MEMORYREMAP_TYPE));
     newRemap->setName(getUniqueRemapName(mapName, newRemapName, MEMORYREMAP_TYPE));
     for (auto mapBlock : *containingMap->getMemoryBlocks())
     {
