@@ -61,7 +61,7 @@ public:
 
     void createBusInterface(std::string busName, std::string modeString, int index);
 
-    std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
+    std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, QString startAddr, int index);
 
     void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
 
@@ -76,6 +76,8 @@ public:
 private:
 
     std::string getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool useChannel);
+
+    quint64 parseIpxactHex(const QString& str, bool* ok);
 
     void createAddressSpace(std::string busName, QString range, QString width = "32");
 

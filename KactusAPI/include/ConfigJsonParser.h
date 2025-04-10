@@ -40,6 +40,7 @@ struct ConfigStruct {
     int AddressWidth;
     int IDWidth;
     int UserWidth;
+    bool isChannel;
     QList<InitStruct> InitList;
     QList<TargetStruct> TargetList;
 
