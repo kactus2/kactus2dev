@@ -101,7 +101,6 @@ void InterconnectGeneratorDialog::addNewInstance(const QString& type) {
 
     connect(nameCombo, &QComboBox::currentTextChanged, this,
         [=](const QString& newText) mutable {
-            messager_->showMessage("checkpoint");
             if (type == "Initiator") {
                 addedInitiators_.remove(currentText);
                 addedInitiators_.insert(newText);
@@ -433,6 +432,33 @@ QGroupBox* InterconnectGeneratorDialog::createTargetsSection() {
     return groupBox;
 }
 
+QWidget* InterconnectGeneratorDialog::createInterconnectModeSelector() {
+    QGroupBox* modeGroup = new QGroupBox(tr("Interconnect Mode"), this);
+    QHBoxLayout* modeLayout = new QHBoxLayout(modeGroup);
+
+    bridgeButton_ = new QRadioButton(tr("Transparent Bridge"), this);
+    channelButton_ = new QRadioButton(tr("Channel"), this);
+    bridgeButton_->setChecked(true);
+
+    modeLayout->addWidget(bridgeButton_);
+    modeLayout->addWidget(channelButton_);
+    modeGroup->setLayout(modeLayout);
+
+    connect(bridgeButton_, &QRadioButton::toggled, this, [this](bool checked) {
+        if (checked) {
+            isChannel_ = false;
+        }
+        });
+
+    connect(channelButton_, &QRadioButton::toggled, this, [this](bool checked) {
+        if (checked) {
+            isChannel_ = true;
+        }
+        });
+
+    return modeGroup;
+}
+
 QDialogButtonBox* InterconnectGeneratorDialog::createButtonBox() {
     QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->addButton(tr("Generate"), QDialogButtonBox::AcceptRole);
@@ -450,6 +476,7 @@ void InterconnectGeneratorDialog::setUpLayout() {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(createTopConfigSection());
     mainLayout->addWidget(parameterGroupBox_);
+    mainLayout->addWidget(createInterconnectModeSelector());
 
     QHBoxLayout* bottomRowLayout = new QHBoxLayout();
     bottomRowLayout->addWidget(createInitiatorsSection());
@@ -500,7 +527,7 @@ void InterconnectGeneratorDialog::accept()
     config->AddressWidth = 32;
     config->IDWidth = 8;
     config->UserWidth = 1;
-    config->isChannel = false;
+    config->isChannel = isChannel_;
 
     QList<InitStruct> initiators;
     InitStruct initiator;

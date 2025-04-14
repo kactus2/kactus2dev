@@ -61,13 +61,15 @@ public:
 
     void createBusInterface(std::string busName, std::string modeString, int index);
 
-    std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, QString startAddr, int index);
+    std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
 
     void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
 
     void createPhysPorts(QSharedPointer<Component> comp, QString busName);
 
     void createRstorClkInterface(std::string busName, int index);
+
+    void customizeBasedOnInterfaceMode(std::string newBusName, std::string modeString);
 
     //! No copying. No assignment.
     InterconnectGenerator(const InterconnectGenerator& other) = delete;
@@ -143,6 +145,8 @@ private:
     VLNV clkVLNV_;
     QString clkPort_;
     QString rstPort_;
+    QString startAddr_;
+    QString range_;
 
 };
 

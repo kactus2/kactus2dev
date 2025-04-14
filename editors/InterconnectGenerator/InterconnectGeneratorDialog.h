@@ -18,6 +18,7 @@
 #include <QSet>
 #include <QHash>
 #include <QList>
+#include <QRadioButton>
 
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
@@ -59,6 +60,7 @@ private:
     QDialogButtonBox* createButtonBox();
     QVBoxLayout* createNameAndEnumerationEditorLayout(const QString& type, InterfaceEnumEditor* interfaceEditor, QFrame* instanceFrame);
     QFrame* createInstanceEditorFrame(const QString& type);
+    QWidget* createInterconnectModeSelector();
     void setUpLayout();
 
     // Parameter and selection logic
@@ -98,6 +100,8 @@ private:
     QLineEdit* dataWidthEdit_;
     QCheckBox* clockCheckBox_;
     QCheckBox* resetCheckBox_;
+    QRadioButton* channelButton_;
+    QRadioButton* bridgeButton_;
 
     QVBoxLayout* instancesContainerLayout_;
     QVBoxLayout* initiatorsContainerLayout_;
@@ -105,6 +109,7 @@ private:
 
     int previousIndex_ = -1;
     bool ignoreChange_ = false;
+    bool isChannel_ = false;
 
     QSet<QSharedPointer<ConfigurableVLNVReference>> absRefs_;
     QHash<QString, QSet<QSharedPointer<BusInterface > > > instanceBusesHash_;

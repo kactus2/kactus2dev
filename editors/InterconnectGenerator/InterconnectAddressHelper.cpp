@@ -151,8 +151,11 @@ bool InterconnectAddressHelper::assignAddressRange(const QString& instanceName, 
     }
 
     std::sort(freeAddressSpaces_.begin(), freeAddressSpaces_.end());
+
     for (int i = 0; i < freeAddressSpaces_.size(); ++i) {
-        QPair<quint64, quint64> free = freeAddressSpaces_.at(i);
+        const QPair<quint64, quint64>& free = freeAddressSpaces_.at(i);
+
+        // If block is large enough to hold the range
         if (free.second >= totalRange) {
             outStart = free.first;
             outRange = totalRange;
@@ -165,14 +168,17 @@ bool InterconnectAddressHelper::assignAddressRange(const QString& instanceName, 
                 freeAddressSpaces_[i].first += totalRange;
                 freeAddressSpaces_[i].second -= totalRange;
             }
+
             return true;
         }
     }
 
+    // No free block fit; use the next available address
     outStart = nextAvailableAddress_;
     outRange = totalRange;
     usedAddressRanges_.insert(instanceName, qMakePair(outStart, outRange));
     nextAvailableAddress_ += totalRange;
+
     return true;
 }
 
