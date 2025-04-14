@@ -65,7 +65,6 @@ private:
 
     // Parameter and selection logic
     void populateParameters();
-    void updateNameCombos();
     void updateNameCombo(QComboBox* nameCombo, const QString& instanceType, QStringList& availableInstances);
     void onInstanceSelected(const QString& instanceName, const QString& type, InterfaceEnumEditor* interfaceEditor);
     void clearInitiatorAndTargetLists();
@@ -103,7 +102,6 @@ private:
     QRadioButton* channelButton_;
     QRadioButton* bridgeButton_;
 
-    QVBoxLayout* instancesContainerLayout_;
     QVBoxLayout* initiatorsContainerLayout_;
     QVBoxLayout* targetsContainerLayout_;
 

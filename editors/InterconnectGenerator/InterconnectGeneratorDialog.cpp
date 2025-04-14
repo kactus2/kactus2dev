@@ -9,7 +9,6 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
     library_(library),
     messager_(messager),
     designWidget_(designWidget),
-    instancesContainerLayout_(new QVBoxLayout()),
     initiatorsContainerLayout_(new QVBoxLayout()),
     targetsContainerLayout_(new QVBoxLayout()),
     vlnvEditor_(new VLNVEditor(VLNV::BUSDEFINITION, library, this, this))
@@ -110,10 +109,7 @@ void InterconnectGeneratorDialog::addNewInstance(const QString& type) {
                 addedTargets_.insert(newText);
             }
             currentText = newText;
-            updateNameCombos();
         });
-
-    updateNameCombos();
 }
 
 void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, const QString& instanceType, QStringList& availableInstances)
@@ -166,19 +162,6 @@ void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName
     interfaceEditor->clearAll();
     bool isTargets = (type == "Target") ? true : false;
     interfaceEditor->addItems(busInterfaceNames, isTargets, instanceName);
-}
-
-void InterconnectGeneratorDialog::updateNameCombos()
-{
-    QList<QComboBox*> nameCombos = instancesContainerLayout_->findChildren<QComboBox*>();
-    for (QComboBox* combo : nameCombos)
-    {
-        combo->clear();
-        for (int i = 0; i < componentInstances_->count(); ++i)
-        {
-            combo->addItem(componentInstances_->itemText(i));
-        }
-    }
 }
 
 QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& type) {
@@ -237,7 +220,6 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ty
             addedTargets_.remove(nameCombo->currentText());
         }
         instanceFrame->deleteLater();
-        updateNameCombos();
         });
 
     return instanceFrame;
@@ -289,7 +271,6 @@ QVBoxLayout* InterconnectGeneratorDialog::createNameAndEnumerationEditorLayout(
             addedTargets_.remove(instanceName);
         }
         instanceFrame->deleteLater();
-        updateNameCombos();
         });
 
     return layout;
@@ -312,7 +293,6 @@ void InterconnectGeneratorDialog::clearInitiatorAndTargetLists()
     }
     addedInitiators_.clear();
     addedTargets_.clear();
-    updateNameCombos();
     initiatorsContainerLayout_->update();
     targetsContainerLayout_->update();
 }

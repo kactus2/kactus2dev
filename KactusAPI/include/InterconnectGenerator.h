@@ -85,6 +85,8 @@ private:
 
     void createGlobalAddressSpaceFromTargets(const QHash<QString, QList<QSharedPointer<TargetData>>>& targets);
 
+    void createChannel();
+
     //! Message handler.
     MessageMediator* messager_{ nullptr };
 
