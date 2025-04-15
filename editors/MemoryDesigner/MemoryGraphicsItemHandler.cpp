@@ -269,11 +269,12 @@ void MemoryGraphicsItemHandler::createFieldOverlapItems()
 //-----------------------------------------------------------------------------
 // Function: MemoryGraphicsItemHandler::cloneMemoryItem()
 //-----------------------------------------------------------------------------
-MainMemoryGraphicsItem* MemoryGraphicsItemHandler::cloneMemoryItem(MainMemoryGraphicsItem* originalItem, MemoryColumn* containingColumn)
+MainMemoryGraphicsItem* MemoryGraphicsItemHandler::cloneMemoryItem(MainMemoryGraphicsItem* targetItem, MemoryColumn* containingColumn)
 {
     MainMemoryGraphicsItem* clonedItem = nullptr;
 
-    if (containingColumn)
+    auto originalItem = getOriginalItem(targetItem);
+    if (containingColumn && originalItem != nullptr)
     {
         if (auto mapItem = dynamic_cast<MemoryMapGraphicsItem const*>(originalItem); mapItem)
         {
@@ -303,6 +304,42 @@ MainMemoryGraphicsItem* MemoryGraphicsItemHandler::cloneMemoryItem(MainMemoryGra
     }
 
     return clonedItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::getOriginalItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryGraphicsItemHandler::getOriginalItem(MainMemoryGraphicsItem* suspiciousItem)
+{
+    MainMemoryGraphicsItem* originalItem = suspiciousItem;
+
+    if (originalItem != nullptr && originalItem->isOriginal() == false)
+    {
+        if (originalItem->type() == GraphicsItemTypes::GFX_TYPE_ADDRESS_SPACE_ITEM)
+        {
+            for (auto spaceItem : spaceItems_)
+            {
+                if (spaceItem->name() == originalItem->name() && spaceItem->isOriginal())
+                {
+                    originalItem = spaceItem;
+                    break;
+                }
+            }
+        }
+        else if (originalItem->type() == GraphicsItemTypes::GFX_TYPE_MEMORY_ITEM)
+        {
+            for (auto mapItem : memoryMapItems_)
+            {
+                if (mapItem->name() == originalItem->name() && mapItem->isOriginal())
+                {
+                    originalItem = mapItem;
+                    break;
+                }
+            }
+        }
+    }
+
+    return originalItem;
 }
 
 //-----------------------------------------------------------------------------
