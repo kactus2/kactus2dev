@@ -356,14 +356,5 @@ void FileReader::Details::parseDescription(QDomElement const& fileElement, QShar
 //-----------------------------------------------------------------------------
 void FileReader::Details::parseFileExtensions(QDomNode const& fileNode, QSharedPointer<File> newFile)
 {
-    QDomElement extensionsElement = fileNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
-
-    QDomElement hashExtension = extensionsElement.firstChildElement(QStringLiteral("kactus2:hash"));
-    if (!hashExtension.isNull())
-    {
-        QString hash = hashExtension.firstChild().nodeValue();
-        newFile->setLastHash(hash);
-    }
-
     CommonItemsReader::parseVendorExtensions(fileNode, newFile);
 }

@@ -60,7 +60,7 @@ public:
      *
      *    @return True, if the memory block is accepted, false otherwise.
      */
-    virtual bool acceptBlock(std::string const& blockName) const override final;
+    virtual bool acceptBlock(std::string const& blockName) const final;
 
     /*!
      *  Get the master bus interface reference of the selected subspace map.
@@ -115,7 +115,7 @@ public:
      *
      *    @return True, if all the ports are valid, false otherwise.
      */
-    virtual bool validateItems() const override final;
+    virtual bool validateItems() const final;
 
     /*!
      *  Check if the selected subspace map has a valid master bus interface reference.
@@ -141,7 +141,7 @@ public:
      *    @param [in] row             Row of the new subspace map.
      *    @param [in] newBlockName    Name of the new subspace map.
      */
-    virtual void addBlock(int const& row, std::string const& newBlockName = std::string("")) override final;
+    virtual void addBlock(int const& row, std::string const& newBlockName = std::string("")) final;
 
     /*!
      *  Get the expressions in the selected items.
@@ -150,7 +150,7 @@ public:
      *
      *    @return The expressions of the selected items.
      */
-    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const override final;
+    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const final;
 
     //! No copying. No assignment.
     SubspaceMapInterface(const SubspaceMapInterface& other) = delete;
@@ -181,7 +181,7 @@ private:
      *
      *    @return Default name for a subspace map.
      */
-    virtual std::string getDefaultName() const override final;
+    virtual std::string getDefaultName() const final;
 
     /*!
      *  Get a list of the copied subspace maps.
@@ -190,14 +190,14 @@ private:
      *
      *    @return List of the copied subspace maps.
      */
-    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> const& selectedRows) const override final;
+    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> const& selectedRows) const final;
 
     /*!
      *  Get the mime type of the subspace map.
      *
      *    @return The mime type of the subspace map.
      */
-    virtual QString getMimeType() const override final;
+    virtual QString getMimeType() const final;
 
     /*!
      *  Create a copy of the selected subspace map.
@@ -207,7 +207,7 @@ private:
      *    @return Copy of the selected subspace map.
      */
     virtual QSharedPointer<MemoryBlockBase> createCopyBlock(QSharedPointer<MemoryBlockBase> copiedItem) const
-        override final;
+        final;
 
     /*!
      *  Count the subspace map items in the selected list.
@@ -216,14 +216,14 @@ private:
      *
      *    @return Number of subspace map items in the selected list.
      */
-    virtual int countItems(QList<QSharedPointer<MemoryBlockBase> > itemList) const override final;
+    virtual int countItems(QList<QSharedPointer<MemoryBlockBase> > itemList) const final;
 
     /*!
      *  Get the subspace map validator.
      *
      *    @return The subspace map validator.
      */
-    virtual QSharedPointer<MemoryBlockValidator> getValidator() const override final;
+    virtual QSharedPointer<MemoryBlockValidator> getValidator() const final;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -1260,7 +1260,7 @@ QSharedPointer<Field> FieldInterface::getField(std::string const& fieldName) con
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::addField()
 //-----------------------------------------------------------------------------
-void FieldInterface::addField(int const& row, std::string const& newFieldName)
+void FieldInterface::addField(int const& row, std::string const& newFieldName /*= std::string("")*/)
 {
     QString fieldName = getUniqueName(newFieldName, FIELD_TYPE);
 
@@ -1268,6 +1268,14 @@ void FieldInterface::addField(int const& row, std::string const& newFieldName)
     newField->setName(fieldName);
 
     fields_->insert(row, newField);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::addField()
+//-----------------------------------------------------------------------------
+void FieldInterface::addField(std::string const& newFieldName /*= std::string("")*/)
+{
+    addField(fields_->size(), newFieldName);
 }
 
 //-----------------------------------------------------------------------------

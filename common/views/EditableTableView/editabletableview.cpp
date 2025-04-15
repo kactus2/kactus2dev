@@ -411,21 +411,15 @@ void EditableTableView::onRemoveAction()
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    std::sort(indexes.begin(), indexes.end());
-    int rowCount = qMax(1, countRows(indexes));
-
-    // Remove as many rows as wanted.
-    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
-
-    for (int i = 0; i < rowCount; ++i)
+    // Remove selected rows. Removal starts from the back of the selected indexes to remove correct rows.
+    // Sorting model apparently returns indexes in correct order when selectedIndexes() is called, which makes 
+    // reverse removal possible.
+    if (auto sortProxy = dynamic_cast<QSortFilterProxyModel*>(model()))
     {
-        QModelIndex index = indexes.first();
-        if (sortProxy != 0)
+        for (auto it = indexes.crbegin(); it != indexes.crend(); ++it)
         {
-            index = sortProxy->mapToSource(index);
+            emit removeItem(sortProxy->mapToSource(*it));
         }
-
-        emit removeItem(index);
     }
 
     clearSelection();

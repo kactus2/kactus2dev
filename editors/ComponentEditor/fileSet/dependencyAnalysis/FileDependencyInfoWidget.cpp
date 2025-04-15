@@ -119,6 +119,7 @@ void FileDependencyInfoWidget::lockedCheckChanged(int /*state*/)
 {
     dependency_->setLocked(lockedCheck_.isChecked());
     lockEverything(lockedCheck_.isChecked());
+    emit dependencyChanged(dependency_);
 }
 
 //-----------------------------------------------------------------------------

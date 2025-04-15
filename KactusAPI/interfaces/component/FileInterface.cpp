@@ -238,6 +238,14 @@ void FileInterface::addFile(int const& row, std::string const& newFileName)
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileInterface::addFile()
+//-----------------------------------------------------------------------------
+void FileInterface::addFile(std::string const& newFileName /*= std::string("")*/)
+{
+    addFile(files_->size(), newFileName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileInterface::removeFile()
 //-----------------------------------------------------------------------------
 bool FileInterface::removeFile(std::string const& fileName)

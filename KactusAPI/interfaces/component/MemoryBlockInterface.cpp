@@ -431,6 +431,14 @@ QString MemoryBlockInterface::getNewBlockBaseAddress() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryBlockInterface::addBlock()
+//-----------------------------------------------------------------------------
+void MemoryBlockInterface::addBlock(std::string const& newBlockName /*= std::string("")*/)
+{
+    addBlock(blockData_->size(), newBlockName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::removeBlock()
 //-----------------------------------------------------------------------------
 bool MemoryBlockInterface::removeBlock(std::string const& blockName)

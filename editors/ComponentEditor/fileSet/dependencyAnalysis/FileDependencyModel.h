@@ -53,8 +53,9 @@ public:
      *  Adds a new dependency to the model.
      *
      *    @param [in] dependency The file dependency to add.
+     *    @param [in] byUser     Indicates if dependency was manually added by user.
      */
-    void addDependency(QSharedPointer<FileDependency> dependency);
+    void addDependency(QSharedPointer<FileDependency> dependency, bool byUser = false);
 
     /*!
      *  Removes a dependency from the model.
@@ -244,7 +245,7 @@ signals:
     /*!
      *  Emitted when a file dependency has been added to the model.
      */
-    void dependencyAdded(FileDependency* dependency);
+    void dependencyAdded(FileDependency* dependency, bool shouldNotify);
 
     /*!
      *  Emitted when a file dependency has been removed from the model.

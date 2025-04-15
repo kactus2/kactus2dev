@@ -742,6 +742,14 @@ void BusInterfaceInterface::addBusInterface(int const& newBusIndex, std::string 
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::addBusInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceInterface::addBusInterface(std::string const& busName /*= ""*/)
+{
+    addBusInterface(busInterfaces_->size(), busName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusInterfaceInterface::removeBusInterface()
 //-----------------------------------------------------------------------------
 bool BusInterfaceInterface::removeBusInterface(std::string const& busName)
@@ -760,7 +768,7 @@ bool BusInterfaceInterface::removeBusInterface(std::string const& busName)
 //-----------------------------------------------------------------------------
 bool BusInterfaceInterface::busInterfaceExists(std::string const& busName) const
 {
-    for (auto name : getItemNames())
+    for (auto const& name : getItemNames())
     {
         if (name == busName)
         {

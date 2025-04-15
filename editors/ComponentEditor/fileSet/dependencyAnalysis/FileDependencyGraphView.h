@@ -176,7 +176,7 @@ private slots:
     /*!
      *  Called when a dependency has been added.
      */
-    void onDependencyAdded(FileDependency* dependency, bool immediateRepaint = true);
+    void onDependencyAdded(FileDependency* dependency, bool shouldNotify, bool immediateRepaint = true);
 
     /*!
      *  Called when a dependency has been changed.

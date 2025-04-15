@@ -75,8 +75,8 @@ void FileDependencyGraphView::setModel(QAbstractItemModel* model)
     FileDependencyModel* depModel = dynamic_cast<FileDependencyModel*>(model);
     if (depModel != 0)
     {
-        connect(depModel, SIGNAL(dependencyAdded(FileDependency*)),
-                this, SLOT(onDependencyAdded(FileDependency*)), Qt::UniqueConnection);
+        connect(depModel, SIGNAL(dependencyAdded(FileDependency*, bool)),
+                this, SLOT(onDependencyAdded(FileDependency*, bool)), Qt::UniqueConnection);
         connect(depModel, SIGNAL(dependencyChanged(FileDependency*)),
                 this, SLOT(onDependencyChanged(FileDependency*)), Qt::UniqueConnection);
         connect(depModel, SIGNAL(dependencyRemoved(FileDependency*)),
@@ -96,6 +96,9 @@ void FileDependencyGraphView::setModel(QAbstractItemModel* model)
 
     sortFilter_->setSourceModel(model_);
     QTreeView::setModel(sortFilter_);
+
+    // TODO: Remove this later and remove status traffic lights properly if no-one ever needs them again
+    hideColumn(FileDependencyColumns::STATUS);
 }
 
 //-----------------------------------------------------------------------------
@@ -318,7 +321,7 @@ void FileDependencyGraphView::reset()
 //-----------------------------------------------------------------------------
 // Function: FileDependencyGraphWidget::onDependencyAdded()
 //-----------------------------------------------------------------------------
-void FileDependencyGraphView::onDependencyAdded(FileDependency* dependency, bool immediateRepaint)
+void FileDependencyGraphView::onDependencyAdded(FileDependency* dependency, bool shouldNotify, bool immediateRepaint /*= true*/)
 {
     FileDependencyItem* fromItem = model_->findFileItem(dependency->getFile1());
     FileDependencyItem* toItem = model_->findFileItem(dependency->getFile2());
@@ -379,6 +382,12 @@ void FileDependencyGraphView::onDependencyAdded(FileDependency* dependency, bool
         {
             repaintArrowRegion(x, fromY, toY);
         }
+        
+        // Emit changes only if needed
+        if (shouldNotify)
+        {
+            emit dependencyChanged(dependency);
+        }
     }
 }
 
@@ -409,14 +418,17 @@ void FileDependencyGraphView::onDependencyRemoved(FileDependency* dependency)
                 int toY = 0;
                 bool visible = getCoordinates(dep, fromY, toY);
 
+                if (dependency->isManual())
+                {
+                    emit dependencyChanged(dependency);
+                }
+
                 column->dependencies.removeOne(dep);
 
                 if (visible)
                 {
                     repaintArrowRegion(x, fromY, toY);
                 }
-
-                return;
             }
         }
 
@@ -437,7 +449,7 @@ void FileDependencyGraphView::onDependenciesReset()
 
     foreach (QSharedPointer<FileDependency> dependency, model_->getDependencies())
     {
-        onDependencyAdded(dependency.data(), false);
+        onDependencyAdded(dependency.data(), false, false);
     }
 
     viewport()->repaint();
@@ -654,7 +666,7 @@ void FileDependencyGraphView::createDependency(QMouseEvent* event)
                     if (reversedDependency == 0 || !reversedDependency->isManual())
                     {
                         FileDependency* createdDependency = createManualDependency();                           
-                        model_->addDependency(QSharedPointer<FileDependency>(createdDependency));
+                        model_->addDependency(QSharedPointer<FileDependency>(createdDependency), true);
 
                         // Selecting created manual dependency.
                         changeDependencySelection(createdDependency);
@@ -665,6 +677,7 @@ void FileDependencyGraphView::createDependency(QMouseEvent* event)
                         reversedDependency->setBidirectional(true);
                         changeDependencySelection(reversedDependency);
                         emit warningMessage(tr("An existing manual dependency was changed to bidirectional."));
+                        emit dependencyChanged(existingDependency);
                     }
                 }
 

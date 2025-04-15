@@ -668,48 +668,23 @@ void RegisterInterface::setAddressUnitBits(int const& newAddressUnitbits)
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::addRegister()
 //-----------------------------------------------------------------------------
-void RegisterInterface::addRegister(int const& row, int const& dataIndex, std::string const& newRegisterName)
+void RegisterInterface::addRegister(int const& row, int const& dataIndex, std::string const& newRegisterName /*= std::string("")*/)
 {
     QString registerName = getUniqueName(newRegisterName, REGISTER_TYPE);
 
-    auto lastRegister = std::max_element(registerData_->cbegin(), registerData_->cend(),
-        [this](QSharedPointer<RegisterBase> const& a, QSharedPointer<RegisterBase> const& b)
-    {
-        return parseExpressionToDecimal(a->getAddressOffset()).toInt() <
-            parseExpressionToDecimal(b->getAddressOffset()).toInt();
-    });
-
-    quint64 lastRegAddress = 0;
-    quint64 lastRegDimension = 0;
-    quint64 lastRegRange = 0;
-
-    if (lastRegister != registerData_->cend())
-    {
-        lastRegAddress = parseExpressionToDecimal((*lastRegister)->getAddressOffset()).toInt();
-        lastRegDimension = parseExpressionToDecimal((*lastRegister)->getDimension()).toInt();
-
-        QSharedPointer<Register> reg = lastRegister->dynamicCast<Register>();
-        QSharedPointer<RegisterFile> regFile = lastRegister->dynamicCast<RegisterFile>();
-        if (reg)
-        {
-            lastRegRange = parseExpressionToDecimal(reg->getSize()).toInt() / qMax(addressUnitBits_, 1u);
-        }
-        else if (regFile)
-        {
-            lastRegRange = parseExpressionToDecimal(regFile->getRange()).toInt();
-        }
-    }
-
-    qreal offsetIncrease = qMax(quint64(0), lastRegRange * qMax(quint64(1), lastRegDimension));
-
-    quint64 itemAddress = lastRegAddress + offsetIncrease;
-    QString offset = QStringLiteral("'h") + QString::number(itemAddress, 16);
-
     QSharedPointer<Register> regItem(new Register());
-    regItem->setAddressOffset(offset);
+    regItem->setAddressOffset(getNextRegisterOffset());
     regItem->setName(registerName);
     registers_.insert(row, regItem);
     registerData_->insert(dataIndex, regItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterInterface::addRegister()
+//-----------------------------------------------------------------------------
+void RegisterInterface::addRegister(std::string const& newRegisterName /*= std::string("")*/)
+{
+    addRegister(registers_.size(), registerData_->size(), newRegisterName);
 }
 
 //-----------------------------------------------------------------------------
@@ -845,4 +820,43 @@ AccessPolicyInterface* RegisterInterface::getAccessPolicyInterface() const
 QSharedPointer<NameGroup> RegisterInterface::getItem(std::string const& registerName) const
 {
     return getRegister(registerName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterInterface::getNextRegisterOffset()
+//-----------------------------------------------------------------------------
+QString RegisterInterface::getNextRegisterOffset() const
+{
+    auto lastRegister = std::max_element(registerData_->cbegin(), registerData_->cend(),
+        [this](QSharedPointer<RegisterBase> const& a, QSharedPointer<RegisterBase> const& b)
+        {
+            return parseExpressionToDecimal(a->getAddressOffset()).toInt() <
+                parseExpressionToDecimal(b->getAddressOffset()).toInt();
+        });
+
+    quint64 lastRegAddress = 0;
+    quint64 lastRegDimension = 0;
+    quint64 lastRegRange = 0;
+
+    if (lastRegister != registerData_->cend())
+    {
+        lastRegAddress = parseExpressionToDecimal((*lastRegister)->getAddressOffset()).toInt();
+        lastRegDimension = parseExpressionToDecimal((*lastRegister)->getDimension()).toInt();
+
+        QSharedPointer<Register> reg = lastRegister->dynamicCast<Register>();
+        QSharedPointer<RegisterFile> regFile = lastRegister->dynamicCast<RegisterFile>();
+        if (reg)
+        {
+            lastRegRange = parseExpressionToDecimal(reg->getSize()).toInt() / qMax(addressUnitBits_, 1u);
+        }
+        else if (regFile)
+        {
+            lastRegRange = parseExpressionToDecimal(regFile->getRange()).toInt();
+        }
+    }
+
+    qreal offsetIncrease = qMax(quint64(0), lastRegRange * qMax(quint64(1), lastRegDimension));
+
+    quint64 itemAddress = lastRegAddress + offsetIncrease;
+    return QStringLiteral("'h") + QString::number(itemAddress, 16);
 }

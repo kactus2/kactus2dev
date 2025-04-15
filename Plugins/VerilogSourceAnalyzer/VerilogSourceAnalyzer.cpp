@@ -198,10 +198,9 @@ QMap<QString, QString> VerilogSourceAnalyzer::findItemsInFilesets(Component cons
 			if (isOfSupportedFileType(file))
 			{
 				QString path = findAbsolutePathFor(file->name(), componentPath);
-				QString content = readFileContentAndRemoveComments(file->name());
+				QString content = readFileContentAndRemoveComments(path);
 
 				itemsInFilesets.insert(findItemsInFileContent(content, path));
-
 			}
 		}
 	}
@@ -314,13 +313,23 @@ QList<FileDependencyDesc>  VerilogSourceAnalyzer::findInstantiationDependencies(
 	QList<FileDependencyDesc> dependencies;
 	for (auto const& moduleName : instanceFiles)
 	{
-		QString targetAbsolutePath = itemsInFilesets.value(moduleName, moduleName + sourceFileSuffix);
-		QString targetRelativePath = sourceAbsoluteDir.relativeFilePath(targetAbsolutePath);
+		// Add modules not found in filesets as external dependencies
+		auto const& targetAbsolutePath = itemsInFilesets.value(moduleName);
+		QString targetRelativePath;
 
-		FileDependencyDesc dependency;
-		dependency.description = tr("Submodule instantiation of module %1").arg(moduleName); 
-		dependency.filename = targetRelativePath;		
-		dependencies.append(dependency);
+		if (targetAbsolutePath.isEmpty())
+		{
+			targetRelativePath = tr("%1 (Verilog module)").arg(moduleName);
+		}
+		else
+		{
+			targetRelativePath = sourceAbsoluteDir.relativeFilePath(targetAbsolutePath);
+		}
+
+        FileDependencyDesc dependency;
+        dependency.description = tr("Submodule instantiation of module %1").arg(moduleName);
+        dependency.filename = targetRelativePath;
+        dependencies.append(dependency);
 	}
 
 	return dependencies;

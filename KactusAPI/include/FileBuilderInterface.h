@@ -93,13 +93,21 @@ public:
      */
     std::vector<std::string> getExpressionsInSelectedFileBuilders(std::vector<std::string> fileBuilderNames) const;
 
+     /*!
+      *  Add a new file builder, inserting it to the position given by row.
+      *
+      *    @param [in] row                 Row of the new file builder.
+      *    @param [in] newFileBuilderName  Name of the new file builder.
+      */
+    void addFileBuilder(int const& row, std::string const& newFileBuilderName = std::string(""));
+    
     /*!
      *  Add a new file builder.
-     *
-     *    @param [in] row                 Row of the new file builder.
+     *  This overload should be preferred when using Python.
+     * 
      *    @param [in] newFileBuilderName  Name of the new file builder.
      */
-    void addFileBuilder(int const& row, std::string const& newFileBuilderName = std::string(""));
+    void addFileBuilder(std::string const& newFileBuilderName = std::string(""));
 
     /*!
      *  Remove the selected file builder.

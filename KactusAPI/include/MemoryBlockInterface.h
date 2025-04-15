@@ -257,12 +257,20 @@ public:
     bool hasValidIsPresent(std::string const& itemName) const;
 
     /*!
-     *  Add a new memory block.
+     *  Add a new memory block, inserting it to specified position given by row.
      *
      *    @param [in] row             Row of the new memory block.
      *    @param [in] newBlockName    Name of the new memory block.
      */
     virtual void addBlock(int const& row, std::string const& newBlockName = std::string("")) = 0;
+
+    /*!
+     *  Add a new memory block.
+     *  This overload should be preferred when using Python.
+     *
+     *    @param [in] newBlockName    Name of the new memory block.
+     */
+    virtual void addBlock(std::string const& newBlockName = std::string(""));
 
     /*!
      *  Remove the selected memory block.

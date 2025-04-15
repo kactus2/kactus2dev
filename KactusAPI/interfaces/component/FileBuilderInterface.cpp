@@ -134,6 +134,14 @@ void FileBuilderInterface::addFileBuilder(int const& row, std::string const& new
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileBuilderInterface::addFileBuilder()
+//-----------------------------------------------------------------------------
+void FileBuilderInterface::addFileBuilder(std::string const& newFileBuilderName /*= std::string("")*/)
+{
+    addFileBuilder(fileBuilders_->size(), newFileBuilderName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileBuilderInterface::removeFileBuilder()
 //-----------------------------------------------------------------------------
 bool FileBuilderInterface::removeFileBuilder(std::string const& fileBuilderName)
