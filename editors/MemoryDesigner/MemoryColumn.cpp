@@ -210,33 +210,23 @@ quint64 MemoryColumn::getUnconnectedItemPosition(QSharedPointer<QVector<MainMemo
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn::memoryMapOverlapsInColumn()
 //-----------------------------------------------------------------------------
-bool MemoryColumn::memoryMapOverlapsInColumn(quint64 connectionBaseAddress, quint64 connectionLastAddress,
-    MainMemoryGraphicsItem const* memoryGraphicsItem, QRectF memoryItemRect, int memoryPenWidth,
+bool MemoryColumn::memoryMapOverlapsInColumn(MainMemoryGraphicsItem const* memoryGraphicsItem,
+    QRectF memoryItemRect,
+    int memoryPenWidth,
     QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const
 {
-    foreach (QGraphicsItem* graphicsItem, childItems())
+    for (auto comparisonMemoryItem : *placedMaps)
     {
-        auto comparisonMemoryItem = dynamic_cast<MemoryMapGraphicsItem*>(graphicsItem);
-        if (comparisonMemoryItem && comparisonMemoryItem != memoryGraphicsItem &&
-            placedMaps->contains(comparisonMemoryItem))
+        if (comparisonMemoryItem->parentItem() == this && comparisonMemoryItem != memoryGraphicsItem)
         {
             QRectF comparisonRectangle = comparisonMemoryItem->getSceneRectangleWithSubItems();
             int comparisonLineWidth = comparisonMemoryItem->pen().width();
 
-            quint64 comparisonBaseAddress = comparisonMemoryItem->getLowestConnectedBaseAddress();
-            quint64 comparisonLastAddress = comparisonMemoryItem->getHighestConnectedLastAddress();
-
-            bool itemIsConnectionedToSpaceItems = comparisonMemoryItem->isConnectedToSpaceItems(connectedSpaceItems);
             bool overlap = MemoryDesignerConstants::itemOverlapsAnotherItem(
                 memoryItemRect, memoryPenWidth, comparisonRectangle, comparisonLineWidth);
 
-            bool connectionOverlapsItem =
-                (connectionBaseAddress >= comparisonBaseAddress && connectionBaseAddress <= comparisonLastAddress)
-                ||
-                (connectionLastAddress >= comparisonBaseAddress && connectionLastAddress <= comparisonLastAddress);
-
-            if (itemIsConnectionedToSpaceItems && (overlap || connectionOverlapsItem))
+            if (overlap)
             {
                 return true;
             }

@@ -39,7 +39,7 @@ MemoryDesignerGraphicsItem(memoryItem->getName(), memoryItem->getDisplayName(), 
 SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
 instanceNameLabel_(new QGraphicsTextItem(containingInstance->getName(), this)),
 memoryItem_(memoryItem),
-originalItem_(true),
+isOriginalItem_(true),
 clones_(new QVector<MainMemoryGraphicsItem*>())
 {
     setupDuringConstruction();
@@ -53,7 +53,7 @@ MemoryDesignerGraphicsItem(other, other.parentItem()),
 SubMemoryLayout(other, this),
 instanceNameLabel_(new QGraphicsTextItem(other.getContainingInstance()->getName(), this)),
 memoryItem_(other.memoryItem_),
-originalItem_(false)
+isOriginalItem_(false)
 {
     setupDuringConstruction();
 }
@@ -634,7 +634,7 @@ void MainMemoryGraphicsItem::compressItemAndChildItems(bool compressMemoryItems)
 //-----------------------------------------------------------------------------
 bool MainMemoryGraphicsItem::isOriginal() const
 {
-    return originalItem_;
+    return isOriginalItem_;
 }
 
 //-----------------------------------------------------------------------------

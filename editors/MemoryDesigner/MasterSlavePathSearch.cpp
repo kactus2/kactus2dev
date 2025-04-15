@@ -167,6 +167,13 @@ QVector<MasterSlavePathSearch::Path> MasterSlavePathSearch::findPathsFromInterfa
     }
     else
     {
+        //! The case of a target interface with a memory map being connected to a hierarchical target
+        if ((currentVertex->getMode() == General::TARGET || currentVertex->getMode() == General::SLAVE) && currentVertex->isConnectedToMemory())
+        {
+            MasterSlavePathSearch::Path newPath{ currentVertex };
+            foundPaths.append(newPath);
+        }
+
         for (auto path : pathsFromVertices)
         {
             path.prepend(currentVertex);

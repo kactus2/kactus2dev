@@ -307,7 +307,7 @@ private:
     MemoryExtensionGraphicsItem* extensionItem_ = nullptr;
 
     //! Flag for separating original and cloned items.
-    bool originalItem_;
+    bool isOriginalItem_;
 
     //! List of clones created from this item.
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > clones_ = nullptr;

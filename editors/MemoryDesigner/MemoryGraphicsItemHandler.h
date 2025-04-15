@@ -147,12 +147,12 @@ public:
     /*!
      *  Clone the selected memory item.
      *
-     *    @param [in] originalItem      The selected memory item.
+     *    @param [in] targetItem        The selected memory item.
      *    @param [in] containingColumn  Column containing the selected memory item.
      *
      *    @return The cloned memory item.
      */
-    MainMemoryGraphicsItem* cloneMemoryItem(MainMemoryGraphicsItem* originalItem, MemoryColumn* containingColumn);
+    MainMemoryGraphicsItem* cloneMemoryItem(MainMemoryGraphicsItem* targetItem, MemoryColumn* containingColumn);
 
     /*!
      *  Check if the selected item has been cloned and has the selected base address.
@@ -226,6 +226,15 @@ private:
      *    @param [in] memoryItem  The selected memory item.
      */
     void filterUnconnectedMemoryItem(MainMemoryGraphicsItem* memoryItem);
+
+    /*!
+     *  Get the original item for the selected item.
+     *
+     *    @param [in] suspiciousItem    The selected item with unknown status as original or clone.
+     *
+     *    @return The original item of the selected item.
+     */
+    MainMemoryGraphicsItem* getOriginalItem(MainMemoryGraphicsItem* suspiciousItem);
 
     //-----------------------------------------------------------------------------
     // Data.

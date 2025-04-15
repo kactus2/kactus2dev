@@ -115,8 +115,9 @@ public:
      *
      *    @return True if the memory map overlaps another item in this column, false otherwise.
      */
-    bool memoryMapOverlapsInColumn(quint64 connectionBaseAddress, quint64 connectionLastAddress,
-        MainMemoryGraphicsItem const* memoryGraphicsItem, QRectF memoryItemRect, int memoryPenWidth,
+    bool memoryMapOverlapsInColumn(MainMemoryGraphicsItem const* memoryGraphicsItem,
+        QRectF memoryItemRect,
+        int memoryPenWidth,
         QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const;
 
