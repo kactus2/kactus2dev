@@ -373,7 +373,7 @@ void MemoryConnectionHandler::createLinkedItemsForPath(
                     connectionBaseAddress = pathInterface->getBaseAddress().toULongLong();
                 }
                 //! A memory map connection is created to a target interface.
-                else if (interfaceMode == General::TARGET || interfaceMode == General::SLAVE)
+                else if ((interfaceMode == General::TARGET || interfaceMode == General::SLAVE) && pathInterface == connectionPath.last())
                 {
                     currentLinkedItem = findOrCreateLinkedItem(placedItems, roots, previousItem, pathGraphicsItem, itemBaseAddress, currentBaseAddress, connectionEndAddress, connectionTransfer, mapColumn);
                 }
@@ -382,7 +382,10 @@ void MemoryConnectionHandler::createLinkedItemsForPath(
                 remapValue.clear();
                 remapRange.clear();
 
-                previousItem = currentLinkedItem;
+                if (currentLinkedItem != nullptr)
+                {
+                    previousItem = currentLinkedItem;
+                }
             }
         }
 
