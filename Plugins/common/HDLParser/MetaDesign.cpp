@@ -828,7 +828,14 @@ void MetaDesign::removeUnconnectedInterfaceAssignments()
                 }
             }
 
-            if (connected == false)
+            // Don't remove down assignment if port has tied value.
+            bool hasTiedValue = std::any_of(mPort->downAssignments_.cbegin(), mPort->downAssignments_.cend(),
+                [](QSharedPointer<MetaPortAssignment> assignment)
+                {
+                    return !assignment->defaultValue_.isEmpty();
+                });
+
+            if (connected == false && hasTiedValue == false)
             {
                 mPort->downAssignments_.clear();
             }
