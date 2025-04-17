@@ -13,10 +13,8 @@
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
-#include <common/layouts/VStaticLayout.h>
-#include <common/layouts/VStackedLayout.h>
-#include <common/layouts/VCollisionLayout.h>
 #include <common/layouts/IVGraphicsLayout.h>
+#include <common/layouts/VNoCollisionNoMovementLayout.h>
 
 #include <editors/MemoryDesigner/AddressSpaceGraphicsItem.h>
 #include <editors/MemoryDesigner/MemoryMapGraphicsItem.h>
@@ -33,8 +31,8 @@
 MemoryColumn::MemoryColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout, int itemSpacing):
 GraphicsColumn(desc, layout, false)
 {
-    QSharedPointer<IVGraphicsLayout<QGraphicsItem> > newItemLayout (
-        new VCollisionLayout<QGraphicsItem>(itemSpacing));
+    QSharedPointer<IVGraphicsLayout<QGraphicsItem> > newItemLayout(
+        new VNoCollisionNoMovementLayout<QGraphicsItem>(itemSpacing));
 
     setItemLayout(newItemLayout);
 }
@@ -221,6 +219,13 @@ bool MemoryColumn::memoryMapOverlapsInColumn(MainMemoryGraphicsItem const* memor
         if (comparisonMemoryItem->parentItem() == this && comparisonMemoryItem != memoryGraphicsItem)
         {
             QRectF comparisonRectangle = comparisonMemoryItem->getSceneRectangleWithSubItems();
+
+            if (comparisonMemoryItem->getMemoryConnections().isEmpty() == false)
+            {
+                qreal newHeight = comparisonMemoryItem->getLastConnection()->sceneBoundingRect().bottom() - comparisonMemoryItem->scenePos().y();
+                comparisonRectangle.setHeight(newHeight);
+            }
+
             int comparisonLineWidth = comparisonMemoryItem->pen().width();
 
             bool overlap = MemoryDesignerConstants::itemOverlapsAnotherItem(

@@ -5833,6 +5833,9 @@
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h">
       <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </ClInclude>
+    <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5843,6 +5846,9 @@
     </None>
     <None Include="common\graphicsItems\ConnectionItem.inl">
       <Filter>Source Files\common\graphicsItems</Filter>
+    </None>
+    <None Include="common\layouts\VNoCollisionNoMovementLayout.inl">
+      <Filter>Source Files\common\layouts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
