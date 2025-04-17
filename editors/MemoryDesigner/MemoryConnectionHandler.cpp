@@ -241,17 +241,14 @@ QVector<MemoryConnectionItem*> MemoryConnectionHandler::createConnectionSet(QSha
 
     for (auto const& connectionPath : *pathSet)
     {
-        if (filterAddressSpaceChains_)
-        {
-            createOnlyEndsConnection(connectionPath, placedMapItems, memoryMapColumn, placedSpaceItems);
-        }
-        else
-        {
-            createLinkedItemsForPath(placedItems, roots, spaceColumn, memoryMapColumn, connectionPath);
-        }
+        createLinkedItemsForPath(placedItems, roots, spaceColumn, memoryMapColumn, connectionPath);
     }
 
-    if (filterAddressSpaceChains_ == false)
+    if (filterAddressSpaceChains_)
+    {
+        createOnlyEndsConnectionFromLinks(roots, placedSpaceItems, placedMapItems, memoryMapColumn);
+    }
+    else
     {
         createFullConnectionFromLinks(roots, placedSpaceItems, placedMapItems, memoryMapColumn);
     }
@@ -583,87 +580,6 @@ void MemoryConnectionHandler::getConnectedItems(MainMemoryGraphicsItem* memoryIt
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionHandler::createOnlyEndsConnection()
-//-----------------------------------------------------------------------------
-void MemoryConnectionHandler::createOnlyEndsConnection(Path const& connectionPath,
-    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
-    MemoryColumn* memoryMapColumn,
-    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems)
-{
-    QSharedPointer<ConnectivityInterface const> startInterface = getFirstInitiatorInterface(connectionPath);
-    if (startInterface == nullptr)
-    {
-        return;
-    }
-
-    QSharedPointer<ConnectivityInterface const> endInterface = connectionPath.last();
-    auto connectionStartItem = getMainGraphicsItem(startInterface, MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME);
-    auto connectionEndItem = getConnectionEndItem(startInterface, endInterface);
-
-    if (!connectionStartItem || !connectionEndItem)
-    {
-        return;
-    }
-
-    if (connectionStartItem->isVisible() == false)
-    {
-        connectionStartItem->setVisible(true);
-    }
-    if (connectionEndItem->isVisible() == false)
-    {
-        connectionEndItem->setVisible(true);
-    }
-
-    auto connectionAddresses = MemoryConnectionAddressCalculator::calculatePathAddresses(startInterface, endInterface, connectionPath);
-
-    if (itemHandler_->itemHasCloneWithBaseAddress(connectionEndItem, connectionAddresses.connectionBaseAddress_))
-    {
-        connectionEndItem = itemHandler_->getClonedItemWithBaseAddress(connectionEndItem, connectionAddresses.connectionBaseAddress_);
-    }
-
-    if (connectionAddresses.createConnection_ == false ||
-        connectionExists(connectionStartItem, connectionEndItem, connectionAddresses.connectionBaseAddress_, connectionAddresses.connectionLastAddress_))
-    {
-        return;
-    }
-
-    auto connectionTransferY = connectionAddresses.connectionBaseAddress_ * MemoryDesignerConstants::RANGEINTERVAL;
-
-
-    bool spaceItemShouldMove = moveStartItemNotEndItem(connectionEndItem, connectionAddresses.connectionBaseAddress_);
-
-    // If end item has already been placed -> shared endpoint with other path -> set position of start item accordingly
-    if (placedMapItems->contains(connectionEndItem) && spaceItemShouldMove == false)
-    {
-        connectionEndItem = itemHandler_->cloneMemoryItem(connectionEndItem, memoryMapColumn);
-    }
-
-    if (spaceItemShouldMove)
-    {
-        if (placedSpaceItems->contains(connectionStartItem) == false)
-        {
-            positionSpaceItem(connectionStartItem, connectionEndItem->scenePos().y() - connectionTransferY);
-            if (itemCollidesWithOtherPlacedItems(connectionStartItem, placedSpaceItems))
-            {
-                placeCompressedSpaceToColumn(connectionStartItem, placedSpaceItems);
-            }
-        }
-    }
-    else
-    {
-        placeMemoryMap(connectionEndItem, connectionStartItem, connectionTransferY, placedMapItems, memoryMapColumn);
-        placedMapItems->append(connectionEndItem);
-    }
-
-    if (placedSpaceItems->contains(connectionStartItem) == false)
-    {
-        placedSpaceItems->prepend(connectionStartItem);
-    }
-
-    createConnectionItem(connectionStartItem, connectionEndItem, connectionAddresses.connectionBaseAddress_, connectionAddresses.connectionLastAddress_, connectionTransferY);
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::connectionExists()
 //-----------------------------------------------------------------------------
 bool MemoryConnectionHandler::connectionExists(MainMemoryGraphicsItem* startItem, MainMemoryGraphicsItem* endItem, quint64 const& connectionBaseAddress, quint64 const& connectionEndAddress) const
@@ -697,6 +613,74 @@ bool MemoryConnectionHandler::moveStartItemNotEndItem(MainMemoryGraphicsItem con
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::createOnlyEndsConnectionFromLinks()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::createOnlyEndsConnectionFromLinks(
+    QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem>>> roots,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedSpaces,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedMaps,
+    MemoryColumn* mapColumn)
+{
+    for (auto currentRoot : *roots)
+    {
+        if (currentRoot->item_ == nullptr)
+        {
+            continue;
+        }
+        else if (currentRoot->item_->type() == GFX_TYPE_ADDRESS_SPACE_ITEM)
+        {
+            placedSpaces->append(currentRoot->item_);
+        }
+
+        auto maximumLastAddress = *std::max_element(currentRoot->connectionLastAddresses_.begin(), currentRoot->connectionLastAddresses_.end());
+
+        createOnlyEndsConnectionsForRoot(currentRoot, currentRoot, placedSpaces, placedMaps, mapColumn, maximumLastAddress, currentRoot->yTransfer);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::createOnlyEndsConnectionsForRoot()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::createOnlyEndsConnectionsForRoot(
+    QSharedPointer<LinkedGraphicItem> root,
+    QSharedPointer<LinkedGraphicItem> currentLinkItem,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedSpaces,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedMaps,
+    MemoryColumn* mapColumn,
+    quint64 const& maximumLastAddress,
+    qreal combinedTransferY)
+{
+    auto currentItemMaxLastAddress = *std::max_element(currentLinkItem->connectionLastAddresses_.begin(), currentLinkItem->connectionLastAddresses_.end());
+    auto newMaximumLastAddress = qMin(maximumLastAddress, currentItemMaxLastAddress);
+
+    //! Not in leaf
+    if (currentLinkItem->children_->isEmpty() == false)
+    {
+        for (auto childItem : *currentLinkItem->children_)
+        {
+            if (childItem->connectionBaseAddress_ < newMaximumLastAddress)
+            {
+                createOnlyEndsConnectionsForRoot(root, childItem, placedSpaces, placedMaps, mapColumn, maximumLastAddress, combinedTransferY + childItem->yTransfer);
+            }
+        }
+    }
+    //! In leaf
+    else if (currentLinkItem->item_->type() == GFX_TYPE_MEMORY_ITEM)
+    {
+        //! Create a connection between the items.
+
+        placeMemoryMap(currentLinkItem->item_, root->item_, combinedTransferY, placedMaps, mapColumn);
+        placedMaps->append(currentLinkItem->item_);
+
+        for (auto connectionLastAddress : currentLinkItem->connectionLastAddresses_)
+        {
+            auto lastAddress = qMin(connectionLastAddress, maximumLastAddress);
+            createConnectionItem(root->item_, currentLinkItem->item_, currentLinkItem->connectionBaseAddress_, lastAddress, combinedTransferY);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::createFullConnectionFromLinks()
 //-----------------------------------------------------------------------------
 void MemoryConnectionHandler::createFullConnectionFromLinks(
@@ -707,7 +691,14 @@ void MemoryConnectionHandler::createFullConnectionFromLinks(
 {
     for (auto currentRoot : *roots)
     {
-        placedSpaces->append(currentRoot->item_);
+        if (currentRoot->item_ == nullptr)
+        {
+            continue;
+        }
+        else if (currentRoot->item_->type() == GFX_TYPE_ADDRESS_SPACE_ITEM)
+        {
+            placedSpaces->append(currentRoot->item_);
+        }
 
         createConnectionsForLinkedItem(currentRoot, placedSpaces, placedMaps, mapColumn);
     }

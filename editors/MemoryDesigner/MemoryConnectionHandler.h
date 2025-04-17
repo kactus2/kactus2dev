@@ -291,19 +291,6 @@ private:
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
 
     /*!
-     *  Create a connection displaying only the start and end items.
-     *
-     *    @param [in] connectionPath      The connection path.
-     *    @param [in] placedMapItems      List of the already placed memory maps.
-     *    @param [in] memoryMapColumn     The memory map column.
-     *    @param [in] placedSpaceItems    List of the already placed address spaces.
-     */
-    void createOnlyEndsConnection(Path const& connectionPath,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
-        MemoryColumn* memoryMapColumn,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
-
-    /*!
      *  Check if the selected memory connection already exists.
      *
      *    @param [in] startItem                 Start item of the connection.
@@ -358,7 +345,40 @@ private:
     void getConnectedItems(MainMemoryGraphicsItem* memoryItem, QVector<MainMemoryGraphicsItem*>& itemsConnectedToItem, QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedItems) const;
 
     /*!
-     *  Create a full connection from the linked lists.
+     *  Create connections displaying only the start and end items using the linked lists.
+     *
+     *    @param [in] roots         Starting points for the linked lists.
+     *    @param [in] placedSpaces  List of the already placed address spaces.
+     *    @param [in] placedMaps    List of the already placed memory maps.
+     *    @param [in] mapColumn     The memory map column.
+     */
+    void createOnlyEndsConnectionFromLinks(
+        QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem> > > roots,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaces,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
+        MemoryColumn* mapColumn);
+
+    /*!
+     *  Create connections for a single linked list.
+     *
+     *    @param [in] roots                 Starting point for the linked list.
+     *    @param [in] currentLinkItem       The currently examined linked item.
+     *    @param [in] placedSpaces          List of the already placed address spaces.
+     *    @param [in] placedMaps            List of the already placed memory maps.
+     *    @param [in] mapColumn             The memory map column.
+     *    @param [in] maximumLastAddress    The last address visible for the current connection.
+     *    @param [in] combinedTransferY     Position of the connection relative to the starting item.
+     */
+    void createOnlyEndsConnectionsForRoot(QSharedPointer<LinkedGraphicItem> root,
+        QSharedPointer<LinkedGraphicItem> currentLinkItem,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaces,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
+        MemoryColumn* mapColumn,
+        quint64 const& maximumLastAddress,
+        qreal combinedTransferY);
+
+    /*!
+     *  Create full connections from the linked lists.
      *
      *    @param [in] roots         Starting points for the linked lists.
      *    @param [in] placedSpaces  List of placed address space items.
