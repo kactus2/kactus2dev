@@ -47,7 +47,14 @@ QString ParameterizableInterface::parseExpressionToDecimal(QString const& expres
 //-----------------------------------------------------------------------------
 // Function: ParameterizableInterface::parseExpressionToBaseNumber()
 //-----------------------------------------------------------------------------
-QString ParameterizableInterface::parseExpressionToBaseNumber(QString const& expression, unsigned int baseNumber, bool* expressionIsValid /*= nullptr*/) const
+QString ParameterizableInterface::parseExpressionToBaseNumber(QString const& expression, unsigned int const& baseNumber, bool* expressionIsValid /*= nullptr*/) const
 {
-    return valueFormatter_->format(parseExpressionToDecimal(expression, expressionIsValid), baseNumber);
+    if (baseNumber == 0)
+    {
+        return ExpressionFormatter::format(expression, expressionParser_);
+    }
+    else
+    {
+        return valueFormatter_->format(parseExpressionToDecimal(expression, expressionIsValid), baseNumber);
+    }
 }

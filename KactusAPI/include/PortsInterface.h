@@ -211,7 +211,7 @@ public:
      *
      *    @return Calculated array left value of the selected port.
      */
-    std::string getArrayLeftValue(std::string const& portName, unsigned int baseNumber = 10) const;
+    std::string getArrayLeftValue(std::string const& portName, unsigned int baseNumber = 0) const;
 
     /*!
      *  Get the formatted array left expression of the selected port.
@@ -249,7 +249,7 @@ public:
      *
      *    @return Calculated array right value of the selected port.
      */
-    std::string getArrayRightValue(std::string const& portName, unsigned int baseNumber = 10) const;
+    std::string getArrayRightValue(std::string const& portName, unsigned int baseNumber = 0) const;
 
     /*!
      *  Get the formatted array right expression of the selected port.
@@ -353,7 +353,7 @@ public:
      *
      *    @return Calculated left bound value of the selected port.
      */
-    std::string getLeftBoundValue(std::string const& portName, unsigned int baseNumber = 10) const;
+    std::string getLeftBoundValue(std::string const& portName, unsigned int baseNumber = 0) const;
 
     /*!
      *  Get the formatted left bound expression of the selected port.
@@ -391,7 +391,7 @@ public:
      *
      *    @return Calculated right bound value of the selected port.
      */
-    std::string getRightBoundValue(std::string const& portName, unsigned int baseNumber = 10) const;
+    std::string getRightBoundValue(std::string const& portName, unsigned int baseNumber = 0) const;
 
     /*!
      *  Get the formatted right bound expression of the selected port.
@@ -457,8 +457,8 @@ public:
      *
      *    @return Calculated default value of the selected port.
      */
-    std::string getDefaultValue(std::string const& portName, unsigned int baseNumber = 10) const;
-    
+    std::string getDefaultValue(std::string const& portName, unsigned int baseNumber = 0) const;
+
     /*!
      *  Get the formatted default value expression of the selected port.
      *
@@ -495,7 +495,7 @@ public:
      *
      *    @return Calculated bus width value of the selected port.
      */
-    std::string getBusWidthValue(std::string const& portName, unsigned int baseNumber = 10) const;
+    std::string getBusWidthValue(std::string const& portName, unsigned int baseNumber = 0) const;
 
     /*!
      *  Get the formatted bus width expression of the selected port.
@@ -590,7 +590,7 @@ public:
      *
      *    @return Calculated max connections value of the selected port.
      */
-    std::string getMaxConnectionsValue(std::string const& portName, unsigned int baseNumber = 10) const;
+    std::string getMaxConnectionsValue(std::string const& portName, unsigned int baseNumber = 0) const;
 
     /*!
      *  Get the formatted max connections expression of the selected port.
@@ -628,7 +628,7 @@ public:
      *
      *    @return Calculated min connections value of the selected port.
      */
-    std::string getMinConnectionsValue(std::string const& portName, unsigned int baseNumber = 10) const;
+    std::string getMinConnectionsValue(std::string const& portName, unsigned int baseNumber = 0) const;
 
     /*!
      *  Get the formatted min connections expression of the selected port.

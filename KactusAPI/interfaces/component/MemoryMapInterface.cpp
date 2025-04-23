@@ -463,11 +463,11 @@ std::string MemoryMapInterface::getAddressUnitBitsExpression(std::string const& 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getAddressUnitBitsValue()
 //-----------------------------------------------------------------------------
-std::string MemoryMapInterface::getAddressUnitBitsValue(std::string const& mapName) const
+std::string MemoryMapInterface::getAddressUnitBitsValue(std::string const& mapName, int const& baseNumber) const
 {
     if (auto map = getMemoryMap(mapName))
     {
-        return parseExpressionToBaseNumber(map->getAddressUnitBits(false), 0).toStdString();
+        return parseExpressionToBaseNumber(map->getAddressUnitBits(false), baseNumber).toStdString();
     }
 
     return std::string();

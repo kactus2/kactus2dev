@@ -266,7 +266,7 @@ public:
      *	    
      * 	    @return Address unit bits of the selected memory map.
      */
-    std::string getAddressUnitBitsValue(std::string const& mapName) const;
+    std::string getAddressUnitBitsValue(std::string const& mapName, int const& baseNumber = 0) const;
 
     /*!
      *	Get the formatted address unit bits expression of the selected memory map.

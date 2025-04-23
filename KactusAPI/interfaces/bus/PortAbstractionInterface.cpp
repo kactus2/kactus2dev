@@ -1010,11 +1010,11 @@ std::string PortAbstractionInterface::getWidthFormattedExpression(int portIndex)
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getWidthValue()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getWidthValue(int portIndex, int baseNumber /*= 0*/) const
+std::string PortAbstractionInterface::getWidthValue(int portIndex, int const& baseNumber /*= 0*/) const
 {
     if (auto selectedSignal = getSignal(portIndex); selectedSignal && selectedSignal->wire_)
     {
-        bool expressionIsValid = false;
+        bool expressionIsValid = true;
         auto value = parseExpressionToBaseNumber(
             selectedSignal->wire_->getWidth(), baseNumber, &expressionIsValid).toStdString();
 
@@ -1027,15 +1027,17 @@ std::string PortAbstractionInterface::getWidthValue(int portIndex, int baseNumbe
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getWidthValue()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getWidthValue(std::string const& portName,
-    General::InterfaceMode interfaceMode, std::string const& systemGroup) const
+std::string PortAbstractionInterface::getWidthValue(
+    std::string const& portName,
+    General::InterfaceMode interfaceMode,
+    std::string const& systemGroup,
+    int const& baseNumber) const
 {
-    QSharedPointer<PortAbstraction> port = getPort(portName);
-    if (port && port->getWire() && interfaceMode != General::INTERFACE_MODE_COUNT)
+    if (QSharedPointer<PortAbstraction> port = getPort(portName); port && port->getWire() && interfaceMode != General::INTERFACE_MODE_COUNT)
     {
         auto width = port->getWire()->getWidth(interfaceMode, QString::fromStdString(systemGroup));
         bool expressionOk = false;
-        auto widthAsValue = parseExpressionToBaseNumber(width, 0, &expressionOk);
+        auto widthAsValue = parseExpressionToBaseNumber(width, baseNumber, &expressionOk);
 
         if (expressionOk)
         {

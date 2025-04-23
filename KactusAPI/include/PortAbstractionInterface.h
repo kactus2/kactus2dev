@@ -413,7 +413,7 @@ public:
      *  
      *    @param [in] portIndex     Index of the selected signal.
      *	    
-     * 	    @return The formatted expression of the width.
+     *    @return The formatted expression of the width.
      */
     std::string getWidthFormattedExpression(int portIndex) const;
 
@@ -423,9 +423,9 @@ public:
      *    @param [in] portIndex      Index of the selected signal.
      *    @param [in] baseNumber     Base number to format the value to.
      *	    
-     * 	    @return The evaluated value of the wire width.
+     *    @return The evaluated value of the wire width.
      */
-    std::string getWidthValue(int portIndex, int baseNumber = 0) const;
+    std::string getWidthValue(int portIndex, int const& baseNumber = 0) const;
 
     /*!
      *	Get the width value of the selected signal.
@@ -433,11 +433,15 @@ public:
      *    @param [in] portName          Name of the selected port.
      *    @param [in] interfaceMode     The interface mode of the port.
      *    @param [in] systemGroup       The port system group.
-     *	    
-     * 	    @return The evaluated value of the wire width.
+     *    @param [in] baseNumber        Base number to format the value to.
+     *
+     *    @return The evaluated value of the wire width.
      */
-    std::string getWidthValue(std::string const& portName, General::InterfaceMode interfaceMode, std::string const& systemGroup) const;
-    
+    std::string getWidthValue(std::string const& portName,
+        General::InterfaceMode interfaceMode,
+        std::string const& systemGroup,
+        int const& baseNumber = 0) const;
+
     /*!
      *  Set a new width for the selected signal.
      *

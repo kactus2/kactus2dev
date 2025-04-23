@@ -83,7 +83,7 @@ protected:
      *
      *    @return The value of the expression in the base number form.
      */
-    QString parseExpressionToBaseNumber(QString const& expression, unsigned int baseNumber, bool* expressionIsValid = nullptr) const;
+    QString parseExpressionToBaseNumber(QString const& expression, unsigned int const& baseNumber, bool* expressionIsValid = nullptr) const;
 
 private:
 
