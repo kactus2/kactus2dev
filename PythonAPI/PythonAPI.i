@@ -77,12 +77,12 @@ namespace std {
 // Workaround fix for calling AddressBlockInterface/SubspaceMapInterface::addBlock(std::string const&) from python
 %extend AddressBlockInterface {
     void addBlock(std::string const& newBlockName = std::string("")) {
-        return ((MemoryBlockInterface*)self)->addBlock(newBlockName);
+        return static_cast<MemoryBlockInterface*>(self)->addBlock(newBlockName);
     }
 }
 
 %extend SubspaceMapInterface {
     void addBlock(std::string const& newBlockName = std::string("")) {
-        return ((MemoryBlockInterface*)self)->addBlock(newBlockName);
+        return static_cast<MemoryBlockInterface*>(self)->addBlock(newBlockName);
     }
 }
