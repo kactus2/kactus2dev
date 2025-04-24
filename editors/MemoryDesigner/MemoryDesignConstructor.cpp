@@ -253,6 +253,8 @@ bool MemoryDesignConstructor::constructMemoryDesignItems(QSharedPointer<Connecti
         {
             itemHandler_->createMemoryItems(connectionGraph, addressSpaceColumn, memoryMapColumn);
             connectionHandler_->createConnectedItems(connectionGraph, addressSpaceColumn, memoryMapColumn);
+            filterMemoryOverlapItems(memoryOverlapItemsAreFiltered());
+            
             itemHandler_->createFieldOverlapItems();
 
             filterUnconnectedMemoryItems(unconnectedMemoryItemsAreFiltered());
