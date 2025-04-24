@@ -64,6 +64,12 @@ private:
     QSharedPointer<ConnectivityInterface> createInterfaceWithMemoryItem(QString const& interfaceName,
         QString const& mode, QSharedPointer<ConnectivityComponent> containingInstance, bool hierarchical) const;
 
+    QSharedPointer<ConnectivityInterface> createTargetInterfaceWithConnectedSubspaceMap(
+        QString const& interfaceName,
+        QSharedPointer<ConnectivityComponent> containingInstance,
+        QString const& connectedInitiatorName,
+        bool hierarchical) const;
+
     void addLocalConnection(QSharedPointer<ConnectivityInterface> masterInterface);
 };
 
@@ -317,10 +323,10 @@ void tst_MasterSlavePathSearch::testOpaqueBridgeConnection()
     QSharedPointer<ConnectivityInterface> testTargetInterface =
         createInterfaceWithMemoryItem("targetInterface", PathSearchSpace::TARGETMODE, targetComponent, false);
 
-    QSharedPointer<ConnectivityInterface> testBridgeTarget =
-        createInterfaceWithMemoryItem("bridgeTarget", PathSearchSpace::TARGETMODE, bridgeComponent, false);
-    QSharedPointer<ConnectivityInterface> testBridgeInitiator =
-        createInterfaceWithMemoryItem("bridgeInitiator", PathSearchSpace::INITIATORMODE, bridgeComponent, false);
+    QString initiatorName = "bridgeInitiator";
+    QSharedPointer<ConnectivityInterface> testBridgeInitiator = createInterfaceWithMemoryItem(initiatorName, PathSearchSpace::INITIATORMODE, bridgeComponent, false);
+    QSharedPointer<ConnectivityInterface> testBridgeTarget = createTargetInterfaceWithConnectedSubspaceMap("bridgeTarget", bridgeComponent, initiatorName, false);
+
     testBridgeInitiator->setBridged();
     testBridgeTarget->setBridged();
 
@@ -344,8 +350,7 @@ void tst_MasterSlavePathSearch::testOpaqueBridgeConnection()
     testGraph_->getConnections().append(internalBridge);
     testGraph_->getConnections().append(bridgeToTarget);
 
-    QVector<QVector<QSharedPointer<ConnectivityInterface const> > > paths =
-        pathSearcher_.findMasterSlavePaths(testGraph_, false);
+    QVector<QVector<QSharedPointer<ConnectivityInterface const> > > paths = pathSearcher_.findMasterSlavePaths(testGraph_, false);
 
     QCOMPARE(paths.count(), 1);
     QCOMPARE(paths.first().count(), 4);
@@ -383,6 +388,27 @@ QSharedPointer<ConnectivityInterface> tst_MasterSlavePathSearch::createInterface
     }
 
     return testInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MasterSlavePathSearch::createTargetInterfaceWithConnectedSubspaceMap()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConnectivityInterface> tst_MasterSlavePathSearch::createTargetInterfaceWithConnectedSubspaceMap(
+    QString const& interfaceName,
+    QSharedPointer<ConnectivityComponent> containingInstance,
+    QString const& connectedInitiatorName,
+    bool hierarchical) const
+{
+    QSharedPointer<ConnectivityInterface> testBridgeTarget = createInterfaceWithMemoryItem(interfaceName, PathSearchSpace::TARGETMODE, containingInstance, hierarchical);
+
+    QString subspaceType = "subspaceMap";
+    QString subspaceMapName = interfaceName + "_" + subspaceType;
+
+    QSharedPointer<MemoryItem> testSubspace(new MemoryItem(subspaceMapName, subspaceType));
+    testSubspace->setInitiatorReference(connectedInitiatorName);
+
+    testBridgeTarget->getConnectedMemory()->addChild(testSubspace);
+    return testBridgeTarget;
 }
 
 //-----------------------------------------------------------------------------

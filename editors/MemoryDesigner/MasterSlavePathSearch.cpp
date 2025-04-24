@@ -150,12 +150,9 @@ QVector<MasterSlavePathSearch::Path> MasterSlavePathSearch::findPathsFromInterfa
 
         if (visitedVertices.contains(nextVertex) == false && canConnectInterfaces(currentVertex, nextVertex) && pathDirectionIsAccepted(currentVertex, nextVertex))
         {
-            if (visitedVertices.contains(nextVertex) == false)
+            for (auto const& path : findPathsFromInterface(nextVertex, visitedVertices, graph))
             {
-                for (auto const& path : findPathsFromInterface(nextVertex, visitedVertices, graph))
-                {
-                    pathsFromVertices.append(path);
-                }
+                pathsFromVertices.append(path);
             }
         }
     }
@@ -168,7 +165,7 @@ QVector<MasterSlavePathSearch::Path> MasterSlavePathSearch::findPathsFromInterfa
     else
     {
         //! The case of a target interface with a memory map being connected to a hierarchical target
-        if ((currentVertex->getMode() == General::TARGET || currentVertex->getMode() == General::SLAVE) && currentVertex->isConnectedToMemory())
+        if ((currentVertex->getMode() == General::TARGET || currentVertex->getMode() == General::SLAVE) && currentVertex->isConnectedToMemory() && currentVertex->isBridged() == false)
         {
             MasterSlavePathSearch::Path newPath{ currentVertex };
             foundPaths.append(newPath);
