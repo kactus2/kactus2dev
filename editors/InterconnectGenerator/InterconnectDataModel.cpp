@@ -27,6 +27,11 @@ QSet<QSharedPointer<ConfigurableVLNVReference>> InterconnectDataModel::getValidA
     return validAbsRefs_;
 }
 
+QSet<QSharedPointer<ConfigurableVLNVReference>> InterconnectDataModel::getAllAbstractionRefs() const
+{
+    return allAbsRefs_;
+}
+
 QHash<QString, QSet<QSharedPointer<BusInterface>>> InterconnectDataModel::getInstanceBusMap() const
 {
     return instanceBusesHash_;

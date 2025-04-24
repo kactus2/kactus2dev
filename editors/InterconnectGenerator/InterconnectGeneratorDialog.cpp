@@ -39,7 +39,8 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
         designWidget->getEditedComponent()->getVlnv(), 
         library_, messager_);
 
-    absRefs_ = dataModel_->getValidAbstractionRefs();
+    filteredAbsRefs_ = dataModel_->getValidAbstractionRefs();
+    allAbsRefs_ = dataModel_->getAllAbstractionRefs();
     instanceBusesHash_ = dataModel_->getInstanceBusMap();
     interfaceAbsDefsHash_ = dataModel_->getInterfaceAbstractionHash();
 
@@ -61,7 +62,7 @@ QHash<QString, QList<QSharedPointer<TargetData>>> InterconnectGeneratorDialog::g
 void InterconnectGeneratorDialog::populateParameters()
 {
     QSharedPointer<ConfigurableVLNVReference> absRef;
-    for (auto& ref : absRefs_) {
+    for (auto& ref : filteredAbsRefs_) {
         if (ref->getName() == busInterfaceCombo_->currentText()) {
             absRef = ref;
         }
@@ -312,10 +313,16 @@ QWidget* InterconnectGeneratorDialog::createTopConfigSection() {
     clockCheckBox_->setChecked(false);
     resetCheckBox_->setChecked(false);
 
-    for (QSharedPointer<ConfigurableVLNVReference> ref : absRefs_) {
+    for (QSharedPointer<ConfigurableVLNVReference> ref : filteredAbsRefs_) {
         QString name = ref->getName();
         if (busInterfaceCombo_->findText(name) != -1) continue;
         busInterfaceCombo_->addItem(name);
+    }
+
+    for (QSharedPointer<ConfigurableVLNVReference> ref : allAbsRefs_) {
+        QString name = ref->getName();
+        if (clockCombo_->findText(name) != -1) continue;
+
         clockCombo_->addItem(name);
         resetCombo_->addItem(name);
     }
@@ -480,7 +487,7 @@ void InterconnectGeneratorDialog::accept()
     QSharedPointer<ConfigurableVLNVReference> absRef;
     QSharedPointer<ConfigurableVLNVReference> clkRef;
     QSharedPointer<ConfigurableVLNVReference> rstRef;
-    for (auto& ref : absRefs_) {
+    for (auto& ref : allAbsRefs_) {
         if (ref->getName() == busInterfaceCombo_->currentText()) {
             absRef = ref;
         }

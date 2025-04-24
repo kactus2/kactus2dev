@@ -24,6 +24,8 @@ public:
 
     QSet<QSharedPointer<ConfigurableVLNVReference>> getValidAbstractionRefs() const;
 
+    QSet<QSharedPointer<ConfigurableVLNVReference>> getAllAbstractionRefs() const;
+
     QHash<QString, QSet<QSharedPointer<BusInterface>>> getInstanceBusMap() const;
 
     QHash<QSharedPointer<BusInterface>, QSet<QString>> getInterfaceAbstractionHash() const;

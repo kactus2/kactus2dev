@@ -109,7 +109,8 @@ private:
     bool ignoreChange_ = false;
     bool isChannel_ = false;
 
-    QSet<QSharedPointer<ConfigurableVLNVReference>> absRefs_;
+    QSet<QSharedPointer<ConfigurableVLNVReference>> filteredAbsRefs_;
+    QSet<QSharedPointer<ConfigurableVLNVReference>> allAbsRefs_;
     QHash<QString, QSet<QSharedPointer<BusInterface > > > instanceBusesHash_;
     QHash<QSharedPointer<BusInterface >, QSet<QString > > interfaceAbsDefsHash_;
     QSet<QString> addedInitiators_;

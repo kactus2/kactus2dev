@@ -142,12 +142,22 @@ private:
 
     std::string globalAddressSpaceName_;
 
+    std::string clockName_;
+
+    std::string rstName_;
+
     VLNV busDefVLNV_;
+
     VLNV rstVLNV_;
+
     VLNV clkVLNV_;
+
     QString clkPort_;
+
     QString rstPort_;
+
     QString startAddr_;
+
     QString range_;
 
 };
