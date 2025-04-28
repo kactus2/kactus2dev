@@ -169,9 +169,8 @@ void ComponentEditorAddrBlockItem::createChild( int index )
         QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(regFile,
             model_, libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
             expressionParser_, addressBlockValidator_->getRegisterFileValidator(),
-            blockInterface_->getSubInterface(), addrBlock_, this));
+            blockInterface_->getSubInterface(), addrBlock_, addressUnitBits_, this));
         regFileItem->setLocked(locked_);
-        regFileItem->addressUnitBitsChanged(addressUnitBits_);
 
         if (visualizer_)
         {
