@@ -65,7 +65,7 @@ public:
      *
      *    @return True, if the memory block is an address block, false otherwise.
      */
-    virtual bool acceptBlock(std::string const& blockName) const override final;
+    virtual bool acceptBlock(std::string const& blockName) const final;
 
     /*!
      *  Get the formatted range expression of the selected address block.
@@ -232,8 +232,7 @@ public:
      *
      *    @return Number of references to the selected ID in the selected item.
      */
-    virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const override
-        final;
+    virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const final;
 
     /*!
      *  Validates the contained items.
@@ -275,7 +274,7 @@ public:
      *    @param [in] row             Row of the new address block.
      *    @param [in] newBlockName    Name of the new address block.
      */
-    virtual void addBlock(int const& row, std::string const& newBlockName = std::string("")) override final;
+    virtual void addBlock(int const& row, std::string const& newBlockName = std::string("")) final;
 
     /*!
      *  Get the expressions in the selected items.
@@ -284,7 +283,7 @@ public:
      *
      *    @return The expressions of the selected items.
      */
-    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const override final;
+    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const final;
 
     /*!
      *  Get the sub interface.
@@ -337,7 +336,7 @@ private:
      *
      *    @return Default name for an address block.
      */
-    virtual std::string getDefaultName() const override final;
+    virtual std::string getDefaultName() const final;
 
     /*!
      *  Get a list of the copied address blocks.
@@ -346,8 +345,7 @@ private:
      *
      *    @return List of the copied memory blocks.
      */
-    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> const& selectedRows) const override
-        final;
+    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> const& selectedRows) const final;
 
     /*!
      *  Get the mime type of the address block.
@@ -363,8 +361,7 @@ private:
      *
      *    @return Copy of the selected address block.
      */
-    virtual QSharedPointer<MemoryBlockBase> createCopyBlock(QSharedPointer<MemoryBlockBase> copiedItem) const
-        override final;
+    virtual QSharedPointer<MemoryBlockBase> createCopyBlock(QSharedPointer<MemoryBlockBase> copiedItem) const final;
 
     /*!
      *  Count the address block items in the selected list.
@@ -373,14 +370,14 @@ private:
      *
      *    @return Number of address block items in the selected list.
      */
-    virtual int countItems(QList<QSharedPointer<MemoryBlockBase> > itemList) const override final;
+    virtual int countItems(QList<QSharedPointer<MemoryBlockBase> > itemList) const final;
 
     /*!
      *  Get the address block validator.
      *
      *    @return The address block validator.
      */
-    virtual QSharedPointer<MemoryBlockValidator> getValidator() const override final;
+    virtual QSharedPointer<MemoryBlockValidator> getValidator() const final;
 
     /*!
      *  Get the address block with the selected name, sliced to a NameGroup.

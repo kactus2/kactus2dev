@@ -144,6 +144,36 @@ public:
      */
     void createFieldOverlapItems();
 
+    /*!
+     *  Clone the selected memory item.
+     *
+     *    @param [in] targetItem        The selected memory item.
+     *    @param [in] containingColumn  Column containing the selected memory item.
+     *
+     *    @return The cloned memory item.
+     */
+    MainMemoryGraphicsItem* cloneMemoryItem(MainMemoryGraphicsItem* targetItem, MemoryColumn* containingColumn);
+
+    /*!
+     *  Check if the selected item has been cloned and has the selected base address.
+     *
+     *    @param [in] originalItem  The selected item.
+     *    @param [in] baseAddress   The selected base address.
+     *
+     *    @return True, if the item exists, false otherwise.
+     */
+    bool itemHasCloneWithBaseAddress(MainMemoryGraphicsItem* originalItem, quint64 const& baseAddress) const;
+
+    /*!
+     *  Get the cloned memory item of the selected item with the selected base address.
+     *
+     *    @param [in] originalItem  The selected item.
+     *    @param [in] baseAddress   The selected base address.
+     *
+     *    @return The cloned memory item.
+     */
+    MainMemoryGraphicsItem* getClonedItemWithBaseAddress(MainMemoryGraphicsItem* originalItem, quint64 const& baseAddress);
+
 signals:
 
     /*!
@@ -196,6 +226,15 @@ private:
      *    @param [in] memoryItem  The selected memory item.
      */
     void filterUnconnectedMemoryItem(MainMemoryGraphicsItem* memoryItem);
+
+    /*!
+     *  Get the original item for the selected item.
+     *
+     *    @param [in] suspiciousItem    The selected item with unknown status as original or clone.
+     *
+     *    @return The original item of the selected item.
+     */
+    MainMemoryGraphicsItem* getOriginalItem(MainMemoryGraphicsItem* suspiciousItem);
 
     //-----------------------------------------------------------------------------
     // Data.

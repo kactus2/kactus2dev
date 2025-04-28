@@ -886,6 +886,8 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/AbstractionDefinitionEditor/QualifierData.h \
     ./editors/AbstractionDefinitionEditor/absdefgroup.h \
     ./editors/AbstractionDefinitionEditor/AbstractionDefinitionEditor.h \
+    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceCounter.h \
+    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceTree.h \
     ./editors/AbstractionDefinitionEditor/AbstractionPortsDelegate.h \
     ./editors/AbstractionDefinitionEditor/AbstractionPortsEditor.h \
     ./editors/AbstractionDefinitionEditor/AbstractionPortsModel.h \
@@ -903,8 +905,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceCounter.h \
-    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceTree.h
+    ./common/layouts/VNoCollisionNoMovementLayout.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1680,6 +1681,8 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/PythonSourceEditor/ScriptInputEditor.cpp \
     ./editors/PythonSourceEditor/ScriptViewEditor.cpp \
     ./editors/AbstractionDefinitionEditor/absdefgroup.cpp \
+    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceCounter.cpp \
+    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceTree.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionDefinitionEditor.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionDefinitionPortsSortFilter.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionDefinitionSignalRow.cpp \
@@ -1700,7 +1703,5 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceCounter.cpp \
-    ./editors/AbstractionDefinitionEditor/AbsDefParameterReferenceTree.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp
 RESOURCES += kactus.qrc

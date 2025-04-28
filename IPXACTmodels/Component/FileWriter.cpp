@@ -269,10 +269,5 @@ void FileWriter::Details::writeImageTypes(QXmlStreamWriter& writer, QSharedPoint
 //-----------------------------------------------------------------------------
 void FileWriter::Details::writeFileExtensions(QXmlStreamWriter& writer, QSharedPointer<File> file)
 {
-    if (!file->getPendingHash().isEmpty())
-    {
-        file->setLastHash(file->getPendingHash());
-    }
-
     CommonItemsWriter::writeVendorExtensions(writer, file);
 }

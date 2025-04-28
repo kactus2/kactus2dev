@@ -418,7 +418,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemorySubSpaceMapItem
 void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> reg, int baseAddress, 
     int addressableUnitBits, QString const& blockIdentifier, QSharedPointer<MemoryItem> blockItem) const
 {
-    quint64 registerOffset = expressionParser_->parseExpression(reg->getAddressOffset()).toInt();
+    quint64 registerOffset = expressionParser_->parseExpression(reg->getAddressOffset()).toULongLong();
     quint64 registerAddress = baseAddress + registerOffset;
     int registerSize =  expressionParser_->parseExpression(reg->getSize()).toInt();
     int registerDimension = expressionParser_->parseExpression(reg->getDimension()).toInt();

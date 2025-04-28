@@ -24,19 +24,45 @@ MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem(QSharedPointer<
     QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> containingInstance,
     QGraphicsItem* parent):
 MemoryDesignerGraphicsItem(subMemoryItem->getName(), subMemoryItem->getDisplayName(), identifierChain,
-    containingInstance, parent)
+    containingInstance, parent),
+tooltipType_(toolTipType),
+blockWidth_(blockWidth)
+{
+    quint64 rangeEnd = baseAddress + range - 1;
+
+    setup(range, baseAddress, rangeEnd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem()
+//-----------------------------------------------------------------------------
+MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem(MemoryDesignerChildGraphicsItem const& other, QGraphicsItem* parentItem):
+MemoryDesignerGraphicsItem(other, parentItem),
+tooltipType_(other.tooltipType_),
+blockWidth_(other.blockWidth_)
+{
+    quint64 lastAddress = other.getOriginalLastAddress();
+    quint64 baseAddress = other.getOriginalBaseAddress();
+
+    quint64 range = lastAddress - baseAddress + 1;
+    setup(range, baseAddress, lastAddress);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerChildGraphicsItem::setup()
+//-----------------------------------------------------------------------------
+void MemoryDesignerChildGraphicsItem::setup(quint64 const& range, quint64 const& baseAddress, quint64 const& lastAddress)
 {
     if (range == 1)
     {
         getRangeStartLabel()->hide();
     }
 
-    setGraphicsRectangle(blockWidth, range);
+    setGraphicsRectangle(blockWidth_, range);
 
-    quint64 rangeEnd = baseAddress + range - 1;
-    if (toolTipType.compare(QStringLiteral("Field")) != 0)
+    if (tooltipType_.compare(QStringLiteral("Field")) != 0)
     {
-        setupGraphicsItem(baseAddress, rangeEnd, toolTipType);
+        setupGraphicsItem(baseAddress, lastAddress, tooltipType_);
     }
 }
 

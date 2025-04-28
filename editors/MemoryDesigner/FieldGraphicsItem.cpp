@@ -35,15 +35,44 @@ MemoryDesignerChildGraphicsItem(fieldItem, QStringLiteral("Field"), fieldOffset,
     identifierChain, containingInstance, parentItem),
 combinedRangeLabel_(new QGraphicsTextItem("", this)),
 fieldName_(fieldItem->getName()),
-overlapFields_(),
 overlapIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/triangle_arrow_down.png"), this)),
-overlapAreaRectangle_(0)
+fieldOffset_(fieldOffset),
+fieldLastBit_(fieldLastBit),
+isOutsideRegister_(isOutsideRegister),
+isEmptyField_(isEmptyField)
 {
     if (!fieldItem->getDisplayName().isEmpty())
     {
         fieldName_ = fieldItem->getDisplayName();
     }
 
+    setupFieldItem(labelFont);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::FieldGraphicsItem()
+//-----------------------------------------------------------------------------
+FieldGraphicsItem::FieldGraphicsItem(FieldGraphicsItem const& other, MemoryDesignerGraphicsItem* parentItem):
+MemoryDesignerChildGraphicsItem(other, parentItem),
+combinedRangeLabel_(new QGraphicsTextItem("", this)),
+fieldName_(other.fieldName_),
+// overlapIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/triangle_arrow_down.png"), this))
+overlapIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/triangle_arrow_down.png"), this)),
+fieldOffset_(other.fieldOffset_),
+fieldLastBit_(other.fieldLastBit_),
+isOutsideRegister_(other.isOutsideRegister_),
+isEmptyField_(other.isEmptyField_)
+{
+    setRect(other.rect());
+
+    setupFieldItem(other.getNameLabel()->font());
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::setupFieldItem()
+//-----------------------------------------------------------------------------
+void FieldGraphicsItem::setupFieldItem(QFont const& labelFont)
+{
     qreal overlapIconPositionX = boundingRect().right() - overlapIcon_->boundingRect().width() - (GridSize / 2);
     qreal overlapIconPositionY = boundingRect().top() + (GridSize / 2);
     overlapIcon_->setPos(overlapIconPositionX, overlapIconPositionY);
@@ -52,11 +81,11 @@ overlapAreaRectangle_(0)
     getNameLabel()->setFont(labelFont);
     combinedRangeLabel_->setFont(labelFont);
 
-    setupGraphicsItem(fieldOffset, fieldLastBit, QStringLiteral("Field"));
+    setupGraphicsItem(fieldOffset_, fieldLastBit_, QStringLiteral("Field"));
     setLabelPositions();
 
     QColor fieldColor = KactusColors::FIELD_COLOR;
-    if (isOutsideRegister)
+    if (isOutsideRegister_)
     {
         QString toolTipAddition = QStringLiteral(
             "<br><br><b><font color=\"red\">This field is not contained within register</font></b>");
@@ -64,8 +93,8 @@ overlapAreaRectangle_(0)
 
         fieldColor = KactusColors::MISSING_COMPONENT;
     }
-         
-    setColors(fieldColor, isEmptyField);
+
+    setColors(fieldColor, isEmptyField_);
 }
 
 //-----------------------------------------------------------------------------

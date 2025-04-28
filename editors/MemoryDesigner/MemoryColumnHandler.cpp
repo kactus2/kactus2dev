@@ -203,7 +203,7 @@ void MemoryColumnHandler::createMemoryColumns()
     memoryMapColumn->setPos(columnPlacement);
     layout_->addColumn(memoryMapColumn);
 
-    createMemoryOverlapColumn();
+//     createMemoryOverlapColumn();
 }
 
 //-----------------------------------------------------------------------------

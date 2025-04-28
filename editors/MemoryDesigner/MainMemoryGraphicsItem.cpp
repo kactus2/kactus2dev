@@ -30,16 +30,38 @@
 // Function: MainMemoryGraphicsItem::MainMemoryGraphicsItem()
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem const> memoryItem,
-    QSharedPointer<ConnectivityComponent const> containingInstance, QString const& subItemType,
-    bool filterSubItems, QVector<QString> identifierChain, QGraphicsItem* parent):
-MemoryDesignerGraphicsItem(memoryItem->getName(), memoryItem->getDisplayName(), identifierChain,
-    containingInstance, parent),
+    QSharedPointer<ConnectivityComponent const> containingInstance,
+    QString const& subItemType,
+    bool filterSubItems,
+    QVector<QString> identifierChain,
+    QGraphicsItem* parent):
+MemoryDesignerGraphicsItem(memoryItem->getName(), memoryItem->getDisplayName(), identifierChain, containingInstance, parent),
 SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
 instanceNameLabel_(new QGraphicsTextItem(containingInstance->getName(), this)),
 memoryItem_(memoryItem),
-memoryCollisions_(),
-compressed_(false),
-extensionItem_(0)
+isOriginalItem_(true),
+clones_(new QVector<MainMemoryGraphicsItem*>())
+{
+    setupDuringConstruction();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::MainMemoryGraphicsItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem::MainMemoryGraphicsItem(MainMemoryGraphicsItem const& other) :
+MemoryDesignerGraphicsItem(other, other.parentItem()),
+SubMemoryLayout(other, this),
+instanceNameLabel_(new QGraphicsTextItem(other.getContainingInstance()->getName(), this)),
+memoryItem_(other.memoryItem_),
+isOriginalItem_(false)
+{
+    setupDuringConstruction();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::setupDuringConstruction()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::setupDuringConstruction()
 {
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemSendsScenePositionChanges);
@@ -337,13 +359,13 @@ void MainMemoryGraphicsItem::compressToUnCutCoordinates(QVector<qreal> unCutCoor
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::changeAddressRange()
+// Function: MainMemoryGraphicsItem::changeAddress()
 //-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::changeAddressRange(quint64 offsetChange)
+void MainMemoryGraphicsItem::changeAddress(quint64 const& newAddress)
 {
-    MemoryDesignerGraphicsItem::changeAddressRange(offsetChange);
+    SubMemoryLayout::changeChildItemAddress(getBaseAddress(), newAddress);
 
-    SubMemoryLayout::changeChildItemRanges(offsetChange);
+    MemoryDesignerGraphicsItem::changeAddress(newAddress);
 }
 
 //-----------------------------------------------------------------------------
@@ -605,4 +627,20 @@ void MainMemoryGraphicsItem::compressItemAndChildItems(bool compressMemoryItems)
             setCompressed(true);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::isOriginal()
+//-----------------------------------------------------------------------------
+bool MainMemoryGraphicsItem::isOriginal() const
+{
+    return isOriginalItem_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getClones()
+//-----------------------------------------------------------------------------
+QSharedPointer<QVector<MainMemoryGraphicsItem*> > MainMemoryGraphicsItem::getClones()
+{
+    return clones_;
 }

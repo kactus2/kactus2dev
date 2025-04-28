@@ -12,6 +12,7 @@
 #include "MemoryConnectionHandler.h"
 
 #include <editors/MemoryDesigner/MasterSlavePathSearch.h>
+#include <editors/MemoryDesigner/ConnectivityComponent.h>
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <editors/MemoryDesigner/MainMemoryGraphicsItem.h>
@@ -21,16 +22,14 @@
 #include <editors/MemoryDesigner/MemoryCollisionItem.h>
 #include <editors/MemoryDesigner/MemoryColumnHandler.h>
 #include <editors/MemoryDesigner/MemoryItem.h>
+#include <editors/MemoryDesigner/MemoryGraphicsItemHandler.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::MemoryConnectionHandler()
 //-----------------------------------------------------------------------------
-MemoryConnectionHandler::MemoryConnectionHandler(QSharedPointer<MemoryColumnHandler> columnHandler):
-condenseMemoryItems_(true),
-filterAddressSpaceChains_(true),
-connectionsToMemoryMaps_(),
-memoryCollisions_(),
-columnHandler_(columnHandler)
+MemoryConnectionHandler::MemoryConnectionHandler(QSharedPointer<MemoryColumnHandler> columnHandler, QSharedPointer<MemoryGraphicsItemHandler> itemHandler):
+columnHandler_(columnHandler),
+itemHandler_(itemHandler)
 {
 
 }
@@ -96,36 +95,34 @@ void MemoryConnectionHandler::reDrawConnectionsAndCollisions()
 //-----------------------------------------------------------------------------
 void MemoryConnectionHandler::createConnectedItems(QSharedPointer<ConnectivityGraph> connectionGraph, MemoryColumn* spaceColumn, MemoryColumn* memoryMapColumn)
 {
-    MasterSlavePathSearch pathSearcher;
-    QVector<Path> masterSlavePaths = pathSearcher.findMasterSlavePaths(connectionGraph, false);
-    if (masterSlavePaths.isEmpty())
-    {
-        return;
-    }
-
-    QVector<QSharedPointer<QVector<Path> > > pathSets = findPathSets(masterSlavePaths);
-
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems(
         new QVector<MainMemoryGraphicsItem*>());
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems(
         new QVector<MainMemoryGraphicsItem*>());
     QVector<MemoryConnectionItem*> connections;
-    
-    qreal spaceYPlacement = MemoryDesignerConstants::SPACEITEMINTERVAL;
 
-    for (auto const& singleSet : pathSets)
+    MasterSlavePathSearch pathSearcher;
+    QVector<Path> masterSlavePaths = pathSearcher.findMasterSlavePaths(connectionGraph, false);
+    if (masterSlavePaths.isEmpty() == false)
     {
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItemsInSet(new QVector<MainMemoryGraphicsItem*>());
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItemsInSet(new QVector<MainMemoryGraphicsItem*>());
+        QVector<QSharedPointer<QVector<Path> > > pathSets = findPathSets(masterSlavePaths);
 
-        connections.append(createConnectionSet(singleSet, placedMapItemsInSet, memoryMapColumn, spaceYPlacement, placedSpaceItemsInSet, spaceColumn));
+        qreal spaceYPlacement = MemoryDesignerConstants::SPACEITEMINTERVAL;
 
-        placedMapItems->append(*placedMapItemsInSet);
-        placedSpaceItems->append(*placedSpaceItemsInSet);
+        for (auto const& singleSet : pathSets)
+        {
+            QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItemsInSet(new QVector<MainMemoryGraphicsItem*>());
+            QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItemsInSet(new QVector<MainMemoryGraphicsItem*>());
 
-        // Reposition items in set
-        repositionCompressedAddressSpaces(placedSpaceItemsInSet);
-        repositionCompressedMemoryMaps(placedMapItemsInSet, memoryMapColumn);
+            connections.append(createConnectionSet(singleSet, placedMapItemsInSet, memoryMapColumn, spaceColumn, spaceYPlacement, placedSpaceItemsInSet));
+
+            placedMapItems->append(*placedMapItemsInSet);
+            placedSpaceItems->append(*placedSpaceItemsInSet);
+
+            // Reposition items in set
+            repositionCompressedAddressSpaces(placedSpaceItemsInSet);
+            repositionCompressedMemoryMaps(placedMapItemsInSet, memoryMapColumn);
+        }
     }
 
     spaceColumn->compressUnconnectedMemoryItems(condenseMemoryItems_, placedSpaceItems);
@@ -134,14 +131,17 @@ void MemoryConnectionHandler::createConnectedItems(QSharedPointer<ConnectivityGr
     spaceColumn->moveUnconnectedMemoryItems(placedSpaceItems);
     memoryMapColumn->moveUnconnectedMemoryItems(placedMapItems);
 
-    redrawMemoryConnections(connections);
-    createOverlappingConnectionMarkers(placedSpaceItems);
+    if (masterSlavePaths.isEmpty() == false)
+    {
+        redrawMemoryConnections(connections);
+        createOverlappingConnectionMarkers(placedSpaceItems);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::findPathSets()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<QVector<MemoryConnectionHandler::Path> > > MemoryConnectionHandler::findPathSets(QVector<Path> masterSlavePaths) const
+QVector<QSharedPointer<QVector<MemoryConnectionHandler::Path> > > MemoryConnectionHandler::findPathSets(QVector<Path> const& masterSlavePaths) const
 {
     QVector<QSharedPointer<QVector<Path> > > pathSets;
 
@@ -175,7 +175,7 @@ QVector<QSharedPointer<QVector<MemoryConnectionHandler::Path> > > MemoryConnecti
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::findPathSetIndexes()
 //-----------------------------------------------------------------------------
-QQueue<int> MemoryConnectionHandler::findPathSetIndexes(Path currentPath, QVector<QSharedPointer<QVector<Path> > > pathSets) const
+QQueue<int> MemoryConnectionHandler::findPathSetIndexes(Path const& currentPath, QVector<QSharedPointer<QVector<Path> > > const& pathSets) const
 {
     QQueue<int> pathSetIndexes;
 
@@ -194,7 +194,7 @@ QQueue<int> MemoryConnectionHandler::findPathSetIndexes(Path currentPath, QVecto
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::pathIsContainedWithPathSet()
 //-----------------------------------------------------------------------------
-bool MemoryConnectionHandler::pathIsContainedWithPathSet(Path currentPath, QSharedPointer<QVector<Path>> pathSet) const
+bool MemoryConnectionHandler::pathIsContainedWithPathSet(Path const& currentPath, QSharedPointer<QVector<Path>> pathSet) const
 {
     for (auto const& comparisonPath : *pathSet)
     {
@@ -213,7 +213,7 @@ bool MemoryConnectionHandler::pathIsContainedWithPathSet(Path currentPath, QShar
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::interfacedItemIsWithinPath()
 //-----------------------------------------------------------------------------
-bool MemoryConnectionHandler::interfacedItemIsWithinPath(QSharedPointer<const ConnectivityInterface> pathInterface, MemoryConnectionHandler::Path comparisonPath) const
+bool MemoryConnectionHandler::interfacedItemIsWithinPath(QSharedPointer<const ConnectivityInterface> pathInterface, Path const& comparisonPath) const
 {
     for (auto const& comparisonInterface : comparisonPath)
     {
@@ -232,13 +232,25 @@ bool MemoryConnectionHandler::interfacedItemIsWithinPath(QSharedPointer<const Co
 QVector<MemoryConnectionItem*> MemoryConnectionHandler::createConnectionSet(QSharedPointer<QVector<Path>> pathSet,
     QSharedPointer<QVector<MainMemoryGraphicsItem*>> placedMapItems,
     MemoryColumn* memoryMapColumn,
+    MemoryColumn* spaceColumn,
     qreal& spaceYPlacement,
-    QSharedPointer<QVector<MainMemoryGraphicsItem*>> placedSpaceItems,
-    MemoryColumn* spaceColumn)
+    QSharedPointer<QVector<MainMemoryGraphicsItem*>> placedSpaceItems)
 {
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems(new QVector<MainMemoryGraphicsItem*>());
+    QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem> > > roots(new QVector<QSharedPointer<LinkedGraphicItem> >());
+
     for (auto const& connectionPath : *pathSet)
     {
-        createConnectionFromSet(connectionPath, placedMapItems, memoryMapColumn, placedSpaceItems, spaceColumn, spaceYPlacement);
+        createLinkedItemsForPath(placedItems, roots, spaceColumn, memoryMapColumn, connectionPath);
+    }
+
+    if (filterAddressSpaceChains_)
+    {
+        createOnlyEndsConnectionFromLinks(roots, placedSpaceItems, placedMapItems, memoryMapColumn);
+    }
+    else
+    {
+        createFullConnectionFromLinks(roots, placedSpaceItems, placedMapItems, memoryMapColumn);
     }
 
     if (placedSpaceItems->isEmpty())
@@ -246,149 +258,524 @@ QVector<MemoryConnectionItem*> MemoryConnectionHandler::createConnectionSet(QSha
         return QVector<MemoryConnectionItem*>();
     }
 
-    auto highestItemInSet = placedSpaceItems->first();
-    highestItemInSet = getHighestPlacedItemInSet(highestItemInSet, placedSpaceItems);
-    highestItemInSet = getHighestPlacedItemInSet(highestItemInSet, placedMapItems);
+    QVector<MemoryConnectionItem*> connections;
 
-    auto yMovement = spaceYPlacement - highestItemInSet->scenePos().y();
-    
-    // Move entire group of connections to sensible vertical position.
-    // Round movement up to integer, but std::ceil instead of qCeil to preserve type.
-    highestItemInSet->moveItemAndConnectedItems(std::ceil(yMovement));
+    auto separatedPathSets = separateBrokenPathSet(placedSpaceItems);
+    for (auto pathSet : separatedPathSets)
+    {
+        auto highestItemInSet = pathSet->connectedSpaces_->first();
+        highestItemInSet = getHighestPlacedItemInSet(highestItemInSet, pathSet->connectedSpaces_);
+        highestItemInSet = getHighestPlacedItemInSet(highestItemInSet, pathSet->connectedMaps_);
 
-    auto connections = compressConnectedMemoryItems(placedSpaceItems, placedMapItems);
+        auto yMovement = spaceYPlacement - highestItemInSet->scenePos().y();
 
-    spaceYPlacement = highestItemInSet->getLowestPointOfConnectedItems() + MemoryDesignerConstants::SPACEITEMINTERVAL;
+        // Move entire group of connections to sensible vertical position.
+        // Round movement up to integer, but std::ceil instead of qCeil to preserve type.
+        highestItemInSet->moveItemAndConnectedItems(std::ceil(yMovement));
+
+        for (auto compressedConnection : compressConnectedMemoryItems(pathSet->connectedSpaces_, pathSet->connectedMaps_))
+        {
+            connections.append(compressedConnection);
+        }
+
+        spaceYPlacement = highestItemInSet->getLowestPointOfConnectedItems() + MemoryDesignerConstants::SPACEITEMINTERVAL;
+    }
 
     return connections;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionHandler::createConnectionFromSet()
+// Function: MemoryConnectionHandler::createLinkedItemsForPath()
 //-----------------------------------------------------------------------------
-void MemoryConnectionHandler::createConnectionFromSet(Path const& connectionPath,
-    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
-    MemoryColumn* memoryMapColumn,
-    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
+void MemoryConnectionHandler::createLinkedItemsForPath(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems,
+    QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem> > > roots,
     MemoryColumn* spaceColumn,
-    qreal initialPlacementOffset)
+    MemoryColumn* mapColumn,
+    const Path& connectionPath)
 {
-    QSharedPointer<ConnectivityInterface const> startInterface = getStartInterface(connectionPath);
-    QSharedPointer<ConnectivityInterface const> endInterface = connectionPath.last();
+    QString remapValue = "";
+    QString remapRange = "";
 
-    auto connectionStartItem = getMainGraphicsItem(startInterface, MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME);
-    auto connectionEndItem = getConnectionEndItem(startInterface, endInterface);
+    quint64 currentBaseAddress = 0;
+    quint64 connectionBaseAddress = 0;
 
-    if (!connectionStartItem || !connectionEndItem)
+    QSharedPointer<LinkedGraphicItem> previousItem = nullptr;
+    QSharedPointer<const ConnectivityInterface> previousInterface = nullptr;
+
+    for (auto const pathInterface : connectionPath)
     {
-        return;
-    }
-
-    if (connectionStartItem->isVisible() == false)
-    {
-        connectionStartItem->setVisible(true);
-    }
-    if (connectionEndItem->isVisible() == false)
-    {
-        connectionEndItem->setVisible(true);
-    }
-
-    // Path variables also contain address space chain info
-    auto pathVariables = MemoryConnectionAddressCalculator::calculatePathAddresses(startInterface, endInterface, connectionPath);
-    auto yTransfer = getConnectionInitialTransferY(pathVariables.baseAddressNumber_,
-        pathVariables.mirroredSlaveAddressChange_, pathVariables.hasRemapRange_,
-        pathVariables.memoryMapBaseAddress_, pathVariables.spaceChainBaseAddress_);
-
-    MainMemoryGraphicsItem* lastPlacedItem = connectionStartItem;
-
-    if (placedSpaceItems->contains(connectionStartItem) == false)
-    {
-        placedSpaceItems->prepend(connectionStartItem);
-    }
-
-    // If end item has already been placed -> shared endpoint with other path -> set position of start item accordingly
-    if (placedMapItems->contains(connectionEndItem))
-    {
-        positionSpaceItem(connectionStartItem, connectionEndItem->scenePos().y() - yTransfer);
-    }
-
-    if (!filterAddressSpaceChains_)
-    {
-        // Start placing address spaces from left to right
-        for (auto spaceIt = std::next(pathVariables.spaceChain_.begin()); spaceIt != pathVariables.spaceChain_.end(); ++spaceIt)
+        if (General::InterfaceMode interfaceMode = pathInterface->getMode();
+            (interfaceMode == General::MIRRORED_SLAVE || interfaceMode == General::MIRRORED_TARGET) && !pathInterface->getRemapAddress().isEmpty() && !pathInterface->getRemapRange().isEmpty())
         {
-            auto prevSpaceIt = std::prev(spaceIt);
-
-            auto spaceItem = getMainGraphicsItem(spaceIt->spaceInterface_, MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME);
-            auto prevSpaceItem = getMainGraphicsItem(prevSpaceIt->spaceInterface_, MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME);
-
-            if (placedSpaceItems->contains(spaceItem) == false)
+            remapValue = pathInterface->getRemapAddress();
+            remapRange = pathInterface->getRemapRange();
+        }
+        //! Initiator and target interfaces must be connected to a memory item for some change to happen with the address calculation.
+        else if (pathInterface->isConnectedToMemory())
+        {
+            //! A path with a connection to itself is a connection to a local memory map.
+            if (previousInterface == pathInterface)
             {
-                placedSpaceItems->append(spaceItem);
+                createLocalLinkedItem(previousItem, pathInterface, placedItems, mapColumn);
+                continue;
             }
 
-            positionSpaceItem(spaceItem, prevSpaceItem->scenePos().y() + prevSpaceIt->spaceInterface_->getBaseAddress().toULongLong() * MemoryDesignerConstants::RANGEINTERVAL);
-
-            auto prevSpaceBaseAddr = prevSpaceIt->spaceInterface_->getBaseAddress().toULongLong();
-            auto connectionYOffset = prevSpaceBaseAddr * MemoryDesignerConstants::RANGEINTERVAL;
-
-            createConnectionItem(prevSpaceItem, spaceItem, prevSpaceBaseAddr,
-                prevSpaceBaseAddr + spaceItem->getLastAddress(), pathVariables.memoryMapBaseAddress_, 
-                pathVariables.hasRemapRange_, connectionYOffset);
-
-            lastPlacedItem = spaceItem;
-            yTransfer = spaceIt->spaceInterface_->getBaseAddress().toULongLong() * MemoryDesignerConstants::RANGEINTERVAL;
-        }
-
-        if (placedMapItems->contains(connectionEndItem) == false)
-        {
-            if (placedSpaceItems->contains(connectionStartItem) == false)
+            //! If this is reached, there is a connection to be made to an address space (initiator) or memory map (target).
+            if (interfaceMode == General::MASTER || interfaceMode == General::INITIATOR ||
+                interfaceMode == General::SLAVE || interfaceMode == General::TARGET)
             {
-                placedSpaceItems->append(connectionStartItem);
-            }
+                auto pathGraphicsItem = getPathGraphicsItem(pathInterface);
+                if (pathGraphicsItem == nullptr)
+                {
+                    continue;
+                }
 
-            placeMemoryMap(connectionEndItem, lastPlacedItem, yTransfer, pathVariables, placedMapItems, memoryMapColumn);
-            placedMapItems->append(connectionEndItem);
+                if (pathGraphicsItem->isVisible() == false)
+                {
+                    pathGraphicsItem->setVisible(true);
+                }
+
+                //! Base address of the item is calculated because an item (especially memory map) can have a base address different from 0.
+                //! Remap value changes this item base address.
+                quint64 itemBaseAddress = pathGraphicsItem->getOriginalBaseAddress();
+
+                //! Connection is made to the full item, unless a remap range is given.
+                quint64 connectionSize = pathGraphicsItem->getOriginalLastAddress() - itemBaseAddress + 1;
+                if (remapRange.isEmpty() == false)
+                {
+                    connectionSize = remapRange.toULongLong();
+                }
+                if (remapValue.isEmpty() == false)
+                {
+                    itemBaseAddress = remapValue.toULongLong();
+                }
+
+                currentBaseAddress += itemBaseAddress;
+                connectionBaseAddress += itemBaseAddress;
+                quint64 connectionEndAddress = currentBaseAddress + connectionSize - 1;
+
+                qreal connectionTransfer = connectionBaseAddress * MemoryDesignerConstants::RANGEINTERVAL;
+
+                QSharedPointer<LinkedGraphicItem> currentLinkedItem = nullptr;
+
+                //! An address space connection is created to an initiator interface.
+                //! The base address of the interface must be added to the cumulative base address calculation.
+                //! The connection base address is set to begin from the base address of the interface.
+                if (interfaceMode == General::MASTER || interfaceMode == General::INITIATOR)
+                {
+                    currentLinkedItem = findOrCreateLinkedItem(placedItems, roots, previousItem, pathGraphicsItem, itemBaseAddress, currentBaseAddress, connectionEndAddress, connectionTransfer, spaceColumn);
+
+                    currentBaseAddress += pathInterface->getBaseAddress().toULongLong();
+                    connectionBaseAddress = pathInterface->getBaseAddress().toULongLong();
+                }
+                //! A memory map connection is created to a target interface.
+                else if ((interfaceMode == General::TARGET || interfaceMode == General::SLAVE) && pathInterface == connectionPath.last())
+                {
+                    currentLinkedItem = findOrCreateLinkedItem(placedItems, roots, previousItem, pathGraphicsItem, itemBaseAddress, currentBaseAddress, connectionEndAddress, connectionTransfer, mapColumn);
+                }
+
+                //! After the connection, the effects of the remap address and remap range are done and can be cleared.
+                remapValue.clear();
+                remapRange.clear();
+
+                if (currentLinkedItem != nullptr)
+                {
+                    previousItem = currentLinkedItem;
+                }
+            }
         }
 
-        createConnectionItem(lastPlacedItem, connectionEndItem,
-            pathVariables.remappedAddress_, pathVariables.remappedEndAddress_, pathVariables.memoryMapBaseAddress_,
-            pathVariables.hasRemapRange_, yTransfer);
+        previousInterface = pathInterface;
     }
-    else
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::createLocalLinkedItem()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::createLocalLinkedItem(
+    QSharedPointer<LinkedGraphicItem> previousItem,
+    QSharedPointer<ConnectivityInterface const> localMapInterface,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedItems,
+    MemoryColumn* mapColumn)
+{
+    auto localMapGraphicsItem = getLocalMemoryMapItem(localMapInterface);
+    if (localMapGraphicsItem->isVisible() == false)
     {
-        if (placedMapItems->contains(connectionEndItem) == false)
+        localMapGraphicsItem->setVisible(true);
+    }
+
+    quint64 mapBaseAddress = localMapGraphicsItem->getOriginalBaseAddress();
+    quint64 mapEndAddress = localMapGraphicsItem->getOriginalLastAddress();
+
+    qreal yTransfer = mapBaseAddress * MemoryDesignerConstants::RANGEINTERVAL;
+
+    createLinkedItem(previousItem->children_, localMapGraphicsItem, mapBaseAddress, mapBaseAddress, mapEndAddress, yTransfer, placedItems, mapColumn);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::findOrCreateLinkedItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryConnectionHandler::LinkedGraphicItem> MemoryConnectionHandler::findOrCreateLinkedItem(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems,
+    QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem> > > roots,
+    QSharedPointer<LinkedGraphicItem> previousItem,
+    MainMemoryGraphicsItem* pathGraphicsItem,
+    quint64 const& itemBaseAddress,
+    quint64 const& connectionBaseAddress,
+    quint64 const& connectionLastAddress,
+    qreal const& yTransfer,
+    MemoryColumn* itemColumn)
+{
+    auto itemSet = roots;
+    if (previousItem != nullptr)
+    {
+        itemSet = previousItem->children_;
+    }
+
+    for (auto linkedItem : *itemSet)
+    {
+        if (foundLinkedItem(linkedItem, pathGraphicsItem, connectionBaseAddress))
         {
-            if (placedSpaceItems->contains(connectionStartItem) == false)
+            if (linkedItem->connectionLastAddresses_.contains(connectionLastAddress) == false)
             {
-                placedSpaceItems->append(connectionStartItem);
+                linkedItem->connectionLastAddresses_.append(connectionLastAddress);
             }
 
-            placeMemoryMap(connectionEndItem, connectionStartItem, yTransfer, pathVariables, placedMapItems, memoryMapColumn);
-            placedMapItems->append(connectionEndItem);
+            return linkedItem;
         }
-        else if (placedSpaceItems->contains(connectionStartItem) == false)
-        {
-            positionSpaceItem(
-                connectionStartItem, connectionEndItem->scenePos().y() - yTransfer);
-
-            placedSpaceItems->append(connectionStartItem);
-        }
-
-        lastPlacedItem = connectionStartItem;
-
-        // Create connection between last space and memory map
-        createConnectionItem(lastPlacedItem, connectionEndItem,
-            pathVariables.remappedAddress_, pathVariables.remappedEndAddress_, pathVariables.memoryMapBaseAddress_,
-            pathVariables.hasRemapRange_, yTransfer);
     }
+
+    return createLinkedItem(itemSet, pathGraphicsItem, itemBaseAddress, connectionBaseAddress, connectionLastAddress, yTransfer, placedItems, itemColumn);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::foundLinkedItem()
+//-----------------------------------------------------------------------------
+bool MemoryConnectionHandler::foundLinkedItem(QSharedPointer<LinkedGraphicItem> linkedItem, MainMemoryGraphicsItem* pathGraphicsItem, quint64 const& connectionBaseAddress) const
+{
+    if (linkedItem->item_ && linkedItem->connectionBaseAddress_ == connectionBaseAddress)
+    {
+        if (linkedItem->item_ == pathGraphicsItem ||
+            (linkedItem->item_->name() == pathGraphicsItem->name() && linkedItem->item_->getContainingInstance() == pathGraphicsItem->getContainingInstance()))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::createLinkedItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryConnectionHandler::LinkedGraphicItem> MemoryConnectionHandler::createLinkedItem(
+    QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem> > > containingSet,
+    MainMemoryGraphicsItem* pathGraphicsItem,
+    quint64 const& itemBaseAddress,
+    quint64 const& connectionBaseAddress,
+    quint64 const& connectionLastAddress,
+    qreal const& yTransfer,
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems,
+    MemoryColumn* itemColumn)
+{
+
+    QSharedPointer<LinkedGraphicItem> newLinkedItem(new LinkedGraphicItem());
+    newLinkedItem->itemBaseAddress_ = itemBaseAddress;
+    newLinkedItem->connectionBaseAddress_ = connectionBaseAddress;
+    newLinkedItem->connectionLastAddresses_.append(connectionLastAddress);
+    newLinkedItem->yTransfer = yTransfer;
+
+    if (placedItems->contains(pathGraphicsItem))
+    {
+        pathGraphicsItem = itemHandler_->cloneMemoryItem(pathGraphicsItem, itemColumn);
+    }
+    
+    newLinkedItem->item_ = pathGraphicsItem;
+    placedItems->append(pathGraphicsItem);
+    containingSet->append(newLinkedItem);
+    return newLinkedItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::separateBrokenPathSet()
+//-----------------------------------------------------------------------------
+QVector<QSharedPointer<MemoryConnectionHandler::ConnectedItemSet> > MemoryConnectionHandler::separateBrokenPathSet(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems) const
+{
+    QVector<QSharedPointer<MemoryConnectionHandler::ConnectedItemSet> > itemSets;
+
+    QVector<MainMemoryGraphicsItem*> remainingSpaces;
+    for (auto spaceItem : *placedSpaceItems)
+    {
+        remainingSpaces.append(spaceItem);
+    }
+
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedItems(new QVector<MainMemoryGraphicsItem*>());
+
+    while (remainingSpaces.isEmpty() == false)
+    {
+        auto spaceItem = remainingSpaces.takeFirst();
+        if (visitedItems->contains(spaceItem) == false)
+        {
+            auto connectedItemSet = getConnectedItemsForSpaceItem(spaceItem, visitedItems);
+            itemSets.append(connectedItemSet);
+        }
+    }
+
+    return itemSets;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::getConnectedItemsForSpaceItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryConnectionHandler::ConnectedItemSet> MemoryConnectionHandler::getConnectedItemsForSpaceItem(MainMemoryGraphicsItem* spaceItem, QSharedPointer<QVector<MainMemoryGraphicsItem *>> visitedItems) const
+{
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > connectedSpaces(new QVector<MainMemoryGraphicsItem*>());
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > connectedMaps(new QVector<MainMemoryGraphicsItem*>());
+
+    QVector<MainMemoryGraphicsItem*> itemsConnectedToSpace;
+    getConnectedItems(spaceItem, itemsConnectedToSpace, visitedItems);
+    for (auto connectedItem : itemsConnectedToSpace)
+    {
+        if (connectedItem->type() == GraphicsItemTypes::GFX_TYPE_ADDRESS_SPACE_ITEM)
+        {
+            connectedSpaces->append(connectedItem);
+        }
+        else
+        {
+            connectedMaps->append(connectedItem);
+        }
+    }
+
+    QSharedPointer<MemoryConnectionHandler::ConnectedItemSet> combinedConnectedItems(new MemoryConnectionHandler::ConnectedItemSet());
+    combinedConnectedItems->connectedSpaces_ = connectedSpaces;
+    combinedConnectedItems->connectedMaps_ = connectedMaps;
+
+    return combinedConnectedItems;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::getConnectedItems()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::getConnectedItems(MainMemoryGraphicsItem* memoryItem, QVector<MainMemoryGraphicsItem*>& itemsConnectedToItem, QSharedPointer<QVector<MainMemoryGraphicsItem *>> visitedItems) const
+{
+    visitedItems->append(memoryItem);
+    itemsConnectedToItem.append(memoryItem);
+    QVector<MainMemoryGraphicsItem*> connectedItems;
+
+    auto connections = memoryItem->getMemoryConnections();
+    for (auto iterator = connections.cbegin(), end = connections.cend(); iterator != end; ++iterator)
+    {
+        auto currentConnection = iterator.value();
+
+        if (auto connectionStartItem = currentConnection->getConnectionStartItem(); visitedItems->contains(connectionStartItem) == false)
+        {
+            getConnectedItems(connectionStartItem, itemsConnectedToItem, visitedItems);
+        }
+        if (auto connectionEndItem = currentConnection->getConnectionEndItem(); visitedItems->contains(connectionEndItem) == false)
+        {
+            getConnectedItems(connectionEndItem, itemsConnectedToItem, visitedItems);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::connectionExists()
+//-----------------------------------------------------------------------------
+bool MemoryConnectionHandler::connectionExists(MainMemoryGraphicsItem* startItem, MainMemoryGraphicsItem* endItem, quint64 const& connectionBaseAddress, quint64 const& connectionEndAddress) const
+{
+    QMultiMapIterator connectionIterator(startItem->getMemoryConnections());
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+        if (connectionIterator.key() > connectionBaseAddress)
+        {
+            return false;
+        }
+
+        if (connectionIterator.key() == connectionBaseAddress &&
+            connectionIterator.value()->getConnectionEndItem() == endItem && connectionIterator.value()->getRangeEndValue() == connectionEndAddress)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::moveStartItemNotEndItem()
+//-----------------------------------------------------------------------------
+bool MemoryConnectionHandler::moveStartItemNotEndItem(MainMemoryGraphicsItem const* endItem,
+    quint64 const& connectionBaseAddress) const
+{
+    return endItem->getMemoryConnections().isEmpty() == false && endItem->getBaseAddress() == connectionBaseAddress;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::createOnlyEndsConnectionFromLinks()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::createOnlyEndsConnectionFromLinks(
+    QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem>>> roots,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedSpaces,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedMaps,
+    MemoryColumn* mapColumn)
+{
+    for (auto currentRoot : *roots)
+    {
+        if (currentRoot->item_ == nullptr)
+        {
+            continue;
+        }
+        else if (currentRoot->item_->type() == GFX_TYPE_ADDRESS_SPACE_ITEM)
+        {
+            placedSpaces->append(currentRoot->item_);
+        }
+
+        auto maximumLastAddress = *std::max_element(currentRoot->connectionLastAddresses_.begin(), currentRoot->connectionLastAddresses_.end());
+
+        createOnlyEndsConnectionsForRoot(currentRoot, currentRoot, placedSpaces, placedMaps, mapColumn, maximumLastAddress, currentRoot->yTransfer);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::createOnlyEndsConnectionsForRoot()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::createOnlyEndsConnectionsForRoot(
+    QSharedPointer<LinkedGraphicItem> root,
+    QSharedPointer<LinkedGraphicItem> currentLinkItem,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedSpaces,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedMaps,
+    MemoryColumn* mapColumn,
+    quint64 const& maximumLastAddress,
+    qreal combinedTransferY)
+{
+    auto currentItemMaxLastAddress = *std::max_element(currentLinkItem->connectionLastAddresses_.begin(), currentLinkItem->connectionLastAddresses_.end());
+    auto newMaximumLastAddress = qMin(maximumLastAddress, currentItemMaxLastAddress);
+
+    //! Not in leaf
+    if (currentLinkItem->children_->isEmpty() == false)
+    {
+        for (auto childItem : *currentLinkItem->children_)
+        {
+            if (childItem->connectionBaseAddress_ < newMaximumLastAddress)
+            {
+                createOnlyEndsConnectionsForRoot(root, childItem, placedSpaces, placedMaps, mapColumn, maximumLastAddress, combinedTransferY + childItem->yTransfer);
+            }
+        }
+    }
+    //! In leaf
+    else if (currentLinkItem->item_->type() == GFX_TYPE_MEMORY_ITEM)
+    {
+        //! Create a connection between the items.
+
+        placeMemoryMap(currentLinkItem->item_, root->item_, combinedTransferY, placedMaps, mapColumn);
+        placedMaps->append(currentLinkItem->item_);
+
+        for (auto connectionLastAddress : currentLinkItem->connectionLastAddresses_)
+        {
+            auto lastAddress = qMin(connectionLastAddress, maximumLastAddress);
+            createConnectionItem(root->item_, currentLinkItem->item_, currentLinkItem->connectionBaseAddress_, lastAddress, combinedTransferY);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::createFullConnectionFromLinks()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::createFullConnectionFromLinks(
+    QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem>>> roots,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedSpaces,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedMaps,
+    MemoryColumn* mapColumn)
+{
+    for (auto currentRoot : *roots)
+    {
+        if (currentRoot->item_ == nullptr)
+        {
+            continue;
+        }
+        else if (currentRoot->item_->type() == GFX_TYPE_ADDRESS_SPACE_ITEM)
+        {
+            placedSpaces->append(currentRoot->item_);
+        }
+
+        createConnectionsForLinkedItem(currentRoot, placedSpaces, placedMaps, mapColumn);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::createConnectionsForLinkedItem()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::createConnectionsForLinkedItem(
+    QSharedPointer<LinkedGraphicItem> linkedItem,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedSpaces,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedMaps,
+    MemoryColumn* mapColumn)
+{
+    for (auto child : *linkedItem->children_)
+    {
+        MainMemoryGraphicsItem* childItem = child->item_;
+
+        if (childItem->type() == GFX_TYPE_ADDRESS_SPACE_ITEM)
+        {
+            positionSpaceItem(childItem, child->yTransfer + linkedItem->item_->scenePos().y());
+            if (itemCollidesWithOtherPlacedItems(childItem, placedSpaces))
+            {
+                placeCompressedSpaceToColumn(childItem, placedSpaces);
+            }
+
+            placedSpaces->append(childItem);
+        }
+        else
+        {
+            placeMemoryMap(childItem, linkedItem->item_, child->yTransfer, placedMaps, mapColumn);
+            placedMaps->append(child->item_);
+        }
+
+        for (auto connectionLastAddress : child->connectionLastAddresses_)
+        {
+            createConnectionItem(linkedItem->item_, childItem, child->connectionBaseAddress_, connectionLastAddress, child->yTransfer);
+        }
+
+        createConnectionsForLinkedItem(child, placedSpaces, placedMaps, mapColumn);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::getPathGraphicsItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryConnectionHandler::getPathGraphicsItem(QSharedPointer<const ConnectivityInterface> pathInterface) const
+{
+    if (!pathInterface)
+    {
+        return nullptr;
+    }
+
+    QString columnType = "";
+    if (QSharedPointer<MemoryItem const> memoryItem = pathInterface->getConnectedMemory(); memoryItem->getType() == MemoryDesignerConstants::ADDRESSSPACE_TYPE)
+    {
+        columnType = MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME;
+    }
+    else if (memoryItem->getType() == MemoryDesignerConstants::MEMORYMAP_TYPE)
+    {
+        columnType = MemoryDesignerConstants::MEMORYMAPCOLUMNCOMMON_NAME;
+    }
+
+    MainMemoryGraphicsItem* graphicsItem = nullptr;
+    if (!columnType.isEmpty())
+    {
+        graphicsItem = getMainGraphicsItem(pathInterface, columnType);
+    }
+
+    return graphicsItem;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::getMainGraphicsItem()
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem* MemoryConnectionHandler::getMainGraphicsItem(
-    QSharedPointer<ConnectivityInterface const> connectionInterface, QString columnType) const
+    QSharedPointer<ConnectivityInterface const> connectionInterface, QString const& columnType) const
 {
     MainMemoryGraphicsItem* graphicsItem = nullptr;
 
@@ -409,10 +796,9 @@ MainMemoryGraphicsItem* MemoryConnectionHandler::getMainGraphicsItem(
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionHandler::getStartInterface()
+// Function: MemoryConnectionHandler::getFirstInitiatorInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityInterface const> MemoryConnectionHandler::getStartInterface(
-    QVector<QSharedPointer<ConnectivityInterface const> > connectionPath)
+QSharedPointer<ConnectivityInterface const> MemoryConnectionHandler::getFirstInitiatorInterface(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath) const
 {
     for (auto pathInterface : connectionPath)
     {
@@ -422,7 +808,7 @@ QSharedPointer<ConnectivityInterface const> MemoryConnectionHandler::getStartInt
         }
     }
 
-    return connectionPath.first();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -471,57 +857,29 @@ MainMemoryGraphicsItem* MemoryConnectionHandler::getLocalMemoryMapItem(
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionHandler::getConnectionInitialTransferY()
-//-----------------------------------------------------------------------------
-qreal MemoryConnectionHandler::getConnectionInitialTransferY(quint64 baseAddressNumber,
-    quint64 mirroredSlaveAddressChange, bool hasRemapRange, quint64 memoryMapBaseAddress,
-    quint64 spaceChainConnectionBaseAddress) const
-{
-    qreal yTransfer = baseAddressNumber + mirroredSlaveAddressChange;
-
-    if (!hasRemapRange)
-    {
-        yTransfer += memoryMapBaseAddress;
-    }
-
-    yTransfer += spaceChainConnectionBaseAddress;
-    yTransfer = yTransfer * MemoryDesignerConstants::RANGEINTERVAL;
-
-    return yTransfer;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::placeMemoryMap()
 //-----------------------------------------------------------------------------
 void MemoryConnectionHandler::placeMemoryMap(MainMemoryGraphicsItem* mapItem,
     MainMemoryGraphicsItem* startItem,
-    qreal yTransfer,
-    MemoryConnectionAddressCalculator::ConnectionPathVariables const& pathVariables,
-    QSharedPointer<QVector<MainMemoryGraphicsItem*>> placedMapItems,
+    qreal const& yTransfer,
+    QSharedPointer<QVector<MainMemoryGraphicsItem *>> placedMapItems,
     MemoryColumn* mapColumn)
 {
-    qreal memoryMapYTransfer = yTransfer;
-    if (pathVariables.hasRemapRange_)
-    {
-        memoryMapYTransfer += (pathVariables.memoryMapBaseAddress_ * MemoryDesignerConstants::RANGEINTERVAL);
-    }
-
-    qreal newEndItemPositionY = startItem->pos().y() + memoryMapYTransfer;
-    mapItem->setY(newEndItemPositionY);
+    mapItem->setY(startItem->pos().y() + yTransfer);
 
     if (!placedMapItems->isEmpty())
     {
-        checkMemoryMapRepositionToOverlapColumn(
-            pathVariables.remappedAddress_, pathVariables.remappedEndAddress_, placedMapItems, mapItem, mapColumn, startItem);
+        checkMemoryMapRepositionToOverlapColumn(placedMapItems, mapItem, mapColumn, startItem);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn()
 //-----------------------------------------------------------------------------
-void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(quint64 connectionBaseAddress,
-    quint64 connectionLastAddress, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
-    MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn, MainMemoryGraphicsItem* connectionStartItem)
+void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
+    MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn,
+    MainMemoryGraphicsItem* connectionStartItem)
 {
     QRectF selectedItemRect = memoryItem->getSceneRectangleWithSubItems();
 
@@ -534,15 +892,13 @@ void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(quint64 co
         connectedSpaceItems.append(chainedSpaceItem);
     }
 
-    if (originalColumn->memoryMapOverlapsInColumn(connectionBaseAddress, connectionLastAddress, memoryItem,
-        selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
+    if (originalColumn->memoryMapOverlapsInColumn(memoryItem, selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
     {
         for (MemoryColumn * memoryColumn : columnHandler_->getMapOverlapColumns())
         {
             selectedItemRect.setX(selectedItemRect.x() + memoryColumn->boundingRect().width());
 
-            if (!memoryColumn->memoryMapOverlapsInColumn(connectionBaseAddress, connectionLastAddress, memoryItem,
-                selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
+            if (!memoryColumn->memoryMapOverlapsInColumn(memoryItem, selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
             {
                 originalColumn->removeItem(memoryItem);
                 memoryColumn->addItem(memoryItem);
@@ -561,30 +917,7 @@ void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(quint64 co
 //-----------------------------------------------------------------------------
 void MemoryConnectionHandler::positionSpaceItem(MainMemoryGraphicsItem* spaceItem, qreal ypos)
 {
-    QRectF spaceRectangle = spaceItem->getSceneRectangleWithSubItems();
-    qreal spaceHeight = spaceRectangle.height();
-
     spaceItem->setY(ypos);
-    spaceRectangle.setY(ypos);
-    spaceRectangle.setHeight(spaceHeight);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionHandler::placeSpaceItemToColumn()
-//-----------------------------------------------------------------------------
-void MemoryConnectionHandler::placeSpaceItemToColumn(MainMemoryGraphicsItem* spaceItem, QRectF const& spaceRectangle, int spaceLineWidth, QSharedPointer<QVector<MainMemoryGraphicsItem*>> placedSpaceItems) const
-{
-    for (auto currentColumn : columnHandler_->getAddressSpaceColumns())
-    {
-        if (!currentColumn->itemOverlapsAnotherPlacedColumnItem(spaceItem, spaceRectangle, spaceLineWidth, placedSpaceItems))
-        {
-            currentColumn->addItem(spaceItem);
-            return;
-        }
-    }
-
-    MemoryColumn* newSpaceColumn = columnHandler_->createAddressSpaceColumn();
-    newSpaceColumn->addItem(spaceItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -592,34 +925,26 @@ void MemoryConnectionHandler::placeSpaceItemToColumn(MainMemoryGraphicsItem* spa
 //-----------------------------------------------------------------------------
 void MemoryConnectionHandler::createConnectionItem(MainMemoryGraphicsItem* startItem,
     MainMemoryGraphicsItem* endItem,
-    quint64 remappedAddress,
-    quint64 remappedEndAddress,
-    quint64 memoryMapBaseAddress,
-    bool hasRemapRange,
-    qreal yTransfer)
+    quint64 const& remappedAddress,
+    quint64 const& remappedEndAddress,
+    qreal const& yTransfer)
 {
-    changeConnectionEndItemRanges(endItem, remappedAddress, memoryMapBaseAddress, hasRemapRange);
+    changeConnectionEndItemRanges(endItem, remappedAddress);
 
     auto newConnectionItem = new MemoryConnectionItem(startItem, remappedAddress, remappedEndAddress, endItem, startItem->scene(), yTransfer);
     connectionsToMemoryMaps_.append(newConnectionItem);
 
-    startItem->hideCollidingRangeLabels(remappedAddress, remappedEndAddress);
-    endItem->hideCollidingRangeLabels(remappedAddress, remappedEndAddress);
+//     startItem->hideCollidingRangeLabels(remappedAddress, remappedEndAddress);
+//     endItem->hideCollidingRangeLabels(remappedAddress, remappedEndAddress);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::changeConnectionEndItemRanges()
 //-----------------------------------------------------------------------------
 void MemoryConnectionHandler::changeConnectionEndItemRanges(MainMemoryGraphicsItem* connectionEndItem,
-    quint64 remappedAddress, quint64 memoryMapBaseAddress, bool hasRemappedRange) const
+    quint64 const& remappedAddress) const
 {
-    quint64 addressRangeAddition = remappedAddress;
-    if (!hasRemappedRange)
-    {
-        addressRangeAddition = addressRangeAddition - memoryMapBaseAddress;
-    }
-
-    connectionEndItem->changeAddressRange(addressRangeAddition);
+    connectionEndItem->changeAddress(remappedAddress);
 }
 
 //-----------------------------------------------------------------------------
@@ -723,6 +1048,7 @@ QMap<qreal, qreal> MemoryConnectionHandler::calculateAreaMovements(QVector<qreal
 //-----------------------------------------------------------------------------
 void MemoryConnectionHandler::repositionCompressedAddressSpaces(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems)
 {
+/*
     auto spaceIter = std::next(placedSpaceItems->begin());
     while (spaceIter != placedSpaceItems->end())
     {
@@ -734,6 +1060,7 @@ void MemoryConnectionHandler::repositionCompressedAddressSpaces(QSharedPointer<Q
         }
         spaceIter = std::next(spaceIter);
     }
+*/
 }
 
 //-----------------------------------------------------------------------------
@@ -826,9 +1153,6 @@ void MemoryConnectionHandler::repositionCompressedMemoryMaps(
 
             QVector<MainMemoryGraphicsItem*> connectedSpaceItems = mapItem->getChainedSpaceItems();
 
-            quint64 firstConnectionBaseAddress = mapItem->getLowestConnectedBaseAddress();
-            quint64 lastConnectionLastAddress = mapItem->getHighestConnectedLastAddress();
-
             int columnWidth = originalColumn->sceneBoundingRect().width();
 
             QPointF columnPoint(originalColumn->pos().x() - columnWidth, mapRectangle.y());
@@ -840,9 +1164,7 @@ void MemoryConnectionHandler::repositionCompressedMemoryMaps(
                 {
                     mapRectangle.setX(mapRectangle.x() - columnWidth);
 
-                    if (!comparisonColumn->memoryMapOverlapsInColumn(
-                        firstConnectionBaseAddress, lastConnectionLastAddress, mapItem, mapRectangle, mapPenWidth,
-                        connectedSpaceItems, placedMapItems))
+                    if (!comparisonColumn->memoryMapOverlapsInColumn(mapItem, mapRectangle, mapPenWidth, connectedSpaceItems, placedMapItems))
                     {
                         originalColumn->removeItem(mapItem);
                         comparisonColumn->addItem(mapItem, true);

@@ -48,8 +48,16 @@ public:
         QSharedPointer<ConnectivityComponent const> containingInstance, bool filterSegments,
         QGraphicsItem* parent = 0);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other     The original address space item.
+     *
+     *    @return Copy of the original address space item.
+     */
+    AddressSpaceGraphicsItem(AddressSpaceGraphicsItem const& other);
+
     // Disable copying.
-    AddressSpaceGraphicsItem(AddressSpaceGraphicsItem const& rhs) = delete;
     AddressSpaceGraphicsItem& operator=(AddressSpaceGraphicsItem const& rhs) = delete;
 
 	/*!
@@ -96,6 +104,15 @@ private:
     virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd) override;
 
     /*!
+     *  Create a copy of the selected sub item.
+     *
+     *    @param [in] subItem   The selected sub item.
+     *
+     *    @return Copy of the selected sub item.
+     */
+    virtual MemoryDesignerChildGraphicsItem* createCopyOfSubItem(MemoryDesignerChildGraphicsItem* subItem) override final;
+
+    /*!
      *  Get the minimum height required to display for the memory item.
      *	
      *    @return The minimum height required to display the memory item.
@@ -108,6 +125,9 @@ private:
 
     //! The icon for an address space with a CPU.
     QGraphicsPixmapItem* cpuIcon_;
+
+    //! Range of the address space item.
+    quint64 spaceRangeInt_ = 0;
 };
 
 //-----------------------------------------------------------------------------

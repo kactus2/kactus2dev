@@ -27,9 +27,28 @@ AddressSegmentGraphicsItem::AddressSegmentGraphicsItem(QSharedPointer<MemoryItem
     QSharedPointer<ConnectivityComponent const> containingInstance, AddressSpaceGraphicsItem* spaceItem):
 MemoryDesignerChildGraphicsItem(segmentItem, QStringLiteral("Segment"), segmentItem->getOffset().toULongLong(),
     segmentItem->getRange().toULongLong(), getSegmentItemWidth(spaceItem), identifierChain, containingInstance,
-    spaceItem)
+    spaceItem),
+isEmptySegment_(isEmptySegment)
 {
-    setColors(KactusColors::ADDRESS_SEGMENT, isEmptySegment);
+    setupSegment();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSegmentGraphicsItem::AddressSegmentGraphicsItem()
+//-----------------------------------------------------------------------------
+AddressSegmentGraphicsItem::AddressSegmentGraphicsItem(AddressSegmentGraphicsItem const& other, AddressSpaceGraphicsItem* parentItem) :
+MemoryDesignerChildGraphicsItem(other, parentItem),
+isEmptySegment_(other.isEmptySegment_)
+{
+    setupSegment();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSegmentGraphicsItem::setupSegment()
+//-----------------------------------------------------------------------------
+void AddressSegmentGraphicsItem::setupSegment()
+{
+    setColors(KactusColors::ADDRESS_SEGMENT, isEmptySegment_);
     setLabelPositions();
 }
 

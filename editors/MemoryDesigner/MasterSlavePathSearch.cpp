@@ -119,45 +119,117 @@ bool MasterSlavePathSearch::isConnectedToSubspaceMap(QSharedPointer<const Connec
 //-----------------------------------------------------------------------------
 // Function: MasterSlavePathSearch::findPaths()
 //-----------------------------------------------------------------------------
-QVector<MasterSlavePathSearch::Path> MasterSlavePathSearch::findPaths(
-    QSharedPointer<ConnectivityInterface> startVertex,
-    QSharedPointer<const ConnectivityGraph> graph) const
+QVector<MasterSlavePathSearch::Path> MasterSlavePathSearch::findPaths(QSharedPointer<ConnectivityInterface > startVertex, QSharedPointer<const ConnectivityGraph> graph) const
 {
     QVector<MasterSlavePathSearch::Path> foundPaths;
+    QVector<QSharedPointer<ConnectivityInterface> > visitedVertices;
 
-    // Use breadth-first search (BFS) to find shortest paths and avoid loops.
-    // The search spans a BFS tree in the graph using the parent-property of the vertices.
-    QQueue<QSharedPointer<ConnectivityInterface> > verticesToSearch;
-    QVector<QSharedPointer<ConnectivityInterface> > traversed;
-    startVertex->setParent(nullptr);
-    traversed.append(startVertex);
-    verticesToSearch.enqueue(startVertex);
-
-    while (verticesToSearch.isEmpty() == false)
+    for (auto const& path : findPathsFromInterface(startVertex, visitedVertices, graph))
     {
-        auto const currentVertex = verticesToSearch.dequeue();
-        auto const connections = graph->getConnectionsFor(currentVertex);
+        foundPaths.append(path);
+    }
 
-        bool isLeaf = true;
-        for (auto const& nextEdge : connections)
+    return foundPaths;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::findPathsFromInterface()
+//-----------------------------------------------------------------------------
+QVector<MasterSlavePathSearch::Path> MasterSlavePathSearch::findPathsFromInterface(
+    QSharedPointer<ConnectivityInterface> currentVertex,
+    QVector<QSharedPointer<ConnectivityInterface>> visitedVertices,
+    QSharedPointer<const ConnectivityGraph> graph) const
+{
+    visitedVertices.append(currentVertex);
+    QVector<MasterSlavePathSearch::Path> foundPaths;
+    QVector<MasterSlavePathSearch::Path> pathsFromVertices;
+
+    for (auto const& nextEdge : graph->getConnectionsFor(currentVertex))
+    {
+        auto nextVertex = findConnectedInterface(currentVertex, nextEdge);
+
+        if (visitedVertices.contains(nextVertex) == false && canConnectInterfaces(currentVertex, nextVertex) && pathDirectionIsAccepted(currentVertex, nextVertex))
         {
-            auto nextVertex = findConnectedInterface(currentVertex, nextEdge);
-            if (traversed.contains(nextVertex) == false && canConnectInterfaces(currentVertex, nextVertex))
+            for (auto const& path : findPathsFromInterface(nextVertex, visitedVertices, graph))
             {
-                traversed.append(nextVertex);
-                nextVertex->setParent(currentVertex);
-                verticesToSearch.enqueue(nextVertex);
-                isLeaf = false;
+                pathsFromVertices.append(path);
             }
         }
+    }
 
-        if (isLeaf)
+    if (pathsFromVertices.isEmpty())
+    {
+        MasterSlavePathSearch::Path newPath{ currentVertex };
+        foundPaths.append(newPath);
+    }
+    else
+    {
+        //! The case of a target interface with a memory map being connected to a hierarchical target
+        if ((currentVertex->getMode() == General::TARGET || currentVertex->getMode() == General::SLAVE) && currentVertex->isConnectedToMemory() && currentVertex->isBridged() == false)
         {
-            foundPaths.append(findPathFromRoot(currentVertex));
+            MasterSlavePathSearch::Path newPath{ currentVertex };
+            foundPaths.append(newPath);
+        }
+
+        for (auto path : pathsFromVertices)
+        {
+            path.prepend(currentVertex);
+            foundPaths.append(path);
         }
     }
 
     return foundPaths;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::pathDirectionIsAccepted()
+//-----------------------------------------------------------------------------
+bool MasterSlavePathSearch::pathDirectionIsAccepted(QSharedPointer<ConnectivityInterface> startVertex, QSharedPointer<ConnectivityInterface> connectedVertex) const
+{
+    General::InterfaceMode startMode = startVertex->getMode();
+    General::InterfaceMode connectedMode = connectedVertex->getMode();
+    bool acceptDirection = true;
+
+    if ((startMode == General::MASTER || startMode == General::INITIATOR) &&
+        (connectedMode == General::SLAVE || connectedMode == General::TARGET) &&
+        startVertex->getInstance() == connectedVertex->getInstance())
+    {
+        acceptDirection = false;
+    }
+    else if (startMode == General::SLAVE || startMode == General::TARGET)
+    {
+        if (connectedMode == General::MIRRORED_SLAVE || connectedMode == General::MIRRORED_TARGET)
+        {
+            acceptDirection = false;
+        }
+        else if ((connectedMode == General::MASTER || connectedMode == General::INITIATOR) &&
+            (startVertex->getInstance() != connectedVertex->getInstance()))
+        {
+            acceptDirection = false;
+        }
+    }
+    else if ((startMode == General::MIRRORED_MASTER || startMode == General::MIRRORED_INITIATOR) &&
+        (connectedMode == General::MASTER || connectedMode == General::INITIATOR))
+    {
+        return false;
+    }
+    else if ((startMode == General::MIRRORED_SLAVE || startMode == General::MIRRORED_TARGET) &&
+        (connectedMode == General::MIRRORED_MASTER || connectedMode == General::MIRRORED_INITIATOR))
+    {
+        return false;
+    }
+
+    return acceptDirection;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::vertexIsLeaf()
+//-----------------------------------------------------------------------------
+bool MasterSlavePathSearch::vertexIsLeaf(QSharedPointer<ConnectivityInterface> possibleLeaf, QSharedPointer<const ConnectivityGraph> graph) const
+{
+    General::InterfaceMode leafMode = possibleLeaf->getMode();
+
+    return (leafMode == General::SLAVE || leafMode == General::TARGET) && possibleLeaf->isBridged() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -233,26 +305,6 @@ bool MasterSlavePathSearch::canConnectInterfaces(QSharedPointer<ConnectivityInte
         (startIsMirroredInitiator && endIsMirroredTarget && startInstance == endInstance) ||
         (startIsMirroredTarget && (endIsTarget || (endIsMirroredInitiator && startInstance == endInstance)))
         );
-}
-
-//-----------------------------------------------------------------------------
-// Function: MasterSlavePathSearch::findPathFromRoot()
-//-----------------------------------------------------------------------------
-MasterSlavePathSearch::Path MasterSlavePathSearch::findPathFromRoot(
-    QSharedPointer<ConnectivityInterface const> endVertex) const
-{
-    QVector<QSharedPointer<ConnectivityInterface const> > path;
-    path.append(endVertex);
-
-    auto i = endVertex;
-    while (i->getParent() != nullptr)
-    {
-        path.append(i->getParent());
-        i = i->getParent();
-    }
-
-    std::reverse(path.begin(), path.end());
-    return path;
 }
 
 //-----------------------------------------------------------------------------

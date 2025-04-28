@@ -42,16 +42,42 @@ MainMemoryGraphicsItem(memoryItem, containingInstance, MemoryDesignerConstants::
 addressUnitBits_(memoryItem->getAUB()),
 filterAddressBlocks_(filterAddressBlocks),
 filterRegisters_(filterRegisters),
-filterFields_(filterFields),
-subItemWidth_(0),
-filteredBlocks_()
+filterFields_(filterFields)
 {
-    QPair<quint64, quint64> memoryRanges =
-        MemoryConnectionAddressCalculator::getMemoryMapAddressRanges(memoryItem);
+    auto [baseAddress, lastAddress] = MemoryConnectionAddressCalculator::getMemoryMapAddressRanges(memoryItem);
 
-    quint64 baseAddress = memoryRanges.first;
-    quint64 lastAddress = memoryRanges.second;
+    setupMemoryMapItem(baseAddress, lastAddress);
 
+    qreal blockXPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX;
+
+    subItemWidth_ = getSubItemWidth();
+
+    setupSubItems(blockXPosition, memoryItem);
+    setLabelPositions();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::MemoryMapGraphicsItem()
+//-----------------------------------------------------------------------------
+MemoryMapGraphicsItem::MemoryMapGraphicsItem(MemoryMapGraphicsItem const& other):
+MainMemoryGraphicsItem(other),
+addressUnitBits_(other.addressUnitBits_),
+filterAddressBlocks_(other.filterAddressBlocks_),
+filterRegisters_(other.filterRegisters_),
+filterFields_(other.filterFields_),
+subItemWidth_(other.subItemWidth_)
+{
+    setupMemoryMapItem(other.getOriginalBaseAddress(), other.getOriginalLastAddress());
+
+    cloneSubItems(other);
+    MemoryMapGraphicsItem::setLabelPositions();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::setupDuringConstruction()
+//-----------------------------------------------------------------------------
+void MemoryMapGraphicsItem::setupMemoryMapItem(quint64 const& baseAddress, quint64 const& lastAddress)
+{
     QBrush memoryMapBrush(KactusColors::MEM_MAP_COLOR);
     setBrush(memoryMapBrush);
 
@@ -72,13 +98,6 @@ filteredBlocks_()
 
     setGraphicsRectangle(memoryWidth, memoryHeight);
     setupGraphicsItem(baseAddress, lastAddress, QStringLiteral("Memory Map"));
-
-    qreal blockXPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX;
-
-    subItemWidth_ = getSubItemWidth();
-
-    setupSubItems(blockXPosition, memoryItem);
-    setLabelPositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -203,6 +222,34 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(
     connect(childItem, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
         this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
 
+    return childItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::createCopyOfSubItem()
+//-----------------------------------------------------------------------------
+MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createCopyOfSubItem(MemoryDesignerChildGraphicsItem* subItem)
+{
+    MemoryDesignerChildGraphicsItem* childItem = 0;
+
+    if (!filterAddressBlocks_)
+    {
+        auto blockItem = dynamic_cast<AddressBlockGraphicsItem*>(subItem);
+        if (blockItem)
+        {
+            childItem = new AddressBlockGraphicsItem(*blockItem, this);
+        }
+    }
+    else if (!filterRegisters_)
+    {
+        auto registerItem = dynamic_cast<RegisterGraphicsItem*>(subItem);
+        if (registerItem)
+        {
+            childItem = new RegisterGraphicsItem(*registerItem, this);
+        }
+    }
+
+    connect(childItem, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
     return childItem;
 }
 

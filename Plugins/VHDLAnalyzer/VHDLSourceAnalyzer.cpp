@@ -235,7 +235,7 @@ void VHDLSourceAnalyzer::scanEntityReferences(QString const& source, QString con
 	 QList<FileDependencyDesc>& dependencies)
 {
 	static QRegularExpression entityExp(
-		"\\b(\\w+)\\s+\\:\\s+(ENTITY\\s+)?(\\w+\\.)?(\\w+)\\s+(GENERIC|PORT)\\s+MAP\\b",
+		"\\b(\\w+)\\s*\\:\\s*(ENTITY\\s+)?(\\w+\\.)?(\\w+)\\s+(GENERIC|PORT)\\s+MAP\\b",
 		QRegularExpression::CaseInsensitiveOption);
 
 	auto entityMatches = entityExp.globalMatch(source);
@@ -298,7 +298,7 @@ void VHDLSourceAnalyzer::addEntityDependency(QString const& componentName, QStri
     {
 		FileDependencyDesc dependency;
 		dependency.description = description.arg(componentName);
-        dependency.filename = componentName + ".vhd";
+        dependency.filename = componentName + " (VHDL entity)";
 
 		addUniqueDependency(dependency, dependencies);
     }
@@ -329,7 +329,7 @@ void VHDLSourceAnalyzer::addPackageDependency(QString const& packageName, QStrin
     {
 		FileDependencyDesc dependency;
 		dependency.description = description.arg(packageName);
-        dependency.filename = packageName + ".vhd";
+        dependency.filename = packageName + " (VHDL package)";
 
 		addUniqueDependency(dependency, dependencies);
     }

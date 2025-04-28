@@ -1,6 +1,6 @@
 /* File : pythonAPI.i */
 
-/*%feature("autodoc", "3");*/
+//%feature("autodoc", "2");
 %module pythonAPI
 
 %include "std_string.i"
@@ -75,3 +75,16 @@ namespace std {
 %include "../KactusAPI/include/PortMapInterface.h"
 %include "../KactusAPI/include/BusInterfaceInterface.h"
 #include "../KactusAPI/include/InterconnectGenerator.h"
+
+// Workaround fix for calling AddressBlockInterface/SubspaceMapInterface::addBlock(std::string const&) from python
+%extend AddressBlockInterface {
+    void addBlock(std::string const& newBlockName = std::string("")) {
+        return static_cast<MemoryBlockInterface*>(self)->addBlock(newBlockName);
+    }
+}
+
+%extend SubspaceMapInterface {
+    void addBlock(std::string const& newBlockName = std::string("")) {
+        return static_cast<MemoryBlockInterface*>(self)->addBlock(newBlockName);
+    }
+}

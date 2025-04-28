@@ -523,12 +523,20 @@ public:
     bool hasValidWriteValueConstraint(std::string const& fieldName, int accessPolicyIndex) const;
 
     /*!
-     *  Add a new field.
+     *  Add a new field, inserting it to specified position given by row.
      *
      *    @param [in] row             Row of the new field.
      *    @param [in] newFieldName    Name of the new field.
      */
     void addField(int const& row, std::string const& newFieldName = std::string(""));
+
+    /*!
+     *  Add a new field.
+     *  This overload should be preferred when using Python.
+     *
+     *    @param [in] newFieldName    Name of the new field.
+     */
+    void addField(std::string const& newFieldName = std::string(""));
 
     /*!
      *  Remove the selected field.

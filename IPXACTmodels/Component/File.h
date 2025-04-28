@@ -288,34 +288,6 @@ public:
 	 */
 	void setDescription(QString const& description);
 
-    /*!
-     *  Returns the last calculated hash.
-     *
-     *    @return The last calculated hash.
-     */
-    QString getLastHash() const;
-
-    /*!
-     *  Set the last calculated hash.
-     *
-     *    @param [in] newHash     The new hash value.
-     */
-    void setLastHash(QString const& newHash);
-
-    /*!
-     *  Gets the newest calculated hash pending for commit.
-     *
-     *    @return The pending hash.
-     */
-    QString getPendingHash() const;
-
-    /*!
-     *  Sets the newest calculated hash pending for commit.
-     *
-     *    @param [in] hash    The calculated hash value.
-     */
-    void setPendingHash(QString const& hash);
-
 	/*! 
      *  Check if the file matches at least one of the specified file types.
 	 *
@@ -493,9 +465,6 @@ private:
 
 	//! Details the file for the user.
 	QString description_;
-
-    //! The current hash that is pending for writing to disk.
-    QString pendingHash_;
 
 };
 

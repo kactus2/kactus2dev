@@ -19,7 +19,7 @@ name_(name),
 baseAddress_(),
 remapAddress_(),
 instance_(),
-memory_(),
+memory_(nullptr),
 hierarchical_(false),
 bridged_(false),
 childInterfaceNodes_()
@@ -193,20 +193,4 @@ void ConnectivityInterface::addChildInterfaceNode(QSharedPointer<ConnectivityInt
 void ConnectivityInterface::removeChildInterface(int const& indexOfInterface)
 {
     childInterfaceNodes_.removeAt(indexOfInterface);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConnectivityInterface::setParent()
-//-----------------------------------------------------------------------------
-void ConnectivityInterface::setParent(QSharedPointer<ConnectivityInterface> parentInterface)
-{
-    bfsParent_ = parentInterface;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConnectivityInterface::getParent()
-//-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityInterface> ConnectivityInterface::getParent() const
-{
-    return bfsParent_;
 }

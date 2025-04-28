@@ -20,6 +20,7 @@
 #include <editors/MemoryDesigner/MemoryMapGraphicsItem.h>
 #include <editors/MemoryDesigner/MemoryColumn.h>
 #include <editors/MemoryDesigner/MemoryCollisionItem.h>
+#include <editors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryGraphicsItemHandler::MemoryGraphicsItemHandler()
@@ -263,4 +264,112 @@ void MemoryGraphicsItemHandler::createFieldOverlapItems()
     {
         mapItem->createFieldOverlapItems();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::cloneMemoryItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryGraphicsItemHandler::cloneMemoryItem(MainMemoryGraphicsItem* targetItem, MemoryColumn* containingColumn)
+{
+    MainMemoryGraphicsItem* clonedItem = nullptr;
+
+    auto originalItem = getOriginalItem(targetItem);
+    if (containingColumn && originalItem != nullptr)
+    {
+        if (auto mapItem = dynamic_cast<MemoryMapGraphicsItem const*>(originalItem); mapItem)
+        {
+            auto clonedMap = new MemoryMapGraphicsItem(*mapItem);
+            memoryMapItems_.append(clonedMap);
+
+            connectGraphicsItemSignals(clonedMap);
+            containingColumn->addItem(clonedMap, true);
+
+            clonedItem = clonedMap;
+        }
+        else if (auto spaceItem = dynamic_cast<AddressSpaceGraphicsItem const*>(originalItem); spaceItem)
+        {
+            auto clonedSpace = new AddressSpaceGraphicsItem(*spaceItem);
+            spaceItems_.append(clonedSpace);
+
+            connectGraphicsItemSignals(clonedSpace);
+            containingColumn->addItem(clonedSpace, true);
+
+            clonedItem = clonedSpace;
+        }
+    }
+
+    if (clonedItem != nullptr)
+    {
+        originalItem->getClones()->append(clonedItem);
+    }
+
+    return clonedItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::getOriginalItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryGraphicsItemHandler::getOriginalItem(MainMemoryGraphicsItem* suspiciousItem)
+{
+    MainMemoryGraphicsItem* originalItem = suspiciousItem;
+
+    if (originalItem != nullptr && originalItem->isOriginal() == false)
+    {
+        if (originalItem->type() == GraphicsItemTypes::GFX_TYPE_ADDRESS_SPACE_ITEM)
+        {
+            for (auto spaceItem : spaceItems_)
+            {
+                if (spaceItem->name() == originalItem->name() && spaceItem->isOriginal())
+                {
+                    originalItem = spaceItem;
+                    break;
+                }
+            }
+        }
+        else if (originalItem->type() == GraphicsItemTypes::GFX_TYPE_MEMORY_ITEM)
+        {
+            for (auto mapItem : memoryMapItems_)
+            {
+                if (mapItem->name() == originalItem->name() && mapItem->isOriginal())
+                {
+                    originalItem = mapItem;
+                    break;
+                }
+            }
+        }
+    }
+
+    return originalItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::itemHasCloneWithBaseAddress()
+//-----------------------------------------------------------------------------
+bool MemoryGraphicsItemHandler::itemHasCloneWithBaseAddress(MainMemoryGraphicsItem* originalItem, quint64 const& baseAddress) const
+{
+    for (auto cloneItem : *originalItem->getClones())
+    {
+        if (cloneItem->getBaseAddress() == baseAddress)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::getClonedItemWithBaseAddress()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryGraphicsItemHandler::getClonedItemWithBaseAddress(MainMemoryGraphicsItem* originalItem, quint64 const& baseAddress)
+{
+    for (auto cloneItem : *originalItem->getClones())
+    {
+        if (cloneItem->getBaseAddress() == baseAddress)
+        {
+            return cloneItem;
+        }
+    }
+
+    return nullptr;
 }

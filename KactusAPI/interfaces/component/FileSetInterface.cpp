@@ -257,6 +257,14 @@ void FileSetInterface::addFileSet(int const& row, std::string const& newFileSetN
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileSetInterface::addFileSet()
+//-----------------------------------------------------------------------------
+void FileSetInterface::addFileSet(std::string const& newFileSetName /*= std::string("")*/)
+{
+    addFileSet(fileSets_->size(), newFileSetName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileSetInterface::removeFileSet()
 //-----------------------------------------------------------------------------
 bool FileSetInterface::removeFileSet(std::string const& fileName)

@@ -5862,6 +5862,9 @@
     </ClInclude>
     <ClInclude Include="editors\InterconnectGenerator\InterconnectAddressHelper.h">
       <Filter>Header Files\editors\InterconnectGenerator</Filter>
+	</ClInclude>
+    <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -5873,6 +5876,9 @@
     </None>
     <None Include="common\graphicsItems\ConnectionItem.inl">
       <Filter>Source Files\common\graphicsItems</Filter>
+    </None>
+    <None Include="common\layouts\VNoCollisionNoMovementLayout.inl">
+      <Filter>Source Files\common\layouts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -406,14 +406,22 @@ public:
     bool hasValidSize(std::string const& registerName) const;
 
     /*!
-     *  Add a new register.
+     *  Add a new register, inserting it to position specified by row and dataIndex.
      *
      *    @param [in] row                 Row of the new register.
      *    @param [in] dataIndex           Index of the new register in the register data.
      *    @param [in] newRegisterName     Name of the new register.
      */
     void addRegister(int const& row, int const& dataIndex, std::string const& newRegisterName = std::string(""));
-
+    
+    /*!
+     *  Add a new register.
+     *  This overload should be preferred when using Python.
+     *
+     *    @param [in] newRegisterName     Name of the new register.
+     */
+    void addRegister(std::string const& newRegisterName = std::string(""));
+    
     /*!
      *  Remove the selected register.
      *
@@ -494,6 +502,13 @@ private:
      *    @return The sliced register with the selected name.
      */
     QSharedPointer<NameGroup> getItem(std::string const& registerName) const;
+
+    /*!
+     *	Calculate the offset of the next register to be added.
+     *  
+     *    @return The offset for the new register
+     */
+    QString getNextRegisterOffset() const;
 
     //-----------------------------------------------------------------------------
     // Data.

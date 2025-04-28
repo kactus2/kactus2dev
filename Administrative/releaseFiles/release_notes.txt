@@ -1,12 +1,26 @@
 ===============================================================================
                             RELEASE NOTES : Kactus2
-                  Copyright (c) 2012-2024 Tampere University
+                  Copyright (c) 2012-2025 Tampere University
                  https://research.tuni.fi/system-on-chip/tools
 ===============================================================================
               + Improvement or feature added
               - Bug fix or something removed
               * Changed or Information
 ===============================================================================
+
+24/04/2024 3.13.4
+----------------------------------------------------
+* Reworked memory designer to correctly show memory connections
+  * Designer now shows each address space as separate connection sets
+  * Items can be displayed in multiple connections
+  * Target-initiator path search now finds multiple paths instead of just the shortest
+  * Simple view of the designer excludes connections that are out of bounds (of connected address space)
+* Simplified file dependency scanning. File dependencies are no longer stored in IP-XACT files, except if manually created.
++ Added option to toggle memory overlap on and off in memory designer
++ Added ability to create IP-XACT 2022 components and designs through the Python API
+- Fixed Verilog and VHDL dependency scanning. Only file set files are scanned for dependencies, other dependencies are marked as external.
+- Fixed removal of multiple non-contiguous rows in tables
+- Fixed writing tied value of ad-hoc port with direction out (Verilog generator)
 
 14/10/2024 3.13.3
 ----------------------------------------------------

@@ -156,12 +156,20 @@ public:
     std::vector<std::string> getExpressionsInSelectedFiles(std::vector<std::string> fileNames) const;
 
     /*!
-     *  Add a new file.
+     *  Add a new file, inserting it to a specified position given by row.
      *
      *    @param [in] row             Row of the new file.
      *    @param [in] newFileName     Name of the new file.
      */
     void addFile(int const& row, std::string const& newFileName = std::string(""));
+
+    /*!
+     *  Add a new file.
+     *  This overload should be preferred when using Python.
+     * 
+     *    @param [in] newFileName     Name of the new file.
+     */
+    void addFile(std::string const& newFileName = std::string(""));
 
     /*!
      *  Remove the selected file.

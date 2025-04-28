@@ -56,6 +56,15 @@ public:
         QFont labelFont, QSharedPointer<ConnectivityComponent const> containingInstance, bool isOutsideRegister,
         MemoryDesignerGraphicsItem* parentItem);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other     The original field item.
+     *
+     *    @return Copy of the original field item.
+     */
+    FieldGraphicsItem(FieldGraphicsItem const& other, MemoryDesignerGraphicsItem* parentItem);
+
 	/*!
      *  The destructor.
      */
@@ -127,8 +136,14 @@ protected:
 
 private:
     // Disable copying.
-    FieldGraphicsItem(FieldGraphicsItem const& rhs);
     FieldGraphicsItem& operator=(FieldGraphicsItem const& rhs);
+
+    /*!
+     *  Setup the field item.
+     *
+     *    @param [in] labelFont     Font used for the labels.
+     */
+    void setupFieldItem(QFont const& labelFont);
 
     /*!
      *  Set colors for ranges in an empty field graphics item.
@@ -194,7 +209,19 @@ private:
     QGraphicsPixmapItem* overlapIcon_;
 
     //! Rectangle for containing all the overlapped field graphics items.
-    QGraphicsRectItem* overlapAreaRectangle_;
+    QGraphicsRectItem* overlapAreaRectangle_ = nullptr;
+
+    //! Offset of the field.
+    quint64 fieldOffset_ = 0;
+
+    //! Last bit used by the field.
+    quint64 fieldLastBit_ = 0;
+
+    //! Flag for fields outside the containing register.
+    bool isOutsideRegister_ = false;
+
+    //! Flag for an empty field.
+    bool isEmptyField_ = false;
 };
 
 //-----------------------------------------------------------------------------

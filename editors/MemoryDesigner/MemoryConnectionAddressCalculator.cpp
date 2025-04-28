@@ -11,6 +11,10 @@
 
 #include "MemoryConnectionAddressCalculator.h"
 
+#include <KactusAPI/include/PluginUtilityAdapter.h>
+
+#include <editors/MemoryDesigner/ConnectivityComponent.h>
+
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <editors/MemoryDesigner/MemoryItem.h>
@@ -18,96 +22,106 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionAddressCalculator::calculatePathAddresses()
 //-----------------------------------------------------------------------------
-MemoryConnectionAddressCalculator::ConnectionPathVariables MemoryConnectionAddressCalculator::
-    calculatePathAddresses(QSharedPointer<const ConnectivityInterface> startInterface,
-        QSharedPointer<const ConnectivityInterface> endInterface,
-        QVector<QSharedPointer<ConnectivityInterface const> > connectionPath)
+MemoryConnectionAddressCalculator::CalculatedPathAddresses MemoryConnectionAddressCalculator::calculatePathAddresses(
+    QSharedPointer<const ConnectivityInterface> startInterface,
+    QSharedPointer<const ConnectivityInterface> endInterface,
+    QVector<QSharedPointer<ConnectivityInterface const> > connectionPath)
 {
-    MemoryConnectionAddressCalculator::ConnectionPathVariables newPathVariables;
-    newPathVariables.hasRemapRange_ = false;
-    newPathVariables.isChainedSpaceConnection_ = false;
-    newPathVariables.baseAddressNumber_ = getStartingBaseAddress(startInterface, endInterface);
-    newPathVariables.mirroredSlaveAddressChange_ = 0;
+    //! Base address for the connection.
+    quint64 connectionBaseAddress = 0;
+    //! Last address available from the point of the starting item.
+    quint64 availableLastAddress = 0;
 
-    QSharedPointer<MemoryItem> mapItem = MemoryDesignerConstants::getMapItem(startInterface, endInterface);
+    QString remapValue("");
+    QString remapRange("");
 
-    QPair<quint64, quint64> mapAddressRanges = getMemoryMapAddressRanges(mapItem);
-    newPathVariables.spaceChainBaseAddress_ = 0;
-    newPathVariables.memoryMapEndAddress_ = mapAddressRanges.second;
-
-    QSharedPointer<MemoryItem> startSpace = startInterface->getConnectedMemory();
-    MemoryConnectionAddressCalculator::ChainedSpace newChainedSpace;
-    newChainedSpace.spaceConnectionBaseAddress_ = 0;
-    newChainedSpace.spaceInterface_ = startInterface;
-
-    newPathVariables.spaceChain_.append(newChainedSpace);
-
-    for (QSharedPointer<ConnectivityInterface const> pathInterface : connectionPath)
-    {
-        if (pathInterface != startInterface && pathInterface != endInterface)
-        {
-            General::InterfaceMode interfaceMode = pathInterface->getMode();
-            if ((interfaceMode == General::MIRRORED_SLAVE || interfaceMode == General::MIRRORED_TARGET) &&
-                !pathInterface->getRemapAddress().isEmpty() && !pathInterface->getRemapRange().isEmpty())
-            {
-                newPathVariables.mirroredSlaveAddressChange_ += pathInterface->getRemapAddress().toULongLong();
-
-                newPathVariables.memoryMapEndAddress_ = pathInterface->getRemapRange().toULongLong() - 1;
-                newPathVariables.hasRemapRange_ = true;
-            }
-            else if ((interfaceMode == General::MASTER || interfaceMode == General::INITIATOR) &&
-                pathInterface->isConnectedToMemory())
-            {
-                newPathVariables.spaceChainBaseAddress_ += newPathVariables.baseAddressNumber_;
-
-                if (QSharedPointer<MemoryItem> middleSpace = pathInterface->getConnectedMemory(); middleSpace)
-                {
-                    quint64 chainOffset = newPathVariables.spaceChainBaseAddress_;
-
-                    MemoryConnectionAddressCalculator::ChainedSpace middleChainedSpace;
-                    middleChainedSpace.spaceInterface_ = pathInterface;
-                    middleChainedSpace.spaceConnectionBaseAddress_ = chainOffset;
-
-                    newPathVariables.spaceChain_.append(middleChainedSpace);
-                    newPathVariables.isChainedSpaceConnection_ = true;
-                }
-
-                newPathVariables.baseAddressNumber_ = pathInterface->getBaseAddress().toULongLong();
-            }
-        }
-    }
-
-    newPathVariables.memoryMapBaseAddress_ = mapAddressRanges.first;
-    newPathVariables.endAddressNumber_ =
-        newPathVariables.baseAddressNumber_ + newPathVariables.memoryMapEndAddress_;
-    newPathVariables.remappedAddress_ =
-        MemoryConnectionAddressCalculator::getRemappedBaseAddress(newPathVariables.memoryMapBaseAddress_,
-        newPathVariables.baseAddressNumber_, newPathVariables.spaceChainBaseAddress_,
-        newPathVariables.mirroredSlaveAddressChange_, newPathVariables.hasRemapRange_);
-    newPathVariables.remappedEndAddress_ = newPathVariables.endAddressNumber_ +
-        newPathVariables.spaceChainBaseAddress_ + newPathVariables.mirroredSlaveAddressChange_;
-
-    return newPathVariables;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionAddressCalculator::getStartingBaseAddress()
-//-----------------------------------------------------------------------------
-quint64 MemoryConnectionAddressCalculator::getStartingBaseAddress(
-    QSharedPointer<ConnectivityInterface const> startInterface,
-    QSharedPointer<ConnectivityInterface const> endInterface)
-{
-    quint64 baseAddressNumber = 0;
     if (startInterface != endInterface)
     {
-        QString startInterfaceBaseAddress = startInterface->getBaseAddress();
-        if (startInterfaceBaseAddress.compare(QStringLiteral("x"), Qt::CaseInsensitive) != 0)
+        auto pathMemoryItem = startInterface->getConnectedMemory();
+        auto memoryItemRange = pathMemoryItem->getRange().toULongLong();
+        availableLastAddress = memoryItemRange - 1;
+
+        for (auto pathInterface : connectionPath)
         {
-            baseAddressNumber = startInterfaceBaseAddress.toULongLong();
+            //! Initiator interfaces add their base address to the base address of the connection.
+            //! Size of the connected item, or a remap range value determines the last available address for the connection.
+            if (auto pathMode = pathInterface->getMode(); (pathMode == General::MASTER || pathMode == General::INITIATOR) &&
+                pathInterface->isConnectedToMemory())
+            {
+                if (remapRange.isEmpty())
+                {
+                    pathMemoryItem = pathInterface->getConnectedMemory();
+                    memoryItemRange = pathMemoryItem->getRange().toULongLong();
+                }
+                else
+                {
+                    memoryItemRange = remapRange.toULongLong();
+                    remapRange.clear();
+                }
+                if (remapValue.isEmpty() == false)
+                {
+                    connectionBaseAddress += remapValue.toULongLong();
+                }
+
+                if (quint64 newLastAddress = connectionBaseAddress + memoryItemRange - 1; newLastAddress < availableLastAddress)
+                {
+                    availableLastAddress = newLastAddress;
+                }
+
+                connectionBaseAddress += pathInterface->getBaseAddress().toULongLong();
+                remapValue.clear();
+            }
+
+            //! Mirrored target interfaces remap the base address for the connected item.
+            //! Range determines the size of the connection
+            else if ((pathMode == General::MIRRORED_SLAVE || pathMode == General::MIRRORED_TARGET) &&
+                pathInterface->getRemapAddress().isEmpty() == false &&
+                pathInterface->getRemapRange().isEmpty() == false)
+            {
+                remapValue = pathInterface->getRemapAddress();
+                remapRange = pathInterface->getRemapRange();
+            }
         }
     }
+    else
+    {
+        auto startMemory = startInterface->getConnectedMemory();
+        auto startRange = startMemory->getRange().toULongLong();
+        
+        availableLastAddress = connectionBaseAddress + startRange - 1;
+    }
 
-    return baseAddressNumber;
+    auto mapItem = MemoryDesignerConstants::getMapItem(startInterface, endInterface);
+    auto [mapBaseAddress, mapLastAddress] = getMemoryMapAddressRanges(mapItem);
+    auto mapSize = mapLastAddress - mapBaseAddress;
+
+    if (remapValue.isEmpty() == false)
+    {
+        mapBaseAddress = remapValue.toULongLong();
+    }
+    if (remapRange.isEmpty() == false)
+    {
+        mapSize = remapRange.toULongLong() - 1;
+    }
+
+    CalculatedPathAddresses pathAddresses;
+
+    connectionBaseAddress += mapBaseAddress;
+    quint64 connectionLastAddress = connectionBaseAddress + mapSize;
+
+    if (connectionBaseAddress < availableLastAddress)
+    {
+        if (connectionLastAddress > availableLastAddress)
+        {
+            connectionLastAddress = availableLastAddress;
+        }
+
+        pathAddresses.connectionBaseAddress_ = connectionBaseAddress;
+        pathAddresses.connectionLastAddress_ = connectionLastAddress;
+        pathAddresses.createConnection_ = true;
+    }
+
+    return pathAddresses;
 }
 
 //-----------------------------------------------------------------------------
@@ -153,22 +167,4 @@ QPair<quint64, quint64> MemoryConnectionAddressCalculator::getMemoryMapAddressRa
 
     QPair<quint64, quint64> memoryRanges(baseAddress, lastAddress);
     return memoryRanges;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionAddressCalculator::getRemappedBaseAddress()
-//-----------------------------------------------------------------------------
-quint64 MemoryConnectionAddressCalculator::getRemappedBaseAddress(quint64 memoryMapBaseAddress,
-    quint64 baseAddressNumber, quint64 spaceChainConnectionBaseAddress, quint64 mirroredSlaveAddressChange,
-    bool hasRemapRange)
-{
-    quint64 remappedAddress =
-        baseAddressNumber + spaceChainConnectionBaseAddress + mirroredSlaveAddressChange;
-
-    if (!hasRemapRange)
-    {
-        remappedAddress += memoryMapBaseAddress;
-    }
-
-    return remappedAddress;
 }

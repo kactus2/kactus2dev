@@ -35,18 +35,19 @@ public:
     /*!
      *  The constructor.
      *
-     *    @param [in] regFile                 The register file being edited.
-     *    @param [in] model                   The model that owns the items.
-     *    @param [in] libHandler              The instance that manages the library.
-     *    @param [in] component               The component being edited.
-     *    @param [in] referenceCounter        The instance for counting references to parameters.
-     *    @param [in] parameterFinder         The parameter finder.
-     *    @param [in] expressionFormatter     The expression formatter.
-     *    @param [in] expressionParser        The expression formatter.
-     *    @param [in] addressBlockValidator   Validator used for address blocks.
-     *    @param [in] registerInterface       Interface for accessing registers.
-     *    @param [in] containingBlock         Address block containing the edited register file.
-     *    @param [in] parent                  The parent item.
+     *    @param [in] regFile                   The register file being edited.
+     *    @param [in] model                     The model that owns the items.
+     *    @param [in] libHandler                The instance that manages the library.
+     *    @param [in] component                 The component being edited.
+     *    @param [in] referenceCounter          The instance for counting references to parameters.
+     *    @param [in] parameterFinder           The parameter finder.
+     *    @param [in] expressionFormatter       The expression formatter.
+     *    @param [in] expressionParser          The expression formatter.
+     *    @param [in] addressBlockValidator     Validator used for address blocks.
+     *    @param [in] registerInterface         Interface for accessing registers.
+     *    @param [in] containingBlock           Address block containing the edited register file.
+     *    @param [in] addressUnitBits           Address unit bits of the memory map.
+     *    @param [in] parent                    The parent item.
      */
     ComponentEditorRegisterFileItem(
         QSharedPointer<RegisterFile> regFile,
@@ -60,6 +61,7 @@ public:
         QSharedPointer<RegisterFileValidator> registerFileValidator,
         RegisterInterface* registerInterface,
         QSharedPointer<AddressBlock> containingBlock,
+        unsigned int addressUnitBits,
         ComponentEditorItem* parent);
 
     /*!

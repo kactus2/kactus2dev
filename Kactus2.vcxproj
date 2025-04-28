@@ -1238,6 +1238,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h" />
     <ClInclude Include="common\NameGenerationPolicy.h" />
     <QtMoc Include="common\views\EditableTreeView\EditableTreeView.h">
     </QtMoc>
@@ -2932,6 +2933,7 @@ CreateHelp
   </ItemGroup>
   <ItemGroup>
     <None Include="common\graphicsItems\ConnectionItem.inl" />
+    <None Include="common\layouts\VNoCollisionNoMovementLayout.inl" />
     <None Include="wizards\common\IPXactElementComparator.inl" />
     <None Include="wizards\common\ListComparator.inl" />
   </ItemGroup>

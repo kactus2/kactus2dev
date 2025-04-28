@@ -41,6 +41,16 @@ public:
         quint64 baseAddress, quint64 range, qreal blockWidth, QVector<QString> identifierChain,
         QSharedPointer<ConnectivityComponent const> containingInstance, QGraphicsItem* parent);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other         The original child graphics item.
+     *    @param [in] parentItem    The parent item.
+     *
+     *    @return Copy of the original child graphics item.
+     */
+    MemoryDesignerChildGraphicsItem(MemoryDesignerChildGraphicsItem const& other, QGraphicsItem* parentItem);
+
 	/*!
      *  The destructor.
      */
@@ -68,8 +78,16 @@ protected:
 
 private:
     // Disable copying.
-    MemoryDesignerChildGraphicsItem(MemoryDesignerChildGraphicsItem const& rhs);
     MemoryDesignerChildGraphicsItem& operator=(MemoryDesignerChildGraphicsItem const& rhs);
+
+    /*!
+     *  Setup the child graphics item.
+     *
+     *    @param [in] range         Child graphics item.
+     *    @param [in] baseAddress   Base address of the child item.
+     *    @param [in] lastAddress   Last address of the child item.
+     */
+    void setup(quint64 const& range, quint64 const& baseAddress, quint64 const& lastAddress);
 
     /*!
      *  Set colors for ranges in an empty sub graphics item.
@@ -84,6 +102,16 @@ private:
      *    @return The width of the available area used by the memory sub item.
      */
     virtual qreal getItemWidth() const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Type of the tooltip.
+    QString tooltipType_;
+
+    //! Width of the item block.
+    qreal blockWidth_;
 };
 
 //-----------------------------------------------------------------------------

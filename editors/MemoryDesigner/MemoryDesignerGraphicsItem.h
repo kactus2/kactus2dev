@@ -51,8 +51,17 @@ public:
         QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent const> componentInstance,
         QGraphicsItem* parent = 0);
 
+    /*!
+     *  The copy constructor.
+     *
+     *    @param [in] other         The original graphics item.
+     *    @param [in] parentItem    The parent item.
+     *
+     *    @return Copy of the original graphics item.
+     */
+    MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& other, QGraphicsItem* parentItem);
+
     // Disable copying.
-    MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& rhs) = delete;
     MemoryDesignerGraphicsItem& operator=(MemoryDesignerGraphicsItem const& rhs) = delete;
 
 	/*!
@@ -168,9 +177,9 @@ public:
     /*!
      *  Change the address range of the memory item.
      *
-     *    @param [in] offset  The offset of the parent item.
+     *    @param [in] newAddress    New address for the memory item.
      */
-    virtual void changeAddressRange(quint64 offset);
+    virtual void changeAddress(quint64 const& newAddress);
 
     /*!
      *  Compress this item to contain the selected coordinates.

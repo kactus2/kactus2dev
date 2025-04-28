@@ -33,12 +33,20 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem()
 //-----------------------------------------------------------------------------
-ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<RegisterFile> regFile,
-    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<RegisterFileValidator> registerFileValidator, RegisterInterface* registerInterface,
-    QSharedPointer<AddressBlock> containingBlock, ComponentEditorItem* parent):
+ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(
+    QSharedPointer<RegisterFile> regFile,
+    ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler,
+    QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<RegisterFileValidator> registerFileValidator,
+    RegisterInterface* registerInterface,
+    QSharedPointer<AddressBlock> containingBlock,
+    unsigned int addressUnitBits,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 registerFile_(regFile),
 visualizer_(nullptr),
@@ -47,7 +55,7 @@ expressionParser_(expressionParser),
 registerFileValidator_(registerFileValidator),
 registerInterface_(registerInterface),
 containingBlock_(containingBlock),
-addressUnitBits_(0)
+addressUnitBits_(addressUnitBits)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -129,7 +137,7 @@ void ComponentEditorRegisterFileItem::createChild( int index )
     {
         QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(regFile,
             model_, libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
-            expressionParser_, registerFileValidator_, registerInterface_, containingBlock_, this));
+            expressionParser_, registerFileValidator_, registerInterface_, containingBlock_, addressUnitBits_, this));
         regFileItem->setLocked(locked_);
      
         if (visualizer_)
@@ -249,6 +257,14 @@ void ComponentEditorRegisterFileItem::setVisualizer( MemoryMapsVisualizer* visua
 void ComponentEditorRegisterFileItem::addressUnitBitsChanged(int newAddressUnitBits)
 {
     addressUnitBits_ = newAddressUnitBits;
+
+    for (auto const& child : childItems_)
+    {
+        if (auto regFileItem = child.dynamicCast<ComponentEditorRegisterFileItem>())
+        {
+            regFileItem->addressUnitBitsChanged(newAddressUnitBits);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
