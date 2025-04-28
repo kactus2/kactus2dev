@@ -1,0 +1,61 @@
+name: Generate and deploy docs
+on:
+    push:
+      branches:
+        - main
+env:
+  DOXYGEN_VERSION: '1.13.2'
+  DOXYFILE_PATH: ./kactus2dev/Administrative/docs/Doxyfile
+  
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Doxygen
+        run: |
+              echo $(pwd)
+              sudo apt install -y wget
+              wget -nv https://www.doxygen.nl/files/doxygen-$DOXYGEN_VERSION.linux.bin.tar.gz
+              tar -xzf doxygen-$DOXYGEN_VERSION.linux.bin.tar.gz
+              echo "$(pwd)/doxygen-$DOXYGEN_VERSION/bin" >> $GITHUB_PATH
+
+      - name: Checkout kactus2 repository
+        uses: actions/checkout@v4
+        with:
+          repository: kactus2/kactus2dev
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: kactus2dev
+
+      - name: Generate Doxygen documentation
+        run: doxygen $DOXYFILE_PATH
+  
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+        with:
+          repository: kactus2/kactus2.github.io
+          token: ${{ secrets.PAGES_REPO_PAT }}
+          path: kactus2.github.io
+        
+      - name: Copy documentation to target repository
+        run: |
+            cd kactus2.github.io
+            git rm -rf .
+            git clean -fxd
+            touch .nojekyll
+            cd ..
+            mkdir kactus2.github.io/reference-guide
+            cp -r docs/html/* kactus2.github.io/reference-guide
+            cp kactus2dev/Administrative/docs/index.html kactus2.github.io
+            
+      - name: Commit and push changes
+        run: |
+            cd kactus2.github.io
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+            git add .
+            git commit -m 'Update Doxygen documentation'
+            git push
+
+      # - name: Publish pages
+      #   uses: actions/github-pages
