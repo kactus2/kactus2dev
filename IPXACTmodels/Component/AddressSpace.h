@@ -69,9 +69,11 @@ public:
 	/*!
      *  Get the address unit bits
 	 *
+     *    @param [in] defaultIfEmpty      Flag for returning the default AUB value (8 bits) if AUB is empty.
+	 *
 	 *    @return The address unit bits.
 	 */
-    QString getAddressUnitBits() const;
+    QString getAddressUnitBits(bool defaultIfEmpty = true) const;
 
 	/*!
      *  Get the range of the address space.

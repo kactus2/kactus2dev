@@ -478,6 +478,22 @@ void tst_MemoryMapReader::readAddressUnitBits()
 
     QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
     QCOMPARE(testMemoryMap->getAddressUnitBits(), QString("8"));
+
+    // No AUB = default 8 bits
+    QString documentContentNoAUB(
+        "<ipxact:memoryMap>"
+            "<ipxact:name>testMemoryMapNoAub</ipxact:name>"
+        "</ipxact:memoryMap>"
+        );
+
+    document.setContent(documentContentNoAUB);
+
+    memoryMapNode = document.firstChildElement("ipxact:memoryMap");
+
+    QSharedPointer<MemoryMap> testMemoryMapNoAUB = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std14);
+
+    QCOMPARE(testMemoryMapNoAUB->name(), QString("testMemoryMapNoAub"));
+    QCOMPARE(testMemoryMapNoAUB->getAddressUnitBits(), QString("8"));
 }
 
 //-----------------------------------------------------------------------------

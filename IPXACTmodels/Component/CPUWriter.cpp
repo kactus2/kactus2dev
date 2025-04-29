@@ -179,7 +179,7 @@ void CPUWriter::Details::writeLanguageTools(QXmlStreamWriter& writer, QSharedPoi
 void CPUWriter::Details::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu)
 {
     CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:addressUnitBits"), 
-        cpu->getAddressUnitBits());
+        cpu->getAddressUnitBits(false));
 }
 
 //-----------------------------------------------------------------------------
