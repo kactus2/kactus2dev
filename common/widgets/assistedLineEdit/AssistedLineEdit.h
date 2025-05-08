@@ -41,7 +41,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~AssistedLineEdit() = default;
+    virtual ~AssistedLineEdit();
 
     // Disable copying.
     AssistedLineEdit(AssistedLineEdit const& rhs) = delete;

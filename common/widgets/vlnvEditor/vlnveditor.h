@@ -215,6 +215,15 @@ protected:
      *    @param [in] event   Pointer to the show event.
      */
     virtual void showEvent(QShowEvent* event);
+    
+    /*!
+     *	Finds a new widget to give the keyboard focus to with tab and shift+tab.
+     *  
+     *    @param [in] next     Searches forward if true, otherwise searches backwards.
+     *	    
+     *    @return True if it can find a new widget, false if it can't
+     */
+    bool focusNextPrevChild(bool next) override;
 
 private slots:
 
