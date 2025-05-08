@@ -51,14 +51,16 @@ jobs:
       - name: Commit and push changes
         run: |
             cd kactus2.github.io
-            if [[ `git status --porcelain` ]]; then
+            echo "Checking for changes..."
+            if [[ `git diff --quiet` ]]; then
+              echo "No changes detected, aborting push"
+            else
+              echo "Changes detected, proceeding with commit and push."
               git config --global user.name 'github-actions[bot]'
               git config --global user.email 'github-actions[bot]@users.noreply.github.com'
               git add .
               git commit -m 'Update Doxygen documentation'
               git push
-            else
-              echo "No changes detected, aborting push"
             fi
         shell: bash
 
