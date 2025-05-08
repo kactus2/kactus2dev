@@ -8,7 +8,13 @@
               * Changed or Information
 ===============================================================================
 
-24/04/2024 3.13.4
+08/05/2025 3.13.5
+----------------------------------------------------
+- Fixed bug introduced in 3.13.4 where rows couldn't be removed in some table editors
+- Fixed a crash when creating a register inside a register file inside another register file
+* Changed default AUB for CPUs and address spaces to 8 bits
+
+24/04/2025 3.13.4
 ----------------------------------------------------
 * Reworked memory designer to correctly show memory connections
   * Designer now shows each address space as separate connection sets
