@@ -47,6 +47,13 @@ public:
     bool commandlineMode() const;
 
     /*!
+     *	Checks if the run a script mode is set.
+     *	    
+     *    @return True, if the mode is set, otherwise false.
+     */
+    bool runScriptMode() const;
+
+    /*!
      *  Processes the given command line arguments and executes accordingly.
      *
      *    @param [in] arguments       The command line arguments to process.
@@ -55,6 +62,15 @@ public:
      *    @return 0 for a successful run, any other value for errors.
      */
     int process(QStringList const& arguments, MessageMediator* messageChannel);
+
+    /*!
+     *	Get the user provided value of given command line option.
+     *  
+     *    @param [in] option     The option whose value to get.
+     *	    
+     *    @return The user provide value for given option.
+     */
+    QString getOptionValue(QString const& option) const;
    
 private:
 

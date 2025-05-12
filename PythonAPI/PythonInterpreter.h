@@ -91,8 +91,10 @@ public slots:
      * Run a script from a given file.
      *
      *    @param [in] filePath  Path to the file to run.
+     * 
+     *    @return Return value of the script or 1 if script file couldn't be opened.
      */
-    void runFile(QString const& filePath);
+    int runFile(QString const& filePath);
 
 private:
 

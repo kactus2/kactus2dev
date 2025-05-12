@@ -190,7 +190,11 @@ int main(int argc, char *argv[])
         QStringList arguments = application->arguments();
         CommandLineParser parser;
 
-        parser.process(arguments, mediator.data());
+        // Check for arg errors
+        if (parser.process(arguments, mediator.data()))
+        {
+            return 1;
+        }
         
         if (parser.commandlineMode())
         {
@@ -200,11 +204,20 @@ int main(int argc, char *argv[])
             QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
 
             bool interactive = isatty(fileno(stdin));
-            PythonInterpreter console(outChannel.data(), errChannel.data(), interactive, application.data());
+            bool runScript = parser.runScriptMode();
+            bool shouldPrintPrompts = interactive && !runScript;
+            PythonInterpreter console(outChannel.data(), errChannel.data(), shouldPrintPrompts, application.data());
 
             if (console.initialize(interactive) == false)
             {
                 return 1;
+            }
+
+            // Run specified script and exit
+            if (parser.runScriptMode())
+            {
+                auto scriptPath = parser.getOptionValue(QStringLiteral("input-script"));
+                return console.runFile(scriptPath);
             }
 
             QScopedPointer<StdInputListener> listener(new StdInputListener(&console, application.data()));

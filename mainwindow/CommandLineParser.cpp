@@ -27,8 +27,12 @@ CommandLineParser::CommandLineParser() : optionParser_(), preReadDone_(false)
     optionParser_.addVersionOption();
 
     QCommandLineOption interactiveOption({ "c", "no-gui" }, "Run in command-line mode.");
+    QCommandLineOption runScriptOption({ "i", "input-script" }, "Run script then exit.", "script path");
+    QCommandLineOption suppressInfo({ "s", "suppress-info" }, "Suppress printing library and Python version information");
 
     optionParser_.addOption(interactiveOption);
+    optionParser_.addOption(runScriptOption);
+    optionParser_.addOption(suppressInfo);
 }
 
 //-----------------------------------------------------------------------------
@@ -49,6 +53,14 @@ bool CommandLineParser::commandlineMode() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: CommandLineParser::runScriptMode()
+//-----------------------------------------------------------------------------
+bool CommandLineParser::runScriptMode() const
+{
+    return optionParser_.isSet(QStringLiteral("input-script"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: CommandLineParser::process()
 //-----------------------------------------------------------------------------
 int CommandLineParser::process(QStringList const& arguments, MessageMediator* messageChannel)
@@ -61,13 +73,27 @@ int CommandLineParser::process(QStringList const& arguments, MessageMediator* me
     if (optionParser_.isSet(QStringLiteral("version")))
     {
         QString versionText = KactusAPI::getVersion() +
-            " Copyright (C) 2023 Tampere University\n" +
+            " Copyright (C) 2025 Tampere University\n" +
             "License GPL2: GNU GPL version 2 <https://gnu.org/licenses/gpl.html>\n";
         
         messageChannel->showMessage(versionText);
         return 0;
     }
 
+    if (optionParser_.isSet(QStringLiteral("input-script")) && optionParser_.value(QStringLiteral("input-script")).isEmpty())
+    {
+        messageChannel->showFailure("Error: No script path given!");
+        return 1;
+    }
+
     optionParser_.process(arguments);
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommandLineParser::getOptionParser()
+//-----------------------------------------------------------------------------
+QString CommandLineParser::getOptionValue(QString const& option) const
+{
+    return optionParser_.value(option);
 }
