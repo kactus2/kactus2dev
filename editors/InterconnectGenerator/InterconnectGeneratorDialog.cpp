@@ -70,8 +70,17 @@ void InterconnectGeneratorDialog::populateParameters()
     QSharedPointer<Document> libComp = library_->getModel(*absRef);
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
-    parameterGroupBox_->setNewParameters(absDef->getParameters(), absDef->getChoices(),
-        absDef->getRevision());
+    interconnectParams_ = QSharedPointer<QList<QSharedPointer<Parameter>>>::create();
+    for (const auto& param : *absDef->getParameters()) {
+        interconnectParams_->append(QSharedPointer<Parameter>::create(*param));
+    }
+
+    auto copiedChoices = QSharedPointer<QList<QSharedPointer<Choice>>>::create();
+    for (const auto& choice : *absDef->getChoices()) {
+        copiedChoices->append(QSharedPointer<Choice>::create(*choice));
+    }
+
+    parameterGroupBox_->setNewParameters(interconnectParams_, copiedChoices, absDef->getRevision());
 }
 
 void InterconnectGeneratorDialog::addNewInitiator() {
@@ -515,6 +524,7 @@ void InterconnectGeneratorDialog::accept()
     config->IDWidth = 8;
     config->UserWidth = 1;
     config->isChannel = isChannel_;
+    config->interconnectParams = *interconnectParams_;
 
     QList<InitStruct> initiators;
     InitStruct initiator;

@@ -125,6 +125,8 @@ void InterconnectGenerator::createInterconComponent(VLNV VLNV)
 
     parameterFinder_->setComponent(interconComponent_);
 
+    interconComponent_->getParameters()->append(config_->interconnectParams);
+
     busInfInterface_ = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_,
         expressionFormatter_, expressionParser_, interconComponent_, library_);
 
@@ -495,27 +497,92 @@ void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QStr
     portValidator_->componentChange(comp->getViews());
     portsInterface_->setPorts(comp->getPorts());
 
-    for (QString portID : parameterFinder_->getAllParameterIds()) {
-    }
+    QSharedPointer<Document> libComp = library_->getModel(busDefVLNV_);
+    QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
+    portAbsInterface_->setAbsDef(absDef);
 
     for (QSharedPointer<Port> port : comp->getPortsMappedInInterface(busName))
     {
-        std::string leftBound = portsInterface_->getLeftBoundValue(port->name().toStdString());
+        QString physicalName = port->name();
+        std::string logicalName = getLogicalPortName(comp, busName, physicalName);
+
+        QString leftBound, rightBound;
+
+        if (!logicalName.empty())
+        {
+            std::tie(leftBound, rightBound) = getWidthBoundsFromAbstraction(logicalName);
+        }
+
+        if (leftBound.isEmpty() || rightBound.isEmpty())
+        {
+            std::tie(leftBound, rightBound) = getMirroredWidthBounds(physicalName);
+        }
 
         QSharedPointer<Port> newPort(new Port(*port));
-
-        QString newName = QString::fromStdString(prefix_) + newPort->name();
-        newPort->setName(newName);
+        newPort->setName(QString::fromStdString(prefix_) + newPort->name());
 
         DirectionTypes::Direction newDir = DirectionTypes::convert2Mirrored(newPort->getDirection());
         newPort->setDirection(newDir);
-        if (leftBound != "") {
-            newPort->setLeftBound(QString::fromStdString(leftBound));
-        }
+        newPort->setLeftBound(leftBound);
+        newPort->setRightBound(rightBound);
+
         interconComponent_->getPorts()->append(newPort);
     }
+
     parameterFinder_->setComponent(interconComponent_);
 }
+
+std::string InterconnectGenerator::getLogicalPortName(
+    QSharedPointer<Component> comp, QString busName, QString physicalName) const
+{
+    auto portMaps = comp->getBusInterface(busName)->getPortMapsForView("");
+    for (const auto& map : portMaps)
+    {
+        if (map->getPhysicalPort()->name_ == physicalName)
+        {
+            return map->getLogicalPort()->name_.toStdString();
+        }
+    }
+    return "";
+}
+
+std::pair<QString, QString> InterconnectGenerator::getWidthBoundsFromAbstraction(
+    const std::string& logicalName) const
+{
+    int index = portAbsInterface_->getItemIndex(logicalName);
+    if (index == -1) {
+        return { "", "" };
+    }
+
+    std::string absWidth = portAbsInterface_->getWidthExpression(index);
+    if (absWidth.empty()) {
+        return { "", "" };
+    }
+
+    QString widthExpr = QString::fromStdString(absWidth).trimmed();
+    QString left = (widthExpr == "1") ? "0" : QString("(%1 - 1)").arg(widthExpr);
+    QString right = "0";
+
+    messager_->showMessage(QString("Using abstraction width for port %1: [%2:%3]")
+        .arg(QString::fromStdString(logicalName)).arg(left).arg(right));
+
+    return { left, right };
+}
+
+std::pair<QString, QString> InterconnectGenerator::getMirroredWidthBounds(const QString& physicalName) const
+{
+    std::string left = portsInterface_->getLeftBoundValue(physicalName.toStdString());
+    std::string right = portsInterface_->getRightBoundValue(physicalName.toStdString());
+
+    QString leftBound = left.empty() ? "0" : QString::fromStdString(left);
+    QString rightBound = right.empty() ? "0" : QString::fromStdString(right);
+
+    messager_->showMessage(QString("Mirrored width for port %1: [%2:%3]")
+        .arg(physicalName).arg(leftBound).arg(rightBound));
+
+    return { leftBound, rightBound };
+}
+
 
 void InterconnectGenerator::createRstorClkInterface(std::string busName, int index)
 {

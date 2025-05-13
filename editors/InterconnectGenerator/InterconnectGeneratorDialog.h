@@ -87,6 +87,8 @@ private:
     QSharedPointer<InterconnectDataModel> dataModel_;
     QSharedPointer<InterconnectAddressHelper> addressHelper_;
 
+    QSharedPointer<QList<QSharedPointer<Parameter>>> interconnectParams_;
+
     // UI and state
     ConfigStruct* config_ = nullptr;
     QString designVLNV_;

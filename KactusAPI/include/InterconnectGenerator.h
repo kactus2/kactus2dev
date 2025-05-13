@@ -19,6 +19,7 @@
 #include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/PortsInterface.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
 #include <KactusAPI/include/ComponentInstanceInterface.h>
 #include <KactusAPI/include/InterconnectionInterface.h>
 #include <KactusAPI/include/AdHocConnectionInterface.h>
@@ -85,6 +86,12 @@ private:
 
     void createGlobalAddressSpaceFromTargets(const QHash<QString, QList<QSharedPointer<TargetData>>>& targets);
 
+    std::string getLogicalPortName(QSharedPointer<Component> comp, QString busName, QString physicalName) const;
+
+    std::pair<QString, QString> getWidthBoundsFromAbstraction(const std::string& logicalName) const;
+
+    std::pair<QString, QString> getMirroredWidthBounds(const QString& physicalName) const;
+
     void createChannel();
 
     //! Message handler.
@@ -117,6 +124,8 @@ private:
 
     //! Interface for accessing the component ports.
     PortsInterface* portsInterface_{ new PortsInterface(portValidator_, expressionParser_, expressionFormatter_) };
+
+    PortAbstractionInterface* portAbsInterface_{ new PortAbstractionInterface(expressionParser_, expressionFormatter_) };
 
     //! Interface for accessing interconnections.
     InterconnectionInterface* connectionInterface_{ new InterconnectionInterface() };

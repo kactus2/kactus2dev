@@ -1,6 +1,8 @@
 #ifndef CONFIGJSONPARSER_H
 #define CONFIGJSONPARSER_H
 
+#include <IPXACTmodels/common/Parameter.h>
+
 #include <QtCore>
 #include <QDir>
 
@@ -41,6 +43,7 @@ struct ConfigStruct {
     int IDWidth;
     int UserWidth;
     bool isChannel;
+    QList<QSharedPointer<Parameter>> interconnectParams;
     QList<InitStruct> InitList;
     QList<TargetStruct> TargetList;
 
