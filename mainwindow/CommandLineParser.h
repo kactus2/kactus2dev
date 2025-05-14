@@ -24,6 +24,24 @@ class MessageMediator;
 class CommandLineParser
 {
 public:
+    
+    // Data for storing CLI options
+
+    enum class Option
+    {
+        NoGui,
+        InputScript
+    };
+
+    struct OptionData
+    {
+        QChar character;
+        QString shortName;
+        QString description;
+        QString valueName;
+    };
+
+    static const QHash<Option, OptionData> CLI_OPTS;
 
     // The constructor.
     CommandLineParser();
@@ -53,6 +71,8 @@ public:
      */
     bool runScriptMode() const;
 
+    bool versionMode() const;
+
     /*!
      *  Processes the given command line arguments and executes accordingly.
      *
@@ -70,7 +90,16 @@ public:
      *	    
      *    @return The user provide value for given option.
      */
-    QString getOptionValue(QString const& option) const;
+    QString getOptionValue(CommandLineParser::Option option) const;
+
+    /*!
+     *	Tells if a given option is set.
+     *  
+     *    @param [in] option     The option to check.
+     *	    
+     *    @return True, if the option is set, otherwise false.
+     */
+    bool optionIsSet(CommandLineParser::Option option) const;
    
 private:
 

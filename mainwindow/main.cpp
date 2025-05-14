@@ -196,35 +196,44 @@ int main(int argc, char *argv[])
             return 1;
         }
         
-        if (parser.commandlineMode())
+        QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
+        QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
+
+        // Excecute according to mode
+        if (parser.versionMode())
+        {
+            return 0;
+        }
+        else if (parser.commandlineMode()) // Start interactive CLI mode
         {
             library.searchForIPXactFiles();
 
-            QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
-            QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
-
             bool interactive = isatty(fileno(stdin));
-            bool runScript = parser.runScriptMode();
-            bool shouldPrintPrompts = interactive && !runScript;
-            PythonInterpreter console(outChannel.data(), errChannel.data(), shouldPrintPrompts, application.data());
+            PythonInterpreter console(outChannel.data(), errChannel.data(), interactive, application.data());
 
             if (console.initialize(interactive) == false)
             {
                 return 1;
             }
 
-            // Run specified script and exit
-            if (parser.runScriptMode())
+            QScopedPointer<StdInputListener> listener(new StdInputListener(&console, application.data()));
+            QObject::connect(listener.data(), SIGNAL(inputFailure()), application.data(), SLOT(quit()));
+            return application->exec();
+        }
+        else if (parser.runScriptMode()) // Run script and exit
+        {
+            library.searchForIPXactFiles();
+
+            bool interactive = isatty(fileno(stdin));
+            PythonInterpreter console(outChannel.data(), errChannel.data(), false, application.data());
+
+            if (console.initialize(interactive) == false)
             {
-                auto scriptPath = parser.getOptionValue(QStringLiteral("input-script"));
-                return console.runFile(scriptPath);
+                return 1;
             }
 
-            QScopedPointer<StdInputListener> listener(new StdInputListener(&console, application.data()));
-
-            QObject::connect(listener.data(), SIGNAL(inputFailure()), application.data(), SLOT(quit()));
-
-            return application->exec();
+            auto scriptPath = parser.getOptionValue(CommandLineParser::Option::InputScript);
+            return console.runFile(scriptPath);
         }
 
         return 1;
