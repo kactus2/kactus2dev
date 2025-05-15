@@ -560,11 +560,8 @@ std::pair<QString, QString> InterconnectGenerator::getWidthBoundsFromAbstraction
     }
 
     QString widthExpr = QString::fromStdString(absWidth).trimmed();
-    QString left = (widthExpr == "1") ? "0" : QString("(%1 - 1)").arg(widthExpr);
+    QString left = widthExpr == "1" ? "0" : QString("%1 - 1").arg(widthExpr);
     QString right = "0";
-
-    messager_->showMessage(QString("Using abstraction width for port %1: [%2:%3]")
-        .arg(QString::fromStdString(logicalName)).arg(left).arg(right));
 
     return { left, right };
 }
@@ -576,9 +573,6 @@ std::pair<QString, QString> InterconnectGenerator::getMirroredWidthBounds(const 
 
     QString leftBound = left.empty() ? "0" : QString::fromStdString(left);
     QString rightBound = right.empty() ? "0" : QString::fromStdString(right);
-
-    messager_->showMessage(QString("Mirrored width for port %1: [%2:%3]")
-        .arg(physicalName).arg(leftBound).arg(rightBound));
 
     return { leftBound, rightBound };
 }

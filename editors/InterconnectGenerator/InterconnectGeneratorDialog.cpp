@@ -67,6 +67,10 @@ void InterconnectGeneratorDialog::populateParameters()
             absRef = ref;
         }
     }
+    if (!absRef) 
+    {
+        return;
+    }
     QSharedPointer<Document> libComp = library_->getModel(*absRef);
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 

@@ -120,8 +120,19 @@ private:
     QHash<QString, QList<QSharedPointer<BusInterface>>> selectedInitiators_;
     QHash<QString, QList<QSharedPointer<TargetData>>> selectedTargets_;
 
-    const QSet<General::InterfaceMode> initiatorModes_ = { General::MASTER, General::INITIATOR };
-    const QSet<General::InterfaceMode> targetModes_ = { General::SLAVE, General::TARGET };
+    const QSet<General::InterfaceMode> initiatorModes_ = {
+        General::MASTER,
+        General::INITIATOR,
+        General::MIRRORED_SLAVE,
+        General::MIRRORED_TARGET
+    };
+
+    const QSet<General::InterfaceMode> targetModes_ = {
+        General::SLAVE,
+        General::TARGET,
+        General::MIRRORED_MASTER,
+        General::MIRRORED_INITIATOR
+    };
 };
 
 #endif // INTERCONNECTGENERATORDIALOG_H
