@@ -3,6 +3,9 @@
 
 #include <QMessageBox>
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::InterconnectGeneratorDialog()
+//-----------------------------------------------------------------------------
 InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWidget, LibraryHandler* library,
     MessageMediator* messager, QWidget* parent)
     : QDialog(parent),
@@ -47,18 +50,33 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
     setUpLayout();
 }
 
-ConfigStruct* InterconnectGeneratorDialog::getConfig() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::getConfig()
+//-----------------------------------------------------------------------------
+ConfigStruct* InterconnectGeneratorDialog::getConfig() 
+{
     return config_;
 }
 
-QHash<QString, QList<QSharedPointer<BusInterface>>> InterconnectGeneratorDialog::getSelectedInitiators() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::getSelectedInitiators()
+//-----------------------------------------------------------------------------
+QHash<QString, QList<QSharedPointer<BusInterface>>> InterconnectGeneratorDialog::getSelectedInitiators() 
+{
     return selectedInitiators_;
 }
 
-QHash<QString, QList<QSharedPointer<TargetData>>> InterconnectGeneratorDialog::getSelectedTargets() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::getSelectedTargets()
+//-----------------------------------------------------------------------------
+QHash<QString, QList<QSharedPointer<TargetData>>> InterconnectGeneratorDialog::getSelectedTargets() 
+{
     return selectedTargets_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::populateParameters()
+//-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::populateParameters()
 {
     QSharedPointer<ConfigurableVLNVReference> absRef;
@@ -87,15 +105,27 @@ void InterconnectGeneratorDialog::populateParameters()
     parameterGroupBox_->setNewParameters(interconnectParams_, copiedChoices, absDef->getRevision());
 }
 
-void InterconnectGeneratorDialog::addNewInitiator() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::addNewInitiator()
+//-----------------------------------------------------------------------------
+void InterconnectGeneratorDialog::addNewInitiator() 
+{
     addNewInstance("Initiator");
 }
 
-void InterconnectGeneratorDialog::addNewTarget() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::addNewTarget()
+//-----------------------------------------------------------------------------
+void InterconnectGeneratorDialog::addNewTarget() 
+{
     addNewInstance("Target");
 }
 
-void InterconnectGeneratorDialog::addNewInstance(const QString& type) {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::addNewInstance()
+//-----------------------------------------------------------------------------
+void InterconnectGeneratorDialog::addNewInstance(const QString& type) 
+{
     QFrame* instanceFrame = createInstanceEditorFrame(type);
     if (!instanceFrame) return;
     QComboBox* nameCombo = instanceFrame->findChild<QComboBox*>();
@@ -126,6 +156,9 @@ void InterconnectGeneratorDialog::addNewInstance(const QString& type) {
         });
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::getConfig()
+//-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, const QString& instanceType, QStringList& availableInstances)
 {
     availableInstances.clear();
@@ -159,6 +192,9 @@ void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, const QS
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::onInstanceSelected()
+//-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName, const QString& type, InterfaceEnumEditor* interfaceEditor)
 {
     QStringList busInterfaceNames;
@@ -178,7 +214,11 @@ void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName
     interfaceEditor->addItems(busInterfaceNames, isTargets, instanceName);
 }
 
-QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& type) {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::createInstanceEditorFrame()
+//-----------------------------------------------------------------------------
+QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& type) 
+{
     QStringList availableInstances;
     updateNameCombo(nullptr, type, availableInstances);
 
@@ -239,6 +279,9 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ty
     return instanceFrame;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::createNameAndEnumerationEditorLayout()
+//-----------------------------------------------------------------------------
 QVBoxLayout* InterconnectGeneratorDialog::createNameAndEnumerationEditorLayout(
     const QString& type, InterfaceEnumEditor* interfaceEditor, QFrame* instanceFrame)
 {
@@ -290,6 +333,9 @@ QVBoxLayout* InterconnectGeneratorDialog::createNameAndEnumerationEditorLayout(
     return layout;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::clearInitiatorAndTargetLists()
+//-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::clearInitiatorAndTargetLists()
 {
     QLayoutItem* item;
@@ -311,7 +357,11 @@ void InterconnectGeneratorDialog::clearInitiatorAndTargetLists()
     targetsContainerLayout_->update();
 }
 
-QWidget* InterconnectGeneratorDialog::createTopConfigSection() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::createTopConfigSection()
+//-----------------------------------------------------------------------------
+QWidget* InterconnectGeneratorDialog::createTopConfigSection() 
+{
     QGroupBox* configGroup = new QGroupBox(tr("Interconnect Component Configuration"), this);
     QFormLayout* formLayout = new QFormLayout();
 
@@ -390,7 +440,11 @@ QWidget* InterconnectGeneratorDialog::createTopConfigSection() {
     return container;
 }
 
-QGroupBox* InterconnectGeneratorDialog::createInitiatorsSection() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::createInitiatorsSection()
+//-----------------------------------------------------------------------------
+QGroupBox* InterconnectGeneratorDialog::createInitiatorsSection() 
+{
     QPushButton* addInitiatorButton = new QPushButton(QIcon(":/icons/common/graphics/add.png"), tr("Add New Initiator"));
     connect(addInitiatorButton, &QPushButton::clicked, this, &InterconnectGeneratorDialog::addNewInitiator);
 
@@ -411,7 +465,11 @@ QGroupBox* InterconnectGeneratorDialog::createInitiatorsSection() {
     return groupBox;
 }
 
-QGroupBox* InterconnectGeneratorDialog::createTargetsSection() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::createTargetsSection()
+//-----------------------------------------------------------------------------
+QGroupBox* InterconnectGeneratorDialog::createTargetsSection() 
+{
     QPushButton* addTargetButton = new QPushButton(QIcon(":/icons/common/graphics/add.png"), tr("Add New Target"));
     connect(addTargetButton, &QPushButton::clicked, this, &InterconnectGeneratorDialog::addNewTarget);
 
@@ -432,7 +490,11 @@ QGroupBox* InterconnectGeneratorDialog::createTargetsSection() {
     return groupBox;
 }
 
-QWidget* InterconnectGeneratorDialog::createInterconnectModeSelector() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::createInterconnectModeSelector()
+//-----------------------------------------------------------------------------
+QWidget* InterconnectGeneratorDialog::createInterconnectModeSelector() 
+{
     QGroupBox* modeGroup = new QGroupBox(tr("Interconnect Mode"), this);
     QHBoxLayout* modeLayout = new QHBoxLayout(modeGroup);
 
@@ -459,7 +521,11 @@ QWidget* InterconnectGeneratorDialog::createInterconnectModeSelector() {
     return modeGroup;
 }
 
-QDialogButtonBox* InterconnectGeneratorDialog::createButtonBox() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::createButtonBox()
+//-----------------------------------------------------------------------------
+QDialogButtonBox* InterconnectGeneratorDialog::createButtonBox() 
+{
     QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->addButton(tr("Generate"), QDialogButtonBox::AcceptRole);
     buttonBox->addButton(QDialogButtonBox::Cancel);
@@ -470,7 +536,11 @@ QDialogButtonBox* InterconnectGeneratorDialog::createButtonBox() {
     return buttonBox;
 }
 
-void InterconnectGeneratorDialog::setUpLayout() {
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::setUpLayout()
+//-----------------------------------------------------------------------------
+void InterconnectGeneratorDialog::setUpLayout() 
+{
     setWindowTitle("Interconnect Component Configuration");
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -488,6 +558,9 @@ void InterconnectGeneratorDialog::setUpLayout() {
     setLayout(mainLayout);
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::accept()
+//-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::accept()
 {
     ConfigStruct* config = new ConfigStruct;
@@ -574,6 +647,9 @@ void InterconnectGeneratorDialog::accept()
     QDialog::accept();
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::collectInstances()
+//-----------------------------------------------------------------------------
 bool InterconnectGeneratorDialog::collectInstances(ConfigStruct* config)
 {
     auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
@@ -584,6 +660,9 @@ bool InterconnectGeneratorDialog::collectInstances(ConfigStruct* config)
     return !config->InitList.isEmpty() || !config->TargetList.isEmpty();
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::collectInitiators()
+//-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::collectInitiators(
     const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup)
 {
@@ -617,6 +696,9 @@ void InterconnectGeneratorDialog::collectInitiators(
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::collectTargets()
+//-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::collectTargets(
     const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup)
 {
