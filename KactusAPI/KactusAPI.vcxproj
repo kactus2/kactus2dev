@@ -18,6 +18,7 @@
     <ClInclude Include="include\AddressBlockInterface.h" />
     <ClInclude Include="include\AddressSpaceExpressionsGatherer.h" />
     <ClInclude Include="include\AdHocConnectionInterface.h" />
+    <ClInclude Include="include\ArrayableMemoryInterface.h" />
     <ClInclude Include="include\BusInterfaceInterface.h" />
     <ClInclude Include="include\BusInterfaceInterfaceFactory.h" />
     <ClInclude Include="include\BusInterfaceUtilities.h" />
@@ -137,6 +138,7 @@
     <ClCompile Include="interfaces\common\ParametersInterface.cpp" />
     <ClCompile Include="interfaces\component\AccessPolicyInterface.cpp" />
     <ClCompile Include="interfaces\component\AddressBlockInterface.cpp" />
+    <ClCompile Include="interfaces\component\ArrayableMemoryInterface.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceInterface.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceInterfaceFactory.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceUtilities.cpp" />

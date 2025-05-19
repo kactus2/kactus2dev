@@ -215,6 +215,7 @@
     <ClCompile Include="Component\AddressSpaceReader.cpp" />
     <ClCompile Include="Component\AddressSpaceWriter.cpp" />
     <ClCompile Include="Component\AlternateRegister.cpp" />
+    <ClCompile Include="Component\ArrayableMemory.cpp" />
     <ClCompile Include="Component\BuildCommand.cpp" />
     <ClCompile Include="Component\BusInterface.cpp" />
     <ClCompile Include="Component\BusInterfaceReader.cpp" />
@@ -443,6 +444,7 @@
     <ClInclude Include="Component\AccessPolicy.h" />
     <ClInclude Include="Component\AccessPolicyReader.h" />
     <ClInclude Include="Component\AccessPolicyWriter.h" />
+    <ClInclude Include="Component\ArrayableMemory.h" />
     <ClInclude Include="Component\Driver.h" />
     <ClInclude Include="Component\ExecutableImage.h" />
     <ClInclude Include="Component\FieldAccessPolicy.h" />

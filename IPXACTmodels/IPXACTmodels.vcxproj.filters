@@ -1040,6 +1040,9 @@
     <ClCompile Include="AbstractionDefinition\validators\PortAbstractionValidator.cpp">
       <Filter>Source Files\AbstractionDefinition\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\ArrayableMemory.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1803,6 +1806,9 @@
     </ClInclude>
     <ClInclude Include="AbstractionDefinition\validators\PortAbstractionValidator.h">
       <Filter>Header Files\AbstractionDefinition\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ArrayableMemory.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -154,6 +154,9 @@ private slots:
     //! Called when isPresent is changed.
     void onIsPresentEdited();
 
+    //! Called when dimension is changed.
+    void onDimensionChanged();
+
     /*!
      *  Sets the value in the usage editor.
      *
@@ -224,6 +227,9 @@ private:
 
     //! Editor for the is present of the address block-
     ExpressionEditor* isPresentEditor_;
+
+    //! Editor for memory array dimension.
+    ExpressionEditor* dimensionEditor_;
 
     //! Editor for selecting the access of the address block.
     AccessComboBox* accessEditor_;

@@ -94,7 +94,8 @@ HEADERS += ./KactusAPI.h \
     ./include/LibraryHandler.h \
     ./include/LibraryItem.h \
     ./include/LibraryTreeModel.h \
-    ./include/ParameterCache.h
+    ./include/ParameterCache.h \
+    ./include/ArrayableMemoryInterface.h
 SOURCES += ./KactusAPI.cpp \
     ./expressions/AddressBlockExpressionsGatherer.cpp \
     ./expressions/AddressSpaceExpressionsGatherer.cpp \
@@ -111,13 +112,13 @@ SOURCES += ./KactusAPI.cpp \
     ./expressions/MemoryMapExpressionsGatherer.cpp \
     ./expressions/MemoryRemapExpressionGatherer.cpp \
     ./expressions/ModeConditionParser.cpp \
+    ./expressions/ModeConditionParserInterface.cpp \
     ./expressions/MultipleParameterFinder.cpp \
     ./expressions/NullParser.cpp \
     ./expressions/ParameterCache.cpp \
     ./expressions/RegisterExpressionsGatherer.cpp \
     ./expressions/RegisterFileExpressionsGatherer.cpp \
     ./expressions/SystemVerilogExpressionParser.cpp \
-    ./expressions/ModeConditionParserInterface.cpp \
     ./interfaces/bus/AbstractionTypeInterface.cpp \
     ./interfaces/bus/PortAbstractionInterface.cpp \
     ./interfaces/component/AccessPolicyInterface.cpp \
@@ -166,4 +167,5 @@ SOURCES += ./KactusAPI.cpp \
     ./library/LibraryItem.cpp \
     ./library/LibraryLoader.cpp \
     ./library/LibraryTreeModel.cpp \
-    ./library/TagManager.cpp
+    ./library/TagManager.cpp \
+    ./interfaces/component/ArrayableMemoryInterface.cpp

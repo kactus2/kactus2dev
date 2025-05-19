@@ -41,7 +41,7 @@ namespace
 RegisterInterface::RegisterInterface(QSharedPointer<RegisterValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
     FieldInterface* subInterface, AccessPolicyInterface* accessPolicyInterface) :
-ParameterizableInterface(expressionParser, expressionFormatter),
+ArrayableMemoryInterface(expressionParser, expressionFormatter),
 registers_(),
 validator_(validator),
 subInterface_(subInterface),
@@ -216,63 +216,6 @@ bool RegisterInterface::setOffset(std::string const& registerName, std::string c
     }
 
     selectedRegister->setAddressOffset(QString::fromStdString(newOffset));
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::getDimensionValue()
-//-----------------------------------------------------------------------------
-string RegisterInterface::getDimensionValue(std::string const& registerName, int const& baseNumber) const
-{
-    QSharedPointer<Register> selectedRegister = getRegister(registerName);
-    if (selectedRegister)
-    {
-        return parseExpressionToBaseNumber(selectedRegister->getDimension(), baseNumber).toStdString();
-    }
-
-    return string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::getDimensionFormattedExpression()
-//-----------------------------------------------------------------------------
-string RegisterInterface::getDimensionFormattedExpression(std::string const& registerName) const
-{
-    QSharedPointer<Register> selectedRegister = getRegister(registerName);
-    if (selectedRegister)
-    {
-        return formattedValueFor(selectedRegister->getDimension()).toStdString();
-    }
-
-    return string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::getDimensionExpression()
-//-----------------------------------------------------------------------------
-string RegisterInterface::getDimensionExpression(std::string const& registerName) const
-{
-    QSharedPointer<Register> selectedRegister = getRegister(registerName);
-    if (selectedRegister)
-    {
-        return selectedRegister->getDimension().toStdString();
-    }
-
-    return string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::setDimension()
-//-----------------------------------------------------------------------------
-bool RegisterInterface::setDimension(std::string const& registerName, std::string const& newDimension)
-{
-    QSharedPointer<Register> selectedRegister = getRegister(registerName);
-    if (!selectedRegister)
-    {
-        return false;
-    }
-
-    selectedRegister->setDimension(QString::fromStdString(newDimension));
     return true;
 }
 

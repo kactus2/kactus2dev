@@ -303,6 +303,9 @@
     <ClInclude Include="include\ModeConditionParserInterface.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\ArrayableMemoryInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -520,6 +523,9 @@
     </ClCompile>
     <ClCompile Include="expressions\ModeConditionParserInterface.cpp">
       <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\ArrayableMemoryInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

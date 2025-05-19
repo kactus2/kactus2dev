@@ -135,7 +135,7 @@ public:
     NameGroupInterface(const NameGroupInterface& other) = delete;
     NameGroupInterface& operator=(const NameGroupInterface& other) = delete;
 
-private:
+protected:
 
     /*!
      *  Get the item with the selected name, sliced to a NameGroup.

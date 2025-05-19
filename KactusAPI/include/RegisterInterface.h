@@ -13,11 +13,12 @@
 #define REGISTERINTERFACE_H
 
 #include <KactusAPI/KactusAPIGlobal.h>
-
-#include <ParameterizableInterface.h>
-#include <NameGroupInterface.h>
+#include <KactusAPI/include/ArrayableMemoryInterface.h>
 
 #include <IPXACTmodels/common/AccessTypes.h>
+
+#include <QVector>
+#include <QMap>
 
 class Register;
 class RegisterBase;
@@ -25,13 +26,10 @@ class RegisterValidator;
 class FieldInterface;
 class AccessPolicyInterface;
 
-#include <QVector>
-#include <QMap>
-
 //-----------------------------------------------------------------------------
 //! Interface for editing registers.
 //-----------------------------------------------------------------------------
-class KACTUS2_API RegisterInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API RegisterInterface : public ArrayableMemoryInterface
 {
 
 public:
@@ -157,44 +155,6 @@ public:
      *    @return True, if successful, false otherwise.
      */
     bool setOffset(std::string const& registerName, std::string const& newOffset);
-    
-    /*!
-     *  Get the calculated dimension value of the selected register.
-     *
-     *    @param [in] registerName    Name of the selected register.
-     *    @param [in] baseNumber      Base for displaying the value.
-     *
-     *    @return Calculated dimension value of the selected register.
-     */
-    std::string getDimensionValue(std::string const& registerName, int const& baseNumber = 0) const;
-
-    /*!
-     *  Get the formatted dimension expression of the selected register.
-     *
-     *    @param [in] registerName    Name of the selected register.
-     *
-     *    @return Formatted dimension expression of the selected register.
-     */
-    std::string getDimensionFormattedExpression(std::string const& registerName) const;
-
-    /*!
-     *  Get the dimension expression of the selected register.
-     *
-     *    @param [in] registerName    Name of the selected register.
-     *
-     *    @return Dimension expression of the selected register.
-     */
-    std::string getDimensionExpression(std::string const& registerName) const;
-
-    /*!
-     *  Set a new dimension value for the selected register.
-     *
-     *    @param [in] registerName    Name of the selected register.
-     *    @param [in] newDimension    New dimension value.
-     *
-     *    @return True, if successful, false otherwise.
-     */
-    bool setDimension(std::string const& registerName, std::string const& newDimension);
     
     /*!
      *  Get the calculated is present value of the selected register.

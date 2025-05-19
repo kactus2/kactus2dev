@@ -14,8 +14,7 @@
 
 #include <KactusAPI/KactusAPIGlobal.h>
 
-#include <ParameterizableInterface.h>
-#include <NameGroupInterface.h>
+#include <ArrayableMemoryInterface.h>
 
 #include <QVector>
 #include <QMap>
@@ -31,7 +30,7 @@ class Component;
 //-----------------------------------------------------------------------------
 //! Parent interface for editing memory blocks.
 //-----------------------------------------------------------------------------
-class KACTUS2_API MemoryBlockInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API MemoryBlockInterface : public ArrayableMemoryInterface
 {
 
 public:
