@@ -3,9 +3,12 @@
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Design/Design.h>
 
-InterconnectRTLWriter::InterconnectRTLWriter(QSharedPointer<Component> component, LibraryInterface* library,
-                                             MessageMediator* messager, QString directory, ConfigStruct* config,
-                                             QString clk, QString rst)
+
+
+
+InterconnectRTLWriter::InterconnectRTLWriter(QSharedPointer<Component> component,
+    LibraryInterface* library, MessageMediator* messager, QString directory,
+    ConfigStruct* config, QString clk, QString rst)
 {
     component_ = component;
     library_ = library;
@@ -20,11 +23,11 @@ void InterconnectRTLWriter::generateRTL()
 {
     QSharedPointer<Design> design;
     QSharedPointer<DesignConfiguration> designConfig;
-    for (IPlugin* plugin : PluginManager::getInstance().getActivePlugins()){
+    for (IPlugin* plugin : PluginManager::getInstance().getActivePlugins()) {
         CLIGenerator* runnable = dynamic_cast<CLIGenerator*>(plugin);
         if (runnable != 0)
         {
-            if (runnable->getOutputFormat().toLower() == "verilog"){
+            if (runnable->getOutputFormat().toLower() == "verilog") {
                 PluginUtilityAdapter adapter(library_, messager_, VersionHelper::createVersionString(), nullptr);
                 runnable->runGenerator(&adapter, component_, design, designConfig, "", directory_);
             }
@@ -34,166 +37,275 @@ void InterconnectRTLWriter::generateRTL()
     QString verilogDirectory = directory_ + "/" + component_->getVlnv().getName() + ".v";
     messager_->showMessage(QString("Opening file %1").arg(verilogDirectory));
     QFile verilogFile(verilogDirectory);
+
     QString verilogTxt;
     QTextStream verilogRTL(&verilogFile);
-
-    if(verilogFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        while(!verilogRTL.atEnd()){
+    
+    if (verilogFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        while (!verilogRTL.atEnd()) {
             QString line = verilogRTL.readLine();
-            verilogTxt.append(line+ "\n");
-            if(line.startsWith(");")){
+            verilogTxt.append(line + "\n");
+            if (line.startsWith(");")) {
                 break;
             }
         }
     }
     verilogFile.close();
 
-    if(verilogFile.open(QIODevice::WriteOnly)){
+    if (verilogFile.open(QIODevice::WriteOnly)) {
         verilogRTL << verilogTxt << Qt::endl;
     }
     verilogFile.close();
 
-    if(verilogFile.open(QIODevice::WriteOnly | QIODevice::Append)){
+    QString usedInterfaceStr = config_->BusType.toLower();
+    // usedInterfaceStr = "axi4"; //debug
 
-        verilogRTL << "  localparam " << axiTargetParam_ << " = " << config_->TargetList.size() << ";" << Qt::endl;
-        verilogRTL << "  localparam " << axiInitParam_ << " = " << config_->InitList.size() << ";" << Qt::endl;
-        verilogRTL << "  localparam " << axiIdWidthInits_ << " = ";
-        verilogRTL << config_->IDWidth << " + " << "$clog2(" << axiTargetParam_ << ");\n" << Qt::endl;
+    if (supportedInterfaces.contains(usedInterfaceStr)) {
+        removeEndmodule(verilogFile);
+    }
 
-        writeBus(verilogRTL, "target");
-        writeBus(verilogRTL, "init");
-        writeAddrMap(verilogRTL);
-        writeXbarCfg(verilogRTL);
-        writeXbar(verilogRTL);
+    if (verilogFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
+
+        if (usedInterfaceStr == "axi4") {
+
+            writeAXI4(verilogRTL);
+            writeAddrMap(verilogRTL);
+            writeAxiXbarCfg(verilogRTL);
+            writeAxiXbar(verilogRTL, usedInterfaceStr);
+
+        } else if (usedInterfaceStr == "axi4lite") {
+
+            writeAXI4(verilogRTL);
+            writeAddrMap(verilogRTL);
+            writeAxiXbarCfg(verilogRTL);
+            writeAxiXbar(verilogRTL, usedInterfaceStr);
+
+        } else {
+
+            messager_->showMessage(QString("*** No RTL generated: Interface type '%1' is not supported.").arg(config_->BusType));
+
+            verilogRTL << Qt::endl;
+            verilogRTL << "// Could not implement the interconnect: unknown interface type" << Qt::endl;
+
+            return;
+        }
+
         writeTargetAssign(verilogRTL);
         writeInitAssign(verilogRTL);
         verilogRTL << "endmodule" << Qt::endl;
     }
+    
     verilogFile.close();
     messager_->showMessage(QString("Closed file %1").arg(verilogDirectory));
+    return;
 }
 
-void InterconnectRTLWriter::writeBus(QTextStream &stream, QString type)
-{
-    if(config_->BusType == "AXI4"){
-        stream << "  AXI_BUS #(" << Qt::endl;
-    }else if(config_->BusType == "AXI4LITE"){
-        stream << "  AXI_LITE #(" << Qt::endl;
+
+
+void InterconnectRTLWriter::removeEndmodule(QFile& file) {
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
     }
 
-    if(config_->BusType == "AXI4") {
-        stream << "    .AXI_ID_WIDTH(" << axiIdWidthInits_ << ")," << Qt::endl;
-        stream << "    .AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
+    QString newContent;
+    QTextStream in(&file);
 
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (line.trimmed() != "endmodule") {
+            newContent.append(line + '\n');
+        }
     }
-    stream << "    .AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
-    stream << "    .AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
-    if(type=="target"){
-        axiTargetBus_ = config_->BusType.toLower() + axiTargetBus_;
-        stream << "  ) " << axiTargetBus_;
-        stream << " [" << axiTargetParam_ << "-1:0]();\n" << Qt::endl;
-    } else {
-        axiInitBus_ = config_->BusType.toLower() + axiInitBus_;
-        stream << "  ) " << axiInitBus_;
-        stream << " [" << axiInitParam_ << "-1:0]();\n" << Qt::endl;
+    file.close();
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
+        return;
     }
+
+    QTextStream out(&file);
+    out << newContent;
+
+    file.close();
 }
 
-void InterconnectRTLWriter::writeAddrMap(QTextStream &stream)
+
+void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
+
+    writeAxiParams(stream);
+
+    stream << indent()  << "AXI_BUS #(" << Qt::endl;
+    stream << indent(2) << ".AXI_ID_WIDTH(" << axiIdWidthInits_ << ")," << Qt::endl;
+    stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
+    stream << indent(2) << ".AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
+    stream << indent(2) << ".AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;    
+
+    axiTargetBus_ = config_->BusType.toLower() + axiTargetBus_;
+    stream << indent() << ") " << axiTargetBus_;
+    stream << "[" << axiTargetParam_ << "-1:0]();\n" << Qt::endl;
+
+
+    stream << indent()  << "AXI_BUS #(" << Qt::endl;
+    stream << indent(2) << ".AXI_ID_WIDTH(" << axiIdWidthInits_ << ")," << Qt::endl;
+    stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
+    stream << indent(2) << ".AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
+    stream << indent(2) << ".AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
+
+    axiInitBus_ = config_->BusType.toLower() + axiInitBus_;
+    stream << indent() << ") " << axiInitBus_;
+    stream << "[" << axiInitParam_ << "-1:0]();\n" << Qt::endl;
+
+}
+
+
+void InterconnectRTLWriter::writeAXI4LITE(QTextStream& stream) {
+
+    writeAxiParams(stream);
+
+    stream << indent()  << "AXI_LITE #("      << Qt::endl;
+    stream << indent(2) << ".AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
+    stream << indent(2) << ".AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
+
+    axiTargetBus_ = config_->BusType.toLower() + axiTargetBus_;
+    stream << "    ) " << axiTargetBus_;
+    stream << " [" << axiTargetParam_ << "-1:0]();\n" << Qt::endl;
+
+
+    stream << indent()  << "AXI_LITE #("      << Qt::endl;
+    stream << indent(2) << ".AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
+    stream << indent(2) << ".AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
+
+    axiInitBus_ = config_->BusType.toLower() + axiInitBus_;
+    stream << indent() << ") " << axiInitBus_;
+    stream << " [" << axiInitParam_ << "-1:0]();\n" << Qt::endl;
+
+}
+
+
+void InterconnectRTLWriter::writeAxiParams(QTextStream& stream) {
+    
+    stream << indent() << "localparam " << axiTargetParam_
+    << " = " << config_->TargetList.size() << ";" << Qt::endl;
+
+    stream << indent() << "localparam " << axiInitParam_ << " = "
+    << config_->InitList.size() << ";" << Qt::endl;
+
+    stream << indent() << "localparam " << axiIdWidthInits_ << " = ";
+    stream << config_->IDWidth << " + " << "$clog2(" << axiTargetParam_ << ");" << Qt::endl;
+    stream << Qt::endl;
+}
+
+
+void InterconnectRTLWriter::writeAddrMap(QTextStream& stream)
 {
     int targetRegions = 0;
-    for(TargetStruct target : config_->TargetList){
-        if(target.AddressRegions.length() > 1){
+    for (TargetStruct target : config_->TargetList) {
+        if (target.AddressRegions.length() > 1) {
             targetRegions += target.AddressRegions.length() - 1;
         }
     }
 
-    stream << "  localparam " << addrRulesParam_ << " = " << axiTargetParam_ << " + "<< targetRegions << ";\n" << Qt::endl;
-    stream << "  typedef axi_pkg::xbar_rule_" << config_->AddressWidth << "_t " << ruleType_ << ";\n"<< Qt::endl;
-    stream << "  " << ruleType_ << " [" << addrRulesParam_ << "-1:0] " << addrMapXBAR_ << ";\n" << Qt::endl;
-    stream << "  assign " << addrMapXBAR_ << " = " << Qt::endl;
+    stream << indent() << "localparam " << addrRulesParam_ << " = " << axiTargetParam_ << " + " << targetRegions << ";\n" << Qt::endl;
 
-    stream << "    '{" << Qt::endl;
+    stream << indent() << "typedef axi_pkg::xbar_rule_" << config_->AddressWidth << "_t " << ruleType_ << ";\n" << Qt::endl;
+    stream << indent() << ruleType_ << " [" << addrRulesParam_ << "-1:0] " << addrMapXBAR_ << ";\n" << Qt::endl;
+    stream << indent() << "assign " << addrMapXBAR_ << " = " << Qt::endl;
+    stream << indent(2) << "'{" << Qt::endl;
 
     int regionCounter = 0;
 
-    for(TargetStruct target : config_->TargetList){
-        for(AddressPair addrPair : target.AddressRegions){
+    for (TargetStruct target : config_->TargetList) {
+        for (AddressPair addrPair : target.AddressRegions) {
             regionCounter += 1;
             int start = std::stoul(addrPair.Start.toStdString(), nullptr, 16);
             int end = std::stoul(addrPair.End.toStdString(), nullptr, 16);
-            stream << "      '{idx: 32'd" << target.Index;
-            stream << ", start_addr: " << config_->AddressWidth << "'h" << QString::number( start, 16 );
-            stream << ", end_addr: " << config_->AddressWidth << "'h" << QString::number( end, 16 );
-            if(regionCounter == targetRegions + config_->TargetList.size()){
+            stream << indent(3) << "'{idx: 32'd" << target.Index;
+            stream << ", start_addr: " << config_->AddressWidth << "'h" << QString::number(start, 16);
+            stream << ", end_addr: " << config_->AddressWidth << "'h" << QString::number(end, 16);
+            if (regionCounter == targetRegions + config_->TargetList.size()) {
                 stream << "}";
-            } else {
+            }
+            else {
                 stream << "},";
             }
             stream << " //" << target.Name << Qt::endl;
         }
     }
-    stream << "    };\n" << Qt::endl;
+    stream << indent(2) << "};\n" << Qt::endl;
 }
 
-void InterconnectRTLWriter::writeXbarCfg(QTextStream &stream)
+
+void InterconnectRTLWriter::writeAxiXbarCfg(QTextStream& stream)
 {
-    stream << "  localparam axi_pkg::xbar_cfg_t " << axiCfg_ << " = '{" << Qt::endl;
-    stream << "    NoSlvPorts:         " << axiTargetParam_ << "," << Qt::endl;
-    stream << "    NoMstPorts:         " << axiInitParam_ << "," << Qt::endl;
-    stream << "    MaxMstTrans:        1," << Qt::endl;
-    stream << "    MaxSlvTrans:        1," << Qt::endl;
-    stream << "    FallThrough:        1'b0," << Qt::endl;
-    stream << "    LatencyMode:        axi_pkg::CUT_ALL_AX," << Qt::endl;
-    stream << "    AxiIdWidthSlvPorts: " << config_->IDWidth << "," << Qt::endl;
-    stream << "    AxiIdUsedSlvPorts:  0," << Qt::endl;
-    stream << "    UniqueIds:          1'b1," << Qt::endl;
-    stream << "    AxiAddrWidth:       " << config_->AddressWidth << "," << Qt::endl;
-    stream << "    AxiDataWidth:       " << config_->TargetList[0].DataWidth << "," << Qt::endl;
-    stream << "    NoAddrRules:        " << addrRulesParam_ << Qt::endl;
-    stream << "  };\n" << Qt::endl;
+    stream << indent()  << "localparam axi_pkg::xbar_cfg_t " << axiCfg_ << " = '{" << Qt::endl;
+    stream << indent(2) << "NoSlvPorts:         " << axiTargetParam_ << "," << Qt::endl;
+    stream << indent(2) << "NoMstPorts:         " << axiInitParam_ << "," << Qt::endl;
+    stream << indent(2) << "MaxMstTrans:        1," << Qt::endl;
+    stream << indent(2) << "MaxSlvTrans:        1," << Qt::endl;
+    stream << indent(2) << "FallThrough:        1'b0," << Qt::endl;
+    stream << indent(2) << "PipelineStages:     1'b0," << Qt::endl; // check
+    stream << indent(2) << "LatencyMode:        axi_pkg::CUT_ALL_AX," << Qt::endl;
+    stream << indent(2) << "AxiIdWidthSlvPorts: " << config_->IDWidth << "," << Qt::endl;
+    stream << indent(2) << "AxiIdUsedSlvPorts:  0," << Qt::endl;
+    stream << indent(2) << "UniqueIds:          1'b1," << Qt::endl;
+    stream << indent(2) << "AxiAddrWidth:       " << config_->AddressWidth << "," << Qt::endl;
+    stream << indent(2) << "AxiDataWidth:       " << config_->TargetList[0].DataWidth << "," << Qt::endl;
+    stream << indent(2) << "NoAddrRules:        " << addrRulesParam_ << Qt::endl;
+    stream << indent() << "};" << Qt::endl;
+    stream << '\n';
 }
 
-void InterconnectRTLWriter::writeXbar(QTextStream &stream) {
-    if(config_->BusType == "AXI4") {
+
+void InterconnectRTLWriter::writeAxiXbar(QTextStream& stream, QString interface) {
+
+    if (interface == "axi4") {
+
         axiXbar_ = "i_axi_xbar";
-        stream << "  axi_xbar_intf #(" << Qt::endl;
-        stream << "    .AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
-    } else if(config_->BusType == "AXI4LITE"){
-        axiXbar_ = "i_axi_lite_xbar";
-        stream << "  axi_lite_xbar_intf #(" << Qt::endl;
-    }
-    stream << "    .Cfg(" << axiCfg_ << ")," << Qt::endl;
-    stream << "    .rule_t(" << ruleType_ << ")" << Qt::endl;
+        stream << indent() << "axi_xbar_intf #(" << Qt::endl;
+        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
 
-    stream << "  ) " << axiXbar_ << "(" << Qt::endl;
-    stream << "    .clk_i(" << clkPort_ << ")," << Qt::endl; //fix
-    stream << "    .rst_ni(" << rstPort_ << ")," << Qt::endl; //fix
-    stream << "    .test_i(1'b0)," << Qt::endl;
-    stream << "    .slv_ports(" << axiInitBus_ << ")," << Qt::endl;
-    stream << "    .mst_ports(" << axiTargetBus_ << ")," << Qt::endl;
-    stream << "    .addr_map_i(" << addrMapXBAR_ << ")," << Qt::endl;
-    stream << "    .en_default_mst_port_i('0)," << Qt::endl;
-    stream << "    .default_mst_port_i('0)" << Qt::endl;
-    stream << "  );\n" << Qt::endl;
+    }
+    else if (interface == "axi4lite") {
+
+        axiXbar_ = "i_axi_lite_xbar";
+        stream << indent() << "axi_lite_xbar_intf #(" << Qt::endl;
+
+    }
+    
+    stream << indent(2) << ".Cfg(" << axiCfg_ << ")," << Qt::endl;
+    stream << indent(2) << ".rule_t(" << ruleType_ << ")" << Qt::endl;
+    
+    stream << indent() << ") " << axiXbar_ << "(" << Qt::endl;
+
+    stream << indent(2) << ".clk_i(" << clkPort_ << ")," << Qt::endl;       // fix
+    stream << indent(2) << ".rst_ni(" << rstPort_ << ")," << Qt::endl;     // fix
+    stream << indent(2) << ".test_i(1'b0)," << Qt::endl;
+    stream << indent(2) << ".slv_ports(" << axiInitBus_ << ")," << Qt::endl;
+    stream << indent(2) << ".mst_ports(" << axiTargetBus_ << ")," << Qt::endl;
+    stream << indent(2) << ".addr_map_i(" << addrMapXBAR_ << ")," << Qt::endl;
+    stream << indent(2) << ".en_default_mst_port_i('0)," << Qt::endl;
+    stream << indent(2) << ".default_mst_port_i('0)" << Qt::endl;
+    stream << indent() << ");\n" << Qt::endl;
 }
 
-void InterconnectRTLWriter::writeAssign(QTextStream &stream, QString busName, int index) {
+
+void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName, int index) {
     QStringList ports;
-    for(QSharedPointer<Port> compPort : component_->getPortsMappedInInterface(busName)) {
-        if(config_->BusType == "AXI4") {
+    for (QSharedPointer<Port> compPort : component_->getPortsMappedInInterface(busName)) {
+        if (config_->BusType.toLower() == "axi4") {
             ports = axiPorts_;
-        } else {
+        }
+        else {
             ports = axiLitePorts_;
         }
-        for(QString port : ports) {
-            if(compPort->name().contains("_" + port)){
-                if(compPort->getDirection() == DirectionTypes::IN){
-                    stream << "  assign " << axiTargetBus_ << "[" << index << "]." << port;
+        for (QString port : ports) {
+            if (compPort->name().contains("_" + port)) {
+                if (compPort->getDirection() == DirectionTypes::IN) {
+                    stream << indent() << "assign " << axiTargetBus_ << "[" << index << "]." << port;
                     stream << " = " << compPort->name() << Qt::endl;
                 }
                 else {
-                    stream << "  assign " << compPort->name();
+                    stream << indent() << "assign " << compPort->name();
                     stream << " = " << axiTargetBus_ << "[" << index << "]." << port << Qt::endl;
                 }
             }
@@ -201,18 +313,26 @@ void InterconnectRTLWriter::writeAssign(QTextStream &stream, QString busName, in
     }
 }
 
-void InterconnectRTLWriter::writeTargetAssign(QTextStream &stream) {
-    for(TargetStruct target : config_->TargetList){
+
+void InterconnectRTLWriter::writeTargetAssign(QTextStream& stream) {
+    for (TargetStruct target : config_->TargetList) {
         QString busName = target.Name + "_" + config_->BusType;
-        writeAssign(stream, busName, target.Index);
+        writeAxiAssign(stream, busName, target.Index);
         stream << Qt::endl;
     }
 }
 
-void InterconnectRTLWriter::writeInitAssign(QTextStream &stream) {
-    for(InitStruct init : config_->InitList){
+
+void InterconnectRTLWriter::writeInitAssign(QTextStream& stream) {
+    for (InitStruct init : config_->InitList) {
         QString busName = init.Name + "_" + config_->BusType;
-        writeAssign(stream, busName, init.Index);
+        writeAxiAssign(stream, busName, init.Index);
         stream << Qt::endl;
     }
+}
+
+
+QString InterconnectRTLWriter::indent(int n) {
+
+    return QString(n * 4, ' ');
 }

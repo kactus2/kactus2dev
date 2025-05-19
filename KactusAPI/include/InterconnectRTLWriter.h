@@ -15,6 +15,8 @@
 #include <KactusAPI/include/PluginUtilityAdapter.h>
 #include <KactusAPI/include/VersionHelper.h>
 
+
+
 class InterconnectRTLWriter
 {
 public:
@@ -26,25 +28,34 @@ public:
 
     void generateRTL();
 
-    void writeBus(QTextStream& stream, QString type);
-
-    void writeAddrMap(QTextStream& stream);
-
-    void writeXbarCfg(QTextStream& stream);
-
-    void writeXbar(QTextStream& stream);
-
-    void writeAssign(QTextStream& stream, QString busName, int index);
-
-    void writeTargetAssign(QTextStream& stream);
-
-    void writeInitAssign(QTextStream& stream);
-
     //! No copying. No assignment.
     InterconnectRTLWriter(const InterconnectRTLWriter& other) = delete;
     InterconnectRTLWriter& operator=(const InterconnectRTLWriter& other) = delete;
 
 private:
+    void writeBus(QTextStream& stream, QString type);
+
+    void writeAddrMap(QTextStream& stream);
+
+    void writeAxiXbarCfg(QTextStream& stream);
+
+    void writeAxiXbar(QTextStream& stream, QString interface);
+
+    void writeAxiAssign(QTextStream& stream, QString busName, int index);
+
+    void writeTargetAssign(QTextStream& stream);
+
+    void writeInitAssign(QTextStream& stream);
+
+    void removeEndmodule(QFile& file);
+
+    void writeAXI4(QTextStream& stream);
+
+    void writeAXI4LITE(QTextStream& stream);
+
+    void writeAxiParams(QTextStream& stream);
+
+    QString indent(int n = 1);
 
     QSharedPointer<Component> component_{nullptr};
 
@@ -58,25 +69,29 @@ private:
     QString clkPort_;
     QString rstPort_;
 
-    QStringList axiLitePorts_ = {"aw_addr", "aw_prot", "aw_valid", "aw_ready",
+    QStringList axiLitePorts_ = {"aw_addr", "aw_port", "aw_valid", "aw_ready",
                                 "w_data", "w_strb", "w_valid", "w_ready",
                                 "b_reasp", "b_valid", "b_ready",
                                 "ar_addr", "ar_prot", "ar_valid", "ar_ready",
                                 "r_data", "r_resp", "r_valid", "r_ready"};
 
-    QStringList axiPorts_ = {"aw_id", "aw_addr", "aw_len", "aw_burst", "aw_lock",
-                            "aw_cache", "aw_prot", "aw_qos", "aw_region",
-                            "aw_atop", "aw_user", "aw_valid", "aw_ready",
-                            "w_data", "w_strb", "w_last", "w_user", "w_valid", "w_ready",
-                            "b_id", "b_resp", "b_user", "b_valid", "b_ready",
-                            "ar_id", "ar_addr", "ar_len", "ar_burst", "ar_lock",
-                            "ar_cache", "ar_prot", "ar_qos", "ar_region",
-                            "ar_atop", "ar_user", "ar_valid", "ar_ready",
-                            "r_id", "r_data", "r_resp", "r_last", "r_user", "r_valid", "r_ready"};
+    QStringList axiPorts_ = {
+        "aw_id", "aw_addr", "aw_len", "aw_burst", "aw_lock",
+        "aw_cache", "aw_prot", "aw_qos", "aw_region", "aw_atop", "aw_user",
+        "aw_valid", "aw_ready", "w_data", "w_strb", "w_last", "w_user",
+        "w_valid", "w_ready", "b_id", "b_resp", "b_user", "b_valid",
+        "b_ready", "ar_id", "ar_addr", "ar_len", "ar_burst", "ar_lock",
+        "ar_cache", "ar_prot", "ar_qos", "ar_region", "ar_atop", "ar_user",
+        "ar_valid", "ar_ready", "r_id", "r_data", "r_resp", "r_last",
+        "r_user", "r_valid", "r_ready"
+    };
+
+    QStringList supportedInterfaces = {"axi4", "axi4lite"};
+                                
 
     QString axiTargetBus_ = "_target";
     QString axiInitBus_ = "_init";
-    QString axiXbar_;
+    QString axiXbar_ = "";
 
     QString axiTargetParam_ = "AXI_TARGETS";
     QString axiInitParam_ = "AXI_INITIATORS";
