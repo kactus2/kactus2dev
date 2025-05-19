@@ -1,3 +1,14 @@
+//-----------------------------------------------------------------------------
+// File: InterconnectGeneratorDialog.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Sampo Suokuisma
+// Date: xx.xx.2025
+//
+// Description:
+// Class for configuring generated interconnect component
+//-----------------------------------------------------------------------------
+
 #ifndef INTERCONNECTGENERATORDIALOG_H
 #define INTERCONNECTGENERATORDIALOG_H
 
@@ -37,6 +48,9 @@
 
 class InterconnectDataModel;
 
+//-----------------------------------------------------------------------------
+//! Class for configuring generated interconnect component
+//-----------------------------------------------------------------------------
 class InterconnectGeneratorDialog : public QDialog
 {
     Q_OBJECT

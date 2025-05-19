@@ -23,6 +23,9 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::InterconnectAddressHelper()
+//-----------------------------------------------------------------------------
 InterconnectAddressHelper::InterconnectAddressHelper(VLNV designVLNV,
     LibraryHandler* library, MessageMediator* messager)
     : library_(library),
@@ -56,11 +59,17 @@ InterconnectAddressHelper::InterconnectAddressHelper(VLNV designVLNV,
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::reset()
+//-----------------------------------------------------------------------------
 void InterconnectAddressHelper::reset() {
     usedAddressRanges_.clear();
     nextAvailableAddress_ = 0;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::getTargetAddressRange()
+//-----------------------------------------------------------------------------
 bool InterconnectAddressHelper::getTargetAddressRange(const QString& instanceName,
     const QString& interfaceName,
     quint64& outStart,
@@ -81,6 +90,9 @@ bool InterconnectAddressHelper::getTargetAddressRange(const QString& instanceNam
     return assignAddressRange(instanceName, totalRange, outStart, outRange);
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::loadComponentForInstance()
+//-----------------------------------------------------------------------------
 QSharedPointer<Component> InterconnectAddressHelper::loadComponentForInstance(const QString& instanceName)
 {
     QSharedPointer<VLNV> compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
@@ -101,6 +113,9 @@ QSharedPointer<Component> InterconnectAddressHelper::loadComponentForInstance(co
     return component;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::findMatchingMemoryMap()
+//-----------------------------------------------------------------------------
 QString InterconnectAddressHelper::findMatchingMemoryMap(QSharedPointer<Component> component, const QString& interfaceName)
 {
     std::vector<std::string> mapNames = memoryMapInterface_->getItemNames();
@@ -115,6 +130,9 @@ QString InterconnectAddressHelper::findMatchingMemoryMap(QSharedPointer<Componen
     return QString();
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::calculateTotalRange()
+//-----------------------------------------------------------------------------
 quint64 InterconnectAddressHelper::calculateTotalRange(QSharedPointer<Component> component, const QString& mapName)
 {
     MemoryMap* map = memoryMapInterface_->getMapPointer(mapName.toStdString());
@@ -140,6 +158,9 @@ quint64 InterconnectAddressHelper::calculateTotalRange(QSharedPointer<Component>
     return totalRange;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::assignAddressRange()
+//-----------------------------------------------------------------------------
 bool InterconnectAddressHelper::assignAddressRange(const QString& instanceName, quint64 totalRange,
     quint64& outStart, quint64& outRange)
 {
@@ -182,7 +203,9 @@ bool InterconnectAddressHelper::assignAddressRange(const QString& instanceName, 
     return true;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::releaseTargetAddress()
+//-----------------------------------------------------------------------------
 void InterconnectAddressHelper::releaseTargetAddress(const QString& instanceName) {
     if (!usedAddressRanges_.contains(instanceName)) return;
 
@@ -216,6 +239,9 @@ void InterconnectAddressHelper::mergeFreeSpaces() {
     freeAddressSpaces_ = merged;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::initialize()
+//-----------------------------------------------------------------------------
 void InterconnectAddressHelper::initialize(QSharedPointer<Component> component) {
     if (component == currentComponent_ && memoryMapInterface_ && addressBlockInterface_) return;
     currentComponent_ = component;
@@ -223,6 +249,9 @@ void InterconnectAddressHelper::initialize(QSharedPointer<Component> component) 
     createInterfaces(component);
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::createValidators()
+//-----------------------------------------------------------------------------
 void InterconnectAddressHelper::createValidators(QSharedPointer<Component> component) {
     parameterValidator_ = QSharedPointer<ParameterValidator>::create(
         expressionParser_, component->getChoices(), component->getRevision());
@@ -259,6 +288,9 @@ void InterconnectAddressHelper::createValidators(QSharedPointer<Component> compo
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectAddressHelper::createInterfaces()
+//-----------------------------------------------------------------------------
 void InterconnectAddressHelper::createInterfaces(QSharedPointer<Component> component) 
 {
     resetInterface_ = new ResetInterface(fieldValidator_, expressionParser_, expressionFormatter_);
