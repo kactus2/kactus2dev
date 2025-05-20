@@ -39,7 +39,7 @@ namespace
 FieldInterface::FieldInterface(QSharedPointer<FieldValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
     ResetInterface* subInterface):
-ParameterizableInterface(expressionParser, expressionFormatter),
+ArrayableMemoryInterface(expressionParser, expressionFormatter),
 validator_(validator),
 accessPolicyValidator_(expressionParser),
 subInterface_(subInterface)

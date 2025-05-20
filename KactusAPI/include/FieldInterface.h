@@ -16,6 +16,7 @@
 
 #include <ParameterizableInterface.h>
 #include <NameGroupInterface.h>
+#include <ArrayableMemoryInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/AccessTypes.h>
@@ -35,7 +36,7 @@ class ModeReferenceInterface;
 //-----------------------------------------------------------------------------
 //! Interface for editing fields.
 //-----------------------------------------------------------------------------
-class KACTUS2_API FieldInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API FieldInterface : public ArrayableMemoryInterface
 {
 
 public:
