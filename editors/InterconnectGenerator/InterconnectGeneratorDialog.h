@@ -37,6 +37,7 @@
 #include <common/widgets/instanceWidgets/InstanceWidgets.h>
 #include <editors/common/DesignWidget.h>
 #include <editors/InterconnectGenerator/InterconnectAddressHelper.h>
+#include <editors/InterconnectGenerator/InterconnectDataModel.h>
 #include <common/graphicsItems/ComponentItem.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
@@ -45,8 +46,6 @@
 #include <KactusAPI/include/LibraryHandler.h>
 #include <KactusAPI/include/InterconnectGenerator.h>
 #include <KactusAPI/include/MessageMediator.h>
-
-class InterconnectDataModel;
 
 //-----------------------------------------------------------------------------
 //! Class for configuring generated interconnect component
@@ -83,14 +82,14 @@ public:
      *
      *  @return QHash containing instance name as key and bus interfaces as values.
      */
-    QHash<QString, QList<QSharedPointer<BusInterface>>> getSelectedInitiators();
+    QHash<QString, QList<QSharedPointer<BusInterface>>> getSelectedStartingPoints();
 
     /*!
      *  Get selected target interfaces.
      *
      *  @return QHash containing instance name as key and bus interfaces as values.
      */
-    QHash<QString, QList<QSharedPointer<TargetData>>> getSelectedTargets();
+    QHash<QString, QList<QSharedPointer<TargetData>>> getSelectedEndpoints();
 
 protected:
 
@@ -113,14 +112,14 @@ private:
      *
      *  @return Pointer to the created QGroupBox containing initiator controls.
      */
-    QGroupBox* createInitiatorsSection();
+    QGroupBox* createStartingPointsSection();
 
     /*!
      *  Create the UI section for listing and managing target interfaces.
      *
      *  @return Pointer to the created QGroupBox containing target controls.
      */
-    QGroupBox* createTargetsSection();
+    QGroupBox* createEndpointsSection();
 
     /*!
      *  Create the standard button box for dialog actions (OK/Cancel).
@@ -187,7 +186,7 @@ private:
     /*!
      *  Clear all entries from both the initiator and target lists.
      */
-    void clearInitiatorAndTargetLists();
+    void clearConnectionsLists();
 
     /*!
      *  Collect instance configurations for interconnect generation.
@@ -203,15 +202,14 @@ private:
      *
      *  @param [in] instanceBusesLookup  Lookup table mapping instances to their bus interfaces.
      */
-    void collectInitiators(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
+    void collectStartingPoints(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
 
     /*!
      *  Collect target interface selections from the UI and populate the config.
      *
      *  @param [in] instanceBusesLookup  Lookup table mapping instances to their bus interfaces.
      */
-    void collectTargets(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
-
+    void collectEndpoints(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
 
     /*!
      *  Add a new instance of the given type to the instance list.
@@ -223,12 +221,14 @@ private:
     /*!
      *  Add a new initiator interface to the list.
      */
-    void addNewInitiator();
+    void addNewStartingPoint();
 
     /*!
      *  Add a new target interface to the list.
      */
-    void addNewTarget();
+    void addNewEndpoint();
+
+    InterconnectDataModel::InterconnectType getSelectedInterconnectType() const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -292,10 +292,10 @@ private:
     QRadioButton* bridgeButton_;
 
     //! Layout container for initiator interface selection.
-    QVBoxLayout* initiatorsContainerLayout_;
+    QVBoxLayout* startingPointsLayout_;
 
     //! Layout container for target interface selection.
-    QVBoxLayout* targetsContainerLayout_;
+    QVBoxLayout* endpointsLayout_;
 
     //! Previous index selected in UI (used for change tracking).
     int previousIndex_ = -1;
@@ -319,32 +319,16 @@ private:
     QHash<QSharedPointer<BusInterface>, QSet<QString>> interfaceAbsDefsHash_;
 
     //! Set of already added initiator interface keys (to avoid duplicates).
-    QSet<QString> addedInitiators_;
+    QSet<QString> addedStartingPoints_;
 
     //! Set of already added target interface keys (to avoid duplicates).
-    QSet<QString> addedTargets_;
+    QSet<QString> addedEndpoints_;
 
     //! Map of selected initiator interfaces, grouped by instance name.
-    QHash<QString, QList<QSharedPointer<BusInterface>>> selectedInitiators_;
+    QHash<QString, QList<QSharedPointer<BusInterface>>> selectedStartingPoints_;
 
     //! Map of selected target interfaces and related metadata, grouped by instance name.
-    QHash<QString, QList<QSharedPointer<TargetData>>> selectedTargets_;
-
-    //! Set of interface modes considered as initiators (including mirrored types).
-    const QSet<General::InterfaceMode> initiatorModes_ = {
-        General::MASTER,
-        General::INITIATOR,
-        General::MIRRORED_SLAVE,
-        General::MIRRORED_TARGET
-    };
-
-    //! Set of interface modes considered as targets (including mirrored types).
-    const QSet<General::InterfaceMode> targetModes_ = {
-        General::SLAVE,
-        General::TARGET,
-        General::MIRRORED_MASTER,
-        General::MIRRORED_INITIATOR
-    };
+    QHash<QString, QList<QSharedPointer<TargetData>>> selectedEndpoints_;
 };
 
 #endif // INTERCONNECTGENERATORDIALOG_H

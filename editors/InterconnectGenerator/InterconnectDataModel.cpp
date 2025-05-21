@@ -4,21 +4,17 @@
 #include <IPXACTmodels/common/Document.h>
 #include <common/graphicsItems/ComponentItem.h>
 
-InterconnectDataModel::InterconnectDataModel(DesignWidget* designWidget, LibraryHandler* library)
+InterconnectDataModel::InterconnectDataModel(DesignWidget* designWidget, LibraryHandler* library, MessageMediator* messager)
     : designWidget_(designWidget),
-    library_(library)
+    library_(library),
+    messager_(messager)
 {
 }
 
-void InterconnectDataModel::gatherBusAndAbstractionData(
-    const QSet<General::InterfaceMode>& initiatorModes,
-    const QSet<General::InterfaceMode>& targetModes)
-{
-    initiatorModes_ = initiatorModes;
-    targetModes_ = targetModes;
-
+void InterconnectDataModel::gatherBusAndAbstractionData() {
     getBusesFromInstances();
     getBusesFromTopComponent();
+    initConnectionRules();
     filterValidAbstractionReferences();
 }
 
@@ -78,11 +74,11 @@ void InterconnectDataModel::getBusesFromTopComponent()
     for (QSharedPointer<BusInterface> bus : *buses)
     {
         instanceBusesHash_[name].insert(bus);
-        getAbstractionDefinitions(bus, false);
+        getAbstractionDefinitions(bus);
     }
 }
 
-void InterconnectDataModel::getAbstractionDefinitions(QSharedPointer<BusInterface> bus, bool fromInstance)
+void InterconnectDataModel::getAbstractionDefinitions(QSharedPointer<BusInterface> bus)
 {
     QSharedPointer<QList<QSharedPointer<AbstractionType>>> absTypes = bus->getAbstractionTypes();
     if (!absTypes)
@@ -110,40 +106,197 @@ void InterconnectDataModel::filterValidAbstractionReferences()
 {
     validAbsRefs_.clear();
 
+    // Build a quick lookup of all buses grouped by abstraction name
+    QHash<QString, QSet<QSharedPointer<BusInterface>>> absToBuses;
+    for (auto it = interfaceAbsDefsHash_.cbegin(); it != interfaceAbsDefsHash_.cend(); ++it)
+    {
+        const QSharedPointer<BusInterface>& bus = it.key();
+        const QSet<QString>& absNames = it.value();
+
+        for (const QString& abs : absNames)
+        {
+            absToBuses[abs].insert(bus);
+        }
+    }
+
+    // Build mode/entity hash for each bus once
+    QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>> modeEntityToBuses;
+    for (auto it = instanceBusesHash_.cbegin(); it != instanceBusesHash_.cend(); ++it)
+    {
+        const QString& instanceName = it.key();
+        EntityType entityType = (instanceName == designWidget_->getEditedComponent()->getVlnv().getName())
+            ? EntityType::TopComponent : EntityType::Instance;
+
+        for (const QSharedPointer<BusInterface>& bus : it.value())
+        {
+            General::InterfaceMode mode = normalizeTo2014(bus->getInterfaceMode());
+            modeEntityToBuses.insert({ mode, entityType }, bus);
+        }
+    }
+
+    // Main abstraction filtering
     for (const QSharedPointer<ConfigurableVLNVReference>& absRef : allAbsRefs_)
     {
-        bool hasInitiator = false;
-        bool hasTarget = false;
+        const QString abs = absRef->getName();
+        const auto& busesWithAbs = absToBuses.value(abs);
 
-        for (auto it = instanceBusesHash_.begin(); it != instanceBusesHash_.end(); ++it)
+        bool abstractionIsConnectable = false;
+
+        for (const QSharedPointer<BusInterface>& sourceBus : busesWithAbs)
         {
-            const QSet<QSharedPointer<BusInterface>>& busSet = it.value();
+            General::InterfaceMode sourceMode = normalizeTo2014(sourceBus->getInterfaceMode());
 
-            for (const QSharedPointer<BusInterface>& bus : busSet)
-            {
-                if (interfaceAbsDefsHash_.contains(bus) &&
-                    interfaceAbsDefsHash_.value(bus).contains(absRef->getName()))
-                {
-                    General::InterfaceMode mode = bus->getInterfaceMode();
+            QString sourceInstance;
+            EntityType sourceEntity = EntityType::Instance;
 
-                    if (initiatorModes_.contains(mode))
-                        hasInitiator = true;
-
-                    if (targetModes_.contains(mode))
-                        hasTarget = true;
-                }
-
-                if (hasInitiator && hasTarget)
-                {
-                    validAbsRefs_.insert(absRef);
+            // Find instance name
+            for (auto it = instanceBusesHash_.cbegin(); it != instanceBusesHash_.cend(); ++it) {
+                if (it.value().contains(sourceBus)) {
+                    sourceInstance = it.key();
                     break;
                 }
             }
 
-            if (hasInitiator && hasTarget)
-                break;
+            sourceEntity = (sourceInstance == designWidget_->getEditedComponent()->getVlnv().getName())
+                ? EntityType::TopComponent : EntityType::Instance;
+
+            QList<ConnectionRule> rules;
+            rules += getValidConnectionTargets(sourceEntity, sourceMode, InterconnectType::Bridge);
+            rules += getValidConnectionTargets(sourceEntity, sourceMode, InterconnectType::Channel);
+
+            for (const ConnectionRule& rule : rules)
+            {
+                QPair<General::InterfaceMode, EntityType> targetKey = { rule.targetMode, rule.targetEntity };
+                const auto matchingTargets = modeEntityToBuses.values(targetKey);
+
+                for (const QSharedPointer<BusInterface>& targetBus : matchingTargets)
+                {
+                    if (!absToBuses.value(abs).contains(targetBus))
+                        continue;
+
+                    General::InterfaceMode actualTargetMode = normalizeTo2014(targetBus->getInterfaceMode());
+
+                    if (actualTargetMode == rule.targetMode)
+                    {
+                        validAbsRefs_.insert(absRef);
+                        abstractionIsConnectable = true;
+                        break;
+                    }
+                }
+
+                if (abstractionIsConnectable) break;
+            }
+
+            if (abstractionIsConnectable) break;
         }
     }
+}
+
+bool InterconnectDataModel::ConnectionKey::operator==(const ConnectionKey& other) const {
+    return sourceEntity == other.sourceEntity && sourceMode == other.sourceMode;
+}
+
+bool InterconnectDataModel::ConnectionKey::operator!=(const ConnectionKey& other) const {
+    return !(*this == other);
+}
+
+QList<InterconnectDataModel::ConnectionRule> InterconnectDataModel::getValidConnectionTargets(
+    EntityType sourceEntity,
+    General::InterfaceMode sourceMode,
+    InterconnectType currentInterconnect) const
+{   
+
+    ConnectionKey key{ sourceEntity, sourceMode };
+    QList<ConnectionRule> result;
+
+    if (!connectionRules_.contains(key)) {
+        return result;
+    }
+
+    for (const ConnectionRule& rule : connectionRules_.value(key)) {
+        if (rule.interconnect == currentInterconnect) {
+            result.append(rule);
+        }
+    }
+    return result;
+}
+
+General::InterfaceMode InterconnectDataModel::normalizeTo2014(General::InterfaceMode mode)
+{
+    switch (mode) {
+    case General::MASTER: return General::INITIATOR;
+    case General::SLAVE:  return General::TARGET;
+    case General::MIRRORED_MASTER: return General::MIRRORED_INITIATOR;
+    case General::MIRRORED_SLAVE:  return General::MIRRORED_TARGET;
+    default: return mode;
+    }
+}
+
+void InterconnectDataModel::initConnectionRules()
+{
+    using ET = EntityType;
+    using IM = General::InterfaceMode;
+    using IC = InterconnectType;
+
+    connectionRules_.clear();
+
+    // Instance INITIATOR
+    connectionRules_[{ET::Instance, IM::INITIATOR}] = {
+        {ET::Instance, IM::TARGET, IC::Bridge},
+        {ET::Instance, IM::TARGET, IC::Channel},
+        {ET::Instance, IM::MIRRORED_INITIATOR, IC::Bridge},
+        {ET::TopComponent, IM::TARGET, IC::Bridge},
+        {ET::TopComponent, IM::MIRRORED_TARGET, IC::Channel}
+    };
+
+    // Instance TARGET
+    connectionRules_[{ET::Instance, IM::TARGET}] = {
+        {ET::Instance, IM::INITIATOR, IC::Bridge},
+        {ET::Instance, IM::INITIATOR, IC::Channel},
+        {ET::Instance, IM::MIRRORED_TARGET, IC::Bridge},
+        {ET::TopComponent, IM::INITIATOR, IC::Bridge},
+        {ET::TopComponent, IM::MIRRORED_INITIATOR, IC::Channel}
+    };
+
+    // Instance MIRRORED_INITIATOR
+    connectionRules_[{ET::Instance, IM::MIRRORED_INITIATOR}] = {
+        {ET::Instance, IM::TARGET, IC::Bridge},
+        {ET::Instance, IM::MIRRORED_TARGET, IC::Bridge},
+        {ET::TopComponent, IM::TARGET, IC::Bridge}
+    };
+
+    // Instance MIRRORED_TARGET
+    connectionRules_[{ET::Instance, IM::MIRRORED_TARGET}] = {
+        {ET::Instance, IM::INITIATOR, IC::Bridge},
+        {ET::Instance, IM::MIRRORED_INITIATOR, IC::Bridge},
+        {ET::TopComponent, IM::INITIATOR, IC::Bridge}
+    };
+
+    // TopComponent INITIATOR
+    connectionRules_[{ET::TopComponent, IM::INITIATOR}] = {
+        {ET::Instance, IM::TARGET, IC::Bridge},
+        {ET::Instance, IM::MIRRORED_TARGET, IC::Channel},
+        {ET::TopComponent, IM::TARGET, IC::Bridge}
+    };
+
+    // TopComponent TARGET
+    connectionRules_[{ET::TopComponent, IM::TARGET}] = {
+        {ET::Instance, IM::INITIATOR, IC::Bridge},
+        {ET::Instance, IM::MIRRORED_INITIATOR, IC::Channel},
+        {ET::TopComponent, IM::INITIATOR, IC::Bridge}
+    };
+
+    // TopComponent MIRRORED_INITIATOR
+    connectionRules_[{ET::TopComponent, IM::MIRRORED_INITIATOR}] = {
+        {ET::Instance, IM::TARGET, IC::Channel},
+        {ET::TopComponent, IM::MIRRORED_TARGET, IC::Channel}
+    };
+
+    // TopComponent MIRRORED_TARGET
+    connectionRules_[{ET::TopComponent, IM::MIRRORED_TARGET}] = {
+        {ET::Instance, IM::INITIATOR, IC::Channel},
+        {ET::TopComponent, IM::MIRRORED_INITIATOR, IC::Channel}
+    };
 }
 
 QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> InterconnectDataModel::createInstanceBusesLookup() const
@@ -161,4 +314,29 @@ QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> InterconnectDataMod
     }
 
     return lookup;
+}
+
+QString InterconnectDataModel::toString(General::InterfaceMode mode) const
+{
+    switch (mode)
+    {
+    case General::MASTER: return "MASTER";
+    case General::SLAVE: return "SLAVE";
+    case General::INITIATOR: return "INITIATOR";
+    case General::TARGET: return "TARGET";
+    case General::SYSTEM: return "SYSTEM";
+    case General::MIRRORED_MASTER: return "MIRRORED_MASTER";
+    case General::MIRRORED_SLAVE: return "MIRRORED_SLAVE";
+    case General::MIRRORED_INITIATOR: return "MIRRORED_INITIATOR";
+    case General::MIRRORED_TARGET: return "MIRRORED_TARGET";
+    case General::MIRRORED_SYSTEM: return "MIRRORED_SYSTEM";
+    case General::MONITOR: return "MONITOR";
+    default: return "UNKNOWN_MODE";
+    }
+}
+
+uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed)
+{
+    return qHash(static_cast<int>(key.sourceEntity), seed) ^
+        qHash(static_cast<int>(key.sourceMode), seed << 1);
 }
