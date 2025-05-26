@@ -230,6 +230,8 @@ private:
 
     InterconnectDataModel::InterconnectType getSelectedInterconnectType() const;
 
+    void updateInterconnectModeOptions();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

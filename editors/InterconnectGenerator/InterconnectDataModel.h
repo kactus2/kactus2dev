@@ -11,6 +11,7 @@
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 
 #include <KactusAPI/include/LibraryHandler.h>
+#include <KactusAPI/include/InterconnectGenerator.h>
 #include <editors/common/DesignWidget.h>
 
 class InterconnectDataModel
@@ -52,10 +53,17 @@ public:
     QHash<QSharedPointer<BusInterface>, QSet<QString>> getInterfaceAbstractionHash() const;
     QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> createInstanceBusesLookup() const;
 
+    static General::InterfaceMode normalizeTo2014(General::InterfaceMode mode);
+
     QList<ConnectionRule> getValidConnectionTargets(
         EntityType sourceEntity,
         General::InterfaceMode sourceMode,
         InterconnectType currentInterconnect) const;
+
+    bool isModeValidForAllConnections(
+        const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
+        const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints,
+        InterconnectType mode) const;
 
 private:
     void initConnectionRules();
@@ -63,7 +71,6 @@ private:
     void getBusesFromTopComponent();
     void getAbstractionDefinitions(QSharedPointer<BusInterface> bus);
     void filterValidAbstractionReferences();
-    General::InterfaceMode normalizeTo2014(General::InterfaceMode mode);
     QString toString(General::InterfaceMode mode) const;
 
     DesignWidget* designWidget_;

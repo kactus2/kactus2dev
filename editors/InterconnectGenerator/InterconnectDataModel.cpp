@@ -192,6 +192,56 @@ void InterconnectDataModel::filterValidAbstractionReferences()
     }
 }
 
+bool InterconnectDataModel::isModeValidForAllConnections(
+    const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
+    const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints,
+    InterconnectType mode) const
+{
+    auto instanceBusesLookup = createInstanceBusesLookup();
+
+    for (auto it = startingPoints.cbegin(); it != startingPoints.cend(); ++it) {
+        QString initiatorInstance = it.key();
+        EntityType initiatorEntity =
+            (initiatorInstance == designWidget_->getEditedComponent()->getVlnv().getName()) ?
+            EntityType::TopComponent :
+            EntityType::Instance;
+
+        for (const auto& initiatorBus : it.value()) {
+            General::InterfaceMode initiatorMode = normalizeTo2014(initiatorBus->getInterfaceMode());
+
+            const QList<ConnectionRule> validRules =
+                getValidConnectionTargets(initiatorEntity, initiatorMode, mode);
+
+            for (auto jt = endpoints.cbegin(); jt != endpoints.cend(); ++jt) {
+                QString targetInstance = jt.key();
+                EntityType targetEntity =
+                    (targetInstance == designWidget_->getEditedComponent()->getVlnv().getName()) ?
+                    EntityType::TopComponent :
+                    EntityType::Instance;
+
+                for (const auto& targetData : jt.value()) {
+                    QSharedPointer<BusInterface> targetBus = targetData->targetBus;
+                    General::InterfaceMode targetMode = normalizeTo2014(targetBus->getInterfaceMode());
+
+                    bool valid = false;
+                    for (const ConnectionRule& rule : validRules) {
+                        if (rule.targetEntity == targetEntity && rule.targetMode == targetMode) {
+                            valid = true;
+                            break;
+                        }
+                    }
+
+                    if (!valid) {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
 bool InterconnectDataModel::ConnectionKey::operator==(const ConnectionKey& other) const {
     return sourceEntity == other.sourceEntity && sourceMode == other.sourceMode;
 }
@@ -240,59 +290,53 @@ void InterconnectDataModel::initConnectionRules()
 
     connectionRules_.clear();
 
-    // Instance INITIATOR
+    // === Instance ===
     connectionRules_[{ET::Instance, IM::INITIATOR}] = {
         {ET::Instance, IM::TARGET, IC::Bridge},
         {ET::Instance, IM::TARGET, IC::Channel},
         {ET::Instance, IM::MIRRORED_INITIATOR, IC::Bridge},
-        {ET::TopComponent, IM::TARGET, IC::Bridge},
+        {ET::TopComponent, IM::INITIATOR, IC::Bridge},
         {ET::TopComponent, IM::MIRRORED_TARGET, IC::Channel}
     };
 
-    // Instance TARGET
     connectionRules_[{ET::Instance, IM::TARGET}] = {
         {ET::Instance, IM::INITIATOR, IC::Bridge},
         {ET::Instance, IM::INITIATOR, IC::Channel},
         {ET::Instance, IM::MIRRORED_TARGET, IC::Bridge},
-        {ET::TopComponent, IM::INITIATOR, IC::Bridge},
+        {ET::TopComponent, IM::TARGET, IC::Bridge},
         {ET::TopComponent, IM::MIRRORED_INITIATOR, IC::Channel}
     };
 
-    // Instance MIRRORED_INITIATOR
     connectionRules_[{ET::Instance, IM::MIRRORED_INITIATOR}] = {
-        {ET::Instance, IM::TARGET, IC::Bridge},
+        {ET::Instance, IM::INITIATOR, IC::Bridge},
         {ET::Instance, IM::MIRRORED_TARGET, IC::Bridge},
         {ET::TopComponent, IM::TARGET, IC::Bridge}
     };
 
-    // Instance MIRRORED_TARGET
     connectionRules_[{ET::Instance, IM::MIRRORED_TARGET}] = {
+        {ET::Instance, IM::TARGET, IC::Bridge},
+        {ET::Instance, IM::MIRRORED_INITIATOR, IC::Bridge},
+        {ET::TopComponent, IM::TARGET, IC::Bridge}
+    };
+
+    // === TopComponent ===
+    connectionRules_[{ET::TopComponent, IM::INITIATOR}] = {
         {ET::Instance, IM::INITIATOR, IC::Bridge},
+        {ET::Instance, IM::MIRRORED_TARGET, IC::Bridge},
+        {ET::TopComponent, IM::TARGET, IC::Bridge}
+    };
+
+    connectionRules_[{ET::TopComponent, IM::TARGET}] = {
+        {ET::Instance, IM::TARGET, IC::Bridge},
         {ET::Instance, IM::MIRRORED_INITIATOR, IC::Bridge},
         {ET::TopComponent, IM::INITIATOR, IC::Bridge}
     };
 
-    // TopComponent INITIATOR
-    connectionRules_[{ET::TopComponent, IM::INITIATOR}] = {
-        {ET::Instance, IM::TARGET, IC::Bridge},
-        {ET::Instance, IM::MIRRORED_TARGET, IC::Channel},
-        {ET::TopComponent, IM::TARGET, IC::Bridge}
-    };
-
-    // TopComponent TARGET
-    connectionRules_[{ET::TopComponent, IM::TARGET}] = {
-        {ET::Instance, IM::INITIATOR, IC::Bridge},
-        {ET::Instance, IM::MIRRORED_INITIATOR, IC::Channel},
-        {ET::TopComponent, IM::INITIATOR, IC::Bridge}
-    };
-
-    // TopComponent MIRRORED_INITIATOR
     connectionRules_[{ET::TopComponent, IM::MIRRORED_INITIATOR}] = {
         {ET::Instance, IM::TARGET, IC::Channel},
         {ET::TopComponent, IM::MIRRORED_TARGET, IC::Channel}
     };
 
-    // TopComponent MIRRORED_TARGET
     connectionRules_[{ET::TopComponent, IM::MIRRORED_TARGET}] = {
         {ET::Instance, IM::INITIATOR, IC::Channel},
         {ET::TopComponent, IM::MIRRORED_INITIATOR, IC::Channel}

@@ -48,6 +48,8 @@ public:
 signals:
     void targetInterfaceChecked(const QString& interfaceName, const QString& instanceName);
     void targetInterfaceUnchecked(const QString& interfaceName, const QString& instanceName);
+    void initiatorInterfaceChecked(const QString& interfaceName, const QString& instanceName);
+    void initiatorInterfaceUnchecked(const QString& interfaceName, const QString& instanceName);
 
 private:
     QVBoxLayout* mainLayout_;

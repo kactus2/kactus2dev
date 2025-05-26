@@ -41,7 +41,9 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget, cons
         QLabel* startLabel = nullptr;
         QLabel* rangeLabel = nullptr;
 
-        if (isTarget) {
+        if (isTarget) 
+        {
+            // Handle target-specific fields
             startLabel = new QLabel("Start:");
             rangeLabel = new QLabel("Range:");
             startEdit = new QLineEdit();
@@ -58,6 +60,17 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget, cons
                 }
                 else {
                     emit targetInterfaceUnchecked(checkBox->text(), instanceName);
+                }
+                });
+        }
+        else 
+        {
+            connect(checkBox, &QCheckBox::toggled, this, [=](bool checked) {
+                if (checked) {
+                    emit initiatorInterfaceChecked(checkBox->text(), instanceName);
+                }
+                else {
+                    emit initiatorInterfaceUnchecked(checkBox->text(), instanceName);
                 }
                 });
         }

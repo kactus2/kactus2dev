@@ -174,12 +174,11 @@ void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, const QS
     availableInstances.clear();
 
     QString selectedAbsDef = busInterfaceCombo_->currentText();
-    QSet<QString> alreadyAdded = (roleLabel == "StartingPoint") ? addedStartingPoints_ : addedEndpoints_;
     InterconnectDataModel::InterconnectType icType = getSelectedInterconnectType();
 
     for (const QString& instanceName : instanceBusesHash_.keys())
     {
-        if (alreadyAdded.contains(instanceName)) {
+        if (addedStartingPoints_.contains(instanceName) || addedEndpoints_.contains(instanceName)) {
             continue;
         }
 
@@ -197,7 +196,7 @@ void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, const QS
                 continue;
             }
 
-            General::InterfaceMode mode = bus->getInterfaceMode();
+            General::InterfaceMode mode = InterconnectDataModel::normalizeTo2014(bus->getInterfaceMode());
 
             const QList<InterconnectDataModel::ConnectionRule> validTargets =
                 dataModel_->getValidConnectionTargets(entityType, mode, icType);
@@ -244,7 +243,7 @@ void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName
             continue;
         }
 
-        General::InterfaceMode mode = bus->getInterfaceMode();
+        General::InterfaceMode mode = InterconnectDataModel::normalizeTo2014(bus->getInterfaceMode());
         QList<InterconnectDataModel::ConnectionRule> rules =
             dataModel_->getValidConnectionTargets(entityType, mode, icType);
 
@@ -256,6 +255,34 @@ void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName
     interfaceEditor->clearAll();
     bool isTarget = (roleLabel == "Endpoint");
     interfaceEditor->addItems(validInterfaceNames, isTarget, instanceName);
+}
+
+void InterconnectGeneratorDialog::updateInterconnectModeOptions()
+{
+    // Ensure latest selection state
+    collectStartingPoints(dataModel_->createInstanceBusesLookup());
+    collectEndpoints(dataModel_->createInstanceBusesLookup());
+
+    bool bridgeValid = dataModel_->isModeValidForAllConnections(
+        selectedStartingPoints_, selectedEndpoints_, InterconnectDataModel::InterconnectType::Bridge);
+
+    bool channelValid = dataModel_->isModeValidForAllConnections(
+        selectedStartingPoints_, selectedEndpoints_, InterconnectDataModel::InterconnectType::Channel);
+
+    bridgeButton_->setEnabled(bridgeValid);
+    channelButton_->setEnabled(channelValid);
+
+    // Adjust which button is checked if current one became invalid
+    if (!bridgeValid && !channelValid) {
+        bridgeButton_->setChecked(false);
+        channelButton_->setChecked(false);
+    }
+    else if (!channelValid && channelButton_->isChecked()) {
+        bridgeButton_->setChecked(true);
+    }
+    else if (!bridgeValid && bridgeButton_->isChecked()) {
+        channelButton_->setChecked(true);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -277,7 +304,6 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ro
 
     InterfaceEnumEditor* interfaceEditor = new InterfaceEnumEditor(this);
 
-    // Address range logic for targets (if applicable)
     connect(interfaceEditor, &InterfaceEnumEditor::targetInterfaceChecked, this,
         [=](const QString& interfaceName, const QString& instanceName) {
             quint64 start = 0;
@@ -285,12 +311,32 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ro
             if (addressHelper_->getTargetAddressRange(instanceName, interfaceName, start, range)) {
                 interfaceEditor->setTargetInterfaceValues(interfaceName, start, range);
             }
+            auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
+            collectEndpoints(instanceBusesLookup);
+            updateInterconnectModeOptions();
         });
 
     connect(interfaceEditor, &InterfaceEnumEditor::targetInterfaceUnchecked, this,
         [=](const QString& interfaceName, const QString& instanceName) {
             addressHelper_->releaseTargetAddress(instanceName);
             interfaceEditor->clearTargetInterfaceValues(interfaceName);
+            auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
+            collectEndpoints(instanceBusesLookup);
+            updateInterconnectModeOptions();
+        });
+
+    connect(interfaceEditor, &InterfaceEnumEditor::initiatorInterfaceChecked, this,
+        [=](const QString&, const QString&) {
+            auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
+            collectStartingPoints(instanceBusesLookup);
+            updateInterconnectModeOptions();
+        });
+
+    connect(interfaceEditor, &InterfaceEnumEditor::initiatorInterfaceUnchecked, this,
+        [=](const QString&, const QString&) {
+            auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
+            collectStartingPoints(instanceBusesLookup);
+            updateInterconnectModeOptions();
         });
 
     QVBoxLayout* nameAndEditorLayout = createNameAndEnumerationEditorLayout(roleLabel, interfaceEditor, instanceFrame);
@@ -322,6 +368,7 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ro
                 addedEndpoints_.remove(nameCombo->currentText());
             }
             instanceFrame->deleteLater();
+            updateInterconnectModeOptions();
         });
 
     return instanceFrame;
