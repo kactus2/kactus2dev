@@ -101,116 +101,84 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
         return false;
     }
 
-    qint64 registerSizeInt = expressionParser_->parseExpression(registerSize).toLongLong();
+    quint64 registerSizeUInt = expressionParser_->parseExpression(registerSize).toULongLong();
 
-    QVector<QString> fieldNames;
     QVector<QString> fieldTypeIdentifiers;
 
-    QMultiHash<QString, QSharedPointer<Field> > foundFieldNames;
+    QHash<QString, QSharedPointer<Field> > foundFieldNames;
 
     bool fieldsAreValid = true;
+    auto fields = selectedRegister->getFields();
+
+    // Setup memory areas for register fields
+    MemoryReserve memReserve;
+    setupMemoryAreas(selectedRegister, memReserve);
     
-    auto fieldsCopy = QSharedPointer<QList<QSharedPointer<Field> > >(new QList(*selectedRegister->getFields()));
+    // Check for overlapping and uncontained areas
+    QSet<QString> errorAreas;
+    memReserve.checkOverlapAndContainment(errorAreas, registerSizeUInt);
 
-    // Sort fields by offset for checking overlap.
-    auto sortFieldsByOffset = [&](QSharedPointer<Field> fieldA, QSharedPointer<Field> fieldB)
-        {
-            return expressionParser_->parseExpression(fieldA->getBitOffset()).toLongLong() < 
-                expressionParser_->parseExpression(fieldB->getBitOffset()).toLongLong();
-        };
-
-    std::sort(fieldsCopy->begin(), fieldsCopy->end(), sortFieldsByOffset);
-
-    qint64 lastFieldEnd = 0;
-
-    for (int fieldIndex = 0; fieldIndex < fieldsCopy->size(); ++fieldIndex)
+    for (int fieldIndex = 0; fieldIndex < fields->size(); ++fieldIndex)
     {
-        QSharedPointer<Field> field = fieldsCopy->at(fieldIndex);
+        bool currentValid = true;
+        QSharedPointer<Field> field = fields->at(fieldIndex);
 
-        quint64 bitWidth = getTrueFieldBitWidth(field);
-        qint64 rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toLongLong();
-        qint64 rangeEnd = rangeBegin + bitWidth - 1;
-        qint64 fieldEndPosition = registerSizeInt - bitWidth;
-
-        if (!fieldNames.contains(field->name()))
+        // Mark each field with non-unique name as invalid
+        if (foundFieldNames.contains(field->name()))
         {
-            fieldValidator_->setChildItemValidity(field, true);
+            currentValid = false;
+        }
+        else
+        {
+            foundFieldNames.insert(field->name(), field);
         }
 
-        foundFieldNames.insert(field->name(), field);
-        
-        if (rangeBegin < 0 || rangeBegin > fieldEndPosition)
+        // Mark invalid if overlapping or not contained
+        if (errorAreas.contains(field->name()))
         {
             fieldValidator_->setChildItemValidity(field, false);
-            fieldsAreValid = false;
         }
 
+        // Mark invalid if there is a field with same type identifier but differing definitions
         if (!field->getTypeIdentifier().isEmpty() && fieldTypeIdentifiers.contains(field->getTypeIdentifier()))
         {
             int typeIdIndex = fieldTypeIdentifiers.indexOf(field->getTypeIdentifier());
 
-            QSharedPointer<Field> comparedField = fieldsCopy->at(typeIdIndex);
+            QSharedPointer<Field> comparedField = fields->at(typeIdIndex);
             if (!fieldsHaveSimilarDefinitionGroups(field, comparedField))
             {
-                fieldValidator_->setChildItemValidity(field, false);
                 fieldValidator_->setChildItemValidity(comparedField, false);
-                fieldsAreValid = false;
+                currentValid = false;
             }
         }
 
-        fieldTypeIdentifiers.append(field->getTypeIdentifier());
-
+        // Mark invalid if volatility of field is not equal to volatility of register
         if (field->getVolatile().toBool() == true && selectedRegister->getVolatile() == QLatin1String("false"))
         {
-            fieldValidator_->setChildItemValidity(field, false);
-            fieldsAreValid = false;
+            currentValid = false;
         }
 
         if (docRevision_ == Document::Revision::Std14 && !fieldHasValidAccess(selectedRegister, field))
         {
+            currentValid = false;
+        }
+
+        if (currentValid == false)
+        {
             fieldValidator_->setChildItemValidity(field, false);
             fieldsAreValid = false;
         }
 
-        if (field->getIsPresent().isEmpty() || expressionParser_->parseExpression(field->getIsPresent()).toInt())
-        {
-            if (fieldIndex != 0 && rangeBegin <= lastFieldEnd)
-            {
-                fieldValidator_->setChildItemValidity(field, false);
-                fieldValidator_->setChildItemValidity(fieldsCopy->at(fieldIndex - 1), false);
-                fieldsAreValid = false;
-            }
-
-            if (rangeEnd > lastFieldEnd)
-            {
-                lastFieldEnd = rangeEnd;
-            }
-        }
+        fieldTypeIdentifiers.append(field->getTypeIdentifier());
     }
     
-    // Mark fields with duplicate names as invalid.
-    for (auto const& name : foundFieldNames.keys())
-    {
-        if (auto const& duplicateNames = foundFieldNames.values(name);
-            duplicateNames.count() > 1)
-        {
-            std::for_each(duplicateNames.begin(), duplicateNames.end(),
-                [this](QSharedPointer<Field> field)
-                {
-                    fieldValidator_->setChildItemValidity(field, false);
-                });
-
-            fieldsAreValid = false;
-        }
-    }
-
     if (!fieldsAreValid)
     {
         return false;
     }
 
     // Validate fields separately.
-    for (auto const& field : *fieldsCopy)
+    for (auto const& field : *fields)
     {
         if (!fieldValidator_->validate(field))
         {
@@ -449,80 +417,67 @@ void RegisterValidator::findErrorsInSize(QVector<QString>& errors, QSharedPointe
 void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
     QSharedPointer<RegisterDefinition> selectedRegister, QString const& registerSize, QString const& context) const
 {
-    if (!selectedRegister->getFields()->isEmpty())
+    if (selectedRegister->getFields()->isEmpty())
     {
-        QStringList fieldNames;
-        QStringList fieldTypeIdentifiers;
+        errors.append(QObject::tr("Register %1 must contain at least one field").arg(selectedRegister->name()));
+        return;
+    }
 
-        qint64 registerSizeInt = expressionParser_->parseExpression(registerSize).toLongLong();
-        MemoryReserve reservedArea;
+    QStringList fieldNames;
+    QStringList fieldTypeIdentifiers;
 
-        for (auto const& field : *selectedRegister->getFields())
+    quint64 registerSizeUInt = expressionParser_->parseExpression(registerSize).toULongLong();
+
+    // Create memory areas for fields for checking overlap and containment
+    MemoryReserve reservedArea;
+    setupMemoryAreas(selectedRegister, reservedArea);
+
+    for (auto const& field : *selectedRegister->getFields())
+    {
+        fieldValidator_->findErrorsIn(errors, field, context);
+
+        if (fieldNames.contains(field->name()))
         {
-            fieldValidator_->findErrorsIn(errors, field, context);
+            errors.append(
+                QObject::tr("Name %1 of fields in %2 is not unique.").arg(field->name()).arg(context));
+        }
 
-            if (fieldNames.contains(field->name()))
+        reservedArea.findErrorsInContainment(errors, field->name(), QStringLiteral("Field"), 
+            selectedRegister->name(), 0, registerSizeUInt - 1);
+        
+        if (!field->getTypeIdentifier().isEmpty() && fieldTypeIdentifiers.contains(field->getTypeIdentifier()))
+        {
+            int typeIdIndex = fieldTypeIdentifiers.indexOf(field->getTypeIdentifier());
+            QSharedPointer<Field> comparedField = selectedRegister->getFields()->at(typeIdIndex);
+            if (!fieldsHaveSimilarDefinitionGroups(field, comparedField))
             {
-                errors.append(
-                    QObject::tr("Name %1 of fields in %2 is not unique.").arg(field->name()).arg(context));
-            }
-
-            qint64 bitWidth = getTrueFieldBitWidth(field);
-
-            qint64 rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toLongLong();
-            qint64 rangeEnd = rangeBegin + bitWidth - 1;
-
-            qint64 fieldEndPosition = registerSizeInt - bitWidth;
-
-            if (rangeBegin < 0 || rangeBegin > fieldEndPosition)
-            {
-                errors.append(QObject::tr("Field %1 is not contained within %2").arg(field->name()).
-                    arg(selectedRegister->name()));
-            }
-
-            if(field->getIsPresent().isEmpty() || expressionParser_->parseExpression(field->getIsPresent()).toInt())
-            {
-              reservedArea.addArea(field->name(), rangeBegin, rangeEnd);
-            }
-
-            if (!field->getTypeIdentifier().isEmpty() && fieldTypeIdentifiers.contains(field->getTypeIdentifier()))
-            {
-                int typeIdIndex = fieldTypeIdentifiers.indexOf(field->getTypeIdentifier());
-                QSharedPointer<Field> comparedField = selectedRegister->getFields()->at(typeIdIndex);
-                if (!fieldsHaveSimilarDefinitionGroups(field, comparedField))
-                {
-                    errors.append(QObject::tr("Fields %1 and %2 have type identifier %3, but different "
-                        "field definitions within %4").arg(comparedField->name()).arg(field->name())
-                        .arg(field->getTypeIdentifier()).arg(context));
-                }
-            }
-
-            fieldNames.append(field->name());
-            fieldTypeIdentifiers.append(field->getTypeIdentifier());
-
-            if (field->getVolatile().toBool() == true && selectedRegister->getVolatile() == QLatin1String("false"))
-            {
-                errors.append(QObject::tr("Volatile cannot be set to false in %1, where contained field %2 "
-                    "has volatile true").arg(context).arg(field->name()));
-            }
-
-            if (docRevision_ == Document::Revision::Std14)
-            {
-                if (!fieldHasValidAccess(selectedRegister, field))
-                {
-                    errors.append(QObject::tr("Access cannot be set to %1 in field %2, where containing register %3 "
-                        "has access %4").arg(AccessTypes::access2Str(field->getAccess())).arg(field->name())
-                        .arg(selectedRegister->name()).arg(AccessTypes::access2Str(selectedRegister->getAccess())));
-                }
+                errors.append(QObject::tr("Fields %1 and %2 have type identifier %3, but different "
+                    "field definitions within %4").arg(comparedField->name()).arg(field->name())
+                    .arg(field->getTypeIdentifier()).arg(context));
             }
         }
 
-        reservedArea.findErrorsInOverlap(errors, QLatin1String("Fields"), context);
+        fieldNames.append(field->name());
+        fieldTypeIdentifiers.append(field->getTypeIdentifier());
+
+        if (field->getVolatile().toBool() == true && selectedRegister->getVolatile() == QLatin1String("false"))
+        {
+            errors.append(QObject::tr("Volatile cannot be set to false in %1, where contained field %2 "
+                "has volatile true").arg(context).arg(field->name()));
+        }
+
+        if (docRevision_ == Document::Revision::Std14)
+        {
+            if (!fieldHasValidAccess(selectedRegister, field))
+            {
+                errors.append(QObject::tr("Access cannot be set to %1 in field %2, where containing register %3 "
+                    "has access %4").arg(AccessTypes::access2Str(field->getAccess())).arg(field->name())
+                    .arg(selectedRegister->name()).arg(AccessTypes::access2Str(selectedRegister->getAccess())));
+            }
+        }
     }
-    else
-    {
-        errors.append(QObject::tr("Register %1 must contain at least one field").arg(selectedRegister->name()));
-    }
+
+    reservedArea.findErrorsInOverlap(errors, QLatin1String("Fields"), context);
 }
 
 //-----------------------------------------------------------------------------
@@ -657,4 +612,58 @@ quint64 RegisterValidator::getTrueFieldBitWidth(QSharedPointer<Field> field) con
     }
 
     return bitWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterValidator::setupMemoryAreas()
+//-----------------------------------------------------------------------------
+void RegisterValidator::setupMemoryAreas(QSharedPointer<RegisterDefinition> reg, MemoryReserve& reserve) const
+{
+    // Create memory areas for all fields and their possible replicas (dimensions)
+    for (auto const& field : *reg->getFields())
+    {
+        auto dimension = field->getDimension();
+        auto fieldOffset = expressionParser_->parseExpression(field->getBitOffset()).toULongLong();
+        auto fieldSize = fieldOffset + expressionParser_->parseExpression(field->getBitWidth()).toULongLong() - 1;
+        
+        // Reset validity
+        fieldValidator_->setChildItemValidity(field, true);
+        
+        if (field->getIsPresent().isEmpty() || expressionParser_->parseExpression(field->getIsPresent()).toInt() == 1)
+        {
+            if (dimension.isEmpty() || expressionParser_->parseExpression(dimension).toULongLong() == 1)
+            {
+                reserve.addArea(field->name(), fieldOffset, fieldSize);
+            }
+            else
+            {
+                quint64 stride = 0;
+                auto allDimensions = field->getMemoryArray()->getDimensions();
+
+                // If stride is empty, set field width as stride
+                if (!field->getStride().isEmpty())
+                {
+                    stride = expressionParser_->parseExpression(field->getStride()).toULongLong();
+                }
+                else
+                {
+                    stride = expressionParser_->parseExpression(field->getBitWidth()).toULongLong();
+                }
+
+                // Create replicas and calculate their addressing based on stride
+                quint64 replicas = 1;
+                std::for_each(allDimensions->cbegin(), allDimensions->cend(),
+                    [&replicas, this](QSharedPointer<MemoryArray::Dimension> dim)
+                    {
+                        replicas *= expressionParser_->parseExpression(dim->value_).toULongLong();
+                    });
+
+                for (int i = 0; i < replicas; i++)
+                {
+                    // start from fieldOffset, then add i multiples of stride
+                    reserve.addArea(field->name(), fieldOffset + i * stride,  i * stride + fieldSize);
+                }
+            }
+        }
+    }
 }

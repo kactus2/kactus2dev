@@ -114,6 +114,8 @@ public:
      */
     void setTypeDefinitionsReference(QString const& typeDefinitionsRef);
 
+    static quint64 calculateDefaultStride(quint64 addressUnitBits, quint64 regSize);
+
 private:
 
     /*!

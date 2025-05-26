@@ -30,6 +30,7 @@ class ParameterValidator;
 class RegisterBaseValidator;
 class ResetType;
 class Component;
+class MemoryReserve;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Register.
@@ -229,6 +230,14 @@ private:
      * 	    @return The true bit width of the field.
      */
     quint64 getTrueFieldBitWidth(QSharedPointer<Field> field) const;
+
+    /*!
+     *	Create memory areas for overlap and containment check.
+     *
+     *    @param [in] reg                 The register to create memory areas for.
+     *    @param [in] reserve             The memory reserve to add created areas to.
+     */
+    void setupMemoryAreas(QSharedPointer<RegisterDefinition> reg, MemoryReserve& reserve) const;
 
     //-----------------------------------------------------------------------------
     // Data.

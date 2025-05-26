@@ -101,95 +101,60 @@ bool RegisterFileValidator::hasValidRegisterData(QSharedPointer<RegisterFile> se
         return true;
     }
 
-    QMultiHash<QString, QSharedPointer<RegisterBase> > foundNames;
-
     bool aubChangeOk = true;
-    qint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
-    qint64 registerFileRangeInt = getTrueRegisterFileRange(selectedRegisterFile);
+    quint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toULongLong(&aubChangeOk);
+    quint64 registerFileRange = expressionParser_->parseExpression(selectedRegisterFile->getRange()).toULongLong();
 
-    auto registerDataCopy = QSharedPointer<QList<QSharedPointer<RegisterBase> > >(new QList(*selectedRegisterFile->getRegisterData()));
-
+    if (!aubChangeOk || aubInt == 0)
+    {
+        return false;
+    }
+    
+    auto registerData = selectedRegisterFile->getRegisterData();
     bool registerDataIsValid = true;
 
-    // Sort registers and register files by address offset
-    auto sortByAddressOffset = [&](QSharedPointer<RegisterBase> registerBaseA, QSharedPointer<RegisterBase> registerBaseB)
+    QHash<QString, QSharedPointer<RegisterBase> > foundNames;
+    QSet<QString> erroneousAreas;
+
+    // Create memory areas for child registers and register files
+    MemoryReserve memReserve;
+    setupMemoryAreas(selectedRegisterFile, memReserve, aubInt);
+
+    memReserve.checkOverlapAndContainment(erroneousAreas, registerFileRange);
+
+    auto markItemInvalid = [this](QSharedPointer<RegisterBase> regBase)
         {
-            return expressionParser_->parseExpression(registerBaseA->getAddressOffset()).toLongLong() <
-                expressionParser_->parseExpression(registerBaseB->getAddressOffset()).toLongLong();
+            if (auto asReg = regBase.dynamicCast<Register>())
+            {
+                registerValidator_->setChildItemValidity(asReg, false);
+            }
+            else if (auto asRegFile = regBase.dynamicCast<RegisterFile>())
+            {
+                setChildItemValidity(asRegFile, false);
+            }
         };
 
-    std::sort(registerDataCopy->begin(), registerDataCopy->end(), sortByAddressOffset);
 
-    qint64 lastRangeEnd = -1;
-
-    bool previousWasRegister = false;
-
-    for (auto regIter = registerDataCopy->begin(); regIter != registerDataCopy->end(); ++regIter)
+    // Mark erroneous registers and register files
+    for (auto const& regBase : *registerData)
     {
-        if (auto asRegister = regIter->dynamicCast<Register>())
+        // If duplicate name, mark current and first found reg with this name as invalid
+        if (auto found = foundNames[regBase->name()])
         {
-            if (!foundNames.contains(asRegister->name()))
-            {
-                registerValidator_->setChildItemValidity(asRegister, true);
-            }
+            markItemInvalid(regBase);
+            markItemInvalid(found);
 
-            foundNames.insert(asRegister->name(), asRegister);
-
-            qint64 registerSize = getRegisterSizeInLAU(asRegister, aubInt);
-            qint64 blockWidth = expressionParser_->parseExpression(addressBlockWidth).toLongLong();
-
-            if (registerSize > blockWidth)
-            {
-                registerValidator_->setChildItemValidity(asRegister, false);
-                registerDataIsValid = false;
-            }
-
-            if (aubChangeOk && aubInt != 0 &&
-                markRegisterOverlap(regIter, lastRangeEnd, registerFileRangeInt, aubInt, true, previousWasRegister))
-            {
-                registerDataIsValid = false;
-            }
-
-            previousWasRegister = true;
+            registerDataIsValid = false;
         }
-        else if (auto asRegisterFile = regIter->dynamicCast<RegisterFile>())
+        else
         {
-            if (!foundNames.contains(asRegisterFile->name()))
-            {
-                setChildItemValidity(asRegisterFile, true);
-            }
-
-            foundNames.insert(asRegisterFile->name(), asRegisterFile);
-
-            if (aubChangeOk && aubInt != 0 &&
-                markRegisterOverlap(regIter, lastRangeEnd, registerFileRangeInt, aubInt, false, previousWasRegister))
-            {
-                registerDataIsValid = false;
-            }
-
-            previousWasRegister = false;
+            foundNames.insert(regBase->name(), regBase);
         }
-    }
 
-    // Mark registers and register files with duplicate names as invalid.
-    for (auto const& name : foundNames.keys())
-    {
-        if (auto const& duplicateNames = foundNames.values(name);
-            duplicateNames.count() > 1)
+        // mark invalid, if register (file) overlaps or is not contained within parent reg file
+        if (erroneousAreas.contains(regBase->name()))
         {
-            std::for_each(duplicateNames.begin(), duplicateNames.end(),
-                [this](QSharedPointer<RegisterBase> registerBase)
-                {
-                    if (registerBase.dynamicCast<Register>())
-                    {
-                        registerValidator_->setChildItemValidity(registerBase, false);
-                    }
-                    else if (registerBase.dynamicCast<RegisterFile>())
-                    {
-                        setChildItemValidity(registerBase, false);
-                    }
-                });
-
+            markItemInvalid(regBase);
             registerDataIsValid = false;
         }
     }
@@ -200,12 +165,12 @@ bool RegisterFileValidator::hasValidRegisterData(QSharedPointer<RegisterFile> se
     }
 
     // Validate registers and register files separately
-    for (auto const& registerBase : *registerDataCopy)
+    for (auto const& registerBase : *registerData)
     {
-        if (QSharedPointer<Register> asRegister = registerBase.dynamicCast<Register>();
+        if (QSharedPointer<Register> asRegister = registerBase.dynamicCast<Register>(); 
             asRegister && !registerValidator_->validate(asRegister))
         {
-            return false;
+            return false;   
         }
         else if (QSharedPointer<RegisterFile> asRegisterFile = registerBase.dynamicCast<RegisterFile>();
             asRegisterFile && !validate(asRegisterFile, addressUnitBits, addressBlockWidth))
@@ -238,7 +203,7 @@ bool RegisterFileValidator::hasValidStructure(QSharedPointer<RegisterFile> selec
 // Function: RegisterFileValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void RegisterFileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<RegisterFile> selectedRegisterFile,
-    QString const& context, QString const& addressUnitBits, QString const& addressBlockWidth) const
+    QString const& context, QString const& addressUnitBits, QString const& addressBlockWidth)
 {
     QString registerContext = QStringLiteral("register file ") + selectedRegisterFile->name();
 
@@ -287,14 +252,12 @@ void RegisterFileValidator::findErrorsInRange(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 void RegisterFileValidator::findErrorsInRegisterData(QVector<QString>& errors,
     QSharedPointer<RegisterFile> selectedRegisterFile, QString const& context, QString const& addressUnitBits,
-    QString const& addressBlockWidth) const
+    QString const& addressBlockWidth)
 {
     if (selectedRegisterFile->getRegisterData()->isEmpty())
     {
         return;
     }
-
-    MemoryReserve reservedArea;
 
     QStringList registerNames;
     QStringList registerFileNames;
@@ -304,11 +267,18 @@ void RegisterFileValidator::findErrorsInRegisterData(QVector<QString>& errors,
     QMultiHash<QString, QSharedPointer<RegisterBase> > foundNames;
 
     bool aubChangeOk = true;
-    qint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
-    qint64 registerFileRangeInt = getTrueRegisterFileRange(selectedRegisterFile);
-    qint64 addressBlockWidthInt = expressionParser_->parseExpression(addressBlockWidth).toLongLong();
+    quint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
+    
+    quint64 registerFileRange = expressionParser_->parseExpression(selectedRegisterFile->getRange()).toULongLong();
+    registerFileRange = getTrueRegisterFileRange(selectedRegisterFile, registerFileRange);
+    
+    quint64 addressBlockWidthInt = expressionParser_->parseExpression(addressBlockWidth).toLongLong();
 
     auto registerData = selectedRegisterFile->getRegisterData();
+
+    // Create memory areas of child register data for overlap comparison
+    MemoryReserve reservedArea;
+    setupMemoryAreas(selectedRegisterFile, reservedArea, aubInt);
 
     if (aubChangeOk && aubInt != 0)
     {
@@ -317,12 +287,12 @@ void RegisterFileValidator::findErrorsInRegisterData(QVector<QString>& errors,
             if (auto asRegister = reg.dynamicCast<Register>())
             {
                 findErrorsInChildRegister(errors, asRegister, context, aubInt, 
-                    registerFileRangeInt, addressBlockWidthInt, reservedArea, registerNames, duplicateRegisterNames);
+                    registerFileRange, addressBlockWidthInt, reservedArea, registerNames, duplicateRegisterNames);
             }
             else if (auto asRegisterFile = reg.dynamicCast<RegisterFile>())
             {
                 findErrorsInChildRegisterFile(errors, asRegisterFile, context, addressUnitBits, 
-                    registerFileRangeInt, addressBlockWidth, reservedArea, registerFileNames, duplicateRegisterFileNames);
+                    registerFileRange, addressBlockWidth, reservedArea, registerFileNames, duplicateRegisterFileNames);
             }
         }
     }
@@ -346,22 +316,9 @@ void RegisterFileValidator::findErrorsInAccessPolicies(QStringList& errors,
 qint64 RegisterFileValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, qint64 addressUnitBits) const
 {
     qint64 size = expressionParser_->parseExpression(targetRegister->getSize()).toLongLong();
-    qint64 dimensionsProduct = 1;
 
-    if (auto memArray = targetRegister->getMemoryArray())
-    {
-        for (auto const& dimension : *memArray->getDimensions())
-        {
-            dimensionsProduct *= expressionParser_->parseExpression(dimension->value_).toLongLong();
-        }
-    }
-
-    qint64 topPart = size + addressUnitBits - 1;
-    qint64 dimensionlessSize = topPart / addressUnitBits;
-
-    qint64 trueSize = dimensionlessSize * dimensionsProduct;
-
-    return trueSize;
+    // Round register size up to closest multiple of AUB to get size in least addressable units/AUB.
+    return static_cast<qint64>(std::ceil(size / static_cast<double>(addressUnitBits)));
 }
 
 //-----------------------------------------------------------------------------
@@ -385,7 +342,6 @@ void RegisterFileValidator::findErrorsInChildRegister(QStringList& errors, QShar
     }
 
     registerValidator_->findErrorsIn(errors, childRegister, context);
-
     qint64 registerSize = expressionParser_->parseExpression(childRegister->getSize()).toInt();
 
     if (registerSize > addressBlockWidth)
@@ -394,24 +350,9 @@ void RegisterFileValidator::findErrorsInChildRegister(QStringList& errors, QShar
             "addressBlock width.").arg(childRegName));
     }
 
-    qint64 realRegisterSize = getRegisterSizeInLAU(childRegister, addressUnitBits);
-
-    qint64 registerBegin = expressionParser_->parseExpression(
-        childRegister->getAddressOffset()).toLongLong();
-
-    qint64 registerEnd = registerBegin + realRegisterSize - 1;
-
-    if (registerBegin < 0 || registerBegin + realRegisterSize > parentRegisterFileRange)
-    {
-        errors.append(QObject::tr("Register %1 is not contained within parent register file.")
-            .arg(childRegName));
-    }
-
-    if (childRegister->getIsPresent().isEmpty() ||
-        expressionParser_->parseExpression(childRegister->getIsPresent()).toInt())
-    {
-        reservedArea.addArea(childRegName, registerBegin, registerEnd);
-    }
+    // Check if register is contained within containing register file
+    reservedArea.findErrorsInContainment(errors, childRegName, QStringLiteral("Register"),
+        context, 0, parentRegisterFileRange - 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -420,7 +361,7 @@ void RegisterFileValidator::findErrorsInChildRegister(QStringList& errors, QShar
 void RegisterFileValidator::findErrorsInChildRegisterFile(QStringList& errors, 
     QSharedPointer<RegisterFile> childRegisterFile, QString const& context, QString const& addressUnitBits, 
     qint64 parentRegisterFileRange, QString const& addressBlockWidth, MemoryReserve& reservedArea, 
-    QStringList& registerFileNames, QStringList& duplicateRegisterFileNames) const
+    QStringList& registerFileNames, QStringList& duplicateRegisterFileNames)
 {
     QString const& childRegFileName = childRegisterFile->name();
 
@@ -433,115 +374,115 @@ void RegisterFileValidator::findErrorsInChildRegisterFile(QStringList& errors,
     {
         registerFileNames.append(childRegFileName);
     }
-
+    
+    // Find errors in nested reg file
     findErrorsIn(errors, childRegisterFile, context, addressUnitBits, addressBlockWidth);
 
-    qint64 registerFileBegin = expressionParser_->parseExpression(
-        childRegisterFile->getAddressOffset()).toLongLong();
-
-    qint64 registerFileRangeInt = expressionParser_->parseExpression(childRegisterFile->getRange()).toLongLong();
-    qint64 registerFileEnd = registerFileBegin + registerFileRangeInt - 1;
-
-    if (registerFileBegin < 0 || registerFileBegin + registerFileEnd > parentRegisterFileRange)
-    {
-        errors.append(QObject::tr("Register file %1 not contained within %2.").arg(childRegisterFile->name()).arg(context));
-    }
-
-    if (childRegisterFile->getIsPresent().isEmpty() ||
-        expressionParser_->parseExpression(childRegisterFile->getIsPresent()).toInt())
-    {
-        reservedArea.addArea(childRegisterFile->name(), registerFileBegin, registerFileEnd);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileValidator::markRegisterOverlap()
-//-----------------------------------------------------------------------------
-bool RegisterFileValidator::markRegisterOverlap(QList<QSharedPointer<RegisterBase> >::iterator regIter, 
-    qint64& lastEndAddress, qint64 registerFileRange, qint64 addressUnitBits, bool targetIsRegister, 
-    bool lastWasRegister)
-{
-    auto targetRegisterBase = *regIter;
-
-    qint64 targetRegisterBaseBegin = expressionParser_->parseExpression(
-        targetRegisterBase->getAddressOffset()).toLongLong();
-    qint64 targetRegisterBaseRangeInt = -1;
-
-    bool errorFound = false;
-
-    if (targetIsRegister)
-    {
-        targetRegisterBaseRangeInt = getRegisterSizeInLAU(targetRegisterBase.staticCast<Register>(), addressUnitBits);
-    }
-    else
-    {
-        targetRegisterBaseRangeInt = getTrueRegisterFileRange(targetRegisterBase.staticCast<RegisterFile>());
-    }
-
-    qint64 registerBaseEnd = targetRegisterBaseBegin + targetRegisterBaseRangeInt - 1;
-
-    if (targetRegisterBase->getIsPresent().isEmpty() ||
-        expressionParser_->parseExpression(targetRegisterBase->getIsPresent()).toInt())
-    {
-        if (targetRegisterBaseBegin <= lastEndAddress && lastEndAddress != -1)
-        {
-            auto prevRegisterBase = *std::prev(regIter);
-
-            if (lastWasRegister)
-            {
-                registerValidator_->setChildItemValidity(prevRegisterBase, false);
-            }
-            else
-            {
-                setChildItemValidity(prevRegisterBase, false);
-            }
-
-            if (targetIsRegister)
-            {
-                registerValidator_->setChildItemValidity(targetRegisterBase, false);
-            }
-            else
-            {
-                setChildItemValidity(targetRegisterBase, false);
-            }
-
-            errorFound = true;
-        }
-
-        if (registerBaseEnd > lastEndAddress)
-        {
-            lastEndAddress = registerBaseEnd;
-        }
-    }
-
-    if (targetRegisterBaseBegin < 0 || targetRegisterBaseBegin + targetRegisterBaseRangeInt > registerFileRange)
-    {
-        targetIsRegister
-            ? registerValidator_->setChildItemValidity(targetRegisterBase, false)
-            : setChildItemValidity(targetRegisterBase, false);
-        errorFound = true;
-    }
-
-    return errorFound;
+    // Check if nested reg file is contained within parent
+    reservedArea.findErrorsInContainment(errors, childRegFileName, QStringLiteral("Register file"), 
+        context, 0, parentRegisterFileRange - 1);
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileValidator::getTrueRegisterFileRange()
 //-----------------------------------------------------------------------------
-qint64 RegisterFileValidator::getTrueRegisterFileRange(QSharedPointer<RegisterFile> targetRegisterFile) const
+qint64 RegisterFileValidator::getTrueRegisterFileRange(QSharedPointer<RegisterFile> targetRegisterFile, quint64 singleReplicaRange) const
 {
     qint64 dimensionsProduct = 1;
 
     if (auto memArray = targetRegisterFile->getMemoryArray())
     {
-        for (auto const& dimension : *memArray->getDimensions())
+        // Give range as total range of consecutive register file replicas, if stride == single replica range. 
+        // Otherwise range is just single replica range.
+        auto regFileStrideStr = targetRegisterFile->getStride();
+        quint64 regFileStride = expressionParser_->parseExpression(regFileStrideStr).toULongLong();
+
+        if (regFileStrideStr.isEmpty() || regFileStride == singleReplicaRange)
         {
-            dimensionsProduct *= expressionParser_->parseExpression(dimension->value_).toLongLong();
+            for (auto const& dimension : *memArray->getDimensions())
+            {
+                dimensionsProduct *= expressionParser_->parseExpression(dimension->value_).toLongLong();
+            }
         }
     }
 
-    qint64 dimensionlessRange = expressionParser_->parseExpression(targetRegisterFile->getRange()).toLongLong();
-    qint64 trueRange = dimensionlessRange * dimensionsProduct;
+    return singleReplicaRange * dimensionsProduct;
+}
 
-    return trueRange;
+//-----------------------------------------------------------------------------
+// Function: RegisterFileValidator::setupMemoryAreas()
+//-----------------------------------------------------------------------------
+void RegisterFileValidator::setupMemoryAreas(QSharedPointer<RegisterFile> regFile, MemoryReserve& reserve, quint64 addressUnitBits)
+{
+    if (regFile->getIsPresent().isEmpty() == false && expressionParser_->parseExpression(regFile->getIsPresent()).toInt() != 1)
+    {
+        return;
+    }
+
+    // Create memory areas for all registers and register files and their possible replicas (dimensions)
+    // All calculations should be done using address unit bits (unit for range)
+    for (auto const& regBase : *regFile->getRegisterData())
+    {
+        auto dimension = regBase->getDimension(); // Just first dimension which is most commonly in use. Empty if no mem array.
+        auto addressOffset = expressionParser_->parseExpression(regBase->getAddressOffset()).toULongLong();
+        quint64 regBaseSize = 0; // size of register(file) in AUB
+        quint64 regBaseStride = 0; // stride of register(file) in AUB
+
+        if (regBase->getIsPresent().isEmpty() == false &&
+            expressionParser_->parseExpression(regBase->getIsPresent()).toInt() != 1)
+        {
+            continue;
+        }
+
+        if (auto asRegister = regBase.dynamicCast<Register>())
+        {
+            // Register size (in bits) needs to be rounded up to multiple of AUB for overlap checks using AUBs
+            regBaseSize = getRegisterSizeInLAU(asRegister, addressUnitBits);
+            registerValidator_->setChildItemValidity(asRegister, true);
+        }
+        else if (auto asRegFile = regBase.dynamicCast<RegisterFile>())
+        {
+            regBaseSize = expressionParser_->parseExpression(asRegFile->getRange()).toULongLong();
+            setChildItemValidity(asRegFile, true);
+        }
+
+        // Stride empty
+        // - For register: stride = reg size rounded up to closest multiple of AUB
+        // - For register file: stride = range
+        if (auto regStrideStr = regBase->getStride(); regStrideStr.isEmpty())
+        {
+            regBaseStride = regBaseSize;
+        }
+        else
+        {
+            regBaseStride = expressionParser_->parseExpression(regBase->getStride()).toULongLong();
+        }
+
+        // Register has single dimension
+        if (dimension.isEmpty() || expressionParser_->parseExpression(dimension).toInt() == 1)
+        {
+            reserve.addArea(regBase->name(), addressOffset, addressOffset + regBaseSize - 1);
+        }
+        // Multiple dimensions, calculate number of replicas with dimensions
+        else
+        {
+            auto allDimensions = regBase->getMemoryArray()->getDimensions();
+
+            quint64 replicas = 1;
+            std::for_each(allDimensions->cbegin(), allDimensions->cend(),
+                [&replicas, this](QSharedPointer<MemoryArray::Dimension> dim)
+                {
+                    replicas *= expressionParser_->parseExpression(dim->value_).toULongLong();
+                });
+
+            for (int i = 0; i < replicas; i++)
+            {
+                // start from fieldOffset, then add i multiples of stride
+                quint64 replicaStart = addressOffset + i * regBaseStride;
+                quint64 replicaEnd = replicaStart + regBaseSize - 1;
+
+                reserve.addArea(regBase->name(), replicaStart, replicaEnd);
+            }
+        }
+    }
 }

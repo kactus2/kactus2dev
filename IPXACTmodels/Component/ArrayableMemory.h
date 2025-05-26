@@ -45,6 +45,20 @@ public:
      */
     void setDimension(QString const& newDimension);
 
+
+    /*!
+     *	Get the stride value. Implemented in derived classes because of different stride defaults when empty.
+     *  
+     *    @return  The stride value
+     */
+    virtual QString getStride();
+
+    void setStride(QString const& newStride);
+
+    QString getIndexVar();
+
+    void setIndexVar(QString const& newIndexVar);
+
     /*!
      *	Get the memory array of the memory item.
      *

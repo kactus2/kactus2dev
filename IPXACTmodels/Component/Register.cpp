@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/Component/MemoryArray.h>
 
+#include <QtGlobal>
+
 //-----------------------------------------------------------------------------
 // Function: Register::Register()
 //-----------------------------------------------------------------------------
@@ -137,6 +139,28 @@ QString Register::getTypeDefinitionsReference() const
 void Register::setTypeDefinitionsReference(QString const& typeDefinitionsRef)
 {
     typeDefinitionsReference_ = typeDefinitionsRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::calculateDefaultStride()
+//-----------------------------------------------------------------------------
+quint64 Register::calculateDefaultStride(quint64 addressUnitBits, quint64 regSize)
+{
+    Q_ASSERT_X(addressUnitBits == 0, "Register::calculateDefaultStride()", "Address unit bits is zero");
+
+    // Default stride is smallest k so that k * AUB >= reg size
+    if (addressUnitBits == 0)
+    {
+        return 0;
+    }
+    else if (regSize % addressUnitBits == 0)
+    {
+        return regSize / addressUnitBits;
+    }
+    else
+    {
+        return regSize / addressUnitBits + 1;
+    }
 }
 
 //-----------------------------------------------------------------------------

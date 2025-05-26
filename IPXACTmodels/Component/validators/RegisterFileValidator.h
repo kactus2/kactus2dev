@@ -109,7 +109,7 @@ public:
         QSharedPointer<RegisterFile> selectedRegisterFile,
         QString const& context,
         QString const& addressUnitBits,
-        QString const& addressBlockWidth) const;
+        QString const& addressBlockWidth);
 
 private:
 
@@ -135,7 +135,7 @@ private:
         QSharedPointer<RegisterFile> selectedRegisterFile,
         QString const& context,
         QString const& addressUnitBits,
-        QString const& addressBlockWidth) const;
+        QString const& addressBlockWidth);
 
     /*!
      *	Find errors within the access policies of the register file.
@@ -193,22 +193,7 @@ private:
     void findErrorsInChildRegisterFile(QStringList& errors, QSharedPointer<RegisterFile> childRegisterFile, 
         QString const& context, QString const& addressUnitBits, qint64 parentRegisterFileRange, 
         QString const& addressBlockWidth, MemoryReserve& reservedArea, QStringList& registerFileNames,
-        QStringList& duplicateRegisterFileNames) const;
-
-    /*!
-     *	Mark overlapping registers and register files as invalid.
-     *
-     *    @param [in] regIter             Iterator pointing to current register(file).
-     *    @param [in] lastEndAddress      Currently biggest register end address found.
-     *    @param [in] registerFileRange   The address block range.
-     *    @param [in] addressUnitBits     The memory map address unit bits.
-     *    @param [in] targetIsRegister    Flag indicating if regIter points to register or register file.
-     *    @param [in] lastWasRegister     Flag indicating if the previous item was a register or register file.
-     *
-     * 	    @return True, if overlapping registers and/or register files were found, otherwise false.
-     */
-    bool markRegisterOverlap(QList<QSharedPointer<RegisterBase> >::iterator regIter, qint64& lastEndAddress,
-        qint64 registerFileRange, qint64 addressUnitBits, bool targetIsRegister, bool lastWasRegister);
+        QStringList& duplicateRegisterFileNames);
 
     /*!
      *	Get register file range (size in AUB) taking dimensions into account.
@@ -217,7 +202,16 @@ private:
      *
      * 	    @return The true register file range.
      */
-    qint64 getTrueRegisterFileRange(QSharedPointer<RegisterFile> targetRegisterFile) const;
+    qint64 getTrueRegisterFileRange(QSharedPointer<RegisterFile> targetRegisterFile, quint64 singleReplicaRange) const;
+
+    /*!
+     *	Create memory areas for overlap and containment check.
+     *  
+     *    @param [in] regFile             The register file to create memory areas for.
+     *    @param [in] reserve             The memory reserve to add created areas to.
+     *    @param [in] addressUnitBits     The memory map address unit bits.
+     */
+    void setupMemoryAreas(QSharedPointer<RegisterFile> regFile, MemoryReserve& reserve, quint64 addressUnitBits);
 
     //-----------------------------------------------------------------------------
     // Data.

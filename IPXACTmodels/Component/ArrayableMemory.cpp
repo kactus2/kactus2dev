@@ -80,6 +80,61 @@ void ArrayableMemory::setDimension(QString const& newDimension)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ArrayableMemory::getStride()
+//-----------------------------------------------------------------------------
+QString ArrayableMemory::getStride()
+{
+    if (memoryArray_)
+    {
+        return memoryArray_->getStride();
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemory::setStride()
+//-----------------------------------------------------------------------------
+void ArrayableMemory::setStride(QString const& newStride)
+{
+    if (!memoryArray_)
+    {
+        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray());
+    }
+
+    memoryArray_->setStride(newStride);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemory::getIndexVar()
+//-----------------------------------------------------------------------------
+QString ArrayableMemory::getIndexVar()
+{
+    if (memoryArray_)
+    {
+        return memoryArray_->getDimensions()->first()->indexVar_;
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemory::setIndexVar()
+//-----------------------------------------------------------------------------
+void ArrayableMemory::setIndexVar(QString const& newIndexVar)
+{
+    if (!memoryArray_)
+    {
+        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray());
+    }
+
+    if (!memoryArray_->getDimensions()->isEmpty())
+    {
+        memoryArray_->getDimensions()->first()->indexVar_= newIndexVar;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ArrayableMemory::getMemoryArray()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryArray> ArrayableMemory::getMemoryArray() const
