@@ -56,7 +56,7 @@ void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, 
     clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->ClkVLNV);
     openDesign(designVLNV);
     createInterconComponent(interconVLNV);
-    processInitiatorsAndTargets(initiators, targets);
+    processStartingPointsAndEndpoints(initiators, targets);
 
     if (config_->isChannel)
     {
@@ -186,150 +186,158 @@ void InterconnectGenerator::findUnconnectedInterfaces()
     createRstorClkInterface("clk", index + 1);
 }
 
-void InterconnectGenerator::processInitiatorsAndTargets(
-    const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
-    const QHash<QString, QList<QSharedPointer<TargetData>>>& targets)
+void InterconnectGenerator::processStartingPointsAndEndpoints(
+    const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
+    const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints)
 {
-    messager_->showMessage("Processing initiators and targets...");
+    messager_->showMessage("Processing starting points and endpoints...");
+    messager_->showMessage(QString("starting points size: %1").arg(startingPoints.size()));
     int index = 0;
 
-    bool isChannel = config_->isChannel;
-    if (!isChannel) {
-        createGlobalAddressSpaceFromTargets(targets);
+    if (!config_->isChannel) {
+        createGlobalAddressSpaceFromTargets(endpoints);
     }
 
-    for (auto it = targets.constBegin(); it != targets.constEnd(); ++it) {
+    std::vector<BusInterfaceInfo> createdBuses;
+
+    auto busesFromEndpoints = processEndpointSide(endpoints, index);
+    auto busesFromStarting = processStartingSide(startingPoints, index);
+
+    createdBuses.insert(createdBuses.end(), busesFromEndpoints.begin(), busesFromEndpoints.end());
+    createdBuses.insert(createdBuses.end(), busesFromStarting.begin(), busesFromStarting.end());
+
+    finalizeBusInterfaceCustomization(createdBuses);
+
+    if (!config_->RstVLNV.isEmpty()) createRstorClkInterface("rst", index++);
+    if (!config_->ClkVLNV.isEmpty()) createRstorClkInterface("clk", index++);
+}
+
+std::vector<BusInterfaceInfo> InterconnectGenerator::processEndpointSide(
+    const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints, int& index)
+{
+    std::vector<BusInterfaceInfo> results;
+    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
+
+    for (auto it = endpoints.constBegin(); it != endpoints.constEnd(); ++it) {
         QString instanceName = it.key();
-        auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
+        bool isTop = (instanceName == designVLNV.getName());
+
+        auto compVLNV = resolveComponentVLNV(instanceName, isTop);
+        if (!compVLNV) continue;
+
         QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
         QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
 
-        const QList<QSharedPointer<TargetData>>& busInterfaceDatas = it.value();
+        for (const QSharedPointer<TargetData>& data : it.value()) {
+            QSharedPointer<BusInterface> bus = data->targetBus;
+            startAddr_ = data->start;
+            range_ = data->range;
 
-        for (const QSharedPointer<TargetData>& busInterfaceData : busInterfaceDatas) {
-            QSharedPointer<BusInterface> busInterface = busInterfaceData->targetBus;
-            QString busName = busInterface->name();
-            VLNV busVLNV = busInterface->getBusType();
-            startAddr_ = busInterfaceData->start;
-            range_ = busInterfaceData->range;
+            BusInterfaceInfo info = createInterfaceForBus(instanceName, bus, isTop, true, index);
+            info.start = data->start;
+            info.range = data->range;
+            results.push_back(info);
 
-            prefix_ = instanceName.toStdString() + "_" + busName.toStdString() + "_";
-            std::string modeString = getInterfaceMode(busInterface, true, isChannel);
-
-            std::string newBusName = createBusInterface(
-                busVLNV, busName.toUpper().toStdString(), modeString, index
-            );
-
-            if (!globalAddressSpaceName_.empty()) {
-                busInfInterface_->setAddressSpaceReference(newBusName, globalAddressSpaceName_);
-            }
-
-            connectionInterface_->addInterconnection(
-                instanceName.toStdString(), busName.toStdString(),
-                interconComponent_->getVlnv().getName().toStdString(), newBusName);
-
-            createPortMaps(modeString, busInterface);
-            createPhysPorts(comp, busName);
+            createPortMaps(info.mode, bus);
+            createPhysPorts(comp, bus->name());
 
             index++;
         }
     }
-    for (auto it = initiators.constBegin(); it != initiators.constEnd(); ++it) {
+
+    return results;
+}
+
+std::vector<BusInterfaceInfo> InterconnectGenerator::processStartingSide(
+    const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints, int& index)
+{
+    std::vector<BusInterfaceInfo> results;
+    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
+
+    for (auto it = startingPoints.constBegin(); it != startingPoints.constEnd(); ++it) {
         QString instanceName = it.key();
-        auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
+        bool isTop = (instanceName == designVLNV.getName());
+
+        auto compVLNV = resolveComponentVLNV(instanceName, isTop);
+        if (!compVLNV) continue;
+
         QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
         QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
 
-        const QList<QSharedPointer<BusInterface>>& busInterfaces = it.value();
-
-        for (const QSharedPointer<BusInterface>& busInterface : busInterfaces) {
-            QString busName = busInterface->name();
-            VLNV busVLNV = busInterface->getBusType();
-
-            prefix_ = instanceName.toStdString() + "_" + busName.toStdString() + "_";
-            std::string modeString = getInterfaceMode(busInterface, false, isChannel);
-
-            std::string newBusName = createBusInterface(
-                busVLNV, busName.toUpper().toStdString(), modeString, index
-            );
-
-            connectionInterface_->addInterconnection(
-                instanceName.toStdString(), busName.toStdString(),
-                interconComponent_->getVlnv().getName().toStdString(), newBusName);
-
-            createPortMaps(modeString, busInterface);
-            createPhysPorts(comp, busName);
+        for (const QSharedPointer<BusInterface>& bus : it.value()) {
+            BusInterfaceInfo info = createInterfaceForBus(instanceName, bus, isTop, true, index);
+            results.push_back(info);
+            
+            createPortMaps(info.mode, bus);
+            createPhysPorts(comp, bus->name());
 
             index++;
         }
     }
-    if (!config_->RstVLNV.isEmpty()) {
-        createRstorClkInterface("rst", index);
-        index++;
-    }
-    if (!config_->ClkVLNV.isEmpty()) {
-        createRstorClkInterface("clk", index);
-    }
+    return results;
 }
 
-void InterconnectGenerator::createGlobalAddressSpaceFromTargets(
-    const QHash<QString, QList<QSharedPointer<TargetData>>>& targets)
+BusInterfaceInfo InterconnectGenerator::createInterfaceForBus(
+    const QString& instanceName, const QSharedPointer<BusInterface>& bus,
+    bool isTop, bool isEndpoint, int& index)
 {
-    quint64 lowestStart = UINT64_MAX;
-    quint64 highestEnd = 0;
+    QString busName = bus->name();
+    VLNV busVLNV = bus->getBusType();
+    prefix_ = instanceName.toStdString() + "_" + busName.toStdString() + "_";
 
-    for (const auto& targetList : targets) {
-        for (const QSharedPointer<TargetData>& targetData : targetList) {
-            bool okStart = false, okRange = false;
+    bool isTarget = isTargetInterface(bus);
+    std::string mode = getInterfaceMode(bus, isTarget, config_->isChannel, isTop);
+    std::string newName = createBusInterface(busVLNV, busName.toUpper().toStdString(), mode, index);
 
-            quint64 start = parseIpxactHex(targetData->start, &okStart);
-            quint64 range = parseIpxactHex(targetData->range, &okRange);
-
-            if (okStart && okRange) {
-                lowestStart = std::min(lowestStart, start);
-                highestEnd = std::max(highestEnd, start + range);
-            }
-        }
+    if (!globalAddressSpaceName_.empty() && isEndpoint && isTarget) 
+    {
+        busInfInterface_->setAddressSpaceReference(newName, globalAddressSpaceName_);
     }
 
-    if (lowestStart == UINT64_MAX || highestEnd == 0) {
-        return;
+    if (isTop) 
+    {
+        connectionInterface_->addHierarchicalInterconnection(
+            interconComponent_->getVlnv().getName().toStdString(), newName, busName.toStdString());
     }
-
-    quint64 addrSpaceSize = (highestEnd > lowestStart) ? (highestEnd - lowestStart) : 0;
-
-    QString hexRange = QString::number(addrSpaceSize, 16).rightJustified(4, '0').toUpper();
-    QString ipxactRange = "'h" + hexRange;
-
-    QString addrWidth = QString::number(config_->AddressWidth);
-    globalAddressSpaceName_ = config_->BusType.toStdString() + "_global_space";
-    createAddressSpace(globalAddressSpaceName_, ipxactRange, addrWidth);
+    else 
+    {
+        connectionInterface_->addInterconnection(
+            instanceName.toStdString(), busName.toStdString(),
+            interconComponent_->getVlnv().getName().toStdString(), newName);
+    }
+    return { newName, mode };
 }
 
-quint64 InterconnectGenerator::parseIpxactHex(const QString& str, bool* ok)
+QSharedPointer<ConfigurableVLNVReference> InterconnectGenerator::resolveComponentVLNV(
+    const QString& instanceName, bool isTop) const
 {
-    QString clean = str.trimmed().toUpper();
+    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
 
-    if (clean.startsWith("'H")) {
-        clean.remove(0, 2);
-    }
-    else if (clean.startsWith("0X")) {
-        clean.remove(0, 2);
+    auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
+
+    if (!compVLNV && isTop) {
+        return QSharedPointer<ConfigurableVLNVReference>::create(designVLNV);
     }
 
-    return clean.toULongLong(ok, 16);
+    return compVLNV;
 }
 
-void InterconnectGenerator::createAddressSpace(std::string spaceName, QString range, QString width)
+bool InterconnectGenerator::isTargetInterface(const QSharedPointer<BusInterface>& bus) const
 {
-    QSharedPointer<AddressSpace> addrSpace = QSharedPointer<AddressSpace>(
-        new AddressSpace(QString::fromStdString(spaceName), range, width));
+    auto mode = bus->getInterfaceMode();
 
-    interconComponent_->getAddressSpaces()->append(addrSpace);
+    return mode == General::TARGET ||
+        mode == General::MIRRORED_INITIATOR ||
+        mode == General::SLAVE ||
+        mode == General::MIRRORED_MASTER;
 }
 
-std::string InterconnectGenerator::getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool isChannel)
+std::string InterconnectGenerator::getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool isChannel, bool isTop)
 {
+    if (isTop) 
+    {
+        return General::interfaceMode2Str(bus->getInterfaceMode()).toStdString();
+    }
     Document::Revision rev = design_->getRevision();
 
     if (rev == Document::Revision::Std14)
@@ -402,39 +410,49 @@ std::string InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string 
     busInfInterface_->addAbstractionType(newBusName, busDef.getVendor().toStdString(), busDef.getLibrary().toStdString(),
         busDef.getName().toStdString(), busDef.getVersion().toStdString());
 
-    customizeBasedOnInterfaceMode(newBusName, modeString);
-
     messager_->showMessage(QString("%1 interface created").arg(QString::fromStdString(newBusName)));
 
     return newBusName;
 }
 
-void InterconnectGenerator::customizeBasedOnInterfaceMode(std::string newBusName, std::string modeString)
+void InterconnectGenerator::finalizeBusInterfaceCustomization(const std::vector<BusInterfaceInfo>& createdBuses)
 {
-    if (modeString == "slave" || modeString == "target") {
-        busInfInterface_->setupSubInterfaces(newBusName);
-        TransparentBridgeInterface* bridgeInterface = busInfInterface_->getBridgeInterface();
-        if (!bridgeInterface) {
-            return;
-        }
-        int index = bridgeInterface->itemCount();
-        for (std::string name : busInfInterface_->getItemNames()) {
-            std::string mode = busInfInterface_->getModeString(name);
-            if (mode != "master" && mode != "initiator") {
+    for (const auto& busInfo : createdBuses) {
+        const std::string& name = busInfo.name;
+        const std::string& mode = busInfo.mode;
+
+        if (mode == "slave" || mode == "target") {
+            busInfInterface_->setupSubInterfaces(name);
+            TransparentBridgeInterface* bridgeInterface = busInfInterface_->getBridgeInterface();
+            if (!bridgeInterface) {
                 continue;
             }
-            bridgeInterface->addBridge(index, name);
-            index++;
+
+            int index = bridgeInterface->itemCount();
+
+            for (const std::string& candidate : busInfInterface_->getItemNames()) {
+                std::string candidateMode = busInfInterface_->getModeString(candidate);
+
+                if (candidateMode != "master" && candidateMode != "initiator") {
+                    continue;
+                }
+                bridgeInterface->addBridge(index, candidate);
+                index++;
+            }
         }
-    }
-    else if (modeString == "master" || modeString == "initiator")
-    {
-        busInfInterface_->setBaseAddress(newBusName, startAddr_.toStdString());
-    }
-    else if (modeString == "mirroredSlave" || modeString == "mirroredTarget")
-    {
-        busInfInterface_->setRemapAddress(newBusName, startAddr_.toStdString());
-        busInfInterface_->setRange(newBusName, range_.toStdString());
+        else if (mode == "master" || mode == "initiator") {
+            if (!busInfo.start.isEmpty()) {
+                busInfInterface_->setBaseAddress(name, busInfo.start.toStdString());
+            }
+        }
+        else if (mode == "mirroredSlave" || mode == "mirroredTarget") {
+            if (!busInfo.start.isEmpty()) {
+                busInfInterface_->setRemapAddress(name, busInfo.start.toStdString());
+            }
+            if (!busInfo.range.isEmpty()) {
+                busInfInterface_->setRange(name, busInfo.range.toStdString());
+            }
+        }
     }
 }
 
@@ -665,4 +683,60 @@ void InterconnectGenerator::createChannel()
     channelList->append(channel);
 
     interconComponent_->setChannels(channelList);
+}
+
+void InterconnectGenerator::createGlobalAddressSpaceFromTargets(
+    const QHash<QString, QList<QSharedPointer<TargetData>>>& targets)
+{
+    quint64 lowestStart = UINT64_MAX;
+    quint64 highestEnd = 0;
+
+    for (const auto& targetList : targets) {
+        for (const QSharedPointer<TargetData>& targetData : targetList) {
+            bool okStart = false, okRange = false;
+
+            quint64 start = parseIpxactHex(targetData->start, &okStart);
+            quint64 range = parseIpxactHex(targetData->range, &okRange);
+
+            if (okStart && okRange) {
+                lowestStart = std::min(lowestStart, start);
+                highestEnd = std::max(highestEnd, start + range);
+            }
+        }
+    }
+
+    if (lowestStart == UINT64_MAX || highestEnd == 0) {
+        return;
+    }
+
+    quint64 addrSpaceSize = (highestEnd > lowestStart) ? (highestEnd - lowestStart) : 0;
+
+    QString hexRange = QString::number(addrSpaceSize, 16).rightJustified(4, '0').toUpper();
+    QString ipxactRange = "'h" + hexRange;
+
+    QString addrWidth = QString::number(config_->AddressWidth);
+    globalAddressSpaceName_ = config_->BusType.toStdString() + "_global_space";
+    createAddressSpace(globalAddressSpaceName_, ipxactRange, addrWidth);
+}
+
+quint64 InterconnectGenerator::parseIpxactHex(const QString& str, bool* ok)
+{
+    QString clean = str.trimmed().toUpper();
+
+    if (clean.startsWith("'H")) {
+        clean.remove(0, 2);
+    }
+    else if (clean.startsWith("0X")) {
+        clean.remove(0, 2);
+    }
+
+    return clean.toULongLong(ok, 16);
+}
+
+void InterconnectGenerator::createAddressSpace(std::string spaceName, QString range, QString width)
+{
+    QSharedPointer<AddressSpace> addrSpace = QSharedPointer<AddressSpace>(
+        new AddressSpace(QString::fromStdString(spaceName), range, width));
+
+    interconComponent_->getAddressSpaces()->append(addrSpace);
 }

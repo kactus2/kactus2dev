@@ -36,6 +36,13 @@ struct TargetData {
     QString range;
 };
 
+struct BusInterfaceInfo {
+    std::string name;
+    std::string mode;
+    QString start;
+    QString range;
+};
+
 class KACTUS2_API InterconnectGenerator
 {
 public:
@@ -50,35 +57,46 @@ public:
     void generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
         const QHash<QString, QList<QSharedPointer<TargetData>>>& targets);
 
-    void openDesign(VLNV designVLNV);
-
-    void createInterconComponent(VLNV VLNV);
-
-    void findUnconnectedInterfaces();
-
-    void processInitiatorsAndTargets(
-        const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
-        const QHash<QString, QList<QSharedPointer<TargetData>>>& targets);
-
-    void createBusInterface(std::string busName, std::string modeString, int index);
-
-    std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
-
-    void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
-
-    void createPhysPorts(QSharedPointer<Component> comp, QString busName);
-
-    void createRstorClkInterface(std::string busName, int index);
-
-    void customizeBasedOnInterfaceMode(std::string newBusName, std::string modeString);
-
     //! No copying. No assignment.
     InterconnectGenerator(const InterconnectGenerator& other) = delete;
     InterconnectGenerator& operator=(const InterconnectGenerator& other) = delete;
 
 private:
 
-    std::string getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool useChannel);
+    void openDesign(VLNV designVLNV);
+
+    void createInterconComponent(VLNV VLNV);
+
+    void findUnconnectedInterfaces();
+
+    void createBusInterface(std::string busName, std::string modeString, int index);
+
+    std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
+
+    void createRstorClkInterface(std::string busName, int index);
+
+    void finalizeBusInterfaceCustomization(const std::vector<BusInterfaceInfo>& createdBuses);
+
+    void processStartingPointsAndEndpoints(
+        const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
+        const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints);
+
+    std::vector<BusInterfaceInfo> processEndpointSide(
+        const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints, int& index);
+
+    std::vector<BusInterfaceInfo> processStartingSide(
+        const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints, int& index);
+
+    BusInterfaceInfo createInterfaceForBus(
+        const QString& instanceName, const QSharedPointer<BusInterface>& bus,
+        bool isTop, bool isEndpoint, int& index);
+
+    QSharedPointer<ConfigurableVLNVReference> resolveComponentVLNV(
+        const QString& instanceName, bool isTop) const;
+
+    std::string getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool useChannel, bool isTop);
+
+    bool isTargetInterface(const QSharedPointer<BusInterface>& bus) const;
 
     quint64 parseIpxactHex(const QString& str, bool* ok);
 
@@ -93,6 +111,12 @@ private:
     std::pair<QString, QString> getMirroredWidthBounds(const QString& physicalName) const;
 
     void createChannel();
+
+    void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
+
+    void createPhysPorts(QSharedPointer<Component> comp, QString busName);
+
+
 
     //! Message handler.
     MessageMediator* messager_{ nullptr };
