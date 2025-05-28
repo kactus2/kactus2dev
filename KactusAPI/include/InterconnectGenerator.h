@@ -114,8 +114,7 @@ private:
 
     void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
 
-    void createPhysPorts(QSharedPointer<Component> comp, QString busName);
-
+    void createPhysPorts(QSharedPointer<Component> comp, QString busName, bool isTop = false);
 
 
     //! Message handler.

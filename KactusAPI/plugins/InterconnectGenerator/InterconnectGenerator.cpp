@@ -206,7 +206,7 @@ void InterconnectGenerator::processStartingPointsAndEndpoints(
     createdBuses.insert(createdBuses.end(), busesFromEndpoints.begin(), busesFromEndpoints.end());
     createdBuses.insert(createdBuses.end(), busesFromStarting.begin(), busesFromStarting.end());
 
-    finalizeBusInterfaceCustomization(createdBuses);
+    //finalizeBusInterfaceCustomization(createdBuses);
 
     if (!config_->RstVLNV.isEmpty()) createRstorClkInterface("rst", index++);
     if (!config_->ClkVLNV.isEmpty()) createRstorClkInterface("clk", index++);
@@ -230,8 +230,6 @@ std::vector<BusInterfaceInfo> InterconnectGenerator::processEndpointSide(
 
         for (const QSharedPointer<TargetData>& data : it.value()) {
             QSharedPointer<BusInterface> bus = data->targetBus;
-            startAddr_ = data->start;
-            range_ = data->range;
 
             BusInterfaceInfo info = createInterfaceForBus(instanceName, bus, isTop, true, index);
             info.start = data->start;
@@ -239,7 +237,7 @@ std::vector<BusInterfaceInfo> InterconnectGenerator::processEndpointSide(
             results.push_back(info);
 
             createPortMaps(info.mode, bus);
-            createPhysPorts(comp, bus->name());
+            createPhysPorts(comp, bus->name(), isTop);
 
             index++;
         }
@@ -265,11 +263,11 @@ std::vector<BusInterfaceInfo> InterconnectGenerator::processStartingSide(
         QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
 
         for (const QSharedPointer<BusInterface>& bus : it.value()) {
-            BusInterfaceInfo info = createInterfaceForBus(instanceName, bus, isTop, true, index);
+            BusInterfaceInfo info = createInterfaceForBus(instanceName, bus, isTop, false, index);
             results.push_back(info);
             
             createPortMaps(info.mode, bus);
-            createPhysPorts(comp, bus->name());
+            createPhysPorts(comp, bus->name(), isTop);
 
             index++;
         }
@@ -288,7 +286,7 @@ BusInterfaceInfo InterconnectGenerator::createInterfaceForBus(
     bool isTarget = isTargetInterface(bus);
     std::string mode = getInterfaceMode(bus, isTarget, config_->isChannel, isTop);
     std::string newName = createBusInterface(busVLNV, busName.toUpper().toStdString(), mode, index);
-
+    
     if (!globalAddressSpaceName_.empty() && isEndpoint && isTarget) 
     {
         busInfInterface_->setAddressSpaceReference(newName, globalAddressSpaceName_);
@@ -305,6 +303,7 @@ BusInterfaceInfo InterconnectGenerator::createInterfaceForBus(
             instanceName.toStdString(), busName.toStdString(),
             interconComponent_->getVlnv().getName().toStdString(), newName);
     }
+    
     return { newName, mode };
 }
 
@@ -462,52 +461,56 @@ void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointe
 
     if (absTypeInf_->setupAbstractionTypeForPortMapInterface(0)) {
         PortMapInterface* portMapInf = absTypeInf_->getPortMapInterface();
-
         std::vector<std::string> logicalPortNames = portMapInf->
             getLogicalPortInterface()->getItemNamesWithModeAndGroup(modeString, "");
         QList<QSharedPointer<PortMap> > portMaps = busInf->getPortMapsForView("");
-
-        for (int index = 0; index < portMaps.size(); index++)
+        for (int i = 0; i < portMaps.size(); i++)
         {
+            QSharedPointer<PortMap> portMap = portMaps.at(i);
+            if (!portMap || !portMap->getLogicalPort() || !portMap->getPhysicalPort())
+            {
+                continue;
+            }
 
             for (std::string logicalName : logicalPortNames)
             {
-                std::string portMapName = portMaps.at(index)->getLogicalPort()->name_.toStdString();
-
+                std::string portMapName = portMap->getLogicalPort()->name_.toStdString();
+                    
                 if (logicalName == portMapName)
                 {
-                    QSharedPointer<PortMap> portMap = portMaps.at(index);
                     std::string newName = prefix_ + portMap->getPhysicalPort()->name_.toStdString();
 
                     QSharedPointer<PartSelect> partSelect = portMap->getPhysicalPort()->partSelect_;
                     QSharedPointer<Range> range = portMap->getLogicalPort()->range_;
+                    int portMapIndex = portMapInf->itemCount();
+                        
+                    portMapInf->addPortMap(portMapIndex);
 
-                    portMapInf->addPortMap(index);
-
-                    portMapInf->setPhysicalPort(index, newName);
+                    portMapInf->setPhysicalPort(portMapIndex, newName);
 
                     if (partSelect != nullptr)
                     {
-                        portMapInf->setPhysicalLeftBound(index, partSelect->getLeftRange().toStdString());
-                        portMapInf->setPhysicalRightBound(index, partSelect->getRightRange().toStdString());
+                        portMapInf->setPhysicalLeftBound(portMapIndex, partSelect->getLeftRange().toStdString());
+                        portMapInf->setPhysicalRightBound(portMapIndex, partSelect->getRightRange().toStdString());
                     }
 
-                    portMapInf->setLogicalPort(index, logicalName);
+                    portMapInf->setLogicalPort(portMapIndex, logicalName);
 
                     if (range != nullptr)
                     {
-                        portMapInf->setLogicalLeftBound(index, range->getLeft().toStdString());
-                        portMapInf->setLogicalRightBound(index, range->getRight().toStdString());
+                        portMapInf->setLogicalLeftBound(portMapIndex, range->getLeft().toStdString());
+                        portMapInf->setLogicalRightBound(portMapIndex, range->getRight().toStdString());
                     }
+                        
                     break;
                 }
-            }
+                }
         }
     }
     messager_->showMessage("All port maps created");
 }
 
-void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QString busName)
+void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QString busName, bool isTop)
 {
     messager_->showMessage("Populating model with ports");
 
@@ -538,8 +541,15 @@ void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QStr
 
         QSharedPointer<Port> newPort(new Port(*port));
         newPort->setName(QString::fromStdString(prefix_) + newPort->name());
-
-        DirectionTypes::Direction newDir = DirectionTypes::convert2Mirrored(newPort->getDirection());
+        DirectionTypes::Direction newDir;
+        if (isTop) 
+        {
+            newDir = newPort->getDirection();
+        }
+        else 
+        {
+            newDir = DirectionTypes::convert2Mirrored(newPort->getDirection());
+        }
         newPort->setDirection(newDir);
         newPort->setLeftBound(leftBound);
         newPort->setRightBound(rightBound);
@@ -556,7 +566,7 @@ std::string InterconnectGenerator::getLogicalPortName(
     auto portMaps = comp->getBusInterface(busName)->getPortMapsForView("");
     for (const auto& map : portMaps)
     {
-        if (map->getPhysicalPort()->name_ == physicalName)
+        if (map->getPhysicalPort() && map->getPhysicalPort()->name_ == physicalName)
         {
             return map->getLogicalPort()->name_.toStdString();
         }
