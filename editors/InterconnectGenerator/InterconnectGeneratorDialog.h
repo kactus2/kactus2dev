@@ -78,18 +78,18 @@ public:
     ConfigStruct* getConfig();
 
     /*!
-     *  Get selected initiator interfaces.
+     *  Get selected starting point interfaces.
      *
      *  @return QHash containing instance name as key and bus interfaces as values.
      */
     QHash<QString, QList<QSharedPointer<BusInterface>>> getSelectedStartingPoints();
 
     /*!
-     *  Get selected target interfaces.
+     *  Get selected endpoint interfaces.
      *
      *  @return QHash containing instance name as key and bus interfaces as values.
      */
-    QHash<QString, QList<QSharedPointer<TargetData>>> getSelectedEndpoints();
+    QHash<QString, QList<QSharedPointer<EndpointData>>> getSelectedEndpoints();
 
 protected:
 
@@ -108,16 +108,16 @@ private:
     QWidget* createTopConfigSection();
 
     /*!
-     *  Create the UI section for listing and managing initiator interfaces.
+     *  Create the UI section for listing and managing starting point interfaces.
      *
-     *  @return Pointer to the created QGroupBox containing initiator controls.
+     *  @return Pointer to the created QGroupBox containing starting point controls.
      */
     QGroupBox* createStartingPointsSection();
 
     /*!
-     *  Create the UI section for listing and managing target interfaces.
+     *  Create the UI section for listing and managing endpoint interfaces.
      *
-     *  @return Pointer to the created QGroupBox containing target controls.
+     *  @return Pointer to the created QGroupBox containing endpoint controls.
      */
     QGroupBox* createEndpointsSection();
 
@@ -169,7 +169,7 @@ private:
      *  Update the instance name combo box with available instance names.
      *
      *  @param [in,out]  nameCombo            Combo box to update.
-     *  @param [in]      instanceType         Type of instance (initiator or target).
+     *  @param [in]      instanceType         Type of instance (starting point or endpoint).
      *  @param [in,out]  availableInstances   List of instances to populate into the combo box.
      */
     void updateNameCombo(QComboBox* nameCombo, const QString& instanceType, QStringList& availableInstances);
@@ -178,13 +178,13 @@ private:
      *  Handle logic triggered when a new instance is selected from the list.
      *
      *  @param [in] instanceName     Name of the selected instance.
-     *  @param [in] type             Type of instance (initiator or target).
+     *  @param [in] type             Type of instance (starting point or endpoint).
      *  @param [in] interfaceEditor  Editor to update with instance-specific data.
      */
     void onInstanceSelected(const QString& instanceName, const QString& type, InterfaceEnumEditor* interfaceEditor);
 
     /*!
-     *  Clear all entries from both the initiator and target lists.
+     *  Clear all entries from both the starting and endpoint lists.
      */
     void clearConnectionsLists();
 
@@ -214,17 +214,17 @@ private:
     /*!
      *  Add a new instance of the given type to the instance list.
      *
-     *  @param [in] type  Type of instance to add (initiator or target).
+     *  @param [in] type  Type of instance to add (starting point or endpoint).
      */
     void addNewInstance(const QString& type);
 
     /*!
-     *  Add a new initiator interface to the list.
+     *  Add a new starting point interface to the list.
      */
     void addNewStartingPoint();
 
     /*!
-     *  Add a new target interface to the list.
+     *  Add a new endpoint interface to the list.
      */
     void addNewEndpoint();
 
@@ -330,7 +330,7 @@ private:
     QHash<QString, QList<QSharedPointer<BusInterface>>> selectedStartingPoints_;
 
     //! Map of selected target interfaces and related metadata, grouped by instance name.
-    QHash<QString, QList<QSharedPointer<TargetData>>> selectedEndpoints_;
+    QHash<QString, QList<QSharedPointer<EndpointData>>> selectedEndpoints_;
 };
 
 #endif // INTERCONNECTGENERATORDIALOG_H

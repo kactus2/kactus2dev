@@ -68,9 +68,9 @@ void InterconnectAddressHelper::reset() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectAddressHelper::getTargetAddressRange()
+// Function: InterconnectAddressHelper::getEndpointAddressRange()
 //-----------------------------------------------------------------------------
-bool InterconnectAddressHelper::getTargetAddressRange(const QString& instanceName,
+bool InterconnectAddressHelper::getEndpointAddressRange(const QString& instanceName,
     const QString& interfaceName,
     quint64& outStart,
     quint64& outRange)
@@ -204,9 +204,9 @@ bool InterconnectAddressHelper::assignAddressRange(const QString& instanceName, 
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectAddressHelper::releaseTargetAddress()
+// Function: InterconnectAddressHelper::releaseEndpointAddress()
 //-----------------------------------------------------------------------------
-void InterconnectAddressHelper::releaseTargetAddress(const QString& instanceName) {
+void InterconnectAddressHelper::releaseEndpointAddress(const QString& instanceName) {
     if (!usedAddressRanges_.contains(instanceName)) return;
 
     auto released = usedAddressRanges_.take(instanceName);

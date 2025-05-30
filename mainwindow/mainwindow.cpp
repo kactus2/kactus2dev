@@ -2612,7 +2612,6 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
 
 void MainWindow::onInterconnectGenerate()
 {
-    LibraryInterface* lib = KactusAPI::getLibrary();
     TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
     if (!doc || doc->isProtected())
@@ -2624,12 +2623,12 @@ void MainWindow::onInterconnectGenerate()
     InterconnectGeneratorDialog interconnectDialog(designWidget, libraryHandler_, messageChannel_, this);
     if (interconnectDialog.exec() == QDialog::Accepted) {
         ConfigStruct* config = interconnectDialog.getConfig();
-        QHash<QString, QList<QSharedPointer<BusInterface > > > initiators = interconnectDialog.getSelectedStartingPoints();
-        QHash<QString, QList<QSharedPointer<TargetData > > > targets = interconnectDialog.getSelectedEndpoints();
+        QHash<QString, QList<QSharedPointer<BusInterface > > > startingPoints = interconnectDialog.getSelectedStartingPoints();
+        QHash<QString, QList<QSharedPointer<EndpointData > > > endPoints = interconnectDialog.getSelectedEndpoints();
 
         LibraryInterface* lib = KactusAPI::getLibrary();
         InterconnectGenerator interconGen = InterconnectGenerator(lib, messageChannel_);
-        interconGen.generate(config, initiators, targets);
+        interconGen.generate(config, startingPoints, endPoints);
         doc->refresh();
     }
 }

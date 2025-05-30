@@ -30,8 +30,8 @@
 #include <QHash>
 #include <QString>
 
-struct TargetData {
-    QSharedPointer<BusInterface> targetBus;
+struct EndpointData {
+    QSharedPointer<BusInterface> endpointBus;
     QString start;
     QString range;
 };
@@ -54,8 +54,8 @@ public:
 
     VLNV generate();
 
-    void generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
-        const QHash<QString, QList<QSharedPointer<TargetData>>>& targets);
+    void generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
+        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endPoints);
 
     //! No copying. No assignment.
     InterconnectGenerator(const InterconnectGenerator& other) = delete;
@@ -79,10 +79,10 @@ private:
 
     void processStartingPointsAndEndpoints(
         const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
-        const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints);
+        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints);
 
     std::vector<BusInterfaceInfo> processEndpointSide(
-        const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints, int& index);
+        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints, int& index);
 
     std::vector<BusInterfaceInfo> processStartingSide(
         const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints, int& index);
@@ -102,7 +102,7 @@ private:
 
     void createAddressSpace(std::string busName, QString range, QString width = "32");
 
-    void createGlobalAddressSpaceFromTargets(const QHash<QString, QList<QSharedPointer<TargetData>>>& targets);
+    void createGlobalAddressSpaceFromEndpoints(const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints);
 
     std::string getLogicalPortName(QSharedPointer<Component> comp, QString busName, QString physicalName) const;
 
@@ -187,11 +187,6 @@ private:
     QString clkPort_;
 
     QString rstPort_;
-
-    QString startAddr_;
-
-    QString range_;
-
 };
 
 #endif // INTERCONNECTGENERATOR_H

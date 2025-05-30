@@ -194,7 +194,7 @@ void InterconnectDataModel::filterValidAbstractionReferences()
 
 bool InterconnectDataModel::isModeValidForAllConnections(
     const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
-    const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints,
+    const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints,
     InterconnectType mode) const
 {
     auto instanceBusesLookup = createInstanceBusesLookup();
@@ -220,7 +220,7 @@ bool InterconnectDataModel::isModeValidForAllConnections(
                     EntityType::Instance;
 
                 for (const auto& targetData : jt.value()) {
-                    QSharedPointer<BusInterface> targetBus = targetData->targetBus;
+                    QSharedPointer<BusInterface> targetBus = targetData->endpointBus;
                     General::InterfaceMode targetMode = normalizeTo2014(targetBus->getInterfaceMode());
 
                     bool valid = false;
@@ -358,25 +358,6 @@ QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> InterconnectDataMod
     }
 
     return lookup;
-}
-
-QString InterconnectDataModel::toString(General::InterfaceMode mode) const
-{
-    switch (mode)
-    {
-    case General::MASTER: return "MASTER";
-    case General::SLAVE: return "SLAVE";
-    case General::INITIATOR: return "INITIATOR";
-    case General::TARGET: return "TARGET";
-    case General::SYSTEM: return "SYSTEM";
-    case General::MIRRORED_MASTER: return "MIRRORED_MASTER";
-    case General::MIRRORED_SLAVE: return "MIRRORED_SLAVE";
-    case General::MIRRORED_INITIATOR: return "MIRRORED_INITIATOR";
-    case General::MIRRORED_TARGET: return "MIRRORED_TARGET";
-    case General::MIRRORED_SYSTEM: return "MIRRORED_SYSTEM";
-    case General::MONITOR: return "MONITOR";
-    default: return "UNKNOWN_MODE";
-    }
 }
 
 uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed)

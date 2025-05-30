@@ -62,7 +62,7 @@ public:
 
     bool isModeValidForAllConnections(
         const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
-        const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints,
+        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints,
         InterconnectType mode) const;
 
 private:
@@ -71,7 +71,6 @@ private:
     void getBusesFromTopComponent();
     void getAbstractionDefinitions(QSharedPointer<BusInterface> bus);
     void filterValidAbstractionReferences();
-    QString toString(General::InterfaceMode mode) const;
 
     DesignWidget* designWidget_;
     LibraryHandler* library_;

@@ -19,7 +19,7 @@ InterfaceEnumEditor::InterfaceEnumEditor(QWidget* parent) : QFrame(parent) {
     mainLayout_->addWidget(scrollArea_);
 }
 
-void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget, const QString& instanceName) {
+void InterfaceEnumEditor::addItems(const QStringList& items, bool isEndpoint, const QString& instanceName) {
     QList<QCheckBox*> checkBoxes;
     int maxCheckBoxWidth = 0;
 
@@ -41,9 +41,8 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget, cons
         QLabel* startLabel = nullptr;
         QLabel* rangeLabel = nullptr;
 
-        if (isTarget) 
+        if (isEndpoint)
         {
-            // Handle target-specific fields
             startLabel = new QLabel("Start:");
             rangeLabel = new QLabel("Range:");
             startEdit = new QLineEdit();
@@ -56,10 +55,10 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget, cons
 
             connect(checkBox, &QCheckBox::toggled, this, [=](bool checked) {
                 if (checked) {
-                    emit targetInterfaceChecked(checkBox->text(), instanceName);
+                    emit endpointInterfaceChecked(checkBox->text(), instanceName);
                 }
                 else {
-                    emit targetInterfaceUnchecked(checkBox->text(), instanceName);
+                    emit endpointInterfaceUnchecked(checkBox->text(), instanceName);
                 }
                 });
         }
@@ -67,10 +66,10 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isTarget, cons
         {
             connect(checkBox, &QCheckBox::toggled, this, [=](bool checked) {
                 if (checked) {
-                    emit initiatorInterfaceChecked(checkBox->text(), instanceName);
+                    emit startingPointInterfaceChecked(checkBox->text(), instanceName);
                 }
                 else {
-                    emit initiatorInterfaceUnchecked(checkBox->text(), instanceName);
+                    emit startingPointInterfaceUnchecked(checkBox->text(), instanceName);
                 }
                 });
         }
@@ -91,7 +90,7 @@ void InterfaceEnumEditor::clearAll() {
     interfaceItems_.clear();
 }
 
-QStringList InterfaceEnumEditor::getSelectedInitiatorInterfaces() const {
+QStringList InterfaceEnumEditor::getSelectedStartingPointInterfaces() const {
     QStringList selectedInitiators;
 
     for (const InterfaceItem& item : interfaceItems_) {
@@ -102,12 +101,12 @@ QStringList InterfaceEnumEditor::getSelectedInitiatorInterfaces() const {
     return selectedInitiators;
 }
 
-QList<TargetInterfaceData> InterfaceEnumEditor::getSelectedTargetInterfaces() const {
-    QList<TargetInterfaceData> selectedTargets;
+QList<EndpointInterfaceData> InterfaceEnumEditor::getSelectedEndpointInterfaces() const {
+    QList<EndpointInterfaceData> selectedTargets;
 
     for (const InterfaceItem& item : interfaceItems_) {
         if (item.checkBox->isChecked() && item.startEdit && item.rangeEdit) {
-            TargetInterfaceData data;
+            EndpointInterfaceData data;
             data.name = item.checkBox->text();
             data.startValue = item.startEdit->text();
             data.range = item.rangeEdit->text();
@@ -117,7 +116,7 @@ QList<TargetInterfaceData> InterfaceEnumEditor::getSelectedTargetInterfaces() co
     return selectedTargets;
 }
 
-void InterfaceEnumEditor::setTargetInterfaceValues(const QString& interfaceName, quint64 start, quint64 range) {
+void InterfaceEnumEditor::setEndpointInterfaceValues(const QString& interfaceName, quint64 start, quint64 range) {
     auto formatToIpxactHex = [](quint64 value, int minDigits = 4) -> QString {
         return "'h" + QString::number(value, 16).rightJustified(minDigits, '0').toUpper();
         };
@@ -131,7 +130,7 @@ void InterfaceEnumEditor::setTargetInterfaceValues(const QString& interfaceName,
     }
 }
 
-void InterfaceEnumEditor::clearTargetInterfaceValues(const QString& interfaceName) {
+void InterfaceEnumEditor::clearEndpointInterfaceValues(const QString& interfaceName) {
     for (InterfaceItem& item : interfaceItems_) {
         if (item.checkBox->text() == interfaceName && item.startEdit && item.rangeEdit) {
             item.startEdit->clear();

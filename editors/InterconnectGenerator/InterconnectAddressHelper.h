@@ -65,7 +65,7 @@ public:
      *
      *  @return True if an address range could be resolved and assigned.
      */
-    bool getTargetAddressRange(const QString& instanceName,
+    bool getEndpointAddressRange(const QString& instanceName,
         const QString& interfaceName,
         quint64& outStart,
         quint64& outRange);
@@ -75,7 +75,7 @@ public:
      *
      *  @param [in] instanceName  The instance whose range to release.
      */
-    void releaseTargetAddress(const QString& instanceName);
+    void releaseEndpointAddress(const QString& instanceName);
 
     /*!
      *  Reset all allocated and free address tracking state.

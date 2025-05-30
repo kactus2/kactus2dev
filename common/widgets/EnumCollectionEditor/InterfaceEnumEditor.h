@@ -19,7 +19,7 @@ struct InterfaceItem {
     QLineEdit* rangeEdit;
 };
 
-struct TargetInterfaceData {
+struct EndpointInterfaceData {
     QString name;
     QString startValue; 
     QString range;
@@ -33,23 +33,23 @@ public:
 
     virtual ~InterfaceEnumEditor() = default;
 
-    QStringList getSelectedInitiatorInterfaces() const;
+    QStringList getSelectedStartingPointInterfaces() const;
 
-    QList<TargetInterfaceData> getSelectedTargetInterfaces() const;
+    QList<EndpointInterfaceData> getSelectedEndpointInterfaces() const;
 
     void addItems(const QStringList& items, bool isTarget, const QString& instanceName);
 
-    void setTargetInterfaceValues(const QString& interfaceName, quint64 start, quint64 range);
+    void setEndpointInterfaceValues(const QString& interfaceName, quint64 start, quint64 range);
 
-    void clearTargetInterfaceValues(const QString& interfaceName);
+    void clearEndpointInterfaceValues(const QString& interfaceName);
 
     void clearAll();
 
 signals:
-    void targetInterfaceChecked(const QString& interfaceName, const QString& instanceName);
-    void targetInterfaceUnchecked(const QString& interfaceName, const QString& instanceName);
-    void initiatorInterfaceChecked(const QString& interfaceName, const QString& instanceName);
-    void initiatorInterfaceUnchecked(const QString& interfaceName, const QString& instanceName);
+    void endpointInterfaceChecked(const QString& interfaceName, const QString& instanceName);
+    void endpointInterfaceUnchecked(const QString& interfaceName, const QString& instanceName);
+    void startingPointInterfaceChecked(const QString& interfaceName, const QString& instanceName);
+    void startingPointInterfaceUnchecked(const QString& interfaceName, const QString& instanceName);
 
 private:
     QVBoxLayout* mainLayout_;

@@ -43,8 +43,8 @@ VLNV InterconnectGenerator::generate()
     return interconVLNV;
 }
 
-void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
-    const QHash<QString, QList<QSharedPointer<TargetData>>>& targets)
+void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
+    const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints)
 {
     config_ = config;
 
@@ -56,7 +56,7 @@ void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, 
     clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->ClkVLNV);
     openDesign(designVLNV);
     createInterconComponent(interconVLNV);
-    processStartingPointsAndEndpoints(initiators, targets);
+    processStartingPointsAndEndpoints(startingPoints, endpoints);
 
     if (config_->isChannel)
     {
@@ -188,14 +188,13 @@ void InterconnectGenerator::findUnconnectedInterfaces()
 
 void InterconnectGenerator::processStartingPointsAndEndpoints(
     const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
-    const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints)
+    const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints)
 {
     messager_->showMessage("Processing starting points and endpoints...");
-    messager_->showMessage(QString("starting points size: %1").arg(startingPoints.size()));
     int index = 0;
 
     if (!config_->isChannel) {
-        createGlobalAddressSpaceFromTargets(endpoints);
+        createGlobalAddressSpaceFromEndpoints(endpoints);
     }
 
     std::vector<BusInterfaceInfo> createdBuses;
@@ -206,14 +205,14 @@ void InterconnectGenerator::processStartingPointsAndEndpoints(
     createdBuses.insert(createdBuses.end(), busesFromEndpoints.begin(), busesFromEndpoints.end());
     createdBuses.insert(createdBuses.end(), busesFromStarting.begin(), busesFromStarting.end());
 
-    //finalizeBusInterfaceCustomization(createdBuses);
+    finalizeBusInterfaceCustomization(createdBuses);
 
     if (!config_->RstVLNV.isEmpty()) createRstorClkInterface("rst", index++);
     if (!config_->ClkVLNV.isEmpty()) createRstorClkInterface("clk", index++);
 }
 
 std::vector<BusInterfaceInfo> InterconnectGenerator::processEndpointSide(
-    const QHash<QString, QList<QSharedPointer<TargetData>>>& endpoints, int& index)
+    const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints, int& index)
 {
     std::vector<BusInterfaceInfo> results;
     VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
@@ -228,8 +227,8 @@ std::vector<BusInterfaceInfo> InterconnectGenerator::processEndpointSide(
         QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
         QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
 
-        for (const QSharedPointer<TargetData>& data : it.value()) {
-            QSharedPointer<BusInterface> bus = data->targetBus;
+        for (const QSharedPointer<EndpointData>& data : it.value()) {
+            QSharedPointer<BusInterface> bus = data->endpointBus;
 
             BusInterfaceInfo info = createInterfaceForBus(instanceName, bus, isTop, true, index);
             info.start = data->start;
@@ -541,6 +540,7 @@ void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QStr
 
         QSharedPointer<Port> newPort(new Port(*port));
         newPort->setName(QString::fromStdString(prefix_) + newPort->name());
+
         DirectionTypes::Direction newDir;
         if (isTop) 
         {
@@ -695,18 +695,18 @@ void InterconnectGenerator::createChannel()
     interconComponent_->setChannels(channelList);
 }
 
-void InterconnectGenerator::createGlobalAddressSpaceFromTargets(
-    const QHash<QString, QList<QSharedPointer<TargetData>>>& targets)
+void InterconnectGenerator::createGlobalAddressSpaceFromEndpoints(
+    const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints)
 {
     quint64 lowestStart = UINT64_MAX;
     quint64 highestEnd = 0;
 
-    for (const auto& targetList : targets) {
-        for (const QSharedPointer<TargetData>& targetData : targetList) {
+    for (const auto& endpointList : endpoints) {
+        for (const QSharedPointer<EndpointData>& endpointData : endpointList) {
             bool okStart = false, okRange = false;
 
-            quint64 start = parseIpxactHex(targetData->start, &okStart);
-            quint64 range = parseIpxactHex(targetData->range, &okRange);
+            quint64 start = parseIpxactHex(endpointData->start, &okStart);
+            quint64 range = parseIpxactHex(endpointData->range, &okRange);
 
             if (okStart && okRange) {
                 lowestStart = std::min(lowestStart, start);
