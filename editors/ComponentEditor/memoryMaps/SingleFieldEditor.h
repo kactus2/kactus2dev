@@ -198,6 +198,12 @@ private slots:
      */
     void onDimensionEdited();
 
+    /*!
+     *	Sets the edited bit stride value for the field.
+     */
+    void onBitStrideEdited();
+
+
 private:
 	
 	//! No copying. No assignment.
@@ -297,6 +303,9 @@ private:
     
     //! The dimension editor.
     ExpressionEditor* dimensionEditor_;
+
+    //! The bit stride editor.
+    ExpressionEditor* bitStrideEditor_;
 
     //! Name of the edited field.
     std::string fieldName_;

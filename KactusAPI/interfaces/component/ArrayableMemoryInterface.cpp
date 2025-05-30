@@ -76,3 +76,56 @@ bool ArrayableMemoryInterface::setDimension(std::string const& memoryName, std::
 
     return false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemoryInterface::getStrideValue()
+//-----------------------------------------------------------------------------
+std::string ArrayableMemoryInterface::getStrideValue(std::string const& memoryName, int const& baseNumber /*= 0*/) const
+{
+    if (auto selectedMemory = getItem(memoryName).dynamicCast<ArrayableMemory>())
+    {
+        return parseExpressionToBaseNumber(selectedMemory->getStride(), baseNumber).toStdString();
+    }
+
+    return std::string();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemoryInterface::getStrideFormattedExpression()
+//-----------------------------------------------------------------------------
+std::string ArrayableMemoryInterface::getStrideFormattedExpression(std::string const& memoryName) const
+{
+    if (auto selectedMemory = getItem(memoryName).dynamicCast<ArrayableMemory>())
+    {
+        return formattedValueFor(selectedMemory->getStride()).toStdString();
+    }
+
+    return std::string();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemoryInterface::getStrideExpression()
+//-----------------------------------------------------------------------------
+std::string ArrayableMemoryInterface::getStrideExpression(std::string const& memoryName) const
+{
+    if (auto selectedMemory = getItem(memoryName).dynamicCast<ArrayableMemory>())
+    {
+        return selectedMemory->getStride().toStdString();
+    }
+
+    return std::string();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemoryInterface::setStride()
+//-----------------------------------------------------------------------------
+bool ArrayableMemoryInterface::setStride(std::string const& memoryName, std::string const& newStride)
+{
+    if (auto selectedMemory = getItem(memoryName).dynamicCast<ArrayableMemory>())
+    {
+        selectedMemory->setStride(QString::fromStdString(newStride));
+        return true;
+    }
+
+    return false;
+}

@@ -74,6 +74,35 @@ public:
      */
     bool setDimension(std::string const& memoryName, std::string const& newDimension);
 
+    /*!
+     *  Get the calculated stride value of the selected memory.
+     *
+     *    @param [in] memoryName    Name of the selected memory.
+     *    @param [in] baseNumber    Base for displaying the value.
+     *
+     *    @return Calculated stride value of the selected memory.
+     */
+    std::string getStrideValue(std::string const& memoryName, int const& baseNumber = 0) const;
+
+    /*!
+     *  Get the formatted stride expression of the selected memory.
+     *
+     *    @param [in] memoryName    Name of the selected memory.
+     *
+     *    @return Formatted stride expression of the selected memory.
+     */
+    std::string getStrideFormattedExpression(std::string const& memoryName) const;
+
+    /*!
+     *  Get the stride expression of the selected memory.
+     *
+     *    @param [in] memoryName    Name of the selected memory.
+     *
+     *    @return Stride expression of the selected memory.
+     */
+    std::string getStrideExpression(std::string const& memoryName) const;
+
+    bool setStride(std::string const& memoryName, std::string const& newStride);
 };
 
 #endif // ARRAYABLEMEMORYINTERFACE_H
