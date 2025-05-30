@@ -2,6 +2,7 @@
 #include "InterconnectDataModel.h"
 
 #include <QMessageBox>
+#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::InterconnectGeneratorDialog()
@@ -603,33 +604,22 @@ void InterconnectGeneratorDialog::accept()
     config->isChannel = isChannel_;
     config->interconnectParams = *interconnectParams_;
 
-    QList<InitStruct> initiators;
-    InitStruct initiator;
+    // Try to find possible address width value from UI parameters
+    for (const auto& param : *interconnectParams_) {
 
-    initiator.Index = 0;
-    initiator.Name = "i_SysCtrl_peripherals";
-    initiator.DataWidth = 32;
+        if (param == nullptr) {
+            continue;
+        }
 
-    initiators.append(initiator);
-
-    QList<AddressPair> addrList;
-    AddressPair addr;
-    addr.Start = "0x00000000";
-    addr.End = "0x0000ffff";
-
-    addrList.append(addr);
-    QList<TargetStruct> targets;
-    TargetStruct target;
-
-    target.Index = 0;
-    target.Name = "core_imem_bridge";
-    target.DataWidth = 32;
-    target.AddressRegions = addrList;
-    
-    targets.append(target);
-
-    config->InitList = initiators;
-    config->TargetList = targets;
+        QString name = param->name().toLower();
+        if ((name.contains("addr") && name.contains("width")) ||
+            name.contains("addrwidth") ||
+            name == "aw" || name == "addr_w") {
+                
+            config->AddressWidth = param->getValue().toInt();
+            break;
+        }
+    }
 
     QString message = QString("Design VLNV: %1\nInterconnect VLNV: %2\nBus VLNV: %3\nClock VLNV: %4\nReset VLNV: %5\nBus Type: %6\nAddress Width: %7\nID Width: %8\n")
         .arg(config->DesignVLNV)
@@ -642,8 +632,9 @@ void InterconnectGeneratorDialog::accept()
         .arg(config->IDWidth);
 
     messager_->showMessage(message);
+    config_ = config; //new
     collectInstances(config);
-    config_ = config;
+    //config_ = config;
     QDialog::accept();
 }
 
@@ -666,6 +657,8 @@ bool InterconnectGeneratorDialog::collectInstances(ConfigStruct* config)
 void InterconnectGeneratorDialog::collectInitiators(
     const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup)
 {
+    QList<InitStruct> initiators;
+
     for (int i = 0; i < initiatorsContainerLayout_->count(); ++i) {
         QLayoutItem* item = initiatorsContainerLayout_->itemAt(i);
         if (QFrame* instanceFrame = qobject_cast<QFrame*>(item->widget())) {
@@ -686,6 +679,31 @@ void InterconnectGeneratorDialog::collectInitiators(
             for (const QString& selectedInterfaceName : selectedInterfaces) {
                 if (busLookup.contains(selectedInterfaceName)) {
                     matchedInterfaces.append(busLookup.value(selectedInterfaceName));
+                                
+                    InitStruct init;
+
+                    init.Index = i;
+                    init.Name = instanceName + "_" + selectedInterfaceName;
+                    init.DataWidth = 32;
+
+                    // Get possible data width value from UI parameters
+                    for (const auto& param : *interconnectParams_) {
+
+                        if (param == nullptr) {
+                            continue;
+                        }
+
+                        QString name = param->name().toLower();
+                        if ((name.contains("data") && name.contains("width")) ||
+                            name.contains("datawidth") ||
+                            name == "dw" || name == "data_w") {
+                                
+                            init.DataWidth = param->getValue().toInt();
+                            break;
+                        }
+                    }
+                    
+                    initiators.append(init);
                 }
             }
             // Add to selectedInitiators_ only if there are matched interfaces
@@ -694,6 +712,8 @@ void InterconnectGeneratorDialog::collectInitiators(
             }
         }
     }
+    config_->InitList.clear();
+    config_->InitList = initiators;
 }
 
 //-----------------------------------------------------------------------------
@@ -702,6 +722,10 @@ void InterconnectGeneratorDialog::collectInitiators(
 void InterconnectGeneratorDialog::collectTargets(
     const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup)
 {
+    QList<AddressPair> addrList;
+
+    QList<TargetStruct> targets;
+
     for (int i = 0; i < targetsContainerLayout_->count(); ++i) {
         QLayoutItem* item = targetsContainerLayout_->itemAt(i);
         if (QFrame* instanceFrame = qobject_cast<QFrame*>(item->widget())) {
@@ -727,6 +751,41 @@ void InterconnectGeneratorDialog::collectTargets(
                     targetData->range = targetInterface.range;
 
                     matchedInterfaces.append(targetData);
+
+                    addrList.clear();
+
+                    AddressPair addr;
+
+                    addr.Start = targetInterface.startValue.isEmpty() ? "<address>" : targetInterface.startValue;
+                    addr.End = targetInterface.range.isEmpty() ? "<address>" : targetInterface.range;
+
+                    addrList.append(addr);
+                    TargetStruct target;
+
+                    target.DataWidth = 32;
+
+                    // Get possible data width value from UI parameters
+                    for (const auto& param : *interconnectParams_) {
+
+                        if (param == nullptr) {
+                            continue;
+                        }
+
+                        QString name = param->name().toLower();
+                        if ((name.contains("data") && name.contains("width")) ||
+                            name.contains("datawidth") ||
+                            name == "dw" || name == "data_w") {
+                                
+                            target.DataWidth = param->getValue().toInt();
+                            break;
+                        }
+                    }
+
+                    target.Index = i;
+                    target.Name = instanceName + "_" + targetInterface.name;
+                    target.AddressRegions = addrList;
+                    
+                    targets.append(target);
                 }
             }
             if (!matchedInterfaces.isEmpty()) {
@@ -734,4 +793,6 @@ void InterconnectGeneratorDialog::collectTargets(
             }
         }
     }
+    config_->TargetList.clear();
+    config_->TargetList = targets;
 }
