@@ -101,8 +101,16 @@ bool RegisterFileValidator::hasValidRegisterData(QSharedPointer<RegisterFile> se
         return true;
     }
 
+    QString correctedAUB = addressUnitBits;
+
+    // Avoid divisions by 0, default AUB to 8 bits
+    if (addressUnitBits.isEmpty())
+    {
+        correctedAUB = QStringLiteral("8");
+    }
+
     bool aubChangeOk = true;
-    quint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toULongLong(&aubChangeOk);
+    quint64 aubInt = expressionParser_->parseExpression(correctedAUB).toULongLong(&aubChangeOk);
     quint64 registerFileRange = expressionParser_->parseExpression(selectedRegisterFile->getRange()).toULongLong();
 
     if (!aubChangeOk || aubInt == 0)
@@ -173,7 +181,7 @@ bool RegisterFileValidator::hasValidRegisterData(QSharedPointer<RegisterFile> se
             return false;   
         }
         else if (QSharedPointer<RegisterFile> asRegisterFile = registerBase.dynamicCast<RegisterFile>();
-            asRegisterFile && !validate(asRegisterFile, addressUnitBits, addressBlockWidth))
+            asRegisterFile && !validate(asRegisterFile, correctedAUB, addressBlockWidth))
         {
             return false;
         }
@@ -264,10 +272,18 @@ void RegisterFileValidator::findErrorsInRegisterData(QVector<QString>& errors,
     QStringList duplicateRegisterNames;
     QStringList duplicateRegisterFileNames;
 
+    QString correctedAUB = addressUnitBits;
+
+    // Avoid divisions by 0, default AUB to 8 bits
+    if (addressUnitBits.isEmpty())
+    {
+        correctedAUB = QStringLiteral("8");
+    }
+
     QMultiHash<QString, QSharedPointer<RegisterBase> > foundNames;
 
     bool aubChangeOk = true;
-    quint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
+    quint64 aubInt = expressionParser_->parseExpression(correctedAUB).toLongLong(&aubChangeOk);
     
     quint64 registerFileRange = expressionParser_->parseExpression(selectedRegisterFile->getRange()).toULongLong();
     registerFileRange = getTrueRegisterFileRange(selectedRegisterFile, registerFileRange);
@@ -280,22 +296,20 @@ void RegisterFileValidator::findErrorsInRegisterData(QVector<QString>& errors,
     MemoryReserve reservedArea;
     setupMemoryAreas(selectedRegisterFile, reservedArea, aubInt);
 
-    if (aubChangeOk && aubInt != 0)
+    for (auto const& reg : *registerData)
     {
-        for (auto const& reg : *registerData)
+        if (auto asRegister = reg.dynamicCast<Register>())
         {
-            if (auto asRegister = reg.dynamicCast<Register>())
-            {
-                findErrorsInChildRegister(errors, asRegister, context, aubInt, 
-                    registerFileRange, addressBlockWidthInt, reservedArea, registerNames, duplicateRegisterNames);
-            }
-            else if (auto asRegisterFile = reg.dynamicCast<RegisterFile>())
-            {
-                findErrorsInChildRegisterFile(errors, asRegisterFile, context, addressUnitBits, 
-                    registerFileRange, addressBlockWidth, reservedArea, registerFileNames, duplicateRegisterFileNames);
-            }
+            findErrorsInChildRegister(errors, asRegister, context, aubInt, 
+                registerFileRange, addressBlockWidthInt, reservedArea, registerNames, duplicateRegisterNames);
+        }
+        else if (auto asRegisterFile = reg.dynamicCast<RegisterFile>())
+        {
+            findErrorsInChildRegisterFile(errors, asRegisterFile, context, correctedAUB, 
+                registerFileRange, addressBlockWidth, reservedArea, registerFileNames, duplicateRegisterFileNames);
         }
     }
+    
     reservedArea.findErrorsInOverlap(errors, QStringLiteral("Register data"), context);
 }
 
@@ -313,12 +327,12 @@ void RegisterFileValidator::findErrorsInAccessPolicies(QStringList& errors,
 //-----------------------------------------------------------------------------
 // Function: RegisterFileValidator::getRegisterSizeInLAU()
 //-----------------------------------------------------------------------------
-qint64 RegisterFileValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, qint64 addressUnitBits) const
+quint64 RegisterFileValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, quint64 addressUnitBits) const
 {
-    qint64 size = expressionParser_->parseExpression(targetRegister->getSize()).toLongLong();
+    quint64 size = expressionParser_->parseExpression(targetRegister->getSize()).toULongLong();
 
     // Round register size up to closest multiple of AUB to get size in least addressable units/AUB.
-    return static_cast<qint64>(std::ceil(size / static_cast<double>(addressUnitBits)));
+    return static_cast<quint64>(std::ceil(size / static_cast<double>(addressUnitBits)));
 }
 
 //-----------------------------------------------------------------------------
@@ -414,7 +428,7 @@ qint64 RegisterFileValidator::getTrueRegisterFileRange(QSharedPointer<RegisterFi
 //-----------------------------------------------------------------------------
 void RegisterFileValidator::setupMemoryAreas(QSharedPointer<RegisterFile> regFile, MemoryReserve& reserve, quint64 addressUnitBits)
 {
-    if (regFile->getIsPresent().isEmpty() == false && expressionParser_->parseExpression(regFile->getIsPresent()).toInt() != 1)
+    if (regFile->getIsPresent().isEmpty() == false && expressionParser_->parseExpression(regFile->getIsPresent()).toInt() != 1 && addressUnitBits != 0)
     {
         return;
     }

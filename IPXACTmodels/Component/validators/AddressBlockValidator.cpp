@@ -152,43 +152,66 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
         return true;
     }
 
-    QMultiHash<QString, QSharedPointer<RegisterBase> > foundNames;
+    QHash<QString, QSharedPointer<RegisterBase> > foundNames;
 
     QStringList typeIdentifiers;
 
+    // Default AUB to 8 if empty
+    QString correctedAUB = addressUnitBits;
+    if (addressUnitBits.isEmpty())
+    {
+        correctedAUB = QStringLiteral("8");
+    }
+
     bool aubChangeOk = true;
-    qint64 aubInt = getExpressionParser()->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
-    qint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toLongLong();
+    quint64 aubUInt = getExpressionParser()->parseExpression(correctedAUB).toULongLong(&aubChangeOk);
+    quint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toULongLong();
+   
+    if (!aubChangeOk || aubUInt == 0)
+    {
+        return false;
+    }
 
-    auto registerDataCopy = QSharedPointer<QList<QSharedPointer<RegisterBase> > >(new QList(*addressBlock->getRegisterData()));
-
+    auto registerData = addressBlock->getRegisterData();
     bool errorFound = false;
 
-    // Sort registers and register files by address offset
-    auto sortByAddressOffset = [&](QSharedPointer<RegisterBase> registerBaseA, QSharedPointer<RegisterBase> registerBaseB)
+    auto markItemInvalid = [this](QSharedPointer<RegisterBase> regBase)
         {
-            return getExpressionParser()->parseExpression(registerBaseA->getAddressOffset()).toLongLong() <
-                getExpressionParser()->parseExpression(registerBaseB->getAddressOffset()).toLongLong();
+            if (auto asReg = regBase.dynamicCast<Register>())
+            {
+                registerValidator_->setChildItemValidity(asReg, false);
+            }
+            else if (auto asRegFile = regBase.dynamicCast<RegisterFile>())
+            {
+                setChildItemValidity(asRegFile, false);
+            }
         };
 
-    std::sort(registerDataCopy->begin(), registerDataCopy->end(), sortByAddressOffset);
-    qint64 lastEndAddress = -1;
 
-    bool lastWasRegister = true;
+    // Create memory areas for AB registers and register files
+    MemoryReserve memReserve;
+    setupMemoryAreas(addressBlock, memReserve, aubUInt);
+
+    // Check memory areas for overlap and containment issues
+    QSet<QString> erroneousAreas;
+    memReserve.checkOverlapAndContainment(erroneousAreas, addressBlockRange);
 
     // Register and register file validity together must be checked before separately
-    for (auto regIter = registerDataCopy->begin(); regIter != registerDataCopy->end(); ++regIter)
+    for (auto regIter = registerData->begin(); regIter != registerData->end(); ++regIter)
     {
-        QSharedPointer<Register> targetRegister = (*regIter).dynamicCast<Register>();
-        if (targetRegister)
+        if (auto targetRegister = (*regIter).dynamicCast<Register>())
         {
             // Mark name as valid, if not found in map.
-            if (!foundNames.contains(targetRegister->name()))
+            if (auto found = foundNames[targetRegister->name()])
             {
-                registerValidator_->setChildItemValidity(targetRegister, true);
+                registerValidator_->setChildItemValidity(targetRegister, false);
+                markItemInvalid(foundNames[targetRegister->name()]);
+                errorFound = true;
             }
-
-            foundNames.insert(targetRegister->name(), targetRegister);
+            else
+            {
+                foundNames.insert(targetRegister->name(), targetRegister);
+            }
 
             if (registerSizeIsNotWithinBlockWidth(targetRegister, addressBlock) ||
                 !hasValidVolatileForRegister(addressBlock, targetRegister) ||
@@ -209,42 +232,41 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
                 }
             }
 
-            if (aubChangeOk && aubInt != 0 &&
-                markRegisterOverlap(regIter, lastEndAddress, addressBlockRange, aubInt, true, lastWasRegister))
+            if (erroneousAreas.contains(targetRegister->name()))
             {
+                registerValidator_->setChildItemValidity(targetRegister, false);
                 errorFound = true;
             }
 
-            lastWasRegister = true;
             typeIdentifiers.append(targetRegister->getTypeIdentifier());
         }
-        else if (QSharedPointer<RegisterFile> targetRegisterFile = (*regIter).dynamicCast<RegisterFile>())
+        else if (auto targetRegisterFile = (*regIter).dynamicCast<RegisterFile>())
         {
-            if (!foundNames.contains(targetRegisterFile->name()))
+            if (auto found = foundNames[targetRegisterFile->name()])
             {
-                registerFileValidator_->setChildItemValidity(targetRegisterFile, true);
+                registerFileValidator_->setChildItemValidity(targetRegisterFile, false);
+                markItemInvalid(foundNames[targetRegisterFile->name()]);
+            }
+            else
+            {
+                foundNames.insert(targetRegisterFile->name(), targetRegisterFile);
             }
 
-            foundNames.insert(targetRegisterFile->name(), targetRegisterFile);
-
-            if (aubChangeOk && aubInt != 0 &&
-                markRegisterOverlap(regIter, lastEndAddress, addressBlockRange, aubInt, false, lastWasRegister))
+            if (erroneousAreas.contains(targetRegisterFile->name()))
             {
+                registerFileValidator_->setChildItemValidity(targetRegisterFile, false);
                 errorFound = true;
             }
-
-            lastWasRegister = false;
         }
     }
 
-    // Mark registers with duplicate names as invalid. Return if any errors were found from any previous check.
-    if (markDuplicateNames(foundNames) || errorFound)
+    if (errorFound)
     {
         return false;
     }
 
     // Validate registers and register files separately
-    for (auto const& registerBase : *registerDataCopy)
+    for (auto const& registerBase : *registerData)
     {
         if (QSharedPointer<Register> asRegister = registerBase.dynamicCast<Register>();
             asRegister && !registerValidator_->validate(asRegister))
@@ -252,7 +274,7 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
             return false;
         }
         else if (QSharedPointer<RegisterFile> asRegisterFile = registerBase.dynamicCast<RegisterFile>();
-            asRegisterFile && !registerFileValidator_->validate(asRegisterFile, addressUnitBits, addressBlock->getWidth()))
+            asRegisterFile && !registerFileValidator_->validate(asRegisterFile, correctedAUB, addressBlock->getWidth()))
         {
             return false;
         }
@@ -267,8 +289,8 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
 bool AddressBlockValidator::registerSizeIsNotWithinBlockWidth(QSharedPointer<Register> targetRegister,
     QSharedPointer<AddressBlock> addressBlock) const
 {
-    int registerSize = getExpressionParser()->parseExpression(targetRegister->getSize()).toInt();
-    int addressBlockWidth = getExpressionParser()->parseExpression(addressBlock->getWidth()).toInt();
+    quint64 registerSize = getExpressionParser()->parseExpression(targetRegister->getSize()).toULongLong();
+    quint64 addressBlockWidth = getExpressionParser()->parseExpression(addressBlock->getWidth()).toULongLong();
 
     return registerSize > addressBlockWidth;
 }
@@ -334,110 +356,6 @@ bool AddressBlockValidator::hasMemoryBlockDataGroupDefined(QSharedPointer<Addres
 {
     return addressBlock->getUsage() != General::USAGE_COUNT || !addressBlock->getVolatile().isEmpty() ||
         !addressBlock->getAccessPolicies()->isEmpty() || !addressBlock->getParameters()->isEmpty();
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::markRegisterOverlap()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::markRegisterOverlap(QList<QSharedPointer<RegisterBase> >::iterator regIter, qint64& lastEndAddress,
-    qint64 addressBlockRange, qint64 addressUnitBits, bool targetIsRegister, bool lastWasRegister)
-{
-    auto targetRegisterBase = *regIter;
-
-    qint64 registerBaseBegin = getExpressionParser()->parseExpression(
-        targetRegisterBase->getAddressOffset()).toLongLong();
-    qint64 registerBaseRangeInt = -1;
-
-    bool errorFound = false;
-
-    if (targetIsRegister)
-    {
-        registerBaseRangeInt = getRegisterSizeInLAU(targetRegisterBase.staticCast<Register>(), addressUnitBits);
-    }
-    else
-    {
-        registerBaseRangeInt = getTrueRegisterFileRange(targetRegisterBase.staticCast<RegisterFile>());
-    }
-
-    qint64 registerBaseEnd = registerBaseBegin + registerBaseRangeInt - 1;
-
-    if (targetRegisterBase->getIsPresent().isEmpty() ||
-        getExpressionParser()->parseExpression(targetRegisterBase->getIsPresent()).toInt())
-    {
-        if (registerBaseBegin <= lastEndAddress && lastEndAddress != -1)
-        {
-            auto prevRegisterBase = *std::prev(regIter);
-
-            if (lastWasRegister)
-            {
-                registerValidator_->setChildItemValidity(prevRegisterBase, false);
-            }
-            else
-            {
-                registerFileValidator_->setChildItemValidity(prevRegisterBase, false);
-            }
-
-
-            if (targetIsRegister)
-            {
-                registerValidator_->setChildItemValidity(targetRegisterBase, false);
-            }
-            else
-            {
-                registerFileValidator_->setChildItemValidity(targetRegisterBase, false);
-            }
-
-            errorFound = true;
-        }
-
-        if (registerBaseEnd > lastEndAddress)
-        {
-            lastEndAddress = registerBaseEnd;
-        }
-    }
-
-    if (registerBaseBegin < 0 || registerBaseBegin + registerBaseRangeInt > addressBlockRange)
-    {
-        targetIsRegister
-            ? registerValidator_->setChildItemValidity(targetRegisterBase, false)
-            : registerFileValidator_->setChildItemValidity(targetRegisterBase, false);
-        errorFound = true;
-    }
-
-    return errorFound;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::markDuplicateNames()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::markDuplicateNames(QMultiHash<QString, QSharedPointer<RegisterBase>> const& foundNames)
-{
-    bool errorFound = false;
-
-    for (auto const& name : foundNames.keys())
-    {
-        if (auto const& duplicateNames = foundNames.values(name);
-            duplicateNames.count() > 1)
-        {
-            std::for_each(duplicateNames.begin(), duplicateNames.end(),
-                [this](QSharedPointer<RegisterBase> registerBase)
-                {
-                    if (auto asRegister = registerBase.dynamicCast<Register>())
-                    {
-                        registerValidator_->setChildItemValidity(asRegister, false);
-                    }
-                    else if (auto asRegisterFile = registerBase.dynamicCast<RegisterFile>())
-                    {
-                        registerFileValidator_->setChildItemValidity(asRegisterFile, false);
-                    }
-                });
-
-            errorFound = true;
-        }
-    }
-
-    return errorFound;
 }
 
 //-----------------------------------------------------------------------------
@@ -580,7 +498,7 @@ bool AddressBlockValidator::hasValidStructure(QSharedPointer<AddressBlock> addre
 // Function: AddressBlockValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void AddressBlockValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-    QString const& addressUnitBits, QString const& context) const
+    QString const& addressUnitBits, QString const& context)
 {    
     QString addressBlockContext = getBlockType() + QStringLiteral(" ") + addressBlock->name();
     findErrorsInName(errors, addressBlock, context);
@@ -672,7 +590,7 @@ void AddressBlockValidator::findErrorsInUsage(QVector<QString>& errors, QSharedP
 // Function: AddressBlockValidator::findErrorsInRegisterData()
 //-----------------------------------------------------------------------------
 void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
-    QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits, QString const& context) const
+    QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits, QString const& context)
 {
     if (addressBlock->getRegisterData()->isEmpty())
     {
@@ -685,15 +603,27 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
     QStringList duplicateRegisterFileNames;
     QStringList typeIdentifiers;
 
-    MemoryReserve reservedArea;
+    QString correctedAUB = addressUnitBits;
+
+    // Avoid divisions by 0, default AUB to 8 bits
+    if (addressUnitBits.isEmpty())
+    {
+        correctedAUB = QStringLiteral("8");
+    }
+
     bool aubChangeOk = true;
-    qint64 aubInt = getExpressionParser()->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
-    qint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toLongLong();
+    quint64 aubUInt = getExpressionParser()->parseExpression(correctedAUB).toULongLong(&aubChangeOk);
+    quint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toULongLong();
+
+    if (!aubChangeOk)
+        return;
+
+    MemoryReserve reservedArea;
+    setupMemoryAreas(addressBlock, reservedArea, aubUInt);
 
     for (QSharedPointer<RegisterBase> const& registerData : *addressBlock->getRegisterData())
     {
-        QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
-        if (targetRegister)
+        if (auto targetRegister = registerData.dynamicCast<Register>())
         {
             if (registerNames.contains(targetRegister->name()) &&
                 !duplicateRegisterNames.contains(targetRegister->name()))
@@ -744,27 +674,8 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                     .arg(AccessTypes::access2Str(addressBlock->getAccess())));
             }
 
-            if (aubChangeOk && aubInt != 0)
-            {
-                qint64 registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
-
-                qint64 registerBegin =
-                    getExpressionParser()->parseExpression(targetRegister->getAddressOffset()).toLongLong();
-
-                qint64 registerEnd = registerBegin + registerSize - 1;
-
-                if(targetRegister->getIsPresent().isEmpty() ||
-                    getExpressionParser()->parseExpression(targetRegister->getIsPresent()).toInt())
-                {
-                    reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
-                }
-
-                if ( registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
-                {
-                    errors.append(QObject::tr("Register %1 is not contained within %2")
-                        .arg(targetRegister->name()).arg(context));
-                }
-            }
+            reservedArea.findErrorsInContainment(errors, targetRegister->name(), QStringLiteral("Register"), 
+                context, 0, addressBlockRange - 1);
         }
         else if (QSharedPointer<RegisterFile> targetRegisterFile = registerData.dynamicCast<RegisterFile>())
         {
@@ -782,29 +693,12 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
 
             registerFileValidator_->findErrorsIn(errors, targetRegisterFile, context, addressUnitBits, addressBlock->getWidth());
 
-            qint64 registerFileBegin = getExpressionParser()->parseExpression(
-                targetRegisterFile->getAddressOffset()).toLongLong();
-
-            qint64 registerFileRangeInt = getTrueRegisterFileRange(targetRegisterFile);
-
-            qint64 registerFileEnd = registerFileBegin + registerFileRangeInt - 1;
-
-            if (targetRegisterFile->getIsPresent().isEmpty() ||
-                getExpressionParser()->parseExpression(targetRegisterFile->getIsPresent()).toInt())
-            {
-                reservedArea.addArea(targetRegisterFile->name(), registerFileBegin, registerFileEnd);
-            }
-
-            if (registerFileBegin < 0 || registerFileBegin + registerFileRangeInt > addressBlockRange)
-            {
-                errors.append(QObject::tr("Register file %1 is not contained within %2")
-                    .arg(targetRegisterFile->name()).arg(context));
-            }
+            reservedArea.findErrorsInContainment(errors, targetRegisterFile->name(), QStringLiteral("Register file"),
+                context, 0, addressBlockRange - 1);
         }
     }
 
     reservedArea.findErrorsInOverlap(errors, QLatin1String("Register data"), context);
-    
 }
 
 //-----------------------------------------------------------------------------
@@ -855,46 +749,91 @@ void AddressBlockValidator::findErrorsInStructure(QStringList& errors, QSharedPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::getRegisterSizeInLAU()
+// Function: AddressBlockValidator::setupMemoryAreas()
 //-----------------------------------------------------------------------------
-qint64 AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, qint64 addressUnitBits) const
+void AddressBlockValidator::setupMemoryAreas(QSharedPointer<AddressBlock> addressBlock, MemoryReserve& reserve, 
+    quint64 addressUnitBits)
 {
-    qint64 size = getExpressionParser()->parseExpression(targetRegister->getSize()).toLongLong();
-    qint64 dimensionsProduct = 1;
-
-    if (auto memArray = targetRegister->getMemoryArray())
+    if (addressBlock->getIsPresent().isEmpty() == false && getExpressionParser()->parseExpression(addressBlock->getIsPresent()).toInt() != 1)
     {
-        for (auto const& dimension : *memArray->getDimensions())
-        {
-            dimensionsProduct *= getExpressionParser()->parseExpression(dimension->value_).toLongLong();
-        }
+        return;
     }
 
-    // Round register size up to closest multiple of AUB to get size in least addressable units/AUB.
-    qint64 dimensionlessSize = static_cast<qint64>(std::ceil(size / static_cast<double>(addressUnitBits)));
+    // Create memory areas for all registers and register files and their possible replicas (dimensions)
+    // All calculations should be done using address unit bits (unit for range)
+    for (auto const& regBase : *addressBlock->getRegisterData())
+    {
+        auto dimension = regBase->getDimension(); // Just first dimension which is most commonly in use. Empty if no mem array.
+        auto addressOffset = getExpressionParser()->parseExpression(regBase->getAddressOffset()).toULongLong();
+        quint64 regBaseSize = 0; // size of register(file) in AUB
+        quint64 regBaseStride = 0; // stride of register(file) in AUB
 
-    qint64 trueSize = dimensionlessSize * dimensionsProduct;
+        if (regBase->getIsPresent().isEmpty() == false &&
+            getExpressionParser()->parseExpression(regBase->getIsPresent()).toInt() != 1)
+        {
+            continue;
+        }
 
-    return trueSize;
+        if (auto asRegister = regBase.dynamicCast<Register>())
+        {
+            // Register size (in bits) needs to be rounded up to multiple of AUB for overlap checks using AUBs
+            regBaseSize = getRegisterSizeInLAU(asRegister, addressUnitBits);
+            registerValidator_->setChildItemValidity(asRegister, true);
+        }
+        else if (auto asRegFile = regBase.dynamicCast<RegisterFile>())
+        {
+            regBaseSize = getExpressionParser()->parseExpression(asRegFile->getRange()).toULongLong();
+            setChildItemValidity(asRegFile, true);
+        }
+
+        // Stride empty
+        // - For register: stride = reg size rounded up to closest multiple of AUB
+        // - For register file: stride = range
+        if (auto regStrideStr = regBase->getStride(); regStrideStr.isEmpty())
+        {
+            regBaseStride = regBaseSize;
+        }
+        else
+        {
+            regBaseStride = getExpressionParser()->parseExpression(regBase->getStride()).toULongLong();
+        }
+
+        // Register has single dimension
+        if (dimension.isEmpty() || getExpressionParser()->parseExpression(dimension).toInt() == 1)
+        {
+            reserve.addArea(regBase->name(), addressOffset, addressOffset + regBaseSize - 1);
+        }
+        // Multiple dimensions, calculate number of replicas with dimensions
+        else
+        {
+            auto allDimensions = regBase->getMemoryArray()->getDimensions();
+
+            quint64 replicas = 1;
+            std::for_each(allDimensions->cbegin(), allDimensions->cend(),
+                [&replicas, this](QSharedPointer<MemoryArray::Dimension> dim)
+                {
+                    replicas *= getExpressionParser()->parseExpression(dim->value_).toULongLong();
+                });
+
+            for (int i = 0; i < replicas; i++)
+            {
+                // start from fieldOffset, then add i multiples of stride
+                quint64 replicaStart = addressOffset + i * regBaseStride;
+                quint64 replicaEnd = replicaStart + regBaseSize - 1;
+
+                reserve.addArea(regBase->name(), replicaStart, replicaEnd);
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::getRealRegisterFileRange()
+// Function: AddressBlockValidator::getRegisterSizeInLAU()
 //-----------------------------------------------------------------------------
-qint64 AddressBlockValidator::getTrueRegisterFileRange(QSharedPointer<RegisterFile> targetRegisterFile) const
+quint64 AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, quint64 addressUnitBits) const
 {
-    qint64 dimensionsProduct = 1;
+    quint64 size = getExpressionParser()->parseExpression(targetRegister->getSize()).toULongLong();
 
-    if (auto memArray = targetRegisterFile->getMemoryArray())
-    {
-        for (auto const& dimension : *memArray->getDimensions())
-        {
-            dimensionsProduct *= getExpressionParser()->parseExpression(dimension->value_).toLongLong();
-        }
-    }
-
-    qint64 dimensionlessRange = getExpressionParser()->parseExpression(targetRegisterFile->getRange()).toLongLong();
-    qint64 trueRange = dimensionlessRange * dimensionsProduct;
-
-    return trueRange;
+    // Round register size up to closest multiple of AUB to get size in least addressable units/AUB.
+    return static_cast<quint64>(std::ceil(size / static_cast<double>(addressUnitBits)));
 }

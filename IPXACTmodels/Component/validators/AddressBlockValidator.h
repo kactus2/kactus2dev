@@ -31,6 +31,7 @@ class RegisterValidator;
 class RegisterFileValidator;
 class ParameterValidator;
 class Mode;
+class MemoryReserve;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:addressBlock.
@@ -194,32 +195,9 @@ public:
      *    @param [in] context             Context to help locate the error.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-        QString const& addressUnitBits, QString const& context) const;
+        QString const& addressUnitBits, QString const& context);
 
 private:
-
-    /*!
-     *	Mark overlapping registers as invalid.
-     *
-     *    @param [in] regIter             Iterator pointing to current register(file).
-     *    @param [in] lastEndAddress      Currently biggest register end address found.
-     *    @param [in] addressBlockRange   The address block range.
-     *    @param [in] addressUnitBits     The memory map address unit bits.
-     *    @param [in] targetIsRegister    Flag indicating if regIter points to register or register file.
-     *    @param [in] lastWasRegister     Flag indicating if the previous item was a register or register file.
-     *
-     * 	    @return True, if overlapping registers and/or register files were found, otherwise false.
-     */
-    bool markRegisterOverlap(QList<QSharedPointer<RegisterBase> >::iterator regIter, qint64& lastEndAddress, qint64 addressBlockRange, qint64 addressUnitBits, bool targetIsRegister, bool lastWasRegister);
-
-    /*!
-     *	Mark registers with duplicate names as invalid.
-     *
-     *    @param [in] foundNames     The registers and register files to check.
-     *
-     * 	    @return True, if duplicate names were found, otherwise false.
-     */
-    bool markDuplicateNames(QMultiHash<QString, QSharedPointer<RegisterBase>> const& foundNames);
 
     /*!
      *  Get the type of the memory block.
@@ -277,16 +255,7 @@ private:
      *
      *    @return The register size in LAU.
      */
-    qint64 getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, qint64 addressUnitBits) const;
-
-    /*!
-     *	Get register file range (size in AUB) taking dimensions into account.
-     *  
-     *    @param [in] targetRegisterFile     The register file to get range of.
-     *	    
-     * 	    @return The true register file range.
-     */
-    qint64 getTrueRegisterFileRange(QSharedPointer<RegisterFile> targetRegisterFile) const;
+    quint64 getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, quint64 addressUnitBits) const;
 
     /*!
      *  Find errors within the address block range.
@@ -327,7 +296,7 @@ private:
      *    @param [in] context             Context to help locate the error.
      */
     void findErrorsInRegisterData(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-        QString const& addressUnitBits, QString const& context) const;
+        QString const& addressUnitBits, QString const& context);
 
     /*!
      *	Find errors within the address block memory array.
@@ -368,6 +337,15 @@ private:
      */
     void findErrorsInStructure(QStringList& errors, QSharedPointer<AddressBlock> addressBlock,
         QString const& context) const;
+
+    /*!
+     *	Create memory areas for register (file) overlap and containment check.
+     *
+     *    @param [in] addressBlock        The address block containing registers of which memory areas are created.
+     *    @param [in] reserve             The memory reserve to add created areas to.
+     *    @param [in] addressUnitBits     The memory map address unit bits.
+     */
+    void setupMemoryAreas(QSharedPointer<AddressBlock> addressBlock, MemoryReserve& reserve, quint64 addressUnitBits);
 
     //-----------------------------------------------------------------------------
     // Data.

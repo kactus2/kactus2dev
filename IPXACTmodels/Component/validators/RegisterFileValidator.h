@@ -155,7 +155,7 @@ private:
      *	    
      * 	    @return The register size in address units.
      */
-    qint64 getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, qint64 addressUnitBits) const;
+    quint64 getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, quint64 addressUnitBits) const;
 
     /*!
      *	Find errors in a given child register of the register file being checked.
