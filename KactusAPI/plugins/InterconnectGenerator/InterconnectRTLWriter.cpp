@@ -77,6 +77,7 @@ void InterconnectRTLWriter::generateRTL()
 
             writeAXI4LITE(verilogRTL);
             writeAddrMap(verilogRTL);
+            writeAxiXbarCfg(verilogRTL);
             writeAxiXbar(verilogRTL);
 
         } else {
