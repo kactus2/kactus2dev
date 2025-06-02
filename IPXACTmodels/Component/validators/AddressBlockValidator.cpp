@@ -765,8 +765,8 @@ void AddressBlockValidator::setupMemoryAreas(QSharedPointer<AddressBlock> addres
     {
         auto dimension = regBase->getDimension(); // Just first dimension which is most commonly in use. Empty if no mem array.
         auto addressOffset = getExpressionParser()->parseExpression(regBase->getAddressOffset()).toULongLong();
-        quint64 regBaseSize = 0; // size of register(file) in AUB
-        quint64 regBaseStride = 0; // stride of register(file) in AUB
+        quint64 regBaseSizeAU = 0; // size of register(file) in addressable units
+        quint64 regBaseStride = 0; // stride of register(file) in addressable units
 
         if (regBase->getIsPresent().isEmpty() == false &&
             getExpressionParser()->parseExpression(regBase->getIsPresent()).toInt() != 1)
@@ -777,12 +777,12 @@ void AddressBlockValidator::setupMemoryAreas(QSharedPointer<AddressBlock> addres
         if (auto asRegister = regBase.dynamicCast<Register>())
         {
             // Register size (in bits) needs to be rounded up to multiple of AUB for overlap checks using AUBs
-            regBaseSize = getRegisterSizeInLAU(asRegister, addressUnitBits);
+            regBaseSizeAU = getRegisterSizeInLAU(asRegister, addressUnitBits);
             registerValidator_->setChildItemValidity(asRegister, true);
         }
         else if (auto asRegFile = regBase.dynamicCast<RegisterFile>())
         {
-            regBaseSize = getExpressionParser()->parseExpression(asRegFile->getRange()).toULongLong();
+            regBaseSizeAU = getExpressionParser()->parseExpression(asRegFile->getRange()).toULongLong();
             setChildItemValidity(asRegFile, true);
         }
 
@@ -791,7 +791,7 @@ void AddressBlockValidator::setupMemoryAreas(QSharedPointer<AddressBlock> addres
         // - For register file: stride = range
         if (auto regStrideStr = regBase->getStride(); regStrideStr.isEmpty())
         {
-            regBaseStride = regBaseSize;
+            regBaseStride = regBaseSizeAU;
         }
         else
         {
@@ -801,7 +801,7 @@ void AddressBlockValidator::setupMemoryAreas(QSharedPointer<AddressBlock> addres
         // Register has single dimension
         if (dimension.isEmpty() || getExpressionParser()->parseExpression(dimension).toInt() == 1)
         {
-            reserve.addArea(regBase->name(), addressOffset, addressOffset + regBaseSize - 1);
+            reserve.addArea(regBase->name(), addressOffset, addressOffset + regBaseSizeAU - 1);
         }
         // Multiple dimensions, calculate number of replicas with dimensions
         else
@@ -817,9 +817,9 @@ void AddressBlockValidator::setupMemoryAreas(QSharedPointer<AddressBlock> addres
 
             for (int i = 0; i < replicas; i++)
             {
-                // start from fieldOffset, then add i multiples of stride
+                // start from offset, then add i multiples of stride
                 quint64 replicaStart = addressOffset + i * regBaseStride;
-                quint64 replicaEnd = replicaStart + regBaseSize - 1;
+                quint64 replicaEnd = replicaStart + regBaseSizeAU - 1;
 
                 reserve.addArea(regBase->name(), replicaStart, replicaEnd);
             }

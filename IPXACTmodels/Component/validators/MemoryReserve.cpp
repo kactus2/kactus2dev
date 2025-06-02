@@ -87,7 +87,7 @@ bool MemoryReserve::hasOverlap()
 //-----------------------------------------------------------------------------
 // Function: MemoryReserve::checkOverlapAndContainment()
 //-----------------------------------------------------------------------------
-void MemoryReserve::checkOverlapAndContainment(QSet<QString>& overlaps, quint64 rangeMax)
+void MemoryReserve::checkOverlapAndContainment(QSet<QString>& erroneousAreas, quint64 rangeMax, bool checkContainment /*= true*/)
 {
     // At least two items needed for them to overlap
     if (reservedArea_.count() < 2)
@@ -96,12 +96,14 @@ void MemoryReserve::checkOverlapAndContainment(QSet<QString>& overlaps, quint64 
             return;
 
         // Check still containment, if one item exists
-        auto area = reservedArea_.first();
-        if (area->start_->coord_ > rangeMax - 1 || area->end_->coord_ > rangeMax - 1)
+        if (checkContainment)
         {
-            overlaps.insert(area->id_);
+            auto area = reservedArea_.first();
+            if (area->start_->coord_ > rangeMax - 1 || area->end_->coord_ > rangeMax - 1)
+            {
+                erroneousAreas.insert(area->id_);
+            }
         }
-        
         return;
     }
 
@@ -115,9 +117,9 @@ void MemoryReserve::checkOverlapAndContainment(QSet<QString>& overlaps, quint64 
         auto indexedPoint = endPoints_.at(i);
 
         // Check out of bounds
-        if (indexedPoint->coord_ > rangeMax - 1)
+        if (checkContainment && indexedPoint->coord_ > rangeMax - 1)
         {
-            overlaps.insert(indexedPoint->parentArea_->id_);
+            erroneousAreas.insert(indexedPoint->parentArea_->id_);
         }
 
         if (indexedPoint->isBegin_)
@@ -129,8 +131,8 @@ void MemoryReserve::checkOverlapAndContainment(QSet<QString>& overlaps, quint64 
             else
             {
                 // Overlap, if there is already an open range and indexed point is the start of a new range
-                overlaps.insert(indexedPoint->parentArea_->id_);
-                overlaps.insert(currentlyOpen->parentArea_->id_);
+                erroneousAreas.insert(indexedPoint->parentArea_->id_);
+                erroneousAreas.insert(currentlyOpen->parentArea_->id_);
                 
                 if (indexedPoint->parentArea_->end_->coord_ > currentlyOpen->parentArea_->end_->coord_)
                 {

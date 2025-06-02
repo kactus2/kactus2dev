@@ -60,8 +60,9 @@ public:
      *  
      *    @param [in/out] erroneousAreas    Areas, that are either overlapping or out of bounds for parent item.
      *    @param [in]     rangeMax          Range/size of the parent item.
+     *    @param [in]     checkContainment  Flag indicating if containment should be checked.
      */
-    void checkOverlapAndContainment(QSet<QString>& erroneousAreas, quint64 rangeMax);
+    void checkOverlapAndContainment(QSet<QString>& erroneousAreas, quint64 rangeMax, bool checkContainment = true);
 
     /*!
      *  Check if the reserved ares with the same identifier overlap.
