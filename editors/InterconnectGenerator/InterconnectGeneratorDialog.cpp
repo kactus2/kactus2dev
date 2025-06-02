@@ -4,6 +4,7 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <QMessageBox>
+#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::InterconnectGeneratorDialog()
@@ -719,33 +720,22 @@ void InterconnectGeneratorDialog::accept()
     config->isChannel = isChannel_;
     config->interconnectParams = *interconnectParams_;
 
-    QList<InitStruct> initiators;
-    InitStruct initiator;
+    // Try to find possible address width value from UI parameters
+    for (const auto& param : *interconnectParams_) {
 
-    initiator.Index = 0;
-    initiator.Name = "i_SysCtrl_peripherals";
-    initiator.DataWidth = 32;
+        if (param == nullptr) {
+            continue;
+        }
 
-    initiators.append(initiator);
+        QString name = param->name().toLower();
+        if ((name.contains("addr") && name.contains("width")) ||
+            name.contains("addrwidth") ||
+            name == "aw" || name == "addr_w") {
 
-    QList<AddressPair> addrList;
-    AddressPair addr;
-    addr.Start = "0x00000000";
-    addr.End = "0x0000ffff";
-
-    addrList.append(addr);
-    QList<TargetStruct> targets;
-    TargetStruct target;
-
-    target.Index = 0;
-    target.Name = "core_imem_bridge";
-    target.DataWidth = 32;
-    target.AddressRegions = addrList;
-
-    targets.append(target);
-
-    config->InitList = initiators;
-    config->TargetList = targets;
+            config->AddressWidth = param->getValue().toInt();
+            break;
+        }
+    }
 
     QString message = QString("Design VLNV: %1\nInterconnect VLNV: %2\nBus VLNV: %3\nClock VLNV: %4\nReset VLNV: %5\nBus Type: %6\nAddress Width: %7\nID Width: %8\n")
         .arg(config->DesignVLNV)
@@ -758,9 +748,8 @@ void InterconnectGeneratorDialog::accept()
         .arg(config->IDWidth);
 
     messager_->showMessage(message);
-
+    config_ = config; //new
     collectInstances(config);
-    config_ = config;
     QDialog::accept();
 }
 
@@ -784,6 +773,8 @@ void InterconnectGeneratorDialog::collectStartingPoints(
     const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup)
 {
     selectedStartingPoints_.clear();
+    QList<InitStruct> initiators;
+
     for (int i = 0; i < startingPointsLayout_->count(); ++i) {
         QLayoutItem* item = startingPointsLayout_->itemAt(i);
         if (QFrame* instanceFrame = qobject_cast<QFrame*>(item->widget())) {
@@ -792,28 +783,53 @@ void InterconnectGeneratorDialog::collectStartingPoints(
             if (!nameCombo || !interfaceEditor) {
                 continue;
             }
-
             QString instanceName = nameCombo->currentText();
             QStringList selectedInterfaces = interfaceEditor->getSelectedStartingPointInterfaces();
 
             if (!instanceBusesLookup.contains(instanceName)) {
                 continue;
             }
-
-            const auto& busLookup = instanceBusesLookup.value(instanceName);
+            const QHash<QString, QSharedPointer<BusInterface>>& busLookup = instanceBusesLookup.value(instanceName);
             QList<QSharedPointer<BusInterface>> matchedInterfaces;
 
             for (const QString& selectedInterfaceName : selectedInterfaces) {
                 if (busLookup.contains(selectedInterfaceName)) {
                     matchedInterfaces.append(busLookup.value(selectedInterfaceName));
+
+                    InitStruct init;
+
+                    init.Index = i;
+                    init.Name = instanceName + "_" + selectedInterfaceName;
+                    init.DataWidth = 32;
+
+                    // Get possible data width value from UI parameters
+                    for (const auto& param : *interconnectParams_) {
+
+                        if (param == nullptr) {
+                            continue;
+                        }
+
+                        QString name = param->name().toLower();
+                        if ((name.contains("data") && name.contains("width")) ||
+                            name.contains("datawidth") ||
+                            name == "dw" || name == "data_w") {
+
+                            init.DataWidth = param->getValue().toInt();
+                            break;
+                        }
+                    }
+
+                    initiators.append(init);
                 }
             }
-
+            // Add to selectedInitiators_ only if there are matched interfaces
             if (!matchedInterfaces.isEmpty()) {
                 selectedStartingPoints_.insert(instanceName, matchedInterfaces);
             }
         }
     }
+    config_->InitList.clear();
+    config_->InitList = initiators;
 }
 
 //-----------------------------------------------------------------------------
@@ -823,6 +839,9 @@ void InterconnectGeneratorDialog::collectEndpoints(
     const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup)
 {
     selectedEndpoints_.clear();
+    QList<AddressPair> addrList;
+    QList<TargetStruct> targets;
+
     for (int i = 0; i < endpointsLayout_->count(); ++i) {
         QLayoutItem* item = endpointsLayout_->itemAt(i);
         if (QFrame* instanceFrame = qobject_cast<QFrame*>(item->widget())) {
@@ -831,31 +850,65 @@ void InterconnectGeneratorDialog::collectEndpoints(
             if (!nameCombo || !interfaceEditor) {
                 continue;
             }
-
             QString instanceName = nameCombo->currentText();
             QList<EndpointInterfaceData> selectedInterfaces = interfaceEditor->getSelectedEndpointInterfaces();
 
             if (!instanceBusesLookup.contains(instanceName)) {
                 continue;
             }
-
-            const auto& busLookup = instanceBusesLookup.value(instanceName);
-            QList<QSharedPointer<EndpointData>> matchedInterfaces;
+            const QHash<QString, QSharedPointer<BusInterface>>& busLookup = instanceBusesLookup.value(instanceName);
+            QList<QSharedPointer<EndpointData > > matchedInterfaces;
 
             for (const EndpointInterfaceData& targetInterface : selectedInterfaces) {
                 if (busLookup.contains(targetInterface.name)) {
-                    auto targetData = QSharedPointer<EndpointData>::create();
+                    QSharedPointer<EndpointData > targetData = QSharedPointer<EndpointData >(new EndpointData);
                     targetData->endpointBus = busLookup.value(targetInterface.name);
                     targetData->start = targetInterface.startValue;
                     targetData->range = targetInterface.range;
 
                     matchedInterfaces.append(targetData);
+
+                    addrList.clear();
+
+                    AddressPair addr;
+
+                    addr.Start = targetInterface.startValue.isEmpty() ? "<address>" : targetInterface.startValue;
+                    addr.End = targetInterface.range.isEmpty() ? "<address>" : targetInterface.range;
+
+                    addrList.append(addr);
+                    TargetStruct target;
+
+                    target.DataWidth = 32;
+
+                    // Get possible data width value from UI parameters
+                    for (const auto& param : *interconnectParams_) {
+
+                        if (param == nullptr) {
+                            continue;
+                        }
+
+                        QString name = param->name().toLower();
+                        if ((name.contains("data") && name.contains("width")) ||
+                            name.contains("datawidth") ||
+                            name == "dw" || name == "data_w") {
+
+                            target.DataWidth = param->getValue().toInt();
+                            break;
+                        }
+                    }
+
+                    target.Index = i;
+                    target.Name = instanceName + "_" + targetInterface.name;
+                    target.AddressRegions = addrList;
+
+                    targets.append(target);
                 }
             }
-
             if (!matchedInterfaces.isEmpty()) {
                 selectedEndpoints_.insert(instanceName, matchedInterfaces);
             }
         }
     }
+    config_->TargetList.clear();
+    config_->TargetList = targets;
 }
