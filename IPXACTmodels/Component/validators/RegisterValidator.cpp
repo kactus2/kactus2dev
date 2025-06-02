@@ -126,6 +126,7 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
         // Mark each field with non-unique name as invalid
         if (foundFieldNames.contains(field->name()))
         {
+            fieldValidator_->setChildItemValidity(foundFieldNames[field->name()], false);
             currentValid = false;
         }
         else
