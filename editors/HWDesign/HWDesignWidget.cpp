@@ -978,7 +978,7 @@ void HWDesignWidget::loadPortChanges(QSharedPointer<Component const> libraryComp
         designComponentPorts.append(compPort);
     }
 
-    // Remove deleted ports (aka if port exists in deisgn component but not in component loaded from disk)
+    // Remove deleted ports (aka if port exists in design component but not in component loaded from disk)
     for (auto designComponentPortIt = designComponentPorts.begin(); designComponentPortIt != designComponentPorts.end();)
     {
         if (auto foundPort = Search::findByName((*designComponentPortIt)->name(), libraryComponentPorts);
@@ -995,21 +995,39 @@ void HWDesignWidget::loadPortChanges(QSharedPointer<Component const> libraryComp
                 }
             }
 
-            // Remove connections and routes
-            if (auto portItem = getDiagram()->getDiagramAdHocPort((*designComponentPortIt)->name()))
-            {
-                for (auto const& connection : portItem->getConnections())
-                {
-                    auto adHocConnection = static_cast<AdHocConnectionItem*>(connection);
-                    getDiagram()->getDesign()->removeRoute(adHocConnection->getRouteExtension());
-                    getDiagram()->getDesign()->getAdHocConnections()->removeOne(adHocConnection->getInterconnection());
-                }
-            }
-
             designComponentPortIt = designComponentPorts.erase(designComponentPortIt);
         }
         else
         {
+            // Update adhoc visibility
+            auto adHocVisibilitiesDesignGroup = getDiagram()->getDesign()->getAdHocPortPositions().dynamicCast<Kactus2Group>();
+            auto adHocVisibilitiesDesign = adHocVisibilitiesDesignGroup->getByType("kactus2:adHocVisible");
+
+            auto portVisibilityDesign = std::find_if(adHocVisibilitiesDesign.cbegin(), adHocVisibilitiesDesign.cend(),
+                [&foundPort](QSharedPointer<VendorExtension> extension)
+                {
+                    return extension.dynamicCast<Kactus2Placeholder>()->getAttributeValue("portName") == foundPort->name();
+                });
+
+            bool visibleInDesign = portVisibilityDesign != adHocVisibilitiesDesign.cend();
+            auto oldComponentPort = getEditedComponent()->getPort(foundPort->name());
+
+            if (!oldComponentPort)
+            {
+                ++designComponentPortIt;
+                continue;
+            }
+
+            bool visibleInOldComponent = oldComponentPort->isAdHocVisible();
+            bool visibleInUpdatedComponent = foundPort->isAdHocVisible();
+
+            // AdHoc visible, if visible in updated component or in design
+            // AdHoc not visible, if was visible in design and old component, but not new component
+            if (visibleInDesign && visibleInOldComponent && !visibleInUpdatedComponent)
+            {
+                adHocVisibilitiesDesignGroup->removeFromGroup(*portVisibilityDesign);
+            }
+
             ++designComponentPortIt;
         }
     }

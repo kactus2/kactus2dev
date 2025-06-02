@@ -297,8 +297,20 @@ void tst_CPUReader::testReadAUB2022()
     QDomNode cpuNode = document.firstChildElement("ipxact:cpu");
 
     QSharedPointer<Cpu> testCPU = CPUReader::createCPUFrom(cpuNode, Document::Revision::Std22);
-
     QCOMPARE(testCPU->getAddressUnitBits(), QString("32"));
+
+    // No AUB = default 8 bits
+    QString documentContentNoAUB(
+        "<ipxact:cpu>"
+        "<ipxact:name>CPU</ipxact:name>"
+        "</ipxact:cpu>"
+    );
+
+    document.setContent(documentContentNoAUB);
+    cpuNode = document.firstChildElement("ipxact:cpu");
+
+    QSharedPointer<Cpu> testCPUNoAUB = CPUReader::createCPUFrom(cpuNode, Document::Revision::Std22);
+    QCOMPARE(testCPUNoAUB->getAddressUnitBits(), QString("8"));
 }
 
 //-----------------------------------------------------------------------------

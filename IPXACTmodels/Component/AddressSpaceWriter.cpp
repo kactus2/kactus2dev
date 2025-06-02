@@ -125,12 +125,9 @@ void AddressSpaceWriter::Details::writeAttributeMap(QXmlStreamWriter& writer, QM
 // Function: AddressSpaceWriter::Details::writeAddressUnitBits()
 //-----------------------------------------------------------------------------
 void AddressSpaceWriter::Details::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace)
-   
 {
-    if (!addressSpace->getAddressUnitBits().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:addressUnitBits"), addressSpace->getAddressUnitBits());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:addressUnitBits"),
+        addressSpace->getAddressUnitBits(false));
 }
 
 //-----------------------------------------------------------------------------

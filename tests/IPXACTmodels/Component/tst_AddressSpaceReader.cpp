@@ -179,6 +179,21 @@ void tst_AddressSpaceReader::testReadAddressUnitBits()
 	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(AddressSpaceNode, Document::Revision::Std14);
 
 	QCOMPARE(testAddressSpace->getAddressUnitBits(), QString("15"));
+
+	// No AUB = default 8 bits
+	QString documentContentNoAUB(
+        "<ipxact:addressSpace>"
+        "</ipxact:addressSpace>"
+    );
+
+    document.setContent(documentContentNoAUB);
+
+    AddressSpaceNode = document.firstChildElement("ipxact:addressSpace");
+
+    QSharedPointer<AddressSpace> testAddressSpaceNoAUB = AddressSpaceReader::createAddressSpaceFrom(AddressSpaceNode, Document::Revision::Std14);
+
+    QCOMPARE(testAddressSpaceNoAUB->getAddressUnitBits(), QString("8"));
+
 }
 
 //-----------------------------------------------------------------------------

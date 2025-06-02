@@ -103,10 +103,8 @@ void MemoryMapWriter::Details::writeMemoryRemaps(QXmlStreamWriter& writer, QShar
 //-----------------------------------------------------------------------------
 void MemoryMapWriter::Details::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap)
 {
-    if (!memoryMap->getAddressUnitBits(false).isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:addressUnitBits"), memoryMap->getAddressUnitBits());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:addressUnitBits"),
+        memoryMap->getAddressUnitBits(false));
 }
 
 //-----------------------------------------------------------------------------

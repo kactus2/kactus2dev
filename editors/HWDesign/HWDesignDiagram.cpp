@@ -2512,7 +2512,6 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
         {
             emit errorMessage(tr("Port %1 was not found in the top-level component").arg(
                 externalPort->getPortRef()));
-            continue;
         }
 
         setPortAdHocVisible(externalPort->getPortRef(), true);

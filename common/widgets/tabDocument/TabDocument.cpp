@@ -202,7 +202,10 @@ bool TabDocument::validate(QVector<QString>&)
 bool TabDocument::save()
 {
     setModified(false);
-    emit documentSaved(this);
+    if (refreshRequested_ == false) // Emit save signal only if initiated by saving in this tab
+    {
+        emit documentSaved(this);
+    }
     return true;
 }
 
@@ -502,7 +505,7 @@ void TabDocument::showEvent(QShowEvent* event)
 
     if (refreshRequested_)
     {
-        refreshRequested_ = false;
+        //refreshRequested_ = false;
         QTimer::singleShot(20, this, SLOT(handleRefreshRequest()));
     }
 }
@@ -510,6 +513,14 @@ void TabDocument::showEvent(QShowEvent* event)
 LibraryInterface* TabDocument::getLibHandler() const
 {
     return libHandler_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::refreshWasRequested()
+//-----------------------------------------------------------------------------
+bool TabDocument::refreshWasRequested() const
+{
+    return refreshRequested_;
 }
 
 //-----------------------------------------------------------------------------
@@ -532,15 +543,17 @@ void TabDocument::handleRefreshRequest()
                "Save changes and refresh?"),
             QMessageBox::Yes | QMessageBox::No, this);
 
-        if (msgBox.exec() == QMessageBox::Yes)
+        if (msgBox.exec() == QMessageBox::No)
         {
             loadChangesFromRelatedTab();
-            save();
             refresh();
+            refreshRequested_ = false;
+            return;
         }
     }
-    else
-    {
-        refresh();
-    }
+    
+    loadChangesFromRelatedTab();
+    save();
+    refresh();
+    refreshRequested_ = false;
 }

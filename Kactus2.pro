@@ -12,11 +12,7 @@ DEFINES += _WINDOWS QT_DLL QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT 
 
 INCLUDEPATH += . \
     ./GeneratedFiles \
-    ./KactusAPI/include \
-    $(QTDIR)/../qttools/include \
-    $(QTDIR)/../qttools/include/QtHelp \
-    $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
-    $(QTDIR)/../qtxmlpatterns/include 
+    ./KactusAPI/include
 LIBS += -L./executable \
     -lIPXACTmodels \
     -L./executable \

@@ -867,8 +867,10 @@ void MetaDesign::removeUnconnectedAdHocAssignments()
                     assignment->wire_ = QSharedPointer<MetaWire>();
                 }
 
-                // Remove port assignment that do not match the criteria. Applies only to the ad hoc wires.
-                if (!assignment->wire_ && assignment->defaultValue_.isEmpty() && isAdHocWire)
+                // Remove port assignment that do not match the criteria. Applies only to the ad hoc wires 
+                // and assignments in which the port is mapped to an interface.
+                if (!assignment->wire_ && assignment->defaultValue_.isEmpty() && 
+                    (isAdHocWire || assignment->mappedInterface_))
                 {
                     iter = mPort->upAssignments_.erase(iter);
                 }
