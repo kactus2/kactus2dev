@@ -4,6 +4,9 @@
 #include <IPXACTmodels/common/Document.h>
 #include <common/graphicsItems/ComponentItem.h>
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::InterconnectDataModel()
+//-----------------------------------------------------------------------------
 InterconnectDataModel::InterconnectDataModel(DesignWidget* designWidget, LibraryHandler* library, MessageMediator* messager)
     : designWidget_(designWidget),
     library_(library),
@@ -11,6 +14,9 @@ InterconnectDataModel::InterconnectDataModel(DesignWidget* designWidget, Library
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::gatherBusAndAbstractionData()
+//-----------------------------------------------------------------------------
 void InterconnectDataModel::gatherBusAndAbstractionData() {
     getBusesFromInstances();
     getBusesFromTopComponent();
@@ -18,26 +24,41 @@ void InterconnectDataModel::gatherBusAndAbstractionData() {
     filterValidAbstractionReferences();
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getValidAbstractionRefs()
+//-----------------------------------------------------------------------------
 QSet<QSharedPointer<ConfigurableVLNVReference>> InterconnectDataModel::getValidAbstractionRefs() const
 {
     return validAbsRefs_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getAllAbstractionRefs()
+//-----------------------------------------------------------------------------
 QSet<QSharedPointer<ConfigurableVLNVReference>> InterconnectDataModel::getAllAbstractionRefs() const
 {
     return allAbsRefs_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getInstanceBusMap()
+//-----------------------------------------------------------------------------
 QHash<QString, QSet<QSharedPointer<BusInterface>>> InterconnectDataModel::getInstanceBusMap() const
 {
     return instanceBusesHash_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getInterfaceAbstractionHash()
+//-----------------------------------------------------------------------------
 QHash<QSharedPointer<BusInterface>, QSet<QString>> InterconnectDataModel::getInterfaceAbstractionHash() const
 {
     return interfaceAbsDefsHash_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getBusesFromInstances()
+//-----------------------------------------------------------------------------
 void InterconnectDataModel::getBusesFromInstances()
 {
     QList<ComponentItem*> componentItems = designWidget_->getInstances();
@@ -59,6 +80,9 @@ void InterconnectDataModel::getBusesFromInstances()
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getBusesFromTopComponent()
+//-----------------------------------------------------------------------------
 void InterconnectDataModel::getBusesFromTopComponent()
 {
     QSharedPointer<Component> topComponent = designWidget_->getEditedComponent();
@@ -78,6 +102,9 @@ void InterconnectDataModel::getBusesFromTopComponent()
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getAbstractionDefinitions()
+//-----------------------------------------------------------------------------
 void InterconnectDataModel::getAbstractionDefinitions(QSharedPointer<BusInterface> bus)
 {
     QSharedPointer<QList<QSharedPointer<AbstractionType>>> absTypes = bus->getAbstractionTypes();
@@ -102,6 +129,9 @@ void InterconnectDataModel::getAbstractionDefinitions(QSharedPointer<BusInterfac
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::filterValidAbstractionReferences()
+//-----------------------------------------------------------------------------
 void InterconnectDataModel::filterValidAbstractionReferences()
 {
     validAbsRefs_.clear();
@@ -192,6 +222,9 @@ void InterconnectDataModel::filterValidAbstractionReferences()
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::isModeValidForAllConnections()
+//-----------------------------------------------------------------------------
 bool InterconnectDataModel::isModeValidForAllConnections(
     const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
     const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints,
@@ -242,14 +275,23 @@ bool InterconnectDataModel::isModeValidForAllConnections(
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::ConnectionKey()
+//-----------------------------------------------------------------------------
 bool InterconnectDataModel::ConnectionKey::operator==(const ConnectionKey& other) const {
     return sourceEntity == other.sourceEntity && sourceMode == other.sourceMode;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::ConnectionKey()
+//-----------------------------------------------------------------------------
 bool InterconnectDataModel::ConnectionKey::operator!=(const ConnectionKey& other) const {
     return !(*this == other);
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getValidConnectionTargets()
+//-----------------------------------------------------------------------------
 QList<InterconnectDataModel::ConnectionRule> InterconnectDataModel::getValidConnectionTargets(
     EntityType sourceEntity,
     General::InterfaceMode sourceMode,
@@ -271,6 +313,9 @@ QList<InterconnectDataModel::ConnectionRule> InterconnectDataModel::getValidConn
     return result;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::normalizeTo2014()
+//-----------------------------------------------------------------------------
 General::InterfaceMode InterconnectDataModel::normalizeTo2014(General::InterfaceMode mode)
 {
     switch (mode) {
@@ -282,6 +327,9 @@ General::InterfaceMode InterconnectDataModel::normalizeTo2014(General::Interface
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::initConnectionRules()
+//-----------------------------------------------------------------------------
 void InterconnectDataModel::initConnectionRules()
 {
     using ET = EntityType;
@@ -343,6 +391,9 @@ void InterconnectDataModel::initConnectionRules()
     };
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::createInstanceBusesLookup()
+//-----------------------------------------------------------------------------
 QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> InterconnectDataModel::createInstanceBusesLookup() const
 {
     QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> lookup;

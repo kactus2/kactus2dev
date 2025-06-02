@@ -1,3 +1,14 @@
+//-----------------------------------------------------------------------------------
+// File: InterconnectAddressHelper.h
+//-----------------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Sampo Suokuisma
+// Date: xx.xx.2025
+//
+// Description:
+// Class for calculating start and range values for interconnect endpoint interfaces
+//-----------------------------------------------------------------------------------
+
 #ifndef INTERCONNECTADDRESSHELPER_H
 #define INTERCONNECTADDRESSHELPER_H
 
@@ -35,7 +46,7 @@
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
 //----------------------------------------------------------------------------------
-//! Class for calculating start and range values for interconnect target interfaces
+//! Class for calculating start and range values for interconnect endpoint interfaces
 //----------------------------------------------------------------------------------
 class InterconnectAddressHelper {
 public:

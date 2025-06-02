@@ -228,8 +228,17 @@ private:
      */
     void addNewEndpoint();
 
+    /*!
+     *  Get the currently selected interconnect type.
+     *
+     *  @return The selected interconnect type (Bridge or Channel).
+     */
     InterconnectDataModel::InterconnectType getSelectedInterconnectType() const;
 
+    /*!
+     *  Update the availability and selection state of interconnect mode options
+     *  based on currently selected starting points and endpoints.
+     */
     void updateInterconnectModeOptions();
 
     //-----------------------------------------------------------------------------

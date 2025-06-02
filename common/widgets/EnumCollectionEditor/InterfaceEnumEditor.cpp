@@ -1,5 +1,8 @@
 #include "InterfaceEnumEditor.h"
 
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::InterfaceEnumEditor()
+//-----------------------------------------------------------------------------
 InterfaceEnumEditor::InterfaceEnumEditor(QWidget* parent) : QFrame(parent) {
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
@@ -19,6 +22,9 @@ InterfaceEnumEditor::InterfaceEnumEditor(QWidget* parent) : QFrame(parent) {
     mainLayout_->addWidget(scrollArea_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::addItems()
+//-----------------------------------------------------------------------------
 void InterfaceEnumEditor::addItems(const QStringList& items, bool isEndpoint, const QString& instanceName) {
     QList<QCheckBox*> checkBoxes;
     int maxCheckBoxWidth = 0;
@@ -79,6 +85,9 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isEndpoint, co
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::clearAll()
+//-----------------------------------------------------------------------------
 void InterfaceEnumEditor::clearAll() {
     for (const InterfaceItem& item : interfaceItems_) {
         delete item.checkBox;
@@ -90,6 +99,9 @@ void InterfaceEnumEditor::clearAll() {
     interfaceItems_.clear();
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::getSelectedStartingPointInterfaces()
+//-----------------------------------------------------------------------------
 QStringList InterfaceEnumEditor::getSelectedStartingPointInterfaces() const {
     QStringList selectedInitiators;
 
@@ -101,6 +113,9 @@ QStringList InterfaceEnumEditor::getSelectedStartingPointInterfaces() const {
     return selectedInitiators;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::getSelectedEndpointInterfaces()
+//-----------------------------------------------------------------------------
 QList<EndpointInterfaceData> InterfaceEnumEditor::getSelectedEndpointInterfaces() const {
     QList<EndpointInterfaceData> selectedTargets;
 
@@ -116,6 +131,9 @@ QList<EndpointInterfaceData> InterfaceEnumEditor::getSelectedEndpointInterfaces(
     return selectedTargets;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::setEndpointInterfaceValues()
+//-----------------------------------------------------------------------------
 void InterfaceEnumEditor::setEndpointInterfaceValues(const QString& interfaceName, quint64 start, quint64 range) {
     auto formatToIpxactHex = [](quint64 value, int minDigits = 4) -> QString {
         return "'h" + QString::number(value, 16).rightJustified(minDigits, '0').toUpper();
@@ -130,6 +148,9 @@ void InterfaceEnumEditor::setEndpointInterfaceValues(const QString& interfaceNam
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::clearEndpointInterfaceValues()
+//-----------------------------------------------------------------------------
 void InterfaceEnumEditor::clearEndpointInterfaceValues(const QString& interfaceName) {
     for (InterfaceItem& item : interfaceItems_) {
         if (item.checkBox->text() == interfaceName && item.startEdit && item.rangeEdit) {
