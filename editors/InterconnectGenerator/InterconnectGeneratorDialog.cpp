@@ -59,7 +59,7 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::getConfig()
 //-----------------------------------------------------------------------------
-ConfigStruct* InterconnectGeneratorDialog::getConfig() 
+ConfigStruct* InterconnectGeneratorDialog::getConfig()  const
 {
     return config_;
 }
@@ -67,7 +67,7 @@ ConfigStruct* InterconnectGeneratorDialog::getConfig()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::getSelectedInitiators()
 //-----------------------------------------------------------------------------
-QHash<QString, QList<QSharedPointer<BusInterface>>> InterconnectGeneratorDialog::getSelectedStartingPoints()
+QHash<QString, QList<QSharedPointer<BusInterface>>> InterconnectGeneratorDialog::getSelectedStartingPoints() const
 {
     return selectedStartingPoints_;
 }
@@ -75,7 +75,7 @@ QHash<QString, QList<QSharedPointer<BusInterface>>> InterconnectGeneratorDialog:
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::getSelectedTargets()
 //-----------------------------------------------------------------------------
-QHash<QString, QList<QSharedPointer<EndpointData>>> InterconnectGeneratorDialog::getSelectedEndpoints()
+QHash<QString, QList<QSharedPointer<EndpointData>>> InterconnectGeneratorDialog::getSelectedEndpoints() const
 {
     return selectedEndpoints_;
 }
@@ -263,8 +263,9 @@ void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName
 void InterconnectGeneratorDialog::updateInterconnectModeOptions()
 {
     // Ensure latest selection state
-    collectStartingPoints(dataModel_->createInstanceBusesLookup());
-    collectEndpoints(dataModel_->createInstanceBusesLookup());
+    auto lookUp = dataModel_->createInstanceBusesLookup();
+    collectStartingPoints(lookUp);
+    collectEndpoints(lookUp);
 
     bool bridgeValid = dataModel_->isModeValidForAllConnections(
         selectedStartingPoints_, selectedEndpoints_, InterconnectDataModel::InterconnectType::Bridge);
@@ -314,8 +315,6 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ro
             if (addressHelper_->getEndpointAddressRange(instanceName, interfaceName, start, range)) {
                 interfaceEditor->setEndpointInterfaceValues(interfaceName, start, range);
             }
-            auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
-            collectEndpoints(instanceBusesLookup);
             updateInterconnectModeOptions();
         });
 
@@ -324,24 +323,16 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ro
             addressHelper_->releaseEndpointAddress(instanceName);
             interfaceEditor->clearEndpointInterfaceValues(interfaceName);
 
-            auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
-            collectEndpoints(instanceBusesLookup);
             updateInterconnectModeOptions();
         });
 
     connect(interfaceEditor, &InterfaceEnumEditor::startingPointInterfaceChecked, this,
         [=](const QString&, const QString&) {
-            auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
-
-            collectStartingPoints(instanceBusesLookup);
             updateInterconnectModeOptions();
         });
 
     connect(interfaceEditor, &InterfaceEnumEditor::startingPointInterfaceUnchecked, this,
         [=](const QString&, const QString&) {
-            auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
-
-            collectStartingPoints(instanceBusesLookup);
             updateInterconnectModeOptions();
         });
 
@@ -723,10 +714,7 @@ void InterconnectGeneratorDialog::accept()
     // Try to find possible address width value from UI parameters
     for (const auto& param : *interconnectParams_) {
 
-        if (param == nullptr) {
-            continue;
-        }
-
+        if (!param) continue;
         QString name = param->name().toLower();
         if ((name.contains("addr") && name.contains("width")) ||
             name.contains("addrwidth") ||
@@ -749,21 +737,19 @@ void InterconnectGeneratorDialog::accept()
 
     messager_->showMessage(message);
     config_ = config; //new
-    collectInstances(config);
+    collectInstances();
     QDialog::accept();
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::collectInstances()
 //-----------------------------------------------------------------------------
-bool InterconnectGeneratorDialog::collectInstances(ConfigStruct* config)
+void InterconnectGeneratorDialog::collectInstances()
 {
     auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
 
     collectStartingPoints(instanceBusesLookup);
     collectEndpoints(instanceBusesLookup);
-
-    return !config->InitList.isEmpty() || !config->TargetList.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -789,7 +775,7 @@ void InterconnectGeneratorDialog::collectStartingPoints(
             if (!instanceBusesLookup.contains(instanceName)) {
                 continue;
             }
-            const QHash<QString, QSharedPointer<BusInterface>>& busLookup = instanceBusesLookup.value(instanceName);
+            const auto& busLookup = instanceBusesLookup.value(instanceName);
             QList<QSharedPointer<BusInterface>> matchedInterfaces;
 
             for (const QString& selectedInterfaceName : selectedInterfaces) {
@@ -828,8 +814,11 @@ void InterconnectGeneratorDialog::collectStartingPoints(
             }
         }
     }
-    config_->InitList.clear();
-    config_->InitList = initiators;
+    if (config_) 
+    {
+        config_->InitList.clear();
+        config_->InitList = initiators;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -856,12 +845,12 @@ void InterconnectGeneratorDialog::collectEndpoints(
             if (!instanceBusesLookup.contains(instanceName)) {
                 continue;
             }
-            const QHash<QString, QSharedPointer<BusInterface>>& busLookup = instanceBusesLookup.value(instanceName);
+            const auto& busLookup = instanceBusesLookup.value(instanceName);
             QList<QSharedPointer<EndpointData > > matchedInterfaces;
 
             for (const EndpointInterfaceData& targetInterface : selectedInterfaces) {
                 if (busLookup.contains(targetInterface.name)) {
-                    QSharedPointer<EndpointData > targetData = QSharedPointer<EndpointData >(new EndpointData);
+                    auto targetData = QSharedPointer<EndpointData>::create();
                     targetData->endpointBus = busLookup.value(targetInterface.name);
                     targetData->start = targetInterface.startValue;
                     targetData->range = targetInterface.range;
@@ -909,6 +898,9 @@ void InterconnectGeneratorDialog::collectEndpoints(
             }
         }
     }
-    config_->TargetList.clear();
-    config_->TargetList = targets;
+    if (config_) 
+    {
+        config_->TargetList.clear();
+        config_->TargetList = targets;
+    }
 }

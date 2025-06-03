@@ -75,21 +75,21 @@ public:
      * 
      *  @return Struct containing interconnect configurations.
      */
-    ConfigStruct* getConfig();
+    ConfigStruct* getConfig() const;
 
     /*!
      *  Get selected starting point interfaces.
      *
      *  @return QHash containing instance name as key and bus interfaces as values.
      */
-    QHash<QString, QList<QSharedPointer<BusInterface>>> getSelectedStartingPoints();
+    QHash<QString, QList<QSharedPointer<BusInterface>>> getSelectedStartingPoints() const;
 
     /*!
      *  Get selected endpoint interfaces.
      *
      *  @return QHash containing instance name as key and bus interfaces as values.
      */
-    QHash<QString, QList<QSharedPointer<EndpointData>>> getSelectedEndpoints();
+    QHash<QString, QList<QSharedPointer<EndpointData>>> getSelectedEndpoints() const;
 
 protected:
 
@@ -190,12 +190,8 @@ private:
 
     /*!
      *  Collect instance configurations for interconnect generation.
-     *
-     *  @param [out] config  Struct to be filled with configuration data.
-     *
-     *  @return True if collection was successful, false otherwise.
      */
-    bool collectInstances(ConfigStruct* config);
+    void collectInstances();
 
     /*!
      *  Collect initiator interface selections from the UI and populate the config.

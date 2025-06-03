@@ -2623,6 +2623,9 @@ void MainWindow::onInterconnectGenerate()
     InterconnectGeneratorDialog interconnectDialog(designWidget, libraryHandler_, messageChannel_, this);
     if (interconnectDialog.exec() == QDialog::Accepted) {
         ConfigStruct* config = interconnectDialog.getConfig();
+        if (!config) {
+            return;
+        }
         QHash<QString, QList<QSharedPointer<BusInterface > > > startingPoints = interconnectDialog.getSelectedStartingPoints();
         QHash<QString, QList<QSharedPointer<EndpointData > > > endPoints = interconnectDialog.getSelectedEndpoints();
 

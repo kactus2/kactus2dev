@@ -80,6 +80,11 @@ public:
     InterconnectDataModel(DesignWidget* designWidget, LibraryHandler* library, MessageMediator* messager);
 
     /*!
+     *  Destructor.
+     */
+    virtual ~InterconnectDataModel() = default;
+
+    /*!
      *  Gathers all bus interfaces and abstraction definitions from the design and its instances.
      */
     void gatherBusAndAbstractionData();
