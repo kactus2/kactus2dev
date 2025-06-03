@@ -51,6 +51,7 @@ rangeEditor_(new ExpressionEditor(parameterFinder, this)),
 widthEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
+strideEditor_(new ExpressionEditor(parameterFinder, this)),
 accessEditor_(),
 volatileEditor_(),
 registersEditor_(new AddressBlockEditor(addressBlock->getRegisterData(), blockInterface->getSubInterface(),
@@ -71,6 +72,7 @@ accessPoliciesEditor_(new AccessPoliciesEditor(addressBlock->getAccessPolicies()
     widthEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
     isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
     dimensionEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    strideEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
@@ -90,11 +92,15 @@ accessPoliciesEditor_(new AccessPoliciesEditor(addressBlock->getAccessPolicies()
     auto dimensionEditorCompleter = new QCompleter(this);
     dimensionEditorCompleter->setModel(componentParametersModel);
 
+    auto strideParameterCompleter = new QCompleter(this);
+    strideParameterCompleter->setModel(componentParametersModel);
+
     baseAddressEditor_->setAppendingCompleter(baseAddressEditorCompleter);
     rangeEditor_->setAppendingCompleter(rangeEditorCompleter);
     widthEditor_->setAppendingCompleter(widthEditorCompleter);
     isPresentEditor_->setAppendingCompleter(isPresentEditorCompleter);
     dimensionEditor_->setAppendingCompleter(dimensionEditorCompleter);
+    strideEditor_->setAppendingCompleter(strideParameterCompleter);
 
     setupLayout();
 
@@ -164,6 +170,21 @@ void SingleAddressBlockEditor::refresh()
     dimensionEditor_->setToolTip(
         QString::fromStdString(blockInterface_->getDimensionValue(blockName_)));
 
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        // Enable stride editing if dimension > 1
+        if (QString::fromStdString(blockInterface_->getDimensionValue(blockName_)).toULongLong() > 1)
+        {
+            strideEditor_->setEnabled(true);
+            strideEditor_->setExpression(QString::fromStdString(blockInterface_->getStrideExpression(blockName_)));
+            strideEditor_->setToolTip(QString::fromStdString(blockInterface_->getStrideValue(blockName_)));
+        }
+        else
+        {
+            strideEditor_->setEnabled(false);
+        }
+    }
+
     changeExpressionEditorSignalBlockStatus(false);
 
     accessEditor_->setCurrentValue(blockInterface_->getAccess(blockName_));
@@ -223,10 +244,34 @@ void SingleAddressBlockEditor::onIsPresentEdited()
 void SingleAddressBlockEditor::onDimensionChanged()
 {
     dimensionEditor_->finishEditingCurrentWord();
-    QString newDimension = dimensionEditor_->getExpression();
+    auto newDimension = dimensionEditor_->getExpression();
+    auto formattedDimension = formattedValueFor(newDimension);
 
     blockInterface_->setDimension(blockName_, newDimension.toStdString());
-    dimensionEditor_->setToolTip(formattedValueFor(newDimension));
+    dimensionEditor_->setToolTip(formattedDimension);
+
+    if (formattedDimension.compare(QStringLiteral("n/a")) != 0 && formattedDimension.toULongLong() > 1)
+    {
+        strideEditor_->setEnabled(true);
+    }
+    else
+    {
+        strideEditor_->setExpression(QString());
+        strideEditor_->setToolTip(QString());
+        strideEditor_->setEnabled(false);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleAddressBlockEditor::onStrideChanged()
+//-----------------------------------------------------------------------------
+void SingleAddressBlockEditor::onStrideChanged()
+{
+    strideEditor_->finishEditingCurrentWord();
+    auto newStride = strideEditor_->getExpression();
+
+    blockInterface_->setStride(blockName_, newStride.toStdString());
+    strideEditor_->setToolTip(formattedValueFor(newStride));
 }
 
 //-----------------------------------------------------------------------------
@@ -308,6 +353,7 @@ void SingleAddressBlockEditor::setupLayout()
         addressBlockDefinitionLayout->addRow(tr("Usage:"), usageEditor_);
         addressBlockDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
         addressBlockDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
+        addressBlockDefinitionLayout->addRow(tr("Stride, f(x):"), strideEditor_);
 
         auto spacer = new QWidget();
         spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -412,13 +458,21 @@ void SingleAddressBlockEditor::connectSignals() const
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(decreaseReference(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(dimensionEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(decreaseReference(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+
 
     connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SLOT(onBaseAddressChanged()), Qt::UniqueConnection);    
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SLOT(onRangeChanged()), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(editingFinished()), this, SLOT(onWidthChanged()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SLOT(onDimensionChanged()), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(editingFinished()), this, SLOT(onStrideChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(registersEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -427,6 +481,7 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(registersEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
@@ -446,6 +501,9 @@ void SingleAddressBlockEditor::connectSignals() const
 
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+
+    connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -481,6 +539,7 @@ void SingleAddressBlockEditor::changeExpressionEditorSignalBlockStatus(bool bloc
     widthEditor_->blockSignals(blockStatus);
     isPresentEditor_->blockSignals(blockStatus);
     dimensionEditor_->blockSignals(blockStatus);
+    strideEditor_->blockSignals(blockStatus);
 }
 
 //-----------------------------------------------------------------------------
