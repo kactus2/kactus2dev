@@ -42,7 +42,7 @@ ArrayableMemory& ArrayableMemory::operator=(ArrayableMemory const& other)
 //-----------------------------------------------------------------------------
 QString ArrayableMemory::getDimension() const
 {
-    if (memoryArray_)
+    if (memoryArray_ && memoryArray_->getDimensions())
     {
         return memoryArray_->getDimensions()->first()->value_;
     }
@@ -97,12 +97,10 @@ QString ArrayableMemory::getStride()
 //-----------------------------------------------------------------------------
 void ArrayableMemory::setStride(QString const& newStride)
 {
-    if (!memoryArray_)
+    if (memoryArray_)
     {
-        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray());
+        memoryArray_->setStride(newStride);
     }
-
-    memoryArray_->setStride(newStride);
 }
 
 //-----------------------------------------------------------------------------

@@ -240,7 +240,7 @@ void SingleFieldEditor::refresh()
         {
             bitStrideEditor_->setEnabled(true);
             bitStrideEditor_->setExpression(QString::fromStdString(fieldInterface_->getStrideExpression(fieldName_)));
-            dimensionEditor_->setToolTip(QString::fromStdString(fieldInterface_->getStrideValue(fieldName_)));
+            bitStrideEditor_->setToolTip(QString::fromStdString(fieldInterface_->getStrideValue(fieldName_)));
         }
         else
         {
@@ -482,6 +482,8 @@ void SingleFieldEditor::onDimensionEdited()
     }
     else
     {
+        bitStrideEditor_->setExpression(QString());
+        bitStrideEditor_->setToolTip(QString());
         bitStrideEditor_->setEnabled(false);
     }
 }
@@ -495,7 +497,7 @@ void SingleFieldEditor::onBitStrideEdited()
     auto newStride = bitStrideEditor_->getExpression();
 
     fieldInterface_->setStride(fieldName_, newStride.toStdString());
-    dimensionEditor_->setToolTip(formattedValueFor(newStride));
+    bitStrideEditor_->setToolTip(formattedValueFor(newStride));
 }
 
 //-----------------------------------------------------------------------------
