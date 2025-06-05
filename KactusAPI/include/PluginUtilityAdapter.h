@@ -12,7 +12,7 @@
 #ifndef PLUGINUTILITYADAPTER_H
 #define PLUGINUTILITYADAPTER_H
 
-#include <kactusAPI/KactusAPIGlobal.h>
+#include <KactusAPI/KactusAPIGlobal.h>
 #include <KactusAPI/include/IPluginUtility.h>
 
 #include <QObject>
