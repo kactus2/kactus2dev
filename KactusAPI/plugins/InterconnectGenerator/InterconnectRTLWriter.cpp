@@ -384,23 +384,27 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
 
     QString parsed = original.trimmed();
 
+    if (parsed.isEmpty()) {
+        return parsed;
+    }
+
     if (parsed.contains("'h", Qt::CaseInsensitive)) {
 
-        int index = original.indexOf("'h", Qt::CaseInsensitive);
-        parsed = original.mid(index + 2).trimmed();
+        int index = parsed.indexOf("'h", Qt::CaseInsensitive);
+        parsed = parsed.mid(index + 2).trimmed();
         return QString::number(config_->AddressWidth) + "'h" + parsed.toUpper();
     }
 
     else if (parsed.startsWith("0x", Qt::CaseInsensitive)) {
 
-        parsed = original.mid(2);
+        parsed = parsed.mid(2);
         return QString::number(config_->AddressWidth) + "'h" + parsed.toUpper();
     }
     
-     else if (parsed.contains("'b", Qt::CaseInsensitive)) {
+    else if (parsed.contains("'b", Qt::CaseInsensitive)) {
 
-        int index = original.indexOf("'b", Qt::CaseInsensitive);
-        parsed = original.mid(index + 2).trimmed();
+        int index = parsed.indexOf("'b", Qt::CaseInsensitive);
+        parsed = parsed.mid(index + 2).trimmed();
 
         bool ok;
         uint64_t temp = parsed.toULongLong(&ok, 2);
@@ -415,7 +419,7 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
 
     else if (parsed.startsWith("0b", Qt::CaseInsensitive)) {
 
-        parsed = original.mid(2);
+        parsed = parsed.mid(2);
 
         bool ok;
         uint64_t temp = parsed.toULongLong(&ok, 2);
@@ -426,6 +430,13 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
         } else {
             return original;
         }
+    }
+
+    bool isDecimal;
+    uint64_t dec = parsed.toULongLong(&isDecimal, 10);
+    if (isDecimal) {
+        parsed = QString::number(config_->AddressWidth) + "'h" + QString::number(dec, 16).toUpper();
+        return parsed;
     }
     
     return original;
