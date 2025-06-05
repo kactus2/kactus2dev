@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Sampo Suokuisma
-// Date: xx.xx.2025
+// Date: 05.06.2025
 //
 // Description:
 // Class for configuring generated interconnect component
@@ -261,6 +261,9 @@ private:
 
     //! Current working interconnect configuration.
     ConfigStruct* config_ = nullptr;
+
+    //! Nested hash lookup for quick bus interface resolution.
+    QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> busLookUp_;
 
     //! VLNV identifier of the design currently being edited.
     QString designVLNV_;

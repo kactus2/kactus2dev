@@ -12,10 +12,10 @@
 // Function: InterconnectGenerator::InterconnectGenerator()
 //-----------------------------------------------------------------------------
 InterconnectGenerator::InterconnectGenerator(LibraryInterface* library, MessageMediator* messager)
+    : library_(library),
+    messager_(messager),
+    config_(0)
 {
-    library_ = library;
-    messager_ = messager;
-    config_ = nullptr;
 }
 
 //-----------------------------------------------------------------------------

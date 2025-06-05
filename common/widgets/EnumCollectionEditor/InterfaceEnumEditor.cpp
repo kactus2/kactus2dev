@@ -3,21 +3,24 @@
 //-----------------------------------------------------------------------------
 // Function: InterfaceEnumEditor::InterfaceEnumEditor()
 //-----------------------------------------------------------------------------
-InterfaceEnumEditor::InterfaceEnumEditor(QWidget* parent) : QFrame(parent) {
+InterfaceEnumEditor::InterfaceEnumEditor(QWidget* parent)
+    : QFrame(parent),
+    mainLayout_(new QVBoxLayout(this)),
+    scrollArea_(new QScrollArea(this)),
+    scrollContainer_(new QWidget()),
+    scrollLayout_(new QVBoxLayout(scrollContainer_))
+{
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NoMousePropagation);
 
-    mainLayout_ = new QVBoxLayout(this);
     setLayout(mainLayout_);
 
-    scrollArea_ = new QScrollArea(this);
     scrollArea_->setWidgetResizable(true);
     scrollArea_->setFrameShape(QFrame::NoFrame);
-    scrollContainer_ = new QWidget();
-    scrollArea_->setWidget(scrollContainer_);
-    scrollLayout_ = new QVBoxLayout(scrollContainer_);
+
     scrollContainer_->setLayout(scrollLayout_);
+    scrollArea_->setWidget(scrollContainer_);
 
     mainLayout_->addWidget(scrollArea_);
 }
