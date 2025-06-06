@@ -349,21 +349,23 @@ private:
     PortAbstractionInterface* portAbsInterface_{
         new PortAbstractionInterface(expressionParser_, expressionFormatter_) };
 
-    //! Interface for managing component instances.
-    ComponentInstanceInterface* instanceInterface_{
-        new ComponentInstanceInterface(connectionInterface_, adhocConnectionInterface_) };
-
     //! Interface for interconnections.
     InterconnectionInterface* connectionInterface_{ new InterconnectionInterface() };
 
     //! Interface for ad hoc connections.
     AdHocConnectionInterface* adhocConnectionInterface_{ new AdHocConnectionInterface() };
 
+    //! Interface for managing component instances.
+    ComponentInstanceInterface* instanceInterface_{
+        new ComponentInstanceInterface(connectionInterface_, adhocConnectionInterface_) };
+
     //! Interface for abstraction type resolution.
     AbstractionTypeInterface* absTypeInf_{ nullptr };
 
     //! Configuration data for generation.
     ConfigStruct* config_;
+
+
 
     //! List of initiator interfaces.
     QList<QSharedPointer<BusInterface>> initiators_;

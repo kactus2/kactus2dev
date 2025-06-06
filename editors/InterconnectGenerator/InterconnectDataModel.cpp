@@ -57,6 +57,14 @@ QHash<QSharedPointer<BusInterface>, QSet<QString>> InterconnectDataModel::getInt
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getLastInvalidConnectionMessage()
+//-----------------------------------------------------------------------------
+QString InterconnectDataModel::getLastInvalidConnectionMessage() const 
+{ 
+    return lastInvalidConnectionMessage_; 
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::getBusesFromInstances()
 //-----------------------------------------------------------------------------
 void InterconnectDataModel::getBusesFromInstances()
@@ -136,90 +144,98 @@ void InterconnectDataModel::filterValidAbstractionReferences()
 {
     validAbsRefs_.clear();
 
-    // Build a quick lookup of all buses grouped by abstraction name
-    QHash<QString, QSet<QSharedPointer<BusInterface>>> absToBuses;
-    for (auto it = interfaceAbsDefsHash_.cbegin(); it != interfaceAbsDefsHash_.cend(); ++it)
-    {
-        const QSharedPointer<BusInterface>& bus = it.key();
-        const QSet<QString>& absNames = it.value();
+    auto absToBuses = buildAbstractionToBusMap();
+    auto modeEntityToBuses = buildModeEntityToBusMap();
 
-        for (const QString& abs : absNames)
-        {
-            absToBuses[abs].insert(bus);
+    for (const auto& absRef : allAbsRefs_) {
+        if (isAbstractionConnectable(absRef, absToBuses, modeEntityToBuses)) {
+            validAbsRefs_.insert(absRef);
         }
     }
+}
 
-    // Build mode/entity hash for each bus once
-    QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>> modeEntityToBuses;
-    for (auto it = instanceBusesHash_.cbegin(); it != instanceBusesHash_.cend(); ++it)
-    {
-        const QString& instanceName = it.key();
-        EntityType entityType = (instanceName == designWidget_->getEditedComponent()->getVlnv().getName())
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::buildAbstractionToBusMap()
+//-----------------------------------------------------------------------------
+QHash<QString, QSet<QSharedPointer<BusInterface>>> InterconnectDataModel::buildAbstractionToBusMap() const
+{
+    QHash<QString, QSet<QSharedPointer<BusInterface>>> map;
+    for (auto it = interfaceAbsDefsHash_.cbegin(); it != interfaceAbsDefsHash_.cend(); ++it) {
+        const auto& bus = it.key();
+        for (const QString& absName : it.value()) {
+            map[absName].insert(bus);
+        }
+    }
+    return map;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::buildModeEntityToBusMap()
+//-----------------------------------------------------------------------------
+QMultiHash<QPair<General::InterfaceMode, InterconnectDataModel::EntityType>, QSharedPointer<BusInterface>>
+InterconnectDataModel::buildModeEntityToBusMap() const
+{
+    QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>> map;
+
+    for (auto it = instanceBusesHash_.cbegin(); it != instanceBusesHash_.cend(); ++it) {
+        EntityType entity = (it.key() == designWidget_->getEditedComponent()->getVlnv().getName())
             ? EntityType::TopComponent : EntityType::Instance;
 
-        for (const QSharedPointer<BusInterface>& bus : it.value())
-        {
-            General::InterfaceMode mode = normalizeTo2014(bus->getInterfaceMode());
-            modeEntityToBuses.insert({ mode, entityType }, bus);
+        for (const auto& bus : it.value()) {
+            map.insert({ normalizeTo2014(bus->getInterfaceMode()), entity }, bus);
         }
     }
 
-    // Main abstraction filtering
-    for (const QSharedPointer<ConfigurableVLNVReference>& absRef : allAbsRefs_)
-    {
-        const QString abs = absRef->getName();
-        const auto& busesWithAbs = absToBuses.value(abs);
+    return map;
+}
 
-        bool abstractionIsConnectable = false;
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::isAbstractionConnectable()
+//-----------------------------------------------------------------------------
+bool InterconnectDataModel::isAbstractionConnectable(
+    QSharedPointer<ConfigurableVLNVReference> absRef,
+    const QHash<QString, QSet<QSharedPointer<BusInterface>>>& absToBuses,
+    const QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>>& modeEntityToBuses) const
+{
+    const QString absName = absRef->getName();
+    const auto& sourceBuses = absToBuses.value(absName);
 
-        for (const QSharedPointer<BusInterface>& sourceBus : busesWithAbs)
-        {
-            General::InterfaceMode sourceMode = normalizeTo2014(sourceBus->getInterfaceMode());
+    for (const auto& sourceBus : sourceBuses) {
+        General::InterfaceMode srcMode = normalizeTo2014(sourceBus->getInterfaceMode());
+        EntityType srcEntity = getEntityTypeForBus(sourceBus);
 
-            QString sourceInstance;
-            EntityType sourceEntity = EntityType::Instance;
+        auto rules = getValidConnectionTargets(srcEntity, srcMode, InterconnectType::Bridge);
+        rules += getValidConnectionTargets(srcEntity, srcMode, InterconnectType::Channel);
 
-            // Find instance name
-            for (auto it = instanceBusesHash_.cbegin(); it != instanceBusesHash_.cend(); ++it) {
-                if (it.value().contains(sourceBus)) {
-                    sourceInstance = it.key();
-                    break;
+        for (const ConnectionRule& rule : rules) {
+            auto targets = modeEntityToBuses.values({ rule.targetMode, rule.targetEntity });
+
+            for (const auto& targetBus : targets) {
+                if (!absToBuses.value(absName).contains(targetBus)) continue;
+
+                if (normalizeTo2014(targetBus->getInterfaceMode()) == rule.targetMode) {
+                    return true;
                 }
             }
+        }
+    }
 
-            sourceEntity = (sourceInstance == designWidget_->getEditedComponent()->getVlnv().getName())
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getEntityTypeForBus()
+//-----------------------------------------------------------------------------
+InterconnectDataModel::EntityType InterconnectDataModel::getEntityTypeForBus(const QSharedPointer<BusInterface>& bus) const
+{
+    for (auto it = instanceBusesHash_.cbegin(); it != instanceBusesHash_.cend(); ++it) {
+        if (it.value().contains(bus)) {
+            return (it.key() == designWidget_->getEditedComponent()->getVlnv().getName())
                 ? EntityType::TopComponent : EntityType::Instance;
-
-            QList<ConnectionRule> rules;
-            rules += getValidConnectionTargets(sourceEntity, sourceMode, InterconnectType::Bridge);
-            rules += getValidConnectionTargets(sourceEntity, sourceMode, InterconnectType::Channel);
-
-            for (const ConnectionRule& rule : rules)
-            {
-                QPair<General::InterfaceMode, EntityType> targetKey = { rule.targetMode, rule.targetEntity };
-                const auto matchingTargets = modeEntityToBuses.values(targetKey);
-
-                for (const QSharedPointer<BusInterface>& targetBus : matchingTargets)
-                {
-                    if (!absToBuses.value(abs).contains(targetBus))
-                        continue;
-
-                    General::InterfaceMode actualTargetMode = normalizeTo2014(targetBus->getInterfaceMode());
-
-                    if (actualTargetMode == rule.targetMode)
-                    {
-                        validAbsRefs_.insert(absRef);
-                        abstractionIsConnectable = true;
-                        break;
-                    }
-                }
-
-                if (abstractionIsConnectable) break;
-            }
-
-            if (abstractionIsConnectable) break;
         }
     }
+
+    return EntityType::Instance;
 }
 
 //-----------------------------------------------------------------------------
@@ -230,6 +246,8 @@ bool InterconnectDataModel::isModeValidForAllConnections(
     const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints,
     InterconnectType mode) const
 {
+    lastInvalidConnectionMessage_.clear(); // Reset previous message
+
     auto instanceBusesLookup = createInstanceBusesLookup();
 
     for (auto it = startingPoints.cbegin(); it != startingPoints.cend(); ++it) {
@@ -241,7 +259,6 @@ bool InterconnectDataModel::isModeValidForAllConnections(
 
         for (const auto& initiatorBus : it.value()) {
             General::InterfaceMode initiatorMode = normalizeTo2014(initiatorBus->getInterfaceMode());
-
             const QList<ConnectionRule> validRules =
                 getValidConnectionTargets(initiatorEntity, initiatorMode, mode);
 
@@ -256,15 +273,18 @@ bool InterconnectDataModel::isModeValidForAllConnections(
                     QSharedPointer<BusInterface> targetBus = targetData->endpointBus;
                     General::InterfaceMode targetMode = normalizeTo2014(targetBus->getInterfaceMode());
 
-                    bool valid = false;
-                    for (const ConnectionRule& rule : validRules) {
-                        if (rule.targetEntity == targetEntity && rule.targetMode == targetMode) {
-                            valid = true;
-                            break;
-                        }
-                    }
+                    bool valid = std::any_of(validRules.begin(), validRules.end(),
+                        [&](const ConnectionRule& rule) {
+                            return rule.targetEntity == targetEntity && rule.targetMode == targetMode;
+                        });
 
                     if (!valid) {
+                        lastInvalidConnectionMessage_ =
+                            QString("Can't connect selected interfaces: %1 [%2] -> %3 [%4]")
+                            .arg(initiatorInstance,
+                                General::interfaceMode2Str(initiatorMode),
+                                targetInstance,
+                                General::interfaceMode2Str(targetMode));
                         return false;
                     }
                 }
@@ -311,6 +331,16 @@ QList<InterconnectDataModel::ConnectionRule> InterconnectDataModel::getValidConn
         }
     }
     return result;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::hasAnyValidConnection()
+//-----------------------------------------------------------------------------
+bool InterconnectDataModel::hasAnyValidConnection(EntityType sourceEntity, General::InterfaceMode sourceMode) const
+{
+    ConnectionKey key{ sourceEntity, sourceMode };
+
+    return connectionRules_.contains(key) && !connectionRules_.value(key).isEmpty();
 }
 
 //-----------------------------------------------------------------------------

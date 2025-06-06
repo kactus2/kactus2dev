@@ -52,6 +52,7 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
     allAbsRefs_ = dataModel_->getAllAbstractionRefs();
     instanceBusesHash_ = dataModel_->getInstanceBusMap();
     interfaceAbsDefsHash_ = dataModel_->getInterfaceAbstractionHash();
+    busLookUp_ = dataModel_->createInstanceBusesLookup();
 
     setUpLayout();
 }
@@ -201,10 +202,7 @@ void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, const QS
 
             General::InterfaceMode mode = InterconnectDataModel::normalizeTo2014(bus->getInterfaceMode());
 
-            const QList<InterconnectDataModel::ConnectionRule> validTargets =
-                dataModel_->getValidConnectionTargets(entityType, mode, icType);
-
-            if (!validTargets.isEmpty()) {
+            if (dataModel_->hasAnyValidConnection(entityType, mode)) {
                 availableInstances.append(instanceName);
                 break;
             }
@@ -247,10 +245,8 @@ void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName
         }
 
         General::InterfaceMode mode = InterconnectDataModel::normalizeTo2014(bus->getInterfaceMode());
-        QList<InterconnectDataModel::ConnectionRule> rules =
-            dataModel_->getValidConnectionTargets(entityType, mode, icType);
 
-        if (!rules.isEmpty()) {
+        if (dataModel_->hasAnyValidConnection(entityType, mode)) {
             validInterfaceNames.append(bus->name());
         }
     }
@@ -262,10 +258,8 @@ void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName
 
 void InterconnectGeneratorDialog::updateInterconnectModeOptions()
 {
-    // Ensure latest selection state
-    auto lookUp = dataModel_->createInstanceBusesLookup();
-    collectStartingPoints(lookUp);
-    collectEndpoints(lookUp);
+    collectStartingPoints(busLookUp_);
+    collectEndpoints(busLookUp_);
 
     bool bridgeValid = dataModel_->isModeValidForAllConnections(
         selectedStartingPoints_, selectedEndpoints_, InterconnectDataModel::InterconnectType::Bridge);
@@ -674,7 +668,8 @@ void InterconnectGeneratorDialog::accept()
     }
     if (!bridgeButton_->isEnabled() && !channelButton_->isEnabled()) 
     {
-        QMessageBox::warning(this, tr("Input Error"), tr("Can't connect selected interfaces."));
+        QString message = dataModel_->getLastInvalidConnectionMessage();
+        QMessageBox::warning(this, tr("Input Error"), message);
         return;
     }
 
@@ -725,19 +720,13 @@ void InterconnectGeneratorDialog::accept()
         }
     }
 
-    QString message = QString("Design VLNV: %1\nInterconnect VLNV: %2\nBus VLNV: %3\nClock VLNV: %4\nReset VLNV: %5\nBus Type: %6\nAddress Width: %7\nID Width: %8\n")
-        .arg(config->DesignVLNV)
-        .arg(config->InterconVLNV)
-        .arg(config->BusVLNV)
-        .arg(config->ClkVLNV)
-        .arg(config->RstVLNV)
-        .arg(config->BusType)
-        .arg(config->AddressWidth)
-        .arg(config->IDWidth);
-
-    messager_->showMessage(message);
     config_ = config; //new
     collectInstances();
+    if (selectedStartingPoints_.isEmpty() || selectedEndpoints_.isEmpty()) 
+    {
+        QMessageBox::warning(this, tr("Input Error"), tr("Can't connect selected interfaces."));
+        return;
+    }
     QDialog::accept();
 }
 
@@ -746,10 +735,9 @@ void InterconnectGeneratorDialog::accept()
 //-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::collectInstances()
 {
-    auto instanceBusesLookup = dataModel_->createInstanceBusesLookup();
 
-    collectStartingPoints(instanceBusesLookup);
-    collectEndpoints(instanceBusesLookup);
+    collectStartingPoints(busLookUp_);
+    collectEndpoints(busLookUp_);
 }
 
 //-----------------------------------------------------------------------------

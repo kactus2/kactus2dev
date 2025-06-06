@@ -3,7 +3,7 @@
 //---------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Sampo Suokuisma
-// Date: xx.xx.2025
+// Date: 05.06.2025
 //
 // Description:
 // Model class for collecting and validating interconnect data from a design.
@@ -159,6 +159,22 @@ public:
         const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints,
         InterconnectType mode) const;
 
+    /*!
+     *  Returns true if the given source bus can connect to any target under any interconnect type.
+     *
+     *  @param [in] sourceEntity     Type of the source entity (Instance or TopComponent).
+     *  @param [in] sourceMode       Normalized interface mode of the source.
+     *  @return True if connectable under any interconnect type.
+     */
+    bool hasAnyValidConnection(EntityType sourceEntity, General::InterfaceMode sourceMode) const;
+
+    /*!
+     *  Returns invalid connection string to show on the dialog.
+     *  
+     *  @return True if valid for all combinations; otherwise false.
+     */
+    QString getLastInvalidConnectionMessage() const;
+
 private:
     /*!
      *  Initialize all valid connection rules.
@@ -189,6 +205,55 @@ private:
     void filterValidAbstractionReferences();
 
 private:
+
+    /*!
+     *  Builds a lookup map of abstraction names to the bus interfaces
+     *  that declare them.
+     *
+     *  @return Mapping from abstraction name to set of associated BusInterfaces.
+     */
+    QHash<QString, QSet<QSharedPointer<BusInterface>>> buildAbstractionToBusMap() const;
+
+    /*!
+     *  Constructs a multimap grouping bus interfaces by their mode
+     *  and whether they belong to an instance or the top component.
+     *
+     *  @param [in] instanceBusesHash_   Map of instance names to sets of bus interfaces.
+     *  @param [in] designWidget_        Design context used to resolve top component name.
+     *
+     *  @return Multi-hash mapping (interface mode, entity type) to BusInterfaces.
+     */
+    QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>>
+        buildModeEntityToBusMap() const;
+
+    /*!
+     *  Checks if a given abstraction reference can be used to connect
+     *  at least one valid pair of interfaces based on defined rules.
+     *
+     *  @param [in] absRef             Abstraction reference to validate.
+     *  @param [in] absToBuses         Lookup from abstraction name to BusInterfaces.
+     *  @param [in] modeEntityToBuses  Lookup from (mode, entity) to BusInterfaces.
+     * 
+     *  @return True if the abstraction is connectable; otherwise false.
+     */
+    bool isAbstractionConnectable(
+        QSharedPointer<ConfigurableVLNVReference> absRef,
+        const QHash<QString, QSet<QSharedPointer<BusInterface>>>& absToBuses,
+        const QMultiHash<QPair<General::InterfaceMode, EntityType>, 
+        QSharedPointer<BusInterface>>& modeEntityToBuses) const;
+
+    /*!
+     *  Determines the entity type (Instance or TopComponent) of a given bus interface.
+     *
+     *  @param [in] bus  The BusInterface whose owning entity is to be identified.
+     *  @return EntityType indicating if it's part of the top-level component or an instance.
+     */
+    EntityType getEntityTypeForBus(const QSharedPointer<BusInterface>& bus) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! Pointer to the design widget (for accessing model and instances).
     DesignWidget* designWidget_;
 
@@ -221,6 +286,9 @@ private:
 
     //! Lookup of all valid connection rules for each source configuration.
     QHash<ConnectionKey, QList<ConnectionRule>> connectionRules_;
+
+    //! Used to store invalid connection message to display on dialog.
+    mutable QString lastInvalidConnectionMessage_;
 };
 
 /*!

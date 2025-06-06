@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Sampo Suokuisma
-// Date: xx.xx.2025
+// Date: 05.06.2025
 //
 // Description:
 // Class for enumerating and selecting interface points for starting or ending connections.
