@@ -24,7 +24,9 @@
 //-----------------------------------------------------------------------------
 AssistedLineEdit::AssistedLineEdit(QWidget* parentWnd, QWidget* parent) : 
 QLineEdit(parent),
-contentAssist_(new LineContentAssistWidget(this, parentWnd))
+contentAssist_(new LineContentAssistWidget(this, parentWnd)) // NOTE: parent window set as parent so that 
+                                                             // content assist visibility isn't dependent 
+                                                             // on "real" parent widget size!
 {
     contentAssist_->setFocusProxy(this);
 }

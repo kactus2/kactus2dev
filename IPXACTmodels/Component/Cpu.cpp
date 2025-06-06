@@ -247,8 +247,13 @@ QSharedPointer<QList<QSharedPointer<Region> > > Cpu::getRegions() const
 //-----------------------------------------------------------------------------
 // Function: Cpu::getAddressUnitBits()
 //-----------------------------------------------------------------------------
-QString Cpu::getAddressUnitBits() const
+QString Cpu::getAddressUnitBits(bool defaultIfEmpty /*= true*/) const
 {
+    if (addressUnitBits_.isEmpty() && defaultIfEmpty)
+    {
+        return QStringLiteral("8");
+    }
+
     return addressUnitBits_;
 }
 

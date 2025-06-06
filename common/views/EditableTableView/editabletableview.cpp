@@ -414,14 +414,19 @@ void EditableTableView::onRemoveAction()
     // Remove selected rows. Removal starts from the back of the selected indexes to remove correct rows.
     // Sorting model apparently returns indexes in correct order when selectedIndexes() is called, which makes 
     // reverse removal possible.
-    if (auto sortProxy = dynamic_cast<QSortFilterProxyModel*>(model()))
+    auto sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+    for (auto it = indexes.crbegin(); it != indexes.crend(); ++it)
     {
-        for (auto it = indexes.crbegin(); it != indexes.crend(); ++it)
+        if (sortProxy)
         {
             emit removeItem(sortProxy->mapToSource(*it));
         }
+        else
+        {
+            emit removeItem(*it);
+        }
     }
-
+    
     clearSelection();
     setCurrentIndex(QModelIndex());
 

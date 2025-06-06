@@ -185,7 +185,12 @@ void DesignWidget::refresh()
     QSharedPointer<Component> comp = getLibHandler()->getModel(editedComponent_->getVlnv()).staticCast<Component>();
 
     setDesign(comp, viewName_);
-    setModified(false);
+
+    // Change modified only if document was refreshed by the document itself, not related document
+    if (!refreshWasRequested())
+    {
+        setModified(false);
+    }
 
     TabDocument::refresh();
 

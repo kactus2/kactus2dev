@@ -508,6 +508,53 @@ void VLNVEditor::showEvent(QShowEvent* event)
 }
 
 //-----------------------------------------------------------------------------
+// Function: VLNVEditor::focusNextPrevChild()
+//-----------------------------------------------------------------------------
+bool VLNVEditor::focusNextPrevChild(bool next)
+{
+    // Function overridden to fix tab and shift+tab behavior when created by delegate of EditableTableView.
+
+    if (next)
+    {
+        if (vendorEdit_->hasFocus())
+        {
+            libraryEdit_->setFocus();
+            return true;
+        }
+        else if (libraryEdit_->hasFocus())
+        {
+            nameEdit_->setFocus();
+            return true;
+        }
+        else if (nameEdit_->hasFocus())
+        {
+            versionEdit_->setFocus();
+            return true;
+        }
+    }
+    else
+    {
+        if (libraryEdit_->hasFocus())
+        {
+            vendorEdit_->setFocus();
+            return true;
+        }
+        else if (nameEdit_->hasFocus())
+        {
+            libraryEdit_->setFocus();
+            return true;
+        }
+        else if (versionEdit_->hasFocus())
+        {
+            nameEdit_->setFocus();
+            return true;
+        }
+    }
+
+    return QWidget::focusNextPrevChild(next);
+}
+
+//-----------------------------------------------------------------------------
 // Function: VLNVEditor::refresh()
 //-----------------------------------------------------------------------------
 void VLNVEditor::refresh()

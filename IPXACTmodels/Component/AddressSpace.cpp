@@ -110,8 +110,13 @@ void AddressSpace::setAddressUnitBits(QString const& newAddressUnitBits)
 //-----------------------------------------------------------------------------
 // Function: AddressSpace::getAddressUnitBits()
 //-----------------------------------------------------------------------------
-QString AddressSpace::getAddressUnitBits() const
+QString AddressSpace::getAddressUnitBits(bool defaultIfEmpty /*= true*/) const
 {
+    if (addressUnitBits_.isEmpty() && defaultIfEmpty)
+    {
+        return QStringLiteral("8");
+    }
+
 	return addressUnitBits_;
 }
 

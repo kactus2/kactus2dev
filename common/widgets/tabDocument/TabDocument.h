@@ -407,6 +407,13 @@ protected:
      */
     LibraryInterface* getLibHandler() const;
 
+    /*!
+     *	Returns the status of if refresh was requested from another document.
+     *	    
+     *    @return True, if the refresh request origin came from elsewhere, otherwise false.
+     */
+    bool refreshWasRequested() const;
+
 private slots:
 
     //! Handles the refresh request.

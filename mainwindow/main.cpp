@@ -190,14 +190,23 @@ int main(int argc, char *argv[])
         QStringList arguments = application->arguments();
         CommandLineParser parser;
 
-        parser.process(arguments, mediator.data());
+        // Check for arg errors
+        if (parser.process(arguments, mediator.data()))
+        {
+            return 1;
+        }
         
-        if (parser.commandlineMode())
+        QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
+        QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
+
+        // Excecute according to mode
+        if (parser.versionMode())
+        {
+            return 0;
+        }
+        else if (parser.commandlineMode()) // Start interactive CLI mode
         {
             library.searchForIPXactFiles();
-
-            QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
-            QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
 
             bool interactive = isatty(fileno(stdin));
             PythonInterpreter console(outChannel.data(), errChannel.data(), interactive, application.data());
@@ -208,10 +217,23 @@ int main(int argc, char *argv[])
             }
 
             QScopedPointer<StdInputListener> listener(new StdInputListener(&console, application.data()));
-
             QObject::connect(listener.data(), SIGNAL(inputFailure()), application.data(), SLOT(quit()));
-
             return application->exec();
+        }
+        else if (parser.runScriptMode()) // Run script and exit
+        {
+            library.searchForIPXactFiles();
+
+            bool interactive = isatty(fileno(stdin));
+            PythonInterpreter console(outChannel.data(), errChannel.data(), false, application.data());
+
+            if (console.initialize(interactive) == false)
+            {
+                return 1;
+            }
+
+            auto scriptPath = parser.getOptionValue(CommandLineParser::Option::InputScript);
+            return console.runFile(scriptPath);
         }
 
         return 1;
