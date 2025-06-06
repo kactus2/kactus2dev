@@ -186,7 +186,7 @@ QMultiMap<quint64, RegisterGraphicsItem::FieldMemoryItem> RegisterGraphicsItem::
 {
     QMultiMap<quint64, RegisterGraphicsItem::FieldMemoryItem> fieldMap;
 
-    quint64 registerOffset = registerItem->getAddress().toULongLong();
+//     quint64 registerOffset = registerItem->getAddress().toULongLong();
 
     for (QSharedPointer<MemoryItem const> fieldItem : registerItem->getChildItems())
     {
@@ -324,9 +324,9 @@ void RegisterGraphicsItem::createOverlappingFieldMarkers()
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::createOverlappingMarkersForField()
 //-----------------------------------------------------------------------------
-void RegisterGraphicsItem::createOverlappingMarkersForField(int fieldIndex, int fieldCount,
-    FieldGraphicsItem* fieldItem, QRectF fieldRectangle, int fieldLineWidth, QBrush overlapBrush,
-    QGraphicsScene* containingScene)
+void RegisterGraphicsItem::createOverlappingMarkersForField(int /*fieldIndex*/, int /*fieldCount*/,
+    FieldGraphicsItem* /*fieldItem*/, QRectF /*fieldRectangle*/, int /*fieldLineWidth*/, QBrush /*overlapBrush*/,
+    QGraphicsScene* /*containingScene*/)
 {
 /*
     for (int comparisonIndex = fieldIndex + 1; comparisonIndex < fieldCount; ++comparisonIndex)

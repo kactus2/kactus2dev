@@ -6,7 +6,7 @@
 // Date: 16.08.2016
 //
 // Description:
-// Memory designer connection item between address spaces and memory maps.
+// Memory designer connection item.
 //-----------------------------------------------------------------------------
 
 #ifndef MEMORYCONNETIONITEM_H
@@ -20,7 +20,7 @@ class ConnectivityInterface;
 #include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
-//! Memory designer connection item between address spaces and memory maps.
+//! Memory designer connection item.
 //-----------------------------------------------------------------------------
 class MemoryConnectionItem : public QGraphicsPathItem
 {
@@ -30,10 +30,12 @@ public:
     /*!
      *  The constructor.
      *
-     *    @param [in] startItem           The start item of the connection (address space).
+     *    @param [in] startItem           The start item of the connection.
      *    @param [in] firstStartValue     Start address in the start item.
      *    @param [in] firstEndValue       End address in the start item.
-     *    @param [in] endItem             The end item of the connection (memory map).
+     *    @param [in] secondStartValue    Start address in the end item.
+     *    @param [in] secondEndValue      End address in the end item.
+     *    @param [in] endItem             The end item of the connection.
      *    @param [in] containingScene     Graphics scene containing the memory connection item.
      *    @param [in] yTransfer           Y transfer of the memory connection.
      *    @param [in] parent              Parent item of the connection.
@@ -41,6 +43,8 @@ public:
     MemoryConnectionItem(MainMemoryGraphicsItem* startItem,
         quint64 firstStartValue,
         quint64 firstEndValue,
+        quint64 secondStartValue,
+        quint64 secondEndvalue,
         MainMemoryGraphicsItem* endItem,
         QGraphicsScene* containingScene,
         qreal yTransfer = 0,
@@ -170,10 +174,12 @@ private:
     /*!
      *  Setup the range labels.
      *
-     *    @param [in] startValue  Base address of the connection.
-     *    @param [in] endValue    Last address of the connection.
+     *    @param [in] leftStartValue    Base address of the connection on the starting item.
+     *    @param [in] leftEndValue      Last address of the connection on the starting item.
+     *    @param [in] rightStartValue   Base address of the connection on the ending item.
+     *    @param [in] rightEndValue     Last address of the connection on the ending item.
      */
-    void setupLabels(quint64 startValue, quint64 endValue);
+    void setupLabels(quint64 const& leftStartValue, quint64 const& leftEndValue, quint64 const& rightStartValue, quint64 const& rightEndValue);
 
     /*!
      *  Create the connection path.

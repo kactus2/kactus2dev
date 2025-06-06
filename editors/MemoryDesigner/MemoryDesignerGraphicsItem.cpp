@@ -115,8 +115,7 @@ void MemoryDesignerGraphicsItem::hideMemoryRangeLabels()
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::hideCollidingRangeLabels()
 //-----------------------------------------------------------------------------
-void MemoryDesignerGraphicsItem::hideCollidingRangeLabels(quint64 connectionBaseAddress,
-    quint64 connectionLastAddress)
+void MemoryDesignerGraphicsItem::hideCollidingRangeLabels(quint64 /*connectionBaseAddress*/, quint64 /*connectionLastAddress*/)
 {
 /*
     quint64 itemBaseAddress = getBaseAddress();
@@ -192,8 +191,7 @@ QGraphicsTextItem* MemoryDesignerGraphicsItem::getRangeEndLabel() const
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::setupGraphicsItem()
 //-----------------------------------------------------------------------------
-void MemoryDesignerGraphicsItem::setupGraphicsItem(quint64 memoryStart, quint64 memoryEnd,
-    QString const& identifier)
+void MemoryDesignerGraphicsItem::setupGraphicsItem(quint64 memoryStart, quint64 memoryEnd, QString const& identifier)
 {
     setupLabels(memoryStart, memoryEnd);
     setupOriginalAddresses(memoryStart, memoryEnd);

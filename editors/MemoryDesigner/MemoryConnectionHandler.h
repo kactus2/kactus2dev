@@ -120,17 +120,18 @@ private:
     //! Graphics item with calculated address ranges and linked child items.
     struct LinkedGraphicItem
     {
-        //! Calculated base address of the item.
-        quint64 itemBaseAddress_ = 0;
+        //! Calculated base addresses of the connection to this item.
+        quint64 connectionLeftBaseAddress_ = 0;
+        quint64 connectionRightBaseAddress_ = 0;
 
-        //! Calculated base address of the connection to this item.
-        quint64 connectionBaseAddress_ = 0;
-
-        //! List of last addresses this item has been connected with to the previous item.
-        QVector<quint64> connectionLastAddresses_;
+        //! List of ranges this item has been connected with to the previous item.
+        QVector<quint64> connectionRanges_;
 
         //! Value for moving the connection relative to the previous item.
-        qreal yTransfer = 0;
+        qreal connectionTransferY_ = 0;
+
+        //! Value for moving the connected item relative to the connection.
+        qreal memoryItemTransferY_ = 0;
 
         //! The linked graphics item.
         MainMemoryGraphicsItem* item_;
@@ -172,15 +173,16 @@ private:
     /*!
      *  Find an existing linked item, or create a new one.
      *
-     *    @param [in] placedItems               List of linked graphics items.
-     *    @param [in] roots                     List of the starting graphics items.
-     *    @param [in] previousItem              The previous linked graphics item.
-     *    @param [in] pathGraphicsItem          Graphics item for this linked item.
-     *    @param [in] itemBaseAddress           Base address for connected item.
-     *    @param [in] connectionBaseAddress     Base address of the connection.
-     *    @param [in] connectionLastAddress     Last address of the connection.
-     *    @param [in] yTransfer                 Value for moving the connection relative to the previous item.
-     *    @param [in] itemColumn                Column for the graphics item.
+     *    @param [in] placedItems                   List of linked graphics items.
+     *    @param [in] roots                         List of the starting graphics items.
+     *    @param [in] previousItem                  The previous linked graphics item.
+     *    @param [in] pathGraphicsItem              Graphics item for this linked item.
+     *    @param [in] connectionLeftBaseAddress     Base address of the connection on the starting item.
+     *    @param [in] connectionRightBaseAddress    Base address of the connection on the ending item.
+     *    @param [in] connectionRange               Range of the connection.
+     *    @param [in] itemTransferY                 Value for moving the item relative to the connection.
+     *    @param [in] connectionTransferY           Value for moving the connection relative to the previous item.
+     *    @param [in] itemColumn                    Column for the graphics item.
      *
      *    @return The found linked graphics item.
      */
@@ -189,44 +191,49 @@ private:
         QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem> > > roots,
         QSharedPointer<LinkedGraphicItem> previousItem,
         MainMemoryGraphicsItem* pathGraphicsItem,
-        quint64 const& itemBaseAddress,
-        quint64 const& connectionBaseAddress,
-        quint64 const& connectionLastAddress,
-        qreal const& yTransfer,
+        quint64 const& connectionLeftBaseAddress,
+        quint64 const& connectionRightBaseAddress,
+        quint64 const& connectionRange,
+        qreal const& itemTransferY,
+        qreal const& connectionTransferY,
         MemoryColumn* itemColumn);
 
     /*!
      *  Check if the graphics item has already been linked to the selected linked item with the selected base address.
      *
-     *    @param [in] linkedItem                The selected linked item.
-     *    @param [in] pathGraphicsItem          The selected graphics item.
-     *    @param [in] connectionBaseAddress     Base address of the connection.
+     *    @param [in] linkedItem                    The selected linked item.
+     *    @param [in] pathGraphicsItem              The selected graphics item.
+     *    @param [in] connectionLeftBaseAddress     Base address of the connection on the starting item.
+     *    @param [in] connectionRightBaseAddress    Base address of the connection on the ending item.
      *
      *    @return True, if the graphics item has been linked, false otherwise.
      */
-    bool foundLinkedItem(QSharedPointer<LinkedGraphicItem> linkedItem, MainMemoryGraphicsItem* pathGraphicsItem, quint64 const& connectionBaseAddress) const;
+    bool foundLinkedItem(QSharedPointer<LinkedGraphicItem> linkedItem, MainMemoryGraphicsItem* pathGraphicsItem, quint64 const& connectionLeftBaseAddress, quint64 const& connectionRightBaseAddress) const;
 
     /*!
      *  Create a linked graphics item.
      *
-     *    @param [in] containingSet             The set of items to which this linked item will be added to.
-     *    @param [in] pathGraphicsItem          Graphics item to be linked.
-     *    @param [in] itemBaseAddress           Base address for the graphics item.
-     *    @param [in] connectionBaseAddress     Base address for the connection to the selected item.
-     *    @param [in] connectionLastAddress     Last address for the connection to the selected item.
-     *    @param [in] yTransfer                 Value for moving the connection relative to the previous item.
-     *    @param [in] placedItems               List of linked graphics items.
-     *    @param [in] itemColumn
+     *    @param [in] containingSet                 The set of items to which this linked item will be added to.
+     *    @param [in] pathGraphicsItem              Graphics item to be linked.
+     *    @param [in] itemBaseAddress               Base address for the graphics item.
+     *    @param [in] connectionLeftBaseAddress     Base address of the connection on the starting item.
+     *    @param [in] connectionRightBaseAddress    Base address of the connection on the ending item.
+     *    @param [in] connectionRange               Last address for the connection to the selected item.
+     *    @param [in] connectedItemTransferY        Value for moving the item relative to the connection.
+     *    @param [in] connectionTransferY           Value for moving the connection relative to the previous item.
+     *    @param [in] placedItems                   List of linked graphics items.
+     *    @param [in] itemColumn                    Column containing the linked memory item.
      *
      *    @return 
      */
     QSharedPointer<LinkedGraphicItem> createLinkedItem(
         QSharedPointer<QVector<QSharedPointer<LinkedGraphicItem> > > containingSet,
         MainMemoryGraphicsItem* pathGraphicsItem,
-        quint64 const& itemBaseAddress,
-        quint64 const& connectionBaseAddress,
-        quint64 const& connectionLastAddress,
-        qreal const& yTransfer,
+        quint64 const& connectionLeftBaseAddress,
+        quint64 const& connectionRightBaseAddress,
+        quint64 const& connectionRange,
+        qreal const& connectedItemTransferY,
+        qreal const& connectionTransferY,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems,
         MemoryColumn* itemColumn);
 
@@ -361,21 +368,23 @@ private:
     /*!
      *  Create connections for a single linked list.
      *
-     *    @param [in] roots                 Starting point for the linked list.
-     *    @param [in] currentLinkItem       The currently examined linked item.
-     *    @param [in] placedSpaces          List of the already placed address spaces.
-     *    @param [in] placedMaps            List of the already placed memory maps.
-     *    @param [in] mapColumn             The memory map column.
-     *    @param [in] maximumLastAddress    The last address visible for the current connection.
-     *    @param [in] combinedTransferY     Position of the connection relative to the starting item.
+     *    @param [in] roots                     Starting point for the linked list.
+     *    @param [in] currentLinkItem           The currently examined linked item.
+     *    @param [in] placedSpaces              List of the already placed address spaces.
+     *    @param [in] placedMaps                List of the already placed memory maps.
+     *    @param [in] mapColumn                 The memory map column.
+     *    @param [in] maximumLeftBaseAddress    The last base address visible to the connected root item.
+     *    @param [in] rightBaseAddressChange    Change made to the connection end item during the connection.
+     *    @param [in] minimumLeftLastAddress    The minimum last address visible to the connected root item.
      */
     void createOnlyEndsConnectionsForRoot(QSharedPointer<LinkedGraphicItem> root,
         QSharedPointer<LinkedGraphicItem> currentLinkItem,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaces,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
         MemoryColumn* mapColumn,
-        quint64 const& maximumLastAddress,
-        qreal combinedTransferY);
+        quint64 const& maximumLeftBaseAddress,
+        quint64 const& rightBaseAddressChange,
+        quint64 const& minimumLeftLastAddress);
 
     /*!
      *  Create full connections from the linked lists.
@@ -455,11 +464,21 @@ private:
     MainMemoryGraphicsItem* getLocalMemoryMapItem(QSharedPointer<ConnectivityInterface const> spaceInterface) const;
 
     /*!
+     *  Place the non-root connected address space item.
+     *
+     *    @param [in] spaceItem     The connected address space item.
+     *    @param [in] startItem     The connection start item.
+     *    @param [in] yTransfer     The initial position of the connected item relative to the starting memory item.
+     *    @param [in] placedSpaces  List of the placed address space items.
+     */
+    void placeAddressSpace(MainMemoryGraphicsItem* spaceItem, MainMemoryGraphicsItem* startItem, qreal const& yTransfer, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaces);
+
+    /*!
      *  Place the memory map item.
      *	
      *    @param [in] mapItem           The connected memory map item.
      *    @param [in] startItem         The connection starting item.
-     *    @param [in] yTransfer         The initial position of the connection from the starting memory item.
+     *    @param [in] yTransfer         The initial position of the connected item relative to the starting memory item.
      *    @param [in] placedMapItems    List of the placed memory map items.
      *    @param [in] mapColumn         The memory map column.
      */
@@ -497,16 +516,20 @@ private:
     /*!
      *  Create the connection item.
      *	
-     *    @param [in] startItem               The starting item of the connection.
-     *    @param [in] endItem                 The end item of the connection.
-     *    @param [in] remappedAddress         Base address for the connection.
-     *    @param [in] remappedEndAddress      End address for the connection.
-     *    @param [in] yTransfer               Position of the connection relative to the starting item.
+     *    @param [in] startItem             The starting item of the connection.
+     *    @param [in] endItem               The end item of the connection.
+     *    @param [in] leftBaseAddress       Base address of the connection on the starting item.
+     *    @param [in] rightBaseAddress      Base address of the connection on the ending item.
+     *    @param [in] endItemBaseAddress    Base address for the end item.
+     *    @param [in] connectionRange       Range of the connection.
+     *    @param [in] yTransfer             Position of the connection relative to the starting item.
      */
     void createConnectionItem(MainMemoryGraphicsItem* startItem,
         MainMemoryGraphicsItem* endItem,
-        quint64 const& remappedAddress,
-        quint64 const& remappedEndAddress,
+        quint64 const& leftBaseAddress,
+        quint64 const& rightBaseAddress,
+        quint64 const& endItemBaseAddress,
+        quint64 const& connectionRange,
         qreal const& yTransfer);
 
     /*!
