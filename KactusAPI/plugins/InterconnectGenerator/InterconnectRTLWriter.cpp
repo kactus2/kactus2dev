@@ -69,16 +69,22 @@ void InterconnectRTLWriter::generateRTL()
         if (usedInterfaceStr == "axi4") {
 
             writeAXI4(verilogRTL);
-            writeAddrMap(verilogRTL);
+            writeAxiAddrMap(verilogRTL);
             writeAxiXbarCfg(verilogRTL);
             writeAxiXbar(verilogRTL);
 
         } else if (usedInterfaceStr == "axi4lite") {
 
             writeAXI4LITE(verilogRTL);
-            writeAddrMap(verilogRTL);
+            writeAxiAddrMap(verilogRTL);
             writeAxiXbarCfg(verilogRTL);
             writeAxiXbar(verilogRTL);
+
+        } else if (usedInterfaceStr == "obi") {
+
+            writeObiParams(verilogRTL);
+            writeObiInterfaces(verilogRTL);
+            writeObiAddrMap(verilogRTL);
 
         } else {
 
@@ -136,7 +142,7 @@ void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
 
     if (!config_->TargetList.isEmpty()) {
         stream << indent()  << "AXI_BUS #(" << Qt::endl;
-        stream << indent(2) << ".AXI_ID_WIDTH(" << axiIdWidthInits_ << ")," << Qt::endl;
+        stream << indent(2) << ".AXI_ID_WIDTH(" << IdWidthInits_ << ")," << Qt::endl;
         stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
         stream << indent(2) << ".AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
         stream << indent(2) << ".AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
@@ -148,7 +154,7 @@ void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
 
     if (!config_->InitList.isEmpty()) {
         stream << indent()  << "AXI_BUS #(" << Qt::endl;
-        stream << indent(2) << ".AXI_ID_WIDTH(" << axiIdWidthInits_ << ")," << Qt::endl;
+        stream << indent(2) << ".AXI_ID_WIDTH(" << IdWidthInits_ << ")," << Qt::endl;
         stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
         stream << indent(2) << ".AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
         stream << indent(2) << ".AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
@@ -194,13 +200,13 @@ void InterconnectRTLWriter::writeAxiParams(QTextStream& stream) {
     stream << indent() << "localparam " << axiInitParam_
         << " = " << config_->InitList.size() << ";" << Qt::endl;
     
-    stream << indent() << "localparam " << axiIdWidthInits_ << " = ";
+    stream << indent() << "localparam " << IdWidthInits_ << " = ";
         stream << config_->IDWidth << " + " << "$clog2(" << axiTargetParam_ << ");" << Qt::endl;
         stream << Qt::endl;
 }
 
 
-void InterconnectRTLWriter::writeAddrMap(QTextStream& stream)
+void InterconnectRTLWriter::writeAxiAddrMap(QTextStream& stream)
 {
     int targetRegions = 0;
     for (TargetStruct target : config_->TargetList) {
@@ -371,6 +377,99 @@ void InterconnectRTLWriter::writeInitAssign(QTextStream& stream) {
         writeAxiAssign(stream, init.Name, init.Index);
         stream << Qt::endl;
     }
+}
+
+
+void InterconnectRTLWriter::writeObiParams(QTextStream& stream) {
+    
+    stream << indent() << "localparam " << obiTargetParam_
+        << " = " << config_->TargetList.size() << ";\n";
+
+    stream << indent() << "localparam " << obiInitParam_
+        << " = " << config_->InitList.size() << ";\n";
+
+    stream << "\n";
+    
+    stream << indent() << "localparam " << IdWidthInits_ << " = ";
+        stream << config_->IDWidth << " + " << "$clog2(" << obiTargetParam_ << ");\n";
+
+    stream << indent() << "localparam " << addrRulesParam_
+        << " = " << obiTargetParam_ << ";\n";
+
+    stream << "\n";
+
+    stream << indent()  << "localparam obi_pkg::obi_optional_cfg_t obi_cfg = obi_pkg::obi_all_optional_config(\n";
+    
+    // Print parameters of the configure struct
+    for (int i = 0; i < obiXbarCfgParams_.size(); ++i) {
+        const QString& param = obiXbarCfgParams_[i];
+        bool isLast = (i == obiXbarCfgParams_.size() - 1);
+        stream << indent(2) << param;
+        if (!isLast)
+            stream << ",";
+        stream << "\n";
+    }
+    stream << indent() << ");\n" << Qt::endl;
+}
+
+
+void InterconnectRTLWriter::writeObiInterfaces(QTextStream& stream) {
+
+    if (!config_->InitList.isEmpty()) {
+        stream << indent()  << "OBI_BUS #(\n";
+        stream << indent(2) << ".OBI_CFG(obi_cfg)\n";
+
+        if (config_->InitList.size() == 1) {
+            stream << indent()  << ") obi_init_bus [(" << obiInitParam_
+                << "+1)-1:0](); // NOTE: Extra interface due to single initiator issue\n" << Qt::endl;
+        } else {
+            stream << indent()  << ") obi_init_bus [" << obiInitParam_ << "-1:0]();\n" << Qt::endl;
+        }
+    }
+
+    if (!config_->TargetList.isEmpty()) {
+        stream << indent()  << "OBI_BUS #(\n";
+        stream << indent(2) << ".OBI_CFG(obi_cfg)\n";
+        stream << indent()  << ") obi_target_bus [" << obiTargetParam_ << "-1:0]();\n" << Qt::endl;
+    }
+}
+
+
+void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
+
+    int targetRegions = 0;
+    for (TargetStruct target : config_->TargetList) {
+        if (target.AddressRegions.length() > 1) {
+            targetRegions += target.AddressRegions.length() - 1;
+        }
+    }
+
+    stream << indent() << "typedef struct packed {\n";
+    stream << indent(2) << "int unsigned idx;\n";
+    stream << indent(2) << "logic [ADDR_WIDTH-1:0] start_addr;\n";
+    stream << indent(2) << "logic [ADDR_WIDTH-1:0] end_addr;\n";
+    stream << indent() << "} addr_rule_t;\n" << Qt::endl;
+
+    stream << indent() << "addr_rule_t AddrMapXBAR [NoAddrRules] = '{\n";
+
+    int regionCounter = 0;
+
+    for (TargetStruct target : config_->TargetList) {
+        for (AddressPair addrPair : target.AddressRegions) {
+            regionCounter += 1;
+
+            QString startStr = parseAddress(addrPair.Start);
+            QString endStr = parseAddress(addrPair.End);
+            // '{idx: IdWidthInits'('d0), start_addr: ADDR_WIDTH'('h0000), end_addr: ADDR_WIDTH'('h10000)}  // Target: axi_imem_bridge_AXI4LITE
+            stream << indent(2)
+                << "'{idx: IdWidthInits'(d" << target.Index
+                << "), start_addr: ADDR_WIDTH'(" << startStr
+                << "), end_addr: ADDR_WIDTH'(" << endStr << ")"
+                << ((regionCounter == targetRegions + config_->TargetList.size()) ? "} " : "},")
+                << " // Target: " << target.Name << "\n";
+        }
+    }
+    stream << indent() << "};\n" << Qt::endl;
 }
 
 

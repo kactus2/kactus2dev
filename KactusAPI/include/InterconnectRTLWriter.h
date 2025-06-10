@@ -35,7 +35,7 @@ public:
 private:
     void writeBus(QTextStream& stream, QString type);
 
-    void writeAddrMap(QTextStream& stream);
+    void writeAxiAddrMap(QTextStream& stream);
 
     void writeAxiXbarCfg(QTextStream& stream);
 
@@ -54,6 +54,12 @@ private:
     void writeAXI4LITE(QTextStream& stream);
 
     void writeAxiParams(QTextStream& stream);
+
+    void writeObiParams(QTextStream& stream);
+
+    void writeObiInterfaces(QTextStream& stream);
+
+    void writeObiAddrMap(QTextStream& stream);
 
     QString indent(int n = 1);
 
@@ -129,7 +135,16 @@ private:
         "r_data", "r_resp", "r_valid", "r_ready"
     };
 
-    QStringList supportedInterfaces = {"axi4", "axi4lite"};
+    QStringList obiXbarCfgParams_ = {
+        "AUSER_WIDTH",
+        "WUSER_WIDTH",
+        "RUSER_WIDTH",
+        "MID_WIDTH",
+        "ACHK_WIDTH",
+        "RCHK_WIDTH"
+    };
+
+    QStringList supportedInterfaces = {"axi4", "axi4lite", "obi"};
                                 
 
     QString axiTargetBus_ = "_target";
@@ -138,11 +153,14 @@ private:
 
     QString axiTargetParam_ = "AXI_TARGETS";
     QString axiInitParam_ = "AXI_INITIATORS";
-    QString axiIdWidthInits_ = "IdWidthInits";
+    QString IdWidthInits_ = "IdWidthInits";
     QString addrRulesParam_ = "NoAddrRules";
     QString ruleType_ = "rule_t";
     QString addrMapXBAR_ = "AddrMapXBAR";
     QString axiCfg_ = "xbar_cfg";
+
+    QString obiTargetParam_ = "OBI_TARGETS";
+    QString obiInitParam_ = "OBI_INITIATORS";
 };
 
 #endif // INTERCONNECTRTLWRITER_H
