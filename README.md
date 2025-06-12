@@ -6,7 +6,7 @@
 ![Kactus2 logo](common/graphics/appicon.png)
 
 Kactus2 is a toolset for designing SoCs. The aim is easier IP reusability and integration for both hardware and
-software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
+software. The tool supports both the IEEE 1685-2014 and IEEE 1685-2022 "IP-XACT" standards.
 
 Windows installer and tar-package for Linux are available in 
 [SourceForge](https://sourceforge.net/projects/kactus2/)
