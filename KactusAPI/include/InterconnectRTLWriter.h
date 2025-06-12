@@ -61,6 +61,8 @@ private:
 
     void writeObiAddrMap(QTextStream& stream);
 
+    void writeObiXbar(QTextStream& stream);
+
     QString indent(int n = 1);
 
     QString parseAddress(QString original);
@@ -161,6 +163,9 @@ private:
 
     QString obiTargetParam_ = "OBI_TARGETS";
     QString obiInitParam_ = "OBI_INITIATORS";
+    QString obiAddrRule_ = "addr_rule_t";
+    QString obiInitInterface_ = "obi_init_bus";
+    QString obiTargetInterface_ = "obi_target_bus";
 };
 
 #endif // INTERCONNECTRTLWRITER_H

@@ -85,6 +85,7 @@ void InterconnectRTLWriter::generateRTL()
             writeObiParams(verilogRTL);
             writeObiInterfaces(verilogRTL);
             writeObiAddrMap(verilogRTL);
+            writeObiXbar(verilogRTL);
 
         } else {
 
@@ -420,17 +421,17 @@ void InterconnectRTLWriter::writeObiInterfaces(QTextStream& stream) {
         stream << indent(2) << ".OBI_CFG(obi_cfg)\n";
 
         if (config_->InitList.size() == 1) {
-            stream << indent()  << ") obi_init_bus [(" << obiInitParam_
+            stream << indent()  << ") " << obiInitInterface_ << " [(" << obiInitParam_
                 << "+1)-1:0](); // NOTE: Extra interface due to single initiator issue\n" << Qt::endl;
         } else {
-            stream << indent()  << ") obi_init_bus [" << obiInitParam_ << "-1:0]();\n" << Qt::endl;
+            stream << indent()  << ") " << obiInitInterface_ << " [" << obiInitParam_ << "-1:0]();\n" << Qt::endl;
         }
     }
 
     if (!config_->TargetList.isEmpty()) {
         stream << indent()  << "OBI_BUS #(\n";
         stream << indent(2) << ".OBI_CFG(obi_cfg)\n";
-        stream << indent()  << ") obi_target_bus [" << obiTargetParam_ << "-1:0]();\n" << Qt::endl;
+        stream << indent()  << ") " << obiTargetInterface_ << " [" << obiTargetParam_ << "-1:0]();\n" << Qt::endl;
     }
 }
 
@@ -448,9 +449,9 @@ void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
     stream << indent(2) << "int unsigned idx;\n";
     stream << indent(2) << "logic [ADDR_WIDTH-1:0] start_addr;\n";
     stream << indent(2) << "logic [ADDR_WIDTH-1:0] end_addr;\n";
-    stream << indent() << "} addr_rule_t;\n" << Qt::endl;
+    stream << indent() << "} " << obiAddrRule_ << " ;\n" << Qt::endl;
 
-    stream << indent() << "addr_rule_t AddrMapXBAR [NoAddrRules] = '{\n";
+    stream << indent() << obiAddrRule_ << " AddrMapXBAR [" << addrRulesParam_ << "] = '{\n";
 
     int regionCounter = 0;
 
@@ -460,9 +461,9 @@ void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
 
             QString startStr = parseAddress(addrPair.Start);
             QString endStr = parseAddress(addrPair.End);
-            // '{idx: IdWidthInits'('d0), start_addr: ADDR_WIDTH'('h0000), end_addr: ADDR_WIDTH'('h10000)}  // Target: axi_imem_bridge_AXI4LITE
+
             stream << indent(2)
-                << "'{idx: IdWidthInits'(d" << target.Index
+                << "'{idx: " << IdWidthInits_ << "'(d" << target.Index
                 << "), start_addr: ADDR_WIDTH'(" << startStr
                 << "), end_addr: ADDR_WIDTH'(" << endStr << ")"
                 << ((regionCounter == targetRegions + config_->TargetList.size()) ? "} " : "},")
@@ -470,6 +471,28 @@ void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
         }
     }
     stream << indent() << "};\n" << Qt::endl;
+}
+
+
+void InterconnectRTLWriter::writeObiXbar(QTextStream& stream) {
+
+    stream << indent() << "obi_xbar_intf #(\n";
+    stream << indent(2) << ".NumSbrPorts       (" << obiInitParam_ << "),\n";
+    stream << indent(2) << ".NumMgrPorts       (" << obiTargetParam_ << "),\n";
+    stream << indent(2) << ".NumMaxTrans       (1),             // Adjustable\n";
+    stream << indent(2) << ".NumAddrRules      (" << addrRulesParam_ << "),\n";
+    stream << indent(2) << ".addr_map_rule_t   (" << obiAddrRule_ << "),\n";
+    stream << indent(2) << ".UseIdForRouting   (0)              // Adjustable\n";
+    stream << indent() << ") i_obi_xbar (\n";
+    stream << indent(2) << ".clk_i             (clk_i),\n";
+    stream << indent(2) << ".rst_ni            (rst_ni),\n";
+    stream << indent(2) << ".testmode_i        (1'b0),          // Adjustable\n";
+    stream << indent(2) << ".sbr_ports         (" << obiInitInterface_ << "),\n";
+    stream << indent(2) << ".mgr_ports         (" << obiTargetInterface_ << "),\n";
+    stream << indent(2) << ".addr_map_i        (" << addrMapXBAR_ << "),\n";
+    stream << indent(2) << ".en_default_idx_i  ('0),            // Adjustable\n";
+    stream << indent(2) << ".default_idx_i     ('0)             // Adjustable\n";
+    stream << indent() << ");\n" << Qt::endl;
 }
 
 
