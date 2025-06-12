@@ -97,6 +97,7 @@ void InterconnectRTLWriter::generateRTL()
             return;
         }
 
+        verilogRTL << commentWriter("Signal assignments") << "\n";
         writeTargetAssign(verilogRTL);
         writeInitAssign(verilogRTL);
         verilogRTL << "endmodule" << Qt::endl;
@@ -322,7 +323,7 @@ void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName,
         return;
     }
 
-    stream << '\n' << indent() << "// Interface: " << busName << '\n' << Qt::endl;
+    stream << indent() << "// Interface: " << busName << '\n' << Qt::endl;
 
     QStringList ports = (config_->BusType.toLower() == "axi4") ? axiPorts_ : axiLitePorts_;
 
@@ -362,7 +363,6 @@ void InterconnectRTLWriter::writeTargetAssign(QTextStream& stream) {
 
     if (config_->TargetList.isEmpty()) return;
 
-
     for (const TargetStruct& target : config_->TargetList) {
         writeAxiAssign(stream, target.Name, target.Index);
         stream << Qt::endl;
@@ -383,11 +383,13 @@ void InterconnectRTLWriter::writeInitAssign(QTextStream& stream) {
 
 void InterconnectRTLWriter::writeObiParams(QTextStream& stream) {
     
-    stream << indent() << "localparam " << obiTargetParam_
-        << " = " << config_->TargetList.size() << ";\n";
+    stream << commentWriter("Local parameters") << "\n";
 
     stream << indent() << "localparam " << obiInitParam_
         << " = " << config_->InitList.size() << ";\n";
+
+    stream << indent() << "localparam " << obiTargetParam_
+        << " = " << config_->TargetList.size() << ";\n";
 
     stream << "\n";
     
@@ -416,6 +418,8 @@ void InterconnectRTLWriter::writeObiParams(QTextStream& stream) {
 
 void InterconnectRTLWriter::writeObiInterfaces(QTextStream& stream) {
 
+    stream << commentWriter("Initiator and target interface(s)") << "\n";
+
     if (!config_->InitList.isEmpty()) {
         stream << indent()  << "OBI_BUS #(\n";
         stream << indent(2) << ".OBI_CFG(obi_cfg)\n";
@@ -438,6 +442,8 @@ void InterconnectRTLWriter::writeObiInterfaces(QTextStream& stream) {
 
 void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
 
+    stream << commentWriter("Address mapping") << "\n";
+
     int targetRegions = 0;
     for (TargetStruct target : config_->TargetList) {
         if (target.AddressRegions.length() > 1) {
@@ -451,7 +457,7 @@ void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
     stream << indent(2) << "logic [ADDR_WIDTH-1:0] end_addr;\n";
     stream << indent() << "} " << obiAddrRule_ << " ;\n" << Qt::endl;
 
-    stream << indent() << obiAddrRule_ << " AddrMapXBAR [" << addrRulesParam_ << "] = '{\n";
+    stream << indent() << obiAddrRule_ << " " << addrMapXBAR_ << " [" << addrRulesParam_ << "] = '{\n";
 
     int regionCounter = 0;
 
@@ -463,7 +469,7 @@ void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
             QString endStr = parseAddress(addrPair.End);
 
             stream << indent(2)
-                << "'{idx: " << IdWidthInits_ << "'(d" << target.Index
+                << "'{idx: " << IdWidthInits_ << "'('d" << target.Index
                 << "), start_addr: ADDR_WIDTH'(" << startStr
                 << "), end_addr: ADDR_WIDTH'(" << endStr << ")"
                 << ((regionCounter == targetRegions + config_->TargetList.size()) ? "} " : "},")
@@ -475,6 +481,8 @@ void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
 
 
 void InterconnectRTLWriter::writeObiXbar(QTextStream& stream) {
+
+    stream << commentWriter("Crossbar initialization", "See parameter definitions in 'obi_xbar.sv'") << "\n";
 
     stream << indent() << "obi_xbar_intf #(\n";
     stream << indent(2) << ".NumSbrPorts       (" << obiInitParam_ << "),\n";
@@ -510,6 +518,9 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
         return parsed;
     }
 
+    // Checks if the given address is in hexadecimal, binary, or decimal format.
+    // Attempts to convert it to hexadecimal before returning.
+    // Otherwise, returns the trimmed original QString
     if (parsed.contains("'h", Qt::CaseInsensitive)) {
 
         int index = parsed.indexOf("'h", Qt::CaseInsensitive);
@@ -562,4 +573,18 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
     }
     
     return original;
+}
+
+
+QString InterconnectRTLWriter::commentWriter(QString title, QString subtitle) {
+
+    QString comment = "\n//---------------------------------------------------\n"
+                    "// " + title + "\n";
+
+    if (!subtitle.isEmpty()) {
+        comment += "// \n// " + indent() + "- " + subtitle + "\n";
+    }
+
+    comment += "//---------------------------------------------------\n";
+    return comment;
 }

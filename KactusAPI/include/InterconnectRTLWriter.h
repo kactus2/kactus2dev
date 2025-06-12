@@ -67,6 +67,8 @@ private:
 
     QString parseAddress(QString original);
 
+    QString commentWriter(QString title, QString subtitle = "");
+
     QSharedPointer<Component> component_{nullptr};
 
     MessageMediator* messager_{ nullptr };
