@@ -139,6 +139,14 @@ private:
         "r_data", "r_resp", "r_valid", "r_ready"
     };
 
+    QStringList obiPorts_ = {
+        // Output
+        "req", "reqpar", "gnt", "gntpar", "addr", "we", "be", "wdata", "aid", "a_optional",
+
+        // Input
+        "rvalid", "rvalidpar", "rready", "rreadypar", "rdata", "rid", "err", "r_optional"
+    };
+
     QStringList obiXbarCfgParams_ = {
         "AUSER_WIDTH",
         "WUSER_WIDTH",
