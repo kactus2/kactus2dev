@@ -348,7 +348,7 @@ void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName,
         }
 
         for (QString port : ports) {
-            if (compPort->getDirection() == DirectionTypes::OUT &&
+            if (compPort->getDirection() == DirectionTypes::IN &&
                 (compPort->name().endsWith("_" + port) ||
                 compPort->name().endsWith("_" + port + "_i") ||
                 compPort->name().endsWith("_" + port + "_o"))) {
@@ -367,7 +367,7 @@ void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName,
         }
 
         for (QString port : ports) {
-            if (compPort->getDirection() == DirectionTypes::IN &&
+            if (compPort->getDirection() == DirectionTypes::OUT &&
                 (compPort->name().endsWith("_" + port) ||
                 compPort->name().endsWith("_" + port + "_i") ||
                 compPort->name().endsWith("_" + port + "_o"))) {
