@@ -147,14 +147,14 @@ private:
         "rvalid", "rvalidpar", "rready", "rreadypar", "rdata", "rid", "err", "r_optional"
     };
 
-    QStringList obiXbarCfgParams_ = {
-        "AUSER_WIDTH",
+    /*QStringList obiXbarCfgParams_ = {
+        /*"AUSER_WIDTH",
         "WUSER_WIDTH",
         "RUSER_WIDTH",
         "MID_WIDTH",
         "ACHK_WIDTH",
         "RCHK_WIDTH"
-    };
+    };*/
 
     QStringList supportedInterfaces = {"axi4", "axi4lite", "obi"};
                                 
@@ -176,6 +176,10 @@ private:
     QString obiAddrRule_ = "addr_rule_t";
     QString obiInitInterface_ = "obi_init_bus";
     QString obiTargetInterface_ = "obi_target_bus";
+
+    QStringList obiXbarCfgParams_ = {
+        "ADDR_WIDTH", "DATA_WIDTH", IdWidthInits_, "obi_pkg::ObiMinimalOptionalConfig"
+    };
 };
 
 #endif // INTERCONNECTRTLWRITER_H
