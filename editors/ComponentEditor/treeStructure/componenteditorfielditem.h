@@ -127,6 +127,13 @@ public:
 	virtual QGraphicsItem* getGraphicsItem();
 
 	/*!
+	 *  Get the visualizer graphics items for the field.
+	 *
+	 *    @return List of the graphics items.
+	 */
+	QList<FieldGraphItem*> const& getGraphicsItems() const;
+
+	/*!
      *  Update the graphics item of the field.
 	 */
     virtual void updateGraphics() override final;
@@ -136,6 +143,15 @@ public:
 	 */
 	virtual void removeGraphicsItem();
 
+	/*!
+	 *  Remove the graphics items of the field.
+	 */
+	virtual void removeGraphicsItems();
+
+    /*!
+     *	Create the graphics items of the field. Multiple items are created if the field has dimension.
+     */
+    void createGraphicsItems();
 
 signals:
 
@@ -179,8 +195,11 @@ private:
 	//! The visualizer of memory maps.
 	MemoryMapsVisualizer* visualizer_ = nullptr;
 
-	//! The graph item that visualizes the field.
-    FieldGraphItem* graphItem_ = nullptr;
+	//! The graph item that visualizes the field. 
+    FieldGraphItem* graphItem_ = nullptr;               // TODO remove this and use only graphItems_
+
+	//! The graph items representing the field and its possible replicas.
+	QList<FieldGraphItem* > graphItems_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

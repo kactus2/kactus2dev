@@ -621,6 +621,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memorymapsmodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryMapsView.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\addressblockgraphitem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\ArrayableMemoryGraphItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\fieldgraphitem.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\MemoryBlockGraphItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\memorymapgraphitem.cpp" />
@@ -1732,6 +1733,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\ReferenceCalculator.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\MemoryBlockGraphItem.h">
     </QtMoc>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\ArrayableMemoryGraphItem.h" />
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\SubspaceMapGraphItem.h">
     </QtMoc>

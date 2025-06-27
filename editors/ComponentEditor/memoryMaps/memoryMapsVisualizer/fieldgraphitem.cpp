@@ -24,6 +24,7 @@
 FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field, QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem* parent):
 MemoryVisualizationItem(expressionParser, parent),
+ArrayableMemoryGraphItem(),
 field_(field)
 {
 	Q_ASSERT(field_);
@@ -46,14 +47,25 @@ field_(field)
 //-----------------------------------------------------------------------------
 void FieldGraphItem::updateDisplay()
 {
-    setName(field_->name());
+    QString formattedName;
+
+    // Add replica index (field with dimension), if it exists
+    if (auto index = getReplicaIndex(); index != -1)
+    {
+        formattedName = tr("%1 (%2)").arg(field_->name()).arg(QString::number(index));
+    }
+    else
+    {
+        formattedName = field_->name();
+    }
 
     quint64 leftBound = getLastAddress();
     quint64 rightBound = getOffset();
 
+    setName(formattedName);
     setDisplayOffset(leftBound);
     setDisplayLastAddress(rightBound);
-    setToolTip("<b>" % name() % "</b> [" % QString::number(leftBound) % ".." % QString::number(rightBound) % "]");
+    setToolTip("<b>" % formattedName % "</b> [" % QString::number(leftBound) % ".." % QString::number(rightBound) % "]");
 }
 
 //-----------------------------------------------------------------------------
@@ -61,7 +73,15 @@ void FieldGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 quint64 FieldGraphItem::getOffset() const
 {
-    return parseExpression(field_->getBitOffset());
+    return offset_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::setOffset()
+//-----------------------------------------------------------------------------
+void FieldGraphItem::setOffset(quint64 newOffset)
+{
+    offset_ = newOffset;
 }
 
 //-----------------------------------------------------------------------------
@@ -69,7 +89,8 @@ quint64 FieldGraphItem::getOffset() const
 //-----------------------------------------------------------------------------
 int FieldGraphItem::getBitWidth() const
 {
-    return parseExpression(field_->getBitWidth());
+    // Force field minimum width to 1 bit in visualizer
+    return qMax(quint64(1), parseExpression(field_->getBitWidth()));
 }
 
 //-----------------------------------------------------------------------------
@@ -125,7 +146,7 @@ void FieldGraphItem::setConflicted(bool conflicted)
     MemoryVisualizationItem::setConflicted(conflicted);
     if (conflicted)
     {
-        setOpacity(0.5);
+        setOpacity(0.7);
     }
     else
     {

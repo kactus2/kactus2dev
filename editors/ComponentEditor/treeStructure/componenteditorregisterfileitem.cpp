@@ -229,7 +229,7 @@ void ComponentEditorRegisterFileItem::setVisualizer( MemoryMapsVisualizer* visua
 
     connect(registerFileItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 
-    // update the visualizers for field items
+    // update the visualizers for child items
     for (QSharedPointer<ComponentEditorItem> child : childItems_)
     {
         auto regItem = child.dynamicCast<ComponentEditorRegisterItem>();

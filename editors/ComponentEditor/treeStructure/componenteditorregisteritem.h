@@ -122,7 +122,7 @@ public:
 	 */
 	virtual ItemVisualizer* visualizer() override final;
 
-	/*! Set the visualizer for this item.
+	/*! Set the visualizer for this item and child items.
 	 *
 	 *    @param [in] visualizer Pointer to the visualizer.
 	 */
@@ -168,8 +168,18 @@ public slots:
     //! Handle the change in item's addressing data.
     void onAddressingChanged();
 
-    //! Handle the change in child item's addressing data.
-    void onChildAddressingChanged();
+	/*!
+	 *	Handle the change in child item's addressing data. Used when signal origin is child component editor item.
+	 */
+	void onChildAddressingChanged();
+
+	/*!
+	 *	Handle the change in child item's addressing data. Used when signal origin is fields table editor.
+	 *  Index corresponds to indexes of child field items.
+	 *
+	 *    @param [in] childIndex     The index of the field that changed.
+	 */
+	void onChildAddressingChangedLocally(int childIndex);
 
 protected slots:
 
@@ -180,7 +190,7 @@ protected slots:
 
     //! Handle the change in child item's graphics.
     void onChildGraphicsChanged(int index);
-   
+
 private:
 	
 

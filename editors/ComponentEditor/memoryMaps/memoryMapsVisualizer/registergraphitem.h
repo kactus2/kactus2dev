@@ -158,6 +158,14 @@ private:
      */
     QMultiMap<quint64, MemoryVisualizationItem*>::iterator addMemoryGap(quint64 startAddress, quint64 endAddress);
 
+    /*!
+     *  Creates a new child that represents a gap in memory, when the gap is outside the register.
+     *
+     *    @param [in] startAddress    The offset of the memory gap.
+     *    @param [in] lastAddress     The last address of the memory gap.
+     */
+    QMultiMap<quint64, MemoryVisualizationItem*>::iterator addOutOfBoundsMemoryGap(quint64 startAddress, quint64 endAddress);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

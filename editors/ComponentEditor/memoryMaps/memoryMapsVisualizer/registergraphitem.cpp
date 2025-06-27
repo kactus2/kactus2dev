@@ -288,25 +288,41 @@ void RegisterGraphItem::fillGapsBetweenChildren()
     auto parentMSB = getRegisterMSB();
     quint64 highestBitHandled = 0;
 
+    bool registerEndGapAdded = false;
+
     // QMap sorts children by ascending offsets.
     for (auto i = childItems_.begin(); i != childItems_.end(); ++i)
     {
         auto currentChild = i.value();
         auto currentOffset = currentChild->getOffset();
 
-        if (currentChild->isPresent())
+        if (highestBitHandled < currentOffset)
         {
-            // Insert gap between fields only if they are not overlapping with a third field.
-            if (highestBitHandled < currentOffset)
-            {        
-                i = addMemoryGap(highestBitHandled, currentOffset - 1);
-                highestBitHandled = currentOffset;
-            }
-            else
+            // Add normal gap if inside register
+            if (currentOffset <= parentMSB)
             {
-                highestBitHandled = qMax(highestBitHandled, currentChild->getLastAddress() + 1);
+                i = addMemoryGap(highestBitHandled, currentOffset - 1);
+            }
+            // Add "out of bounds" gap if outside register
+            else if (currentOffset > parentMSB)
+            {
+                // Add gap between last field and end of register, if needed
+                if (!registerEndGapAdded && highestBitHandled <= parentMSB)
+                {
+                    i = addMemoryGap(highestBitHandled, parentMSB);
+                    highestBitHandled = parentMSB + 1;
+                    registerEndGapAdded = true;
+                }
+
+                // Insert out of bounds gap if field is not directly outside register
+                if (currentOffset > parentMSB + 1)
+                {
+                    i = addOutOfBoundsMemoryGap(highestBitHandled, currentOffset - 1);
+                }
             }
         }
+
+        highestBitHandled = qMax(currentChild->getLastAddress() + 1, highestBitHandled);
     }
 
     // Insert gap between the MSB of the register and the left-most item if needed.
@@ -332,6 +348,21 @@ QMultiMap<quint64, MemoryVisualizationItem*>::iterator RegisterGraphItem::addMem
     quint64 endAddress)
 {
     FieldGapItem* gap = new FieldGapItem(tr("Reserved"), getExpressionParser(), this);
+    gap->setDisplayOffset(startAddress);
+    gap->setDisplayLastAddress(endAddress);
+    gap->updateDisplay();
+
+    return childItems_.insert(gap->getLastAddress(), gap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::addMemoryGapOutOfRange()
+//-----------------------------------------------------------------------------
+QMultiMap<quint64, MemoryVisualizationItem*>::iterator RegisterGraphItem::addOutOfBoundsMemoryGap(quint64 startAddress, quint64 endAddress)
+{
+    FieldGapItem* gap = new FieldGapItem(tr("Out of bounds"), getExpressionParser(), this);
+    gap->setBrush(KactusColors::MISSING_COMPONENT);
+    gap->setOpacity(0.5);
     gap->setDisplayOffset(startAddress);
     gap->setDisplayLastAddress(endAddress);
     gap->updateDisplay();
