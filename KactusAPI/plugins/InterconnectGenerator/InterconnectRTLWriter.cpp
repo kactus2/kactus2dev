@@ -317,7 +317,7 @@ void InterconnectRTLWriter::writeAxiXbar(QTextStream& stream) {
 }
 
 
-void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName, int index) {
+void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName, int index, bool isInit) {
 
     /*QStringList debug = component_->getBusInterfaceNames();
     for (QString compPort : debug) {
@@ -332,12 +332,15 @@ void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName,
 
     QStringList ports = (config_->BusType.toLower() == "axi4") ? axiPorts_ : axiLitePorts_;
     QString targetBus;
+    QString initBus;
 
     if (config_->BusType.toLower() == "obi") {
         ports = obiPorts_;
         targetBus = obiTargetInterface_;
+        initBus = obiInitInterface_;
     } else {
         targetBus = axiTargetBus_;
+        initBus = axiInitBus_;
     }
 
     // Assign input ports first
@@ -353,7 +356,7 @@ void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName,
                 compPort->name().endsWith("_" + port + "_i") ||
                 compPort->name().endsWith("_" + port + "_o"))) {
 
-                stream << indent() << "assign " << targetBus << "[" << index << "]." << port;
+                stream << indent() << "assign " << (isInit ? initBus : targetBus) << "[" << index << "]." << port;
                 stream << " = " << compPort->name() << ";" << Qt::endl;
             }
         }
@@ -373,7 +376,7 @@ void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName,
                 compPort->name().endsWith("_" + port + "_o"))) {
 
                 stream << indent() << "assign " << compPort->name();
-                stream << " = " /*<< config_->BusType*/ << targetBus << "[" << index << "]." << port << ";" << Qt::endl;
+                stream << " = " /*<< config_->BusType*/ << (isInit ? initBus : targetBus) << "[" << index << "]." << port << ";" << Qt::endl;
             }
         }
     }
@@ -385,7 +388,7 @@ void InterconnectRTLWriter::writeTargetAssign(QTextStream& stream) {
     if (config_->TargetList.isEmpty()) return;
 
     for (const TargetStruct& target : config_->TargetList) {
-        writeAxiAssign(stream, target.Name, target.Index);
+        writeAxiAssign(stream, target.Name, target.Index, false);
         stream << Qt::endl;
     }
 }
@@ -396,7 +399,7 @@ void InterconnectRTLWriter::writeInitAssign(QTextStream& stream) {
     if (config_->InitList.isEmpty()) return;
 
     for (const InitStruct& init : config_->InitList) {
-        writeAxiAssign(stream, init.Name, init.Index);
+        writeAxiAssign(stream, init.Name, init.Index, true);
         stream << Qt::endl;
     }
 }

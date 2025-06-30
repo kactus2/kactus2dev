@@ -41,7 +41,7 @@ private:
 
     void writeAxiXbar(QTextStream& stream);
 
-    void writeAxiAssign(QTextStream& stream, QString busName, int index);
+    void writeAxiAssign(QTextStream& stream, QString busName, int index, bool isInit);
 
     void writeTargetAssign(QTextStream& stream);
 

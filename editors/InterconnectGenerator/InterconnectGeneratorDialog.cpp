@@ -748,6 +748,7 @@ void InterconnectGeneratorDialog::collectStartingPoints(
 {
     selectedStartingPoints_.clear();
     QList<InitStruct> initiators;
+    int intfIndex = 0;
 
     for (int i = 0; i < startingPointsLayout_->count(); ++i) {
         QLayoutItem* item = startingPointsLayout_->itemAt(i);
@@ -772,7 +773,7 @@ void InterconnectGeneratorDialog::collectStartingPoints(
 
                     InitStruct init;
 
-                    init.Index = i;
+                    init.Index = intfIndex++;
                     init.Name = instanceName + "_" + selectedInterfaceName;
                     init.DataWidth = 32;
 
@@ -818,6 +819,7 @@ void InterconnectGeneratorDialog::collectEndpoints(
     selectedEndpoints_.clear();
     QList<AddressPair> addrList;
     QList<TargetStruct> targets;
+    int intfIndex = 0;
 
     for (int i = 0; i < endpointsLayout_->count(); ++i) {
         QLayoutItem* item = endpointsLayout_->itemAt(i);
@@ -874,7 +876,7 @@ void InterconnectGeneratorDialog::collectEndpoints(
                         }
                     }
 
-                    target.Index = i;
+                    target.Index = intfIndex++;
                     target.Name = instanceName + "_" + targetInterface.name;
                     target.AddressRegions = addrList;
 
