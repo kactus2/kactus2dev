@@ -68,7 +68,7 @@ public:
 private:
 
     ConfigStruct config_;
-    QString path_ = QDir::currentPath() + "/editors/InterconnectGenerator/config.json";
+    QString path_ = QDir::currentPath() + "/KactusAPI/include/config.json";
 };
 
 #endif // CONFIGJSONPARSER_H
