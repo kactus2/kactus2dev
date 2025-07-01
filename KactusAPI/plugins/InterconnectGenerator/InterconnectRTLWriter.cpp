@@ -1,10 +1,24 @@
+//-----------------------------------------------------------------------------
+// File: InterconnectRTLWriter.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Multiple
+// Date: 07.2025
+//
+// Description:
+// Generates top-level Verilog interconnects for supported bus types utilizing
+// Pulp Platform libraries (https://github.com/pulp-platform).
+//-----------------------------------------------------------------------------
+
 #include "InterconnectRTLWriter.h"
 
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Design/Design.h>
 
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::InterconnectRTLWriter
+//-----------------------------------------------------------------------------
 InterconnectRTLWriter::InterconnectRTLWriter(QSharedPointer<Component> component,
     LibraryInterface* library, MessageMediator* messager, QString directory,
     ConfigStruct* config, QString clk, QString rst)
@@ -18,6 +32,9 @@ InterconnectRTLWriter::InterconnectRTLWriter(QSharedPointer<Component> component
     rstPort_ = rst;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::generateRTL
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::generateRTL()
 {
 
@@ -106,36 +123,9 @@ void InterconnectRTLWriter::generateRTL()
     return;
 }
 
-
-
-void InterconnectRTLWriter::removeEndmodule(QFile& file) {
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        return;
-    }
-
-    QString newContent;
-    QTextStream in(&file);
-
-    while (!in.atEnd()) {
-        QString line = in.readLine();
-        if (line.trimmed() != "endmodule") {
-            newContent.append(line + '\n');
-        }
-    }
-    file.close();
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
-        return;
-    }
-
-    QTextStream out(&file);
-    out << newContent;
-
-    file.close();
-}
-
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeAXI4
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
 
     writeAxiParams(stream);
@@ -165,7 +155,9 @@ void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
     }
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeAXI4LITE
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeAXI4LITE(QTextStream& stream) {
 
     writeAxiParams(stream);
@@ -191,7 +183,9 @@ void InterconnectRTLWriter::writeAXI4LITE(QTextStream& stream) {
     }
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeAxiParams
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeAxiParams(QTextStream& stream) {
 
     stream << indent() << "localparam " << axiTargetParam_
@@ -205,7 +199,9 @@ void InterconnectRTLWriter::writeAxiParams(QTextStream& stream) {
         stream << Qt::endl;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeAxiAddrMap
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeAxiAddrMap(QTextStream& stream)
 {
     int targetRegions = 0;
@@ -255,7 +251,9 @@ void InterconnectRTLWriter::writeAxiAddrMap(QTextStream& stream)
     stream << indent() << "};\n" << Qt::endl;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeAxiXbarCfg
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeAxiXbarCfg(QTextStream& stream)
 {
     stream << indent()  << "localparam axi_pkg::xbar_cfg_t " << axiCfg_ << " = '{" << Qt::endl;
@@ -277,7 +275,9 @@ void InterconnectRTLWriter::writeAxiXbarCfg(QTextStream& stream)
     stream << indent() << "};\n" << Qt::endl;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::witeAxiXbar
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeAxiXbar(QTextStream& stream) {
 
     if (config_->InitList.isEmpty() || config_->TargetList.isEmpty()) {
@@ -316,7 +316,9 @@ void InterconnectRTLWriter::writeAxiXbar(QTextStream& stream) {
     stream << indent() << ");\n" << Qt::endl;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeAxiAssign
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName, int index, bool isInit) {
 
     /*QStringList debug = component_->getBusInterfaceNames();
@@ -376,35 +378,42 @@ void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName,
                 compPort->name().endsWith("_" + port + "_o"))) {
 
                 stream << indent() << "assign " << compPort->name();
-                stream << " = " /*<< config_->BusType*/ << (isInit ? initBus : targetBus) << "[" << index << "]." << port << ";" << Qt::endl;
+                stream << " = " /*<< config_->BusType*/ << (isInit ? initBus : targetBus) << "[" << index << "]." << port << ";\n";
             }
         }
     }
+    stream << Qt::endl;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeTargetAssign
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeTargetAssign(QTextStream& stream) {
 
     if (config_->TargetList.isEmpty()) return;
 
     for (const TargetStruct& target : config_->TargetList) {
         writeAxiAssign(stream, target.Name, target.Index, false);
-        stream << Qt::endl;
+        //stream << Qt::endl;
     }
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeInitAssign
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeInitAssign(QTextStream& stream) {
 
     if (config_->InitList.isEmpty()) return;
 
     for (const InitStruct& init : config_->InitList) {
         writeAxiAssign(stream, init.Name, init.Index, true);
-        stream << Qt::endl;
+        //stream << Qt::endl;
     }
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeObiParams
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeObiParams(QTextStream& stream) {
     
     stream << commentWriter("Local parameters") << "\n";
@@ -440,7 +449,9 @@ void InterconnectRTLWriter::writeObiParams(QTextStream& stream) {
     stream << indent() << ");\n" << Qt::endl;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeObiInterfaces
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeObiInterfaces(QTextStream& stream) {
 
     stream << commentWriter("Initiator and target interface(s)") << "\n";
@@ -464,7 +475,9 @@ void InterconnectRTLWriter::writeObiInterfaces(QTextStream& stream) {
     }
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeObiAddrMap
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
 
     stream << commentWriter("Address mapping") << "\n";
@@ -515,7 +528,9 @@ void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
     stream << indent() << "};\n" << Qt::endl;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeObiXbar
+//-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeObiXbar(QTextStream& stream) {
 
     stream << commentWriter("Crossbar initialization", "See parameter definitions in 'obi_xbar.sv'") << "\n";
@@ -528,8 +543,8 @@ void InterconnectRTLWriter::writeObiXbar(QTextStream& stream) {
     stream << indent(2) << ".addr_map_rule_t   (" << obiAddrRule_ << "),\n";
     stream << indent(2) << ".UseIdForRouting   (0)              // Adjustable\n";
     stream << indent() << ") i_obi_xbar (\n";
-    stream << indent(2) << ".clk_i             (clk_i),\n";
-    stream << indent(2) << ".rst_ni            (rst_ni),\n";
+    stream << indent(2) << ".clk_i             (" << clkPort_ << "),\n";
+    stream << indent(2) << ".rst_ni            (" << rstPort_ << "),\n";
     stream << indent(2) << ".testmode_i        (1'b0),          // Adjustable\n";
     stream << indent(2) << ".sbr_ports         (" << obiInitInterface_ << "),\n";
     stream << indent(2) << ".mgr_ports         (" << obiTargetInterface_ << "),\n";
@@ -539,13 +554,47 @@ void InterconnectRTLWriter::writeObiXbar(QTextStream& stream) {
     stream << indent() << ");\n" << Qt::endl;
 }
 
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::writeEndmodule
+//-----------------------------------------------------------------------------
+void InterconnectRTLWriter::removeEndmodule(QFile& file) {
 
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
+    }
+
+    QString newContent;
+    QTextStream in(&file);
+
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if (line.trimmed() != "endmodule") {
+            newContent.append(line + '\n');
+        }
+    }
+    file.close();
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
+        return;
+    }
+
+    QTextStream out(&file);
+    out << newContent;
+
+    file.close();
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::indent
+//-----------------------------------------------------------------------------
 QString InterconnectRTLWriter::indent(int n) {
 
     return QString(n * 4, ' ');
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::parseAddress
+//-----------------------------------------------------------------------------
 QString InterconnectRTLWriter::parseAddress(QString original) {
 
     QString parsed = original.trimmed();
@@ -582,7 +631,7 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
             parsed = QString::number(config_->AddressWidth) + "'h" + QString::number(temp, 16).toUpper();
             return parsed;
         } else {
-            return original;
+            return parsed;
         }
     }
 
@@ -597,7 +646,7 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
             parsed = QString::number(config_->AddressWidth) + "'h" + QString::number(temp, 16).toUpper();
             return parsed;
         } else {
-            return original;
+            return parsed;
         }
     }
 
@@ -608,10 +657,12 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
         return parsed;
     }
     
-    return original;
+    return parsed;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: InterconnectRTLWriter::commentWriter
+//-----------------------------------------------------------------------------
 QString InterconnectRTLWriter::commentWriter(QString title, QString subtitle) {
 
     QString comment = "\n//---------------------------------------------------\n"
