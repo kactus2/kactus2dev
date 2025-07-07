@@ -75,7 +75,7 @@ void InterconnectRTLWriter::generateRTL()
     verilogFile.close();
 
     QString usedInterfaceStr = config_->BusType.toLower();
-    // usedInterfaceStr = "axi4"; //debug
+    usedInterfaceStr = "axi4"; //debug
 
     if (verilogFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
 
@@ -133,9 +133,9 @@ void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
     if (!config_->TargetList.isEmpty()) {
         stream << indent()  << "AXI_BUS #(" << Qt::endl;
         stream << indent(2) << ".AXI_ID_WIDTH(" << IdWidthInits_ << ")," << Qt::endl;
-        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
-        stream << indent(2) << ".AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
-        stream << indent(2) << ".AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
+        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << "), // Adjustable" << Qt::endl;
+        stream << indent(2) << ".AXI_ADDR_WIDTH(ADDR_WIDTH)," << Qt::endl;
+        stream << indent(2) << ".AXI_DATA_WIDTH(DATA_WIDTH)" << Qt::endl;
 
         axiTargetBus_ = config_->BusType.toLower() + axiTargetBus_;
         stream << indent() << ") " << axiTargetBus_;
@@ -145,9 +145,9 @@ void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
     if (!config_->InitList.isEmpty()) {
         stream << indent()  << "AXI_BUS #(" << Qt::endl;
         stream << indent(2) << ".AXI_ID_WIDTH(" << IdWidthInits_ << ")," << Qt::endl;
-        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
-        stream << indent(2) << ".AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
-        stream << indent(2) << ".AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
+        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << "), // Adjustable" << Qt::endl;
+        stream << indent(2) << ".AXI_ADDR_WIDTH(ADDR_WIDTH)," << Qt::endl;
+        stream << indent(2) << ".AXI_DATA_WIDTH(DATA_WIDTH)" << Qt::endl;
 
         axiInitBus_ = config_->BusType.toLower() + axiInitBus_;
         stream << indent() << ") " << axiInitBus_;
@@ -355,8 +355,10 @@ void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName,
         for (QString port : ports) {
             if (compPort->getDirection() == DirectionTypes::IN &&
                 (compPort->name().endsWith("_" + port) ||
-                compPort->name().endsWith("_" + port + "_i") ||
-                compPort->name().endsWith("_" + port + "_o"))) {
+                 compPort->name().endsWith("_" + port + "_in")  ||
+                 compPort->name().endsWith("_" + port + "_out") ||
+                 compPort->name().endsWith("_" + port + "_i")   ||
+                 compPort->name().endsWith("_" + port + "_o"))) {
 
                 stream << indent() << "assign " << (isInit ? initBus : targetBus) << "[" << index << "]." << port;
                 stream << " = " << compPort->name() << ";" << Qt::endl;
@@ -372,10 +374,12 @@ void InterconnectRTLWriter::writeAxiAssign(QTextStream& stream, QString busName,
         }
 
         for (QString port : ports) {
-            if (compPort->getDirection() == DirectionTypes::OUT &&
+            if (compPort->getDirection() == DirectionTypes::IN &&
                 (compPort->name().endsWith("_" + port) ||
-                compPort->name().endsWith("_" + port + "_i") ||
-                compPort->name().endsWith("_" + port + "_o"))) {
+                 compPort->name().endsWith("_" + port + "_in")  ||
+                 compPort->name().endsWith("_" + port + "_out") ||
+                 compPort->name().endsWith("_" + port + "_i")   ||
+                 compPort->name().endsWith("_" + port + "_o"))) {
 
                 stream << indent() << "assign " << compPort->name();
                 stream << " = " /*<< config_->BusType*/ << (isInit ? initBus : targetBus) << "[" << index << "]." << port << ";\n";
