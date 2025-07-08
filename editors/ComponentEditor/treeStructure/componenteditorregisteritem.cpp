@@ -19,6 +19,7 @@
 #include <KactusAPI/include/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
@@ -134,19 +135,11 @@ void ComponentEditorRegisterItem::createChild( int index )
 	if (visualizer_)
     {
 		fieldItem->setVisualizer(visualizer_);
+        createGraphicsItemsForChild(fieldItem.data());
 
-        auto childItems = fieldItem->getGraphicsItems();
-        
-        for (auto const& item : childItems)
-        {
-            registerItem_->addChild(item);
-            connect(this, SIGNAL(fieldNameChanged(QString const&, QString const&)),
-                fieldItem.data(), SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
-
-            connect(fieldItem.data(), SIGNAL(addressingChanged()), this, SLOT(onChildAddressingChanged()), Qt::UniqueConnection);
-        }
-
-        registerItem_->redoChildLayout();
+        connect(this, SIGNAL(fieldNameChanged(QString const&, QString const&)),
+            fieldItem.data(), SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+        connect(fieldItem.data(), SIGNAL(addressingChanged()), this, SLOT(onChildAddressingChanged()), Qt::UniqueConnection);
 	}
 
 	childItems_.insert(index, fieldItem);
@@ -164,7 +157,13 @@ void ComponentEditorRegisterItem::removeChild(int index)
 
     // Then remove field
     childItems_.removeAt(index);
-    registerItem_->redoChildLayout();
+    
+    // Recreate the layout of all register graph item replicas
+    for (auto const& item : registerItems_)
+    {
+        auto registerItem = static_cast<RegisterGraphItem*>(item);
+        registerItem->redoChildLayout();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -182,27 +181,16 @@ void ComponentEditorRegisterItem::setVisualizer(MemoryMapsVisualizer* visualizer
 {
     visualizer_ = visualizer;
 
-    auto parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-    Q_ASSERT(parentItem);
-
-    registerItem_ = new RegisterGraphItem(reg_, expressionParser_, parentItem);
-    connect(registerItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
-
-	// update the visualizers for field items
+    // Set visualizer for each field item and create its graph items
 	for (auto const& item : childItems_)
     {
 		auto fieldItem = item.staticCast<ComponentEditorFieldItem>();
 		fieldItem->setVisualizer(visualizer_);
 
-        for (auto const& child : fieldItem->getGraphicsItems())
-        {
-            registerItem_->addChild(child);
-        }
+        createGraphicsItemsForChild(fieldItem.data());
 
         connect(item.data(), SIGNAL(addressingChanged()), this, SLOT(onChildAddressingChanged()));
 	}
-
-    registerItem_->redoChildLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -211,6 +199,14 @@ void ComponentEditorRegisterItem::setVisualizer(MemoryMapsVisualizer* visualizer
 QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem()
 {
     return registerItem_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::getGraphicsItems()
+//-----------------------------------------------------------------------------
+QList<QGraphicsItem*> const& ComponentEditorRegisterItem::getGraphicsItems() const
+{
+    return registerItems_;
 }
 
 //-----------------------------------------------------------------------------
@@ -226,9 +222,10 @@ void ComponentEditorRegisterItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::onGraphicsChanged()
 {
-    if (registerItem_ != nullptr)
+    for (auto const& item : registerItems_)
     {
-        registerItem_->updateDisplay();
+        auto registerItem = static_cast<RegisterGraphItem*>(item);
+        registerItem->updateDisplay();
     }
 }
 
@@ -241,16 +238,125 @@ void ComponentEditorRegisterItem::onChildGraphicsChanged(int index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::createGraphicItemsForChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::createGraphicsItemsForChild(ComponentEditorItem* childEditor)
+{
+    Q_ASSERT(childEditor);
+
+    auto child = static_cast<ComponentEditorFieldItem*>(childEditor);
+
+    // add field items as children for every register item replica
+    for (auto const& graphItem : registerItems_)
+    {
+        auto regItem = static_cast<RegisterGraphItem*>(graphItem);
+        child->createGraphicsItems(regItem);
+        for (auto const& childGraphItem : child->getGraphicsItems().values(regItem))
+        {
+            regItem->addChild(childGraphItem);
+        }
+
+        regItem->redoChildLayout();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::createGraphicsItems()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::createGraphicsItems(QGraphicsItem* parentItem)
+{
+    auto memoryParent = static_cast<MemoryVisualizationItem*>(parentItem);
+    Q_ASSERT(memoryParent);
+
+    auto addressUnitSize = memoryParent->getAddressUnitSize();
+    auto parentOffset = memoryParent->getOffset();
+
+    auto registerOffset = expressionParser_->parseExpression(reg_->getAddressOffset()).toULongLong();
+
+    bool hasDim = reg_->getDimension().isEmpty() == false;
+    auto regDim = expressionParser_->parseExpression(reg_->getDimension()).toULongLong();
+
+    bool hasStride = reg_->getStride().isEmpty() == false;
+    auto regStride = expressionParser_->parseExpression(reg_->getStride()).toULongLong();
+
+    // Address unit size needed for calculating minimum stride
+    // Minimum stride is the size of the register in AUB (reg size is given in bits)
+    auto regSize = expressionParser_->parseExpression(reg_->getSize()).toULongLong();
+    auto minimumStride = regSize % addressUnitSize ? regSize / addressUnitSize + 1 : regSize / addressUnitSize;
+
+    if (!hasDim || regDim == 0)
+    {
+        regDim = 1;
+    }
+
+    // Create register replicas
+    for (quint64 i = 0; i < regDim; ++i)
+    {
+        quint64 realOffset = registerOffset;
+
+        // Separate replicas by stride
+        if (hasStride)
+        {
+            realOffset += i * regStride;
+        }
+        else
+        {
+            // Separate by minimum stride
+            realOffset += i * minimumStride;
+        }
+
+        // Total offset is register offset + parent offset (address block/register file)
+        realOffset += parentOffset;
+
+        auto newItem = new RegisterGraphItem(reg_, expressionParser_, parentItem);
+        newItem->setOffset(realOffset);
+
+        // Mark fields with index per replica for identification
+        if (hasDim)
+        {
+            newItem->setReplicaIndex(i);
+        }
+
+        registerItems_.append(newItem);
+        newItem->updateDisplay();
+        connect(newItem, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::createGraphicItemsForChildren()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::createGraphicsItemsForChildren()
+{
+    for (auto const& childEditor : childItems_)
+    {
+        createGraphicsItemsForChild(childEditor.data());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::removeChildGraphItems()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::removeChildGraphicsItems()
+{
+    for (auto const& child : childItems_)
+    {
+        child.staticCast<ComponentEditorFieldItem>()->removeGraphicsItems();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentEditorRegisterItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::onAddressingChanged()
 {
-    if (registerItem_ != nullptr)
+    for (auto const& item : registerItems_)
     {
-        registerItem_->redoChildLayout();
-
-        emit addressingChanged();
+        auto registerItem = static_cast<RegisterGraphItem*>(item);
+        registerItem->redoChildLayout();
     }
+ 
+    emit addressingChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -258,22 +364,11 @@ void ComponentEditorRegisterItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::onChildAddressingChanged()
 {
-    if (registerItem_ != nullptr)
-    {   
-        if (auto editorFieldItem = dynamic_cast<ComponentEditorFieldItem*>(sender()))
-        {
-            // Delete old graph items and create new
-            editorFieldItem->removeGraphicsItems();
-            editorFieldItem->createGraphicsItems();
-
-            // Re-add field graph items to register
-            for (auto const& item : editorFieldItem->getGraphicsItems())
-            {
-                registerItem_->addChild(item);
-            }
-        }
-
-        registerItem_->redoChildLayout();
+    if (auto editorFieldItem = dynamic_cast<ComponentEditorFieldItem*>(sender()))
+    {
+        // Remove and recreate child graphic items
+        editorFieldItem->removeGraphicsItems();
+        createGraphicsItemsForChild(editorFieldItem);
     }
 }
 
@@ -287,22 +382,14 @@ void ComponentEditorRegisterItem::onChildAddressingChangedLocally(int childIndex
     Q_ASSERT(childIndex < childItems_.size());
     auto targetItem = childItems_.at(childIndex).dynamicCast<ComponentEditorFieldItem>();
 
-    if (!targetItem || !registerItem_)
+    if (!targetItem)
     {
         return;
     }
 
-    // Delete old graph items and create new
+    // Remove and recreate child graphic items of changed field
     targetItem->removeGraphicsItems();
-    targetItem->createGraphicsItems();
-
-    // Re-add field graph items to register
-    for (auto const& item : targetItem->getGraphicsItems())
-    {
-        registerItem_->addChild(item);
-    }
-
-    registerItem_->redoChildLayout();
+    createGraphicsItemsForChild(targetItem.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -323,4 +410,37 @@ void ComponentEditorRegisterItem::removeGraphicsItem()
         delete registerItem_;
         registerItem_ = nullptr;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::removeGraphicsItems()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::removeGraphicsItems()
+{
+    // First remove child graph items
+    for (auto const& child : childItems_)
+    {
+        child.staticCast<ComponentEditorFieldItem>()->removeGraphicsItems();
+    }
+
+    // Remove this item's graph items
+    for (auto const& item : registerItems_)
+    {
+        auto registerItem = static_cast<RegisterGraphItem*>(item);
+
+        Q_ASSERT(registerItem->parentItem());
+        auto parentItem = static_cast<AddressBlockGraphItem*>(registerItem->parentItem());
+        parentItem->removeChild(registerItem);
+
+        qDebug() << "REG CHILD ITEMS:" << registerItem->childItems().size();
+
+        registerItem->setParent(nullptr);
+        disconnect(registerItem, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+
+        // delete the graph item
+        delete registerItem;
+        registerItem = nullptr;
+    }
+
+    registerItems_.clear();
 }

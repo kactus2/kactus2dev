@@ -113,7 +113,7 @@ ItemVisualizer* ComponentEditorFieldItem::visualizer()
 void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 {
 	visualizer_ = visualizer;
-    createGraphicsItems();
+    //createGraphicsItems(TODO);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFieldItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
-QList<FieldGraphItem*> const& ComponentEditorFieldItem::getGraphicsItems() const
+QMultiHash<QGraphicsItem*, FieldGraphItem* > const& ComponentEditorFieldItem::getGraphicsItems() const
 {
     return graphItems_;
 }
@@ -206,7 +206,7 @@ void ComponentEditorFieldItem::onGraphicsChanged()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFieldItem::createGraphicsItems()
 //-----------------------------------------------------------------------------
-void ComponentEditorFieldItem::createGraphicsItems()
+void ComponentEditorFieldItem::createGraphicsItems(QGraphicsItem* parentItem)
 {
     auto fieldOffset = expressionParser_->parseExpression(field_->getBitOffset()).toULongLong();
 
@@ -237,7 +237,7 @@ void ComponentEditorFieldItem::createGraphicsItems()
             realOffset += i * expressionParser_->parseExpression(field_->getBitWidth()).toULongLong();
         }
 
-        auto newItem = new FieldGraphItem(field_, expressionParser_, nullptr);
+        auto newItem = new FieldGraphItem(field_, expressionParser_, parentItem);
         newItem->setOffset(realOffset);
 
         // Mark fields with index per replica for identification
@@ -246,7 +246,7 @@ void ComponentEditorFieldItem::createGraphicsItems()
             newItem->setReplicaIndex(i);
         }
 
-        graphItems_.append(newItem);
+        graphItems_.insert(parentItem, newItem);
         newItem->updateDisplay();
         connect(newItem, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
     }

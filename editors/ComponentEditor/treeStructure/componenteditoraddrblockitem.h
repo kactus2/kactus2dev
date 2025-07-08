@@ -154,7 +154,9 @@ public slots:
     void onAddressingChanged();
 
     //! Handle the change in child item's addressing data.
-    void onChildAddressingChanged(int index);
+    void onChildAddressingChangedLocally(int index);
+
+    void onChildAddressingChanged();
 
 protected slots:
     

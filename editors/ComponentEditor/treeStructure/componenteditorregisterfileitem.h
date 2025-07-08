@@ -161,8 +161,9 @@ signals:
 
     void onAddressingChanged();
 
-    void onChildAddressingChanged(int index);
-
+    void onChildAddressingChanged();
+    
+    void onChildAddressingChangedLocally(int index);
 
 protected slots:
 

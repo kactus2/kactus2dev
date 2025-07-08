@@ -131,7 +131,7 @@ public:
 	 *
 	 *    @return List of the graphics items.
 	 */
-	QList<FieldGraphItem*> const& getGraphicsItems() const;
+	QMultiHash<QGraphicsItem*, FieldGraphItem* > const& getGraphicsItems() const;
 
 	/*!
      *  Update the graphics item of the field.
@@ -151,7 +151,7 @@ public:
     /*!
      *	Create the graphics items of the field. Multiple items are created if the field has dimension.
      */
-    void createGraphicsItems();
+    void createGraphicsItems(QGraphicsItem* parentItem);
 
 signals:
 
@@ -199,7 +199,7 @@ private:
     FieldGraphItem* graphItem_ = nullptr;               // TODO remove this and use only graphItems_
 
 	//! The graph items representing the field and its possible replicas.
-	QList<FieldGraphItem* > graphItems_;
+	QMultiHash<QGraphicsItem*, FieldGraphItem* > graphItems_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

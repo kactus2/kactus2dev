@@ -134,12 +134,21 @@ public:
 	 */
 	virtual QGraphicsItem* getGraphicsItem() override final;
 
+	QList<QGraphicsItem*> const& getGraphicsItems() const;
+
     //! Update the graphics item of the register.
     virtual void updateGraphics() override final;
 
 	//! Remove the graphics item of the register.
 	virtual void removeGraphicsItem() override final;
 
+	void removeGraphicsItems();
+
+	void createGraphicsItems(QGraphicsItem* parentItem);
+
+	void createGraphicsItemsForChildren();
+
+	void removeChildGraphicsItems();
 signals:
 
     /*
@@ -192,7 +201,8 @@ protected slots:
     void onChildGraphicsChanged(int index);
 
 private:
-	
+
+	void createGraphicsItemsForChild(ComponentEditorItem* childEditor);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -206,6 +216,8 @@ private:
 
 	//! The graph item that visualizes the register and possible dimensions.
 	RegisterGraphItem* registerItem_ = nullptr;
+
+	QList<QGraphicsItem*> registerItems_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

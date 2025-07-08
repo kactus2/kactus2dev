@@ -30,6 +30,7 @@
 RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
     QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
 MemoryVisualizationItem(expressionParser, parent),
+ArrayableMemoryGraphItem(),
 register_(reg)
 {
 	Q_ASSERT(register_);
@@ -44,24 +45,28 @@ register_(reg)
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::updateDisplay()
 {
-    QString name = register_->name();
+    QString formattedName;
 
-    int dimension = parseExpression(register_->getDimension());
-    if (dimension > 0)
+    // Add replica index (field with dimension), if it exists
+    if (auto index = getReplicaIndex(); index != -1)
     {
-        name.append("[" % QString::number(dimension - 1) % ":0]");
+        formattedName = tr("%1 (%2)").arg(register_->name()).arg(QString::number(index));
+    }
+    else
+    {
+        formattedName = register_->name();
     }
 
     quint64 offset = getOffset();
     quint64 lastAddress = getLastAddress();
 
-    setName(name);
+    setName(formattedName);
     setDisplayOffset(offset);
     setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
     const int BIT_WIDTH = getBitWidth();
-    setToolTip("<b>Name: </b>" % register_->name() % "<br>" %
+    setToolTip("<b>Name: </b>" % formattedName % "<br>" %
         "<b>First address: </b>" % toHexString(offset, BIT_WIDTH) % "<br>" %
         "<b>Last address: </b>" % toHexString(lastAddress, BIT_WIDTH) % "<br>" %
         "<b>Size [bits]: </b>" % QString::number(getBitWidth()));
@@ -93,15 +98,16 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
 // Function: RegisterGraphItem::getOffset()
 //-----------------------------------------------------------------------------
 quint64 RegisterGraphItem::getOffset() const
-{	
-	MemoryVisualizationItem const* blockItem = static_cast<MemoryVisualizationItem const*>(parentItem());
-	Q_ASSERT(blockItem);
-	quint64 blockOffset = blockItem->getOffset();
+{
+    return offset_;
+}
 
-    quint64 regOffset = parseExpression(register_->getAddressOffset());
-
-	// the total offset is the address block's offset added with register's offset
-	return blockOffset + regOffset;
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::setOffset()
+//-----------------------------------------------------------------------------
+void RegisterGraphItem::setOffset(qint64 newOffset)
+{
+    offset_ = newOffset;
 }
 
 //-----------------------------------------------------------------------------
@@ -211,9 +217,7 @@ quint64 RegisterGraphItem::getSizeInAUB() const
         ++size; //Round truncated number upwards
     }
 
-    quint64 dimension = qMax(quint64(1), parseExpression(register_->getDimension()));
-
-    return dimension * size;
+    return size;
 }
 
 //-----------------------------------------------------------------------------
