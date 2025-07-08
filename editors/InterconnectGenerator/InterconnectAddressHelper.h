@@ -42,7 +42,7 @@
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
-#include <IPXACTmodels/Component/validators/PortmapValidator.h>
+#include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
 //----------------------------------------------------------------------------------
