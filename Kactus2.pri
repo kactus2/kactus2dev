@@ -210,7 +210,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./Plugins/common/SingleCpuRoutesContainer.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
-    ./library/LibraryInterface.h \
+    # ./library/LibraryInterface.h \
     ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryUtils.h \
     ./library/ObjectSelectionListItem.h \
@@ -663,7 +663,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/CatalogEditor/CatalogFileDelegate.h \
     ./editors/CatalogEditor/CatalogFileFilter.h \
     ./editors/CatalogEditor/CatalogFileView.h \
-    ./editors/BusDefinitionEditor/LogicalPortColumns.h \
+    # ./editors/BusDefinitionEditor/LogicalPortColumns.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
     ./editors/BusDefinitionEditor/BusDefinitionParameterReferenceTree.h \
@@ -801,9 +801,9 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/HWDesign/undoCommands/HWComponentAddCommand.h \
     ./editors/HWDesign/undoCommands/InterfaceDeleteCommand.h \
     ./editors/HWDesign/undoCommands/ReplaceComponentCommand.h \
-    ./editors/InterconnectGenerator/InterconnectGenerator.h \
-    ./editors/InterconnectGenerator/ConfigJsonParser.h \
-    ./editors/InterconnectGenerator/InterconnectRTLWriter.h \
+    #./editors/InterconnectGenerator/InterconnectGenerator.h \
+    #./editors/InterconnectGenerator/ConfigJsonParser.h \
+    #./editors/InterconnectGenerator/InterconnectRTLWriter.h \
     ./editors/MemoryDesigner/AddressBlockGraphicsItem.h \
     ./editors/MemoryDesigner/AddressSegmentGraphicsItem.h \
     ./editors/MemoryDesigner/AddressSpaceGraphicsItem.h \
@@ -895,6 +895,10 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/AbstractionDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/AbstractionDefinitionEditor/QualifierEditor.h \
+    ./KactusAPI/include/ConfigJsonParser.h \
+    ./KactusAPI/include/InterconnectGenerator.h \
+    ./KactusAPI/include/InterconnectRTLWriter.h \
+    ./KactusAPI/include/LibraryInterface.h \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.h \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.h \
     ./kactusGenerators/DocumentGenerator/MarkdownWriter.h \
@@ -1606,9 +1610,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/HWDesign/undoCommands/PortPasteCommand.cpp \
     ./editors/HWDesign/undoCommands/ReplaceComponentCommand.cpp \
     ./editors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp \
-    ./editors/InterconnectGenerator/InterconnectGenerator.cpp \
-    ./editors/InterconnectGenerator/ConfigJsonParser.cpp \
-    ./editors/InterconnectGenerator/InterconnectRTLWriter.cpp \
+    # ./editors/InterconnectGenerator/InterconnectGenerator.cpp \
+    # ./editors/InterconnectGenerator/ConfigJsonParser.cpp \
+    # ./editors/InterconnectGenerator/InterconnectRTLWriter.cpp \
     ./editors/MemoryDesigner/AddressBlockGraphicsItem.cpp \
     ./editors/MemoryDesigner/AddressSegmentGraphicsItem.cpp \
     ./editors/MemoryDesigner/AddressSpaceGraphicsItem.cpp \
@@ -1695,6 +1699,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsDelegate.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsSortFilter.cpp \
     ./editors/AbstractionDefinitionEditor/QualifierEditor.cpp \
+    ./KactusAPI/plugins/ConfigJsonParser.cpp \
+    ./KactusAPI/plugins/InterconnectGenerator.cpp \
+    ./KactusAPI/plugins/InterconnectRTLWriter.cpp \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.cpp \
