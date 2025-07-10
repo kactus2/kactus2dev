@@ -441,6 +441,19 @@ QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> InterconnectDataMod
     return lookup;
 }
 
+/*Added by Teemu Hanhisuanto 10.7.2025 in order to pass the CI tests*/
+uint qHash(InterconnectDataModel::EntityType key, uint seed)
+{
+    return qHash(static_cast<uint>(key), seed);
+}
+
+/*Added by Teemu Hanhisuanto 10.7.2025 in order to pass the CI tests*/
+uint qHash(InterconnectDataModel::InterconnectType key, uint seed)
+{
+    return qHash(static_cast<std::underlying_type_t<InterconnectDataModel::InterconnectType>>(key), seed);
+}
+
+
 uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed)
 {
     return qHash(static_cast<int>(key.sourceEntity), seed) ^

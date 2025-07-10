@@ -291,13 +291,33 @@ private:
     mutable QString lastInvalidConnectionMessage_;
 };
 
+
 /*!
- *  Hash function specialization for ConnectionKey, used in QHash containers.
- *
- *  @param [in] key   The connection key to hash.
- *  @param [in] seed  Optional seed value.
- *  @return Hashed value.
- */
-uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed = 0);
+*  Hash function specialization for ConnectionKey, used in QHash containers.
+*
+*  @param [in] key   The connection key to hash.
+*  @param [in] seed  Optional seed value.
+*  @return Hashed value.
+*/
+inline uint qHash(InterconnectDataModel::EntityType key, uint seed = 0); // added by Teemu Hanhisuanto 10.7.2025
+
+/*!
+*  Hash function specialization for InterconnectType, used in QHash containers.
+*
+*  @param [in] key   The Interconnect Type to hash.
+*  @param [in] seed  Optional seed value.
+*  @return Hashed value.
+*/
+inline uint qHash(InterconnectDataModel::InterconnectType key, uint seed = 0); // added by Teemu Hanhisuanto 10.7.2025
+
+/*!
+*  Hash function specialization for ConnectionKey, used in QHash containers.
+*
+*  @param [in] key   The connection key to hash.
+*  @param [in] seed  Optional seed value.
+*  @return Hashed value.
+*/
+inline uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed = 0);
+
 
 #endif // INTERCONNECTDATAMODEL_H
