@@ -30,6 +30,9 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/assistedTextEdit/TextContentAssistWidget.h \
     ./common/widgets/assistedTextEdit/ToolTipHintWidget.h \
     ./common/widgets/assistedTextEdit/AssistedTextEdit.h \
+    ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
+    ./common/widgets/EnumCollectionEditor/EnumerationEditor.h \
+    ./common/widgets/EnumCollectionEditor/InterfaceEnumEditor.h \
     ./common/widgets/vlnvEditor/VLNVContentMatcher.h \
     ./common/widgets/vlnvEditor/VLNVDataTree.h \
     ./common/widgets/vlnvEditor/vlnveditor.h \
@@ -39,6 +42,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/ParameterGroupBox/parametergroupbox.h \
     ./common/widgets/nameGroupEditor/namegroupeditor.h \
     ./common/widgets/summaryLabel/summarylabel.h \
+    ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.h \
     ./common/widgets/interfaceSelector/interfaceselector.h \
     ./common/widgets/LineEditEx/LineEditEx.h \
@@ -51,8 +55,6 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
     ./common/widgets/viewSelector/viewselector.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
-    ./common/widgets/EnumCollectionEditor/EnumerationEditor.h \
-    ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
     ./common/widgets/FileSelector/fileselector.h \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
@@ -947,6 +949,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/ParameterGroupBox/parametergroupbox.cpp \
     ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
     ./common/widgets/summaryLabel/summarylabel.cpp \
+    ./common/widgets/instanceWidgets/InstanceWidgets.cpp \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/widgets/LineEditEx/LineEditEx.cpp \
@@ -961,6 +964,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/fileTypeSelector/filetypeselector.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
     ./common/widgets/EnumCollectionEditor/EnumerationEditor.cpp \
+    ./common/widgets/EnumCollectionEditor/InterfaceEnumEditor.cpp \
     ./common/widgets/FileSelector/fileselector.cpp \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
