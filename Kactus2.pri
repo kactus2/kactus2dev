@@ -1699,9 +1699,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsDelegate.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsSortFilter.cpp \
     ./editors/AbstractionDefinitionEditor/QualifierEditor.cpp \
-    ./KactusAPI/plugins/ConfigJsonParser.cpp \
-    ./KactusAPI/plugins/InterconnectGenerator.cpp \
-    ./KactusAPI/plugins/InterconnectRTLWriter.cpp \
+    ./KactusAPI/plugins/InterconnectGenerator/ConfigJsonParser.cpp \
+    ./KactusAPI/plugins/InterconnectGenerator/InterconnectGenerator.cpp \
+    ./KactusAPI/plugins/InterconnectGenerator/InterconnectRTLWriter.cpp \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.cpp \
