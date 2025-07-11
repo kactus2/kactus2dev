@@ -6,9 +6,9 @@
 HEADERS += ./PythonAPI.h \
     ./pythonapi_global.h \
     ../common/validators/LibraryPathValidator/librarypathvalidator.h \
-    ../editors/InterconnectGenerator/InterconnectGenerator.h
+    ../KactusAPI/include/InterconnectGenerator.h
 
 SOURCES += ./PythonAPI.cpp \
     ../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
-    ../editors/InterconnectGenerator/InterconnectGenerator.cpp \
+    ../KactusAPI/plugins/InterconnectGenerator.cpp \
     ./PythonAPI_wrap.cxx
