@@ -10,5 +10,5 @@ HEADERS += ./PythonAPI.h \
 
 SOURCES += ./PythonAPI.cpp \
     ../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
-    ../KactusAPI/plugins/InterconnectGenerator.cpp \
+    ../KactusAPI/plugins/InterconnectGenerator/InterconnectGenerator.cpp \
     ./PythonAPI_wrap.cxx
