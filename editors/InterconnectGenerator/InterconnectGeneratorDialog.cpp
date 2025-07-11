@@ -508,10 +508,10 @@ QWidget* InterconnectGeneratorDialog::createTopConfigSection()
         previousIndex_ = currentIndex;
         });
 
-    connect(clockCheckBox_, &QCheckBox::checkStateChanged, this, [this](int state) {
+    connect(clockCheckBox_, &QCheckBox::stateChanged, this, [this](int state) {
         clockCombo_->setEnabled(state == Qt::Checked);
         });
-    connect(resetCheckBox_, &QCheckBox::checkStateChanged, this, [this](int state) {
+    connect(resetCheckBox_, &QCheckBox::stateChanged, this, [this](int state) {
         resetCombo_->setEnabled(state == Qt::Checked);
         });
 
