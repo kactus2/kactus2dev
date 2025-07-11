@@ -173,12 +173,11 @@ InterconnectDataModel::InterconnectType InterconnectGeneratorDialog::getSelected
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::updateNameCombo()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, const QString& roleLabel, QStringList& availableInstances)
+void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, QStringList& availableInstances)
 {
     availableInstances.clear();
 
     QString selectedAbsDef = busInterfaceCombo_->currentText();
-    InterconnectDataModel::InterconnectType icType = getSelectedInterconnectType();
 
     for (const QString& instanceName : instanceBusesHash_.keys())
     {
@@ -232,7 +231,7 @@ void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName
         ? InterconnectDataModel::EntityType::TopComponent
         : InterconnectDataModel::EntityType::Instance;
 
-    InterconnectDataModel::InterconnectType icType = getSelectedInterconnectType();
+    //InterconnectDataModel::InterconnectType icType = getSelectedInterconnectType();
 
     const QSet<QSharedPointer<BusInterface>>& busSet = instanceBusesHash_.value(instanceName);
     for (const QSharedPointer<BusInterface>& bus : busSet)
@@ -289,7 +288,7 @@ void InterconnectGeneratorDialog::updateInterconnectModeOptions()
 QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& roleLabel)
 {
     QStringList availableInstances;
-    updateNameCombo(nullptr, roleLabel, availableInstances);
+    updateNameCombo(nullptr, availableInstances);
 
     if (availableInstances.isEmpty()) {
         QMessageBox::information(this, tr("No Instances Available"), tr("All instances have already been added."));
@@ -376,7 +375,7 @@ QVBoxLayout* InterconnectGeneratorDialog::createNameAndEnumerationEditorLayout(
     InstanceComboBox* nameCombo = new InstanceComboBox();
     QStringList availableInstances;
 
-    updateNameCombo(nameCombo, roleLabel, availableInstances);
+    updateNameCombo(nameCombo, availableInstances);
 
     if (availableInstances.isEmpty()) {
         QMessageBox::information(this, tr("No Instances Available"),
@@ -484,7 +483,7 @@ QWidget* InterconnectGeneratorDialog::createTopConfigSection()
     previousIndex_ = busInterfaceCombo_->currentIndex();
     populateParameters();
 
-    connect(busInterfaceCombo_, &QComboBox::activated, this, [this](int index) {
+    connect(busInterfaceCombo_, &QComboBox::activated, this, [this]() {
         previousIndex_ = busInterfaceCombo_->currentIndex();
         });
 
@@ -509,10 +508,10 @@ QWidget* InterconnectGeneratorDialog::createTopConfigSection()
         previousIndex_ = currentIndex;
         });
 
-    connect(clockCheckBox_, &QCheckBox::stateChanged, this, [this](int state) {
+    connect(clockCheckBox_, &QCheckBox::checkStateChanged, this, [this](int state) {
         clockCombo_->setEnabled(state == Qt::Checked);
         });
-    connect(resetCheckBox_, &QCheckBox::stateChanged, this, [this](int state) {
+    connect(resetCheckBox_, &QCheckBox::checkStateChanged, this, [this](int state) {
         resetCombo_->setEnabled(state == Qt::Checked);
         });
 

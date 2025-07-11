@@ -146,7 +146,7 @@ private:
      *
      *  @return Pointer to the created QFrame.
      */
-    QFrame* createInstanceEditorFrame(const QString& type);
+    QFrame* createInstanceEditorFrame(const QString& roleLabel);
 
     /*!
      *  Create a widget that allows the user to select the interconnect mode.
@@ -169,10 +169,9 @@ private:
      *  Update the instance name combo box with available instance names.
      *
      *  @param [in,out]  nameCombo            Combo box to update.
-     *  @param [in]      instanceType         Type of instance (starting point or endpoint).
      *  @param [in,out]  availableInstances   List of instances to populate into the combo box.
      */
-    void updateNameCombo(QComboBox* nameCombo, const QString& instanceType, QStringList& availableInstances);
+    void updateNameCombo(QComboBox* nameCombo, QStringList& availableInstances);
 
     /*!
      *  Handle logic triggered when a new instance is selected from the list.
