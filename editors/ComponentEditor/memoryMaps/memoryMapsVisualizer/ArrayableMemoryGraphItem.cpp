@@ -12,6 +12,8 @@
 
 #include "ArrayableMemoryGraphItem.h"
 
+#include <QObject>
+
 //-----------------------------------------------------------------------------
 // Function: ArrayableMemoryGraphItem::setReplicaIndex()
 //-----------------------------------------------------------------------------
@@ -26,4 +28,19 @@ void ArrayableMemoryGraphItem::setReplicaIndex(qint64 newIndex)
 qint64 ArrayableMemoryGraphItem::getReplicaIndex() const
 {
     return replicaIndex_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemoryGraphItem::getReplicaName()
+//-----------------------------------------------------------------------------
+QString ArrayableMemoryGraphItem::getReplicaName(QString const& originalName) const
+{
+    if (replicaIndex_ != -1)
+    {
+        return QObject::tr("%1 (%2)").arg(originalName).arg(QString::number(replicaIndex_));
+    }
+    else
+    {
+        return originalName;
+    }
 }

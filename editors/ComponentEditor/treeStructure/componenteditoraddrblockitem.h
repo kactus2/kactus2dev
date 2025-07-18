@@ -153,10 +153,14 @@ public slots:
     //! Handle the change in item's addressing data.
     void onAddressingChanged();
 
-    //! Handle the change in child item's addressing data.
+    //! Handle the change in child item's addressing data. Slot called when child is edited from table editor.
     void onChildAddressingChangedLocally(int index);
 
+    //! Handle the change in child item's addressing data. Slot called when child is edited in its editor.
     void onChildAddressingChanged();
+
+    //! Handle request to redo layout of children and re-emit request to parent.
+    void onLayoutRefreshRequested();
 
 protected slots:
     
@@ -179,6 +183,9 @@ signals:
 
     //! Signals a change in the item's address data.
     void addressingChanged();
+
+    //! Signals that the parent should redo the layout of its children.
+    void refreshLayout();
 
     /*
      *  Informs of register name change.

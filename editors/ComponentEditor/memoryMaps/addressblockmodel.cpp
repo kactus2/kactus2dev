@@ -452,7 +452,7 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
                 emit graphicsChanged(index.row());
                 if (index.column() != AddressBlockColumns::NAME)
                 {
-                    emit childAddressingChanged(index.row());
+                    emit childAddressingChanged(registerInterface_->indexInRegisterData(index.row()));
                 }
             }
 

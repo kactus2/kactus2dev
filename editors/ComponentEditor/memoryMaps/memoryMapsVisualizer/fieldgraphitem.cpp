@@ -47,17 +47,8 @@ field_(field)
 //-----------------------------------------------------------------------------
 void FieldGraphItem::updateDisplay()
 {
-    QString formattedName;
-
-    // Add replica index (field with dimension), if it exists
-    if (auto index = getReplicaIndex(); index != -1)
-    {
-        formattedName = tr("%1 (%2)").arg(field_->name()).arg(QString::number(index));
-    }
-    else
-    {
-        formattedName = field_->name();
-    }
+    // Get name with replica index
+    QString formattedName = getReplicaName(field_->name());
 
     quint64 leftBound = getLastAddress();
     quint64 rightBound = getOffset();

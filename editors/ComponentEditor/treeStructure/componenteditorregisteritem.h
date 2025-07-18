@@ -134,7 +134,7 @@ public:
 	 */
 	virtual QGraphicsItem* getGraphicsItem() override final;
 
-	QList<QGraphicsItem*> const& getGraphicsItems() const;
+	QMultiHash<QGraphicsItem*, QGraphicsItem*> const& getGraphicsItems() const;
 
     //! Update the graphics item of the register.
     virtual void updateGraphics() override final;
@@ -142,13 +142,23 @@ public:
 	//! Remove the graphics item of the register.
 	virtual void removeGraphicsItem() override final;
 
+	/*!
+	 *	Remove the graph items of this item.
+	 */
 	void removeGraphicsItems();
-
+	
+	/*!
+	 *	Create graph item for this item or multiple items in case of dimensions.
+	 *
+	 *    @param [in] parentItem     The parent item for created item(s).
+	 */
 	void createGraphicsItems(QGraphicsItem* parentItem);
 
+	/*!
+	 *	Create graph items for all child items.
+	 */
 	void createGraphicsItemsForChildren();
 
-	void removeChildGraphicsItems();
 signals:
 
     /*
@@ -169,8 +179,6 @@ signals:
 
     //! Signals a change in the item's address data.
     void addressingChanged();
-
-
 
 public slots:
 
@@ -202,6 +210,11 @@ protected slots:
 
 private:
 
+	/*!
+	 *	Create the graph items for given child item. Creates child graph items for each register graph item replica.
+	 *
+	 *    @param [in] childEditor     The child to create items for.
+	 */
 	void createGraphicsItemsForChild(ComponentEditorItem* childEditor);
 
     //-----------------------------------------------------------------------------
@@ -217,7 +230,8 @@ private:
 	//! The graph item that visualizes the register and possible dimensions.
 	RegisterGraphItem* registerItem_ = nullptr;
 
-	QList<QGraphicsItem*> registerItems_;
+    //! The graph items that visualize the register and its dimensions, keyed by parent graph item.
+	QMultiHash<QGraphicsItem*, QGraphicsItem*> registerItems_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

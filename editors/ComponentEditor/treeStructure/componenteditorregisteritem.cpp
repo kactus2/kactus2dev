@@ -20,6 +20,7 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.h>
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
@@ -204,7 +205,7 @@ QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorRegisterItem::getGraphicsItems()
 //-----------------------------------------------------------------------------
-QList<QGraphicsItem*> const& ComponentEditorRegisterItem::getGraphicsItems() const
+QMultiHash<QGraphicsItem*, QGraphicsItem*> const& ComponentEditorRegisterItem::getGraphicsItems() const
 {
     return registerItems_;
 }
@@ -317,7 +318,7 @@ void ComponentEditorRegisterItem::createGraphicsItems(QGraphicsItem* parentItem)
             newItem->setReplicaIndex(i);
         }
 
-        registerItems_.append(newItem);
+        registerItems_.insert(parentItem, newItem);
         newItem->updateDisplay();
         connect(newItem, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
     }
@@ -331,17 +332,6 @@ void ComponentEditorRegisterItem::createGraphicsItemsForChildren()
     for (auto const& childEditor : childItems_)
     {
         createGraphicsItemsForChild(childEditor.data());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterItem::removeChildGraphItems()
-//-----------------------------------------------------------------------------
-void ComponentEditorRegisterItem::removeChildGraphicsItems()
-{
-    for (auto const& child : childItems_)
-    {
-        child.staticCast<ComponentEditorFieldItem>()->removeGraphicsItems();
     }
 }
 
@@ -429,10 +419,15 @@ void ComponentEditorRegisterItem::removeGraphicsItems()
         auto registerItem = static_cast<RegisterGraphItem*>(item);
 
         Q_ASSERT(registerItem->parentItem());
-        auto parentItem = static_cast<AddressBlockGraphItem*>(registerItem->parentItem());
-        parentItem->removeChild(registerItem);
 
-        qDebug() << "REG CHILD ITEMS:" << registerItem->childItems().size();
+        if (auto addrBlockParent = dynamic_cast<AddressBlockGraphItem*>(registerItem->parentItem()))
+        {
+            addrBlockParent->removeChild(registerItem);
+        }
+        else if (auto regFileParent = dynamic_cast<RegisterFileGraphItem*>(registerItem->parentItem()))
+        {
+            regFileParent->removeChild(registerItem);
+        }
 
         registerItem->setParent(nullptr);
         disconnect(registerItem, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));

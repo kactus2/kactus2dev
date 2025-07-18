@@ -113,7 +113,6 @@ ItemVisualizer* ComponentEditorFieldItem::visualizer()
 void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 {
 	visualizer_ = visualizer;
-    //createGraphicsItems(TODO);
 }
 
 //-----------------------------------------------------------------------------

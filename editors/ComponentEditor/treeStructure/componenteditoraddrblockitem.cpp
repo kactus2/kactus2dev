@@ -148,17 +148,17 @@ void ComponentEditorAddrBlockItem::createChild( int index )
 		
 		if (visualizer_)
         {
+            regItem->setVisualizer(visualizer_);
             regItem->createGraphicsItems(graphItem_);
-			regItem->setVisualizer(visualizer_);
 
-            for (auto const& regGraphItem : regItem->getGraphicsItems())
+            for (auto const& regGraphItem : regItem->getGraphicsItems().values(graphItem_))
             {
                 auto asRegGraphItem = static_cast<RegisterGraphItem*>(regGraphItem);
                 graphItem_->addChild(asRegGraphItem);
                 regGraphItem->setParentItem(graphItem_);
             }
 
-            onAddressingChanged();
+            onLayoutRefreshRequested();
         }
         
         if (reg->getFields()->isEmpty())
@@ -185,8 +185,19 @@ void ComponentEditorAddrBlockItem::createChild( int index )
         if (visualizer_)
         {
             regFileItem->setVisualizer(visualizer_);
+            regFileItem->createGraphicsItems(graphItem_);
+
+            for (auto const& regFileGraphItem : regFileItem->getGraphicsItems().values(graphItem_))
+            {
+                auto asRegGraphItem = static_cast<RegisterGraphItem*>(regFileGraphItem);
+                graphItem_->addChild(asRegGraphItem);
+                regFileGraphItem->setParentItem(graphItem_);
+            }
+
+            onLayoutRefreshRequested();
         }
 
+        connect(regFileItem.data(), SIGNAL(refreshLayout()), this, SLOT(onLayoutRefreshRequested()), Qt::UniqueConnection);
         connect(regFileItem.data(), SIGNAL(addressingChanged()),
             this, SLOT(onChildAddressingChanged()), Qt::UniqueConnection);
         childItems_.insert(index, regFileItem);
@@ -198,7 +209,7 @@ void ComponentEditorAddrBlockItem::createChild( int index )
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrBlockItem::removeChild(int index)
 {
-    if (visualizer_)
+    if (!visualizer_)
     {
         return;
     }
@@ -217,14 +228,9 @@ void ComponentEditorAddrBlockItem::removeChild(int index)
     }
     else if (auto registerFileEditorItem = childEditorItem.dynamicCast<ComponentEditorRegisterFileItem>())
     {
-        auto childItem = static_cast<MemoryVisualizationItem*>(childItems_.at(index)->getGraphicsItem());
-        Q_ASSERT(childItem);
-
-        // TODO update this
-
-        graphItem_->removeChild(childItem);
+        registerFileEditorItem->removeGraphicsItems();
+        childItems_.removeAt(index);
         onAddressingChanged();
-        ComponentEditorItem::removeChild(index);
     }
 }
 
@@ -270,6 +276,9 @@ void ComponentEditorAddrBlockItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrBlockItem::onChildAddressingChangedLocally(int index)
 {
+    // Index corresponds to register data index in address block register data 
+    // (also: register data index == order in component editor tree)
+
     if (auto childRegister = childItems_.at(index).dynamicCast<ComponentEditorRegisterItem>())
     {
         // Need to delete register graph items as well as field graph items
@@ -288,17 +297,28 @@ void ComponentEditorAddrBlockItem::onChildAddressingChangedLocally(int index)
         }
 
         childRegister->updateGraphics();
-        childRegister->onAddressingChanged();
-
-        // Redo layout of child registers, inform parent item of addressing changes
-        onAddressingChanged();
     }
     else if (auto childRegisterFile = childItems_.at(index).dynamicCast<ComponentEditorRegisterFileItem>())
     {
-        // TODO update this
+        // Need to delete register graph items as well as field graph items
+        childRegisterFile->removeGraphicsItems();
+
+        // Create new graph items with updated addressing
+        childRegisterFile->createGraphicsItems(graphItem_);
+        childRegisterFile->createGraphicsItemsForChildren();
+
+        for (auto const& regFileGraphItem : childRegisterFile->getGraphicsItems())
+        {
+            auto asRegFileGraphItem = static_cast<RegisterFileGraphItem*>(regFileGraphItem);
+            graphItem_->addChild(asRegFileGraphItem);
+            regFileGraphItem->setParentItem(graphItem_);
+        }
+
         childRegisterFile->updateGraphics();
-        childRegisterFile->onAddressingChanged();
     }
+
+    // Redo layout of child registers, inform parent item of addressing changes
+    onLayoutRefreshRequested();
 }
 
 //-----------------------------------------------------------------------------
@@ -322,11 +342,45 @@ void ComponentEditorAddrBlockItem::onChildAddressingChanged()
         }
 
         registerEditor->updateGraphics();
-
-        // Redo layout of child registers, inform parent item of addressing changes
-        onAddressingChanged();
+        graphItem_->redoChildLayout();
     }
-    // TODO handle register file addressing changes
+    else if (auto registerFileEditor = dynamic_cast<ComponentEditorRegisterFileItem*>(sender()))
+    {
+        // Need to delete register graph items as well as field graph items
+        registerFileEditor->removeGraphicsItems();
+
+        // Create new graph items with updated addressing
+        registerFileEditor->createGraphicsItems(graphItem_);
+        registerFileEditor->createGraphicsItemsForChildren();
+
+        for (auto const& regFileGraphItem : registerFileEditor->getGraphicsItems())
+        {
+            auto asRegFileGraphItem = static_cast<RegisterFileGraphItem*>(regFileGraphItem);
+            graphItem_->addChild(asRegFileGraphItem);
+            regFileGraphItem->setParentItem(graphItem_);
+        }
+
+        registerFileEditor->updateGraphics();
+        graphItem_->redoChildLayout();
+
+    }
+
+    // Redo layout of child registers, inform parent item of addressing changes
+    onAddressingChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::onLayoutRefreshRequested()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrBlockItem::onLayoutRefreshRequested()
+{
+    if (graphItem_)
+    {
+        graphItem_->redoChildLayout();
+    }
+
+    //emit refreshLayout(); // TODO uncomment and replace addressingChanged(), connect to memory maps, when implemented there
+    emit addressingChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -370,9 +424,16 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
         }
         else if (auto regFileItem = child.dynamicCast<ComponentEditorRegisterFileItem>())
         {
+            regFileItem->createGraphicsItems(graphItem_);
             regFileItem->setVisualizer(visualizer_);
-            auto childGraphicItem = static_cast<MemoryVisualizationItem*>(child->getGraphicsItem());
-            graphItem_->addChild(childGraphicItem);
+
+            // Add created graph items as children
+            for (auto const& regFileGraphItem : regFileItem->getGraphicsItems())
+            {
+                auto asRegFileGraphItem = static_cast<RegisterGraphItem*>(regFileGraphItem);
+                graphItem_->addChild(asRegFileGraphItem);
+                regFileGraphItem->setParentItem(graphItem_);
+            }
         }
    	}
 

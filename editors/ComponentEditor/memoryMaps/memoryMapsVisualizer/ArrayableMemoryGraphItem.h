@@ -14,6 +14,7 @@
 #define ARRAYABLEMEMORYGRAPHITEM_H
 
 #include <QtGlobal>
+#include <QString>
 
 class ArrayableMemoryGraphItem
 {
@@ -39,6 +40,15 @@ public:
 	 *    @return The replica index.
 	 */
 	qint64 getReplicaIndex() const;
+
+	/*!
+	 *	Get the name of the item taking replica index into account
+	 *  
+	 *    @param [in] originalName     The name of the item without the replica index.
+	 *	    
+	 *    @return The name of the item.
+	 */
+	QString getReplicaName(QString const& originalName) const;
 
 private:
 

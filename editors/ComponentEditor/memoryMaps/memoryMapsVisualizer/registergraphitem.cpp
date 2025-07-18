@@ -45,17 +45,8 @@ register_(reg)
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::updateDisplay()
 {
-    QString formattedName;
-
-    // Add replica index (field with dimension), if it exists
-    if (auto index = getReplicaIndex(); index != -1)
-    {
-        formattedName = tr("%1 (%2)").arg(register_->name()).arg(QString::number(index));
-    }
-    else
-    {
-        formattedName = register_->name();
-    }
+    // Get name with replica index
+    QString formattedName = getReplicaName(register_->name());
 
     quint64 offset = getOffset();
     quint64 lastAddress = getLastAddress();

@@ -78,61 +78,85 @@ public:
     *
     *    @return The text for the tool tip to print to user.
     */
-    virtual QString getTooltip() const override final;
+    virtual QString getTooltip() const final;
 
     /*!
     *  Get the text to be displayed to user in the tree for this item.
     *
     *    @return QString Contains the text to display.
     */
-    virtual QString text() const override final;
+    virtual QString text() const final;
 
     /*!
     *  Check the validity of this item and sub items.
     *
     *    @return bool True if item is in valid state.
     */
-    virtual bool isValid() const override final;
+    virtual bool isValid() const final;
 
     /*!
     *  Get pointer to the editor of this item.
     *
     *    @return The editor to use for this item.
     */
-    virtual ItemEditor* editor() override final;
+    virtual ItemEditor* editor() final;
 
     /*!
     *  Add a new child to the item.
     *
     *    @param [in] index The index to add the child into.
     */
-    virtual void createChild(int index) override final;
+    virtual void createChild(int index) final;
 
-    virtual void removeChild(int index) override final;
+    virtual void removeChild(int index) final;
 
     /*!
     *  Get the visualizer graphics item for the memory map.
     *
     *    @return QGraphicsItem* The graphics item.
     */
-    virtual QGraphicsItem* getGraphicsItem() override final;
+    virtual QGraphicsItem* getGraphicsItem() final;
+
+    /*!
+     *  Get the visualizer graph item for the register file. Graph items keyed by parent item.
+     *
+     *    @return The graphics items.
+     */
+    QMultiHash<QGraphicsItem*, QGraphicsItem*> const& getGraphicsItems() const;
+
+    /*!
+     *	Create graph item for this item or multiple items in case of dimensions.
+     *  
+     *    @param [in] parentItem     The parent item for created item(s).
+     */
+    void createGraphicsItems(QGraphicsItem* parentItem);
+
+    /*!
+     *	Create graph items for all child items.
+     */
+    void createGraphicsItemsForChildren();
 
     /*!
     *  Remove the graphics item of the memory map.
     */
-    virtual void removeGraphicsItem() override final;
+    virtual void removeGraphicsItem() final;
+
+    /*!
+     *	Remove the graph items of this item.
+     */
+    void removeGraphicsItems();
 
     /*!
     *  Get pointer to the visualizer of this item.
     *
     *    @return The visualizer to use for this item.
     */
-    virtual ItemVisualizer* visualizer() override final;
+    virtual ItemVisualizer* visualizer() final;
 
     /*!
     *  Update the graphics item of the memory map.
     */
-    virtual void updateGraphics() override final;
+    virtual void updateGraphics() final;
 
     void setVisualizer(MemoryMapsVisualizer* visualizer);
 
@@ -146,8 +170,8 @@ public:
 
 signals:
 
+    //! Signals a change in the item's address data.
     void addressingChanged();
-
 
     /*
      *  Informs of register name change.
@@ -157,23 +181,39 @@ signals:
      */
     void registerNameChanged(QString const& oldName, QString const& newName);
 
+    //! Signals that the parent should redo the layout of its children.
+    void refreshLayout();
+
  public slots:
 
+    //! Handle the change in item's addressing data.
     void onAddressingChanged();
-
+    
+    //! Handle the change in child item's addressing data. Slot called when child is edited in its editor.
     void onChildAddressingChanged();
     
+    //! Handle the change in child item's addressing data. Slot called when child is edited from table editor.
     void onChildAddressingChangedLocally(int index);
+
+    //! Handle request to redo layout of children and re-emit request to parent.
+    void onLayoutRefreshRequested();
 
 protected slots:
 
 
     //!  Handler for editor's contentChanged signal.
-    virtual void onGraphicsChanged() override final;
+    virtual void onGraphicsChanged() final;
 
     void onChildGraphicsChanged(int index);
 
 private:
+    
+    /*!
+     *	Create the graph items for given child item. Creates child graph items for each register file graph item replica.
+     *  
+     *    @param [in] childEditor     The child to create items for.
+     */
+    void createGraphicsItemsForChild(ComponentEditorItem* childEditor);
 
     //! The register file being edited.
     QSharedPointer<RegisterFile> registerFile_;
@@ -183,6 +223,9 @@ private:
 
     //! The graph item that visualizes the register file and its dimensions.
     RegisterFileGraphItem* registerFileItem_ = nullptr;
+
+    //! The graph items that visualize the register file and its dimensions, keyed by parent graph item.
+    QMultiHash<QGraphicsItem*, QGraphicsItem*> graphItems_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
