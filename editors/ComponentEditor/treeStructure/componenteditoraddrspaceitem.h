@@ -156,7 +156,14 @@ protected slots:
 
     void onAddressingChanged();
 
-    void onChildAddressingChanged(int index);
+    //! Handle the change in child item's addressing data. Slot called when child is edited from table editor.
+    void onChildAddressingChangedLocally(int index);
+
+    //! Handle the change in child item's addressing data. Slot called when child is edited in its editor.
+	void onChildAddressingChanged();
+
+    //! Handle request to redo layout of children.
+	void onLayoutRefreshRequested();
 
 signals:
 
@@ -170,6 +177,13 @@ signals:
     void addressingChanged();
 
 private:
+
+	/*!
+	 *	Create the graph items for given child item. Creates child graph items for each child graph item replica.
+	 *
+	 *    @param [in] childEditor     The child to create items for.
+	 */
+	void createGraphicsItemsForChild(ComponentEditorItem* childEditor);
 
 	//! The address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;

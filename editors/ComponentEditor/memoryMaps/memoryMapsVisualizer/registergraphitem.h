@@ -12,7 +12,6 @@
 #ifndef REGISTERGRAPHITEM_H
 #define REGISTERGRAPHITEM_H
 
-#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include "ArrayableMemoryGraphItem.h"
 
 #include <IPXACTmodels/Component/Register.h>
@@ -24,7 +23,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The graphical item that represents one register.
 //-----------------------------------------------------------------------------
-class RegisterGraphItem : public MemoryVisualizationItem, public ArrayableMemoryGraphItem
+class RegisterGraphItem : public ArrayableMemoryGraphItem
 {
 	Q_OBJECT
 
@@ -55,15 +54,6 @@ public:
 
 	//! Remove the item.
     virtual void removeChild(MemoryVisualizationItem* childItem ) override final;
-
-	/*!
-     *  Get the offset of the item. 
-	 *
-	 *    @return The offset of the item from the parent item's base address.
-	 */
-	virtual quint64 getOffset() const override final;
-
-    void setOffset(qint64 newOffset);
 
 	/*!
      *  Get the last address contained in the item.
@@ -175,9 +165,6 @@ private:
 
     //! Pointer to the register being visualized.
 	QSharedPointer<Register> register_;
-
-    quint64 offset_;
-
 };
 
 #endif // REGISTERGRAPHITEM_H

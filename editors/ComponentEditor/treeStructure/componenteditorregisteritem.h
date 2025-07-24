@@ -128,19 +128,8 @@ public:
 	 */
     void setVisualizer(MemoryMapsVisualizer* visualizer);
 
-	/*! Get the visualizer graphics item for the register.
-	 *
-	 *    @return QGraphicsItem* Pointer to the graphics item.
-	 */
-	virtual QGraphicsItem* getGraphicsItem() override final;
-
-	QMultiHash<QGraphicsItem*, QGraphicsItem*> const& getGraphicsItems() const;
-
     //! Update the graphics item of the register.
     virtual void updateGraphics() override final;
-
-	//! Remove the graphics item of the register.
-	virtual void removeGraphicsItem() override final;
 
 	/*!
 	 *	Remove the graph items of this item.
@@ -226,12 +215,6 @@ private:
 
 	//! The visualizer of memory maps.
 	MemoryMapsVisualizer* visualizer_ = nullptr;
-
-	//! The graph item that visualizes the register and possible dimensions.
-	RegisterGraphItem* registerItem_ = nullptr;
-
-    //! The graph items that visualize the register and its dimensions, keyed by parent graph item.
-	QMultiHash<QGraphicsItem*, QGraphicsItem*> registerItems_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

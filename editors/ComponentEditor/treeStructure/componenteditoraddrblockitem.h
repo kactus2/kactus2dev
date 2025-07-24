@@ -78,44 +78,44 @@ public:
 	 * 
 	 *    @return The text for the tool tip to print to user.
 	 */
-	virtual QString getTooltip() const override final;
+	virtual QString getTooltip() const final;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
 	 *    @return QString Contains the text to display.
 	 */
-	virtual QString text() const override final;
+	virtual QString text() const final;
 
 	/*!
      *  Check the validity of this item and sub items.
 	 *
 	 *    @return bool True if item is in valid state.
 	 */
-	virtual bool isValid() const override final;
+	virtual bool isValid() const final;
 
 	/*!
      *  Get pointer to the editor of this item.
 	 *
 	 *    @return The editor to use for this item.
 	 */
-	virtual ItemEditor* editor() override final;
+	virtual ItemEditor* editor() final;
 
 	/*!
      *  Add a new child to the item.
 	 * 
 	 *    @param [in] index The index to add the child into.
 	 */
-	virtual void createChild(int index) override final;
+	virtual void createChild(int index) final;
 
-    virtual void removeChild(int index) override final;
+    virtual void removeChild(int index) final;
 
     /*!
      *  Get pointer to the visualizer of this item.
 	 * 
 	 *    @return The visualizer to use for this item.
 	 */
-	virtual ItemVisualizer* visualizer() override final;
+	virtual ItemVisualizer* visualizer() final;
 
 	/*!
      *  Set the visualizer for this item.
@@ -124,22 +124,27 @@ public:
 	 */
 	void setVisualizer(MemoryMapsVisualizer* visualizer);
 
-	/*!
-     *  Get the visualizer graphics item for the address block.
-	 *
-	 *    @return QGraphicsItem* The graphics item.
-	 */
-	virtual QGraphicsItem* getGraphicsItem() override final;
+    /*!
+     *	Create graph item for this item or multiple items in case of dimensions.
+     *
+     *    @param [in] parentItem     The parent item for created item(s).
+     */
+    void createGraphicsItems(QGraphicsItem* parentItem);
+
+    /*!
+     *	Create graph items for all child items.
+     */
+    void createGraphicsItemsForChildren();
 
 	/*!
      *  Update the graphics item of the address block.
 	 */
-	virtual void updateGraphics() override final;
+	virtual void updateGraphics() final;
 
-	/*!
-     *  Remove the graphics item of the address block.
-	 */
-	virtual void removeGraphicsItem() override final;
+    /*!
+     *	Remove the graph items of this item.
+     */
+    void removeGraphicsItems();
 
     /*!
      *  Change the address unit bits in component editor.
@@ -204,6 +209,13 @@ signals:
     void addressBlockNameChanged(QString const& oldName, QString const& newName);
 
 private:
+
+    /*!
+     *	Create the graph items for given child item. Creates child graph items for each child graph item replica.
+     *
+     *    @param [in] childEditor     The child to create items for.
+     */
+    void createGraphicsItemsForChild(ComponentEditorItem* childEditor);
 	
     //! Memory map containing the edited address block.
     QSharedPointer<MemoryMapBase> containingMap_;
@@ -213,9 +225,6 @@ private:
 
 	//! The visualizer for memory maps.
 	MemoryMapsVisualizer* visualizer_;
-
-	//! The graph item which visualizes the address block.
-	AddressBlockGraphItem* graphItem_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

@@ -24,9 +24,8 @@
 RegisterFileGraphItem::RegisterFileGraphItem(QSharedPointer<RegisterFile> regFile,
     QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem *parent) :
-    MemoryVisualizationItem(expressionParser, parent),
-    ArrayableMemoryGraphItem(),
-    regFile_(regFile)
+ArrayableMemoryGraphItem(expressionParser, parent),
+regFile_(regFile)
 {
     Q_ASSERT(regFile_);    
 
@@ -57,22 +56,6 @@ void RegisterFileGraphItem::updateDisplay()
         "<b>AUB: </b>" % QString::number(getAddressUnitSize()) % "<br>" %
         "<b>First address: </b>" % toHexString(offset, BIT_WIDTH) % "<br>" %
         "<b>Last address: </b>" % toHexString(lastAddress, BIT_WIDTH));
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileGraphItem::getOffset()
-//-----------------------------------------------------------------------------
-quint64 RegisterFileGraphItem::getOffset() const
-{    
-    return offset_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileGraphItem::setOffset()
-//-----------------------------------------------------------------------------
-void RegisterFileGraphItem::setOffset(quint64 newOffset)
-{
-    offset_ = newOffset;
 }
 
 //-----------------------------------------------------------------------------

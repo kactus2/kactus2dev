@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 MemoryBlockGraphItem::MemoryBlockGraphItem(QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem *parent):
-MemoryVisualizationItem(expressionParser, parent),
+ArrayableMemoryGraphItem(expressionParser, parent),
 addressableUnitBits_(0)
 {
 

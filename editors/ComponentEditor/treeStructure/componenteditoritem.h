@@ -223,6 +223,13 @@ public:
 	virtual QGraphicsItem* getGraphicsItem();
 
 	/*!
+     *  Get the visualizer graph items for the editor item, with the parent parent items as keys.
+     *
+     *    @return The graphics items.
+     */
+	virtual QMultiHash<QGraphicsItem*, QGraphicsItem* > const& getGraphicsItems() const;
+
+	/*!
 	 *  Update the graphics item of the element.
 	 *
 	 * The default implementation does nothing, reimplement for elements which
@@ -415,6 +422,9 @@ protected:
 
 	//! Expression formatter, formats the referencing expressions.
 	QSharedPointer<ExpressionFormatter> expressionFormatter_ = nullptr;
+
+	//! The visualizer graph items of this editor item, with corresponding parent items as keys.
+    QMultiHash<QGraphicsItem*, QGraphicsItem* > graphItems_;
 
 protected slots:
 

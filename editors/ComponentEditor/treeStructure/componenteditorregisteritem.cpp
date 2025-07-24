@@ -160,7 +160,7 @@ void ComponentEditorRegisterItem::removeChild(int index)
     childItems_.removeAt(index);
     
     // Recreate the layout of all register graph item replicas
-    for (auto const& item : registerItems_)
+    for (auto const& item : graphItems_)
     {
         auto registerItem = static_cast<RegisterGraphItem*>(item);
         registerItem->redoChildLayout();
@@ -195,22 +195,6 @@ void ComponentEditorRegisterItem::setVisualizer(MemoryMapsVisualizer* visualizer
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorregisteritem::getGraphicsItem()
-//-----------------------------------------------------------------------------
-QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem()
-{
-    return registerItem_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterItem::getGraphicsItems()
-//-----------------------------------------------------------------------------
-QMultiHash<QGraphicsItem*, QGraphicsItem*> const& ComponentEditorRegisterItem::getGraphicsItems() const
-{
-    return registerItems_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: componenteditorregisteritem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::updateGraphics()
@@ -223,7 +207,7 @@ void ComponentEditorRegisterItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::onGraphicsChanged()
 {
-    for (auto const& item : registerItems_)
+    for (auto const& item : graphItems_)
     {
         auto registerItem = static_cast<RegisterGraphItem*>(item);
         registerItem->updateDisplay();
@@ -248,13 +232,14 @@ void ComponentEditorRegisterItem::createGraphicsItemsForChild(ComponentEditorIte
     auto child = static_cast<ComponentEditorFieldItem*>(childEditor);
 
     // add field items as children for every register item replica
-    for (auto const& graphItem : registerItems_)
+    for (auto const& graphItem : graphItems_)
     {
         auto regItem = static_cast<RegisterGraphItem*>(graphItem);
         child->createGraphicsItems(regItem);
         for (auto const& childGraphItem : child->getGraphicsItems().values(regItem))
         {
-            regItem->addChild(childGraphItem);
+            auto fieldItem = static_cast<FieldGraphItem*>(childGraphItem);
+            regItem->addChild(fieldItem);
         }
 
         regItem->redoChildLayout();
@@ -270,6 +255,11 @@ void ComponentEditorRegisterItem::createGraphicsItems(QGraphicsItem* parentItem)
     Q_ASSERT(memoryParent);
 
     auto addressUnitSize = memoryParent->getAddressUnitSize();
+    if (addressUnitSize == 0) // avoid dbz
+    {
+        addressUnitSize = 1;
+    }
+
     auto parentOffset = memoryParent->getOffset();
 
     auto registerOffset = expressionParser_->parseExpression(reg_->getAddressOffset()).toULongLong();
@@ -318,7 +308,7 @@ void ComponentEditorRegisterItem::createGraphicsItems(QGraphicsItem* parentItem)
             newItem->setReplicaIndex(i);
         }
 
-        registerItems_.insert(parentItem, newItem);
+        graphItems_.insert(parentItem, newItem);
         newItem->updateDisplay();
         connect(newItem, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
     }
@@ -340,7 +330,7 @@ void ComponentEditorRegisterItem::createGraphicsItemsForChildren()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::onAddressingChanged()
 {
-    for (auto const& item : registerItems_)
+    for (auto const& item : graphItems_)
     {
         auto registerItem = static_cast<RegisterGraphItem*>(item);
         registerItem->redoChildLayout();
@@ -383,26 +373,6 @@ void ComponentEditorRegisterItem::onChildAddressingChangedLocally(int childIndex
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorregisteritem::removeGraphicsItem()
-//-----------------------------------------------------------------------------
-void ComponentEditorRegisterItem::removeGraphicsItem()
-{
-    if (registerItem_)
-    {
-        // get the graphics item for the address block.
-        auto parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-        Q_ASSERT(parentItem);
-
-        registerItem_->setParent(nullptr);
-
-        disconnect(registerItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
-
-        delete registerItem_;
-        registerItem_ = nullptr;
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentEditorRegisterItem::removeGraphicsItems()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::removeGraphicsItems()
@@ -414,7 +384,7 @@ void ComponentEditorRegisterItem::removeGraphicsItems()
     }
 
     // Remove this item's graph items
-    for (auto const& item : registerItems_)
+    for (auto const& item : graphItems_)
     {
         auto registerItem = static_cast<RegisterGraphItem*>(item);
 
@@ -437,5 +407,5 @@ void ComponentEditorRegisterItem::removeGraphicsItems()
         registerItem = nullptr;
     }
 
-    registerItems_.clear();
+    graphItems_.clear();
 }

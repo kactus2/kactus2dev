@@ -116,43 +116,13 @@ void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorFieldItem::getGraphicsItem()
-//-----------------------------------------------------------------------------
-QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem()
-{
-	return graphItem_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorFieldItem::getGraphicsItem()
-//-----------------------------------------------------------------------------
-QMultiHash<QGraphicsItem*, FieldGraphItem* > const& ComponentEditorFieldItem::getGraphicsItems() const
-{
-    return graphItems_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorFieldItem::removeGraphicsItem()
-//-----------------------------------------------------------------------------
-void ComponentEditorFieldItem::removeGraphicsItem()
-{
-	if (graphItem_)
-    {
-		disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
-
-		// delete the graph item
-		delete graphItem_;
-		graphItem_ = NULL;
-	}
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentEditorFieldItem::removeGraphicsItems()
 //-----------------------------------------------------------------------------
 void ComponentEditorFieldItem::removeGraphicsItems()
 {
-    for (auto graphItem : graphItems_)
+    for (auto item : graphItems_)
     {
+        auto graphItem = static_cast<FieldGraphItem*>(item);
         Q_ASSERT(graphItem);
 
         if (!graphItem)
@@ -196,9 +166,9 @@ void ComponentEditorFieldItem::onEditorChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorFieldItem::onGraphicsChanged()
 {
-    if (graphItem_)
+    for (auto const& graphItem : graphItems_)
     {
-        graphItem_->updateDisplay();
+        static_cast<FieldGraphItem*>(graphItem)->updateDisplay();
     }
 }
 

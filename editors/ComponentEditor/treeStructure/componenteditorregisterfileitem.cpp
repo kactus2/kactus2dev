@@ -51,7 +51,6 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(
 ComponentEditorItem(model, libHandler, component, parent),
 registerFile_(regFile),
 visualizer_(nullptr),
-registerFileItem_(nullptr),
 expressionParser_(expressionParser),
 registerFileValidator_(registerFileValidator),
 registerInterface_(registerInterface),
@@ -262,22 +261,6 @@ void ComponentEditorRegisterFileItem::addressUnitBitsChanged(int newAddressUnitB
             regFileItem->addressUnitBitsChanged(newAddressUnitBits);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterFileItem::getGraphicsItem()
-//-----------------------------------------------------------------------------
-QGraphicsItem* ComponentEditorRegisterFileItem::getGraphicsItem()
-{
-    return registerFileItem_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterFileItem::getGraphicsItems()
-//-----------------------------------------------------------------------------
-QMultiHash<QGraphicsItem*, QGraphicsItem*> const& ComponentEditorRegisterFileItem::getGraphicsItems() const
-{
-    return graphItems_;
 }
 
 //-----------------------------------------------------------------------------
@@ -515,27 +498,6 @@ void ComponentEditorRegisterFileItem::onChildAddressingChanged()
 
     // Redo layout of child registers, inform parent item of addressing changes
     onLayoutRefreshRequested();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorRegisterFileItem::removeGraphicsItem()
-//-----------------------------------------------------------------------------
-void ComponentEditorRegisterFileItem::removeGraphicsItem()
-{
-    if (registerFileItem_)
-    {
-        // get the graphics item for the address block.
-        auto parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-        Q_ASSERT(parentItem);
-
-        //sparentItem->removeChild(registerFileItem_);
-        registerFileItem_->setParent(nullptr);
-
-        disconnect(registerFileItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
-
-        delete registerFileItem_;
-        registerFileItem_ = nullptr;
-    }
 }
 
 //-----------------------------------------------------------------------------

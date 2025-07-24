@@ -29,8 +29,7 @@
 //-----------------------------------------------------------------------------
 RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
     QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
-MemoryVisualizationItem(expressionParser, parent),
-ArrayableMemoryGraphItem(),
+ArrayableMemoryGraphItem(expressionParser, parent),
 register_(reg)
 {
 	Q_ASSERT(register_);
@@ -83,22 +82,6 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
 
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::getOffset()
-//-----------------------------------------------------------------------------
-quint64 RegisterGraphItem::getOffset() const
-{
-    return offset_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::setOffset()
-//-----------------------------------------------------------------------------
-void RegisterGraphItem::setOffset(qint64 newOffset)
-{
-    offset_ = newOffset;
 }
 
 //-----------------------------------------------------------------------------

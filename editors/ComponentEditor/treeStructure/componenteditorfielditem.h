@@ -120,28 +120,9 @@ public:
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*!
-     *  Get the visualizer graphics item for the field.
-	 *
-	 *    @return The graphics item.
-	 */
-	virtual QGraphicsItem* getGraphicsItem();
-
-	/*!
-	 *  Get the visualizer graphics items for the field.
-	 *
-	 *    @return List of the graphics items.
-	 */
-	QMultiHash<QGraphicsItem*, FieldGraphItem* > const& getGraphicsItems() const;
-
-	/*!
      *  Update the graphics item of the field.
 	 */
     virtual void updateGraphics() override final;
-
-	/*!
-     *  Remove the graphics item of the field.
-	 */
-	virtual void removeGraphicsItem();
 
 	/*!
 	 *  Remove the graphics items of the field.
@@ -194,12 +175,6 @@ private:
 
 	//! The visualizer of memory maps.
 	MemoryMapsVisualizer* visualizer_ = nullptr;
-
-	//! The graph item that visualizes the field. 
-    FieldGraphItem* graphItem_ = nullptr;               // TODO remove this and use only graphItems_
-
-	//! The graph items representing the field and its possible replicas.
-	QMultiHash<QGraphicsItem*, FieldGraphItem* > graphItems_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

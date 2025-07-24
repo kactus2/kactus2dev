@@ -23,8 +23,7 @@
 //-----------------------------------------------------------------------------
 FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field, QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem* parent):
-MemoryVisualizationItem(expressionParser, parent),
-ArrayableMemoryGraphItem(),
+ArrayableMemoryGraphItem(expressionParser, parent),
 field_(field)
 {
 	Q_ASSERT(field_);
@@ -57,22 +56,6 @@ void FieldGraphItem::updateDisplay()
     setDisplayOffset(leftBound);
     setDisplayLastAddress(rightBound);
     setToolTip("<b>" % formattedName % "</b> [" % QString::number(leftBound) % ".." % QString::number(rightBound) % "]");
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGraphItem::getOffset()
-//-----------------------------------------------------------------------------
-quint64 FieldGraphItem::getOffset() const
-{
-    return offset_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGraphItem::setOffset()
-//-----------------------------------------------------------------------------
-void FieldGraphItem::setOffset(quint64 newOffset)
-{
-    offset_ = newOffset;
 }
 
 //-----------------------------------------------------------------------------

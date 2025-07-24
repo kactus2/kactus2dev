@@ -26,7 +26,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Graphical item to represent register file in visualization.
 //-----------------------------------------------------------------------------
-class RegisterFileGraphItem : public MemoryVisualizationItem, public ArrayableMemoryGraphItem
+class RegisterFileGraphItem : public ArrayableMemoryGraphItem
 {
 public:
 
@@ -50,20 +50,6 @@ public:
 
     //! Updates the labels and tooltip for the item.
     void updateDisplay() final;
-
-    /*!
-    *  Get the offset of the item.
-    *
-    *    @return int The offset of the item from the parent item's base address.
-    */
-    quint64 getOffset() const final;
-
-    /*!
-     *	Get the offset of the item.
-     *  
-     *    @param [in] newOffset     The new offset value.
-     */
-    void setOffset(quint64 newOffset);
 
     /*!
     *  Get the last bit contained in the field.
@@ -98,8 +84,6 @@ private:
     //! The register file being visualized.
     QSharedPointer<RegisterFile> regFile_;
 
-    //! The offset of the register file
-    quint64 offset_;
 };
 
 #endif // REGISTERFILEGRAPHITEM_H

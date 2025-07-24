@@ -50,25 +50,24 @@ public:
     AddressBlockGraphItem& operator=(const AddressBlockGraphItem& other) = delete;
 
 	/*!
-     *  Get the offset of the item. 
-	 *
-	 *    @return int The offset of the item from the parent item's base address.
-	 */
-	virtual quint64 getOffset() const override final;
-
-	/*!
      *  Get the bit width of the item.
 	 * 
 	 *    @return The bit width of the item.
 	 */
-	virtual int getBitWidth() const override final;
+	virtual int getBitWidth() const final;
            
     /*!
      *  Checks if the item is to be used in the visualization.
      *
      *    @return True, if the item should be used, otherwise false.
      */
-    virtual bool isPresent() const override final;
+    virtual bool isPresent() const final;
+
+    //! Updates the labels and tooltip for the item.
+    void updateDisplay() final;
+
+    //! Updates the labels and tooltip for the child items.
+    void updateChildrenDisplay() const;
 
 private:
 
@@ -77,14 +76,14 @@ private:
      *
      *    @return Name of the memory block.
      */
-    virtual QString getName() const override final;
+    virtual QString getName() const final;
 
     /*!
      *  Get the range of the memory block.
      *
      *    @return Range of the memory block.
      */
-    virtual quint64 getRange() const override final;
+    virtual quint64 getRange() const final;
 
     //-----------------------------------------------------------------------------
     // Data.

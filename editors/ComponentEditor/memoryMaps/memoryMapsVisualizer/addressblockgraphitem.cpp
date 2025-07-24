@@ -33,14 +33,6 @@ addrBlock_(addrBlock)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockGraphItem::getOffset()
-//-----------------------------------------------------------------------------
-quint64 AddressBlockGraphItem::getOffset() const
-{
-    return parseExpression(addrBlock_->getBaseAddress());
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::getBitWidth()
 //-----------------------------------------------------------------------------
 int AddressBlockGraphItem::getBitWidth() const
@@ -54,6 +46,38 @@ int AddressBlockGraphItem::getBitWidth() const
 bool AddressBlockGraphItem::isPresent() const
 {
     return addrBlock_->getIsPresent().isEmpty() || parseExpression(addrBlock_->getIsPresent()) == 1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::updateDisplay()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphItem::updateDisplay()
+{
+    QString formattedName = getReplicaName(getName());
+
+    quint64 offset = getOffset();
+    quint64 lastAddress = getLastAddress();
+
+    setName(formattedName);
+    setDisplayOffset(offset);
+    setDisplayLastAddress(lastAddress);
+
+    const int BIT_WIDTH = getBitWidth();
+    setToolTip("<b>Name: </b>" % formattedName % "<br>" %
+        "<b>Offset: </b>" % toHexString(offset, BIT_WIDTH) % "<br>" %
+        "<b>Last address: </b>" % toHexString(lastAddress, BIT_WIDTH) % "<br>" %
+        "<b>Size [AUB]: </b>" % QString::number(getRange()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::updateChildrenDisplay()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphItem::updateChildrenDisplay() const
+{
+    for (auto const& child : childItems_)
+    {
+        child->updateDisplay();
+    }
 }
 
 //-----------------------------------------------------------------------------

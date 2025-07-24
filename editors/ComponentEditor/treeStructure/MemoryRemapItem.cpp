@@ -128,7 +128,7 @@ ItemEditor* MemoryRemapItem::editor()
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);        
         connect(editor_, SIGNAL(childAddressingChanged(int)),
-            this, SLOT(onChildAddressingChanged(int)), Qt::UniqueConnection);
+            this, SLOT(onChildAddressingChangedLocally(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -197,18 +197,15 @@ void MemoryRemapItem::createChild( int index )
 		if (visualizer_)
         {
 			addrBlockItem->setVisualizer(visualizer_);
-
-            auto childItem = static_cast<MemoryVisualizationItem*>(addrBlockItem->getGraphicsItem());
-            Q_ASSERT(childItem);
-
-            graphItem_->addChild(childItem);
-            childItem->setParent(graphItem_);
+            createGraphicsItemsForChild(addrBlockItem.data());
 
             onAddressingChanged();
 		}
 
         connect(addrBlockItem.data(), SIGNAL(addressingChanged()),
-            this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
+            this, SLOT(onChildAddressingChanged()), Qt::UniqueConnection);
+        connect(addrBlockItem.data(), SIGNAL(refreshLayout()),
+            this, SLOT(onLayoutRefreshRequested()), Qt::UniqueConnection);
 
 		childItems_.insert(index, addrBlockItem);
 	}
@@ -257,7 +254,18 @@ void MemoryRemapItem::createChild( int index )
 //-----------------------------------------------------------------------------
 void MemoryRemapItem::removeChild(int index)
 {
-    ComponentEditorItem::removeChild(index);
+    auto childEditorItem = childItems_.at(index);
+    Q_ASSERT(childEditorItem);
+
+    if (auto abEditorItem = childEditorItem.dynamicCast<ComponentEditorAddrBlockItem>())
+    {
+        abEditorItem->removeGraphicsItems();
+        childItems_.removeAt(index);
+    }
+    else if (auto subspaceItem = childEditorItem.dynamicCast<SubspaceMapItem>())
+    {
+        ComponentEditorItem::removeChild(index);
+    }
 
     onAddressingChanged();
 }
@@ -281,29 +289,20 @@ void MemoryRemapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 	visualizer_->addMemoryMapItem(graphItem_);
 	graphItem_->updateDisplay();
 
-    changeAdressUnitBitsOnAddressBlocks();
-
 	// update the visualizers of address block items
 	for (auto item : childItems_)
     {
-        auto addrItem = item.dynamicCast<ComponentEditorAddrBlockItem>();
-        if (addrItem)
+        if (auto addrItem = item.dynamicCast<ComponentEditorAddrBlockItem>())
         {
             addrItem->setVisualizer(visualizer_);
-
-            auto childGraphicItem = static_cast<MemoryVisualizationItem*>(addrItem->getGraphicsItem());
-            graphItem_->addChild(childGraphicItem);
+            createGraphicsItemsForChild(addrItem.data());
         }
-        else
+        else if (auto subspaceItem = item.dynamicCast<SubspaceMapItem>())
         {
-            auto subspaceItem = item.dynamicCast<SubspaceMapItem>();
-            if (subspaceItem)
-            {
-                subspaceItem->setVisualizer(visualizer_);
+            subspaceItem->setVisualizer(visualizer_);
 
-                auto childGraphicItem = static_cast<MemoryVisualizationItem*>(subspaceItem->getGraphicsItem());
-                graphItem_->addChild(childGraphicItem);
-            }
+            auto childGraphicItem = static_cast<MemoryVisualizationItem*>(subspaceItem->getGraphicsItem());
+            graphItem_->addChild(childGraphicItem);
         }
 	}
 
@@ -376,27 +375,50 @@ void MemoryRemapItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 // Function: MemoryRemapItem::onChildAddressingChanged()
 //-----------------------------------------------------------------------------
-void MemoryRemapItem::onChildAddressingChanged(int index)
+void MemoryRemapItem::onChildAddressingChangedLocally(int index)
 {
-    if (graphItem_ != nullptr)
+    if (graphItem_ == nullptr)
     {
-        auto childBlock = childItems_.at(index).dynamicCast<ComponentEditorAddrBlockItem>();
+        return;
+    }
 
-        if (childBlock)
-        {
-            childBlock->updateGraphics();
-            childBlock->onAddressingChanged();
-        }
-        else
-        {
-            auto childSubspace = childItems_.at(index).dynamicCast<SubspaceMapItem>();
+    if (auto childBlock = childItems_.at(index).dynamicCast<ComponentEditorAddrBlockItem>())
+    {
+        childBlock->removeGraphicsItems();
+        createGraphicsItemsForChild(childBlock.data());
 
-            if (childSubspace)
-            {
-                childSubspace->updateGraphics();
-                childSubspace->onAddressingChanged();
-            }
-        }
+        onAddressingChanged();
+    }
+    else if (auto childSubspace = childItems_.at(index).dynamicCast<SubspaceMapItem>())
+    {
+        childSubspace->updateGraphics();
+        childSubspace->onAddressingChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemapItem::onChildAddressingChanged()
+//-----------------------------------------------------------------------------
+void MemoryRemapItem::onChildAddressingChanged()
+{
+    if (auto addressBlock = dynamic_cast<ComponentEditorAddrBlockItem*>(sender()))
+    {
+        addressBlock->removeGraphicsItems();
+        createGraphicsItemsForChild(addressBlock);
+    }
+
+    onLayoutRefreshRequested();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemapItem::onLayoutRefreshRequested()
+//-----------------------------------------------------------------------------
+void MemoryRemapItem::onLayoutRefreshRequested()
+{
+    if (graphItem_)
+    {
+        graphItem_->redoChildLayout();
+        emit addressingChanged();
     }
 }
 
@@ -428,8 +450,35 @@ void MemoryRemapItem::changeAdressUnitBitsOnAddressBlocks()
         }
     }
 
+    if (graphItem_)
+    {
+        graphItem_->redoChildLayout();
+    }
+
     if (editor_)
     {
         emit assignNewAddressUnitBits(addressUnitBits);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemapItem::createGraphicsItemsForChild()
+//-----------------------------------------------------------------------------
+void MemoryRemapItem::createGraphicsItemsForChild(ComponentEditorItem* childEditor)
+{
+    Q_ASSERT(childEditor);
+
+    if (auto addrItem = dynamic_cast<ComponentEditorAddrBlockItem*>(childEditor))
+    {
+        addrItem->createGraphicsItems(graphItem_);
+
+        for (auto const& childGraphItem : addrItem->getGraphicsItems().values(graphItem_))
+        {
+            graphItem_->addChild(static_cast<MemoryVisualizationItem*>(childGraphItem));
+            childGraphItem->setParentItem(graphItem_);
+        }
+
+        addrItem->createGraphicsItemsForChildren();
+        addrItem->updateGraphics();
     }
 }

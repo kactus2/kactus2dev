@@ -151,8 +151,14 @@ public slots:
     //! Handle the change in item's addressing data.
     void onAddressingChanged();
 
-    //! Handle the change in child item's addressing data.
-    void onChildAddressingChanged(int index);
+    //! Handle the change in child item's addressing data. Slot called when child is edited from table editor.
+    void onChildAddressingChangedLocally(int index);
+
+    //! Handle the change in child item's addressing data. Slot called when child is edited in its editor.
+    void onChildAddressingChanged();
+    
+    //! Handle request to redo layout of children.
+    void onLayoutRefreshRequested();
 
     /*!
      *  Change the address unit bits for the address blocks.
@@ -211,6 +217,8 @@ signals:
     void memoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
 
 private:
+
+    void createGraphicsItemsForChild(ComponentEditorItem* childEditor);
 
 	//! The memory remap being edited.
     QSharedPointer<MemoryMapBase> memoryRemap_;

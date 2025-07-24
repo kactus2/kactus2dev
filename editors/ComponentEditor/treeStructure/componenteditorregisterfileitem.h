@@ -111,20 +111,6 @@ public:
     virtual void removeChild(int index) final;
 
     /*!
-    *  Get the visualizer graphics item for the memory map.
-    *
-    *    @return QGraphicsItem* The graphics item.
-    */
-    virtual QGraphicsItem* getGraphicsItem() final;
-
-    /*!
-     *  Get the visualizer graph item for the register file. Graph items keyed by parent item.
-     *
-     *    @return The graphics items.
-     */
-    QMultiHash<QGraphicsItem*, QGraphicsItem*> const& getGraphicsItems() const;
-
-    /*!
      *	Create graph item for this item or multiple items in case of dimensions.
      *  
      *    @param [in] parentItem     The parent item for created item(s).
@@ -135,11 +121,6 @@ public:
      *	Create graph items for all child items.
      */
     void createGraphicsItemsForChildren();
-
-    /*!
-    *  Remove the graphics item of the memory map.
-    */
-    virtual void removeGraphicsItem() final;
 
     /*!
      *	Remove the graph items of this item.
@@ -220,12 +201,6 @@ private:
 
     //! The visualizer for memory maps.
     MemoryMapsVisualizer* visualizer_ = nullptr;
-
-    //! The graph item that visualizes the register file and its dimensions.
-    RegisterFileGraphItem* registerFileItem_ = nullptr;
-
-    //! The graph items that visualize the register file and its dimensions, keyed by parent graph item.
-    QMultiHash<QGraphicsItem*, QGraphicsItem*> graphItems_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

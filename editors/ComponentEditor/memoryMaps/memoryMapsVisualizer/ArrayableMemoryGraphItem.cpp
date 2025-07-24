@@ -6,13 +6,23 @@
 // Date: 24.06.2025
 //
 // Description:
-// Describes a memory item that can be expressed as an array of identical items.
+// Represents a visualization of a memory item that can be expressed as an array of identical items.
 // Replicas of the item are identified with their index. 
 //-----------------------------------------------------------------------------
 
 #include "ArrayableMemoryGraphItem.h"
 
 #include <QObject>
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemoryGraphItem::ArrayableMemoryGraphItem()
+//-----------------------------------------------------------------------------
+ArrayableMemoryGraphItem::ArrayableMemoryGraphItem(QSharedPointer<ExpressionParser> expressionParser, 
+    QGraphicsItem* parent /*= nullptr*/) :
+MemoryVisualizationItem(expressionParser, parent)
+{
+
+}
 
 //-----------------------------------------------------------------------------
 // Function: ArrayableMemoryGraphItem::setReplicaIndex()
@@ -43,4 +53,20 @@ QString ArrayableMemoryGraphItem::getReplicaName(QString const& originalName) co
     {
         return originalName;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemoryGraphItem::getOffset()
+//-----------------------------------------------------------------------------
+quint64 ArrayableMemoryGraphItem::getOffset() const
+{
+    return offset_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ArrayableMemoryGraphItem::setOffset()
+//-----------------------------------------------------------------------------
+void ArrayableMemoryGraphItem::setOffset(quint64 newOffset)
+{
+    offset_ = newOffset;
 }
