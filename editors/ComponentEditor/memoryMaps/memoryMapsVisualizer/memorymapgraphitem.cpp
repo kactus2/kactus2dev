@@ -84,7 +84,7 @@ quint64 MemoryMapGraphItem::getOffset() const
     {
         if (dynamic_cast<MemoryGapItem const*>(child) == nullptr)
         {
-            offset = qMin(child->getOffset(), offset);  
+            offset = qMin(child->getOffset(), offset);
         }
     }
 

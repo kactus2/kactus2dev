@@ -79,6 +79,11 @@ public:
     */
     bool isPresent() const final;
 
+    /*!
+     * Fills the gaps between child items with gap items.
+     */
+    void fillGapsBetweenChildren() final;
+
 private:
 
     //! The register file being visualized.

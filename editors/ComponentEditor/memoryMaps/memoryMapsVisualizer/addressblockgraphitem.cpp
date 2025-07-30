@@ -81,6 +81,43 @@ void AddressBlockGraphItem::updateChildrenDisplay() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::fillGapsBetweenChildren()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphItem::fillGapsBetweenChildren()
+{
+    quint64 lastAddressInUse = getOffset();
+
+    for (auto i = childItems_.begin(); i != childItems_.end(); ++i)
+    {
+        if (auto current = i.value(); current->isPresent())
+        {
+            auto addrBlockOffset = getOffset();
+            quint64 currentChildOffset = childItems_.key(current);
+            auto relativeOffset = currentChildOffset - addrBlockOffset;
+
+            if (currentChildOffset > 0 && relativeOffset > 0 && i == childItems_.begin())
+            {
+                // Create gap immediately from start of register file, if needed (unlike memory map).
+                i = createMemoryGap(lastAddressInUse, currentChildOffset - 1);
+                lastAddressInUse = currentChildOffset - 1;
+            }
+            else if (emptySpaceBeforeChild(current, lastAddressInUse))
+            {
+                i = createMemoryGap(lastAddressInUse + 1, currentChildOffset - 1);
+            }
+
+            lastAddressInUse = qMax(current->getLastAddress(), lastAddressInUse);
+        }
+    }
+
+    // Fill in any addresses left between children and the end of this item.
+    if (childItems_.isEmpty() == false && getLastAddress() > lastAddressInUse)
+    {
+        createMemoryGap(lastAddressInUse + 1, getLastAddress());
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: addressblockgraphitem::getName()
 //-----------------------------------------------------------------------------
 QString AddressBlockGraphItem::getName() const

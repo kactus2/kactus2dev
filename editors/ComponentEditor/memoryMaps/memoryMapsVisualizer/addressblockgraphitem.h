@@ -69,6 +69,11 @@ public:
     //! Updates the labels and tooltip for the child items.
     void updateChildrenDisplay() const;
 
+    /*!
+     * Fills the gaps between child items with gap items.
+     */
+    void fillGapsBetweenChildren() final;
+
 private:
 
     /*!

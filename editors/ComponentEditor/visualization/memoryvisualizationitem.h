@@ -167,11 +167,16 @@ protected:
 	//! Handler for mouse press events
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
-	//! Contains the child memory items. The offset of the child is the key.
-	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
+    /*!
+     *  Creates a new child for representing a free memory slot.
+     *
+     *    @param [in] offset          The offset of the free memory slot.
+     *    @param [in] lastAddress     The last address of the free memory slot.
+     *
+     *    @return The created child item.
+     */
+    QMultiMap<quint64, MemoryVisualizationItem*>::iterator createMemoryGap(quint64 offset, quint64 lastAddress);
 
-private:
-    
     /*!
      *  Checks if there is empty memory space between the given child and the last known used address.
      *
@@ -182,6 +187,12 @@ private:
      */
     bool emptySpaceBeforeChild(MemoryVisualizationItem const* current, quint64 lastAddressInUse) const;
 
+	//! Contains the child memory items. The offset of the child is the key.
+	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
+
+private:
+    
+
     /*!
      *	Mark child and its preceding children conflicting, if overlapping.
      *  
@@ -189,15 +200,6 @@ private:
      */
     void markChildIfConflicting(MemoryVisualizationItem* child);
 
-    /*!
-     *  Creates a new child for representing a free memory slot.
-     *
-     *    @param [in] offset          The offset of the free memory slot.
-     *    @param [in] lastAddress     The last address of the free memory slot.
-     *
-     *    @return The created child item.
-     */
-    QMultiMap<quint64, MemoryVisualizationItem*>::iterator createMemoryGap(quint64 offset, quint64 lastAddress);
 
     //-----------------------------------------------------------------------------
     // Data.
