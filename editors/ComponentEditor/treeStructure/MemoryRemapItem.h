@@ -152,10 +152,10 @@ public slots:
     void onAddressingChanged();
 
     //! Handle the change in child item's addressing data. Slot called when child is edited from table editor.
-    void onChildAddressingChangedLocally(int index);
+    void onChildAddressingChangedLocally(int index, bool needRedraw);
 
     //! Handle the change in child item's addressing data. Slot called when child is edited in its editor.
-    void onChildAddressingChanged();
+    void onChildAddressingChanged(bool needRedraw);
     
     //! Handle request to redo layout of children.
     void onLayoutRefreshRequested();

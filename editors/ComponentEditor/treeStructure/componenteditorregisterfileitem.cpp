@@ -280,6 +280,11 @@ void ComponentEditorRegisterFileItem::onGraphicsChanged()
     {
         static_cast<RegisterFileGraphItem*>(graphItem)->updateDisplay();
     }
+
+    for (auto const& child : childItems_)
+    {
+        child->updateGraphics();
+    }
 }
 
 //-----------------------------------------------------------------------------

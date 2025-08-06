@@ -56,6 +56,8 @@ public:
      */
     void setExpression(QString const& expression) final;
 
+    QString getPreviousExpression() const;
+
 protected:
 
     /*!
@@ -241,6 +243,9 @@ private:
      * 	    @return The start index of the current selection.
      */
     int getSelectionStartIndex() const final;
+
+
+    QString previousExpression_;
 };
 
 #endif // EXPRESSIONEDITOR_H

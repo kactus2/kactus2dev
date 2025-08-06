@@ -127,8 +127,8 @@ void SingleMemoryMapEditor::connectSignals()
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     connect(addressBlockEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
     connect(addressBlockEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
-    connect(addressBlockEditor_, SIGNAL(childAddressingChanged(int)),
-        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
+    connect(addressBlockEditor_, SIGNAL(childAddressingChanged(int, bool)),
+        this, SIGNAL(childAddressingChanged(int, bool)), Qt::UniqueConnection);
 
     connect(addressBlockEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
 
@@ -147,8 +147,8 @@ void SingleMemoryMapEditor::connectSignals()
     connect(subspaceMapEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(subspaceMapEditor_, SIGNAL(childAddressingChanged(int)),
-        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
+    connect(subspaceMapEditor_, SIGNAL(childAddressingChanged(int, bool)),
+        this, SIGNAL(childAddressingChanged(int, bool)), Qt::UniqueConnection);
     connect(subspaceMapEditor_, SIGNAL(graphicsChanged(int)),
         this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
 

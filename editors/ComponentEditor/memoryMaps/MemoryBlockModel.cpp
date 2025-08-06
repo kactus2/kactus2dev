@@ -186,17 +186,41 @@ bool MemoryBlockModel::setData(QModelIndex const& index, QVariant const& value, 
         }
         else if (index.column() == baseAddressColumn())
         {
-            if (!value.isValid())
+            std::string oldValue = blockInterface_->getBaseAddressExpression(blockName);
+            std::string newValue = value.toString().toStdString();
+
+            if (blockInterface_->setBaseAddress(blockName, newValue))
             {
-                removeReferencesFromSingleExpression(
-                    QString::fromStdString(blockInterface_->getBaseAddressExpression(blockName)));
+                removeReferencesFromSingleExpression(QString::fromStdString(oldValue));
+            }
+            else
+            {
+                return false;
             }
 
-            blockInterface_->setBaseAddress(blockName, value.toString().toStdString());
+            if (oldValue.compare(newValue) != 0)
+            {
+                emit childAddressingChanged(index.row(), true);
+            }
         }
         else if (index.column() == isPresentColumn())
         {
-            blockInterface_->setIsPresent(blockName, value.toString().toStdString());
+            std::string oldValue = blockInterface_->getBaseAddressExpression(blockName);
+            std::string newValue = value.toString().toStdString();
+
+            if (blockInterface_->setIsPresent(blockName, newValue))
+            {
+                removeReferencesFromSingleExpression(QString::fromStdString(oldValue));
+            }
+            else
+            {
+                return false;
+            }
+
+            if (oldValue.compare(newValue) != 0)
+            {
+                emit childAddressingChanged(index.row(), true);
+            }
         }
         else if (index.column() == descriptionColumn())
         {
@@ -211,11 +235,6 @@ bool MemoryBlockModel::setData(QModelIndex const& index, QVariant const& value, 
             index.column() == isPresentColumn())
         {
             emit graphicsChanged(index.row());
-        }
-
-        if (index.column() == baseAddressColumn() || index.column() == isPresentColumn())
-        {
-            emit childAddressingChanged(index.row());
         }
 
         emit dataChanged(index, index);

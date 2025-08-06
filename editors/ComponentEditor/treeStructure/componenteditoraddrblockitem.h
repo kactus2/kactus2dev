@@ -156,7 +156,7 @@ public:
 public slots:
 
     //! Handle the change in item's addressing data.
-    void onAddressingChanged();
+    void onAddressingChanged(bool needRedraw);
 
     //! Handle the change in child item's addressing data. Slot called when child is edited from table editor.
     void onChildAddressingChangedLocally(int index);
@@ -187,7 +187,7 @@ signals:
 
 
     //! Signals a change in the item's address data.
-    void addressingChanged();
+    void addressingChanged(bool needRedraw);
 
     //! Signals that the parent should redo the layout of its children.
     void refreshLayout();

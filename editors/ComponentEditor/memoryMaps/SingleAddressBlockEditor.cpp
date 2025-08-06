@@ -221,9 +221,18 @@ void SingleAddressBlockEditor::onRangeChanged()
 void SingleAddressBlockEditor::onWidthChanged()
 {
     widthEditor_->finishEditingCurrentWord();
+    auto currentExpression = widthEditor_->getExpression();
 
-    blockInterface_->setWidth(blockName_, widthEditor_->getExpression().toStdString());
+    blockInterface_->setWidth(blockName_, currentExpression.toStdString());
     widthEditor_->setToolTip(QString::fromStdString(blockInterface_->getWidthValue(blockName_)));
+
+    auto previousExpression = widthEditor_->getPreviousExpression();
+
+    if (previousExpression.compare(currentExpression, Qt::CaseSensitive) != 0)
+    {
+        emit addressingChanged(false);
+        emit graphicsChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -314,6 +323,33 @@ void SingleAddressBlockEditor::onVolatileSelected(QString const& newVolatileValu
     blockInterface_->setVolatile(blockName_, newVolatileValue.toStdString());
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleAddressBlockEditor::onAddressingMaybeChanged()
+//-----------------------------------------------------------------------------
+void SingleAddressBlockEditor::onAddressingMaybeChanged()
+{
+    // Emit signal only if expression actually changed
+    if (auto senderEditor = dynamic_cast<ExpressionEditor*>(sender()))
+    {
+        auto previousExpression = senderEditor->getPreviousExpression();
+        auto currentExpression = senderEditor->getExpression();
+
+        if (previousExpression.compare(currentExpression, Qt::CaseSensitive) != 0)
+        {
+            emit addressingChanged(true);
+            emit graphicsChanged();
+        }
+        //else
+        //{
+        //    emit addressingChanged(false);
+        //}
+    }
+    else
+    {
+        emit addressingChanged(false);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -490,24 +526,23 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(registerFilesEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
     connect(registerFilesEditor_, SIGNAL(childAddressingChanged(int)), this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
 
-    connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+    //connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
     
-    connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+    //connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(rangeEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
 
-    connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+    //connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
-    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+    //connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
 
-    connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+    //connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
 
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onAddressBlockNameChanged()), Qt::UniqueConnection);
 

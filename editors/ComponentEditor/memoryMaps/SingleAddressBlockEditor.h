@@ -119,7 +119,7 @@ signals:
      */
     void registerNameChanged(QString const& oldName, QString const& newName);
 
-    void addressingChanged();
+    void addressingChanged(bool needRedraw);
 
     void childAddressingChanged(int index);
 
@@ -180,6 +180,8 @@ private slots:
      *    @param [in] newVolatileValue    The selected volatile status.
      */
     void onVolatileSelected(QString const& newVolatileValue);
+
+    void onAddressingMaybeChanged();
 
 private:
 

@@ -99,7 +99,7 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(addressingChanged(bool)), this, SLOT(onAddressingChanged(bool)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAddressingChanged(int)), 
             this, SLOT(onChildAddressingChangedLocally(int)), Qt::UniqueConnection); // Signal from registers/regfile table
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -222,10 +222,7 @@ void ComponentEditorAddrBlockItem::removeChild(int index)
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrBlockItem::onGraphicsChanged()
 {
-    for (auto const& graphItem : graphItems_)
-    {
-        static_cast<AddressBlockGraphItem*>(graphItem)->updateDisplay();
-    }
+    updateGraphics();
 }
 
 //-----------------------------------------------------------------------------
@@ -256,7 +253,6 @@ void ComponentEditorAddrBlockItem::createGraphicsItemsForChild(ComponentEditorIt
                 regGraphItem->setParentItem(addrBlockGraphItem);
             }
 
-            regItem->updateGraphics();
             addrBlockGraphItem->redoChildLayout();
         }
 
@@ -277,7 +273,6 @@ void ComponentEditorAddrBlockItem::createGraphicsItemsForChild(ComponentEditorIt
                 regFileGraphItem->setParentItem(addrBlockGraphItem);
             }
 
-            regFileItem->updateGraphics();
             addrBlockGraphItem->redoChildLayout();
         }
 
@@ -288,19 +283,14 @@ void ComponentEditorAddrBlockItem::createGraphicsItemsForChild(ComponentEditorIt
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrBlockItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorAddrBlockItem::onAddressingChanged()
+void ComponentEditorAddrBlockItem::onAddressingChanged(bool needRedraw)
 {
     for (auto const& graphItem : graphItems_)
     {
         static_cast<AddressBlockGraphItem*>(graphItem)->redoChildLayout();
     }
 
-    for (auto child : childItems_)
-    {
-        child->updateGraphics();
-    }
-
-    emit addressingChanged();
+    emit addressingChanged(needRedraw);
 }
 
 //-----------------------------------------------------------------------------
@@ -318,7 +308,6 @@ void ComponentEditorAddrBlockItem::onChildAddressingChangedLocally(int index)
         
         // Create new graph items with updated addressing
         createGraphicsItemsForChild(childRegister.data());
-        childRegister->updateGraphics();
     }
     else if (auto childRegisterFile = childItems_.at(index).dynamicCast<ComponentEditorRegisterFileItem>())
     {
@@ -327,7 +316,6 @@ void ComponentEditorAddrBlockItem::onChildAddressingChangedLocally(int index)
 
         // Create new graph items with updated addressing
         createGraphicsItemsForChild(childRegisterFile.data());
-        childRegisterFile->updateGraphics();
     }
 
     // Redo layout of child registers, inform parent item of addressing changes
@@ -345,7 +333,6 @@ void ComponentEditorAddrBlockItem::onChildAddressingChanged()
 
         // Create new graph items with updated addressing
         createGraphicsItemsForChild(registerEditor);
-        registerEditor->updateGraphics();
     }
     else if (auto registerFileEditor = dynamic_cast<ComponentEditorRegisterFileItem*>(sender()))
     {
@@ -354,7 +341,6 @@ void ComponentEditorAddrBlockItem::onChildAddressingChanged()
 
         // Create new graph items with updated addressing
         createGraphicsItemsForChild(registerFileEditor);
-        registerFileEditor->updateGraphics();
     }
 
     // Redo layout of child registers, inform parent item of addressing changes
@@ -482,6 +468,11 @@ void ComponentEditorAddrBlockItem::updateGraphics()
     {
         static_cast<AddressBlockGraphItem*>(graphItem)->updateDisplay();
 	}
+
+    for (auto const& child : childItems_)
+    {
+        child->updateGraphics();
+    }
 }
 
 //-----------------------------------------------------------------------------

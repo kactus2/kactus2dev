@@ -127,8 +127,8 @@ ItemEditor* MemoryRemapItem::editor()
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);        
-        connect(editor_, SIGNAL(childAddressingChanged(int)),
-            this, SLOT(onChildAddressingChangedLocally(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAddressingChanged(int, bool)),
+            this, SLOT(onChildAddressingChangedLocally(int, bool)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -202,8 +202,8 @@ void MemoryRemapItem::createChild( int index )
             onAddressingChanged();
 		}
 
-        connect(addrBlockItem.data(), SIGNAL(addressingChanged()),
-            this, SLOT(onChildAddressingChanged()), Qt::UniqueConnection);
+        connect(addrBlockItem.data(), SIGNAL(addressingChanged(bool)),
+            this, SLOT(onChildAddressingChanged(bool)), Qt::UniqueConnection);
         connect(addrBlockItem.data(), SIGNAL(refreshLayout()),
             this, SLOT(onLayoutRefreshRequested()), Qt::UniqueConnection);
 
@@ -375,7 +375,7 @@ void MemoryRemapItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 // Function: MemoryRemapItem::onChildAddressingChanged()
 //-----------------------------------------------------------------------------
-void MemoryRemapItem::onChildAddressingChangedLocally(int index)
+void MemoryRemapItem::onChildAddressingChangedLocally(int index, bool needRedraw)
 {
     if (graphItem_ == nullptr)
     {
@@ -384,10 +384,19 @@ void MemoryRemapItem::onChildAddressingChangedLocally(int index)
 
     if (auto childBlock = childItems_.at(index).dynamicCast<ComponentEditorAddrBlockItem>())
     {
-        childBlock->removeGraphicsItems();
-        createGraphicsItemsForChild(childBlock.data());
+        // Recreate graph items if needed, otherwise update just graphics (address ranges) and redo layout
+        if (needRedraw)
+        {
+            childBlock->removeGraphicsItems();
+            createGraphicsItemsForChild(childBlock.data());
 
-        onAddressingChanged();
+            onAddressingChanged();
+        }
+        else
+        {
+            onGraphicsChanged();
+            childBlock->onLayoutRefreshRequested();
+        }
     }
     else if (auto childSubspace = childItems_.at(index).dynamicCast<SubspaceMapItem>())
     {
@@ -399,14 +408,16 @@ void MemoryRemapItem::onChildAddressingChangedLocally(int index)
 //-----------------------------------------------------------------------------
 // Function: MemoryRemapItem::onChildAddressingChanged()
 //-----------------------------------------------------------------------------
-void MemoryRemapItem::onChildAddressingChanged()
+void MemoryRemapItem::onChildAddressingChanged(bool needRedraw)
 {
-    if (auto addressBlock = dynamic_cast<ComponentEditorAddrBlockItem*>(sender()))
+    if (auto addressBlock = dynamic_cast<ComponentEditorAddrBlockItem*>(sender());
+        addressBlock && needRedraw)
     {
         addressBlock->removeGraphicsItems();
         createGraphicsItemsForChild(addressBlock);
     }
 
+    updateGraphics();
     onLayoutRefreshRequested();
 }
 

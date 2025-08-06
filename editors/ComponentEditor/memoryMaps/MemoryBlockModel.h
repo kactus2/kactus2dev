@@ -268,9 +268,9 @@ signals:
     /*!
      *  Informs of addressing changes in child items.
      *
-     *    @param [in]     Index of the selected address block.
+     *    @param [in] index    Index of the selected address block.
      */
-    void childAddressingChanged(int);
+    void childAddressingChanged(int index, bool needRedraw);
 
 private:
 

@@ -104,7 +104,7 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(childAddressingChanged(int)), this, SLOT(onChildAddressingChangedLocally(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAddressingChanged(int, bool)), this, SLOT(onChildAddressingChangedLocally(int, bool)), Qt::UniqueConnection);
 
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childRemoved(int)),	this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
@@ -165,7 +165,7 @@ void ComponentEditorAddrSpaceItem::createChild(int index)
 		childItems_.insert(index, addressBlockItem);
         addressBlockItem->addressUnitBitsChanged(addressUnitBits);
 
-        connect(addressBlockItem.data(), SIGNAL(addressingChanged()), this, SLOT(onChildAddressingChanged()));
+        connect(addressBlockItem.data(), SIGNAL(addressingChanged(bool)), this, SLOT(onChildAddressingChanged(bool)));
         connect(addressBlockItem.data(), SIGNAL(refreshLayout()), this, SLOT(onLayoutRefreshRequested()));
 	}
 }
@@ -268,12 +268,12 @@ void ComponentEditorAddrSpaceItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpaceItem::onChildAddressingChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorAddrSpaceItem::onChildAddressingChangedLocally(int index)
+void ComponentEditorAddrSpaceItem::onChildAddressingChangedLocally(int index, bool needRedraw)
 {
     if (graphItem_ != nullptr)
     {
         if (auto childBlock = childItems_.at(index).dynamicCast<ComponentEditorAddrBlockItem>();
-            childBlock)
+            childBlock && needRedraw)
         {
             childBlock->removeGraphicsItems();
             createGraphicsItemsForChild(childBlock.data());
@@ -289,15 +289,16 @@ void ComponentEditorAddrSpaceItem::onChildAddressingChangedLocally(int index)
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpaceItem::onChildAddressingChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorAddrSpaceItem::onChildAddressingChanged()
+void ComponentEditorAddrSpaceItem::onChildAddressingChanged(bool needRedraw)
 {
-    if (auto addressBlock = dynamic_cast<ComponentEditorAddrBlockItem*>(sender()))
+    if (auto addressBlock = dynamic_cast<ComponentEditorAddrBlockItem*>(sender());
+        addressBlock && needRedraw)
     {
         addressBlock->removeGraphicsItems();
         createGraphicsItemsForChild(addressBlock);
-
-        onAddressingChanged();
     }
+
+    onAddressingChanged();
 }
 
 //-----------------------------------------------------------------------------
