@@ -39,12 +39,26 @@ ExpressionFormatter::~ExpressionFormatter()
 //-----------------------------------------------------------------------------
 // Function: ExpressionFormatter::format()
 //-----------------------------------------------------------------------------
-QString ExpressionFormatter::format(QString const& expression, QSharedPointer<ExpressionParser> parser)
+QString ExpressionFormatter::format(QString const& expression, QSharedPointer<ExpressionParser> parser, bool* expressionIsValid /*= nullptr*/)
 {
-    bool isValidExpression = false;
-    QString value = parser->parseExpression(expression, &isValidExpression);
+    if (expressionIsValid != nullptr)
+    {
+        return getFormattedValue(expression, parser, expressionIsValid);
+    }
+    else
+    {
+		bool isValidExpression = false;
+        return getFormattedValue(expression, parser, &isValidExpression);
+    }
+}
 
-    if (isValidExpression)
+//-----------------------------------------------------------------------------
+// Function: ExpressionFormatter::getFormattedValue()
+//-----------------------------------------------------------------------------
+QString ExpressionFormatter::getFormattedValue(QString const& expression, QSharedPointer<ExpressionParser> parser, bool* expressionIsValid)
+{
+    QString value = parser->parseExpression(expression, expressionIsValid);
+    if (expressionIsValid)
     {
         ValueFormatter formatter;
         return formatter.format(value, parser->baseForExpression(expression));

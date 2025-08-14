@@ -49,9 +49,29 @@ public:
      */
     QString formatReferringExpression(QString const& expression) const;
 
-    static QString format(QString const& expression, QSharedPointer<ExpressionParser> parser);
+    /*!
+     *  Format an expression to its largest base number.
+     *
+     *    @param [in] expression            The selected expression.
+     *    @param [in] parser                The used expression parser.
+     *    @param [in] expressionIsValid     Flag for informing of a valid expression.
+     *
+     *    @return Formatted expression.
+     */
+    static QString format(QString const& expression, QSharedPointer<ExpressionParser> parser, bool* expressionIsValid = nullptr);
 
 private:
+
+    /*!
+     *  Format an expression to its largest base number.
+     *
+     *    @param [in] expression            The selected expression.
+     *    @param [in] parser                The used expression parser.
+     *    @param [in] expressionIsValid     Flag for informing of a valid expression.
+     *
+     *    @return Formatted expression.
+     */
+    static QString getFormattedValue(QString const& expression, QSharedPointer<ExpressionParser> parser, bool* expressionIsValid);
 
 	//! No copying
     ExpressionFormatter(const ExpressionFormatter& other);
