@@ -103,6 +103,13 @@ public:
      */
     QSharedPointer<GenerationOutput> changeFileName(int index, QString const& newName);
 
+    /*!
+     *  Write the contents of the selected file using the current base directory.
+     *
+     *    @param [in] index     The position of the output within the list.
+     */
+    void writeFileToCurrentPath(int const& index);
+
 private:
 
 	// Disable copying.

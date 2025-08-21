@@ -112,7 +112,20 @@ QSharedPointer<GenerationOutput> OutputControl::changeFileName(int index, QStrin
     }
 
     selection->fileName_ = newName;
-    selection->write(outputPath_);
 
     return selection;
+}
+
+//-----------------------------------------------------------------------------
+// Function: OutputControl::writeFileToCurrentPath()
+//-----------------------------------------------------------------------------
+void OutputControl::writeFileToCurrentPath(int const& index)
+{
+	if (index >= outputs_->size() || index < 0)
+	{
+        return;
+	}
+
+	QSharedPointer<GenerationOutput> selection = outputs_->at(index);
+    selection->write(outputPath_);
 }

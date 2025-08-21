@@ -13,6 +13,9 @@
 
 #include <QChar>
 
+//-----------------------------------------------------------------------------
+// Function: vhdlgeneric::VhdlGeneric()
+//-----------------------------------------------------------------------------
 VhdlGeneric::VhdlGeneric(QSharedPointer<ModuleParameter> generic,  QSharedPointer<ExpressionFormatter> formatter):
 VhdlTypedObject(generic->name(),
 		        generic->getDataType(),
@@ -26,6 +29,9 @@ VhdlTypedObject(generic->name(),
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: vhdlgeneric::write()
+//-----------------------------------------------------------------------------
 void VhdlGeneric::write( QTextStream& stream ) const
 {
 	Q_ASSERT(!name().isEmpty());

@@ -26,6 +26,7 @@
 #include <IPXACTmodels/Component/Port.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QSharedPointer>
 #include <QMultiMap>
@@ -35,9 +36,8 @@
 // Function: vhdlcomponentinstance::VhdlComponentInstance()
 //-----------------------------------------------------------------------------
 VhdlComponentInstance::VhdlComponentInstance(QObject* parent, LibraryInterface* handler,
-											 VhdlComponentDeclaration* compDeclaration,
-											 const QString& instanceName, const QString& viewName,
-											 const QString& description):
+	VhdlComponentDeclaration* compDeclaration, const QString& instanceName, QSharedPointer<ExpressionParser> parser,
+	const QString& viewName, const QString& description):
 QObject(parent),
 VhdlObject(instanceName, description),
 compDeclaration_(compDeclaration),
@@ -47,7 +47,8 @@ architecture_(),
 description_(description),
 defaultPortConnections_(),
 genericMap_(),
-portMap_() 
+portMap_(),
+parser_(parser)
 {
 	Q_ASSERT(handler);
 
@@ -298,19 +299,22 @@ void VhdlComponentInstance::useDefaultsForOtherPorts()
 	for (auto i = defaultPortConnections_.cbegin(); i != defaultPortConnections_.cend();
         ++i)
     {
+		QString portDefaultValue = i.value();
         // if the default value is not set
-        if (i.value().isEmpty())
-        {
+		if (portDefaultValue.isEmpty())
+		{
             continue;
         }
 
         VhdlPortMap port(i.key(), QString(), QString(), QString());
 
+		auto formattedDefaultValue = ExpressionFormatter::format(portDefaultValue, parser_);
+
 		// get the type of the port
 		QString portTypeStr(portType(i.key()));
 
 		// make sure the default value is in correct form
-		QString defaultStr = VhdlGeneral::convertDefaultValue(i.value(), portTypeStr);
+		QString defaultStr = VhdlGeneral::convertDefaultValue(formattedDefaultValue, portTypeStr);
 
 		VhdlPortMap defaultValue(defaultStr, QString(), QString(), QString());
 		addMapping(port, defaultValue);

@@ -219,7 +219,13 @@ void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
 
     if (affectedFile)
     {
-        emit fileNameChanged(item->row());
+        //! This is a change done for verilog generator.
+
+		emit fileNameChanged(item->row());
+
+        model_->writeFileToCurrentPath(item->row());
+
+        emit selectedFileChanged(affectedFile);
 
         // A name of a file changed -> emit signal and update existence status.
         checkExistence();

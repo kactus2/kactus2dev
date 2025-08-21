@@ -351,10 +351,16 @@ void GenerationControl::reInitializeDocuments(
 QSharedPointer<GenerationOutput> GenerationControl::getMatchingMetaDesignOutput(
     QSharedPointer<GenerationOutput> output) const
 {
+    auto originalTopInstance = output->metaDesign_->getTopInstance();
+
     for (auto designOutput : *outputControl_->getOutputs())
     {
-        if (designOutput->metaDesign_->getTopInstance()->getComponent()->getVlnv() ==
-            output->metaDesign_->getTopInstance()->getComponent()->getVlnv())
+        auto comparisonTopInstance = designOutput->metaDesign_->getTopInstance();
+
+		if (originalTopInstance->getComponent()->getVlnv() == comparisonTopInstance->getComponent()->getVlnv() &&
+            (originalTopInstance->getComponentInstance() == nullptr || 
+            (originalTopInstance->getComponentInstance() && comparisonTopInstance->getComponentInstance() && 
+            originalTopInstance->getComponentInstance()->name() == comparisonTopInstance->getComponentInstance()->name())))
         {
             return designOutput;
         }
