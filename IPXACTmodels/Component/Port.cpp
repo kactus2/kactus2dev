@@ -47,6 +47,11 @@ isPresent_(other.isPresent_)
         transactional_ = QSharedPointer<Transactional>(other.transactional_->clone());
 	}
 
+    if (other.structured_)
+    {
+        structured_ = QSharedPointer<Structured>(other.structured_->clone());
+    }
+
     Copy::copyList(other.configurableArrays_, configurableArrays_);
 }
 
@@ -71,6 +76,12 @@ Port & Port::operator=( const Port &other )
 		if (other.transactional_) 
         {
 			transactional_ = QSharedPointer<Transactional>(other.transactional_->clone());
+		}
+
+        structured_.clear();
+		if (other.structured_)
+		{
+			structured_ = QSharedPointer<Structured>(other.structured_->clone());
 		}
 
         configurableArrays_->clear();

@@ -68,7 +68,7 @@ void PortValidator::componentChange(QSharedPointer<QList<QSharedPointer<View> > 
 bool PortValidator::validate(QSharedPointer<Port> port) const
 {
     return hasValidName(port->name()) && hasValidIsPresent(port) && hasValidArrays(port) &&
-        (port->getTransactional() || port->getWire()) && hasValidWire(port) &&
+        (port->getTransactional() || port->getWire() || port->getStructured()) && hasValidWire(port) &&
         hasValidTransactionalPort(port) && validComparedToSiblings(port);
 }
 

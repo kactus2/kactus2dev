@@ -341,17 +341,20 @@ void PortWriter::writeStructured(QXmlStreamWriter& writer, QSharedPointer<Struct
 //-----------------------------------------------------------------------------
 void PortWriter::writeStructuredType(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const
 {
-    writer.writeStartElement(QStringLiteral("ipxact:") + Structured::toString(structured->getType()));
-    if (structured->getType() == Structured::Type::Struct || structured->getType() == Structured::Type::Union)
+    if (structured->getType() != Structured::Type::Undefined)
     {
-        writer.writeAttribute(QStringLiteral("direction"), DirectionTypes::direction2Str(structured->getDirection()));
+		writer.writeStartElement(QStringLiteral("ipxact:") + Structured::toString(structured->getType()));
+		if (structured->getType() == Structured::Type::Struct || structured->getType() == Structured::Type::Union)
+		{
+			writer.writeAttribute(QStringLiteral("direction"), DirectionTypes::direction2Str(structured->getDirection()));
+		}
+		else if (structured->getType() == Structured::Type::Interface &&
+			structured->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
+		{
+			writer.writeAttribute(QStringLiteral("phantom"), QStringLiteral("true"));
+		}
+		writer.writeEndElement(); // ipxact:struct/union/interface
     }
-    else if (structured->getType() == Structured::Type::Interface &&
-        structured->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
-    {
-        writer.writeAttribute(QStringLiteral("phantom"), QStringLiteral("true"));
-    }
-    writer.writeEndElement(); // ipxact:struct/union/interface
 }
 
 //-----------------------------------------------------------------------------
