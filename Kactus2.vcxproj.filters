@@ -3415,6 +3415,9 @@
     <ClCompile Include="editors\InterconnectGenerator\InterconnectAddressHelper.cpp">
       <Filter>Source Files\editors\InterconnectGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InstanceInterfacesEditor.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5862,7 +5865,7 @@
     </ClInclude>
     <ClInclude Include="editors\InterconnectGenerator\InterconnectAddressHelper.h">
       <Filter>Header Files\editors\InterconnectGenerator</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h">
       <Filter>Header Files\common\layouts</Filter>
     </ClInclude>
@@ -6169,6 +6172,9 @@
     </QtMoc>
     <QtMoc Include="common\widgets\instanceWidgets\InstanceWidgets.h">
       <Filter>Source Files\common\widgets\instanceWidgets</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\interconnectgenerator\InstanceInterfacesEditor.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

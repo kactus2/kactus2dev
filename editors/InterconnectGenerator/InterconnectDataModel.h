@@ -60,6 +60,15 @@ public:
         bool operator!=(const ConnectionKey& other) const;
     };
 
+    struct ConnectionKeyNew
+    {
+        InterconnectType icType;
+        EntityType entityType;
+
+        bool operator==(const ConnectionKeyNew& other) const { return other.icType == icType && other.entityType == entityType; }
+        bool operator!=(const ConnectionKeyNew& other) const { return !operator==(other); }
+    };
+
     /*!
      *  Describes a valid target connection rule.
      */
@@ -125,12 +134,12 @@ public:
     QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> createInstanceBusesLookup() const;
 
     /*!
-     *  Normalizes a legacy interface mode to IP-XACT 2014 standard.
+     *  Normalizes a legacy interface mode to IP-XACT 2022 standard.
      *
      *  @param [in] mode  Interface mode to normalize.
      *  @return Standardized interface mode.
      */
-    static General::InterfaceMode normalizeTo2014(General::InterfaceMode mode);
+    static General::InterfaceMode normalizeTo2022(General::InterfaceMode mode);
 
     /*!
      *  Returns valid connection targets for a given source configuration.
@@ -144,6 +153,8 @@ public:
         EntityType sourceEntity,
         General::InterfaceMode sourceMode,
         InterconnectType currentInterconnect) const;
+
+    QSet<General::InterfaceMode> getConnectableInterfaceTypes(ConnectionKeyNew const& connectionKey) const;
 
     /*!
      *  Verifies whether the provided interconnect mode is valid for all
@@ -180,7 +191,7 @@ private:
      *  Initialize all valid connection rules.
      */
     void initConnectionRules();
-
+    void initConnectionRulesNew();
     /*!
      *  Collect bus interfaces from all component instances in the design.
      */
@@ -279,13 +290,15 @@ private:
     QHash<QSharedPointer<BusInterface>, QSet<QString>> interfaceAbsDefsHash_;
 
     //! Reverse mapping: abstraction name -> set of buses that implement it.
-    QHash<QString, QSet<QSharedPointer<BusInterface>>> absToBuses;
+    //QHash<QString, QSet<QSharedPointer<BusInterface>>> absToBuses;
 
     //! Multi-map to track all available bus interfaces by mode and entity type.
-    QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>> modeEntityToBuses;
+    //QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>> modeEntityToBuses;
 
     //! Lookup of all valid connection rules for each source configuration.
     QHash<ConnectionKey, QList<ConnectionRule>> connectionRules_;
+
+    QHash<ConnectionKeyNew, QSet<General::InterfaceMode> > connectionRulesNew_;
 
     //! Used to store invalid connection message to display on dialog.
     mutable QString lastInvalidConnectionMessage_;
@@ -318,6 +331,8 @@ inline uint qHash(InterconnectDataModel::InterconnectType key, uint seed = 0); /
 *  @return Hashed value.
 */
 inline uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed = 0);
+
+inline uint qHash(const InterconnectDataModel::ConnectionKeyNew& key, uint seed = 0);
 
 
 #endif // INTERCONNECTDATAMODEL_H

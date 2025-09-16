@@ -12,6 +12,9 @@
 #ifndef INTERFACEENUMEDITOR_H
 #define INTERFACEENUMEDITOR_H
 
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/Document.h>
+
 #include <QFrame>
 #include <QVBoxLayout>
 #include <QScrollArea>
@@ -21,17 +24,6 @@
 #include <QList>
 #include <QString>
 #include <QPair>
-
-/*!
- *  Struct representing the UI elements associated with a single interface.
- */
-struct InterfaceItem {
-    QCheckBox* checkBox;       /*!< Checkbox to enable or disable the interface. */
-    QLabel* startLabel;        /*!< Label for the start address. */
-    QLineEdit* startEdit;      /*!< Input field for the start address. */
-    QLabel* rangeLabel;        /*!< Label for the address range. */
-    QLineEdit* rangeEdit;      /*!< Input field for the address range. */
-};
 
 /*!
  *  Struct representing selected data for a target endpoint interface.
@@ -54,12 +46,19 @@ public:
      *
      *  @param [in] parent  Parent widget.
      */
-    explicit InterfaceEnumEditor(QWidget* parent = nullptr);
+    explicit InterfaceEnumEditor(Document::Revision docRevision, QWidget* parent = nullptr);
 
     /*!
      *  Destructor.
      */
     virtual ~InterfaceEnumEditor() = default;
+
+    struct InterfaceData
+    {
+        QString name;
+        QString startValue;
+        QString range;
+    };
 
     /*!
      *  Get the names of selected starting point interfaces.
@@ -75,6 +74,9 @@ public:
      */
     QList<EndpointInterfaceData> getSelectedEndpointInterfaces() const;
 
+    QList<InterfaceData> getSelectedInterfaces() const;
+
+
     /*!
      *  Add a list of interface names to the editor.
      *
@@ -83,6 +85,8 @@ public:
      *  @param [in] instanceName  Name of the associated instance.
      */
     void addItems(const QStringList& items, bool isTarget, const QString& instanceName);
+
+    void addItems(const QStringList& items, const QString& instanceName, General::InterfaceMode interfaceMode, bool isChannel);
 
     /*!
      *  Set address values for a selected endpoint interface.
@@ -104,6 +108,8 @@ public:
      *  Remove all interface entries from the editor.
      */
     void clearAll();
+
+    void createLayoutCondenser();
 
 signals:
     /*!
@@ -139,6 +145,21 @@ signals:
     void startingPointInterfaceUnchecked(const QString& interfaceName, const QString& instanceName);
 
 private:
+
+    /*!
+     *  Struct representing the UI elements associated with a single interface.
+     */
+    struct InterfaceItem
+    {
+        QCheckBox* checkBox;       /*!< Checkbox to enable or disable the interface. */
+        QLabel* startLabel;        /*!< Label for the start address. */
+        QLineEdit* startEdit;      /*!< Input field for the start address. */
+        QLabel* rangeLabel;        /*!< Label for the address range. */
+        QLineEdit* rangeEdit;      /*!< Input field for the address range. */
+    };
+
+    QHash<QString, InterfaceItem> singleInterfaces_;
+
     //! Main layout for the editor.
     QVBoxLayout* mainLayout_;
 
@@ -151,8 +172,14 @@ private:
     //! Layout for items within the scroll container.
     QVBoxLayout* scrollLayout_;
 
+    QGridLayout* itemLayout_;
+
+    QWidget* itemLayoutCondenser_;
+
     //! List of currently displayed interface widgets.
     QList<InterfaceItem> interfaceItems_;
+
+    bool isStd22_ = true;
 };
 
 #endif

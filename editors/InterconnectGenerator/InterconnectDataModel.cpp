@@ -21,6 +21,7 @@ void InterconnectDataModel::gatherBusAndAbstractionData() {
     getBusesFromInstances();
     getBusesFromTopComponent();
     initConnectionRules();
+    initConnectionRulesNew();
     filterValidAbstractionReferences();
 }
 
@@ -144,7 +145,7 @@ void InterconnectDataModel::filterValidAbstractionReferences()
 {
     validAbsRefs_.clear();
 
-    auto absToBuses = buildAbstractionToBusMap();
+    auto absToBuses = buildAbstractionToBusMap(); // ? are these supposed to shadow ?
     auto modeEntityToBuses = buildModeEntityToBusMap();
 
     for (const auto& absRef : allAbsRefs_) {
@@ -177,12 +178,14 @@ InterconnectDataModel::buildModeEntityToBusMap() const
 {
     QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>> map;
 
+    auto topComponentName = designWidget_->getEditedComponent()->getVlnv().getName();
+
     for (auto it = instanceBusesHash_.cbegin(); it != instanceBusesHash_.cend(); ++it) {
-        EntityType entity = (it.key() == designWidget_->getEditedComponent()->getVlnv().getName())
+        EntityType entity = (it.key() == topComponentName)
             ? EntityType::TopComponent : EntityType::Instance;
 
         for (const auto& bus : it.value()) {
-            map.insert({ normalizeTo2014(bus->getInterfaceMode()), entity }, bus);
+            map.insert({ normalizeTo2022(bus->getInterfaceMode()), entity }, bus);
         }
     }
 
@@ -201,7 +204,7 @@ bool InterconnectDataModel::isAbstractionConnectable(
     const auto& sourceBuses = absToBuses.value(absName);
 
     for (const auto& sourceBus : sourceBuses) {
-        General::InterfaceMode srcMode = normalizeTo2014(sourceBus->getInterfaceMode());
+        General::InterfaceMode srcMode = normalizeTo2022(sourceBus->getInterfaceMode());
         EntityType srcEntity = getEntityTypeForBus(sourceBus);
 
         auto rules = getValidConnectionTargets(srcEntity, srcMode, InterconnectType::Bridge);
@@ -213,7 +216,7 @@ bool InterconnectDataModel::isAbstractionConnectable(
             for (const auto& targetBus : targets) {
                 if (!absToBuses.value(absName).contains(targetBus)) continue;
 
-                if (normalizeTo2014(targetBus->getInterfaceMode()) == rule.targetMode) {
+                if (normalizeTo2022(targetBus->getInterfaceMode()) == rule.targetMode) {
                     return true;
                 }
             }
@@ -258,7 +261,7 @@ bool InterconnectDataModel::isModeValidForAllConnections(
             EntityType::Instance;
 
         for (const auto& initiatorBus : it.value()) {
-            General::InterfaceMode initiatorMode = normalizeTo2014(initiatorBus->getInterfaceMode());
+            General::InterfaceMode initiatorMode = normalizeTo2022(initiatorBus->getInterfaceMode());
             const QList<ConnectionRule> validRules =
                 getValidConnectionTargets(initiatorEntity, initiatorMode, mode);
 
@@ -271,7 +274,7 @@ bool InterconnectDataModel::isModeValidForAllConnections(
 
                 for (const auto& targetData : jt.value()) {
                     QSharedPointer<BusInterface> targetBus = targetData->endpointBus;
-                    General::InterfaceMode targetMode = normalizeTo2014(targetBus->getInterfaceMode());
+                    General::InterfaceMode targetMode = normalizeTo2022(targetBus->getInterfaceMode());
 
                     bool valid = std::any_of(validRules.begin(), validRules.end(),
                         [&](const ConnectionRule& rule) {
@@ -334,6 +337,14 @@ QList<InterconnectDataModel::ConnectionRule> InterconnectDataModel::getValidConn
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::getConnectableInterfaceTypes()
+//-----------------------------------------------------------------------------
+QSet<General::InterfaceMode> InterconnectDataModel::getConnectableInterfaceTypes(ConnectionKeyNew const& connectionKey) const
+{
+    return connectionRulesNew_.value(connectionKey);
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::hasAnyValidConnection()
 //-----------------------------------------------------------------------------
 bool InterconnectDataModel::hasAnyValidConnection(EntityType sourceEntity, General::InterfaceMode sourceMode) const
@@ -344,9 +355,9 @@ bool InterconnectDataModel::hasAnyValidConnection(EntityType sourceEntity, Gener
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectDataModel::normalizeTo2014()
+// Function: InterconnectDataModel::normalizeTo2022()
 //-----------------------------------------------------------------------------
-General::InterfaceMode InterconnectDataModel::normalizeTo2014(General::InterfaceMode mode)
+General::InterfaceMode InterconnectDataModel::normalizeTo2022(General::InterfaceMode mode)
 {
     switch (mode) {
     case General::MASTER: return General::INITIATOR;
@@ -422,6 +433,36 @@ void InterconnectDataModel::initConnectionRules()
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::initConnectionRulesNew()
+//-----------------------------------------------------------------------------
+void InterconnectDataModel::initConnectionRulesNew()
+{
+    connectionRulesNew_.clear();
+
+    connectionRulesNew_[{InterconnectType::Bridge, EntityType::Instance}] = {
+        General::InterfaceMode::INITIATOR, General::InterfaceMode::TARGET,
+        General::InterfaceMode::MIRRORED_INITIATOR, General::InterfaceMode::MIRRORED_TARGET,
+        General::InterfaceMode::MASTER, General::InterfaceMode::SLAVE,
+        General::InterfaceMode::MIRRORED_MASTER, General::InterfaceMode::MIRRORED_SLAVE
+    };
+
+    connectionRulesNew_[{InterconnectType::Bridge, EntityType::TopComponent}] = {
+        General::InterfaceMode::INITIATOR, General::InterfaceMode::TARGET,
+        General::InterfaceMode::MASTER, General::InterfaceMode::SLAVE
+    };
+
+    connectionRulesNew_[{InterconnectType::Channel, EntityType::Instance}] = {
+        General::InterfaceMode::INITIATOR, General::InterfaceMode::TARGET,
+        General::InterfaceMode::MASTER, General::InterfaceMode::SLAVE
+    };
+
+    connectionRulesNew_[{InterconnectType::Channel, EntityType::TopComponent}] = {
+        General::InterfaceMode::MIRRORED_INITIATOR, General::InterfaceMode::MIRRORED_TARGET,
+        General::InterfaceMode::MIRRORED_MASTER, General::InterfaceMode::MIRRORED_SLAVE
+    };
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::createInstanceBusesLookup()
 //-----------------------------------------------------------------------------
 QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> InterconnectDataModel::createInstanceBusesLookup() const
@@ -458,4 +499,12 @@ uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed)
 {
     return qHash(static_cast<int>(key.sourceEntity), seed) ^
         qHash(static_cast<int>(key.sourceMode), seed << 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: qHash()
+//-----------------------------------------------------------------------------
+uint qHash(const InterconnectDataModel::ConnectionKeyNew& key, uint seed /*= 0*/)
+{
+    return qHashMulti(seed, static_cast<uint>(key.entityType), static_cast<uint>(key.icType));
 }

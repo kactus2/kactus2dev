@@ -3,18 +3,21 @@
 //-----------------------------------------------------------------------------
 // Function: InterfaceEnumEditor::InterfaceEnumEditor()
 //-----------------------------------------------------------------------------
-InterfaceEnumEditor::InterfaceEnumEditor(QWidget* parent)
+InterfaceEnumEditor::InterfaceEnumEditor(Document::Revision docRevision, QWidget* parent)
     : QFrame(parent),
     mainLayout_(new QVBoxLayout(this)),
     scrollArea_(new QScrollArea(this)),
     scrollContainer_(new QWidget()),
-    scrollLayout_(new QVBoxLayout(scrollContainer_))
+    scrollLayout_(new QVBoxLayout(scrollContainer_)),
+    itemLayout_(new QGridLayout())
 {
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NoMousePropagation);
+    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     setLayout(mainLayout_);
+    scrollLayout_->addLayout(itemLayout_);
 
     scrollArea_->setWidgetResizable(true);
     scrollArea_->setFrameShape(QFrame::NoFrame);
@@ -23,6 +26,8 @@ InterfaceEnumEditor::InterfaceEnumEditor(QWidget* parent)
     scrollArea_->setWidget(scrollContainer_);
 
     mainLayout_->addWidget(scrollArea_);
+
+    isStd22_ = docRevision == Document::Revision::Std22;
 }
 
 //-----------------------------------------------------------------------------
@@ -89,17 +94,127 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isEndpoint, co
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::addItems()
+//-----------------------------------------------------------------------------
+void InterfaceEnumEditor::addItems(const QStringList& items, const QString& instanceName, General::InterfaceMode interfaceMode, bool isChannel)
+{
+    if (items.isEmpty())
+    {
+        return;
+    }
+
+    QLabel* typeLabel = new QLabel();
+
+    bool isTarget = interfaceMode == General::InterfaceMode::TARGET || interfaceMode == General::InterfaceMode::SLAVE;
+    bool isMirroredTarget = interfaceMode == General::InterfaceMode::MIRRORED_TARGET || interfaceMode == General::InterfaceMode::MIRRORED_SLAVE;
+    bool isInitiator = interfaceMode == General::InterfaceMode::INITIATOR || interfaceMode == General::InterfaceMode::MASTER;
+    bool isMirroredInitiator = interfaceMode == General::InterfaceMode::MIRRORED_INITIATOR || interfaceMode == General::InterfaceMode::MIRRORED_MASTER;
+
+    if (isInitiator)
+    {
+        typeLabel->setText(isStd22_ ? "Initiators:" : "Masters:");
+    }
+    else if (isMirroredInitiator)
+    {
+        typeLabel->setText(isStd22_ ? "Mirrored initiators:" : "Mirrored masters:");
+    }
+    else if (isTarget)
+    {
+        typeLabel->setText(isStd22_ ? "Targets:" : "Slaves:");
+    }
+    else if (isMirroredTarget)
+    {
+        typeLabel->setText(isStd22_ ? "Mirrored targets:" : "Mirrored slaves:");
+    }
+
+    itemLayout_->addWidget(typeLabel, itemLayout_->rowCount(), 0);
+    typeLabel->setMaximumSize(typeLabel->sizeHint());
+
+    int rowCounter = itemLayout_->rowCount();
+
+    for (auto const& itemName : items)
+    {
+        auto checkBox = new QCheckBox(itemName);
+        checkBox->adjustSize();
+        
+        itemLayout_->addWidget(checkBox, rowCounter, 0);
+
+        QLabel* startLabel = nullptr;
+        QLabel* rangeLabel = nullptr;
+        QLineEdit* startEdit = nullptr;
+        QLineEdit* rangeEdit = nullptr;
+
+        // Add remapping editors if item is target or target adjacent
+        // Only show range editors if channel is selected (not possible with bridge).
+        // Also show range editor if interface is mirrored target of top component
+
+        if (isTarget)
+        {
+            startLabel = new QLabel("Start:");
+            startEdit = new QLineEdit();
+            itemLayout_->addWidget(startLabel, rowCounter, 1);
+            itemLayout_->addWidget(startEdit, rowCounter, 2);
+
+            if (isChannel)
+            {
+                rangeLabel = new QLabel("Range:");
+                rangeEdit = new QLineEdit();
+                itemLayout_->addWidget(rangeLabel, rowCounter, 3);
+                itemLayout_->addWidget(rangeEdit, rowCounter, 4);
+            }
+        }
+        else if (isMirroredTarget && isChannel)
+        {
+            startLabel = new QLabel("Start:");
+            startEdit = new QLineEdit();
+            itemLayout_->addWidget(startLabel, rowCounter, 1);
+            itemLayout_->addWidget(startEdit, rowCounter, 2);
+
+            rangeLabel = new QLabel("Range:");
+            rangeEdit = new QLineEdit();
+            itemLayout_->addWidget(rangeLabel, rowCounter, 3);
+            itemLayout_->addWidget(rangeEdit, rowCounter, 4);
+        }
+
+        singleInterfaces_.emplace(itemName, InterfaceItem{ checkBox, startLabel, startEdit, rangeLabel, rangeEdit });
+        rowCounter++;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterfaceEnumEditor::clearAll()
 //-----------------------------------------------------------------------------
 void InterfaceEnumEditor::clearAll() {
-    for (const InterfaceItem& item : interfaceItems_) {
+    // TODO remove this old stuff
+    for (auto const& item : interfaceItems_) {
         delete item.checkBox;
         delete item.startEdit;
         delete item.rangeEdit;
         delete item.startLabel;
         delete item.rangeLabel;
     }
+
     interfaceItems_.clear();
+
+    QLayoutItem* currentChild;
+    while ((currentChild = itemLayout_->takeAt(0)) != nullptr)
+    {
+        delete currentChild->widget();
+        delete currentChild;
+    }
+
+    itemLayoutCondenser_ = nullptr;
+    singleInterfaces_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::createLayoutCondenser()
+//-----------------------------------------------------------------------------
+void InterfaceEnumEditor::createLayoutCondenser()
+{
+    itemLayoutCondenser_ = new QWidget();
+    itemLayoutCondenser_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    itemLayout_->addWidget(itemLayoutCondenser_, itemLayout_->rowCount(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -132,6 +247,28 @@ QList<EndpointInterfaceData> InterfaceEnumEditor::getSelectedEndpointInterfaces(
         }
     }
     return selectedTargets;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::getSelectedInterfaces()
+//-----------------------------------------------------------------------------
+QList<InterfaceEnumEditor::InterfaceData> InterfaceEnumEditor::getSelectedInterfaces() const
+{
+    QList<InterfaceEnumEditor::InterfaceData> selectedInterfaces;
+
+    for (auto const& interfaceEditor : singleInterfaces_)
+    {
+        if (interfaceEditor.checkBox->isChecked())
+        {
+            selectedInterfaces.emplace_back(InterfaceData{ 
+                interfaceEditor.checkBox->text(), 
+                interfaceEditor.startEdit->text(), 
+                interfaceEditor.rangeEdit->text() 
+            });
+        }
+    }
+
+    return selectedInterfaces;
 }
 
 //-----------------------------------------------------------------------------

@@ -47,6 +47,9 @@
 #include <KactusAPI/include/InterconnectGenerator.h>
 #include <KactusAPI/include/MessageMediator.h>
 
+class ExpressionEditor;
+class InstanceInterfacesEditor;
+
 //-----------------------------------------------------------------------------
 //! Class for configuring generated interconnect component
 //-----------------------------------------------------------------------------
@@ -68,7 +71,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~InterconnectGeneratorDialog() = default;
+    ~InterconnectGeneratorDialog();
 
     /*!
      *  Get config to generate interconnect.
@@ -98,6 +101,18 @@ protected:
      */
     void accept() override;
 
+private slots:
+
+    void onAbsDefChanged(int currentIndex);
+
+    void onInstanceSelected(QString const& newInstanceName, QString const& oldInstanceName);
+
+    void onInstanceRemoved();
+
+    void addNewInstance();
+
+    void onInterconnectSelectorToggled(bool checked);
+
 private:
     
     /*!
@@ -112,14 +127,7 @@ private:
      *
      *  @return Pointer to the created QGroupBox containing starting point controls.
      */
-    QGroupBox* createStartingPointsSection();
-
-    /*!
-     *  Create the UI section for listing and managing endpoint interfaces.
-     *
-     *  @return Pointer to the created QGroupBox containing endpoint controls.
-     */
-    QGroupBox* createEndpointsSection();
+    QGroupBox* createInstancesSection();
 
     /*!
      *  Create the standard button box for dialog actions (OK/Cancel).
@@ -185,7 +193,7 @@ private:
     /*!
      *  Clear all entries from both the starting and endpoint lists.
      */
-    void clearConnectionsLists();
+    void clearInstanceSelections();
 
     /*!
      *  Collect instance configurations for interconnect generation.
@@ -207,23 +215,6 @@ private:
     void collectEndpoints(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
 
     /*!
-     *  Add a new instance of the given type to the instance list.
-     *
-     *  @param [in] type  Type of instance to add (starting point or endpoint).
-     */
-    void addNewInstance(const QString& type);
-
-    /*!
-     *  Add a new starting point interface to the list.
-     */
-    void addNewStartingPoint();
-
-    /*!
-     *  Add a new endpoint interface to the list.
-     */
-    void addNewEndpoint();
-
-    /*!
      *  Get the currently selected interconnect type.
      *
      *  @return The selected interconnect type (Bridge or Channel).
@@ -235,6 +226,23 @@ private:
      *  based on currently selected starting points and endpoints.
      */
     void updateInterconnectModeOptions();
+
+    void filterAvailableInstancesByAbsDef();
+
+    /*!
+     *	Update the available instances for all instance interface editors
+     */
+    void updateAvailableInstances();
+
+    void updateAvailableInstanceInterfaces(InstanceInterfacesEditor* interfacesEditor, QString const& selectedInstance);
+
+    void updateAddInstanceButtonStatus();
+
+    bool hasSelectedInstances();
+
+    QSet<General::InterfaceMode> getAllowedInterfaceTypes(QString const& selectedInstance);
+
+    bool interfaceSelectionsAreLegal(QString& errorMsg);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -258,6 +266,8 @@ private:
     //! Parameters specific to the generated interconnect component.
     QSharedPointer<QList<QSharedPointer<Parameter>>> interconnectParams_;
 
+    QSharedPointer<ExpressionParser> expressionParser_{ new SystemVerilogExpressionParser() };
+
     //! Current working interconnect configuration.
     ConfigStruct* config_ = nullptr;
 
@@ -274,10 +284,10 @@ private:
     ParameterGroupBox* parameterGroupBox_;
 
     //! Combo box for selecting a component instance.
-    InstanceComboBox* componentInstances_;
+    //InstanceComboBox* componentInstances_;
 
     //! Combo box for selecting a bus interface.
-    InstanceComboBox* busInterfaceCombo_;
+    InstanceComboBox* absDefCombo_;
 
     //! Combo box for selecting a clock interface.
     InstanceComboBox* clockCombo_;
@@ -286,7 +296,10 @@ private:
     InstanceComboBox* resetCombo_;
 
     //! Line edit for specifying data width.
-    QLineEdit* dataWidthEdit_;
+    ExpressionEditor* dataWidthEdit_;
+
+    //! Line edit for specifying address width.
+    ExpressionEditor* addressWidthEdit_;
 
     //! Checkbox to enable or disable clock signal configuration.
     QCheckBox* clockCheckBox_;
@@ -301,19 +314,23 @@ private:
     QRadioButton* bridgeButton_;
 
     //! Layout container for initiator interface selection.
-    QVBoxLayout* startingPointsLayout_;
+    QVBoxLayout* instancesLayout_;
 
     //! Layout container for target interface selection.
     QVBoxLayout* endpointsLayout_;
 
+    QPushButton* addInstanceButton_ = new QPushButton(QIcon(":/icons/common/graphics/add.png"), tr("Add New Instance"));
+
     //! Previous index selected in UI (used for change tracking).
-    int previousIndex_ = -1;
+    int previousAbsDefIndex_ = -1;
 
     //! Internal flag to suppress change-triggered logic during setup.
     bool ignoreChange_ = false;
 
     //! Indicates whether the interconnect is being generated as a channel.
     bool isChannel_ = false;
+
+    QSet<QString> availableInstances_;
 
     //! Set of filtered abstraction references compatible with the selected bus.
     QSet<QSharedPointer<ConfigurableVLNVReference>> filteredAbsRefs_;
@@ -333,11 +350,16 @@ private:
     //! Set of already added target interface keys (to avoid duplicates).
     QSet<QString> addedEndpoints_;
 
+    QSet<QString> addedInstances_;
+
+
     //! Map of selected initiator interfaces, grouped by instance name.
     QHash<QString, QList<QSharedPointer<BusInterface>>> selectedStartingPoints_;
 
     //! Map of selected target interfaces and related metadata, grouped by instance name.
     QHash<QString, QList<QSharedPointer<EndpointData>>> selectedEndpoints_;
+
+    QSet<InstanceInterfacesEditor*> instanceEditors_;
 };
 
 #endif // INTERCONNECTGENERATORDIALOG_H

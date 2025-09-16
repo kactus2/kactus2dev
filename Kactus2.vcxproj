@@ -862,6 +862,7 @@ CreateHelp
     <ClCompile Include="editors\HWDesign\undoCommands\ReplaceComponentCommand.cpp" />
     <ClCompile Include="editors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp" />
     <ClCompile Include="editors\HWDesign\WarningSymbol.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InstanceInterfacesEditor.cpp" />
     <ClCompile Include="editors\InterconnectGenerator\InterconnectAddressHelper.cpp" />
     <ClCompile Include="editors\InterconnectGenerator\InterconnectDataModel.cpp" />
     <ClCompile Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.cpp" />
@@ -2109,6 +2110,7 @@ CreateHelp
       </Command>
     </CustomBuild>
     <QtMoc Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.h" />
+    <QtMoc Include="editors\interconnectgenerator\InstanceInterfacesEditor.h" />
     <ClInclude Include="editors\InterconnectGenerator\InterconnectAddressHelper.h" />
     <ClInclude Include="editors\InterconnectGenerator\InterconnectDataModel.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressBlockGraphicsItem.h" />
