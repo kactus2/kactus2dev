@@ -2,7 +2,7 @@
 // File: InterconnectRTLWriter.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Multiple
+// Author: Teemu Hanhisuanto, Linda Virtanen
 // Date: 07.2025
 //
 // Description:
@@ -114,12 +114,12 @@ private:
      *    @param [in] isInit    Boolean indicating whether the interface
      *                          represents an initiator or target
      */
-    void writeAxiAssign(QTextStream& stream, QString busName, int index, bool isInit);
+    void writeSignalAssignments(QTextStream& stream, QString busName, int index, bool isInit);
 
 
     /*!
      *  Returns immediately if 'TargetList' is empty. Iterates through each
-     *  target and calls the 'writeAxiAssign' function.
+     *  target and calls the 'writeSignalAssignments' function.
      *
      *    @param [in] stream    Verilog file output stream
      */
@@ -128,7 +128,7 @@ private:
 
     /*!
      *  Returns immediately if 'InitList' is empty. Iterates through each
-     *  initiator and calls the 'writeAxiAssign' function.
+     *  initiator and calls the 'writeSignalAssignments' function.
      *
      *    @param [in] stream    Verilog file output stream
      */
