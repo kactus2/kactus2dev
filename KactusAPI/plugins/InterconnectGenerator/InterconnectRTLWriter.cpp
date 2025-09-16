@@ -2,7 +2,7 @@
 // File: InterconnectRTLWriter.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Multiple
+// Author: Teemu Hanhisuanto, Linda Virtanen
 // Date: 07.2025
 //
 // Description:
@@ -130,10 +130,12 @@ void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
 
     writeAxiParams(stream);
 
+    stream << commentWriter("Initiator and target interface(s)") << "\n";
+
     if (!config_->TargetList.isEmpty()) {
         stream << indent()  << "AXI_BUS #(" << Qt::endl;
         stream << indent(2) << ".AXI_ID_WIDTH(" << IdWidthInits_ << ")," << Qt::endl;
-        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << "), // Adjustable" << Qt::endl;
+        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << "),      // Adjustable" << Qt::endl;
         stream << indent(2) << ".AXI_ADDR_WIDTH(ADDR_WIDTH)," << Qt::endl;
         stream << indent(2) << ".AXI_DATA_WIDTH(DATA_WIDTH)" << Qt::endl;
 
@@ -145,7 +147,7 @@ void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
     if (!config_->InitList.isEmpty()) {
         stream << indent()  << "AXI_BUS #(" << Qt::endl;
         stream << indent(2) << ".AXI_ID_WIDTH(" << IdWidthInits_ << ")," << Qt::endl;
-        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << "), // Adjustable" << Qt::endl;
+        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << "),      // Adjustable" << Qt::endl;
         stream << indent(2) << ".AXI_ADDR_WIDTH(ADDR_WIDTH)," << Qt::endl;
         stream << indent(2) << ".AXI_DATA_WIDTH(DATA_WIDTH)" << Qt::endl;
 
@@ -161,6 +163,8 @@ void InterconnectRTLWriter::writeAXI4(QTextStream& stream) {
 void InterconnectRTLWriter::writeAXI4LITE(QTextStream& stream) {
 
     writeAxiParams(stream);
+
+    stream << commentWriter("Initiator and target interface(s)") << "\n";
 
     if (!config_->TargetList.isEmpty()) {
         stream << indent()  << "AXI_LITE #("      << Qt::endl;
@@ -188,15 +192,18 @@ void InterconnectRTLWriter::writeAXI4LITE(QTextStream& stream) {
 //-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeAxiParams(QTextStream& stream) {
 
+    stream << commentWriter("Local parameters") << "\n";
+
     stream << indent() << "localparam " << axiTargetParam_
-        << " = " << config_->TargetList.size() << ";" << Qt::endl;
+        << " = " << config_->TargetList.size() << ";\n";
 
     stream << indent() << "localparam " << axiInitParam_
-        << " = " << config_->InitList.size() << ";" << Qt::endl;
+        << " = " << config_->InitList.size() << ";\n";
     
     stream << indent() << "localparam " << IdWidthInits_ << " = ";
-        stream << config_->IDWidth << " + " << "$clog2(" << axiTargetParam_ << ");" << Qt::endl;
-        stream << Qt::endl;
+        stream << config_->IDWidth << " + " << "$clog2(" << axiTargetParam_ << ");\n";
+
+    stream << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -210,9 +217,10 @@ void InterconnectRTLWriter::writeAxiAddrMap(QTextStream& stream)
             targetRegions += target.AddressRegions.length() - 1;
         }
     }
+    stream << commentWriter("Address mapping") << "\n";
 
     stream << indent() << "localparam " << addrRulesParam_ << " = "
-        << axiTargetParam_ << " + " << targetRegions << ";\n" << Qt::endl;
+        << axiTargetParam_ << " + " << targetRegions << ";\n";
 
     stream << indent() << "typedef axi_pkg::xbar_rule_" << config_->AddressWidth
         << "_t " << ruleType_ << ";\n" << Qt::endl;
@@ -237,7 +245,7 @@ void InterconnectRTLWriter::writeAxiAddrMap(QTextStream& stream)
 
             if (startOk && rangeOk) {
                 uint64_t sum = startValue + endValue + 1; // start >=, end <
-                rangeStr = QString::number(config_->AddressWidth) + "'h" + QString::number(sum, 16).toUpper();
+                rangeStr = /*QString::number(config_->AddressWidth)*/ + "'h" + QString::number(sum, 16).toUpper();
             }
             
             stream << indent(2)
@@ -256,6 +264,8 @@ void InterconnectRTLWriter::writeAxiAddrMap(QTextStream& stream)
 //-----------------------------------------------------------------------------
 void InterconnectRTLWriter::writeAxiXbarCfg(QTextStream& stream)
 {
+    stream << commentWriter("Crossbar configuration", "See definitions in 'axi_pkg.sv'") << "\n";
+
     stream << indent()  << "localparam axi_pkg::xbar_cfg_t " << axiCfg_ << " = '{" << Qt::endl;
     stream << indent(2) << "NoSlvPorts:         " << axiTargetParam_ << "," << Qt::endl;
     stream << indent(2) << "NoMstPorts:         " << axiInitParam_ << "," << Qt::endl;
@@ -286,33 +296,35 @@ void InterconnectRTLWriter::writeAxiXbar(QTextStream& stream) {
 
     if (config_->BusType.toLower() == "axi4") {
 
+        stream << commentWriter("Crossbar initialization", "See parameter definitions in 'axi_xbar.sv'") << "\n";
         axiXbar_ = "i_axi_xbar";
-        stream << indent() << "axi_xbar_intf #(" << Qt::endl;
-        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
+        stream << indent() << "axi_xbar_intf #(\n";
+        stream << indent(2) << ".AXI_USER_WIDTH(" << config_->UserWidth << "),\n";
 
     }
     else if (config_->BusType.toLower() == "axi4lite") {
 
+        stream << commentWriter("Crossbar initialization", "See parameter definitions in 'axi_lite_xbar.sv'") << "\n";
         axiXbar_ = "i_axi_lite_xbar";
-        stream << indent() << "axi_lite_xbar_intf #(" << Qt::endl;
+        stream << indent() << "axi_lite_xbar_intf #(\n";
 
     } else {
         return;
     }
     
-    stream << indent(2) << ".Cfg(" << axiCfg_ << ")," << Qt::endl;
-    stream << indent(2) << ".rule_t(" << ruleType_ << ")" << Qt::endl;
+    stream << indent(2) << ".Cfg(" << axiCfg_ << "),\n";
+    stream << indent(2) << ".rule_t(" << ruleType_ << ")\n";
     
-    stream << indent() << ") " << axiXbar_ << "(" << Qt::endl;
+    stream << indent() << ") " << axiXbar_ << "(\n";
 
-    stream << indent(2) << ".clk_i(" << clkPort_ << ")," << Qt::endl;
-    stream << indent(2) << ".rst_ni(" << rstPort_ << ")," << Qt::endl;
-    stream << indent(2) << ".test_i(1'b0)," << Qt::endl;
-    stream << indent(2) << ".slv_ports(" << axiInitBus_ << ")," << Qt::endl;
-    stream << indent(2) << ".mst_ports(" << axiTargetBus_ << ")," << Qt::endl;
-    stream << indent(2) << ".addr_map_i(" << addrMapXBAR_ << ")," << Qt::endl;
-    stream << indent(2) << ".en_default_mst_port_i('0)," << Qt::endl;
-    stream << indent(2) << ".default_mst_port_i('0)" << Qt::endl;
+    stream << indent(2) << ".clk_i(" << clkPort_ << "),\n";
+    stream << indent(2) << ".rst_ni(" << rstPort_ << "),\n";
+    stream << indent(2) << ".test_i(1'b0),               // Adjustable\n";
+    stream << indent(2) << ".slv_ports(" << axiInitBus_ << "),\n";
+    stream << indent(2) << ".mst_ports(" << axiTargetBus_ << "),\n";
+    stream << indent(2) << ".addr_map_i(" << addrMapXBAR_ << "),\n";
+    stream << indent(2) << ".en_default_mst_port_i('0),  // Adjustable\n";
+    stream << indent(2) << ".default_mst_port_i('0)      // Adjustable\n";
     stream << indent() << ");\n" << Qt::endl;
 }
 
@@ -542,19 +554,19 @@ void InterconnectRTLWriter::writeObiXbar(QTextStream& stream) {
     stream << indent() << "obi_xbar_intf #(\n";
     stream << indent(2) << ".NumSbrPorts       (" << obiInitParam_ << "),\n";
     stream << indent(2) << ".NumMgrPorts       (" << obiTargetParam_ << "),\n";
-    stream << indent(2) << ".NumMaxTrans       (1),             // Adjustable\n";
+    stream << indent(2) << ".NumMaxTrans       (1),          // Adjustable\n";
     stream << indent(2) << ".NumAddrRules      (" << addrRulesParam_ << "),\n";
     stream << indent(2) << ".addr_map_rule_t   (" << obiAddrRule_ << "),\n";
-    stream << indent(2) << ".UseIdForRouting   (0)              // Adjustable\n";
+    stream << indent(2) << ".UseIdForRouting   (0)           // Adjustable\n";
     stream << indent() << ") i_obi_xbar (\n";
     stream << indent(2) << ".clk_i             (" << clkPort_ << "),\n";
     stream << indent(2) << ".rst_ni            (" << rstPort_ << "),\n";
-    stream << indent(2) << ".testmode_i        (1'b0),          // Adjustable\n";
+    stream << indent(2) << ".testmode_i        (1'b0),       // Adjustable\n";
     stream << indent(2) << ".sbr_ports         (" << obiInitInterface_ << "),\n";
     stream << indent(2) << ".mgr_ports         (" << obiTargetInterface_ << "),\n";
     stream << indent(2) << ".addr_map_i        (" << addrMapXBAR_ << "),\n";
-    stream << indent(2) << ".en_default_idx_i  ('0),            // Adjustable\n";
-    stream << indent(2) << ".default_idx_i     ('0)             // Adjustable\n";
+    stream << indent(2) << ".en_default_idx_i  ('0),         // Adjustable\n";
+    stream << indent(2) << ".default_idx_i     ('0)          // Adjustable\n";
     stream << indent() << ");\n" << Qt::endl;
 }
 
@@ -614,13 +626,13 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
 
         int index = parsed.indexOf("'h", Qt::CaseInsensitive);
         parsed = parsed.mid(index + 2).trimmed();
-        return QString::number(config_->AddressWidth) + "'h" + parsed.toUpper();
+        return /*QString::number(config_->AddressWidth)*/ + "'h" + parsed.toUpper();
     }
 
     else if (parsed.startsWith("0x", Qt::CaseInsensitive)) {
 
         parsed = parsed.mid(2);
-        return QString::number(config_->AddressWidth) + "'h" + parsed.toUpper();
+        return /*QString::number(config_->AddressWidth)*/ + "'h" + parsed.toUpper();
     }
     
     else if (parsed.contains("'b", Qt::CaseInsensitive)) {
@@ -632,7 +644,7 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
         uint64_t temp = parsed.toULongLong(&ok, 2);
         
         if (ok) {
-            parsed = QString::number(config_->AddressWidth) + "'h" + QString::number(temp, 16).toUpper();
+            parsed = /*QString::number(config_->AddressWidth) +*/ "'h" + QString::number(temp, 16).toUpper();
             return parsed;
         } else {
             return parsed;
@@ -647,7 +659,7 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
         uint64_t temp = parsed.toULongLong(&ok, 2);
         
         if (ok) {
-            parsed = QString::number(config_->AddressWidth) + "'h" + QString::number(temp, 16).toUpper();
+            parsed = /*QString::number(config_->AddressWidth) +*/ "'h" + QString::number(temp, 16).toUpper();
             return parsed;
         } else {
             return parsed;
@@ -657,7 +669,7 @@ QString InterconnectRTLWriter::parseAddress(QString original) {
     bool isDecimal;
     uint64_t dec = parsed.toULongLong(&isDecimal, 10);
     if (isDecimal) {
-        parsed = QString::number(config_->AddressWidth) + "'h" + QString::number(dec, 16).toUpper();
+        parsed = /*QString::number(config_->AddressWidth) +*/ "'h" + QString::number(dec, 16).toUpper();
         return parsed;
     }
     
