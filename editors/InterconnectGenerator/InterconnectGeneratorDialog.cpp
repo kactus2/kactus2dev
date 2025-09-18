@@ -461,7 +461,7 @@ void InterconnectGeneratorDialog::updateAvailableInstanceInterfaces(InstanceInte
             }
             else if (interfaceMode == General::InterfaceMode::MIRRORED_INITIATOR || interfaceMode == General::InterfaceMode::MIRRORED_MASTER)
             {
-                mirroredTargetsToAdd.append(busInterface->name());
+                mirroredInitiatorsToAdd.append(busInterface->name());
             }
         }
     }
