@@ -433,10 +433,12 @@ void InterconnectGeneratorDialog::updateAvailableInstanceInterfaces(InstanceInte
     auto allowedInterfaceTypes = getAllowedInterfaceTypes(selectedInstance);
     auto currentAbsDef = absDefCombo_->currentText();
 
-    QStringList targetsToAdd;
-    QStringList initiatorsToAdd;
-    QStringList mirroredTargetsToAdd;
-    QStringList mirroredInitiatorsToAdd;
+    bool isTopComponent = designWidget_->getEditedComponent()->getVlnv().getName() == selectedInstance;
+
+    QList<InterfaceEnumEditor::InterfaceInput> targetsToAdd;
+    QList<InterfaceEnumEditor::InterfaceInput> initiatorsToAdd;
+    QList<InterfaceEnumEditor::InterfaceInput> mirroredTargetsToAdd;
+    QList<InterfaceEnumEditor::InterfaceInput> mirroredInitiatorsToAdd;
 
     for (auto const& busInterface : instanceInterfaces)
     {
@@ -447,21 +449,51 @@ void InterconnectGeneratorDialog::updateAvailableInstanceInterfaces(InstanceInte
 
         if (interfaceModeAllowed && busHasCompatibleAbsType)
         {
-            if (interfaceMode == General::InterfaceMode::TARGET || interfaceMode == General::InterfaceMode::SLAVE)
+            // Divide interfaces in groups based on 1) type and 2) if they are target- or initiator adjacent
+            // (target adjacent = start and range can be set)
+            if (isChannel_)
             {
-                targetsToAdd.append(busInterface->name());
+                // E.g. Target is always target-adjacent when used with channel
+                // (because function getAllowedInterfaceTypes() filters top component targets)
+                if (interfaceMode == General::InterfaceMode::TARGET || interfaceMode == General::InterfaceMode::SLAVE)
+                {
+                    targetsToAdd.append(InterfaceEnumEditor::InterfaceInput{ busInterface->name(), true });
+                }
+                else if (interfaceMode == General::InterfaceMode::INITIATOR || interfaceMode == General::InterfaceMode::MASTER)
+                {
+                    initiatorsToAdd.append(InterfaceEnumEditor::InterfaceInput{ busInterface->name(), false });
+                }
+                else if (interfaceMode == General::InterfaceMode::MIRRORED_TARGET || interfaceMode == General::InterfaceMode::MIRRORED_SLAVE)
+                {
+                    mirroredTargetsToAdd.append(InterfaceEnumEditor::InterfaceInput{ busInterface->name(), true });
+                }
+                else if (interfaceMode == General::InterfaceMode::MIRRORED_INITIATOR || interfaceMode == General::InterfaceMode::MIRRORED_MASTER)
+                {
+                    mirroredInitiatorsToAdd.append(InterfaceEnumEditor::InterfaceInput{ busInterface->name(), false });
+                }
             }
-            else if (interfaceMode == General::InterfaceMode::INITIATOR || interfaceMode == General::InterfaceMode::MASTER)
+            else
             {
-                initiatorsToAdd.append(busInterface->name());
-            }
-            else if (interfaceMode == General::InterfaceMode::MIRRORED_TARGET || interfaceMode == General::InterfaceMode::MIRRORED_SLAVE)
-            {
-                mirroredTargetsToAdd.append(busInterface->name());
-            }
-            else if (interfaceMode == General::InterfaceMode::MIRRORED_INITIATOR || interfaceMode == General::InterfaceMode::MIRRORED_MASTER)
-            {
-                mirroredInitiatorsToAdd.append(busInterface->name());
+                if (interfaceMode == General::InterfaceMode::TARGET || interfaceMode == General::InterfaceMode::SLAVE)
+                {
+                    // Both top component and instance targets can be connected when using bridge, target is target-adjacent
+                    // if it is an instance interface.
+                    targetsToAdd.append(InterfaceEnumEditor::InterfaceInput{ busInterface->name(), isTopComponent == false });
+                }
+                else if (interfaceMode == General::InterfaceMode::INITIATOR || interfaceMode == General::InterfaceMode::MASTER)
+                {
+                    // Both top component and instance initiators can be connected when using bridge. Initiator is target-adjacent,
+                    // if it is a top component interface.
+                    initiatorsToAdd.append(InterfaceEnumEditor::InterfaceInput{ busInterface->name(), isTopComponent == true });
+                }
+                else if (interfaceMode == General::InterfaceMode::MIRRORED_TARGET || interfaceMode == General::InterfaceMode::MIRRORED_SLAVE)
+                {
+                    mirroredTargetsToAdd.append(InterfaceEnumEditor::InterfaceInput{ busInterface->name(), false });
+                }
+                else if (interfaceMode == General::InterfaceMode::MIRRORED_INITIATOR || interfaceMode == General::InterfaceMode::MIRRORED_MASTER)
+                {
+                    mirroredInitiatorsToAdd.append(InterfaceEnumEditor::InterfaceInput{ busInterface->name(), true });
+                }
             }
         }
     }
@@ -471,7 +503,7 @@ void InterconnectGeneratorDialog::updateAvailableInstanceInterfaces(InstanceInte
     interfacesEditor->addInterfaceItems(targetsToAdd, General::InterfaceMode::TARGET);
     interfacesEditor->addInterfaceItems(mirroredTargetsToAdd, General::InterfaceMode::MIRRORED_TARGET);
 
-    interfacesEditor->createInterfaceItems(selectedInstance, isChannel_);
+    interfacesEditor->createInterfaceItems(isChannel_);
 }
 
 //-----------------------------------------------------------------------------

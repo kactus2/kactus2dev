@@ -74,7 +74,7 @@ QString InstanceInterfacesEditor::getSelectedInstance() const
 //-----------------------------------------------------------------------------
 // Function: InstanceInterfacesEditor::addInterfaceItems()
 //-----------------------------------------------------------------------------
-void InstanceInterfacesEditor::addInterfaceItems(const QStringList& items, General::InterfaceMode interfaceMode)
+void InstanceInterfacesEditor::addInterfaceItems(const QList<InterfaceEnumEditor::InterfaceInput>& items, General::InterfaceMode interfaceMode)
 {
     interfacesToAdd_.insert(interfaceMode, items);
 }
@@ -82,30 +82,30 @@ void InstanceInterfacesEditor::addInterfaceItems(const QStringList& items, Gener
 //-----------------------------------------------------------------------------
 // Function: InstanceInterfacesEditor::createInterfaceItems()
 //-----------------------------------------------------------------------------
-void InstanceInterfacesEditor::createInterfaceItems(const QString& instanceName, bool isChannel)
+void InstanceInterfacesEditor::createInterfaceItems(bool isChannel)
 {
     if (interfacesToAdd_.contains(General::InterfaceMode::INITIATOR))
     {
         interfacesEditor_->addItems(interfacesToAdd_.value(General::InterfaceMode::INITIATOR), 
-                instanceName, General::InterfaceMode::INITIATOR, isChannel);
+                General::InterfaceMode::INITIATOR, isChannel);
     }
 
     if (interfacesToAdd_.contains(General::InterfaceMode::TARGET))
     {
         interfacesEditor_->addItems(interfacesToAdd_.value(General::InterfaceMode::TARGET),
-            instanceName, General::InterfaceMode::TARGET, isChannel);
+            General::InterfaceMode::TARGET, isChannel);
     }
 
     if (interfacesToAdd_.contains(General::InterfaceMode::MIRRORED_INITIATOR))
     {
         interfacesEditor_->addItems(interfacesToAdd_.value(General::InterfaceMode::MIRRORED_INITIATOR),
-            instanceName, General::InterfaceMode::MIRRORED_INITIATOR, isChannel);
+            General::InterfaceMode::MIRRORED_INITIATOR, isChannel);
     }
 
     if (interfacesToAdd_.contains(General::InterfaceMode::MIRRORED_TARGET))
     {
         interfacesEditor_->addItems(interfacesToAdd_.value(General::InterfaceMode::MIRRORED_TARGET),
-            instanceName, General::InterfaceMode::MIRRORED_TARGET, isChannel);
+            General::InterfaceMode::MIRRORED_TARGET, isChannel);
     }
 
     interfacesEditor_->createLayoutCondenser();

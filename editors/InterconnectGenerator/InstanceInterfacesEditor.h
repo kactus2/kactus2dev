@@ -22,7 +22,6 @@
 class QLabel;
 class QPushButton;
 class QComboBox;
-class InterfaceEnumEditor;
 class InstanceComboBox;
 
 
@@ -41,8 +40,8 @@ public:
 
     QString getSelectedInstance() const;
 
-    void addInterfaceItems(const QStringList& items, General::InterfaceMode interfaceMode);
-    void createInterfaceItems(const QString& instanceName, bool isChannel);
+    void addInterfaceItems(const QList<InterfaceEnumEditor::InterfaceInput>& items, General::InterfaceMode interfaceMode);
+    void createInterfaceItems(bool isChannel);
 
     QList<InterfaceEnumEditor::InterfaceData> getSelectedInterfaces() const;
 
@@ -71,7 +70,7 @@ private:
 
     InterfaceEnumEditor* interfacesEditor_;
 
-    QHash<General::InterfaceMode, QStringList> interfacesToAdd_;
+    QHash<General::InterfaceMode, QList<InterfaceEnumEditor::InterfaceInput> > interfacesToAdd_;
 };
 
 

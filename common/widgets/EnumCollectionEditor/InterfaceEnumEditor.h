@@ -53,11 +53,23 @@ public:
      */
     virtual ~InterfaceEnumEditor() = default;
 
+    //! Contains data about interface selected in editor
     struct InterfaceData
     {
         QString name;
         QString startValue;
         QString range;
+    };
+
+    //! Contains data about an interface to be added as option in editor
+    struct InterfaceInput
+    {
+        QString interfaceName;
+
+        //! Flag indicating if the interface is able to 
+        //! 1) connect to the bridge initiator(s), if interconnect is using bridge or
+        //! 2) connect to the interconnect tomponent mirrored target, if interconnect is using channel
+        bool isTargetAdjacent;
     };
 
     /*!
@@ -86,7 +98,7 @@ public:
      */
     void addItems(const QStringList& items, bool isTarget, const QString& instanceName);
 
-    void addItems(const QStringList& items, const QString& instanceName, General::InterfaceMode interfaceMode, bool isChannel);
+    void addItems(const QList<InterfaceInput>& items, General::InterfaceMode interfaceMode, bool isChannel);
 
     /*!
      *  Set address values for a selected endpoint interface.

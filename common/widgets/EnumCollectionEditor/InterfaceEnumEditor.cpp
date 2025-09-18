@@ -96,7 +96,7 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isEndpoint, co
 //-----------------------------------------------------------------------------
 // Function: InterfaceEnumEditor::addItems()
 //-----------------------------------------------------------------------------
-void InterfaceEnumEditor::addItems(const QStringList& items, const QString& instanceName, General::InterfaceMode interfaceMode, bool isChannel)
+void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::InterfaceMode interfaceMode, bool isChannel)
 {
     if (items.isEmpty())
     {
@@ -132,9 +132,9 @@ void InterfaceEnumEditor::addItems(const QStringList& items, const QString& inst
 
     int rowCounter = itemLayout_->rowCount();
 
-    for (auto const& itemName : items)
+    for (auto const& item : items)
     {
-        auto checkBox = new QCheckBox(itemName);
+        auto checkBox = new QCheckBox(item.interfaceName);
         checkBox->adjustSize();
         
         itemLayout_->addWidget(checkBox, rowCounter, 0);
@@ -144,11 +144,9 @@ void InterfaceEnumEditor::addItems(const QStringList& items, const QString& inst
         QLineEdit* startEdit = nullptr;
         QLineEdit* rangeEdit = nullptr;
 
-        // Add remapping editors if item is target or target adjacent
+        // Add remapping editors if item is target-adjacent.
         // Only show range editors if channel is selected (not possible with bridge).
-        // Also show range editor if interface is mirrored target of top component
-
-        if (isTarget)
+        if (item.isTargetAdjacent)
         {
             startLabel = new QLabel("Start:");
             startEdit = new QLineEdit();
@@ -163,20 +161,8 @@ void InterfaceEnumEditor::addItems(const QStringList& items, const QString& inst
                 itemLayout_->addWidget(rangeEdit, rowCounter, 4);
             }
         }
-        else if (isMirroredTarget && isChannel)
-        {
-            startLabel = new QLabel("Start:");
-            startEdit = new QLineEdit();
-            itemLayout_->addWidget(startLabel, rowCounter, 1);
-            itemLayout_->addWidget(startEdit, rowCounter, 2);
 
-            rangeLabel = new QLabel("Range:");
-            rangeEdit = new QLineEdit();
-            itemLayout_->addWidget(rangeLabel, rowCounter, 3);
-            itemLayout_->addWidget(rangeEdit, rowCounter, 4);
-        }
-
-        singleInterfaces_.emplace(itemName, InterfaceItem{ checkBox, startLabel, startEdit, rangeLabel, rangeEdit });
+        singleInterfaces_.emplace(item.interfaceName, InterfaceItem{ checkBox, startLabel, startEdit, rangeLabel, rangeEdit });
         rowCounter++;
     }
 }

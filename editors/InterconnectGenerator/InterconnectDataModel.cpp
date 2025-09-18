@@ -439,6 +439,11 @@ void InterconnectDataModel::initConnectionRulesNew()
 {
     connectionRulesNew_.clear();
 
+    // Connection rules for editor where all types of interfaces can be selected.
+    // Selectable interfaces depend only on type of interconnect and instance.
+
+
+    // Valid interface types if bridge interconnect and interface is in instance
     connectionRulesNew_[{InterconnectType::Bridge, EntityType::Instance}] = {
         General::InterfaceMode::INITIATOR, General::InterfaceMode::TARGET,
         General::InterfaceMode::MIRRORED_INITIATOR, General::InterfaceMode::MIRRORED_TARGET,
@@ -446,16 +451,19 @@ void InterconnectDataModel::initConnectionRulesNew()
         General::InterfaceMode::MIRRORED_MASTER, General::InterfaceMode::MIRRORED_SLAVE
     };
 
+    // Valid interface types if bridge interconnect and interface is in top component
     connectionRulesNew_[{InterconnectType::Bridge, EntityType::TopComponent}] = {
         General::InterfaceMode::INITIATOR, General::InterfaceMode::TARGET,
         General::InterfaceMode::MASTER, General::InterfaceMode::SLAVE
     };
 
+    // Valid interface types if channel interconnect and interface is in instance
     connectionRulesNew_[{InterconnectType::Channel, EntityType::Instance}] = {
         General::InterfaceMode::INITIATOR, General::InterfaceMode::TARGET,
         General::InterfaceMode::MASTER, General::InterfaceMode::SLAVE
     };
-
+    
+    // Valid interface types if channel interconnect and interface is in top component
     connectionRulesNew_[{InterconnectType::Channel, EntityType::TopComponent}] = {
         General::InterfaceMode::MIRRORED_INITIATOR, General::InterfaceMode::MIRRORED_TARGET,
         General::InterfaceMode::MIRRORED_MASTER, General::InterfaceMode::MIRRORED_SLAVE
