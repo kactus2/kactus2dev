@@ -246,11 +246,21 @@ QList<InterfaceEnumEditor::InterfaceData> InterfaceEnumEditor::getSelectedInterf
     {
         if (interfaceEditor.checkBox->isChecked())
         {
-            selectedInterfaces.emplace_back(InterfaceData{ 
-                interfaceEditor.checkBox->text(), 
-                interfaceEditor.startEdit->text(), 
-                interfaceEditor.rangeEdit->text() 
-            });
+            auto selectedInterfaceData = InterfaceData{
+                interfaceEditor.checkBox->text()
+            };
+
+            if (interfaceEditor.startEdit)
+            {
+                selectedInterfaceData.startValue = interfaceEditor.startEdit->text();
+            }
+
+            if (interfaceEditor.rangeEdit)
+            {
+                selectedInterfaceData.range = interfaceEditor.rangeEdit->text();
+            }
+
+            selectedInterfaces.push_back(selectedInterfaceData);
         }
     }
 

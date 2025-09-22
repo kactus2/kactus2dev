@@ -60,13 +60,23 @@ public:
         bool operator!=(const ConnectionKey& other) const;
     };
 
-    struct ConnectionKeyNew
+    struct AllowedInterfaceModesKey
     {
         InterconnectType icType;
         EntityType entityType;
 
-        bool operator==(const ConnectionKeyNew& other) const { return other.icType == icType && other.entityType == entityType; }
-        bool operator!=(const ConnectionKeyNew& other) const { return !operator==(other); }
+        bool operator==(const AllowedInterfaceModesKey& other) const { return other.icType == icType && other.entityType == entityType; }
+        bool operator!=(const AllowedInterfaceModesKey& other) const { return !operator==(other); }
+    };
+
+    struct InterfaceModeAdjacencyKey
+    {
+        General::InterfaceMode ifMode;
+        InterconnectType icType;
+        EntityType componentType;
+
+        bool operator==(const InterfaceModeAdjacencyKey& other) const { return other.icType == icType && other.componentType == componentType && other.ifMode == ifMode; }
+        bool operator!=(const InterfaceModeAdjacencyKey& other) const { return !operator==(other); }
     };
 
     /*!
@@ -154,7 +164,7 @@ public:
         General::InterfaceMode sourceMode,
         InterconnectType currentInterconnect) const;
 
-    QSet<General::InterfaceMode> getConnectableInterfaceTypes(ConnectionKeyNew const& connectionKey) const;
+    QSet<General::InterfaceMode> getConnectableInterfaceTypes(AllowedInterfaceModesKey const& connectionKey) const;
 
     /*!
      *  Verifies whether the provided interconnect mode is valid for all
@@ -186,12 +196,15 @@ public:
      */
     QString getLastInvalidConnectionMessage() const;
 
+    bool interfaceIsTargetAdjacent(General::InterfaceMode ifMode, InterconnectType icType, EntityType componentType);
+    bool interfaceIsInitiatorAdjacent(General::InterfaceMode ifMode, InterconnectType icType, EntityType componentType);
+
 private:
     /*!
      *  Initialize all valid connection rules.
      */
     void initConnectionRules();
-    void initConnectionRulesNew();
+    void initAllowedInterfaceModeRules();
     /*!
      *  Collect bus interfaces from all component instances in the design.
      */
@@ -261,6 +274,8 @@ private:
      */
     EntityType getEntityTypeForBus(const QSharedPointer<BusInterface>& bus) const;
 
+    void createInterfaceAdjacencyRules();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -298,7 +313,10 @@ private:
     //! Lookup of all valid connection rules for each source configuration.
     QHash<ConnectionKey, QList<ConnectionRule>> connectionRules_;
 
-    QHash<ConnectionKeyNew, QSet<General::InterfaceMode> > connectionRulesNew_;
+    QHash<AllowedInterfaceModesKey, QSet<General::InterfaceMode> > allowedInterfaceModeRules_;
+
+    QSet<InterfaceModeAdjacencyKey> targetAdjacencyRules_;
+    QSet<InterfaceModeAdjacencyKey> initiatorAdjacencyRules_;
 
     //! Used to store invalid connection message to display on dialog.
     mutable QString lastInvalidConnectionMessage_;
@@ -332,7 +350,9 @@ inline uint qHash(InterconnectDataModel::InterconnectType key, uint seed = 0); /
 */
 inline uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed = 0);
 
-inline uint qHash(const InterconnectDataModel::ConnectionKeyNew& key, uint seed = 0);
+inline uint qHash(const InterconnectDataModel::AllowedInterfaceModesKey& key, uint seed = 0);
+
+inline uint qHash(const InterconnectDataModel::InterfaceModeAdjacencyKey& key, uint seed = 0);
 
 
 #endif // INTERCONNECTDATAMODEL_H

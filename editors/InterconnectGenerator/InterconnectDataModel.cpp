@@ -21,7 +21,8 @@ void InterconnectDataModel::gatherBusAndAbstractionData() {
     getBusesFromInstances();
     getBusesFromTopComponent();
     initConnectionRules();
-    initConnectionRulesNew();
+    initAllowedInterfaceModeRules();
+    createInterfaceAdjacencyRules();
     filterValidAbstractionReferences();
 }
 
@@ -63,6 +64,22 @@ QHash<QSharedPointer<BusInterface>, QSet<QString>> InterconnectDataModel::getInt
 QString InterconnectDataModel::getLastInvalidConnectionMessage() const 
 { 
     return lastInvalidConnectionMessage_; 
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::interfaceIsTargetAdjacent()
+//-----------------------------------------------------------------------------
+bool InterconnectDataModel::interfaceIsTargetAdjacent(General::InterfaceMode ifMode, InterconnectType icType, EntityType componentType)
+{
+    return targetAdjacencyRules_.contains(InterfaceModeAdjacencyKey{ ifMode, icType, componentType });
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::interfaceIsInitiatorAdjacent()
+//-----------------------------------------------------------------------------
+bool InterconnectDataModel::interfaceIsInitiatorAdjacent(General::InterfaceMode ifMode, InterconnectType icType, EntityType componentType)
+{
+    return initiatorAdjacencyRules_.contains(InterfaceModeAdjacencyKey{ ifMode, icType, componentType });
 }
 
 //-----------------------------------------------------------------------------
@@ -242,6 +259,31 @@ InterconnectDataModel::EntityType InterconnectDataModel::getEntityTypeForBus(con
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterconnectDataModel::createInterfaceAdjacencyRules()
+//-----------------------------------------------------------------------------
+void InterconnectDataModel::createInterfaceAdjacencyRules()
+{
+    
+    // The following rules define initiator-adjacent combinations for bridges:
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::INITIATOR, InterconnectType::Bridge, EntityType::Instance });
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_TARGET, InterconnectType::Bridge, EntityType::Instance });
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::TARGET, InterconnectType::Bridge, EntityType::TopComponent });
+
+    // The following rules define initiator-adjacent combinations for channels:
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::INITIATOR, InterconnectType::Channel, EntityType::Instance });
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_INITIATOR, InterconnectType::Channel, EntityType::TopComponent });
+
+    // The following rules define target-adjacent combinations for bridges:
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::TARGET, InterconnectType::Bridge, EntityType::Instance });
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_INITIATOR, InterconnectType::Bridge, EntityType::Instance });
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::INITIATOR, InterconnectType::Bridge, EntityType::TopComponent });
+
+    // The following rules define target-adjacent combinations for channels:
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::TARGET, InterconnectType::Channel, EntityType::Instance });
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_TARGET, InterconnectType::Channel, EntityType::TopComponent });
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::isModeValidForAllConnections()
 //-----------------------------------------------------------------------------
 bool InterconnectDataModel::isModeValidForAllConnections(
@@ -339,9 +381,9 @@ QList<InterconnectDataModel::ConnectionRule> InterconnectDataModel::getValidConn
 //-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::getConnectableInterfaceTypes()
 //-----------------------------------------------------------------------------
-QSet<General::InterfaceMode> InterconnectDataModel::getConnectableInterfaceTypes(ConnectionKeyNew const& connectionKey) const
+QSet<General::InterfaceMode> InterconnectDataModel::getConnectableInterfaceTypes(AllowedInterfaceModesKey const& connectionKey) const
 {
-    return connectionRulesNew_.value(connectionKey);
+    return allowedInterfaceModeRules_.value(connectionKey);
 }
 
 //-----------------------------------------------------------------------------
@@ -433,18 +475,18 @@ void InterconnectDataModel::initConnectionRules()
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectDataModel::initConnectionRulesNew()
+// Function: InterconnectDataModel::initAllowedInterfaceModeRules()
 //-----------------------------------------------------------------------------
-void InterconnectDataModel::initConnectionRulesNew()
+void InterconnectDataModel::initAllowedInterfaceModeRules()
 {
-    connectionRulesNew_.clear();
+    allowedInterfaceModeRules_.clear();
 
     // Connection rules for editor where all types of interfaces can be selected.
     // Selectable interfaces depend only on type of interconnect and instance.
 
 
     // Valid interface types if bridge interconnect and interface is in instance
-    connectionRulesNew_[{InterconnectType::Bridge, EntityType::Instance}] = {
+    allowedInterfaceModeRules_[{InterconnectType::Bridge, EntityType::Instance}] = {
         General::InterfaceMode::INITIATOR, General::InterfaceMode::TARGET,
         General::InterfaceMode::MIRRORED_INITIATOR, General::InterfaceMode::MIRRORED_TARGET,
         General::InterfaceMode::MASTER, General::InterfaceMode::SLAVE,
@@ -452,19 +494,19 @@ void InterconnectDataModel::initConnectionRulesNew()
     };
 
     // Valid interface types if bridge interconnect and interface is in top component
-    connectionRulesNew_[{InterconnectType::Bridge, EntityType::TopComponent}] = {
+    allowedInterfaceModeRules_[{InterconnectType::Bridge, EntityType::TopComponent}] = {
         General::InterfaceMode::INITIATOR, General::InterfaceMode::TARGET,
         General::InterfaceMode::MASTER, General::InterfaceMode::SLAVE
     };
 
     // Valid interface types if channel interconnect and interface is in instance
-    connectionRulesNew_[{InterconnectType::Channel, EntityType::Instance}] = {
+    allowedInterfaceModeRules_[{InterconnectType::Channel, EntityType::Instance}] = {
         General::InterfaceMode::INITIATOR, General::InterfaceMode::TARGET,
         General::InterfaceMode::MASTER, General::InterfaceMode::SLAVE
     };
     
     // Valid interface types if channel interconnect and interface is in top component
-    connectionRulesNew_[{InterconnectType::Channel, EntityType::TopComponent}] = {
+    allowedInterfaceModeRules_[{InterconnectType::Channel, EntityType::TopComponent}] = {
         General::InterfaceMode::MIRRORED_INITIATOR, General::InterfaceMode::MIRRORED_TARGET,
         General::InterfaceMode::MIRRORED_MASTER, General::InterfaceMode::MIRRORED_SLAVE
     };
@@ -512,7 +554,16 @@ uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed)
 //-----------------------------------------------------------------------------
 // Function: qHash()
 //-----------------------------------------------------------------------------
-uint qHash(const InterconnectDataModel::ConnectionKeyNew& key, uint seed /*= 0*/)
+uint qHash(const InterconnectDataModel::AllowedInterfaceModesKey& key, uint seed /*= 0*/)
 {
     return qHashMulti(seed, static_cast<uint>(key.entityType), static_cast<uint>(key.icType));
+}
+
+//-----------------------------------------------------------------------------
+// Function: qHash()
+//-----------------------------------------------------------------------------
+uint qHash(const InterconnectDataModel::InterfaceModeAdjacencyKey& key, uint seed /*= 0*/)
+{
+    return qHashMulti(seed, static_cast<uint>(key.componentType), static_cast<uint>(key.icType), static_cast<uint>(key.ifMode));
+
 }

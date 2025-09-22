@@ -313,7 +313,8 @@ BusInterfaceInfo InterconnectGenerator::createInterfaceForBus(
     prefix_ = instanceName.toStdString() + "_" + busName.toStdString() + "_";
 
     bool isTarget = isTargetInterface(bus);
-    std::string mode = getInterfaceMode(bus, isTarget, config_->isChannel, isTop);
+    // Get the mode the new interconnect bus interface should use (e.g. endpoint = target and channel is used => mode should be mirroredTarget)
+    std::string mode = getInterfaceMode(bus, isTarget, config_->isChannel, isTop); 
     std::string newName = createBusInterface(busVLNV, busName.toUpper().toStdString(), mode, index);
     
     if (!globalAddressSpaceName_.empty() && isEndpoint && isTarget) 
@@ -332,7 +333,7 @@ BusInterfaceInfo InterconnectGenerator::createInterfaceForBus(
             instanceName.toStdString(), busName.toStdString(),
             interconComponent_->getVlnv().getName().toStdString(), newName);
     }
-    
+
     return { newName, mode };
 }
 
@@ -510,19 +511,24 @@ void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointe
     messager_->showMessage("Creating port maps");
 
     if (absTypeInf_->setupAbstractionTypeForPortMapInterface(0)) {
+
         PortMapInterface* portMapInf = absTypeInf_->getPortMapInterface();
+        
         std::vector<std::string> logicalPortNames = portMapInf->
             getLogicalPortInterface()->getItemNamesWithModeAndGroup(modeString, "");
+        
         QList<QSharedPointer<PortMap> > portMaps = busInf->getPortMapsForView("");
+        
         for (int i = 0; i < portMaps.size(); i++)
         {
             QSharedPointer<PortMap> portMap = portMaps.at(i);
+
             if (!portMap || !portMap->getLogicalPort() || !portMap->getPhysicalPort())
             {
                 continue;
             }
 
-            for (std::string logicalName : logicalPortNames)
+            for (std::string const& logicalName : logicalPortNames)
             {
                 std::string portMapName = portMap->getLogicalPort()->name_.toStdString();
                     
@@ -554,7 +560,7 @@ void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointe
                         
                     break;
                 }
-                }
+            }
         }
     }
     messager_->showMessage("All port maps created");
@@ -756,11 +762,7 @@ void InterconnectGenerator::createChannel()
     channel->setInterfaces(interfaceList);
     channel->setName("channel");
 
-    QSharedPointer<QList<QSharedPointer<Channel>>> channelList = QSharedPointer<
-        QList<QSharedPointer<Channel>>>::create();
-    channelList->append(channel);
-
-    interconComponent_->setChannels(channelList);
+    interconComponent_->getChannels()->append(channel);
 }
 
 //-----------------------------------------------------------------------------

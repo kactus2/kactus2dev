@@ -198,21 +198,7 @@ private:
     /*!
      *  Collect instance configurations for interconnect generation.
      */
-    void collectInstances();
-
-    /*!
-     *  Collect initiator interface selections from the UI and populate the config.
-     *
-     *  @param [in] instanceBusesLookup  Lookup table mapping instances to their bus interfaces.
-     */
-    void collectStartingPoints(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
-
-    /*!
-     *  Collect target interface selections from the UI and populate the config.
-     *
-     *  @param [in] instanceBusesLookup  Lookup table mapping instances to their bus interfaces.
-     */
-    void collectEndpoints(const QHash<QString, QHash<QString, QSharedPointer<BusInterface>>>& instanceBusesLookup);
+    void collectSelectedInterfaces();
 
     /*!
      *  Get the currently selected interconnect type.
@@ -243,6 +229,8 @@ private:
     QSet<General::InterfaceMode> getAllowedInterfaceTypes(QString const& selectedInstance);
 
     bool interfaceSelectionsAreLegal(QString& errorMsg);
+
+    bool instanceIsTopComponent(QString const& instanceName);
 
     //-----------------------------------------------------------------------------
     // Data.
