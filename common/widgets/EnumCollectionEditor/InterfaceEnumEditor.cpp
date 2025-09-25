@@ -145,21 +145,19 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
         QLineEdit* rangeEdit = nullptr;
 
         // Add remapping editors if item is target-adjacent.
-        // Only show range editors if channel is selected (not possible with bridge).
-        if (item.isTargetAdjacent)
+        // Only show start and range editors if channel is selected (configuring start for bridge would require 
+        // creating address spaces etc.).
+        if (item.isTargetAdjacent && isChannel)
         {
             startLabel = new QLabel("Start:");
             startEdit = new QLineEdit();
             itemLayout_->addWidget(startLabel, rowCounter, 1);
             itemLayout_->addWidget(startEdit, rowCounter, 2);
 
-            if (isChannel)
-            {
-                rangeLabel = new QLabel("Range:");
-                rangeEdit = new QLineEdit();
-                itemLayout_->addWidget(rangeLabel, rowCounter, 3);
-                itemLayout_->addWidget(rangeEdit, rowCounter, 4);
-            }
+            rangeLabel = new QLabel("Range:");
+            rangeEdit = new QLineEdit();
+            itemLayout_->addWidget(rangeLabel, rowCounter, 3);
+            itemLayout_->addWidget(rangeEdit, rowCounter, 4);   
         }
 
         singleInterfaces_.emplace(item.interfaceName, InterfaceItem{ checkBox, startLabel, startEdit, rangeLabel, rangeEdit });
