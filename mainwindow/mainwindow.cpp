@@ -129,6 +129,7 @@ ribbon_(0),
 statusBar_(new QStatusBar(this)),
 scriptEditor_(new PythonSourceEditor(this)),
 actNew_(0),
+actMainSave_(0),
 actSave_(0),
 actSaveAs_(0),
 actSaveHierarchy_(0),
@@ -305,7 +306,7 @@ void MainWindow::setupActions()
     actNew_->setToolTip(tooltipNew);
     connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
 
-    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), QString(), this);
+    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), QString("Save"), this);
     actSave_->setShortcut(QKeySequence::Save);
     QString tooltipSave = tr("Save (%1)").arg(actSave_->shortcut().toString(QKeySequence::NativeText));
     actSave_->setToolTip(tooltipSave);
@@ -314,7 +315,12 @@ void MainWindow::setupActions()
     connect(designTabs_, SIGNAL(documentModifiedChanged(bool)),
         actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
-    actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), QString(), this);
+	actMainSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), QString(), this);
+	actMainSave_->setToolTip(tooltipSave);
+	actMainSave_->setEnabled(true);
+	connect(actMainSave_, SIGNAL(triggered()), this, SLOT(passSaveToActSave()));
+
+    actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), QString("Save as"), this);
     actSaveAs_->setShortcut(QKeySequence::SaveAs);
     QString tooltipSaveAs = tr("Save As");
     actSaveAs_->setToolTip(tooltipSaveAs);
@@ -335,9 +341,11 @@ void MainWindow::setupActions()
     connect(actSaveHierarchy_, SIGNAL(triggered()), this, SLOT(saveCurrentDocumentHierarchy()));
 
     auto saveMenu = new QMenu(this);
+    saveMenu->addAction(actSave_);
+    saveMenu->addAction(actSaveAs_);
     saveMenu->addAction(actSaveAll_);
     saveMenu->addAction(actSaveHierarchy_);
-    actSaveAs_->setMenu(saveMenu);
+	actMainSave_->setMenu(saveMenu);
 
     actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), QString(), this);
     actPrint_->setShortcut(QKeySequence::Print);
@@ -618,6 +626,17 @@ void MainWindow::setupActions()
 }
 
 //-----------------------------------------------------------------------------
+// Function: mainwindow::passSaveToActSave()
+//-----------------------------------------------------------------------------
+void MainWindow::passSaveToActSave()
+{
+    if (actSave_->isEnabled())
+    {
+        actSave_->trigger();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: mainwindow::onAdjustVisibilityInWindow()
 //-----------------------------------------------------------------------------
 void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show)
@@ -643,8 +662,7 @@ void MainWindow::setupMenus()
     // The "File" group.
     RibbonGroup* fileGroup = new RibbonGroup(tr("File"), ribbon_);
     fileGroup->addAction(actNew_);
-    fileGroup->addAction(actSave_);
-    fileGroup->addAction(actSaveAs_);
+    fileGroup->addAction(actMainSave_);
     fileGroup->addAction(actPrint_);
     fileGroup->addAction(actImageExport_);
     fileGroup->addAction(actRunImport_);

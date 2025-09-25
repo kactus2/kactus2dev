@@ -414,6 +414,12 @@ protected:
 
 
 private slots:
+
+    /*!
+     *  Save button checks from the save if a document can be saved.
+     */
+    void passSaveToActSave();
+
 	//! Handler for design widget's clearItemSelection signal.
 	void onClearItemSelection();
 
@@ -703,6 +709,9 @@ private:
 
 	//! Create a new document in the IP-Xact library
 	QAction* actNew_;
+
+    //! Action for containing all the save actions.
+    QAction* actMainSave_;
 
     //! Action to save the current design.
     QAction* actSave_;

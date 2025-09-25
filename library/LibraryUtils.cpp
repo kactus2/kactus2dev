@@ -418,6 +418,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
         instance->setUuid(element->getUuid());
 
         instance->setImported(true);
+        instance->setImportRef(hwDesignVLNV.toString() + "_" + element->getInstanceName());
 
         hwInstances->append(instance);
     }

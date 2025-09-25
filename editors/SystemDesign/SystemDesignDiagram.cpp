@@ -1283,8 +1283,12 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             }
 
             HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance); //instance->getConfigurableElementValues());
-            item->setImported(instance->isImported());
-            item->setImportRef(instance->getImportRef());
+            if (instance->isImported())
+            {
+				item->setImported(instance->isImported());
+				item->setImportRef(instance->getImportRef());
+            }
+
             item->setPropertyValues(instance->getPropertyValues());
 
             connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
@@ -1349,8 +1353,12 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
-        item->setImported(instance->isImported());
-        item->setImportRef(instance->getImportRef());
+        if (instance->isImported())
+        {
+			item->setImported(instance->isImported());
+			item->setImportRef(instance->getImportRef());
+        }
+
         item->setPos(instance->getPosition());
         item->setPropertyValues(instance->getPropertyValues());
         item->setFileSetRef(instance->getFileSetRef());
