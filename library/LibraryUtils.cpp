@@ -441,10 +441,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
             continue;
         }
 
-        if (!swInstance->isImported())
-        {
-            swInstances.append(swInstance);
-        }
+        swInstances.append(swInstance);
 
         oldSWInstances.append(swInstance);
     }
