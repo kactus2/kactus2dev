@@ -255,6 +255,9 @@ private:
     QSharedPointer<QList<QSharedPointer<Parameter>>> interconnectParams_;
 
     QSharedPointer<ExpressionParser> expressionParser_{ new SystemVerilogExpressionParser() };
+    
+    //! Formatter for expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
     //! Current working interconnect configuration.
     ConfigStruct* config_ = nullptr;
@@ -340,6 +343,10 @@ private:
 
     QSet<QString> addedInstances_;
 
+    //! Parameter finder for editors needing access to interconnect component parameters.
+    QSharedPointer<ParameterFinder> parameterFinder_;
+
+    ComponentParameterModel* parameterCompleterModel_;
 
     //! Map of selected initiator interfaces, grouped by instance name.
     QHash<QString, QList<QSharedPointer<BusInterface>>> selectedStartingPoints_;

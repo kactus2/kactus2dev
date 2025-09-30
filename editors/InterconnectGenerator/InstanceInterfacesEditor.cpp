@@ -21,12 +21,12 @@
 //-----------------------------------------------------------------------------
 // Function: InstanceInterfacesEditor::InstanceInterfacesEditor()
 //-----------------------------------------------------------------------------
-InstanceInterfacesEditor::InstanceInterfacesEditor(Document::Revision docRevision, QWidget* parent) :
+InstanceInterfacesEditor::InstanceInterfacesEditor(ExpressionSet expressionSet, ComponentParameterModel* parameterCompleterModel, Document::Revision docRevision, QWidget* parent) :
     QFrame(parent),
     instanceNameLabel_(new QLabel("Instance name:")),
     instanceSelectorCombo_(new InstanceComboBox()),
     removeInstanceButton_(new QPushButton(QIcon(":/icons/common/graphics/cross.png"), "Remove")),
-    interfacesEditor_(new InterfaceEnumEditor(docRevision))
+    interfacesEditor_(new InterfaceEnumEditor(expressionSet, parameterCompleterModel, docRevision))
 {
     setLayout(&topLayout_);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);

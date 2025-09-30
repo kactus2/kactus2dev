@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/Document.h>
+#include <editors/common/ExpressionSet.h>
 
 #include <QFrame>
 #include <QVBoxLayout>
@@ -25,14 +26,10 @@
 #include <QString>
 #include <QPair>
 
-/*!
- *  Struct representing selected data for a target endpoint interface.
- */
-struct EndpointInterfaceData {
-    QString name;              /*!< Name of the interface. */
-    QString startValue;        /*!< Start address value (as a string). */
-    QString range;             /*!< Range value (as a string). */
-};
+class ExpressionEditor;
+class ExpressionFormatter;
+class ParameterFinder;
+class ComponentParameterModel;
 
 /*!
  *  Class for enumerating and selecting interface points for starting or ending connections.
@@ -46,7 +43,7 @@ public:
      *
      *  @param [in] parent  Parent widget.
      */
-    explicit InterfaceEnumEditor(Document::Revision docRevision, QWidget* parent = nullptr);
+    explicit InterfaceEnumEditor(ExpressionSet expressionSet, ComponentParameterModel* parameterCompleterModel, Document::Revision docRevision, QWidget* parent = nullptr);
 
     /*!
      *  Destructor.
@@ -73,21 +70,11 @@ public:
     };
 
     /*!
-     *  Get the names of selected starting point interfaces.
+     *  Get the details of selected interfaces.
      *
-     *  @return List of interface names that have been selected as starting points.
+     *  @return List of interface data including names and address information.
      */
-    QStringList getSelectedStartingPointInterfaces() const;
-
-    /*!
-     *  Get the details of selected endpoint interfaces.
-     *
-     *  @return List of endpoint interface data including names and address information.
-     */
-    QList<EndpointInterfaceData> getSelectedEndpointInterfaces() const;
-
     QList<InterfaceData> getSelectedInterfaces() const;
-
 
     /*!
      *  Add a list of interface names to the editor.
@@ -165,9 +152,9 @@ private:
     {
         QCheckBox* checkBox;       /*!< Checkbox to enable or disable the interface. */
         QLabel* startLabel;        /*!< Label for the start address. */
-        QLineEdit* startEdit;      /*!< Input field for the start address. */
+        ExpressionEditor* startEdit;      /*!< Input field for the start address. */
         QLabel* rangeLabel;        /*!< Label for the address range. */
-        QLineEdit* rangeEdit;      /*!< Input field for the address range. */
+        ExpressionEditor* rangeEdit;      /*!< Input field for the address range. */
     };
 
     QHash<QString, InterfaceItem> singleInterfaces_;
@@ -187,6 +174,14 @@ private:
     QGridLayout* itemLayout_;
 
     QWidget* itemLayoutCondenser_;
+
+    //! Parameter finder for expression editors. Should use parameters of generated interconnect component.
+    QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! Parameter completer model for expression editors.
+    ComponentParameterModel* parameterCompleterModel_;
+
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
     //! List of currently displayed interface widgets.
     QList<InterfaceItem> interfaceItems_;

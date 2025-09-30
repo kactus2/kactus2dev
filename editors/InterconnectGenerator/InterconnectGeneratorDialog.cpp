@@ -3,7 +3,9 @@
 #include <KactusAPI/KactusAPI.h>
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <editors/common/ExpressionSet.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include "InstanceInterfacesEditor.h"
 
 #include <QMessageBox>
@@ -35,9 +37,13 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
     auto choices = QSharedPointer<QList<QSharedPointer<Choice>>>::create();
 
     QSharedPointer<ListParameterFinder> listFinder = QSharedPointer<ListParameterFinder>::create();
-    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(listFinder));
+    parameterFinder_ = listFinder;
+    expressionFormatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(listFinder));
 
-    parameterGroupBox_ = new ParameterGroupBox(parameters, choices, listFinder, expressionFormatter,
+    parameterCompleterModel_ = new ComponentParameterModel(parameterFinder_, this);
+    parameterCompleterModel_->setExpressionParser(expressionParser_);
+
+    parameterGroupBox_ = new ParameterGroupBox(parameters, choices, listFinder, expressionFormatter_,
         designWidget_->getEditedComponent()->getRevision(), this);
     parameterGroupBox_->setTitle("Interconnect Component Parameters");
 
@@ -130,7 +136,9 @@ void InterconnectGeneratorDialog::populateParameters()
 void InterconnectGeneratorDialog::addNewInstance()
 {
     // create instance editor
-    auto newInterfacesEditor = new InstanceInterfacesEditor(designWidget_->getEditedComponent()->getRevision());
+    auto newInterfacesEditor = new InstanceInterfacesEditor(ExpressionSet{parameterFinder_, expressionParser_, expressionFormatter_}, 
+        parameterCompleterModel_, designWidget_->getEditedComponent()->getRevision());
+
     connect(newInterfacesEditor, SIGNAL(instanceRemoved()), this, SLOT(onInstanceRemoved()), Qt::UniqueConnection);
 
     instancesLayout_->addWidget(newInterfacesEditor);
@@ -614,7 +622,7 @@ QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& ro
     QFrame* instanceFrame = new QFrame();
     instanceFrame->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 
-    InterfaceEnumEditor* interfaceEditor = new InterfaceEnumEditor(designWidget_->getEditedComponent()->getRevision(), this);
+    InterfaceEnumEditor* interfaceEditor = new InterfaceEnumEditor(ExpressionSet{ parameterFinder_, expressionParser_, expressionFormatter_ }, parameterCompleterModel_, designWidget_->getEditedComponent()->getRevision(), this);
 
     connect(interfaceEditor, &InterfaceEnumEditor::endpointInterfaceChecked, this,
         [=](const QString& interfaceName, const QString& instanceName) {
@@ -888,12 +896,11 @@ void InterconnectGeneratorDialog::setUpLayout()
     mainLayout->addWidget(createTopConfigSection());
     mainLayout->addWidget(parameterGroupBox_);
 
+    mainLayout->addWidget(createInterconnectModeSelector());
+
     QHBoxLayout* bottomRowLayout = new QHBoxLayout();
     bottomRowLayout->addWidget(createInstancesSection());
     mainLayout->addLayout(bottomRowLayout);
-
-
-    mainLayout->addWidget(createInterconnectModeSelector());
 
     mainLayout->addWidget(createButtonBox());
 

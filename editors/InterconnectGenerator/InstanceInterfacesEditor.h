@@ -14,6 +14,7 @@
 
 #include <common/widgets/EnumCollectionEditor/InterfaceEnumEditor.h>
 #include <IPXACTmodels/common/Document.h>
+#include <editors/common/ExpressionSet.h>
 
 #include <QFrame>
 #include <QVBoxLayout>
@@ -23,14 +24,15 @@ class QLabel;
 class QPushButton;
 class QComboBox;
 class InstanceComboBox;
-
+class ParameterFinder;
+class ComponentParameterModel;
 
 class InstanceInterfacesEditor : public QFrame
 {
     Q_OBJECT
 public:
 
-    explicit InstanceInterfacesEditor(Document::Revision docRevision, QWidget* parent = nullptr);
+    explicit InstanceInterfacesEditor(ExpressionSet expressionSet, ComponentParameterModel* parameterCompleterModel, Document::Revision docRevision, QWidget* parent = nullptr);
 
     virtual ~InstanceInterfacesEditor() = default;
 

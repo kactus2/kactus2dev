@@ -1,15 +1,22 @@
 #include "InterfaceEnumEditor.h"
 
+#include <KactusAPI/include/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
 //-----------------------------------------------------------------------------
 // Function: InterfaceEnumEditor::InterfaceEnumEditor()
 //-----------------------------------------------------------------------------
-InterfaceEnumEditor::InterfaceEnumEditor(Document::Revision docRevision, QWidget* parent)
+InterfaceEnumEditor::InterfaceEnumEditor(ExpressionSet expressionSet, ComponentParameterModel* parameterCompleterModel, Document::Revision docRevision, QWidget* parent)
     : QFrame(parent),
     mainLayout_(new QVBoxLayout(this)),
     scrollArea_(new QScrollArea(this)),
     scrollContainer_(new QWidget()),
     scrollLayout_(new QVBoxLayout(scrollContainer_)),
-    itemLayout_(new QGridLayout())
+    itemLayout_(new QGridLayout()),
+    parameterFinder_(expressionSet.finder),
+    parameterCompleterModel_(parameterCompleterModel),
+    expressionFormatter_(expressionSet.formatter)
 {
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
@@ -45,13 +52,13 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isEndpoint, co
     }
 
     for (int i = 0; i < items.size(); ++i) {
-        QHBoxLayout* itemLayout = new QHBoxLayout();
+        QHBoxLayout* itemLayout = new QHBoxLayout(); 
         QCheckBox* checkBox = checkBoxes[i];
         checkBox->setMinimumWidth(maxCheckBoxWidth);
         itemLayout->addWidget(checkBox);
 
-        QLineEdit* startEdit = nullptr;
-        QLineEdit* rangeEdit = nullptr;
+        ExpressionEditor* startEdit = nullptr;
+        ExpressionEditor* rangeEdit = nullptr;
         QLabel* startLabel = nullptr;
         QLabel* rangeLabel = nullptr;
 
@@ -59,8 +66,8 @@ void InterfaceEnumEditor::addItems(const QStringList& items, bool isEndpoint, co
         {
             startLabel = new QLabel("Start:");
             rangeLabel = new QLabel("Range:");
-            startEdit = new QLineEdit();
-            rangeEdit = new QLineEdit();
+            startEdit = new ExpressionEditor(parameterFinder_);
+            rangeEdit = new ExpressionEditor(parameterFinder_);
 
             itemLayout->addWidget(startLabel);
             itemLayout->addWidget(startEdit);
@@ -141,8 +148,8 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
 
         QLabel* startLabel = nullptr;
         QLabel* rangeLabel = nullptr;
-        QLineEdit* startEdit = nullptr;
-        QLineEdit* rangeEdit = nullptr;
+        ExpressionEditor* startEdit = nullptr;
+        ExpressionEditor* rangeEdit = nullptr;
 
         // Add remapping editors if item is target-adjacent.
         // Only show start and range editors if channel is selected (configuring start for bridge would require 
@@ -150,12 +157,25 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
         if (item.isTargetAdjacent && isChannel)
         {
             startLabel = new QLabel("Start:");
-            startEdit = new QLineEdit();
+            startEdit = new ExpressionEditor(parameterFinder_);
+            
+            auto startCompleter = new QCompleter(parent());
+            startCompleter->setModel(parameterCompleterModel_);
+            startEdit->setAppendingCompleter(startCompleter);
+
             itemLayout_->addWidget(startLabel, rowCounter, 1);
             itemLayout_->addWidget(startEdit, rowCounter, 2);
 
             rangeLabel = new QLabel("Range:");
-            rangeEdit = new QLineEdit();
+            rangeEdit = new ExpressionEditor(parameterFinder_);
+
+            auto rangeCompleter = new QCompleter(parent());
+            rangeCompleter->setModel(parameterCompleterModel_);
+            rangeEdit->setAppendingCompleter(rangeCompleter);
+
+            startEdit->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+            rangeEdit->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+
             itemLayout_->addWidget(rangeLabel, rowCounter, 3);
             itemLayout_->addWidget(rangeEdit, rowCounter, 4);   
         }
@@ -202,38 +222,6 @@ void InterfaceEnumEditor::createLayoutCondenser()
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterfaceEnumEditor::getSelectedStartingPointInterfaces()
-//-----------------------------------------------------------------------------
-QStringList InterfaceEnumEditor::getSelectedStartingPointInterfaces() const {
-    QStringList selectedInitiators;
-
-    for (const InterfaceItem& item : interfaceItems_) {
-        if (item.checkBox->isChecked() && !item.startEdit && !item.rangeEdit) {
-            selectedInitiators.append(item.checkBox->text());
-        }
-    }
-    return selectedInitiators;
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterfaceEnumEditor::getSelectedEndpointInterfaces()
-//-----------------------------------------------------------------------------
-QList<EndpointInterfaceData> InterfaceEnumEditor::getSelectedEndpointInterfaces() const {
-    QList<EndpointInterfaceData> selectedTargets;
-
-    for (const InterfaceItem& item : interfaceItems_) {
-        if (item.checkBox->isChecked() && item.startEdit && item.rangeEdit) {
-            EndpointInterfaceData data;
-            data.name = item.checkBox->text();
-            data.startValue = item.startEdit->text();
-            data.range = item.rangeEdit->text();
-            selectedTargets.append(data);
-        }
-    }
-    return selectedTargets;
-}
-
-//-----------------------------------------------------------------------------
 // Function: InterfaceEnumEditor::getSelectedInterfaces()
 //-----------------------------------------------------------------------------
 QList<InterfaceEnumEditor::InterfaceData> InterfaceEnumEditor::getSelectedInterfaces() const
@@ -250,12 +238,12 @@ QList<InterfaceEnumEditor::InterfaceData> InterfaceEnumEditor::getSelectedInterf
 
             if (interfaceEditor.startEdit)
             {
-                selectedInterfaceData.startValue = interfaceEditor.startEdit->text();
+                selectedInterfaceData.startValue = expressionFormatter_->formatReferringExpression(interfaceEditor.startEdit->getExpression());
             }
 
             if (interfaceEditor.rangeEdit)
             {
-                selectedInterfaceData.range = interfaceEditor.rangeEdit->text();
+                selectedInterfaceData.range = expressionFormatter_->formatReferringExpression(interfaceEditor.rangeEdit->getExpression());
             }
 
             selectedInterfaces.push_back(selectedInterfaceData);
