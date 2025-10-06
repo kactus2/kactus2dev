@@ -158,7 +158,8 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
         {
             startLabel = new QLabel("Start:");
             startEdit = new ExpressionEditor(parameterFinder_);
-            
+            connect(startEdit, SIGNAL(editingFinished()), this, SLOT(onExpressionValueEdited()), Qt::UniqueConnection);
+
             auto startCompleter = new QCompleter(parent());
             startCompleter->setModel(parameterCompleterModel_);
             startEdit->setAppendingCompleter(startCompleter);
@@ -168,6 +169,7 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
 
             rangeLabel = new QLabel("Range:");
             rangeEdit = new ExpressionEditor(parameterFinder_);
+            connect(rangeEdit, SIGNAL(editingFinished()), this, SLOT(onExpressionValueEdited()), Qt::UniqueConnection);
 
             auto rangeCompleter = new QCompleter(parent());
             rangeCompleter->setModel(parameterCompleterModel_);
@@ -222,6 +224,17 @@ void InterfaceEnumEditor::createLayoutCondenser()
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::onExpressionValueEdited()
+//-----------------------------------------------------------------------------
+void InterfaceEnumEditor::onExpressionValueEdited()
+{
+    if (auto senderEditor = qobject_cast<ExpressionEditor*>(sender()))
+    {
+        senderEditor->finishEditingCurrentWord();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterfaceEnumEditor::getSelectedInterfaces()
 //-----------------------------------------------------------------------------
 QList<InterfaceEnumEditor::InterfaceData> InterfaceEnumEditor::getSelectedInterfaces() const
@@ -238,12 +251,12 @@ QList<InterfaceEnumEditor::InterfaceData> InterfaceEnumEditor::getSelectedInterf
 
             if (interfaceEditor.startEdit)
             {
-                selectedInterfaceData.startValue = expressionFormatter_->formatReferringExpression(interfaceEditor.startEdit->getExpression());
+                selectedInterfaceData.startValue = interfaceEditor.startEdit->getExpression();
             }
 
             if (interfaceEditor.rangeEdit)
             {
-                selectedInterfaceData.range = expressionFormatter_->formatReferringExpression(interfaceEditor.rangeEdit->getExpression());
+                selectedInterfaceData.range = interfaceEditor.rangeEdit->getExpression();
             }
 
             selectedInterfaces.push_back(selectedInterfaceData);

@@ -143,6 +143,11 @@ signals:
      */
     void startingPointInterfaceUnchecked(const QString& interfaceName, const QString& instanceName);
 
+private slots:
+
+    //! Handles finishing editing of current word when focus is moved from calling editor
+    void onExpressionValueEdited();
+
 private:
 
     /*!

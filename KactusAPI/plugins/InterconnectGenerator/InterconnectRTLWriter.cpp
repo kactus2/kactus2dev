@@ -239,6 +239,11 @@ void InterconnectRTLWriter::writeAxiAddrMap(QTextStream& stream)
                 uint64_t sum = startValue + endValue + 1; // start >=, end <
                 rangeStr = QString::number(config_->AddressWidth) + "'h" + QString::number(sum, 16).toUpper();
             }
+            else
+            {
+                // if parameters are used, create new expression for end andress using them
+                rangeStr = startStr + "+" + rangeStr;
+            }
             
             stream << indent(2)
                 << "'{idx: " << IdWidthInits_ << "'('d" << target.Index

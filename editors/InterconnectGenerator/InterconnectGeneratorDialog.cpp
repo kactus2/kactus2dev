@@ -1106,11 +1106,15 @@ void InterconnectGeneratorDialog::collectSelectedInterfaces()
 
                 selectedEndpoints_[currentInstance].append(newEndpoint);
 
-                // Data for RTL writer
+                // Below is data for RTL writer
                 AddressPair addr;
 
-                addr.Start = singleInterface.startValue.isEmpty() ? "<address>" : singleInterface.startValue;
-                addr.End = singleInterface.range.isEmpty() ? "<address>" : singleInterface.range;
+                // Format start and range values to contain parameter names instead of UUIDs
+                auto formattedStartValue = expressionFormatter_->formatReferringExpression(singleInterface.startValue);
+                auto formattedRangeValue = expressionFormatter_->formatReferringExpression(singleInterface.range);
+
+                addr.Start = singleInterface.startValue.isEmpty() ? "<address>" : formattedStartValue;
+                addr.End = singleInterface.range.isEmpty() ? "<address>" : formattedRangeValue;
 
                 TargetStruct target;
                 target.Name = currentInstance + "_" + singleInterface.name;
