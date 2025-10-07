@@ -1,15 +1,15 @@
 #include "InterconnectGeneratorDialog.h"
 #include "InterconnectDataModel.h"
+#include "InstanceInterfacesEditor.h"
+
 #include <KactusAPI/KactusAPI.h>
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/common/ExpressionSet.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include "InstanceInterfacesEditor.h"
 
 #include <QMessageBox>
-#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::InterconnectGeneratorDialog()
@@ -17,21 +17,16 @@
 InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWidget, LibraryHandler* library,
     MessageMediator* messager, QWidget* parent)
     : QDialog(parent),
+    designWidget_(designWidget),
     library_(library),
     messager_(messager),
-    designWidget_(designWidget),
-    instancesLayout_(new QVBoxLayout()),
-    endpointsLayout_(new QVBoxLayout()),
-    vlnvEditor_(new VLNVEditor(VLNV::BUSDEFINITION, library, this, this))
+    vlnvEditor_(new VLNVEditor(VLNV::BUSDEFINITION, library, this, this)),
+    instancesLayout_(new QVBoxLayout())
 {
     setMinimumWidth(900);
     setMinimumHeight(900);
 
     designVLNV_ = designWidget->getEditedComponent()->getVlnv().toString(":");
-
-    //QWidget* hiddenWidget = new QWidget(this);
-    //hiddenWidget->hide();
-    //componentInstances_ = new InstanceComboBox(hiddenWidget);
 
     auto parameters = QSharedPointer<QList<QSharedPointer<Parameter>>>::create();
     auto choices = QSharedPointer<QList<QSharedPointer<Choice>>>::create();
@@ -50,9 +45,9 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
     dataModel_ = QSharedPointer<InterconnectDataModel>::create(designWidget_, library_, messager_);
     dataModel_->gatherBusAndAbstractionData();
 
-    addressHelper_ = QSharedPointer<InterconnectAddressHelper>::create(
-        designWidget->getEditedComponent()->getVlnv(), 
-        library_, messager_);
+    //addressHelper_ = QSharedPointer<InterconnectAddressHelper>::create(
+    //    designWidget->getEditedComponent()->getVlnv(), 
+    //    library_, messager_);
 
     filteredAbsRefs_ = dataModel_->getValidAbstractionRefs();
     if (filteredAbsRefs_.isEmpty()) {
@@ -216,91 +211,6 @@ InterconnectDataModel::InterconnectType InterconnectGeneratorDialog::getSelected
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectGeneratorDialog::updateNameCombo()
-//-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::updateNameCombo(QComboBox* nameCombo, QStringList& availableInstances)
-{
-    availableInstances.clear();
-
-    QString selectedAbsDef = absDefCombo_->currentText();
-
-    for (const QString& instanceName : instanceBusesHash_.keys())
-    {
-        if (addedStartingPoints_.contains(instanceName) || addedEndpoints_.contains(instanceName)) {
-            continue;
-        }
-
-        InterconnectDataModel::EntityType entityType = instanceIsTopComponent(instanceName)
-            ? InterconnectDataModel::EntityType::TopComponent
-            : InterconnectDataModel::EntityType::Instance;
-
-        const QSet<QSharedPointer<BusInterface>>& busInterfaces = instanceBusesHash_.value(instanceName);
-
-        for (const QSharedPointer<BusInterface>& bus : busInterfaces)
-        {
-            if (!interfaceAbsDefsHash_.contains(bus) ||
-                !interfaceAbsDefsHash_.value(bus).contains(selectedAbsDef))
-            {
-                continue;
-            }
-
-            General::InterfaceMode mode = InterconnectDataModel::normalizeTo2022(bus->getInterfaceMode());
-
-            if (dataModel_->hasAnyValidConnection(entityType, mode)) {
-                availableInstances.append(instanceName);
-                break;
-            }
-        }
-    }
-
-    if (nameCombo) {
-        nameCombo->clear();
-        nameCombo->addItems(availableInstances);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterconnectGeneratorDialog::onInstanceSelected()
-//-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::onInstanceSelected(const QString& instanceName, const QString& roleLabel, InterfaceEnumEditor* interfaceEditor)
-{
-    QString selectedAbsDef = absDefCombo_->currentText();
-    QStringList validInterfaceNames;
-
-    if (!instanceBusesHash_.contains(instanceName)) {
-        interfaceEditor->clearAll();
-        return;
-    }
-
-    InterconnectDataModel::EntityType entityType = instanceIsTopComponent(instanceName)
-        ? InterconnectDataModel::EntityType::TopComponent
-        : InterconnectDataModel::EntityType::Instance;
-
-    //InterconnectDataModel::InterconnectType icType = getSelectedInterconnectType();
-
-    const QSet<QSharedPointer<BusInterface>>& busSet = instanceBusesHash_.value(instanceName);
-    for (const QSharedPointer<BusInterface>& bus : busSet)
-    {
-        // Only consider interfaces that use the currently selected abstraction definition
-        if (!interfaceAbsDefsHash_.contains(bus) ||
-            !interfaceAbsDefsHash_.value(bus).contains(selectedAbsDef))
-        {
-            continue;
-        }
-
-        General::InterfaceMode mode = InterconnectDataModel::normalizeTo2022(bus->getInterfaceMode());
-
-        if (dataModel_->hasAnyValidConnection(entityType, mode)) {
-            validInterfaceNames.append(bus->name());
-        }
-    }
-
-    interfaceEditor->clearAll();
-    bool isTarget = (roleLabel == "Endpoint");
-    interfaceEditor->addItems(validInterfaceNames, isTarget, instanceName);
-}
-
-//-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::onInstanceSelected()
 //-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::onInstanceSelected(QString const& newInstanceName, QString const& oldInstanceName)
@@ -354,30 +264,6 @@ void InterconnectGeneratorDialog::onInstanceRemoved()
     updateAddInstanceButtonStatus();
 }
 
-void InterconnectGeneratorDialog::updateInterconnectModeOptions()
-{
-    bool bridgeValid = dataModel_->isModeValidForAllConnections(
-        selectedStartingPoints_, selectedEndpoints_, InterconnectDataModel::InterconnectType::Bridge);
-
-    bool channelValid = dataModel_->isModeValidForAllConnections(
-        selectedStartingPoints_, selectedEndpoints_, InterconnectDataModel::InterconnectType::Channel);
-
-    bridgeButton_->setEnabled(bridgeValid);
-    channelButton_->setEnabled(channelValid);
-
-    // Adjust which button is checked if current one became invalid
-    if (!bridgeValid && !channelValid) {
-        bridgeButton_->setChecked(false);
-        channelButton_->setChecked(false);
-    }
-    else if (!channelValid && channelButton_->isChecked()) {
-        bridgeButton_->setChecked(true);
-    }
-    else if (!bridgeValid && bridgeButton_->isChecked()) {
-        channelButton_->setChecked(true);
-    }
-}
-
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::filterAvailableInstancesByAbsDef()
 //-----------------------------------------------------------------------------
@@ -390,7 +276,7 @@ void InterconnectGeneratorDialog::filterAvailableInstancesByAbsDef()
     {
         // Take into account that interconnect type limits possible instances
         // AKA for bridge interconnect only instances with interfaces that can be connected to bridge should be listed
-        auto allowedInterfaceTypes = getAllowedInterfaceTypes(instanceName);
+        auto allowedInterfaceTypes = getAllowedInterfaceModes(instanceName);
 
         for (auto const& bus : instanceBusesHash_.value(instanceName))
         {
@@ -435,7 +321,7 @@ void InterconnectGeneratorDialog::updateAvailableInstanceInterfaces(InstanceInte
 
     QList<QPair<QString, bool> > interfacesToAdd;
 
-    auto allowedInterfaceTypes = getAllowedInterfaceTypes(selectedInstance);
+    auto allowedInterfaceTypes = getAllowedInterfaceModes(selectedInstance);
     auto currentAbsDef = absDefCombo_->currentText();
 
     bool isTopComponent = instanceIsTopComponent(selectedInstance);
@@ -528,9 +414,9 @@ bool InterconnectGeneratorDialog::hasSelectedInstances()
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectGeneratorDialog::getAllowedInterfaceTypes()
+// Function: InterconnectGeneratorDialog::getAllowedInterfaceModes()
 //-----------------------------------------------------------------------------
-QSet<General::InterfaceMode> InterconnectGeneratorDialog::getAllowedInterfaceTypes(QString const& selectedInstance)
+QSet<General::InterfaceMode> InterconnectGeneratorDialog::getAllowedInterfaceModes(QString const& selectedInstance)
 {
     // Need to figure out if selected instance is top component or regular instance
     auto isTopComponent = instanceIsTopComponent(selectedInstance);
@@ -563,9 +449,9 @@ QSet<General::InterfaceMode> InterconnectGeneratorDialog::getAllowedInterfaceTyp
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectGeneratorDialog::interfaceSelectionsAreLegal()
+// Function: InterconnectGeneratorDialog::interfaceSelectionsAreValid()
 //-----------------------------------------------------------------------------
-bool InterconnectGeneratorDialog::interfaceSelectionsAreLegal(QString& errorMsg)
+bool InterconnectGeneratorDialog::interfaceSelectionsAreValid(QString& errorMsg)
 {
     auto isStd22 = designWidget_->getEditedComponent()->getRevision() == Document::Revision::Std22;
 
@@ -601,145 +487,6 @@ bool InterconnectGeneratorDialog::interfaceSelectionsAreLegal(QString& errorMsg)
 bool InterconnectGeneratorDialog::instanceIsTopComponent(QString const& instanceName)
 {
     return designWidget_->getEditedComponent()->getVlnv().getName().compare(instanceName) == 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterconnectGeneratorDialog::createInstanceEditorFrame()
-//-----------------------------------------------------------------------------
-QFrame* InterconnectGeneratorDialog::createInstanceEditorFrame(const QString& roleLabel)
-{
-    // TODO remove unused
-
-    QStringList availableInstances;
-    updateNameCombo(nullptr, availableInstances);
-
-    if (availableInstances.isEmpty()) {
-        QMessageBox::information(this, tr("No Instances Available"), tr("All instances have already been added."));
-        return nullptr;
-    }
-
-    QString instanceName = availableInstances.first();
-    QFrame* instanceFrame = new QFrame();
-    instanceFrame->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
-
-    InterfaceEnumEditor* interfaceEditor = new InterfaceEnumEditor(ExpressionSet{ parameterFinder_, expressionParser_, expressionFormatter_ }, parameterCompleterModel_, designWidget_->getEditedComponent()->getRevision(), this);
-
-    connect(interfaceEditor, &InterfaceEnumEditor::endpointInterfaceChecked, this,
-        [=](const QString& interfaceName, const QString& instanceName) {
-            quint64 start = 0;
-            quint64 range = 0;
-            if (addressHelper_->getEndpointAddressRange(instanceName, interfaceName, start, range)) {
-                interfaceEditor->setEndpointInterfaceValues(interfaceName, start, range);
-            }
-            updateInterconnectModeOptions();
-        });
-
-    connect(interfaceEditor, &InterfaceEnumEditor::endpointInterfaceUnchecked, this,
-        [=](const QString& interfaceName, const QString& instanceName) {
-            addressHelper_->releaseEndpointAddress(instanceName);
-            interfaceEditor->clearEndpointInterfaceValues(interfaceName);
-
-            updateInterconnectModeOptions();
-        });
-
-    connect(interfaceEditor, &InterfaceEnumEditor::startingPointInterfaceChecked, this,
-        [=](const QString&, const QString&) {
-            updateInterconnectModeOptions();
-        });
-
-    connect(interfaceEditor, &InterfaceEnumEditor::startingPointInterfaceUnchecked, this,
-        [=](const QString&, const QString&) {
-            updateInterconnectModeOptions();
-        });
-
-    QVBoxLayout* nameAndEditorLayout = createNameAndEnumerationEditorLayout(roleLabel, interfaceEditor, instanceFrame);
-
-    QFormLayout* instanceLayout = new QFormLayout(instanceFrame);
-    instanceLayout->addRow("Instance Name:", nameAndEditorLayout);
-    instanceLayout->addRow(interfaceEditor);
-
-    QComboBox* nameCombo = instanceFrame->findChild<QComboBox*>();
-    if (nameCombo && nameCombo->count() > 0) {
-        onInstanceSelected(nameCombo->currentText(), roleLabel, interfaceEditor);
-    }
-
-    connect(nameCombo, &QComboBox::currentTextChanged, this,
-        [=]() {
-            QString selectedInstance = nameCombo->currentText();
-            onInstanceSelected(selectedInstance, roleLabel, interfaceEditor);
-        });
-
-    QPushButton* closeButton = instanceFrame->findChild<QPushButton*>();
-    connect(closeButton, &QPushButton::clicked, this,
-        [=]() {
-            if (roleLabel == "StartingPoint") {
-                instancesLayout_->removeWidget(instanceFrame);
-                addedStartingPoints_.remove(nameCombo->currentText());
-            }
-            else {
-                endpointsLayout_->removeWidget(instanceFrame);
-                addedEndpoints_.remove(nameCombo->currentText());
-            }
-            instanceFrame->deleteLater();
-            updateInterconnectModeOptions();
-        });
-
-    return instanceFrame;
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterconnectGeneratorDialog::createNameAndEnumerationEditorLayout()
-//-----------------------------------------------------------------------------
-QVBoxLayout* InterconnectGeneratorDialog::createNameAndEnumerationEditorLayout(
-    const QString& roleLabel, InterfaceEnumEditor* interfaceEditor, QFrame* instanceFrame)
-{
-    QVBoxLayout* layout = new QVBoxLayout();
-    QHBoxLayout* nameLayout = new QHBoxLayout();
-    InstanceComboBox* nameCombo = new InstanceComboBox();
-    QStringList availableInstances;
-
-    updateNameCombo(nameCombo, availableInstances);
-
-    if (availableInstances.isEmpty()) {
-        QMessageBox::information(this, tr("No Instances Available"),
-            tr("All instances have already been added."));
-        delete instanceFrame;
-        return layout;
-    }
-
-    QPushButton* closeButton = new QPushButton(QIcon(":/icons/common/graphics/cross.png"), QString());
-    closeButton->setText(roleLabel == "StartingPoint" ? tr("Remove Starting Point") : tr("Remove Endpoint"));
-
-    nameLayout->addWidget(nameCombo);
-    nameLayout->addWidget(closeButton);
-
-    connect(nameCombo, &QComboBox::currentTextChanged, this, [=]() {
-        QString selectedInstance = nameCombo->currentText();
-        onInstanceSelected(selectedInstance, roleLabel, interfaceEditor);
-        });
-
-    if (nameCombo->count() > 0) {
-        onInstanceSelected(nameCombo->currentText(), roleLabel, interfaceEditor);
-    }
-
-    layout->addLayout(nameLayout);
-
-    connect(closeButton, &QPushButton::clicked, this, [=]() {
-        QString instanceName = nameCombo->currentText();
-
-        if (roleLabel == "StartingPoint") {
-            instancesLayout_->removeWidget(instanceFrame);
-            addedStartingPoints_.remove(instanceName);
-        }
-        else {
-            endpointsLayout_->removeWidget(instanceFrame);
-            addedEndpoints_.remove(instanceName);
-        }
-
-        instanceFrame->deleteLater();
-        });
-
-    return layout;
 }
 
 //-----------------------------------------------------------------------------
@@ -988,7 +735,7 @@ void InterconnectGeneratorDialog::accept()
     collectSelectedInterfaces();
 
     QString selectionErrorMsg;
-    if (interfaceSelectionsAreLegal(selectionErrorMsg) == false)
+    if (interfaceSelectionsAreValid(selectionErrorMsg) == false)
     {
         QMessageBox::warning(this, tr("Input Error"), selectionErrorMsg);
         return;

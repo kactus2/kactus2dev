@@ -103,14 +103,36 @@ protected:
 
 private slots:
 
+    /*!
+     *	Handle change in selected abstraction definition (abstraction type) for interconnect component.
+     *  
+     *    @param [in] currentIndex     Index of currently selected abstraction definition
+     */
     void onAbsDefChanged(int currentIndex);
 
+    /*!
+     *  Handle logic triggered when a new instance is selected from the list.
+     *
+     *  @param [in] newInstanceName     Name of the newly selected instance.
+     *  @param [in] oldInstanceName     Name of the previously selected instance.
+     */
     void onInstanceSelected(QString const& newInstanceName, QString const& oldInstanceName);
 
+    /*!
+     *	Handle removing instance and its selected interfaces.
+     */
     void onInstanceRemoved();
 
+    /*!
+     *	Handler for adding a new instance.
+     */
     void addNewInstance();
 
+    /*!
+     *	Handle toggling of interconnect mode selector. Called for each radio button in selector group box.
+     *  
+     *    @param [in] checked     Flag indicating if the calling radio button is checked or not.
+     */
     void onInterconnectSelectorToggled(bool checked);
 
 private:
@@ -137,26 +159,6 @@ private:
     QDialogButtonBox* createButtonBox();
 
     /*!
-     *  Create a layout combining the interconnect name editor and enumeration controls.
-     *
-     *  @param [in] type              Type of interface being configured.
-     *  @param [in] interfaceEditor   Editor for selecting bus interfaces to connect.
-     *  @param [in] instanceFrame     Frame containing the instance list.
-     *
-     *  @return Pointer to the created vertical layout.
-     */
-    QVBoxLayout* createNameAndEnumerationEditorLayout(const QString& type, InterfaceEnumEditor* interfaceEditor, QFrame* instanceFrame);
-
-    /*!
-     *  Create the UI frame for selecting and managing instances of a specific type.
-     *
-     *  @param [in] type  Type of instance (e.g. initiator, target).
-     *
-     *  @return Pointer to the created QFrame.
-     */
-    QFrame* createInstanceEditorFrame(const QString& roleLabel);
-
-    /*!
      *  Create a widget that allows the user to select the interconnect mode.
      *
      *  @return Pointer to the created QWidget.
@@ -172,23 +174,6 @@ private:
      *  Populate the parameter editor with a copy of abstraction definition parameters.
      */
     void populateParameters();
-
-    /*!
-     *  Update the instance name combo box with available instance names.
-     *
-     *  @param [in,out]  nameCombo            Combo box to update.
-     *  @param [in,out]  availableInstances   List of instances to populate into the combo box.
-     */
-    void updateNameCombo(QComboBox* nameCombo, QStringList& availableInstances);
-
-    /*!
-     *  Handle logic triggered when a new instance is selected from the list.
-     *
-     *  @param [in] instanceName     Name of the selected instance.
-     *  @param [in] type             Type of instance (starting point or endpoint).
-     *  @param [in] interfaceEditor  Editor to update with instance-specific data.
-     */
-    void onInstanceSelected(const QString& instanceName, const QString& type, InterfaceEnumEditor* interfaceEditor);
 
     /*!
      *  Clear all entries from both the starting and endpoint lists.
@@ -207,12 +192,6 @@ private:
      */
     InterconnectDataModel::InterconnectType getSelectedInterconnectType() const;
 
-    /*!
-     *  Update the availability and selection state of interconnect mode options
-     *  based on currently selected starting points and endpoints.
-     */
-    void updateInterconnectModeOptions();
-
     void filterAvailableInstancesByAbsDef();
 
     /*!
@@ -220,16 +199,51 @@ private:
      */
     void updateAvailableInstances();
 
+    /*!
+     *	Set the available interfaces for selected instance interface editor.
+     *  
+     *    @param [in] interfacesEditor     The selected editor.
+     *    @param [in] selectedInstance     The currently selected instance whose interfaces will be set.
+     */
     void updateAvailableInstanceInterfaces(InstanceInterfacesEditor* interfacesEditor, QString const& selectedInstance);
 
+    /*!
+     *	Disable or enable add instances button based on available instances.
+     */
     void updateAddInstanceButtonStatus();
 
+    /*!
+     *	Checks if any instances have been added.
+     *  
+     *    @return True, if at least one instance has been added. Otherwise false.
+     */
     bool hasSelectedInstances();
 
-    QSet<General::InterfaceMode> getAllowedInterfaceTypes(QString const& selectedInstance);
+    /*!
+     *	Get the allowed interface modes that can be selected for a given instance.
+     *  
+     *    @param [in] selectedInstance     The selected instance.
+     *	    
+     *    @return A set of allowed interface modes.
+     */
+    QSet<General::InterfaceMode> getAllowedInterfaceModes(QString const& selectedInstance);
 
-    bool interfaceSelectionsAreLegal(QString& errorMsg);
+    /*!
+     *	Checks if gathered interface selections satisfy the requirements for generating an interconnect component.
+     *  
+     *    @param [in/out] errorMsg     Error message to create if selections are invalid.
+     *	    
+     *    @return True, if the selections are valid, otherwise false.
+     */
+    bool interfaceSelectionsAreValid(QString& errorMsg);
 
+    /*!
+     *	Checks if the given instance is the top component of the open design.
+     *  
+     *    @param [in] instanceName     Name of the instance to check.
+     *	    
+     *    @return  True, if the instance is top component, otherwise false.
+     */
     bool instanceIsTopComponent(QString const& instanceName);
 
     //-----------------------------------------------------------------------------
@@ -248,8 +262,9 @@ private:
     //! Shared data model that provides abstraction and bus/interface information.
     QSharedPointer<InterconnectDataModel> dataModel_;
 
+    //! TODO delete if addressing auto population isn't implemented
     //! Helper for generating and analyzing address mappings in interconnects.
-    QSharedPointer<InterconnectAddressHelper> addressHelper_;
+    //QSharedPointer<InterconnectAddressHelper> addressHelper_;
 
     //! Parameters specific to the generated interconnect component.
     QSharedPointer<QList<QSharedPointer<Parameter>>> interconnectParams_;
@@ -274,9 +289,6 @@ private:
     //! Parameter editor group box for the interconnect component.
     ParameterGroupBox* parameterGroupBox_;
 
-    //! Combo box for selecting a component instance.
-    //InstanceComboBox* componentInstances_;
-
     //! Combo box for selecting a bus interface.
     InstanceComboBox* absDefCombo_;
 
@@ -285,12 +297,6 @@ private:
 
     //! Combo box for selecting a reset interface.
     InstanceComboBox* resetCombo_;
-
-    //! Line edit for specifying data width.
-    ExpressionEditor* dataWidthEdit_;
-
-    //! Line edit for specifying address width.
-    ExpressionEditor* addressWidthEdit_;
 
     //! Checkbox to enable or disable clock signal configuration.
     QCheckBox* clockCheckBox_;
@@ -304,12 +310,10 @@ private:
     //! Radio button to choose bridge-based interconnect generation.
     QRadioButton* bridgeButton_;
 
-    //! Layout container for initiator interface selection.
+    //! Layout container for instance and interface selection.
     QVBoxLayout* instancesLayout_;
 
-    //! Layout container for target interface selection.
-    QVBoxLayout* endpointsLayout_;
-
+    //! Button for adding new instances to select interfaces from.
     QPushButton* addInstanceButton_ = new QPushButton(QIcon(":/icons/common/graphics/add.png"), tr("Add New Instance"));
 
     //! Previous index selected in UI (used for change tracking).
@@ -321,6 +325,7 @@ private:
     //! Indicates whether the interconnect is being generated as a channel.
     bool isChannel_ = false;
 
+    //! Set containing names of available instances to select.
     QSet<QString> availableInstances_;
 
     //! Set of filtered abstraction references compatible with the selected bus.
@@ -334,18 +339,11 @@ private:
 
     //! Map of bus interfaces to abstraction definitions used by them.
     QHash<QSharedPointer<BusInterface>, QSet<QString>> interfaceAbsDefsHash_;
-
-    //! Set of already added initiator interface keys (to avoid duplicates).
-    QSet<QString> addedStartingPoints_;
-
-    //! Set of already added target interface keys (to avoid duplicates).
-    QSet<QString> addedEndpoints_;
-
-    QSet<QString> addedInstances_;
-
+    
     //! Parameter finder for editors needing access to interconnect component parameters.
     QSharedPointer<ParameterFinder> parameterFinder_;
 
+    //! Parameter completer model for expression editors in interface selection editors.
     ComponentParameterModel* parameterCompleterModel_;
 
     //! Map of selected initiator interfaces, grouped by instance name.
@@ -354,6 +352,7 @@ private:
     //! Map of selected target interfaces and related metadata, grouped by instance name.
     QHash<QString, QList<QSharedPointer<EndpointData>>> selectedEndpoints_;
 
+    //! Set containing all editors for added instances
     QSet<InstanceInterfacesEditor*> instanceEditors_;
 };
 
