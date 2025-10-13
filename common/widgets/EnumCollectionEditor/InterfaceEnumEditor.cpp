@@ -10,10 +10,8 @@
 InterfaceEnumEditor::InterfaceEnumEditor(ExpressionSet expressionSet, ComponentParameterModel* parameterCompleterModel, Document::Revision docRevision, QWidget* parent)
     : QFrame(parent),
     mainLayout_(new QVBoxLayout(this)),
-    scrollArea_(new QScrollArea(this)),
-    scrollContainer_(new QWidget()),
-    scrollLayout_(new QVBoxLayout(scrollContainer_)),
     itemLayout_(new QGridLayout()),
+    optionalStretchLayout_(new QHBoxLayout()),
     parameterFinder_(expressionSet.finder),
     parameterCompleterModel_(parameterCompleterModel),
     expressionFormatter_(expressionSet.formatter)
@@ -21,83 +19,18 @@ InterfaceEnumEditor::InterfaceEnumEditor(ExpressionSet expressionSet, ComponentP
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NoMousePropagation);
-    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+
+    // Container widget for all interfaces
+    QWidget* itemContainer = new QWidget();
+    //itemContainer->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    itemContainer->setLayout(itemLayout_);
+
+    optionalStretchLayout_->addWidget(itemContainer);
+    mainLayout_->addLayout(optionalStretchLayout_);
 
     setLayout(mainLayout_);
-    scrollLayout_->addLayout(itemLayout_);
-
-    scrollArea_->setWidgetResizable(true);
-    scrollArea_->setFrameShape(QFrame::NoFrame);
-
-    scrollContainer_->setLayout(scrollLayout_);
-    scrollArea_->setWidget(scrollContainer_);
-
-    mainLayout_->addWidget(scrollArea_);
-
     isStd22_ = docRevision == Document::Revision::Std22;
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterfaceEnumEditor::addItems()
-//-----------------------------------------------------------------------------
-void InterfaceEnumEditor::addItems(const QStringList& items, bool isEndpoint, const QString& instanceName) {
-    QList<QCheckBox*> checkBoxes;
-    int maxCheckBoxWidth = 0;
-
-    for (const QString& item : items) {
-        QCheckBox* checkBox = new QCheckBox(item);
-        checkBox->adjustSize();
-        maxCheckBoxWidth = std::max(maxCheckBoxWidth, checkBox->sizeHint().width());
-        checkBoxes.append(checkBox);
-    }
-
-    for (int i = 0; i < items.size(); ++i) {
-        QHBoxLayout* itemLayout = new QHBoxLayout(); 
-        QCheckBox* checkBox = checkBoxes[i];
-        checkBox->setMinimumWidth(maxCheckBoxWidth);
-        itemLayout->addWidget(checkBox);
-
-        ExpressionEditor* startEdit = nullptr;
-        ExpressionEditor* rangeEdit = nullptr;
-        QLabel* startLabel = nullptr;
-        QLabel* rangeLabel = nullptr;
-
-        if (isEndpoint)
-        {
-            startLabel = new QLabel("Start:");
-            rangeLabel = new QLabel("Range:");
-            startEdit = new ExpressionEditor(parameterFinder_);
-            rangeEdit = new ExpressionEditor(parameterFinder_);
-
-            itemLayout->addWidget(startLabel);
-            itemLayout->addWidget(startEdit);
-            itemLayout->addWidget(rangeLabel);
-            itemLayout->addWidget(rangeEdit);
-
-            connect(checkBox, &QCheckBox::toggled, this, [=](bool checked) {
-                if (checked) {
-                    emit endpointInterfaceChecked(checkBox->text(), instanceName);
-                }
-                else {
-                    emit endpointInterfaceUnchecked(checkBox->text(), instanceName);
-                }
-                });
-        }
-        else 
-        {
-            connect(checkBox, &QCheckBox::toggled, this, [=](bool checked) {
-                if (checked) {
-                    emit startingPointInterfaceChecked(checkBox->text(), instanceName);
-                }
-                else {
-                    emit startingPointInterfaceUnchecked(checkBox->text(), instanceName);
-                }
-                });
-        }
-
-        interfaceItems_.append({ checkBox, startLabel, startEdit, rangeLabel, rangeEdit });
-        scrollLayout_->addLayout(itemLayout);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -142,8 +75,16 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
     for (auto const& item : items)
     {
         auto checkBox = new QCheckBox(item.interfaceName);
+        checkBox->setToolTip(item.interfaceName);
         checkBox->adjustSize();
-        
+
+        // Cut off interface name (elide the text) if too long and readjust checkbox
+        // TODO do this after every interface has been added
+        auto maxCheckboxSize = static_cast<int>(0.5 * parentWidget()->width());
+        auto possiblyElidedText = checkBox->fontMetrics().elidedText(item.interfaceName, Qt::TextElideMode::ElideRight, maxCheckboxSize);
+        checkBox->setText(possiblyElidedText);
+        checkBox->adjustSize();
+
         itemLayout_->addWidget(checkBox, rowCounter, 0);
 
         QLabel* startLabel = nullptr;
@@ -156,6 +97,8 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
         // creating address spaces etc.).
         if (item.isTargetAdjacent && isChannel)
         {
+            needInterfacesStretch = false;
+
             startLabel = new QLabel("Start:");
             startEdit = new ExpressionEditor(parameterFinder_);
             connect(startEdit, SIGNAL(editingFinished()), this, SLOT(onExpressionValueEdited()), Qt::UniqueConnection);
@@ -175,8 +118,20 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
             rangeCompleter->setModel(parameterCompleterModel_);
             rangeEdit->setAppendingCompleter(rangeCompleter);
 
+            // Set minimum dimensions of start and range editors so that there is no unnecessary scrolling needed
+            startLabel->setFixedWidth(startLabel->sizeHint().width());
+            startLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+
             startEdit->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+            startEdit->setMinimumWidth(0);
+            startEdit->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+
+            rangeLabel->setFixedWidth(rangeLabel->sizeHint().width());
+            rangeLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+
             rangeEdit->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+            rangeEdit->setMinimumWidth(0);
+            rangeEdit->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
 
             itemLayout_->addWidget(rangeLabel, rowCounter, 3);
             itemLayout_->addWidget(rangeEdit, rowCounter, 4);   
@@ -188,19 +143,20 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::addStretchIfNeeded()
+//-----------------------------------------------------------------------------
+void InterfaceEnumEditor::addStretchIfNeeded()
+{
+    if (needInterfacesStretch)
+    {
+        optionalStretchLayout_->addStretch(1);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterfaceEnumEditor::clearAll()
 //-----------------------------------------------------------------------------
 void InterfaceEnumEditor::clearAll() {
-    // TODO remove this old stuff
-    for (auto const& item : interfaceItems_) {
-        delete item.checkBox;
-        delete item.startEdit;
-        delete item.rangeEdit;
-        delete item.startLabel;
-        delete item.rangeLabel;
-    }
-
-    interfaceItems_.clear();
 
     QLayoutItem* currentChild;
     while ((currentChild = itemLayout_->takeAt(0)) != nullptr)
@@ -209,18 +165,8 @@ void InterfaceEnumEditor::clearAll() {
         delete currentChild;
     }
 
-    itemLayoutCondenser_ = nullptr;
     singleInterfaces_.clear();
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterfaceEnumEditor::createLayoutCondenser()
-//-----------------------------------------------------------------------------
-void InterfaceEnumEditor::createLayoutCondenser()
-{
-    itemLayoutCondenser_ = new QWidget();
-    itemLayoutCondenser_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-    itemLayout_->addWidget(itemLayoutCondenser_, itemLayout_->rowCount(), 0);
+    needInterfacesStretch = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -241,12 +187,13 @@ QList<InterfaceEnumEditor::InterfaceData> InterfaceEnumEditor::getSelectedInterf
 {
     QList<InterfaceEnumEditor::InterfaceData> selectedInterfaces;
 
-    for (auto const& interfaceEditor : singleInterfaces_)
+    for (auto const& singleInterfaceName : singleInterfaces_.keys())
     {
+        auto interfaceEditor = singleInterfaces_.value(singleInterfaceName);
         if (interfaceEditor.checkBox->isChecked())
         {
             auto selectedInterfaceData = InterfaceData{
-                interfaceEditor.checkBox->text()
+                singleInterfaceName
             };
 
             if (interfaceEditor.startEdit)
@@ -264,34 +211,4 @@ QList<InterfaceEnumEditor::InterfaceData> InterfaceEnumEditor::getSelectedInterf
     }
 
     return selectedInterfaces;
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterfaceEnumEditor::setEndpointInterfaceValues()
-//-----------------------------------------------------------------------------
-void InterfaceEnumEditor::setEndpointInterfaceValues(const QString& interfaceName, quint64 start, quint64 range) {
-    auto formatToIpxactHex = [](quint64 value, int minDigits = 4) -> QString {
-        return "'h" + QString::number(value, 16).rightJustified(minDigits, '0').toUpper();
-        };
-
-    for (InterfaceItem& item : interfaceItems_) {
-        if (item.checkBox->text() == interfaceName && item.startEdit && item.rangeEdit) {
-            item.startEdit->setText(formatToIpxactHex(start));
-            item.rangeEdit->setText(formatToIpxactHex(range));
-            break;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterfaceEnumEditor::clearEndpointInterfaceValues()
-//-----------------------------------------------------------------------------
-void InterfaceEnumEditor::clearEndpointInterfaceValues(const QString& interfaceName) {
-    for (InterfaceItem& item : interfaceItems_) {
-        if (item.checkBox->text() == interfaceName && item.startEdit && item.rangeEdit) {
-            item.startEdit->clear();
-            item.rangeEdit->clear();
-            break;
-        }
-    }
 }

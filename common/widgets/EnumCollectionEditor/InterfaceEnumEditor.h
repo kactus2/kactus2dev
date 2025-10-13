@@ -80,35 +80,22 @@ public:
      *  Add a list of interface names to the editor.
      *
      *  @param [in] items         List of interface names to add.
-     *  @param [in] isTarget      True if the interfaces are for endpoints; false for starting points.
-     *  @param [in] instanceName  Name of the associated instance.
+     *  @param [in] interfaceMode The mode of the interface.
+     *  @param [in] isChannel     True, if interconnect type is channel, otherwise false.
      */
-    void addItems(const QStringList& items, bool isTarget, const QString& instanceName);
-
     void addItems(const QList<InterfaceInput>& items, General::InterfaceMode interfaceMode, bool isChannel);
 
     /*!
-     *  Set address values for a selected endpoint interface.
-     *
-     *  @param [in] interfaceName  Name of the interface.
-     *  @param [in] start          Start address value.
-     *  @param [in] range          Range value.
+     *	Add stretch to interfaces layout, if instance has no target-adjacent interfaces and used mode is channel.
+     *  Aligns non-target-adjacent interfaces properly.
      */
-    void setEndpointInterfaceValues(const QString& interfaceName, quint64 start, quint64 range);
-
-    /*!
-     *  Clear the address values for a specific endpoint interface.
-     *
-     *  @param [in] interfaceName  Name of the interface to clear.
-     */
-    void clearEndpointInterfaceValues(const QString& interfaceName);
+    void addStretchIfNeeded();
 
     /*!
      *  Remove all interface entries from the editor.
      */
     void clearAll();
 
-    void createLayoutCondenser();
 
 signals:
     /*!
@@ -162,23 +149,25 @@ private:
         ExpressionEditor* rangeEdit;      /*!< Input field for the address range. */
     };
 
+    //! Map of displayed interface names and related widgets
     QHash<QString, InterfaceItem> singleInterfaces_;
 
     //! Main layout for the editor.
     QVBoxLayout* mainLayout_;
 
-    //! Scroll area to accommodate many interface items.
-    QScrollArea* scrollArea_;
-
-    //! Container widget inside the scroll area.
-    QWidget* scrollContainer_;
-
-    //! Layout for items within the scroll container.
-    QVBoxLayout* scrollLayout_;
-
+    //! Layout for interfaces and related widgets
     QGridLayout* itemLayout_;
 
-    QWidget* itemLayoutCondenser_;
+    /*
+     *   Layout holding the gridlayout containing interfaces etc.
+     *   Possible to add stretch to end of layout, if no target adjacent interfaces are added
+     *   in order to align interface checkbox to the left.
+     *   Need for stretch must be checked in dialog.
+     */
+    QHBoxLayout* optionalStretchLayout_;
+
+    //! Keeps track of need to add stretch to interfaces based on added interfaces.
+    bool needInterfacesStretch = true;
 
     //! Parameter finder for expression editors. Should use parameters of generated interconnect component.
     QSharedPointer<ParameterFinder> parameterFinder_;
@@ -186,11 +175,10 @@ private:
     //! Parameter completer model for expression editors.
     ComponentParameterModel* parameterCompleterModel_;
 
+    //! Formatter for interface start and range expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
-    //! List of currently displayed interface widgets.
-    QList<InterfaceItem> interfaceItems_;
-
+    //! Flag indicating the standard revision in use.
     bool isStd22_ = true;
 };
 

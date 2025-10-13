@@ -108,7 +108,8 @@ void InstanceInterfacesEditor::createInterfaceItems(bool isChannel)
             General::InterfaceMode::MIRRORED_TARGET, isChannel);
     }
 
-    interfacesEditor_->createLayoutCondenser();
+    // Add stretch to editor if needed (determined in interfaces editor)
+    interfacesEditor_->addStretchIfNeeded();
 }
 
 //-----------------------------------------------------------------------------

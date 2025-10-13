@@ -23,7 +23,7 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
     vlnvEditor_(new VLNVEditor(VLNV::BUSDEFINITION, library, this, this)),
     instancesLayout_(new QVBoxLayout())
 {
-    setMinimumWidth(900);
+    setMinimumWidth(1300);
     setMinimumHeight(900);
 
     designVLNV_ = designWidget->getEditedComponent()->getVlnv().toString(":");
@@ -136,9 +136,15 @@ void InterconnectGeneratorDialog::addNewInstance()
 
     connect(newInterfacesEditor, SIGNAL(instanceRemoved()), this, SLOT(onInstanceRemoved()), Qt::UniqueConnection);
 
+    // Temporarily remove condenser item
+    auto condenserItem = instancesLayout_->takeAt(instancesLayout_->count() - 1);
+
     instancesLayout_->addWidget(newInterfacesEditor);
     instanceEditors_.insert(newInterfacesEditor);
     
+    // Re-add condenser item
+    instancesLayout_->addItem(condenserItem);
+
     // Update available instances of new editor
     newInterfacesEditor->updateAvailableInstances(availableInstances_);
     
@@ -410,7 +416,7 @@ void InterconnectGeneratorDialog::updateAddInstanceButtonStatus()
 //-----------------------------------------------------------------------------
 bool InterconnectGeneratorDialog::hasSelectedInstances()
 {
-    return instancesLayout_->isEmpty() == false;
+    return instanceEditors_.size() > 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -496,6 +502,9 @@ void InterconnectGeneratorDialog::clearInstanceSelections()
 {
     QLayoutItem* item;
 
+    // Temporarily remove condenser item
+    auto condenserItem = instancesLayout_->takeAt(instancesLayout_->count() - 1);
+
     while ((item = instancesLayout_->takeAt(0)) != nullptr) {
         if (item->widget()) {
             item->widget()->deleteLater();
@@ -503,6 +512,8 @@ void InterconnectGeneratorDialog::clearInstanceSelections()
         delete item;
     }
     instanceEditors_.clear();
+
+    instancesLayout_->addItem(condenserItem);
     instancesLayout_->update();
 }
 
@@ -582,6 +593,12 @@ QGroupBox* InterconnectGeneratorDialog::createInstancesSection()
     QWidget* scrollWidget = new QWidget();
     scrollWidget->setLayout(instancesLayout_);
 
+    // Condenser item to fill space at bottom of instances list
+    // TODO make this better
+    QWidget* layoutCondenser = new QWidget();
+    layoutCondenser->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    instancesLayout_->addWidget(layoutCondenser);
+
     QScrollArea* scrollArea = new QScrollArea();
     scrollArea->setWidget(scrollWidget);
     scrollArea->setWidgetResizable(true);
@@ -639,16 +656,21 @@ void InterconnectGeneratorDialog::setUpLayout()
 {
     setWindowTitle("Interconnect Component Configuration");
 
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(createTopConfigSection());
-    mainLayout->addWidget(parameterGroupBox_);
+    auto mainLayout = new QVBoxLayout(this);
+    auto leftRightLayout = new QHBoxLayout();
 
-    mainLayout->addWidget(createInterconnectModeSelector());
+    auto leftSideLayout = new QVBoxLayout();
+    leftSideLayout->addWidget(createTopConfigSection());
+    leftSideLayout->addWidget(parameterGroupBox_);
 
-    QHBoxLayout* bottomRowLayout = new QHBoxLayout();
-    bottomRowLayout->addWidget(createInstancesSection());
-    mainLayout->addLayout(bottomRowLayout);
+    auto rightSideLayout = new QVBoxLayout();
+    rightSideLayout->addWidget(createInterconnectModeSelector());
+    rightSideLayout->addWidget(createInstancesSection());
 
+    leftRightLayout->addLayout(leftSideLayout);
+    leftRightLayout->addLayout(rightSideLayout);
+
+    mainLayout->addLayout(leftRightLayout);
     mainLayout->addWidget(createButtonBox());
 
     setLayout(mainLayout);
