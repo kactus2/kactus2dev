@@ -129,15 +129,36 @@ bool SWConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) co
         return false;
     }
 
-    bool fullyDefined = getType() != ENDPOINT_TYPE_UNDEFINED && other->getType() != ENDPOINT_TYPE_UNDEFINED;
+    return commonValidation(other);
+}
 
-    // Check if the types do not match.
-    if (fullyDefined && getType() != other->getType())
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::isExistingConnectionValid()
+//-----------------------------------------------------------------------------
+bool SWConnectionEndpoint::isExistingConnectionValid(ConnectionEndpoint const* other) const
+{
+    if (ConnectionEndpoint::isExistingConnectionValid(other) == false)
     {
         return false;
     }
 
-    return true;
+    return commonValidation(other);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::commonValidation()
+//-----------------------------------------------------------------------------
+bool SWConnectionEndpoint::commonValidation(ConnectionEndpoint const* other) const
+{
+	bool fullyDefined = getType() != ENDPOINT_TYPE_UNDEFINED && other->getType() != ENDPOINT_TYPE_UNDEFINED;
+
+	// Check if the types do not match.
+	if (fullyDefined && getType() != other->getType())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 //-----------------------------------------------------------------------------

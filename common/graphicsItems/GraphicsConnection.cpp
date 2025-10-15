@@ -1107,9 +1107,26 @@ bool GraphicsConnection::isImported() const
 void GraphicsConnection::validate()
 {
     invalid_ = !endpoint1_->isConnectionValid(endpoint2_) || !endpoint2_->isConnectionValid(endpoint1_);
-    setDefaultColor();
-    endpoint1_->updateInterface();
-    endpoint2_->updateInterface();
+    commonValidation();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::reValidate()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::reValidate()
+{
+    invalid_ = !endpoint1()->isExistingConnectionValid(endpoint2_) || !endpoint2_->isExistingConnectionValid(endpoint1_);
+    commonValidation();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::commonValidation()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::commonValidation()
+{
+	setDefaultColor();
+	endpoint1_->updateInterface();
+	endpoint2_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------

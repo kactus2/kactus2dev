@@ -16,7 +16,7 @@
 #include <KactusAPI/include/LibraryHandler.h>
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/ports/portseditor.h>
+#include <editors/ComponentEditor/ports/PortsImportSummaryEditor.h>
 
 #include <KactusAPI/include/PluginManager.h>
 #include <KactusAPI/include/PortsInterface.h>
@@ -76,8 +76,7 @@ componentViews_(component->getViews())
     auto ports = QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressions.parser, expressions.formatter));
     ports->setPorts(component->getPorts());
 
-    portEditor_ = new PortsEditor(importComponent_, handler, expressions, portValidator, ports,
-        busInterface, &splitter_);
+	portEditor_ = new PortsImportSummaryEditor(importComponent_, handler, expressions, portValidator, ports, busInterface, &splitter_);
 
     // CSV import/export is disabled in the wizard.
 

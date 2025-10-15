@@ -77,6 +77,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.h \
     ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
+    ./common/layouts/VNoCollisionNoMovementLayout.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
     ./common/layouts/IHGraphicsLayout.h \
@@ -902,7 +903,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./common/layouts/VNoCollisionNoMovementLayout.h
+    ./editors/ComponentEditor/ports/PortsImportSummaryEditor.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1697,5 +1698,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./editors/ComponentEditor/ports/PortsImportSummaryEditor.cpp
 RESOURCES += kactus.qrc

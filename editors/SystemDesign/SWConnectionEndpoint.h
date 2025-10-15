@@ -84,6 +84,15 @@ public:
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
+	/*!
+	 *  Check if an existing connection to this connection end point is valid.
+	 *
+	 *    @param [in] other     The other connection end point.
+	 *
+	 *    @return True, if the existing connection is valid, false otherwise.
+	 */
+	virtual bool isExistingConnectionValid(ConnectionEndpoint const* other) const override final;
+
     /*!
      *  Updates the endpoint interface.
      */
@@ -135,6 +144,15 @@ protected:
     virtual void initialize();
 
 private:
+
+    /*!
+     *  Common validation for new and existing connections connected to this end point.
+     *
+     *    @param [in] other     The other connected end point.
+     *
+     *    @return True, if the common validation checks are valid, false otherwise.
+     */
+    bool commonValidation(ConnectionEndpoint const* other) const;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -157,16 +157,20 @@ public:
     /*!
      *  Returns true if a connection is valid between the two endpoints.
      *
-     *    @param      [in]    other The other endpoint.
-     *
-     *      @remarks            The function checks all possible connections between
-     *                          two endpoint, including there off-page connectors
-     *                          and parent connectors. Does not take into account 
-     *                          if endpoint is exclusive. 
+     *    @param [in] other     The other endpoint.
      * 
-     *    @return             Boolean true if two endpoints can be connected, otherwise false.
+     *    @return Boolean true if two endpoints can be connected, otherwise false.
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
+
+    /*!
+     *  Check if an existing connection is valid.
+     *
+     *    @param [in] other     The other endpoint of a connection.
+     *
+     *    @return True, if the two end points are connected, otherwise false.
+     */
+    virtual bool isExistingConnectionValid(ConnectionEndpoint const* other) const;
 
     /*!
      *  Returns true if the endpoint is exclusive, i.e. can only have one connection.
@@ -394,7 +398,7 @@ private:
      *      @remarks    Does  not take into account weather points are off-page
                         or not, thus checking two points directly.
      */
-    bool isConnectionBetweenPointsExist(ConnectionEndpoint const* other) const;
+    bool connectionToPointExists(ConnectionEndpoint const* other) const;
 
     //-----------------------------------------------------------------------------
     // Data.

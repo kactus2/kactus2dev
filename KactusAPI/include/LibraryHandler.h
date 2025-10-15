@@ -302,12 +302,13 @@ public slots:
     */
     void onOpenSWDesign(VLNV const& vlnv);
 
-    /*! Open the specified component system design
+    /*!
+     *  Open the specified component system design
      *
-     *    @param [in] vlnv Identifies the component that's system design is wanted
-     *
-    */
-    void onOpenSystemDesign(VLNV const& vlnv);
+     *    @param [in] vlnv          Identifies the component that's system design is wanted
+     *    @param [in] activeView    The selected view for the system design.
+     */
+    void onOpenSystemDesign(VLNV const& vlnv, QString const& activeView);
 
 
     /*! Remove the specified library object from the library and file system.

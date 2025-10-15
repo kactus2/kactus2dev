@@ -75,10 +75,12 @@ VerilogPortParser::VerilogPortParser(): highlighter_(0), parser_(new NullParser)
 void VerilogPortParser::import(QString const& input, QSharedPointer<Component> targetComponent,
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
+/*
     foreach (QSharedPointer<Port> existingPort, *targetComponent->getPorts())
     {
         existingPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);
     }
+*/
 
     foreach (QString portDeclaration, findPortDeclarations(input))
     {

@@ -680,6 +680,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\ports\portsdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\portseditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortsFilter.cpp" />
+    <ClCompile Include="editors\ComponentEditor\ports\PortsImportSummaryEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\portsmodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortSummaryDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortSummaryEditorFactory.cpp" />
@@ -1869,6 +1870,7 @@ CreateHelp
     </QtMoc>
     <ClInclude Include="editors\ComponentEditor\ports\PortsEditorFactory.h" />
     <QtMoc Include="editors\ComponentEditor\ports\PortSummaryModel.h" />
+    <QtMoc Include="editors\ComponentEditor\ports\PortsImportSummaryEditor.h" />
     <ClInclude Include="editors\ComponentEditor\ports\PortSummaryColumns.h" />
     <QtMoc Include="editors\ComponentEditor\ports\PortSummaryFilter.h" />
     <QtMoc Include="editors\ComponentEditor\ports\PortSummaryDelegate.h" />

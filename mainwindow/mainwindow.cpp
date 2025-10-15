@@ -2684,8 +2684,8 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName)
     connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
         this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(destroyed(QObject*)), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(clearItemSelection()),
-        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+//     connect(designWidget, SIGNAL(clearItemSelection()),
+//         libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(clearItemSelection()), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(refreshed()), this, SLOT(onDesignDocumentRefreshed()), Qt::UniqueConnection);
@@ -2751,8 +2751,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
         this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(destroyed(QObject*)),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(clearItemSelection()),
-        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+//     connect(designWidget, SIGNAL(clearItemSelection()),
+//         libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(clearItemSelection()),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 

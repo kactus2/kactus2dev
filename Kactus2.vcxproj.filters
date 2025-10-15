@@ -3391,6 +3391,9 @@
     <ClCompile Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.cpp">
       <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortsImportSummaryEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6130,6 +6133,9 @@
     </QtMoc>
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h">
       <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\ports\PortsImportSummaryEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
