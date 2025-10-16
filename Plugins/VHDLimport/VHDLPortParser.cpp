@@ -63,6 +63,8 @@ VHDLPortParser::VHDLPortParser(QObject* parent): QObject(parent), highlighter_(0
 void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targetComponent,
     QSharedPointer<ComponentInstantiation> /*targetComponentInstantiation*/)
 {
+    //! The existing ports are changed to phantom in order to keep the component error-free.
+    //! These ports can then be deleted later.
     foreach (QSharedPointer<Port> existingPort, *targetComponent->getPorts())
     {
         existingPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);

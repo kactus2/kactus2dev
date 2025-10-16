@@ -75,12 +75,12 @@ VerilogPortParser::VerilogPortParser(): highlighter_(0), parser_(new NullParser)
 void VerilogPortParser::import(QString const& input, QSharedPointer<Component> targetComponent,
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-/*
+    //! The existing ports are changed to phantom in order to keep the component error-free.
+    //! These ports can then be deleted later.
     foreach (QSharedPointer<Port> existingPort, *targetComponent->getPorts())
     {
         existingPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);
     }
-*/
 
     foreach (QString portDeclaration, findPortDeclarations(input))
     {

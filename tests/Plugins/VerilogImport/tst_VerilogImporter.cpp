@@ -1055,7 +1055,7 @@ void tst_VerilogImporter::testExistingPortIsSetAsPhantom()
     runParser(input);
 
     QCOMPARE(importComponent_->getPorts()->count(), 2);
-//     QCOMPARE(importComponent_->getPort("oldPort")->getDirection(), DirectionTypes::DIRECTION_PHANTOM);
+    QCOMPARE(importComponent_->getPort("oldPort")->getDirection(), DirectionTypes::DIRECTION_PHANTOM);
 }
 
 //-----------------------------------------------------------------------------
