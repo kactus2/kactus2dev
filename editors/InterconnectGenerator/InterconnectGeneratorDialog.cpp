@@ -136,14 +136,9 @@ void InterconnectGeneratorDialog::addNewInstance()
 
     connect(newInterfacesEditor, SIGNAL(instanceRemoved()), this, SLOT(onInstanceRemoved()), Qt::UniqueConnection);
 
-    // Temporarily remove condenser item
-    auto condenserItem = instancesLayout_->takeAt(instancesLayout_->count() - 1);
-
-    instancesLayout_->addWidget(newInterfacesEditor);
+    // Add new instance to the front
+    instancesLayout_->insertWidget(0, newInterfacesEditor);
     instanceEditors_.insert(newInterfacesEditor);
-    
-    // Re-add condenser item
-    instancesLayout_->addItem(condenserItem);
 
     // Update available instances of new editor
     newInterfacesEditor->updateAvailableInstances(availableInstances_);
@@ -513,7 +508,10 @@ void InterconnectGeneratorDialog::clearInstanceSelections()
     }
     instanceEditors_.clear();
 
+    // Add condenser item and stretch back
     instancesLayout_->addItem(condenserItem);
+    instancesLayout_->addStretch(1);
+
     instancesLayout_->update();
 }
 
@@ -593,11 +591,11 @@ QGroupBox* InterconnectGeneratorDialog::createInstancesSection()
     QWidget* scrollWidget = new QWidget();
     scrollWidget->setLayout(instancesLayout_);
 
-    // Condenser item to fill space at bottom of instances list
-    // TODO make this better
+    // Condenser item and stretch to fill space at bottom of instances list
     QWidget* layoutCondenser = new QWidget();
     layoutCondenser->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     instancesLayout_->addWidget(layoutCondenser);
+    instancesLayout_->addStretch(1);
 
     QScrollArea* scrollArea = new QScrollArea();
     scrollArea->setWidget(scrollWidget);
