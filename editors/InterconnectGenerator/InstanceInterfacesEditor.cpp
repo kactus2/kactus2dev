@@ -110,6 +110,7 @@ void InstanceInterfacesEditor::createInterfaceItems(bool isChannel)
 
     // Add stretch to editor if needed (determined in interfaces editor)
     interfacesEditor_->addStretchIfNeeded();
+    interfacesEditor_->limitCheckboxTextWidths();
 }
 
 //-----------------------------------------------------------------------------

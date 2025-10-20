@@ -77,14 +77,6 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
         auto checkBox = new QCheckBox(item.interfaceName);
         checkBox->setToolTip(item.interfaceName);
         checkBox->adjustSize();
-
-        // Cut off interface name (elide the text) if too long and readjust checkbox
-        // TODO do this after every interface has been added
-        auto maxCheckboxSize = static_cast<int>(0.5 * parentWidget()->width());
-        auto possiblyElidedText = checkBox->fontMetrics().elidedText(item.interfaceName, Qt::TextElideMode::ElideRight, maxCheckboxSize);
-        checkBox->setText(possiblyElidedText);
-        checkBox->adjustSize();
-
         itemLayout_->addWidget(checkBox, rowCounter, 0);
 
         QLabel* startLabel = nullptr;
@@ -151,6 +143,27 @@ void InterfaceEnumEditor::addStretchIfNeeded()
     {
         optionalStretchLayout_->addStretch(1);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterfaceEnumEditor::limitCheckboxTextWidths()
+//-----------------------------------------------------------------------------
+void InterfaceEnumEditor::limitCheckboxTextWidths()
+{
+    // Limit checkbox text widths to fraction of parent widget width
+    auto maxCheckboxSize = static_cast<int>(0.2 * parentWidget()->width());
+
+    for (auto const& interfaceName : singleInterfaces_.keys())
+    {
+        auto interfaceItem = singleInterfaces_.value(interfaceName);
+
+        // Cut off interface name (elide the text) if too long and readjust checkbox
+        auto possiblyElidedText = interfaceItem.checkBox->fontMetrics().elidedText(interfaceName, Qt::ElideRight, maxCheckboxSize);
+        interfaceItem.checkBox->setText(possiblyElidedText);
+        interfaceItem.checkBox->adjustSize();
+    }
+
+    itemLayout_->invalidate();
 }
 
 //-----------------------------------------------------------------------------

@@ -92,6 +92,11 @@ public:
     void addStretchIfNeeded();
 
     /*!
+     *	Limit width of interface checkbox texts to fraction of parent widget width if needed.
+     */
+    void limitCheckboxTextWidths();
+
+    /*!
      *  Remove all interface entries from the editor.
      */
     void clearAll();
