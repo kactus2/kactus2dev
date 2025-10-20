@@ -97,7 +97,7 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
         // creating address spaces etc.).
         if (item.isTargetAdjacent && isChannel)
         {
-            needInterfacesStretch = false;
+            needInterfacesStretch_ = false;
 
             startLabel = new QLabel("Start:");
             startEdit = new ExpressionEditor(parameterFinder_);
@@ -147,7 +147,7 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
 //-----------------------------------------------------------------------------
 void InterfaceEnumEditor::addStretchIfNeeded()
 {
-    if (needInterfacesStretch)
+    if (needInterfacesStretch_)
     {
         optionalStretchLayout_->addStretch(1);
     }
@@ -166,7 +166,17 @@ void InterfaceEnumEditor::clearAll() {
     }
 
     singleInterfaces_.clear();
-    needInterfacesStretch = false;
+
+    // Also clear possible stretch item for interfaces
+    needInterfacesStretch_ = true;
+    if (auto stretchItem = dynamic_cast<QSpacerItem*>(optionalStretchLayout_->itemAt(optionalStretchLayout_->count() - 1)))
+    {
+        optionalStretchLayout_->removeItem(stretchItem);
+        stretchItem->widget()->deleteLater();
+        delete stretchItem;
+    }
+
+    itemLayout_->invalidate();
 }
 
 //-----------------------------------------------------------------------------

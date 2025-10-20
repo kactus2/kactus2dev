@@ -167,7 +167,7 @@ private:
     QHBoxLayout* optionalStretchLayout_;
 
     //! Keeps track of need to add stretch to interfaces based on added interfaces.
-    bool needInterfacesStretch = true;
+    bool needInterfacesStretch_ = true;
 
     //! Parameter finder for expression editors. Should use parameters of generated interconnect component.
     QSharedPointer<ParameterFinder> parameterFinder_;
