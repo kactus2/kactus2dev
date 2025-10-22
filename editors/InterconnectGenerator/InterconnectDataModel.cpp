@@ -162,7 +162,7 @@ void InterconnectDataModel::filterValidAbstractionReferences()
 {
     validAbsRefs_.clear();
 
-    auto absToBuses = buildAbstractionToBusMap(); // ? are these supposed to shadow ?
+    auto absToBuses = buildAbstractionToBusMap();
     auto modeEntityToBuses = buildModeEntityToBusMap();
 
     for (const auto& absRef : allAbsRefs_) {

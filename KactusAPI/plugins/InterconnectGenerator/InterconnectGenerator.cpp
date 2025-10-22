@@ -53,7 +53,7 @@ VLNV InterconnectGenerator::generate()
 // Function: InterconnectGenerator::generate()
 //-----------------------------------------------------------------------------
 void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
-    const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints)
+    const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints, bool generateRtl)
 {
     config_ = config;
 
@@ -94,8 +94,11 @@ void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, 
         messager_->showError("Error saving design to disk.");
     }
 
-    InterconnectRTLWriter writer(interconComponent_, library_, messager_, directory_, config_, clkPort_, rstPort_);
-    writer.generateRTL();
+    if (generateRtl)
+    {
+        InterconnectRTLWriter writer(interconComponent_, library_, messager_, directory_, config_, clkPort_, rstPort_);
+        writer.generateRTL();
+    }
 }
 
 //-----------------------------------------------------------------------------

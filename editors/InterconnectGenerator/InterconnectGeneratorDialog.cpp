@@ -95,6 +95,14 @@ QHash<QString, QList<QSharedPointer<EndpointData>>> InterconnectGeneratorDialog:
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::rtlGenerationSelected()
+//-----------------------------------------------------------------------------
+bool InterconnectGeneratorDialog::rtlGenerationSelected()
+{
+    return generateRTLCheckBox_->isChecked();
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::populateParameters()
 //-----------------------------------------------------------------------------
 void InterconnectGeneratorDialog::populateParameters()
@@ -633,6 +641,61 @@ QWidget* InterconnectGeneratorDialog::createInterconnectModeSelector()
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::createGenerateRtlCheckbox()
+//-----------------------------------------------------------------------------
+QWidget* InterconnectGeneratorDialog::createGenerateRtlCheckbox()
+{
+    QGroupBox* rtlGenerationGroup = new QGroupBox(tr("Generate RTL"), this);
+    auto layout = new QVBoxLayout();
+    
+    generateRTLCheckBox_ = new QCheckBox("Generate RTL code (for compatible abstraction definitions)");
+    generateRTLCheckBox_->setToolTip("RTL generation support is currently only provided for TUNI-authored abstractions for OBI and AXI4/AXI4LITE.");
+    layout->addWidget(generateRTLCheckBox_);
+    rtlGenerationGroup->setLayout(layout);
+
+    generateRTLCheckBox_->setEnabled(rtlCanBeGenerated());
+
+    return rtlGenerationGroup;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectGeneratorDialog::rtlCanBeGenerated()
+//-----------------------------------------------------------------------------
+bool InterconnectGeneratorDialog::rtlCanBeGenerated()
+{
+    // RTL can only be generated for compatible abs defs (TUNI versions of AXI4, AXI4LITE, OBI for now)
+    // Check if selected abs def is compatible.
+
+    auto selectedAbsDef = absDefCombo_->currentText();
+
+    // Find selected abs def vlnv
+    auto found_it = std::find_if(allAbsRefs_.cbegin(), allAbsRefs_.cend(),
+        [&selectedAbsDef](QSharedPointer<ConfigurableVLNVReference> vlnv)
+        {
+            return vlnv->getName().compare(selectedAbsDef) == 0;
+        });
+
+    auto foundVlnv = found_it->get();
+    if (found_it == allAbsRefs_.cend() || foundVlnv == nullptr)
+    {
+        return false;
+    }
+
+    for (auto const& validVlnvStr : rtlCompatibleAbsDefs_)
+    {
+        auto validAbsDefVlnv = VLNV(VLNV::ABSTRACTIONDEFINITION, validVlnvStr);
+
+        if (validAbsDefVlnv.getVendor().compare(foundVlnv->getVendor()) == 0
+            && validAbsDefVlnv.getLibrary().compare(foundVlnv->getLibrary()) == 0
+            && validAbsDefVlnv.getName().compare(foundVlnv->getName()) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::createButtonBox()
 //-----------------------------------------------------------------------------
 QDialogButtonBox* InterconnectGeneratorDialog::createButtonBox() 
@@ -663,6 +726,7 @@ void InterconnectGeneratorDialog::setUpLayout()
 
     auto rightSideLayout = new QVBoxLayout();
     rightSideLayout->addWidget(createInterconnectModeSelector());
+    rightSideLayout->addWidget(createGenerateRtlCheckbox());
     rightSideLayout->addWidget(createInstancesSection());
 
     leftRightLayout->addLayout(leftSideLayout);
@@ -796,6 +860,10 @@ void InterconnectGeneratorDialog::onAbsDefChanged(int currentIndex)
         updateAddInstanceButtonStatus();
     }
     previousAbsDefIndex_ = currentIndex;
+
+    // Check if new abs def selection allows for RTL generation
+    generateRTLCheckBox_->setEnabled(rtlCanBeGenerated());
+    generateRTLCheckBox_->setChecked(false);
 }
 
 //-----------------------------------------------------------------------------

@@ -304,12 +304,6 @@ private:
     //! Hash of bus interface to the abstraction names it supports.
     QHash<QSharedPointer<BusInterface>, QSet<QString>> interfaceAbsDefsHash_;
 
-    //! Reverse mapping: abstraction name -> set of buses that implement it.
-    //QHash<QString, QSet<QSharedPointer<BusInterface>>> absToBuses;
-
-    //! Multi-map to track all available bus interfaces by mode and entity type.
-    //QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>> modeEntityToBuses;
-
     //! Lookup of all valid connection rules for each source configuration.
     QHash<ConnectionKey, QList<ConnectionRule>> connectionRules_;
 

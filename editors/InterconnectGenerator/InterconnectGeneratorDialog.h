@@ -94,6 +94,13 @@ public:
      */
     QHash<QString, QList<QSharedPointer<EndpointData>>> getSelectedEndpoints() const;
 
+    /*!
+     *	Checks if RTL generation is enabled or not.
+     *  
+     *    @return True, if generator should generate RTL, otherwise false.
+     */
+    bool rtlGenerationSelected();
+
 protected:
 
     /*!
@@ -164,6 +171,21 @@ private:
      *  @return Pointer to the created QWidget.
      */
     QWidget* createInterconnectModeSelector();
+
+    /*!
+     *  Creates the checkbox which is used to enable RTL generation.
+     *
+     *  @return Pointer to the created QWidget.
+     */
+    QWidget* createGenerateRtlCheckbox();
+    
+    /*!
+     *	Checks the selected abstraction definition for RTL generation compatibility. Compatible VLNVs are
+     *  defined in rtlCompatibleAbsDefs_ 
+     *
+     *    @return True, if RTL can be generated, otherwise false.
+     */
+    bool rtlCanBeGenerated();
 
     /*!
      *  Set up the full layout of the interconnect generator dialog.
@@ -303,6 +325,9 @@ private:
 
     //! Checkbox to enable or disable reset signal configuration.
     QCheckBox* resetCheckBox_;
+    
+    //! Checkbox to select if RTL code should be generated if compatible abs def is selected.
+    QCheckBox* generateRTLCheckBox_;
 
     //! Radio button to choose channel-based interconnect generation.
     QRadioButton* channelButton_;
@@ -354,6 +379,13 @@ private:
 
     //! Set containing all editors for added instances
     QSet<InstanceInterfacesEditor*> instanceEditors_;
+
+    //! RTL generation -compatible VLNV bases (version doesn't matter)
+    const QStringList rtlCompatibleAbsDefs_ = {
+        "tuni.fi:interface:AXI4.absDef:version",
+        "tuni.fi:interface:AXI4LITE.absDef:version",
+        "tuni.fi:interface:OBI.absDef:version",
+    };
 };
 
 #endif // INTERCONNECTGENERATORDIALOG_H

@@ -79,10 +79,12 @@ public:
      *  @param [in] config         Interconnect generation configuration.
      *  @param [in] startingPoints Map of initiator instances and interfaces.
      *  @param [in] endPoints      Map of endpoint instances and interfaces.
+     *  @param [in] generateRtl    Flag indicating if RTL code should be generated.
      */
     void generate(ConfigStruct* config,
         const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
-        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endPoints);
+        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endPoints,
+        bool generateRtl);
 
     //! No copy constructor.
     InterconnectGenerator(const InterconnectGenerator& other) = delete;

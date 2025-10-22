@@ -2629,9 +2629,11 @@ void MainWindow::onInterconnectGenerate()
         QHash<QString, QList<QSharedPointer<BusInterface > > > startingPoints = interconnectDialog.getSelectedStartingPoints();
         QHash<QString, QList<QSharedPointer<EndpointData > > > endPoints = interconnectDialog.getSelectedEndpoints();
 
+        bool generateRtl = interconnectDialog.rtlGenerationSelected();
+
         LibraryInterface* lib = KactusAPI::getLibrary();
         InterconnectGenerator interconGen = InterconnectGenerator(lib, messageChannel_);
-        interconGen.generate(config, startingPoints, endPoints);
+        interconGen.generate(config, startingPoints, endPoints, generateRtl);
         doc->refresh();
     }
 }
