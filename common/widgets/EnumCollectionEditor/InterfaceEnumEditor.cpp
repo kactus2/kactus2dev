@@ -1,3 +1,14 @@
+//-----------------------------------------------------------------------------------------
+// File: InterfaceEnumEditor.cpp
+//-----------------------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Sampo Suokuisma
+// Date: 05.06.2025
+//
+// Description:
+// Class for enumerating and selecting interfaces to connect to an interconnect.
+//-----------------------------------------------------------------------------------------
+
 #include "InterfaceEnumEditor.h"
 
 #include <KactusAPI/include/ParameterFinder.h>
@@ -23,7 +34,6 @@ InterfaceEnumEditor::InterfaceEnumEditor(ExpressionSet expressionSet, ComponentP
 
     // Container widget for all interfaces
     QWidget* itemContainer = new QWidget();
-    //itemContainer->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     itemContainer->setLayout(itemLayout_);
 
     optionalStretchLayout_->addWidget(itemContainer);
@@ -84,7 +94,7 @@ void InterfaceEnumEditor::addItems(const QList<InterfaceInput>& items, General::
         ExpressionEditor* startEdit = nullptr;
         ExpressionEditor* rangeEdit = nullptr;
 
-        // Add remapping editors if item is target-adjacent.
+        // Add remapping editors if interface is target-adjacent.
         // Only show start and range editors if channel is selected (configuring start for bridge would require 
         // creating address spaces etc.).
         if (item.isTargetAdjacent && isChannel)

@@ -6,7 +6,7 @@
 // Date: 05.06.2025
 //
 // Description:
-// Class for enumerating and selecting interface points for starting or ending connections.
+// Class for enumerating and selecting interfaces to connect to an interconnect.
 //-----------------------------------------------------------------------------------------
 
 #ifndef INTERFACEENUMEDITOR_H

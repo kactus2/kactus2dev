@@ -2,11 +2,11 @@
 // File: InstanceInterfacesEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: 
+// Author: Anton Hagqvist
 // Date: 12.08.2025
 //
 // Description:
-// 
+// Editor for selecting instance and its interfaces to connect to interconnect
 //-----------------------------------------------------------------------------
 
 #include "InstanceInterfacesEditor.h"
@@ -16,12 +16,11 @@
 
 #include <QLabel>
 #include <QPushButton>
-#include <QtGlobal>
 
 //-----------------------------------------------------------------------------
 // Function: InstanceInterfacesEditor::InstanceInterfacesEditor()
 //-----------------------------------------------------------------------------
-InstanceInterfacesEditor::InstanceInterfacesEditor(ExpressionSet expressionSet, ComponentParameterModel* parameterCompleterModel, Document::Revision docRevision, QWidget* parent) :
+InstanceInterfacesEditor::InstanceInterfacesEditor(ExpressionSet const& expressionSet, ComponentParameterModel* parameterCompleterModel, Document::Revision docRevision, QWidget* parent) :
     QFrame(parent),
     instanceNameLabel_(new QLabel("Instance name:")),
     instanceSelectorCombo_(new InstanceComboBox()),
@@ -51,7 +50,7 @@ void InstanceInterfacesEditor::updateAvailableInstances(QSet<QString> const& ava
     instanceSelectorCombo_->clear();
     instanceSelectorCombo_->addItems(QStringList(availableInterfaces.cbegin(), availableInterfaces.cend()));
     
-    // If there was a previous selection, add and select it again. Otherwise just pick the first option
+    // If there was a previous (non-empty) selection, add and select it again. Otherwise just pick the first option
     if (currentSelection.isEmpty() == false)
     {
         instanceSelectorCombo_->addItem(currentSelection);
@@ -110,6 +109,8 @@ void InstanceInterfacesEditor::createInterfaceItems(bool isChannel)
 
     // Add stretch to editor if needed (determined in interfaces editor)
     interfacesEditor_->addStretchIfNeeded();
+
+    // Recalculate the checkbox widths based on widths of added interface names, shortens names if needed
     interfacesEditor_->limitCheckboxTextWidths();
 }
 

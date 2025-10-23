@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/NameGenerationPolicy.h \
+HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
+    ./common/NameGenerationPolicy.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/IEditProvider.h \
@@ -30,9 +31,6 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/assistedTextEdit/TextContentAssistWidget.h \
     ./common/widgets/assistedTextEdit/ToolTipHintWidget.h \
     ./common/widgets/assistedTextEdit/AssistedTextEdit.h \
-    ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
-    ./common/widgets/EnumCollectionEditor/EnumerationEditor.h \
-    ./common/widgets/EnumCollectionEditor/InterfaceEnumEditor.h \
     ./common/widgets/vlnvEditor/VLNVContentMatcher.h \
     ./common/widgets/vlnvEditor/VLNVDataTree.h \
     ./common/widgets/vlnvEditor/vlnveditor.h \
@@ -42,7 +40,6 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/ParameterGroupBox/parametergroupbox.h \
     ./common/widgets/nameGroupEditor/namegroupeditor.h \
     ./common/widgets/summaryLabel/summarylabel.h \
-    ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.h \
     ./common/widgets/interfaceSelector/interfaceselector.h \
     ./common/widgets/LineEditEx/LineEditEx.h \
@@ -55,6 +52,9 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
     ./common/widgets/viewSelector/viewselector.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
+    ./common/widgets/EnumCollectionEditor/EnumerationEditor.h \
+    ./common/widgets/EnumCollectionEditor/InterfaceEnumEditor.h \
+    ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
     ./common/widgets/FileSelector/fileselector.h \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
@@ -79,6 +79,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.h \
     ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
+    ./common/layouts/VNoCollisionNoMovementLayout.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
     ./common/layouts/IHGraphicsLayout.h \
@@ -212,7 +213,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./Plugins/common/SingleCpuRoutesContainer.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
-    # ./library/LibraryInterface.h \
+    ./library/LibraryInterface.h \
     ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryUtils.h \
     ./library/ObjectSelectionListItem.h \
@@ -665,6 +666,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/CatalogEditor/CatalogFileDelegate.h \
     ./editors/CatalogEditor/CatalogFileFilter.h \
     ./editors/CatalogEditor/CatalogFileView.h \
+    ./editors/BusDefinitionEditor/LogicalPortColumns.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
     ./editors/BusDefinitionEditor/BusDefinitionParameterReferenceTree.h \
@@ -802,9 +804,6 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/HWDesign/undoCommands/HWComponentAddCommand.h \
     ./editors/HWDesign/undoCommands/InterfaceDeleteCommand.h \
     ./editors/HWDesign/undoCommands/ReplaceComponentCommand.h \
-    ./editors/InterconnectGenerator/InterconnectAddressHelper.h \
-    ./editors/InterconnectGenerator/InterconnectDataModel.h \
-    ./editors/InterconnectGenerator/InterconnectGeneratorDialog.h \
     ./editors/MemoryDesigner/AddressBlockGraphicsItem.h \
     ./editors/MemoryDesigner/AddressSegmentGraphicsItem.h \
     ./editors/MemoryDesigner/AddressSpaceGraphicsItem.h \
@@ -896,10 +895,10 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/AbstractionDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/AbstractionDefinitionEditor/QualifierEditor.h \
-    ./KactusAPI/include/ConfigJsonParser.h \
-    ./KactusAPI/include/InterconnectGenerator.h \
-    ./KactusAPI/include/InterconnectRTLWriter.h \
-    ./KactusAPI/include/LibraryInterface.h \
+    ./editors/InterconnectGenerator/InterconnectAddressHelper.h \
+    ./editors/InterconnectGenerator/InterconnectDataModel.h \
+    ./editors/InterconnectGenerator/InterconnectGeneratorDialog.h \
+    ./editors/interconnectgenerator/InstanceInterfacesEditor.h \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.h \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.h \
     ./kactusGenerators/DocumentGenerator/MarkdownWriter.h \
@@ -909,8 +908,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h \
-    ./common/layouts/VNoCollisionNoMovementLayout.h
+    ./PythonAPI/extensions/IOCatcher.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -949,7 +947,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/ParameterGroupBox/parametergroupbox.cpp \
     ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
     ./common/widgets/summaryLabel/summarylabel.cpp \
-    ./common/widgets/instanceWidgets/InstanceWidgets.cpp \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/widgets/LineEditEx/LineEditEx.cpp \
@@ -988,6 +985,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.cpp \
     ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.cpp \
     ./common/widgets/GroupBoxWithAlertSign/StyleOptionGroupBoxWithAlertSign.cpp \
+    ./common/widgets/instanceWidgets/InstanceWidgets.cpp \
     ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
@@ -1613,9 +1611,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/HWDesign/undoCommands/PortPasteCommand.cpp \
     ./editors/HWDesign/undoCommands/ReplaceComponentCommand.cpp \
     ./editors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp \
-    ./editors/InterconnectGenerator/InterconnectAddressHelper.cpp \
-    ./editors/InterconnectGenerator/InterconnectDataModel.cpp \
-    ./editors/InterconnectGenerator/InterconnectGeneratorDialog.cpp \
     ./editors/MemoryDesigner/AddressBlockGraphicsItem.cpp \
     ./editors/MemoryDesigner/AddressSegmentGraphicsItem.cpp \
     ./editors/MemoryDesigner/AddressSpaceGraphicsItem.cpp \
@@ -1702,9 +1697,10 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsDelegate.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsSortFilter.cpp \
     ./editors/AbstractionDefinitionEditor/QualifierEditor.cpp \
-    ./KactusAPI/plugins/InterconnectGenerator/ConfigJsonParser.cpp \
-    ./KactusAPI/plugins/InterconnectGenerator/InterconnectGenerator.cpp \
-    ./KactusAPI/plugins/InterconnectGenerator/InterconnectRTLWriter.cpp \
+    ./editors/InterconnectGenerator/InstanceInterfacesEditor.cpp \
+    ./editors/InterconnectGenerator/InterconnectAddressHelper.cpp \
+    ./editors/InterconnectGenerator/InterconnectDataModel.cpp \
+    ./editors/InterconnectGenerator/InterconnectGeneratorDialog.cpp \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.cpp \
