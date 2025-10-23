@@ -157,6 +157,7 @@
         <file>common/graphics/fail.png</file>
         <file>common/graphics/pass.png</file>
         <file>common/graphics/filterMemoryOverlap.png</file>
+        <file>common/graphics/interconnectGenerator.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

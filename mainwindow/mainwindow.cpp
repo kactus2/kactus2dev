@@ -566,12 +566,12 @@ void MainWindow::setupActions()
     connect(&visibilityMenu_, SIGNAL(triggered(QAction*)), this, SLOT(onVisibilityControlToggled(QAction*)));
 
     // Initialize the action for opening memory designer.
-    openMemoryDesignerAction_ = new QAction(QIcon(":icons/common/graphics/memoryDesigner.png"), tr("Open Memory Designer"), this);
+    openMemoryDesignerAction_ = new QAction(QIcon(":icons/common/graphics/memoryDesigner.png"), tr("Memory Designer"), this);
     openMemoryDesignerAction_->setVisible(false);
     connect(openMemoryDesignerAction_, SIGNAL(triggered()), this, SLOT(openMemoryDesign()), Qt::UniqueConnection);
 
     // Initialize the action for opening interconnect generator.
-    openInterconnectGenerator_ = new QAction(tr("Open Interconnect Generator"), this);
+    openInterconnectGenerator_ = new QAction(QIcon(":icons/common/graphics/interconnectGenerator.png"), tr("Interconnect Generator"), this);
     openInterconnectGenerator_->setVisible(false);
     connect(openInterconnectGenerator_, SIGNAL(triggered()), this, SLOT(onInterconnectGenerate()), Qt::UniqueConnection);
 
