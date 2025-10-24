@@ -60,6 +60,9 @@ MetaComponent::MetaComponent(MessageMediator* messages,
         // If no module name is set, take the name from the VLNV of the component.
         moduleName_ = component_->getVlnv().getName();
     }
+
+    // Must parse the parameters before can use them!
+    parseParameters();
 }
 
 //-----------------------------------------------------------------------------
