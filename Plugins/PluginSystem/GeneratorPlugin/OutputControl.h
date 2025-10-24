@@ -25,6 +25,7 @@ struct GenerationOutput
 {
     //! The name for the file created from the output.
     QString fileName_;
+
     //! The VLNV of the component corresponding the output.
     QString vlnv_;
     //! The content of the output, ie. what will be written to the file.

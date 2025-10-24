@@ -23,6 +23,7 @@
 
 #include <KactusAPI/include/ComponentParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/FileHandler.h>
 
 #include <QCoreApplication>
 #include <QFileDialog>
@@ -256,6 +257,12 @@ QString VHDLGeneratorPlugin::findEntityName(QSharedPointer<Component> component,
 void VHDLGeneratorPlugin::generate(QSharedPointer<Component> component, QString const& filePath, 
     QSharedPointer<ViewSelection> viewSettings)
 {
+    auto generatorFilePath = filePath;
+    if (filePath.endsWith(".vhd") == false && filePath.endsWith(".vhdl") == false)
+    {
+        generatorFilePath = FileHandler::getModifiedPathWithExtension(filePath, QString("vhd"));
+    }
+
     QSharedPointer<ParameterFinder> finder(new ComponentParameterFinder(component));
     QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(finder));
 
@@ -273,12 +280,12 @@ void VHDLGeneratorPlugin::generate(QSharedPointer<Component> component, QString 
     }
 
     // Generate the VHDL code.
-    generator.generate(filePath);
+	generator.generate(generatorFilePath);
 
     if (viewSettings->getSaveToFileset())
     {
         QString basePath = utility_->getLibraryInterface()->getPath(component->getVlnv());
-        QString relativePath = General::getRelativePath(basePath, filePath);
+		QString relativePath = General::getRelativePath(basePath, generatorFilePath);
 
         generator.addRTLView(viewSettings->getFileSetName(), relativePath);
         utility_->getLibraryInterface()->writeModelToFile(component);

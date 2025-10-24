@@ -60,9 +60,6 @@ MetaComponent::MetaComponent(MessageMediator* messages,
         // If no module name is set, take the name from the VLNV of the component.
         moduleName_ = component_->getVlnv().getName();
     }
-
-    // Must parse the parameters before can use them!
-    parseParameters();
 }
 
 //-----------------------------------------------------------------------------
@@ -81,6 +78,10 @@ void MetaComponent::formatComponent()
     //! The formatter for expressions.
     ExpressionFormatter formatter(parameterFinder);
 
+    parameters_->clear();
+    moduleParameters_->clear();
+    metaParameters_->clear();
+    parseParameters();
     formatParameters(formatter);
     formatPorts(formatter);
     parseRemapStates(formatter);
@@ -146,7 +147,7 @@ void MetaComponent::parseParameters()
 //-----------------------------------------------------------------------------
 void MetaComponent::formatParameters(ExpressionFormatter const& formatter)
 {
-    sortParameters(parameters_);
+	sortParameters(parameters_);
     for (QSharedPointer<Parameter> parameter : *parameters_)
     {
         parameter->setValue(formatter.formatReferringExpression(parameter->getValue()));

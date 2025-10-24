@@ -546,6 +546,15 @@ QSharedPointer<GenerationOutput> GenerationControl::setupRenamedSelection(int co
     if (isDesignGeneration_)
     {
         selection->metaDesign_->getTopInstance()->setModuleName(selectionFileName);
+
+        if (auto correctedFileName = selection->fileName_; correctedFileName.right(2) != ".v")
+        {
+            correctedFileName.append(".v");
+            selection->fileName_ = correctedFileName;
+        }
+
+        selection->write(outputControl_->getOutputPath());
+
         generationOutputs->replace(fileIndex, selection);
     }
     else

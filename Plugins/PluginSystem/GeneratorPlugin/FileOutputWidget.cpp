@@ -215,6 +215,12 @@ void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
 
     // Inform the change to the model.
     QString newName = item->text();
+    if (newName.isEmpty())
+    {
+        item->setText(model_->getOutputs()->at(item->row())->fileName_);
+        return;
+    }
+
     QSharedPointer<GenerationOutput> affectedFile = model_->changeFileName(item->row(), newName);
 
     if (affectedFile)
@@ -222,10 +228,7 @@ void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
         //! This is a change done for verilog generator.
 
 		emit fileNameChanged(item->row());
-
-        model_->writeFileToCurrentPath(item->row());
-
-        emit selectedFileChanged(affectedFile);
+		emit selectedFileChanged(model_->getOutputs()->at(item->row()));
 
         // A name of a file changed -> emit signal and update existence status.
         checkExistence();
@@ -269,8 +272,10 @@ void FileOutputWidget::checkExistence()
             continue;
         }
 
+		auto selection = model_->getOutputs()->at(row);
+
         // Select correct check state: Does it exist or not.
-        QFile fileCandidate(model_->getOutputPath() + "/" + pathItem->text());
+		QFile fileCandidate(model_->getOutputPath() + "/" + selection->fileName_);
 
         if (fileCandidate.exists())
         {
