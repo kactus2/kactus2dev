@@ -40,7 +40,7 @@ public:
      *    @param [in] docRevision                   IP-XACT standard revision in use
      *    @param [in] parent                        The parent widget
      */
-    explicit InstanceInterfacesEditor(ExpressionSet const& expressionSet, ComponentParameterModel* parameterCompleterModel, Document::Revision docRevision, QWidget* parent = nullptr);
+    InstanceInterfacesEditor(ExpressionSet const& expressionSet, ComponentParameterModel* parameterCompleterModel, Document::Revision docRevision, QWidget* parent = nullptr);
 
     virtual ~InstanceInterfacesEditor() = default;
 
