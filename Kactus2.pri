@@ -898,7 +898,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./editors/InterconnectGenerator/InterconnectAddressHelper.h \
     ./editors/InterconnectGenerator/InterconnectDataModel.h \
     ./editors/InterconnectGenerator/InterconnectGeneratorDialog.h \
-    ./editors/interconnectgenerator/InstanceInterfacesEditor.h \
+    ./editors/InterconnectGenerator/InstanceInterfacesEditor.h \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.h \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.h \
     ./kactusGenerators/DocumentGenerator/MarkdownWriter.h \
