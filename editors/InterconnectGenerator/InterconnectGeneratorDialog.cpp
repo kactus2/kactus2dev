@@ -669,27 +669,29 @@ bool InterconnectGeneratorDialog::rtlCanBeGenerated()
     auto selectedAbsDef = absDefCombo_->currentText();
 
     // Find selected abs def vlnv
-    auto found_it = std::find_if(allAbsRefs_.cbegin(), allAbsRefs_.cend(),
+    auto foundIt = std::find_if(allAbsRefs_.cbegin(), allAbsRefs_.cend(),
         [&selectedAbsDef](QSharedPointer<ConfigurableVLNVReference> vlnv)
         {
             return vlnv->getName().compare(selectedAbsDef) == 0;
         });
 
-    auto foundVlnv = found_it->get();
-    if (found_it == allAbsRefs_.cend() || foundVlnv == nullptr)
+    if (foundIt == allAbsRefs_.cend())
     {
         return false;
     }
 
-    for (auto const& validVlnvStr : rtlCompatibleAbsDefs_)
+    if (auto foundVlnv = foundIt->get())
     {
-        auto validAbsDefVlnv = VLNV(VLNV::ABSTRACTIONDEFINITION, validVlnvStr);
-
-        if (validAbsDefVlnv.getVendor().compare(foundVlnv->getVendor()) == 0
-            && validAbsDefVlnv.getLibrary().compare(foundVlnv->getLibrary()) == 0
-            && validAbsDefVlnv.getName().compare(foundVlnv->getName()) == 0)
+        for (auto const& validVlnvStr : rtlCompatibleAbsDefs_)
         {
-            return true;
+            auto validAbsDefVlnv = VLNV(VLNV::ABSTRACTIONDEFINITION, validVlnvStr);
+
+            if (validAbsDefVlnv.getVendor().compare(foundVlnv->getVendor()) == 0
+                && validAbsDefVlnv.getLibrary().compare(foundVlnv->getLibrary()) == 0
+                && validAbsDefVlnv.getName().compare(foundVlnv->getName()) == 0)
+            {
+                return true;
+            }
         }
     }
     return false;
