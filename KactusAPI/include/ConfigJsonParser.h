@@ -3,72 +3,92 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
+#include <kactusAPI/KactusAPIGlobal.h>
+
 #include <QtCore>
 #include <QDir>
 
-struct AddressPair {
-
-    QString Start;
-    QString End;
-
-};
-
-struct InitStruct {
-
-    int Index;
-    QString Name;
-    int DataWidth;
-
-};
-
-struct TargetStruct {
-
-    int Index;
-    QString Name;
-    int DataWidth;
-    QList<AddressPair> AddressRegions;
-
-};
-
-// Currently used for CLI version
-struct ConfigStruct {
-
-    QString InterconVLNV;
-    QString DesignVLNV;
-    QString BusVLNV;
-    QString ClkVLNV;
-    QString RstVLNV;
-    QString BusType;
-    int AddressWidth;
-    int IDWidth;
-    int UserWidth;
-    bool isChannel;
-    QList<QSharedPointer<Parameter>> interconnectParams;
-    QList<InitStruct> InitList;
-    QList<TargetStruct> TargetList;
-
-};
-
-class ConfigJsonParser
+namespace InterconnectGeneration
 {
-public:
+    struct AddressPair
+    {
 
-    //! The constructor
-    ConfigJsonParser();
+        QString start;
+        QString end;
 
-    //! The destructor
-    ~ConfigJsonParser() = default;
+    };
 
-    ConfigStruct* readFile();
+    struct InitStruct
+    {
 
-    //! No copying. No assignment.
-    ConfigJsonParser(const ConfigJsonParser& other) = delete;
-    ConfigJsonParser& operator=(const ConfigJsonParser& other) = delete;
+        int index;
+        QString name;
+        int dataWidth;
 
-private:
+    };
 
-    ConfigStruct config_;
-    QString path_ = QDir::currentPath() + "/KactusAPI/include/config.json";
-};
+    struct TargetStruct
+    {
+
+        int index;
+        QString name;
+        int dataWidth;
+        QList<AddressPair> addressRegions;
+
+    };
+
+    enum class BusType {
+        AXI4,
+        AXI4LITE,
+        OBI,
+        UNKNOWN
+    };
+
+    // Currently used for CLI version
+    struct ConfigStruct
+    {
+
+        QString interconVLNV;
+        QString designVLNV;
+        QString busVLNV;
+        QString clkVLNV;
+        QString rstVLNV;
+        BusType busType;
+        int addressWidth;
+        int idWidth;
+        int userWidth;
+        bool isChannel;
+        QList<QSharedPointer<Parameter>> interconnectParams;
+        QList<InitStruct> initList;
+        QList<TargetStruct> targetList;
+
+    };
+
+    class KACTUS2_API ConfigJsonParser
+    {
+    public:
+
+        //! The constructor
+        ConfigJsonParser();
+
+        //! The destructor
+        ~ConfigJsonParser() = default;
+
+        ConfigStruct* readFile();
+
+        //! No copying. No assignment.
+        ConfigJsonParser(const ConfigJsonParser& other) = delete;
+        ConfigJsonParser& operator=(const ConfigJsonParser& other) = delete;
+        
+        static BusType strToBusType(QString const& busTypeStr);
+        static QString busTypeToStr(BusType busType);
+
+    private:
+
+        ConfigStruct config_;
+        QString path_ = QDir::currentPath() + "/KactusAPI/include/config.json";
+    };
+
+}
 
 #endif // CONFIGJSONPARSER_H

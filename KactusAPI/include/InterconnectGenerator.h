@@ -28,382 +28,388 @@
 #include <QHash>
 #include <QString>
 
-/*!
- *  Struct representing address-bound bus interface used as an endpoint.
- */
-struct EndpointData {
-    QSharedPointer<BusInterface> endpointBus;  //!< Endpoint bus interface.
-    QString start;                             //!< Start address.
-    QString range;                             //!< Address range.
-};
-
-/*!
- *  Struct representing bus interface information used for generation.
- */
-struct BusInterfaceInfo {
-    std::string name;  //!< Name of the bus interface.
-    std::string mode;  //!< Mode of the interface.
-    QString start;     //!< Optional start address.
-    QString range;     //!< Optional address range.
-};
-
-/*!
- *  Generator class responsible for creating an interconnect component and related IP-XACT data.
- */
-class KACTUS2_API InterconnectGenerator
+namespace InterconnectGeneration
 {
-public:
-    /*!
-     *  Constructor.
-     *
-     *  @param [in] library   Library interface to load/save IP-XACT models.
-     *  @param [in] messager  Message mediator for reporting status/errors.
-     */
-    InterconnectGenerator(LibraryInterface* library, MessageMediator* messager);
-
-    //! Default destructor.
-    ~InterconnectGenerator() = default;
 
     /*!
-     *  Generate an interconnect component based on configuration loaded from JSON.
-     *  Starting point to generation from CLI
-     *
-     *  @return The VLNV of the generated component.
+     *  Struct representing address-bound bus interface used as an endpoint.
      */
-    VLNV generate();
+    struct EndpointData
+    {
+        QSharedPointer<BusInterface> endpointBus;  //!< Endpoint bus interface.
+        QString start;                             //!< Start address.
+        QString range;                             //!< Address range.
+    };
 
     /*!
-     *  Generate an interconnect component from explicit configuration and connection data.
-     *  Starting point to genration from UI configuration dialog
-     *
-     *  @param [in] config         Interconnect generation configuration.
-     *  @param [in] startingPoints Map of initiator instances and interfaces.
-     *  @param [in] endPoints      Map of endpoint instances and interfaces.
-     *  @param [in] generateRtl    Flag indicating if RTL code should be generated.
+     *  Struct representing bus interface information used for generation.
      */
-    void generate(ConfigStruct* config,
-        const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
-        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endPoints,
-        bool generateRtl);
-
-    //! No copy constructor.
-    InterconnectGenerator(const InterconnectGenerator& other) = delete;
-
-    //! No assignment.
-    InterconnectGenerator& operator=(const InterconnectGenerator& other) = delete;
-
-private:
-    /*!
-     *  Opens the design referenced by the provided VLNV and initializes the internal model.
-     *
-     *  @param [in] designVLNV  VLNV of the top-level design component.
-     */
-    void openDesign(VLNV designVLNV);
+    struct BusInterfaceInfo
+    {
+        std::string name;  //!< Name of the bus interface.
+        std::string mode;  //!< Mode of the interface.
+        QString start;     //!< Optional start address.
+        QString range;     //!< Optional address range.
+    };
 
     /*!
-     *  Creates a new interconnect component based on the given VLNV.
-     *  Replaces any existing component with the same VLNV.
-     *
-     *  @param [in] VLNV  VLNV of the component to create.
+     *  Generator class responsible for creating an interconnect component and related IP-XACT data.
      */
-    void createInterconComponent(VLNV VLNV);
+    class KACTUS2_API Generator
+    {
+    public:
+        /*!
+         *  Constructor.
+         *
+         *  @param [in] library   Library interface to load/save IP-XACT models.
+         *  @param [in] messager  Message mediator for reporting status/errors.
+         */
+        Generator(LibraryInterface* library, MessageMediator* messager);
 
-    /*!
-     *  Searches the current design for unconnected interfaces matching the bus definition,
-     *  and connects them to the generated interconnect.
-     */
-    void findUnconnectedInterfaces();
+        //! Default destructor.
+        ~Generator() = default;
 
-    /*!
-     *  Processes starting points and endpoints and creates all related interfaces and connections.
-     *
-     *  @param [in] startingPoints  Map of initiators.
-     *  @param [in] endpoints       Map of endpoints.
-     */
-    void processStartingPointsAndEndpoints(
-        const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
-        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints);
+        /*!
+         *  Generate an interconnect component based on configuration loaded from JSON.
+         *  Starting point to generation from CLI
+         *
+         *  @return The VLNV of the generated component.
+         */
+        VLNV generate();
 
-    /*!
-     *  Processes all endpoint interfaces and returns their metadata.
-     *
-     *  @param [in] endpoints  Endpoint interface mapping.
-     *  @param [in,out] index  Running index for naming.
-     * 
-     *  @return List of created bus interface metadata.
-     */
-    std::vector<BusInterfaceInfo> processEndpointSide(
-        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints, int& index);
+        /*!
+         *  Generate an interconnect component from explicit configuration and connection data.
+         *  Starting point to genration from UI configuration dialog
+         *
+         *  @param [in] config         Interconnect generation configuration.
+         *  @param [in] startingPoints Map of initiator instances and interfaces.
+         *  @param [in] endPoints      Map of endpoint instances and interfaces.
+         *  @param [in] generateRtl    Flag indicating if RTL code should be generated.
+         */
+        void generate(ConfigStruct* config,
+            const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
+            const QHash<QString, QList<QSharedPointer<EndpointData>>>& endPoints,
+            bool generateRtl);
 
-    /*!
-     *  Processes all initiator interfaces and returns their metadata.
-     *
-     *  @param [in] startingPoints  Initiator interface mapping.
-     *  @param [in,out] index       Running index for naming.
-     * 
-     *  @return List of created bus interface metadata.
-     */
-    std::vector<BusInterfaceInfo> processStartingSide(
-        const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints, int& index);
+        //! No copy constructor.
+        Generator(const Generator& other) = delete;
 
-    /*!
-     *  Creates a new interface for a bus and returns its metadata.
-     *
-     *  @param [in] instanceName  Instance name the bus belongs to.
-     *  @param [in] bus           Bus interface to replicate.
-     *  @param [in] isTop         True if bus belongs to top-level component.
-     *  @param [in] isEndpoint    True if the interface is a target.
-     *  @param [in,out] index     Index used for interface naming.
-     * 
-     *  @return Metadata of created interface.
-     */
-    BusInterfaceInfo createInterfaceForBus(
-        const QString& instanceName, const QSharedPointer<BusInterface>& bus,
-        bool isTop, bool isEndpoint, int& index);
+        //! No assignment.
+        Generator& operator=(const Generator& other) = delete;
 
-    /*!
-     *  Creates a named bus interface with mode and type, used for auto-generated naming.
-     *
-     *  @param [in] busName     Logical name for the interface.
-     *  @param [in] modeString  Interface mode string.
-     *  @param [in] index       Index to insert at.
-     */
-    void createBusInterface(std::string busName, std::string modeString, int index);
+    private:
+        /*!
+         *  Opens the design referenced by the provided VLNV and initializes the internal model.
+         *
+         *  @param [in] designVLNV  VLNV of the top-level design component.
+         */
+        void openDesign(VLNV designVLNV);
 
-    /*!
-     *  Creates a fully defined bus interface and returns its name.
-     *
-     *  @param [in] busVLNV     Bus type definition.
-     *  @param [in] busName     Base name for the interface.
-     *  @param [in] modeString  Interface mode string.
-     *  @param [in] index       Insertion index.
-     * 
-     *  @return Name of the created interface.
-     */
-    std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
+        /*!
+         *  Creates a new interconnect component based on the given VLNV.
+         *  Replaces any existing component with the same VLNV.
+         *
+         *  @param [in] VLNV  VLNV of the component to create.
+         */
+        void createInterconComponent(VLNV VLNV);
 
-    /*!
-     *  Creates a clock or reset interface and maps ports appropriately.
-     *
-     *  @param [in] busName  Must be either "clk" or "rst".
-     *  @param [in] index    Index for interface insertion.
-     */
-    void createRstorClkInterface(std::string busName, int index);
+        /*!
+         *  Searches the current design for unconnected interfaces matching the bus definition,
+         *  and connects them to the generated interconnect.
+         */
+        void findUnconnectedInterfaces();
 
-    /*!
-     *  Creates port maps for a given bus and interface mode.
-     *
-     *  @param [in] modeString  Interface mode (e.g. "target").
-     *  @param [in] busInf      Source bus interface.
-     */
-    void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
+        /*!
+         *  Processes starting points and endpoints and creates all related interfaces and connections.
+         *
+         *  @param [in] startingPoints  Map of initiators.
+         *  @param [in] endpoints       Map of endpoints.
+         */
+        void processStartingPointsAndEndpoints(
+            const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
+            const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints);
 
-    /*!
-     *  Clones and adds physical ports from a component to the interconnect.
-     *
-     *  @param [in] comp     Source component.
-     *  @param [in] busName  Bus interface name.
-     *  @param [in] isTop    True if the port belongs to top-level component.
-     */
-    void createPhysPorts(QSharedPointer<Component> comp, QString busName, bool isTop = false);
+        /*!
+         *  Processes all endpoint interfaces and returns their metadata.
+         *
+         *  @param [in] endpoints  Endpoint interface mapping.
+         *  @param [in,out] index  Running index for naming.
+         *
+         *  @return List of created bus interface metadata.
+         */
+        std::vector<BusInterfaceInfo> processEndpointSide(
+            const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints, int& index);
 
-    /*!
-     *  Applies address space, subinterfaces, and bridges to the bus interfaces.
-     *
-     *  @param [in] createdBuses  List of bus interface metadata.
-     */
-    void finalizeBusInterfaceCustomization(const std::vector<BusInterfaceInfo>& createdBuses);
+        /*!
+         *  Processes all initiator interfaces and returns their metadata.
+         *
+         *  @param [in] startingPoints  Initiator interface mapping.
+         *  @param [in,out] index       Running index for naming.
+         *
+         *  @return List of created bus interface metadata.
+         */
+        std::vector<BusInterfaceInfo> processStartingSide(
+            const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints, int& index);
 
-    /*!
-     *  Creates an address space with provided name, range, and width.
-     *
-     *  @param [in] spaceName  Name of the address space.
-     *  @param [in] range      Address range in IP-XACT format.
-     *  @param [in] width      Address width (default = 32).
-     */
-    void createAddressSpace(std::string spaceName, QString range, QString width = "32");
+        /*!
+         *  Creates a new interface for a bus and returns its metadata.
+         *
+         *  @param [in] instanceName  Instance name the bus belongs to.
+         *  @param [in] bus           Bus interface to replicate.
+         *  @param [in] isTop         True if bus belongs to top-level component.
+         *  @param [in] isEndpoint    True if the interface is a target.
+         *  @param [in,out] index     Index used for interface naming.
+         *
+         *  @return Metadata of created interface.
+         */
+        BusInterfaceInfo createInterfaceForBus(
+            const QString& instanceName, const QSharedPointer<BusInterface>& bus,
+            bool isTop, bool isEndpoint, int& index);
 
-    /*!
-     *  Analyzes endpoint ranges and creates a shared global address space.
-     *
-     *  @param [in] endpoints  Endpoint mapping including start/range data.
-     */
-    void createGlobalAddressSpaceFromEndpoints(
-        const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints);
+        /*!
+         *  Creates a named bus interface with mode and type, used for auto-generated naming.
+         *
+         *  @param [in] busName     Logical name for the interface.
+         *  @param [in] modeString  Interface mode string.
+         *  @param [in] index       Index to insert at.
+         */
+        void createBusInterface(std::string busName, std::string modeString, int index);
 
-    /*!
-     *  Creates a channel and assigns all appropriate interfaces to it.
-     */
-    void createChannel();
+        /*!
+         *  Creates a fully defined bus interface and returns its name.
+         *
+         *  @param [in] busVLNV     Bus type definition.
+         *  @param [in] busName     Base name for the interface.
+         *  @param [in] modeString  Interface mode string.
+         *  @param [in] index       Insertion index.
+         *
+         *  @return Name of the created interface.
+         */
+        std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
 
-    /*!
-     *  Resolves the VLNV of a component instance from the design.
-     *
-     *  @param [in] instanceName  Instance name.
-     *  @param [in] isTop         Whether the instance is the top-level component.
-     * 
-     *  @return VLNV reference if found.
-     */
-    QSharedPointer<ConfigurableVLNVReference> resolveComponentVLNV(
-        const QString& instanceName, bool isTop) const;
+        /*!
+         *  Creates a clock or reset interface and maps ports appropriately.
+         *
+         *  @param [in] busName  Must be either "clk" or "rst".
+         *  @param [in] index    Index for interface insertion.
+         */
+        void createRstorClkInterface(std::string busName, int index);
 
-    /*!
-     *  Determines if a bus is a target based on its interface mode.
-     *
-     *  @param [in] bus  Bus interface to evaluate.
-     * 
-     *  @return True if it's a target interface.
-     */
-    bool isTargetInterface(const QSharedPointer<BusInterface>& bus) const;
+        /*!
+         *  Creates port maps for a given bus and interface mode.
+         *
+         *  @param [in] modeString  Interface mode (e.g. "target").
+         *  @param [in] busInf      Source bus interface.
+         */
+        void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
 
-    /*!
-     *  Computes correct interface mode string based on revision and context.
-     *
-     *  @param [in] bus         Bus to evaluate.
-     *  @param [in] isTarget    True if it's a target.
-     *  @param [in] isChannel   True if interconnect is channel-based.
-     *  @param [in] isTop       True if it's a top-level interface.
-     * 
-     *  @return Corresponding interface mode string.
-     */
-    std::string getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool isChannel, bool isTop);
+        /*!
+         *  Clones and adds physical ports from a component to the interconnect.
+         *
+         *  @param [in] comp     Source component.
+         *  @param [in] busName  Bus interface name.
+         *  @param [in] isTop    True if the port belongs to top-level component.
+         */
+        void createPhysPorts(QSharedPointer<Component> comp, QString busName, bool isTop = false);
 
-    /*!
-     *  Extracts the logical port name from a physical port.
-     *
-     *  @param [in] comp          Component owning the port.
-     *  @param [in] busName       Name of the bus interface.
-     *  @param [in] physicalName  Name of the physical port.
-     * 
-     *  @return Matching logical port name if found.
-     */
-    std::string getLogicalPortName(QSharedPointer<Component> comp, QString busName, QString physicalName) const;
+        /*!
+         *  Applies address space, subinterfaces, and bridges to the bus interfaces.
+         *
+         *  @param [in] createdBuses  List of bus interface metadata.
+         */
+        void finalizeBusInterfaceCustomization(const std::vector<BusInterfaceInfo>& createdBuses);
 
-    /*!
-     *  Gets the width bounds from the abstraction layer for a logical port.
-     *
-     *  @param [in] logicalName  Logical port name.
-     * 
-     *  @return Pair of left and right bounds as strings.
-     */
-    std::pair<QString, QString> getWidthBoundsFromAbstraction(const std::string& logicalName) const;
+        /*!
+         *  Creates an address space with provided name, range, and width.
+         *
+         *  @param [in] spaceName  Name of the address space.
+         *  @param [in] range      Address range in IP-XACT format.
+         *  @param [in] width      Address width (default = 32).
+         */
+        void createAddressSpace(std::string spaceName, QString range, QString width = "32");
 
-    /*!
-     *  Retrieves mirrored bounds (left/right) for a given physical port.
-     *
-     *  @param [in] physicalName  Name of the physical port.
-     * 
-     *  @return Pair of bounds as strings.
-     */
-    std::pair<QString, QString> getMirroredWidthBounds(const QString& physicalName) const;
+        /*!
+         *  Analyzes endpoint ranges and creates a shared global address space.
+         *
+         *  @param [in] endpoints  Endpoint mapping including start/range data.
+         */
+        void createGlobalAddressSpaceFromEndpoints(
+            const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints);
 
-    /*!
-     *  Parses a hexadecimal string from IP-XACT format into an integer.
-     *
-     *  @param [in] str  Input string.
-     *  @param [out] ok  Will be set true if conversion succeeds.
-     * 
-     *  @return Parsed 64-bit value.
-     */
-    quint64 parseIpxactHex(const QString& str, bool* ok);
-    
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
+        /*!
+         *  Creates a channel and assigns all appropriate interfaces to it.
+         */
+        void createChannel();
 
-    //! Message handler.
-    MessageMediator* messager_{ nullptr };
+        /*!
+         *  Resolves the VLNV of a component instance from the design.
+         *
+         *  @param [in] instanceName  Instance name.
+         *  @param [in] isTop         Whether the instance is the top-level component.
+         *
+         *  @return VLNV reference if found.
+         */
+        QSharedPointer<ConfigurableVLNVReference> resolveComponentVLNV(
+            const QString& instanceName, bool isTop) const;
 
-    //! Library interface for model IO.
-    LibraryInterface* library_{ nullptr };
+        /*!
+         *  Determines if a bus is a target based on its interface mode.
+         *
+         *  @param [in] bus  Bus interface to evaluate.
+         *
+         *  @return True if it's a target interface.
+         */
+        bool isTargetInterface(const QSharedPointer<BusInterface>& bus) const;
 
-    //! Interconnect component under construction.
-    QSharedPointer<Component> interconComponent_{ nullptr };
+        /*!
+         *  Computes correct interface mode string based on revision and context.
+         *
+         *  @param [in] bus         Bus to evaluate.
+         *  @param [in] isTarget    True if it's a target.
+         *  @param [in] isChannel   True if interconnect is channel-based.
+         *  @param [in] isTop       True if it's a top-level interface.
+         *
+         *  @return Corresponding interface mode string.
+         */
+        std::string getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool isChannel, bool isTop);
 
-    //! Currently loaded design.
-    QSharedPointer<Design> design_{ nullptr };
+        /*!
+         *  Extracts the logical port name from a physical port.
+         *
+         *  @param [in] comp          Component owning the port.
+         *  @param [in] busName       Name of the bus interface.
+         *  @param [in] physicalName  Name of the physical port.
+         *
+         *  @return Matching logical port name if found.
+         */
+        std::string getLogicalPortName(QSharedPointer<Component> comp, QString busName, QString physicalName) const;
 
-    //! Parameter finder for expression parsing.
-    QSharedPointer<ComponentParameterFinder> parameterFinder_{
-        new ComponentAndInstantiationsParameterFinder(nullptr) };
+        /*!
+         *  Gets the width bounds from the abstraction layer for a logical port.
+         *
+         *  @param [in] logicalName  Logical port name.
+         *
+         *  @return Pair of left and right bounds as strings.
+         */
+        std::pair<QString, QString> getWidthBoundsFromAbstraction(const std::string& logicalName) const;
 
-    //! Expression parser.
-    QSharedPointer<ExpressionParser> expressionParser_{
-        new IPXactSystemVerilogParser(parameterFinder_) };
+        /*!
+         *  Retrieves mirrored bounds (left/right) for a given physical port.
+         *
+         *  @param [in] physicalName  Name of the physical port.
+         *
+         *  @return Pair of bounds as strings.
+         */
+        std::pair<QString, QString> getMirroredWidthBounds(const QString& physicalName) const;
 
-    //! Expression formatter.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_{
-        new ExpressionFormatter(parameterFinder_) };
+        /*!
+         *  Parses a hexadecimal string from IP-XACT format into an integer.
+         *
+         *  @param [in] str  Input string.
+         *  @param [out] ok  Will be set true if conversion succeeds.
+         *
+         *  @return Parsed 64-bit value.
+         */
+        quint64 parseIpxactHex(const QString& str, bool* ok);
 
-    //! Interface for managing bus interfaces.
-    BusInterfaceInterface* busInfInterface_{ nullptr };
+        //-----------------------------------------------------------------------------
+        // Data.
+        //-----------------------------------------------------------------------------
 
-    //! Validator for ports.
-    QSharedPointer<PortValidator> portValidator_{
-        new PortValidator(expressionParser_,
-            QSharedPointer<QList<QSharedPointer<View>> >()) };
+        //! Message handler.
+        MessageMediator* messager_{ nullptr };
 
-    //! Interface for managing physical ports.
-    PortsInterface* portsInterface_{
-        new PortsInterface(portValidator_, expressionParser_, expressionFormatter_) };
+        //! Library interface for model IO.
+        LibraryInterface* library_{ nullptr };
 
-    //! Interface for logical/physical abstraction mappings.
-    PortAbstractionInterface* portAbsInterface_{
-        new PortAbstractionInterface(expressionParser_, expressionFormatter_) };
+        //! Interconnect component under construction.
+        QSharedPointer<Component> interconComponent_{ nullptr };
 
-    //! Interface for interconnections.
-    InterconnectionInterface* connectionInterface_{ new InterconnectionInterface() };
+        //! Currently loaded design.
+        QSharedPointer<Design> design_{ nullptr };
 
-    //! Interface for ad hoc connections.
-    AdHocConnectionInterface* adhocConnectionInterface_{ new AdHocConnectionInterface() };
+        //! Parameter finder for expression parsing.
+        QSharedPointer<ComponentParameterFinder> parameterFinder_{
+            new ComponentAndInstantiationsParameterFinder(nullptr) };
 
-    //! Interface for managing component instances.
-    ComponentInstanceInterface* instanceInterface_{
-        new ComponentInstanceInterface(connectionInterface_, adhocConnectionInterface_) };
+        //! Expression parser.
+        QSharedPointer<ExpressionParser> expressionParser_{
+            new IPXactSystemVerilogParser(parameterFinder_) };
 
-    //! Interface for abstraction type resolution.
-    AbstractionTypeInterface* absTypeInf_{ nullptr };
+        //! Expression formatter.
+        QSharedPointer<ExpressionFormatter> expressionFormatter_{
+            new ExpressionFormatter(parameterFinder_) };
 
-    //! Configuration data for generation.
-    ConfigStruct* config_;
+        //! Interface for managing bus interfaces.
+        BusInterfaceInterface* busInfInterface_{ nullptr };
+
+        //! Validator for ports.
+        QSharedPointer<PortValidator> portValidator_{
+            new PortValidator(expressionParser_,
+                QSharedPointer<QList<QSharedPointer<View>> >()) };
+
+        //! Interface for managing physical ports.
+        PortsInterface* portsInterface_{
+            new PortsInterface(portValidator_, expressionParser_, expressionFormatter_) };
+
+        //! Interface for logical/physical abstraction mappings.
+        PortAbstractionInterface* portAbsInterface_{
+            new PortAbstractionInterface(expressionParser_, expressionFormatter_) };
+
+        //! Interface for interconnections.
+        InterconnectionInterface* connectionInterface_{ new InterconnectionInterface() };
+
+        //! Interface for ad hoc connections.
+        AdHocConnectionInterface* adhocConnectionInterface_{ new AdHocConnectionInterface() };
+
+        //! Interface for managing component instances.
+        ComponentInstanceInterface* instanceInterface_{
+            new ComponentInstanceInterface(connectionInterface_, adhocConnectionInterface_) };
+
+        //! Interface for abstraction type resolution.
+        AbstractionTypeInterface* absTypeInf_{ nullptr };
+
+        //! Configuration data for generation.
+        ConfigStruct* config_;
 
 
 
-    //! List of initiator interfaces.
-    QList<QSharedPointer<BusInterface>> initiators_;
+        //! List of initiator interfaces.
+        QList<QSharedPointer<BusInterface>> initiators_;
 
-    //! List of target interfaces.
-    QList<QSharedPointer<BusInterface>> targets_;
+        //! List of target interfaces.
+        QList<QSharedPointer<BusInterface>> targets_;
 
-    //! Path to component save directory.
-    QString directory_;
+        //! Path to component save directory.
+        QString directory_;
 
-    //! Naming prefix for generated ports/interfaces.
-    std::string prefix_;
+        //! Naming prefix for generated ports/interfaces.
+        std::string prefix_;
 
-    //! Name of the global address space.
-    std::string globalAddressSpaceName_;
+        //! Name of the global address space.
+        std::string globalAddressSpaceName_;
 
-    //! Generated clock port/interface name.
-    std::string clockName_;
+        //! Generated clock port/interface name.
+        std::string clockName_;
 
-    //! Generated reset port/interface name.
-    std::string rstName_;
+        //! Generated reset port/interface name.
+        std::string rstName_;
 
-    //! VLNV of the main bus definition.
-    VLNV busDefVLNV_;
+        //! VLNV of the main bus definition.
+        VLNV busDefVLNV_;
 
-    //! VLNV of the reset signal.
-    VLNV rstVLNV_;
+        //! VLNV of the reset signal.
+        VLNV rstVLNV_;
 
-    //! VLNV of the clock signal.
-    VLNV clkVLNV_;
+        //! VLNV of the clock signal.
+        VLNV clkVLNV_;
 
-    //! Logical port name for clock.
-    QString clkPort_;
+        //! Logical port name for clock.
+        QString clkPort_;
 
-    //! Logical port name for reset.
-    QString rstPort_;
-};
+        //! Logical port name for reset.
+        QString rstPort_;
+    };
+}
 
 #endif // INTERCONNECTGENERATOR_H

@@ -4,6 +4,8 @@
 #include <IPXACTmodels/common/Document.h>
 #include <common/graphicsItems/ComponentItem.h>
 
+using namespace InterconnectGeneration;
+
 //-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::InterconnectDataModel()
 //-----------------------------------------------------------------------------
@@ -190,7 +192,7 @@ QHash<QString, QSet<QSharedPointer<BusInterface>>> InterconnectDataModel::buildA
 //-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::buildModeEntityToBusMap()
 //-----------------------------------------------------------------------------
-QMultiHash<QPair<General::InterfaceMode, InterconnectDataModel::EntityType>, QSharedPointer<BusInterface>>
+QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>>
 InterconnectDataModel::buildModeEntityToBusMap() const
 {
     QMultiHash<QPair<General::InterfaceMode, EntityType>, QSharedPointer<BusInterface>> map;
@@ -246,7 +248,7 @@ bool InterconnectDataModel::isAbstractionConnectable(
 //-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::getEntityTypeForBus()
 //-----------------------------------------------------------------------------
-InterconnectDataModel::EntityType InterconnectDataModel::getEntityTypeForBus(const QSharedPointer<BusInterface>& bus) const
+EntityType InterconnectDataModel::getEntityTypeForBus(const QSharedPointer<BusInterface>& bus) const
 {
     for (auto it = instanceBusesHash_.cbegin(); it != instanceBusesHash_.cend(); ++it) {
         if (it.value().contains(bus)) {
@@ -343,21 +345,21 @@ bool InterconnectDataModel::isModeValidForAllConnections(
 //-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::ConnectionKey()
 //-----------------------------------------------------------------------------
-bool InterconnectDataModel::ConnectionKey::operator==(const ConnectionKey& other) const {
+bool ConnectionKey::operator==(const ConnectionKey& other) const {
     return sourceEntity == other.sourceEntity && sourceMode == other.sourceMode;
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::ConnectionKey()
 //-----------------------------------------------------------------------------
-bool InterconnectDataModel::ConnectionKey::operator!=(const ConnectionKey& other) const {
+bool ConnectionKey::operator!=(const ConnectionKey& other) const {
     return !(*this == other);
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectDataModel::getValidConnectionTargets()
 //-----------------------------------------------------------------------------
-QList<InterconnectDataModel::ConnectionRule> InterconnectDataModel::getValidConnectionTargets(
+QList<ConnectionRule> InterconnectDataModel::getValidConnectionTargets(
     EntityType sourceEntity,
     General::InterfaceMode sourceMode,
     InterconnectType currentInterconnect) const
@@ -530,40 +532,4 @@ QHash<QString, QHash<QString, QSharedPointer<BusInterface>>> InterconnectDataMod
     }
 
     return lookup;
-}
-
-/*Added by Teemu Hanhisuanto 10.7.2025 in order to pass the CI tests*/
-uint qHash(InterconnectDataModel::EntityType key, uint seed)
-{
-    return qHash(static_cast<uint>(key), seed);
-}
-
-/*Added by Teemu Hanhisuanto 10.7.2025 in order to pass the CI tests*/
-uint qHash(InterconnectDataModel::InterconnectType key, uint seed)
-{
-    return qHash(static_cast<std::underlying_type_t<InterconnectDataModel::InterconnectType>>(key), seed);
-}
-
-
-uint qHash(const InterconnectDataModel::ConnectionKey& key, uint seed)
-{
-    return qHash(static_cast<int>(key.sourceEntity), seed) ^
-        qHash(static_cast<int>(key.sourceMode), seed << 1);
-}
-
-//-----------------------------------------------------------------------------
-// Function: qHash()
-//-----------------------------------------------------------------------------
-uint qHash(const InterconnectDataModel::AllowedInterfaceModesKey& key, uint seed /*= 0*/)
-{
-    return qHashMulti(seed, static_cast<uint>(key.entityType), static_cast<uint>(key.icType));
-}
-
-//-----------------------------------------------------------------------------
-// Function: qHash()
-//-----------------------------------------------------------------------------
-uint qHash(const InterconnectDataModel::InterfaceModeAdjacencyKey& key, uint seed /*= 0*/)
-{
-    return qHashMulti(seed, static_cast<uint>(key.componentType), static_cast<uint>(key.icType), static_cast<uint>(key.ifMode));
-
 }

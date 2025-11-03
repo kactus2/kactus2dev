@@ -8,10 +8,12 @@
 #include <KactusAPI/include/PortMapInterface.h>
 #include <KactusAPI/include/PortAbstractionInterface.h>
 
+using namespace InterconnectGeneration;
+
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::InterconnectGenerator()
 //-----------------------------------------------------------------------------
-InterconnectGenerator::InterconnectGenerator(LibraryInterface* library, MessageMediator* messager)
+Generator::Generator(LibraryInterface* library, MessageMediator* messager)
     : library_(library),
     messager_(messager),
     config_(0)
@@ -21,16 +23,16 @@ InterconnectGenerator::InterconnectGenerator(LibraryInterface* library, MessageM
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::generate()
 //-----------------------------------------------------------------------------
-VLNV InterconnectGenerator::generate()
+VLNV Generator::generate()
 {
     ConfigJsonParser parser;
     config_ = parser.readFile();
-    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
-    VLNV interconVLNV(VLNV::COMPONENT, config_->InterconVLNV);
+    VLNV designVLNV(VLNV::COMPONENT, config_->designVLNV);
+    VLNV interconVLNV(VLNV::COMPONENT, config_->interconVLNV);
 
-    busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->BusVLNV);
-    rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->RstVLNV);
-    clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->ClkVLNV);
+    busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->busVLNV);
+    rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->rstVLNV);
+    clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->clkVLNV);
     openDesign(designVLNV);
     createInterconComponent(interconVLNV);
     findUnconnectedInterfaces();
@@ -52,17 +54,17 @@ VLNV InterconnectGenerator::generate()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::generate()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
+void Generator::generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
     const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints, bool generateRtl)
 {
     config_ = config;
 
-    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
-    VLNV interconVLNV(VLNV::COMPONENT, config_->InterconVLNV);
+    VLNV designVLNV(VLNV::COMPONENT, config_->designVLNV);
+    VLNV interconVLNV(VLNV::COMPONENT, config_->interconVLNV);
 
-    busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->BusVLNV);
-    rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->RstVLNV);
-    clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->ClkVLNV);
+    busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->busVLNV);
+    rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->rstVLNV);
+    clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->clkVLNV);
     openDesign(designVLNV);
     createInterconComponent(interconVLNV);
     processStartingPointsAndEndpoints(startingPoints, endpoints);
@@ -104,7 +106,7 @@ void InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::openDesign()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::openDesign(VLNV designVLNV)
+void Generator::openDesign(VLNV designVLNV)
 {
     QSharedPointer<Document> designCompDocument = library_->getModel(designVLNV);
 
@@ -127,7 +129,7 @@ void InterconnectGenerator::openDesign(VLNV designVLNV)
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createInterconComponent()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::createInterconComponent(VLNV VLNV)
+void Generator::createInterconComponent(VLNV VLNV)
 {
     if (library_->contains(VLNV)) {
         library_->removeObject(VLNV);
@@ -161,7 +163,7 @@ void InterconnectGenerator::createInterconComponent(VLNV VLNV)
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::findUnconnectedInterfaces()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::findUnconnectedInterfaces()
+void Generator::findUnconnectedInterfaces()
 {
     messager_->showMessage("Seaching for interfaces..");
     int index = 0;
@@ -210,7 +212,7 @@ void InterconnectGenerator::findUnconnectedInterfaces()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::processStartingPointsAndEndpoints()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::processStartingPointsAndEndpoints(
+void Generator::processStartingPointsAndEndpoints(
     const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints,
     const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints)
 {
@@ -231,18 +233,18 @@ void InterconnectGenerator::processStartingPointsAndEndpoints(
 
     finalizeBusInterfaceCustomization(createdBuses);
 
-    if (!config_->RstVLNV.isEmpty()) createRstorClkInterface("rst", index++);
-    if (!config_->ClkVLNV.isEmpty()) createRstorClkInterface("clk", index++);
+    if (!config_->rstVLNV.isEmpty()) createRstorClkInterface("rst", index++);
+    if (!config_->clkVLNV.isEmpty()) createRstorClkInterface("clk", index++);
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::processEndpointSide()
 //-----------------------------------------------------------------------------
-std::vector<BusInterfaceInfo> InterconnectGenerator::processEndpointSide(
+std::vector<BusInterfaceInfo> Generator::processEndpointSide(
     const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints, int& index)
 {
     std::vector<BusInterfaceInfo> results;
-    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
+    VLNV designVLNV(VLNV::COMPONENT, config_->designVLNV);
 
     for (auto it = endpoints.constBegin(); it != endpoints.constEnd(); ++it) {
         QString instanceName = it.key();
@@ -275,11 +277,11 @@ std::vector<BusInterfaceInfo> InterconnectGenerator::processEndpointSide(
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::processStartingSide()
 //-----------------------------------------------------------------------------
-std::vector<BusInterfaceInfo> InterconnectGenerator::processStartingSide(
+std::vector<BusInterfaceInfo> Generator::processStartingSide(
     const QHash<QString, QList<QSharedPointer<BusInterface>>>& startingPoints, int& index)
 {
     std::vector<BusInterfaceInfo> results;
-    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
+    VLNV designVLNV(VLNV::COMPONENT, config_->designVLNV);
 
     for (auto it = startingPoints.constBegin(); it != startingPoints.constEnd(); ++it) {
         QString instanceName = it.key();
@@ -307,7 +309,7 @@ std::vector<BusInterfaceInfo> InterconnectGenerator::processStartingSide(
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createInterfaceForBus()
 //-----------------------------------------------------------------------------
-BusInterfaceInfo InterconnectGenerator::createInterfaceForBus(
+BusInterfaceInfo Generator::createInterfaceForBus(
     const QString& instanceName, const QSharedPointer<BusInterface>& bus,
     bool isTop, bool isEndpoint, int& index)
 {
@@ -343,10 +345,10 @@ BusInterfaceInfo InterconnectGenerator::createInterfaceForBus(
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::resolveComponentVLNV()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConfigurableVLNVReference> InterconnectGenerator::resolveComponentVLNV(
+QSharedPointer<ConfigurableVLNVReference> Generator::resolveComponentVLNV(
     const QString& instanceName, bool isTop) const
 {
-    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
+    VLNV designVLNV(VLNV::COMPONENT, config_->designVLNV);
 
     auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
 
@@ -360,7 +362,7 @@ QSharedPointer<ConfigurableVLNVReference> InterconnectGenerator::resolveComponen
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::isTargetInterface()
 //-----------------------------------------------------------------------------
-bool InterconnectGenerator::isTargetInterface(const QSharedPointer<BusInterface>& bus) const
+bool Generator::isTargetInterface(const QSharedPointer<BusInterface>& bus) const
 {
     auto mode = bus->getInterfaceMode();
 
@@ -373,7 +375,7 @@ bool InterconnectGenerator::isTargetInterface(const QSharedPointer<BusInterface>
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::getInterfaceMode()
 //-----------------------------------------------------------------------------
-std::string InterconnectGenerator::getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool isChannel, bool isTop)
+std::string Generator::getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool isChannel, bool isTop)
 {
     if (isTop) 
     {
@@ -401,10 +403,10 @@ std::string InterconnectGenerator::getInterfaceMode(QSharedPointer<BusInterface>
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createBusInterface()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::createBusInterface(std::string busName, std::string modeString, int index)
+void Generator::createBusInterface(std::string busName, std::string modeString, int index)
 {
     VLNV busDef = busDefVLNV_;
-    std::string newBusName = prefix_ + config_->BusType.toStdString();
+    std::string newBusName = prefix_ + ConfigJsonParser::busTypeToStr(config_->busType).toStdString();
 
     if (busName == "rst")
     {
@@ -439,7 +441,7 @@ void InterconnectGenerator::createBusInterface(std::string busName, std::string 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createBusInterface()
 //-----------------------------------------------------------------------------
-std::string InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string busName,
+std::string Generator::createBusInterface(VLNV busVLNV, std::string busName,
     std::string modeString, int index
 )
 {
@@ -465,7 +467,7 @@ std::string InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::finalizeBusInterfaceCustomization()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::finalizeBusInterfaceCustomization(const std::vector<BusInterfaceInfo>& createdBuses)
+void Generator::finalizeBusInterfaceCustomization(const std::vector<BusInterfaceInfo>& createdBuses)
 {
     for (const auto& busInfo : createdBuses) {
         const std::string& name = busInfo.name;
@@ -509,7 +511,7 @@ void InterconnectGenerator::finalizeBusInterfaceCustomization(const std::vector<
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createPortMaps()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)
+void Generator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)
 {
     messager_->showMessage("Creating port maps");
 
@@ -572,7 +574,7 @@ void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createPhysPorts()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QString busName, bool isTop)
+void Generator::createPhysPorts(QSharedPointer<Component> comp, QString busName, bool isTop)
 {
     messager_->showMessage("Populating model with ports");
 
@@ -626,7 +628,7 @@ void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QStr
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::getLogicalPortName()
 //-----------------------------------------------------------------------------
-std::string InterconnectGenerator::getLogicalPortName(
+std::string Generator::getLogicalPortName(
     QSharedPointer<Component> comp, QString busName, QString physicalName) const
 {
     auto portMaps = comp->getBusInterface(busName)->getPortMapsForView("");
@@ -643,7 +645,7 @@ std::string InterconnectGenerator::getLogicalPortName(
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::getWidthBoundsFromAbstraction()
 //-----------------------------------------------------------------------------
-std::pair<QString, QString> InterconnectGenerator::getWidthBoundsFromAbstraction(
+std::pair<QString, QString> Generator::getWidthBoundsFromAbstraction(
     const std::string& logicalName) const
 {
     int index = portAbsInterface_->getItemIndex(logicalName);
@@ -666,7 +668,7 @@ std::pair<QString, QString> InterconnectGenerator::getWidthBoundsFromAbstraction
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::getMirroredWidthBounds()
 //-----------------------------------------------------------------------------
-std::pair<QString, QString> InterconnectGenerator::getMirroredWidthBounds(const QString& physicalName) const
+std::pair<QString, QString> Generator::getMirroredWidthBounds(const QString& physicalName) const
 {
     std::string left = portsInterface_->getLeftBoundValue(physicalName.toStdString());
     std::string right = portsInterface_->getRightBoundValue(physicalName.toStdString());
@@ -680,7 +682,7 @@ std::pair<QString, QString> InterconnectGenerator::getMirroredWidthBounds(const 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createRstorClkInterface()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::createRstorClkInterface(std::string busName, int index)
+void Generator::createRstorClkInterface(std::string busName, int index)
 {
     General::InterfaceMode mode = General::TARGET;
 
@@ -748,7 +750,7 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createChannel()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::createChannel()
+void Generator::createChannel()
 {
     std::vector<std::string> busNames = busInfInterface_->getItemNames();
     QList<QString> interfaceList;
@@ -771,7 +773,7 @@ void InterconnectGenerator::createChannel()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createGlobalAddressSpaceFromEndpoints()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::createGlobalAddressSpaceFromEndpoints(
+void Generator::createGlobalAddressSpaceFromEndpoints(
     const QHash<QString, QList<QSharedPointer<EndpointData>>>& endpoints)
 {
     quint64 lowestStart = UINT64_MAX;
@@ -800,15 +802,15 @@ void InterconnectGenerator::createGlobalAddressSpaceFromEndpoints(
     QString hexRange = QString::number(addrSpaceSize, 16).rightJustified(4, '0').toUpper();
     QString ipxactRange = "'h" + hexRange;
 
-    QString addrWidth = QString::number(config_->AddressWidth);
-    globalAddressSpaceName_ = config_->BusType.toStdString() + "_global_space";
+    QString addrWidth = QString::number(config_->addressWidth);
+    globalAddressSpaceName_ = ConfigJsonParser::busTypeToStr(config_->busType).toStdString() + "_global_space";
     createAddressSpace(globalAddressSpaceName_, ipxactRange, addrWidth);
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::parseIpxactHex()
 //-----------------------------------------------------------------------------
-quint64 InterconnectGenerator::parseIpxactHex(const QString& str, bool* ok)
+quint64 Generator::parseIpxactHex(const QString& str, bool* ok)
 {
     QString clean = str.trimmed().toUpper();
 
@@ -825,7 +827,7 @@ quint64 InterconnectGenerator::parseIpxactHex(const QString& str, bool* ok)
 //-----------------------------------------------------------------------------
 // Function: InterconnectGenerator::createAddressSpace()
 //-----------------------------------------------------------------------------
-void InterconnectGenerator::createAddressSpace(std::string spaceName, QString range, QString width)
+void Generator::createAddressSpace(std::string spaceName, QString range, QString width)
 {
     QSharedPointer<AddressSpace> addrSpace = QSharedPointer<AddressSpace>(
         new AddressSpace(QString::fromStdString(spaceName), range, width));

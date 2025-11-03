@@ -11,10 +11,12 @@
 
 #include <QMessageBox>
 
+using namespace InterconnectGeneration;
+
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::InterconnectGeneratorDialog()
 //-----------------------------------------------------------------------------
-InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWidget, LibraryHandler* library,
+Dialog::Dialog(DesignWidget* designWidget, LibraryHandler* library,
     MessageMediator* messager, QWidget* parent)
     : QDialog(parent),
     designWidget_(designWidget),
@@ -64,7 +66,7 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(DesignWidget* designWid
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::~InterconnectGeneratorDialog()
 //-----------------------------------------------------------------------------
-InterconnectGeneratorDialog::~InterconnectGeneratorDialog()
+Dialog::~Dialog()
 {
     if (config_)
         delete config_;
@@ -73,7 +75,7 @@ InterconnectGeneratorDialog::~InterconnectGeneratorDialog()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::getConfig()
 //-----------------------------------------------------------------------------
-ConfigStruct* InterconnectGeneratorDialog::getConfig()  const
+ConfigStruct* Dialog::getConfig()  const
 {
     return config_;
 }
@@ -81,7 +83,7 @@ ConfigStruct* InterconnectGeneratorDialog::getConfig()  const
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::getSelectedInitiators()
 //-----------------------------------------------------------------------------
-QHash<QString, QList<QSharedPointer<BusInterface>>> InterconnectGeneratorDialog::getSelectedStartingPoints() const
+QHash<QString, QList<QSharedPointer<BusInterface>>> Dialog::getSelectedStartingPoints() const
 {
     return selectedStartingPoints_;
 }
@@ -89,7 +91,7 @@ QHash<QString, QList<QSharedPointer<BusInterface>>> InterconnectGeneratorDialog:
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::getSelectedTargets()
 //-----------------------------------------------------------------------------
-QHash<QString, QList<QSharedPointer<EndpointData>>> InterconnectGeneratorDialog::getSelectedEndpoints() const
+QHash<QString, QList<QSharedPointer<EndpointData>>> Dialog::getSelectedEndpoints() const
 {
     return selectedEndpoints_;
 }
@@ -97,7 +99,7 @@ QHash<QString, QList<QSharedPointer<EndpointData>>> InterconnectGeneratorDialog:
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::rtlGenerationSelected()
 //-----------------------------------------------------------------------------
-bool InterconnectGeneratorDialog::rtlGenerationSelected()
+bool Dialog::rtlGenerationSelected()
 {
     return generateRTLCheckBox_->isChecked();
 }
@@ -105,7 +107,7 @@ bool InterconnectGeneratorDialog::rtlGenerationSelected()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::populateParameters()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::populateParameters()
+void Dialog::populateParameters()
 {
     QSharedPointer<ConfigurableVLNVReference> absRef;
     for (auto& ref : filteredAbsRefs_) {
@@ -136,7 +138,7 @@ void InterconnectGeneratorDialog::populateParameters()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::addNewInstance()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::addNewInstance()
+void Dialog::addNewInstance()
 {
     // create instance editor
     auto newInterfacesEditor = new InstanceInterfacesEditor(ExpressionSet{parameterFinder_, expressionParser_, expressionFormatter_}, 
@@ -165,7 +167,7 @@ void InterconnectGeneratorDialog::addNewInstance()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::onInterconnectModeChanged()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::onInterconnectSelectorToggled(bool checked)
+void Dialog::onInterconnectSelectorToggled(bool checked)
 {
     if (!checked)
     {
@@ -213,16 +215,16 @@ void InterconnectGeneratorDialog::onInterconnectSelectorToggled(bool checked)
     updateAddInstanceButtonStatus();
 }
 
-InterconnectDataModel::InterconnectType InterconnectGeneratorDialog::getSelectedInterconnectType() const
+InterconnectGeneration::InterconnectType Dialog::getSelectedInterconnectType() const
 {
-    return isChannel_ ? InterconnectDataModel::InterconnectType::Channel
-        : InterconnectDataModel::InterconnectType::Bridge;
+    return isChannel_ ? InterconnectGeneration::InterconnectType::Channel
+        : InterconnectGeneration::InterconnectType::Bridge;
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::onInstanceSelected()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::onInstanceSelected(QString const& newInstanceName, QString const& oldInstanceName)
+void Dialog::onInstanceSelected(QString const& newInstanceName, QString const& oldInstanceName)
 {
     if (auto interfaceEditor = dynamic_cast<InstanceInterfacesEditor*>(sender()))
     {
@@ -252,7 +254,7 @@ void InterconnectGeneratorDialog::onInstanceSelected(QString const& newInstanceN
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::onInstanceRemoved()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::onInstanceRemoved()
+void Dialog::onInstanceRemoved()
 {
     auto interfacesEditor = dynamic_cast<InstanceInterfacesEditor*>(sender());
     Q_ASSERT_X(interfacesEditor, "InterconnectGeneratorDialog::onInstanceRemoved", "Invalid sender connected to slot");
@@ -276,7 +278,7 @@ void InterconnectGeneratorDialog::onInstanceRemoved()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::filterAvailableInstancesByAbsDef()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::filterAvailableInstancesByAbsDef()
+void Dialog::filterAvailableInstancesByAbsDef()
 {
     auto currentAbsDef = absDefCombo_->currentText();
     QSet<QString> newAvailableInstances;
@@ -304,7 +306,7 @@ void InterconnectGeneratorDialog::filterAvailableInstancesByAbsDef()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::updateAvailableInstances()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::updateAvailableInstances()
+void Dialog::updateAvailableInstances()
 {
     // Update available instances of instance interface editor combo boxes
     for (auto const& singleEditor : instanceEditors_)
@@ -318,7 +320,7 @@ void InterconnectGeneratorDialog::updateAvailableInstances()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::updateAllowedInstanceInterfaces()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::updateAvailableInstanceInterfaces(InstanceInterfacesEditor* interfacesEditor, QString const& selectedInstance)
+void Dialog::updateAvailableInstanceInterfaces(InstanceInterfacesEditor* interfacesEditor, QString const& selectedInstance)
 {
     // Get component interfaces
     auto const& instanceInterfaces = instanceBusesHash_.value(selectedInstance);
@@ -409,7 +411,7 @@ void InterconnectGeneratorDialog::updateAvailableInstanceInterfaces(InstanceInte
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::updateAddInstanceButtonStatus()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::updateAddInstanceButtonStatus()
+void Dialog::updateAddInstanceButtonStatus()
 {
     addInstanceButton_->setEnabled(availableInstances_.isEmpty() == false);
 }
@@ -417,7 +419,7 @@ void InterconnectGeneratorDialog::updateAddInstanceButtonStatus()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::hasSelectedInstances()
 //-----------------------------------------------------------------------------
-bool InterconnectGeneratorDialog::hasSelectedInstances()
+bool Dialog::hasSelectedInstances()
 {
     return instanceEditors_.size() > 0;
 }
@@ -425,16 +427,16 @@ bool InterconnectGeneratorDialog::hasSelectedInstances()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::getAllowedInterfaceModes()
 //-----------------------------------------------------------------------------
-QSet<General::InterfaceMode> InterconnectGeneratorDialog::getAllowedInterfaceModes(QString const& selectedInstance)
+QSet<General::InterfaceMode> Dialog::getAllowedInterfaceModes(QString const& selectedInstance)
 {
     // Need to figure out if selected instance is top component or regular instance
     auto isTopComponent = instanceIsTopComponent(selectedInstance);
 
-    InterconnectDataModel::EntityType instanceType = isTopComponent
-        ? InterconnectDataModel::EntityType::TopComponent
-        : InterconnectDataModel::EntityType::Instance;
+    InterconnectGeneration::EntityType instanceType = isTopComponent
+        ? InterconnectGeneration::EntityType::TopComponent
+        : InterconnectGeneration::EntityType::Instance;
 
-    InterconnectDataModel::AllowedInterfaceModesKey allowedInterfacesKey;
+    InterconnectGeneration::AllowedInterfaceModesKey allowedInterfacesKey;
 
     // Allowed interfaces when channel is selected:
     // Top component: mirrored target/slave & mirrored initiator/master
@@ -442,14 +444,14 @@ QSet<General::InterfaceMode> InterconnectGeneratorDialog::getAllowedInterfaceMod
     if (isChannel_)
     {
         allowedInterfacesKey = {
-            InterconnectDataModel::InterconnectType::Channel,
+            InterconnectGeneration::InterconnectType::Channel,
             instanceType
         };
     }
     else
     {
         allowedInterfacesKey = {
-            InterconnectDataModel::InterconnectType::Bridge,
+            InterconnectGeneration::InterconnectType::Bridge,
             instanceType
         };
     }
@@ -460,7 +462,7 @@ QSet<General::InterfaceMode> InterconnectGeneratorDialog::getAllowedInterfaceMod
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::interfaceSelectionsAreValid()
 //-----------------------------------------------------------------------------
-bool InterconnectGeneratorDialog::interfaceSelectionsAreValid(QString& errorMsg)
+bool Dialog::interfaceSelectionsAreValid(QString& errorMsg)
 {
     auto isStd22 = designWidget_->getEditedComponent()->getRevision() == Document::Revision::Std22;
 
@@ -493,7 +495,7 @@ bool InterconnectGeneratorDialog::interfaceSelectionsAreValid(QString& errorMsg)
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::instanceIsTopComponent()
 //-----------------------------------------------------------------------------
-bool InterconnectGeneratorDialog::instanceIsTopComponent(QString const& instanceName)
+bool Dialog::instanceIsTopComponent(QString const& instanceName)
 {
     return designWidget_->getEditedComponent()->getVlnv().getName().compare(instanceName) == 0;
 }
@@ -501,7 +503,7 @@ bool InterconnectGeneratorDialog::instanceIsTopComponent(QString const& instance
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::clearInitiatorAndTargetLists()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::clearInstanceSelections()
+void Dialog::clearInstanceSelections()
 {
     QLayoutItem* item;
 
@@ -526,7 +528,7 @@ void InterconnectGeneratorDialog::clearInstanceSelections()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::createTopConfigSection()
 //-----------------------------------------------------------------------------
-QWidget* InterconnectGeneratorDialog::createTopConfigSection() 
+QWidget* Dialog::createTopConfigSection() 
 {
     QGroupBox* configGroup = new QGroupBox(tr("Interconnect Component Configuration"), this);
     QFormLayout* formLayout = new QFormLayout();
@@ -591,7 +593,7 @@ QWidget* InterconnectGeneratorDialog::createTopConfigSection()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::createInstancesSection()
 //-----------------------------------------------------------------------------
-QGroupBox* InterconnectGeneratorDialog::createInstancesSection()
+QGroupBox* Dialog::createInstancesSection()
 {
     connect(addInstanceButton_, SIGNAL(clicked()), this, SLOT(addNewInstance()));
 
@@ -621,7 +623,7 @@ QGroupBox* InterconnectGeneratorDialog::createInstancesSection()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::createInterconnectModeSelector()
 //-----------------------------------------------------------------------------
-QWidget* InterconnectGeneratorDialog::createInterconnectModeSelector() 
+QWidget* Dialog::createInterconnectModeSelector() 
 {
     QGroupBox* modeGroup = new QGroupBox(tr("Interconnect Mode"), this);
     QHBoxLayout* modeLayout = new QHBoxLayout(modeGroup);
@@ -643,7 +645,7 @@ QWidget* InterconnectGeneratorDialog::createInterconnectModeSelector()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::createGenerateRtlCheckbox()
 //-----------------------------------------------------------------------------
-QWidget* InterconnectGeneratorDialog::createGenerateRtlCheckbox()
+QWidget* Dialog::createGenerateRtlCheckbox()
 {
     QGroupBox* rtlGenerationGroup = new QGroupBox(tr("Generate RTL"), this);
     auto layout = new QVBoxLayout();
@@ -661,7 +663,7 @@ QWidget* InterconnectGeneratorDialog::createGenerateRtlCheckbox()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::rtlCanBeGenerated()
 //-----------------------------------------------------------------------------
-bool InterconnectGeneratorDialog::rtlCanBeGenerated()
+bool Dialog::rtlCanBeGenerated()
 {
     // RTL can only be generated for compatible abs defs (TUNI versions of AXI4, AXI4LITE, OBI for now)
     // Check if selected abs def is compatible.
@@ -700,14 +702,14 @@ bool InterconnectGeneratorDialog::rtlCanBeGenerated()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::createButtonBox()
 //-----------------------------------------------------------------------------
-QDialogButtonBox* InterconnectGeneratorDialog::createButtonBox() 
+QDialogButtonBox* Dialog::createButtonBox() 
 {
     QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->addButton(tr("Generate"), QDialogButtonBox::AcceptRole);
     buttonBox->addButton(QDialogButtonBox::Cancel);
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &InterconnectGeneratorDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &InterconnectGeneratorDialog::reject);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &Dialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &Dialog::reject);
 
     return buttonBox;
 }
@@ -715,7 +717,7 @@ QDialogButtonBox* InterconnectGeneratorDialog::createButtonBox()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::setUpLayout()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::setUpLayout() 
+void Dialog::setUpLayout() 
 {
     setWindowTitle("Interconnect Component Configuration");
 
@@ -743,9 +745,9 @@ void InterconnectGeneratorDialog::setUpLayout()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::accept()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::accept()
+void Dialog::accept()
 {
-    ConfigStruct* config = new ConfigStruct;
+    InterconnectGeneration::ConfigStruct* config = new ConfigStruct;
 
     if (!vlnvEditor_->isValid()) {
         QMessageBox::warning(this, tr("Input Error"), tr("Select valid VLNV for interconnect component."));
@@ -784,15 +786,15 @@ void InterconnectGeneratorDialog::accept()
     auto clkVLNV = clockCheckBox_->isChecked() ? clkRef->toString() : QString();
     auto rstVLNV = resetCheckBox_->isChecked() ? rstRef->toString() : QString();
     
-    config->DesignVLNV = designVLNV_;
-    config->InterconVLNV = interconVLNV;
-    config->BusVLNV = busVLNV;
-    config->ClkVLNV = clkVLNV;
-    config->RstVLNV = rstVLNV;
-    config->BusType = busType.split(".abs")[0];
-    config->AddressWidth = 32;
-    config->IDWidth = 8;
-    config->UserWidth = 1;
+    config->designVLNV = designVLNV_;
+    config->interconVLNV = interconVLNV;
+    config->busVLNV = busVLNV;
+    config->clkVLNV = clkVLNV;
+    config->rstVLNV = rstVLNV;
+    config->busType = InterconnectGeneration::ConfigJsonParser::strToBusType(busType.split(".abs")[0]);
+    config->addressWidth = 32;
+    config->idWidth = 8;
+    config->userWidth = 1;
     config->isChannel = isChannel_;
     config->interconnectParams = *interconnectParams_;
 
@@ -805,7 +807,7 @@ void InterconnectGeneratorDialog::accept()
             name.contains("addrwidth") ||
             name == "aw" || name == "addr_w") {
 
-            config->AddressWidth = param->getValue().toInt();
+            config->addressWidth = param->getValue().toInt();
             break;
         }
     }
@@ -833,7 +835,7 @@ void InterconnectGeneratorDialog::accept()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::onAbsDefChanged()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::onAbsDefChanged(int currentIndex)
+void Dialog::onAbsDefChanged(int currentIndex)
 {
     if (ignoreChange_)
     {
@@ -871,7 +873,7 @@ void InterconnectGeneratorDialog::onAbsDefChanged(int currentIndex)
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::collectSelectedInterfaces()
 //-----------------------------------------------------------------------------
-void InterconnectGeneratorDialog::collectSelectedInterfaces()
+void Dialog::collectSelectedInterfaces()
 {
     // Get all selected interfaces, divide them into starting points and end points (= initiator adjacent 
     // and target adjacent interfaces)
@@ -883,9 +885,9 @@ void InterconnectGeneratorDialog::collectSelectedInterfaces()
     selectedStartingPoints_.clear();
     selectedEndpoints_.clear();
 
-    InterconnectDataModel::InterconnectType interconnectType = isChannel_
-        ? InterconnectDataModel::InterconnectType::Channel
-        : InterconnectDataModel::InterconnectType::Bridge;
+    InterconnectGeneration::InterconnectType interconnectType = isChannel_
+        ? InterconnectGeneration::InterconnectType::Channel
+        : InterconnectGeneration::InterconnectType::Bridge;
 
     // Get data width to use
     int dataWidth = 32;
@@ -917,9 +919,9 @@ void InterconnectGeneratorDialog::collectSelectedInterfaces()
         auto instanceBuses = busLookUp_.value(currentInstance);
         bool isTopComponent = instanceIsTopComponent(currentInstance);
 
-        InterconnectDataModel::EntityType currentInstanceType = isTopComponent
-            ? InterconnectDataModel::EntityType::TopComponent
-            : InterconnectDataModel::EntityType::Instance;
+        InterconnectGeneration::EntityType currentInstanceType = isTopComponent
+            ? InterconnectGeneration::EntityType::TopComponent
+            : InterconnectGeneration::EntityType::Instance;
 
         for (auto const& singleInterface : interfaceData)
         {
@@ -950,15 +952,15 @@ void InterconnectGeneratorDialog::collectSelectedInterfaces()
                 auto formattedStartValue = expressionFormatter_->formatReferringExpression(singleInterface.startValue);
                 auto formattedRangeValue = expressionFormatter_->formatReferringExpression(singleInterface.range);
 
-                addr.Start = singleInterface.startValue.isEmpty() ? "<address>" : formattedStartValue;
-                addr.End = singleInterface.range.isEmpty() ? "<address>" : formattedRangeValue;
+                addr.start = singleInterface.startValue.isEmpty() ? "<address>" : formattedStartValue;
+                addr.end = singleInterface.range.isEmpty() ? "<address>" : formattedRangeValue;
 
                 TargetStruct target;
-                target.Name = currentInstance + "_" + singleInterface.name;
-                target.DataWidth = dataWidth;
-                target.Index = targetIndex++;
-                target.AddressRegions.append(addr);
-                config_->TargetList.append(target);
+                target.name = currentInstance + "_" + singleInterface.name;
+                target.dataWidth = dataWidth;
+                target.index = targetIndex++;
+                target.addressRegions.append(addr);
+                config_->targetList.append(target);
             }
             else if (dataModel_->interfaceIsInitiatorAdjacent(interfaceMode, interconnectType, currentInstanceType))
             {
@@ -971,11 +973,11 @@ void InterconnectGeneratorDialog::collectSelectedInterfaces()
 
                 // Data for RTL writer
                 InitStruct init;
-                init.Index = initIndex++;
-                init.Name = currentInstance + "_" + singleInterface.name;
-                init.DataWidth = dataWidth;
+                init.index = initIndex++;
+                init.name = currentInstance + "_" + singleInterface.name;
+                init.dataWidth = dataWidth;
 
-                config_->InitList.append(init);
+                config_->initList.append(init);
             }
         }
     }

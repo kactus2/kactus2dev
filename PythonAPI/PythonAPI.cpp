@@ -280,7 +280,7 @@ void PythonAPI::generate(std::string const& format, std::string const& vlnv, std
 void PythonAPI::generateInterconnect()
 {
 
-    InterconnectGenerator interconGen = InterconnectGenerator(library_, messager_);
+    auto interconGen = InterconnectGeneration::Generator(library_, messager_);
 
     VLNV interconVLNV = interconGen.generate();
 }

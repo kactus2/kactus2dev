@@ -1,6 +1,8 @@
 #include "ConfigJsonParser.h"
 #include <QtXml>
 
+using namespace InterconnectGeneration;
+
 ConfigJsonParser::ConfigJsonParser(){}
 
 ConfigStruct* ConfigJsonParser::readFile() {
@@ -20,55 +22,95 @@ ConfigStruct* ConfigJsonParser::readFile() {
             if(document.isObject()) {
                 QJsonObject jsonObj = document.object();
 
-                config_.InterconVLNV = jsonObj.value("intercon").toString();
-                config_.DesignVLNV = jsonObj.value("top").toString();
-                config_.BusVLNV = jsonObj.value("bus").toString();
-                config_.ClkVLNV = jsonObj.value("clk").toString();
-                config_.RstVLNV = jsonObj.value("rst").toString();
+                config_.interconVLNV = jsonObj.value("intercon").toString();
+                config_.designVLNV = jsonObj.value("top").toString();
+                config_.busVLNV = jsonObj.value("bus").toString();
+                config_.clkVLNV = jsonObj.value("clk").toString();
+                config_.rstVLNV = jsonObj.value("rst").toString();
 
-                config_.BusType = jsonObj.value("Bus type").toString();
-                config_.AddressWidth = jsonObj.value("Address width").toInt();
-                config_.IDWidth = jsonObj.value("ID width").toInt();
-                config_.UserWidth = jsonObj.value("User width").toInt();
+                config_.busType = strToBusType(jsonObj.value("Bus type").toString());
+                config_.addressWidth = jsonObj.value("Address width").toInt();
+                config_.idWidth = jsonObj.value("ID width").toInt();
+                config_.userWidth = jsonObj.value("User width").toInt();
 
                 QJsonArray initListArr = jsonObj.value("Initiators").toArray();
-                config_.InitList.resize(initListArr.size());
+                config_.initList.resize(initListArr.size());
 
                 for(int n=0; n<initListArr.size(); n++){
                     QJsonObject initObj = initListArr.at(n).toObject();
                     InitStruct init;
 
-                    init.Index = initObj.value("Index").toInt();
-                    init.Name = initObj.value("Name").toString();
-                    init.DataWidth = initObj.value("Data width").toInt();
+                    init.index = initObj.value("Index").toInt();
+                    init.name = initObj.value("Name").toString();
+                    init.dataWidth = initObj.value("Data width").toInt();
 
-                    config_.InitList[init.Index] = init;
+                    config_.initList[init.index] = init;
                }
 
                 QJsonArray targetListArr = jsonObj.value("Targets").toArray();
-                config_.TargetList.resize(targetListArr.size());
+                config_.targetList.resize(targetListArr.size());
 
                 for(int i=0; i<targetListArr.size(); i++){
                     QJsonObject targetObj = targetListArr.at(i).toObject();
                     TargetStruct target;
 
-                    target.Index = targetObj.value("Index").toInt();
-                    target.Name = targetObj.value("Name").toString();
-                    target.DataWidth = targetObj.value("Data width").toInt();
+                    target.index = targetObj.value("Index").toInt();
+                    target.name = targetObj.value("Name").toString();
+                    target.dataWidth = targetObj.value("Data width").toInt();
 
                     QJsonArray addrRegionArr = targetObj.value("Address regions").toArray();
 
                     for(int k=0; k<addrRegionArr.size(); ++k){
                         QJsonObject addrObj = addrRegionArr.at(k).toObject();
                         AddressPair addrPair;
-                        addrPair.Start = addrObj.value("Start").toString();
-                        addrPair.End = addrObj.value("End").toString();
-                        target.AddressRegions.append(addrPair);
+                        addrPair.start = addrObj.value("Start").toString();
+                        addrPair.end = addrObj.value("End").toString();
+                        target.addressRegions.append(addrPair);
                     }
-                    config_.TargetList[target.Index] = target;
+                    config_.targetList[target.index] = target;
                 }
             }
         }
     }
     return &config_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigJsonParser::strToBusType()
+//-----------------------------------------------------------------------------
+InterconnectGeneration::BusType InterconnectGeneration::ConfigJsonParser::strToBusType(QString const& busTypeStr)
+{
+    auto busTypeStrUpper = busTypeStr.toUpper();
+    if (busTypeStrUpper.compare("AXI4") == 0)
+    {
+        return BusType::AXI4;
+    }
+    else if (busTypeStrUpper.compare("AXI4LITE") == 0)
+    {
+        return BusType::AXI4LITE;
+    }
+    else if (busTypeStrUpper.compare("OBI") == 0)
+    {
+        return BusType::OBI;
+    }
+
+    return BusType::UNKNOWN;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigJsonParser::busTypeToStr()
+//-----------------------------------------------------------------------------
+QString ConfigJsonParser::busTypeToStr(BusType busType)
+{
+    switch (busType)
+    {
+    case BusType::AXI4:
+        return QString("AXI4");
+    case BusType::AXI4LITE:
+        return QString("AXI4LITE");
+    case BusType::OBI:
+        return QString("OBI");
+    default:
+        return QString("Unknown");
+    }
 }

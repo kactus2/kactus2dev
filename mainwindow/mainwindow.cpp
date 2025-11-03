@@ -2612,27 +2612,27 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
 
 void MainWindow::onInterconnectGenerate()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+    auto doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
     if (!doc || doc->isProtected())
     {
         return;
     }
-    DesignWidget* designWidget = static_cast<DesignWidget*>(doc);
+    auto designWidget = static_cast<DesignWidget*>(doc);
 
-    InterconnectGeneratorDialog interconnectDialog(designWidget, libraryHandler_, messageChannel_, this);
+    InterconnectGeneration::Dialog interconnectDialog(designWidget, libraryHandler_, messageChannel_, this);
     if (interconnectDialog.exec() == QDialog::Accepted) {
-        ConfigStruct* config = interconnectDialog.getConfig();
+        auto config = interconnectDialog.getConfig();
         if (!config) {
             return;
         }
-        QHash<QString, QList<QSharedPointer<BusInterface > > > startingPoints = interconnectDialog.getSelectedStartingPoints();
-        QHash<QString, QList<QSharedPointer<EndpointData > > > endPoints = interconnectDialog.getSelectedEndpoints();
+        auto const& startingPoints = interconnectDialog.getSelectedStartingPoints();
+        auto const& endPoints = interconnectDialog.getSelectedEndpoints();
 
         bool generateRtl = interconnectDialog.rtlGenerationSelected();
 
         LibraryInterface* lib = KactusAPI::getLibrary();
-        InterconnectGenerator interconGen = InterconnectGenerator(lib, messageChannel_);
+        auto interconGen = InterconnectGeneration::Generator(lib, messageChannel_);
         interconGen.generate(config, startingPoints, endPoints, generateRtl);
         doc->refresh();
     }
