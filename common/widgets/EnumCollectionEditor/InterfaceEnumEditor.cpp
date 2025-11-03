@@ -29,7 +29,6 @@ InterfaceEnumEditor::InterfaceEnumEditor(ExpressionSet expressionSet, ComponentP
 {
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
-    setAttribute(Qt::WA_NoMousePropagation);
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
     // Container widget for all interfaces
