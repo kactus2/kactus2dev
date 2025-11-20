@@ -9,6 +9,9 @@
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <editors/ComponentEditor/parameters/ParameterColumns.h>
+
 #include <QMessageBox>
 
 using namespace InterconnectGeneration;
@@ -133,6 +136,59 @@ void Dialog::populateParameters()
     }
 
     parameterGroupBox_->setNewParameters(interconnectParams_, copiedChoices, absDef->getRevision());
+
+    addrWidthParamName_ = QString();
+    dataWidthParamName_ = QString();
+
+    // If AXI or OBI selected, width values must be set to parameters
+    if (rtlCanBeGenerated())
+    {
+        // Find parameters corresponding to addr and data widths
+        findWidthParameters();
+
+        // Create parameters for widths with empty values, if not found
+        bool hasDefaultAddrWidhtParam = std::find_if(interconnectParams_->cbegin(), interconnectParams_->cend(), [](QSharedPointer<Parameter> param)
+            {
+                return param->name().compare("ADDR_WIDTH") == 0;
+            }) != interconnectParams_->cend();
+
+        bool hasDefaultDataWidhtParam = std::find_if(interconnectParams_->cbegin(), interconnectParams_->cend(), [](QSharedPointer<Parameter> param)
+            {
+                return param->name().compare("DATA_WIDTH") == 0;
+            }) != interconnectParams_->cend();
+
+        if (addrWidthParamName_.isEmpty())
+        {
+            addrWidthParamName_ = QStringLiteral("ADDR_WIDTH");
+            if (!hasDefaultAddrWidhtParam)
+            {
+                parameterGroupBox_->addParameter(addrWidthParamName_);
+            }
+        }
+
+        if (dataWidthParamName_.isEmpty())
+        {
+            dataWidthParamName_ = QStringLiteral("DATA_WIDTH");
+            if (!hasDefaultDataWidhtParam)
+            {
+                parameterGroupBox_->addParameter(dataWidthParamName_);
+            }
+        }
+
+        parameterGroupBox_->refresh();
+
+        // partially lock width parameters (only value editable)
+        for (auto i = 0; i < ParameterColumns::COLUMN_COUNT; ++i)
+        {
+            if (i != ParameterColumns::VALUE)
+            {
+                parameterGroupBox_->lockParameterColumn(addrWidthParamName_, static_cast<ParameterColumns::columns>(i));
+                parameterGroupBox_->lockParameterColumn(dataWidthParamName_, static_cast<ParameterColumns::columns>(i));
+            }
+        }
+    }
+
+    // TODO check addr width value in accept()
 }
 
 //-----------------------------------------------------------------------------
@@ -668,29 +724,15 @@ bool Dialog::rtlCanBeGenerated()
     // RTL can only be generated for compatible abs defs (TUNI versions of AXI4, AXI4LITE, OBI for now)
     // Check if selected abs def is compatible.
 
-    auto selectedAbsDef = absDefCombo_->currentText();
-
-    // Find selected abs def vlnv
-    auto foundIt = std::find_if(allAbsRefs_.cbegin(), allAbsRefs_.cend(),
-        [&selectedAbsDef](QSharedPointer<ConfigurableVLNVReference> vlnv)
-        {
-            return vlnv->getName().compare(selectedAbsDef) == 0;
-        });
-
-    if (foundIt == allAbsRefs_.cend())
-    {
-        return false;
-    }
-
-    if (auto foundVlnv = foundIt->get())
+    if (auto currentAbsDefVLNV = getCurrentlySelectedAbsDef())
     {
         for (auto const& validVlnvStr : rtlCompatibleAbsDefs_)
         {
             auto validAbsDefVlnv = VLNV(VLNV::ABSTRACTIONDEFINITION, validVlnvStr);
 
-            if (validAbsDefVlnv.getVendor().compare(foundVlnv->getVendor()) == 0
-                && validAbsDefVlnv.getLibrary().compare(foundVlnv->getLibrary()) == 0
-                && validAbsDefVlnv.getName().compare(foundVlnv->getName()) == 0)
+            if (validAbsDefVlnv.getVendor().compare(currentAbsDefVLNV->getVendor()) == 0
+                && validAbsDefVlnv.getLibrary().compare(currentAbsDefVLNV->getLibrary()) == 0
+                && validAbsDefVlnv.getName().compare(currentAbsDefVLNV->getName()) == 0)
             {
                 return true;
             }
@@ -792,28 +834,36 @@ void Dialog::accept()
     config->clkVLNV = clkVLNV;
     config->rstVLNV = rstVLNV;
     config->busType = InterconnectGeneration::ConfigJsonParser::strToBusType(busType.split(".abs")[0]);
-    config->addressWidth = 32;
+    config->addressWidth = -1;
+    config->dataWidth = -1;
+    config->addressWidthParamName = addrWidthParamName_;
+    config->dataWidthParamName = dataWidthParamName_;
     config->idWidth = 8;
     config->userWidth = 1;
     config->isChannel = isChannel_;
     config->interconnectParams = *interconnectParams_;
 
-    // Try to find possible address width value from UI parameters
-    for (const auto& param : *interconnectParams_) {
+    config_ = config;
+    
+    addrWidthValue_ = QString::fromStdString(parameterGroupBox_->getInterface()->getValueFormattedExpression(addrWidthParamName_.toStdString()));
 
-        if (!param) continue;
-        QString name = param->name().toLower();
-        if ((name.contains("addr") && name.contains("width")) ||
-            name.contains("addrwidth") ||
-            name == "aw" || name == "addr_w") {
+    // Get value of addr and data width, check if they are 32 or 64 (for AXI), complain if not (again, if AXI)
+    // TODO set value for axi_pkg::xbar_rule_XX_t (32 or 64 depending onr addr width, XX if no addr width or not resolved) 
+    if (rtlGenerationSelected() && (config->busType == BusType::AXI4 || config->busType == BusType::AXI4LITE))
+    {
+        bool widthOk = false;
+        auto val = expressionParser_->parseExpression(addrWidthValue_, &widthOk).toUInt();
 
-            config->addressWidth = param->getValue().toInt();
-            break;
+        if (!widthOk || val != 32 || val != 64)
+        {
+            if (QMessageBox::warning(this, "Unsupported configuration", "Warning: Unsupported address width. Continue?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+            {
+                return;
+            }
         }
     }
 
-    config_ = config;
-    
+
     // Collect selected interfaces into selectedStartingPoints_ and selectedEndpoints_
     // Interfaces shall be mapped to either bucket based on which interconnect mode is selected.
 
@@ -889,26 +939,6 @@ void Dialog::collectSelectedInterfaces()
         ? InterconnectGeneration::InterconnectType::Channel
         : InterconnectGeneration::InterconnectType::Bridge;
 
-    // Get data width to use
-    int dataWidth = 32;
-    for (const auto& param : *interconnectParams_)
-    {
-        if (param == nullptr)
-        {
-            continue;
-        }
-
-        QString name = param->name().toLower();
-
-        if ((name.contains("data") && name.contains("width")) ||
-            name.contains("datawidth") ||
-            name == "dw" || name == "data_w")
-        {
-            dataWidth = param->getValue().toInt();
-            break;
-        }
-    }
-
     int targetIndex = 0;
     int initIndex = 0;
 
@@ -952,12 +982,11 @@ void Dialog::collectSelectedInterfaces()
                 auto formattedStartValue = expressionFormatter_->formatReferringExpression(singleInterface.startValue);
                 auto formattedRangeValue = expressionFormatter_->formatReferringExpression(singleInterface.range);
 
-                addr.start = singleInterface.startValue.isEmpty() ? "<address>" : formattedStartValue;
-                addr.end = singleInterface.range.isEmpty() ? "<address>" : formattedRangeValue;
+                addr.start = singleInterface.startValue.isEmpty() ? "##address##" : formattedStartValue;
+                addr.end = singleInterface.range.isEmpty() ? "##address##" : formattedRangeValue;
 
                 TargetStruct target;
                 target.name = currentInstance + "_" + singleInterface.name;
-                target.dataWidth = dataWidth;
                 target.index = targetIndex++;
                 target.addressRegions.append(addr);
                 config_->targetList.append(target);
@@ -968,17 +997,138 @@ void Dialog::collectSelectedInterfaces()
                 {
                     selectedStartingPoints_.insert(currentInstance, QList<QSharedPointer<BusInterface> >());
                 }
-                
+
                 selectedStartingPoints_[currentInstance].append(interfaceModel);
 
                 // Data for RTL writer
                 InitStruct init;
                 init.index = initIndex++;
                 init.name = currentInstance + "_" + singleInterface.name;
-                init.dataWidth = dataWidth;
 
                 config_->initList.append(init);
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Dialog::findWidthParameters()
+//-----------------------------------------------------------------------------
+void Dialog::findWidthParameters()
+{
+    // Find currently selected abs def document
+    auto currentAbsDefVLNV = getCurrentlySelectedAbsDef();
+
+    if (currentAbsDefVLNV == nullptr)
+    {
+        return;
+    }
+
+    auto absDef = library_->getModelReadOnly(*currentAbsDefVLNV).dynamicCast<AbstractionDefinition const>();
+
+    if (absDef == nullptr)
+    {
+        return;
+    }
+    
+    bool addressPortFound = false;
+    bool dataPortFound = false;
+
+    QSharedPointer<PortAbstraction> addrPort;
+    QSharedPointer<PortAbstraction> dataPort;
+
+
+    // Go through abs adef logical ports
+    // Look for port with qualifier address or data
+    for (auto const& port : *absDef->getLogicalPorts())
+    {
+        if (addressPortFound && dataPortFound)
+            break;
+
+        auto portQualifier = port->getQualifier();
+        auto qualifierTypes = portQualifier->getTypes();
+
+        if (qualifierTypes.contains(Qualifier::Type::Address) && addressPortFound == false)
+        {
+            addressPortFound = true;
+            addrPort = port;
+        }
+
+        if (qualifierTypes.contains(Qualifier::Type::Data) && dataPortFound == false)
+        {
+            dataPortFound = true;
+            dataPort = port;
+        }
+    }
+
+    
+
+    // Check if parameterized
+    // Gotta check all modes of port (master, slave etc.) and check if that mode has non-empty width.
+    // Use first non-empty that is found. If all modes have mepty widths, then use empty.
+    auto foundAddrWidth = QString();
+    auto foundDataWidth = QString();
+
+    for (int i = 0; i < General::InterfaceMode::INTERFACE_MODE_COUNT; ++i)
+    {
+        auto mode = static_cast<General::InterfaceMode>(i);
+
+        if (foundAddrWidth.isEmpty() == false && foundDataWidth.isEmpty() == false)
+        {
+            break;
+        }
+
+        if (addrPort && addrPort->hasMode(mode, QString()))
+        {
+            if (auto widthStr = addrPort->getWire()->getWidth(mode, QString()); widthStr.isEmpty() == false)
+            {
+                foundAddrWidth = widthStr;
+            }
+        }
+
+        if (dataPort && dataPort->hasMode(mode, QString()))
+        {
+            if (auto widthStr = dataPort->getWire()->getWidth(mode, QString()); widthStr.isEmpty() == false)
+            {
+                foundDataWidth = widthStr;
+            }
+        }
+    }
+
+    QSharedPointer<ListParameterFinder> absDefParamFinder(new ListParameterFinder());
+    absDefParamFinder->setParameterList(absDef->getParameters());
+    auto addrWidthParam = absDefParamFinder->getParameterWithID(foundAddrWidth);
+    auto dataWidthParam = absDefParamFinder->getParameterWithID(foundDataWidth);
+
+    if (addrWidthParam)
+    {
+        addrWidthParamName_ = addrWidthParam->name();
+    }
+
+    if (dataWidthParam)
+    {
+        dataWidthParamName_ = dataWidthParam->name();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Dialog::getCurrentlySelectedAbsDef()
+//-----------------------------------------------------------------------------
+ConfigurableVLNVReference* Dialog::getCurrentlySelectedAbsDef()
+{
+    auto selectedAbsDef = absDefCombo_->currentText();
+
+    // Find selected abs def vlnv
+    auto foundIt = std::find_if(allAbsRefs_.cbegin(), allAbsRefs_.cend(),
+        [&selectedAbsDef](QSharedPointer<ConfigurableVLNVReference> vlnv)
+        {
+            return vlnv->getName().compare(selectedAbsDef) == 0;
+        });
+
+    if (foundIt == allAbsRefs_.cend())
+    {
+        return nullptr;
+    }
+
+    return foundIt->data();
 }

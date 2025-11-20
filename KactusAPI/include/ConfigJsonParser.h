@@ -23,7 +23,6 @@ namespace InterconnectGeneration
 
         int index;
         QString name;
-        int dataWidth;
 
     };
 
@@ -32,7 +31,6 @@ namespace InterconnectGeneration
 
         int index;
         QString name;
-        int dataWidth;
         QList<AddressPair> addressRegions;
 
     };
@@ -55,9 +53,12 @@ namespace InterconnectGeneration
         QString rstVLNV;
         BusType busType;
         int addressWidth;
+        int dataWidth;
         int idWidth;
         int userWidth;
         bool isChannel;
+        QString addressWidthParamName;
+        QString dataWidthParamName;
         QList<QSharedPointer<Parameter>> interconnectParams;
         QList<InitStruct> initList;
         QList<TargetStruct> targetList;

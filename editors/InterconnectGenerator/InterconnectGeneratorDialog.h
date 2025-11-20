@@ -271,6 +271,15 @@ namespace InterconnectGeneration
          */
         bool instanceIsTopComponent(QString const& instanceName);
 
+        /*!
+         *	Find parameters that define address and data width. Finds ports in abs def with address and data qualifers and gets their widths.
+         *  If width is parameterized, addr/data width is set as that parameter. Otherwise hard-coded parameter is created with found width.
+         *  If no widths are found, a default value of ????? (32 or non-numeric?) is used.
+         */
+        void findWidthParameters();
+
+        ConfigurableVLNVReference* getCurrentlySelectedAbsDef();
+
         //-----------------------------------------------------------------------------
         // Data.
         //-----------------------------------------------------------------------------
@@ -382,6 +391,12 @@ namespace InterconnectGeneration
 
         //! Set containing all editors for added instances
         QSet<InstanceInterfacesEditor*> instanceEditors_;
+
+        QString addrWidthParamName_;
+        QString dataWidthParamName_;
+
+        QString addrWidthValue_;
+        QString dataWidthValue_;
 
         //! RTL generation -compatible VLNV bases (version doesn't matter)
         const QStringList rtlCompatibleAbsDefs_ = {

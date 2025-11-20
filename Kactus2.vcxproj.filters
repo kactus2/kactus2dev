@@ -3418,6 +3418,9 @@
     <ClCompile Include="editors\InterconnectGenerator\InstanceInterfacesEditor.cpp">
       <Filter>Source Files\editors\InterconnectGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\LockableParametersModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5868,6 +5871,9 @@
     </ClInclude>
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h">
       <Filter>Header Files\common\layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\parameters\LockableParametersModel.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

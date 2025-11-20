@@ -673,6 +673,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\parameters\Array\ParameterArrayModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\ComponentParameterModel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\parameters\LockableParametersModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\parameterseditor.cpp" />
@@ -1815,6 +1816,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.h">
     </QtMoc>
     <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h" />
+    <ClInclude Include="editors\ComponentEditor\parameters\LockableParametersModel.h" />
     <ClInclude Include="editors\ComponentEditor\parameters\ParameterColumns.h" />
     <QtMoc Include="editors\ComponentEditor\parameters\ParameterDelegate.h">
     </QtMoc>

@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
+    ./editors/ComponentEditor/parameters/LockableParametersModel.h \
     ./common/NameGenerationPolicy.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
@@ -898,7 +899,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./editors/InterconnectGenerator/InterconnectAddressHelper.h \
     ./editors/InterconnectGenerator/InterconnectDataModel.h \
     ./editors/InterconnectGenerator/InterconnectGeneratorDialog.h \
-    ./editors/InterconnectGenerator/InstanceInterfacesEditor.h \
+    ./editors/interconnectgenerator/InstanceInterfacesEditor.h \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.h \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.h \
     ./kactusGenerators/DocumentGenerator/MarkdownWriter.h \
@@ -910,6 +911,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
+    ./editors/ComponentEditor/parameters/LockableParametersModel.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \

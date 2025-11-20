@@ -42,7 +42,7 @@ ConfigStruct* ConfigJsonParser::readFile() {
 
                     init.index = initObj.value("Index").toInt();
                     init.name = initObj.value("Name").toString();
-                    init.dataWidth = initObj.value("Data width").toInt();
+                    //init.dataWidth = initObj.value("Data width").toInt();
 
                     config_.initList[init.index] = init;
                }
@@ -56,7 +56,7 @@ ConfigStruct* ConfigJsonParser::readFile() {
 
                     target.index = targetObj.value("Index").toInt();
                     target.name = targetObj.value("Name").toString();
-                    target.dataWidth = targetObj.value("Data width").toInt();
+                    //target.dataWidth = targetObj.value("Data width").toInt();
 
                     QJsonArray addrRegionArr = targetObj.value("Address regions").toArray();
 
