@@ -58,7 +58,8 @@ QString ExpressionFormatter::format(QString const& expression, QSharedPointer<Ex
 QString ExpressionFormatter::getFormattedValue(QString const& expression, QSharedPointer<ExpressionParser> parser, bool* expressionIsValid)
 {
     QString value = parser->parseExpression(expression, expressionIsValid);
-    if (expressionIsValid)
+
+    if (expressionIsValid && *expressionIsValid == true)
     {
         ValueFormatter formatter;
         return formatter.format(value, parser->baseForExpression(expression));

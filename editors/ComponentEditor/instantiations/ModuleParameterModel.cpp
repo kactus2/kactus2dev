@@ -59,7 +59,7 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
 
     std::string parameterName = getInterface()->getIndexedItemName(index.row());
 
-    if (role == Qt::DisplayRole || role == Qt::ToolTipRole)
+    if (role == Qt::DisplayRole || role == Qt::ToolTipRole || role == Qt::EditRole)
     {
         ModuleParameterInterface* moduleInterface = dynamic_cast<ModuleParameterInterface*>(getInterface());
 

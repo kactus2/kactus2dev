@@ -64,9 +64,9 @@ namespace
 //-----------------------------------------------------------------------------
 QString SystemVerilogExpressionParser::parseExpression(QStringView expression, bool* validExpression) const
 {
-    // Copy of expression needs to be created for replacing unary minuses with special character.
-    QString expressionCopy = expression.toString();
-    return solveRPN(convertToRPN(expressionCopy), validExpression);
+	// Copy of expression needs to be created for replacing unary minuses with special character.
+	QString expressionCopy = expression.toString();
+	return solveRPN(convertToRPN(expressionCopy), validExpression);
 }
 
 //-----------------------------------------------------------------------------

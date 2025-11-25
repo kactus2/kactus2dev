@@ -42,8 +42,7 @@ public:
      *    @param [in] input               The input text to parse.
      *    @param [in] targetComponent     The component to add all the imported ports to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent,
-        QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
+	virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
 
     /*!
      *  Sets the given highlighter to be used by the port parser.
@@ -129,6 +128,15 @@ private:
     QString removeIgnoredLines(QString const& portSection) const ;
 
     /*!
+     *  Removes all the comments from the given input.
+     *
+     *    @param [in] input     The selected input.
+     *
+     *    @return Input without comments.
+     */
+    QString removeAllComments(QString const& input) const;
+
+    /*!
      *  Finds all port declarations from a ports section without comment lines.
      *
      *    @param [in] portSectionWithoutCommentLines   The section of the Verilog containing the ports in module
@@ -144,9 +152,7 @@ private:
      *    @param [in] declaration         The declaration from which to create a port.
      *    @param [in] targetComponent     The component to which add the port.
      */
-    void createPortFromDeclaration(QString const& portDeclaration, 
-        QSharedPointer<Component> targetComponent, 
-        QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;    
+	void createPortFromDeclaration(QString const& portDeclaration, QSharedPointer<Component> targetComponent) const;
 
     /*!
      *  Highlights the given port declaration.

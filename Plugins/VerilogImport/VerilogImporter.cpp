@@ -173,7 +173,7 @@ void VerilogImporter::import(QString const& input, QString const& componentDecla
         importModelName(componentDeclaration, targetComponentInstantiation);
 
         parameterParser_.import(componentDeclaration, targetComponent, targetComponentInstantiation);
-        portParser_.import(componentDeclaration, targetComponent, targetComponentInstantiation);
+		portParser_.import(componentDeclaration, targetComponent);
         instanceParser_.import(input, componentDeclaration, targetComponent);
     }
 }

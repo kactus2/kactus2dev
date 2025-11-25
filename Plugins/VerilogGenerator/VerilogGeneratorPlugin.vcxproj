@@ -131,6 +131,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\common\expressions\utilities.cpp" />
     <ClCompile Include="..\..\editors\common\TopComponentParameterFinder.cpp" />
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
     <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="VerilogWriterFactory\VerilogWriterFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\common\expressions\utilities.h" />
     <ClInclude Include="..\..\editors\common\TopComponentParameterFinder.h" />
     <QtMoc Include="..\..\mainwindow\MessageConsole\messageconsole.h">
     </QtMoc>
