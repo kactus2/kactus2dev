@@ -802,7 +802,7 @@ void Generator::createGlobalAddressSpaceFromEndpoints(
     QString hexRange = QString::number(addrSpaceSize, 16).rightJustified(4, '0').toUpper();
     QString ipxactRange = "'h" + hexRange;
 
-    QString addrWidth = QString::number(config_->addressWidth);
+    QString addrWidth = config_->addressWidth;
     globalAddressSpaceName_ = ConfigJsonParser::busTypeToStr(config_->busType).toStdString() + "_global_space";
     createAddressSpace(globalAddressSpaceName_, ipxactRange, addrWidth);
 }

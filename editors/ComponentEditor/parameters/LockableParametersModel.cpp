@@ -28,14 +28,6 @@ LockableParametersModel::LockableParametersModel(ParametersInterface* parameterI
 }
 
 //-----------------------------------------------------------------------------
-// Function: LockableParametersModel::~LockableParametersModel()
-//-----------------------------------------------------------------------------
-LockableParametersModel::~LockableParametersModel()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: LockableParametersModel::data()
 //-----------------------------------------------------------------------------
 QVariant LockableParametersModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const

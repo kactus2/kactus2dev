@@ -834,8 +834,8 @@ void Dialog::accept()
     config->clkVLNV = clkVLNV;
     config->rstVLNV = rstVLNV;
     config->busType = InterconnectGeneration::ConfigJsonParser::strToBusType(busType.split(".abs")[0]);
-    config->addressWidth = -1;
-    config->dataWidth = -1;
+    config->addressWidth = QString();
+    config->dataWidth = QString();
     config->addressWidthParamName = addrWidthParamName_;
     config->dataWidthParamName = dataWidthParamName_;
     config->idWidth = 8;
@@ -847,14 +847,17 @@ void Dialog::accept()
     
     addrWidthValue_ = QString::fromStdString(parameterGroupBox_->getInterface()->getValueFormattedExpression(addrWidthParamName_.toStdString()));
 
-    // Get value of addr and data width, check if they are 32 or 64 (for AXI), complain if not (again, if AXI)
-    // TODO set value for axi_pkg::xbar_rule_XX_t (32 or 64 depending onr addr width, XX if no addr width or not resolved) 
+    // Get value of addr and data width, check if they are 32 or 64, complain if not (requirement of AXI4(LITE) implementation used)
     if (rtlGenerationSelected() && (config->busType == BusType::AXI4 || config->busType == BusType::AXI4LITE))
     {
         bool widthOk = false;
-        auto val = expressionParser_->parseExpression(addrWidthValue_, &widthOk).toUInt();
+        auto val = expressionParser_->parseExpression(addrWidthValue_, &widthOk).toInt();
 
-        if (!widthOk || val != 32 || val != 64)
+        if (widthOk && (val == 32 || val == 64))
+        {
+            config_->parsedAddressWidth = val;
+        }
+        else
         {
             if (QMessageBox::warning(this, "Unsupported configuration", "Warning: Unsupported address width. Continue?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
             {
@@ -982,8 +985,8 @@ void Dialog::collectSelectedInterfaces()
                 auto formattedStartValue = expressionFormatter_->formatReferringExpression(singleInterface.startValue);
                 auto formattedRangeValue = expressionFormatter_->formatReferringExpression(singleInterface.range);
 
-                addr.start = singleInterface.startValue.isEmpty() ? "##address##" : formattedStartValue;
-                addr.end = singleInterface.range.isEmpty() ? "##address##" : formattedRangeValue;
+                addr.start = singleInterface.startValue.isEmpty() ? "##null##" : formattedStartValue;
+                addr.end = singleInterface.range.isEmpty() ? "##null##" : formattedRangeValue;
 
                 TargetStruct target;
                 target.name = currentInstance + "_" + singleInterface.name;

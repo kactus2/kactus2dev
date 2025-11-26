@@ -223,8 +223,18 @@ void InterconnectRTLWriter::writeAxiAddrMap(QTextStream& stream)
     stream << indent() << "localparam " << addrRulesParam_ << " = "
         << axiTargetParam_ << " + " << targetRegions << ";\n";
 
-    stream << indent() << "typedef axi_pkg::xbar_rule_" << config_->addressWidth
-        << "_t " << ruleType_ << ";\n" << Qt::endl;
+    // parsedAddressWidth should be set to either 32 or 64. Invalid, if neither (i.e. invalid width for AXI)
+    if (config_->parsedAddressWidth == 32 || config_->parsedAddressWidth == 64)
+    {
+        stream << indent() << "typedef axi_pkg::xbar_rule_" << config_->parsedAddressWidth
+            << "_t " << ruleType_ << ";\n" << Qt::endl;
+    }
+    else
+    {
+        // Invalid width marked as X
+        stream << indent() << "typedef axi_pkg::xbar_rule_X_t " << ruleType_ << ";\n" << Qt::endl;
+    }
+
     stream << indent() << ruleType_ << " [" << addrRulesParam_ << "-1:0] "
         << addrMapXBAR_ << ";\n" << Qt::endl;
     stream << indent() << "assign " << addrMapXBAR_ << " = '{" << Qt::endl;
@@ -244,14 +254,19 @@ void InterconnectRTLWriter::writeAxiAddrMap(QTextStream& stream)
             uint64_t startValue = startStr.mid(startStr.indexOf('h') + 1).toULongLong(&startOk, 16);
             uint64_t endValue = rangeStr.mid(startStr.indexOf('h') + 1).toULongLong(&rangeOk, 16);
 
+            // If value can be converted to numeric value, display it
             if (startOk && rangeOk) {
                 uint64_t sum = startValue + endValue + 1; // start >=, end <
                 rangeStr = /*QString::number(config_->AddressWidth)*/ + "'h" + QString::number(sum, 16).toUpper();
             }
             else
             {
-                // if parameters are used, create new expression for end andress using them
-                rangeStr = startStr + "+" + rangeStr;
+                // If start or range are parameterized, create new expression for end andress using parameterized expression.
+                // Otherwise, if empty, leave it as default (##null## = no value set)
+                if (rangeStr.compare("##null##") != 0 && startStr.compare("##null##") != 0)
+                {
+                    rangeStr = startStr + "+" + rangeStr;
+                }
             }
             
             stream << indent(2)
@@ -544,13 +559,15 @@ void InterconnectRTLWriter::writeObiAddrMap(QTextStream& stream) {
 
             if (startOk && rangeOk) {
                 uint64_t sum = startValue + endValue + 1; // start >=, end <
-                rangeStr = QString::number(config_->addressWidth) + "'h" + QString::number(sum, 16).toUpper();
+                rangeStr = "'h" + QString::number(sum, 16).toUpper();
             }
 
             stream << indent(2)
-                << "'{idx: " << IdWidthInits_ << "'('d" << target.index
-                << "), start_addr: " << config_->addressWidthParamName << "'(" << startStr
-                << "), end_addr: " << config_->addressWidthParamName << "'(" << rangeStr << ")"
+                << "'{idx: " << IdWidthInits_ << "'('d" << target.index << "),"
+                //<< "start_addr: " << config_->addressWidthParamName << "'(" << startStr << "), "  // No need to state width explicitly
+                //<< "end_addr: " << config_->addressWidthParamName << "'(" << rangeStr << ")"
+                << "start_addr: " << startStr << "), "
+                << "end_addr: " << rangeStr << ")"
                 << ((regionCounter == targetRegions + config_->targetList.size()) ? "} " : "},")
                 << " // Target: " << target.name << "\n";
         }

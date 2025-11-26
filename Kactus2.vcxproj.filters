@@ -3419,7 +3419,7 @@
       <Filter>Source Files\editors\InterconnectGenerator</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\LockableParametersModel.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5873,7 +5873,7 @@
       <Filter>Header Files\common\layouts</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\parameters\LockableParametersModel.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -28,43 +28,44 @@ ConfigStruct* ConfigJsonParser::readFile() {
                 config_.clkVLNV = jsonObj.value("clk").toString();
                 config_.rstVLNV = jsonObj.value("rst").toString();
 
-                config_.busType = strToBusType(jsonObj.value("Bus type").toString());
-                config_.addressWidth = jsonObj.value("Address width").toInt();
-                config_.idWidth = jsonObj.value("ID width").toInt();
-                config_.userWidth = jsonObj.value("User width").toInt();
+                config_.busType = strToBusType(jsonObj.value("busType").toString());
+                config_.addressWidth = jsonObj.value("addressWidth").toString(); // corresponds to parsedAddressWidth in config struct
+                config_.dataWidth = jsonObj.value("dataWidth").toString();
+                config_.idWidth = jsonObj.value("idWidth").toInt();
+                config_.userWidth = jsonObj.value("userWidth").toInt();
 
-                QJsonArray initListArr = jsonObj.value("Initiators").toArray();
+                QJsonArray initListArr = jsonObj.value("initiators").toArray();
                 config_.initList.resize(initListArr.size());
 
                 for(int n=0; n<initListArr.size(); n++){
                     QJsonObject initObj = initListArr.at(n).toObject();
                     InitStruct init;
 
-                    init.index = initObj.value("Index").toInt();
-                    init.name = initObj.value("Name").toString();
+                    init.index = initObj.value("index").toInt();
+                    init.name = initObj.value("name").toString();
                     //init.dataWidth = initObj.value("Data width").toInt();
 
                     config_.initList[init.index] = init;
                }
 
-                QJsonArray targetListArr = jsonObj.value("Targets").toArray();
+                QJsonArray targetListArr = jsonObj.value("targets").toArray();
                 config_.targetList.resize(targetListArr.size());
 
                 for(int i=0; i<targetListArr.size(); i++){
                     QJsonObject targetObj = targetListArr.at(i).toObject();
                     TargetStruct target;
 
-                    target.index = targetObj.value("Index").toInt();
-                    target.name = targetObj.value("Name").toString();
+                    target.index = targetObj.value("index").toInt();
+                    target.name = targetObj.value("name").toString();
                     //target.dataWidth = targetObj.value("Data width").toInt();
 
-                    QJsonArray addrRegionArr = targetObj.value("Address regions").toArray();
+                    QJsonArray addrRegionArr = targetObj.value("addressRegions").toArray();
 
                     for(int k=0; k<addrRegionArr.size(); ++k){
                         QJsonObject addrObj = addrRegionArr.at(k).toObject();
                         AddressPair addrPair;
-                        addrPair.start = addrObj.value("Start").toString();
-                        addrPair.end = addrObj.value("End").toString();
+                        addrPair.start = addrObj.value("start").toString();
+                        addrPair.end = addrObj.value("end").toString();
                         target.addressRegions.append(addrPair);
                     }
                     config_.targetList[target.index] = target;

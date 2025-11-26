@@ -52,11 +52,12 @@ namespace InterconnectGeneration
         QString clkVLNV;
         QString rstVLNV;
         BusType busType;
-        int addressWidth;
-        int dataWidth;
-        int idWidth;
-        int userWidth;
-        bool isChannel;
+        QString addressWidth;
+        QString dataWidth;
+        int parsedAddressWidth = -1;
+        int idWidth = -1;
+        int userWidth = -1;
+        bool isChannel = false;
         QString addressWidthParamName;
         QString dataWidthParamName;
         QList<QSharedPointer<Parameter>> interconnectParams;

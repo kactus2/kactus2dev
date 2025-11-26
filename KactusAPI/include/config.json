@@ -4,31 +4,28 @@
   "bus": "tuni.fi:interface:AXI4LITE:1.0",
   "clk": "tuni.fi:interface:clock:1.0",
   "rst": "tuni.fi:interface:reset:1.0",
-  "Bus type": "AXI4LITE",
-  "Address width": 32,
-  "ID width": 8,
-  "User width": 1,
-  "Initiators": [
-  	{"Index": 0,
-  	"Name": "i_SysCtrl_peripherals",
-  	"Data width": 32},
-  	{"Index": 1,
-  	"Name": "initComp2",
-  	"Data width": 32}],
-  "Targets":[
-	{"Index": 0,
-	"Name": "core_imem_bridge",
-	"Data width": 32,
-	"Address regions":[
-		{"Start": "0x00000000",
-		"End": "0x0000ffff"},
-		{"Start": "0x00010000",
-		"End": "0x0001ffff"}]},
-	{"Index": 1,
-	"Name": "jtag_dbg_wrapper",
-	"Data width": 32,
-	"Address regions":[
-		{"Start": "0x00020000",
-		"End": "0x0002ffff"}]}
+  "busType": "AXI4LITE",
+  "addressWidth": "32",
+  "dataWidth": "32",
+  "idWidth": 8,
+  "userWidth": 1,
+  "initiators": [
+  	{"index": 0,
+  	"name": "i_SysCtrl_peripherals"},
+  	{"index": 1,
+  	"name": "initComp2"}],
+  "targets":[
+	{"index": 0,
+	"name": "core_imem_bridge",
+	"addressRegions":[
+		{"start": "0x00000000",
+		"end": "0x0000ffff"},
+		{"start": "0x00010000",
+		"end": "0x0001ffff"}]},
+	{"index": 1,
+	"name": "jtag_dbg_wrapper",
+	"addressRegions":[
+		{"start": "0x00020000",
+		"end": "0x0002ffff"}]}
 	]
 }
