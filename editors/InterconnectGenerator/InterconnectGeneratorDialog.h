@@ -49,6 +49,7 @@
 
 class ExpressionEditor;
 class InstanceInterfacesEditor;
+class ParameterReferenceCounter;
 
 namespace InterconnectGeneration
 {
@@ -391,6 +392,9 @@ namespace InterconnectGeneration
 
         //! Set containing all editors for added instances
         QSet<InstanceInterfacesEditor*> instanceEditors_;
+
+        //! Reference counter for interconnect component parameters
+        QSharedPointer<ParameterReferenceCounter> paramRefCounter_;
 
         QString addrWidthParamName_;
         QString dataWidthParamName_;

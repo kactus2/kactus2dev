@@ -12,6 +12,8 @@
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <editors/ComponentEditor/parameters/ParameterColumns.h>
 
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+
 #include <QMessageBox>
 
 using namespace InterconnectGeneration;
@@ -46,6 +48,15 @@ Dialog::Dialog(DesignWidget* designWidget, LibraryHandler* library,
     parameterGroupBox_ = new ParameterGroupBox(parameters, choices, listFinder, expressionFormatter_,
         designWidget_->getEditedComponent()->getRevision(), this);
     parameterGroupBox_->setTitle("Interconnect Component Parameters");
+
+    paramRefCounter_ = QSharedPointer<ParameterReferenceCounter>(new ParameterReferenceCounter(parameterFinder_));
+    connect(parameterGroupBox_, SIGNAL(increaseReferences(QString)), paramRefCounter_.data(), SLOT(increaseReferenceCount(QString const&)), Qt::UniqueConnection);
+    connect(parameterGroupBox_, SIGNAL(decreaseReferences(QString)), paramRefCounter_.data(), SLOT(decreaseReferenceCount(QString const&)), Qt::UniqueConnection);
+    connect(parameterGroupBox_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        paramRefCounter_.data(),
+        SLOT(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        Qt::UniqueConnection);
 
     dataModel_ = QSharedPointer<InterconnectDataModel>::create(designWidget_, library_, messager_);
     dataModel_->gatherBusAndAbstractionData();
@@ -127,7 +138,9 @@ void Dialog::populateParameters()
 
     interconnectParams_ = QSharedPointer<QList<QSharedPointer<Parameter>>>::create();
     for (const auto& param : *absDef->getParameters()) {
-        interconnectParams_->append(QSharedPointer<Parameter>::create(*param));
+        auto copiedParam = QSharedPointer<Parameter>::create(*param);
+        copiedParam->setUsageCount(0);
+        interconnectParams_->append(copiedParam);
     }
 
     auto copiedChoices = QSharedPointer<QList<QSharedPointer<Choice>>>::create();
