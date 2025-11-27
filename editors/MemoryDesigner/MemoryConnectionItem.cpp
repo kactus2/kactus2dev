@@ -556,6 +556,23 @@ void MemoryConnectionItem::setupLabels(quint64 const& leftStartValue, quint64 co
     firstItemEndLabel_->setPlainText(leftEndValueInHexa);
     secondItemStartLabel_->setPlainText(rightStartValueInHexa);
     secondItemEndLabel_->setPlainText(rightEndValueInHexa);
+
+    if (startItem_->getBaseAddress() == leftStartValue)
+    {
+        firstItemStartLabel_->hide();
+    }
+	if (startItem_->getLastAddress() == leftEndValue)
+	{
+		firstItemEndLabel_->hide();
+	}
+	if (endItem_->getBaseAddress() == rightStartValue)
+	{
+		secondItemStartLabel_->hide();
+	}
+	if (endItem_->getLastAddress() == rightEndValue)
+	{
+		secondItemEndLabel_->hide();
+	}
 }
 
 //-----------------------------------------------------------------------------

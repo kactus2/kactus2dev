@@ -169,19 +169,19 @@ void GlobalMemoryMapHeaderWriter::parseInterface(qint64 offset, QTextStream& str
     if (busInterface)
     {
         General::InterfaceMode interfaceMode = busInterface->getInterfaceMode();
-        if (interfaceMode == General::MASTER)
+        if (interfaceMode == General::MASTER || interfaceMode == General::INITIATOR)
         {
             parseMasterInterface(offset, component, stream, interface);
         }
-        else if (interfaceMode == General::SLAVE)
+        else if (interfaceMode == General::SLAVE || interfaceMode == General::TARGET)
         {
             parseSlaveInterface(offset, component, stream, interface);
         }
-        else if (interfaceMode == General::MIRRORED_SLAVE)
+        else if (interfaceMode == General::MIRRORED_SLAVE || interfaceMode == General::MIRRORED_TARGET)
         {
             parseMirroredSlaveInterface(offset, component, stream, interface);
         }
-        else if (interfaceMode == General::MIRRORED_MASTER)
+        else if (interfaceMode == General::MIRRORED_MASTER || interfaceMode == General::MIRRORED_INITIATOR)
         {
             parseMirroredMasterInterface(offset, component, stream, interface);
         }
@@ -326,28 +326,30 @@ void GlobalMemoryMapHeaderWriter::parseMirroredSlaveInterface(qint64 offset, QSh
 // Function: GlobalMemoryMapHeaderWriter::parseMirroredMaster()
 //-----------------------------------------------------------------------------
 void GlobalMemoryMapHeaderWriter::parseMirroredMasterInterface(qint64 offset, QSharedPointer<Component> component,
-    QTextStream& stream, QSharedPointer<ActiveInterface> interface)
+    QTextStream& stream, QSharedPointer<ActiveInterface> currentInterface)
 {
     // mirrored master interfaces are connected via channels
     // find the interfaces connected to the specified mirrored master interface
     QStringList connectedInterfaceNames;
     for (QSharedPointer<Channel> channel : *component->getChannels())
     {
-        if (channel->getInterfaceNames().contains(interface->getBusReference()))
+        if (channel->getInterfaceNames().contains(currentInterface->getBusReference()))
         {
             connectedInterfaceNames.append(channel->getInterfaceNames());
         }
     }
 
     connectedInterfaceNames.removeDuplicates();
-    connectedInterfaceNames.removeAll(interface->getBusReference());
+    connectedInterfaceNames.removeAll(currentInterface->getBusReference());
 
     QVector<QSharedPointer<const BusInterface> > connectedInterfaces;
 
     for (QString const& interfaceName : connectedInterfaceNames)
     {
         QSharedPointer<BusInterface> connectedInterface = component->getBusInterface(interfaceName);
-        if (connectedInterface)
+        auto busMode = connectedInterface->getInterfaceMode();
+        if (connectedInterface &&
+            (busMode != General::MIRRORED_MASTER && busMode != General::MIRRORED_INITIATOR))
         {
             connectedInterfaces.append(connectedInterface);
         }
@@ -355,7 +357,7 @@ void GlobalMemoryMapHeaderWriter::parseMirroredMasterInterface(qint64 offset, QS
 
     for (QSharedPointer<const BusInterface> busif: connectedInterfaces)
     {
-        QSharedPointer<ActiveInterface> connectedInterface(new ActiveInterface(interface->getComponentReference(),
+        QSharedPointer<ActiveInterface> connectedInterface(new ActiveInterface(currentInterface->getComponentReference(),
             busif->name()));
         if (!operatedInterfaces_.contains(connectedInterface))
         {

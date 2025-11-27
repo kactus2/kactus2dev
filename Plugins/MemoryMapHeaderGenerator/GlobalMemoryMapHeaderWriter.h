@@ -135,7 +135,7 @@ private:
      *    @param [in] interFace   Identifies the current interface to parse.
      */
     void parseMirroredMasterInterface(qint64 offset, QSharedPointer<Component> component, QTextStream& stream,
-        QSharedPointer<ActiveInterface> interface);
+        QSharedPointer<ActiveInterface> currentInterface);
 
     /*!
      *  Creates the parameter finder using configurable element values of the instance.

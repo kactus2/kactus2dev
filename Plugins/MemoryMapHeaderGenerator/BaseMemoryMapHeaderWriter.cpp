@@ -301,7 +301,7 @@ void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFin
             QString addressStart = QString::number(addressOffset, 16);
             addressStart.prepend("0x");
 
-            QString endAddress = getAddressBlockLastAddress(currentAddressBlock, expressionParser);
+            QString endAddress = getAddressBlockLastAddress(offset, currentAddressBlock, expressionParser);
             
             stream << "/*" << Qt::endl;
             if (currentAddressBlock->getUsage() == General::MEMORY)
@@ -356,13 +356,15 @@ void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFin
 //-----------------------------------------------------------------------------
 // Function: BaseMemoryMapHeaderWriter::getAddressBlockLastAddress()
 //-----------------------------------------------------------------------------
-QString BaseMemoryMapHeaderWriter::getAddressBlockLastAddress(QSharedPointer<AddressBlock> targetAddressBlock,
+QString BaseMemoryMapHeaderWriter::getAddressBlockLastAddress(
+    quint64 const& offset,
+    QSharedPointer<AddressBlock> targetAddressBlock,
     QSharedPointer<ExpressionParser> expressionParser) const
 {
     QString parsedBaseAddress = expressionParser->parseExpression(targetAddressBlock->getBaseAddress());
     QString parsedRange = expressionParser->parseExpression(targetAddressBlock->getRange());
 
-    quint64 lastAddress = parsedBaseAddress.toUInt() + parsedRange.toUInt();
+    quint64 lastAddress = offset + parsedBaseAddress.toUInt() + parsedRange.toUInt();
     QString lastAddressString = "0x";
     if (lastAddress != 0)
     {

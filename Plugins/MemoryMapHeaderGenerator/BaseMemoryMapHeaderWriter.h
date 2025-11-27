@@ -158,14 +158,16 @@ protected:
     /*!
      *  Gets the ending address of an address block.
      *
-     *    @param [in] targetAddressBlock  The address block being examined.
-     *    @param [in] expressionParser    The expression parser.
+     *      @param [in] offset              The current offset
+     *      @param [in] targetAddressBlock  The address block being examined.
+     *      @param [in] expressionParser    The expression parser.
      *
-     *    @return The ending address of the address block.
+     *      @return The ending address of the address block.
      */
-    QString getAddressBlockLastAddress(QSharedPointer<AddressBlock> targetAddressBlock,
-        QSharedPointer<ExpressionParser> expressionParser) const;
-    
+	QString getAddressBlockLastAddress(quint64 const& offset,
+        QSharedPointer<AddressBlock> targetAddressBlock,
+		QSharedPointer<ExpressionParser> expressionParser) const;
+
     /*!
      *  Get the parsed value for a given expression.
      *
