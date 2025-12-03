@@ -998,6 +998,7 @@ CreateHelp
     <ClCompile Include="Plugins\common\LanguageHighlighter.cpp" />
     <ClCompile Include="Plugins\common\SingleCpuRoutesContainer.cpp" />
     <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp" />
+    <ClCompile Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp" />
     <ClCompile Include="PythonAPI\ChannelRelay.cpp" />
     <ClCompile Include="PythonAPI\extensions\IOCatcher.cpp" />
     <ClCompile Include="PythonAPI\FileChannel.cpp" />
@@ -2269,6 +2270,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="PythonAPI\ChannelRelay.h">
     </QtMoc>
+    <QtMoc Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h" />
     <ClInclude Include="PythonAPI\extensions\IOCatcher.h" />
     <QtMoc Include="PythonAPI\FileChannel.h">
     </QtMoc>

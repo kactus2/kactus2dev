@@ -2,6 +2,8 @@
 #include "InterconnectDataModel.h"
 #include "InstanceInterfacesEditor.h"
 
+#include <Plugins/PluginSystem/GeneratorPlugin/AddToFilesetWidget.h>
+
 #include <KactusAPI/KactusAPI.h>
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -15,6 +17,7 @@
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 
 #include <QMessageBox>
+#include <QApplication>
 
 using namespace InterconnectGeneration;
 
@@ -115,7 +118,7 @@ QHash<QString, QList<QSharedPointer<EndpointData>>> Dialog::getSelectedEndpoints
 //-----------------------------------------------------------------------------
 bool Dialog::rtlGenerationSelected()
 {
-    return generateRTLCheckBox_->isChecked();
+    return rtlGenerationGroup_->isChecked();
 }
 
 //-----------------------------------------------------------------------------
@@ -712,21 +715,28 @@ QWidget* Dialog::createInterconnectModeSelector()
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectGeneratorDialog::createGenerateRtlCheckbox()
+// Function: InterconnectGeneratorDialog::createRtlOutputSection()
 //-----------------------------------------------------------------------------
-QWidget* Dialog::createGenerateRtlCheckbox()
+QWidget* InterconnectGeneration::Dialog::createRtlOutputSection()
 {
-    QGroupBox* rtlGenerationGroup = new QGroupBox(tr("Generate RTL"), this);
+    rtlGenerationGroup_ = new QGroupBox(tr("Generate RTL (for compatible abstraction definitions)"), this);
+    rtlGenerationGroup_->setCheckable(true);
+    rtlGenerationGroup_->setToolTip("RTL generation support is currently only provided for TUNI-authored abstractions for OBI and AXI4/AXI4LITE.");
+    rtlGenerationGroup_->setChecked(false);
+
+    // Set the style of disabled group box text to match other disabled widgets
+    QPalette palette = QApplication::palette();
+    QColor color = palette.color(QPalette::Disabled, QPalette::Text);
+    rtlGenerationGroup_->setStyleSheet("QGroupBox::title::disabled { color: " + color.name() + " }");
+
     auto layout = new QVBoxLayout();
-    
-    generateRTLCheckBox_ = new QCheckBox("Generate RTL code (for compatible abstraction definitions)");
-    generateRTLCheckBox_->setToolTip("RTL generation support is currently only provided for TUNI-authored abstractions for OBI and AXI4/AXI4LITE.");
-    layout->addWidget(generateRTLCheckBox_);
-    rtlGenerationGroup->setLayout(layout);
+    rtlGenerationGroup_->setLayout(layout);
 
-    generateRTLCheckBox_->setEnabled(rtlCanBeGenerated());
+    // Add file output stuff
+    addToFileSet_ = new AddToFilesetWidget(this);
+    layout->addWidget(addToFileSet_);
 
-    return rtlGenerationGroup;
+    return rtlGenerationGroup_;
 }
 
 //-----------------------------------------------------------------------------
@@ -781,11 +791,14 @@ void Dialog::setUpLayout()
 
     auto leftSideLayout = new QVBoxLayout();
     leftSideLayout->addWidget(createTopConfigSection());
+    leftSideLayout->addWidget(createRtlOutputSection());
     leftSideLayout->addWidget(parameterGroupBox_);
+
+    // Refresh rtl checkbox status after creation
+    onAbsDefChanged(absDefCombo_->currentIndex());
 
     auto rightSideLayout = new QVBoxLayout();
     rightSideLayout->addWidget(createInterconnectModeSelector());
-    rightSideLayout->addWidget(createGenerateRtlCheckbox());
     rightSideLayout->addWidget(createInstancesSection());
 
     leftRightLayout->addLayout(leftSideLayout);
@@ -931,9 +944,19 @@ void Dialog::onAbsDefChanged(int currentIndex)
     }
     previousAbsDefIndex_ = currentIndex;
 
-    // Check if new abs def selection allows for RTL generation
-    generateRTLCheckBox_->setEnabled(rtlCanBeGenerated());
-    generateRTLCheckBox_->setChecked(false);
+    // Check if new abs def selection allows for RTL generation, disable/enable widgets accordingly
+    if (rtlCanBeGenerated() == false)
+    {
+        rtlGenerationGroup_->setEnabled(false);
+        rtlGenerationGroup_->setChecked(false);
+
+        addToFileSet_->setChecked(false);
+    }
+    else
+    {
+        rtlGenerationGroup_->setEnabled(true);
+        rtlGenerationGroup_->setChecked(rtlGenerationGroup_->isChecked());
+    }
 }
 
 //-----------------------------------------------------------------------------

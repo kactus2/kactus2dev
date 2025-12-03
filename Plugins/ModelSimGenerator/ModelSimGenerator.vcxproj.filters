@@ -58,9 +58,6 @@
     <ClCompile Include="ModelSimGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
-    
     <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
@@ -70,14 +67,6 @@
     <ClCompile Include="..\common\HDLParser\MetaInstance.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
-    
-    
-    
-    
-    
-    
-    
-    
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
@@ -102,8 +91,6 @@
     <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp">
       <Filter>Source Files\Widgets</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="ModelSimWriterFactory\ModelSimWriterFactory.cpp">
       <Filter>Source Files\ModelSimWriterFactory</Filter>
     </ClCompile>
@@ -115,6 +102,9 @@
     </ClCompile>
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,5 +179,10 @@
     <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

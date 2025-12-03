@@ -50,6 +50,7 @@
 class ExpressionEditor;
 class InstanceInterfacesEditor;
 class ParameterReferenceCounter;
+class AddToFilesetWidget;
 
 namespace InterconnectGeneration
 {
@@ -181,7 +182,7 @@ namespace InterconnectGeneration
          *
          *  @return Pointer to the created QWidget.
          */
-        QWidget* createGenerateRtlCheckbox();
+        QWidget* createRtlOutputSection();
 
         /*!
          *	Checks the selected abstraction definition for RTL generation compatibility. Compatible VLNVs are
@@ -340,7 +341,10 @@ namespace InterconnectGeneration
         QCheckBox* resetCheckBox_;
 
         //! Checkbox to select if RTL code should be generated if compatible abs def is selected.
-        QCheckBox* generateRTLCheckBox_;
+        QGroupBox* rtlGenerationGroup_;
+
+        //! Widget for adding generated rtl to a file set.
+        AddToFilesetWidget* addToFileSet_;
 
         //! Radio button to choose channel-based interconnect generation.
         QRadioButton* channelButton_;

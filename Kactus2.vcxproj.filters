@@ -3421,6 +3421,9 @@
     <ClCompile Include="editors\ComponentEditor\parameters\LockableParametersModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
+    <ClCompile Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6181,6 +6184,9 @@
     </QtMoc>
     <QtMoc Include="editors\interconnectgenerator\InstanceInterfacesEditor.h">
       <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </QtMoc>
+    <QtMoc Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h">
+      <Filter>Header Files\Plugins\common</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

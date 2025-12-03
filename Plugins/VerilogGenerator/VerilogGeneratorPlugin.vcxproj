@@ -141,6 +141,7 @@
     <ClCompile Include="..\common\LanguageHighlighter.cpp" />
     <ClCompile Include="..\common\PortSorter\InterfaceDirectionNameSorter.cpp" />
     <ClCompile Include="..\common\SourceHighlightStyle.cpp" />
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="..\common\PortSorter\InterfaceDirectionNameSorter.h" />
     <ClInclude Include="..\common\PortSorter\PortSorter.h" />
     <ClInclude Include="..\common\SourceHighlightStyle.h" />
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h" />
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.h">
     </QtMoc>

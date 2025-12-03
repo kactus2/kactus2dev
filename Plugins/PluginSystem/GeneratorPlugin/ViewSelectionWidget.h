@@ -12,6 +12,8 @@
 #ifndef VIEWSELECTIONWIDGET_H
 #define VIEWSELECTIONWIDGET_H
 
+#include "AddToFilesetWidget.h"
+
 #include <QComboBox>
 #include <QGroupBox>
 #include <QLabel>
@@ -63,19 +65,13 @@ private:
 	QComboBox* viewSelection_;
 
 	// The group box for file set selection
-	QGroupBox* addToFileset_;
+	AddToFilesetWidget* addToFileset_;
 
 	// The combobox to select the desired component instantiation.
 	QLabel* instantiationSelection_;
 
 	// The label informing the known language of the currently select instantiation.
 	QLabel* instantiationLanguage_;
-
-	// The combobox to select the desired component instantiation.
-	QComboBox* fileSetSelection_;
-
-	// The label to give warnings about file set selection.
-	QLabel* fileSetWarningLabel_;
 };
 
 #endif //VIEWSELECTIONWIDGET_H
