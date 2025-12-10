@@ -27,6 +27,7 @@ ConfigStruct* ConfigJsonParser::readFile() {
                 config_.busVLNV = jsonObj.value("bus").toString();
                 config_.clkVLNV = jsonObj.value("clk").toString();
                 config_.rstVLNV = jsonObj.value("rst").toString();
+                config_.filesetToGenerate = jsonObj.value("filesetToGenerate").toString();
 
                 config_.busType = strToBusType(jsonObj.value("busType").toString());
                 config_.addressWidth = jsonObj.value("addressWidth").toString(); // corresponds to parsedAddressWidth in config struct

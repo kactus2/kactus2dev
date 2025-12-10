@@ -4,6 +4,7 @@
   "bus": "tuni.fi:interface:AXI4LITE:1.0",
   "clk": "tuni.fi:interface:clock:1.0",
   "rst": "tuni.fi:interface:reset:1.0",
+  "filesetToGenerate": "example_fileset",
   "busType": "AXI4LITE",
   "addressWidth": "32",
   "dataWidth": "32",

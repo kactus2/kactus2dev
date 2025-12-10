@@ -51,6 +51,7 @@ namespace InterconnectGeneration
         QString busVLNV;
         QString clkVLNV;
         QString rstVLNV;
+        QString filesetToGenerate;
         BusType busType;
         QString addressWidth;
         QString dataWidth;

@@ -312,6 +312,11 @@ namespace InterconnectGeneration
          */
         quint64 parseIpxactHex(const QString& str, bool* ok);
 
+        /*!
+         *	Creates file and file set for generated rtl
+         */
+        void createFileAndFileset();
+
         //-----------------------------------------------------------------------------
         // Data.
         //-----------------------------------------------------------------------------

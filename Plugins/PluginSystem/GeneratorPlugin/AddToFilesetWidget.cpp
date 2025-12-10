@@ -28,7 +28,7 @@ AddToFilesetWidget::AddToFilesetWidget(QWidget* parent) : QGroupBox(tr("Add file
 
     QFormLayout* filesetLayout = new QFormLayout();
     setLayout(filesetLayout);
-    filesetLayout->addRow(tr("Select file set:"), &fileSetSelection_);
+    filesetLayout->addRow(tr("Select or create new file set:"), &fileSetSelection_);
     filesetLayout->addWidget(&fileSetWarningLabel_);
 
     connect(&fileSetSelection_, SIGNAL(currentTextChanged(QString const&)),
@@ -38,11 +38,12 @@ AddToFilesetWidget::AddToFilesetWidget(QWidget* parent) : QGroupBox(tr("Add file
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddToFilesetWidget::~AddToFilesetWidget()
+// Function: AddToFilesetWidget::clear()
 //-----------------------------------------------------------------------------
-AddToFilesetWidget::~AddToFilesetWidget()
+void AddToFilesetWidget::clear()
 {
-
+    setChecked(false);
+    fileSetSelection_.clear();
 }
 
 //-----------------------------------------------------------------------------

@@ -18,6 +18,7 @@
 
 #include <QMessageBox>
 #include <QApplication>
+#include <QFileDialog>
 
 using namespace InterconnectGeneration;
 
@@ -76,6 +77,8 @@ Dialog::Dialog(DesignWidget* designWidget, LibraryHandler* library,
     instanceBusesHash_ = dataModel_->getInstanceBusMap();
     interfaceAbsDefsHash_ = dataModel_->getInterfaceAbstractionHash();
     busLookUp_ = dataModel_->createInstanceBusesLookup();
+
+    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onVlnvChanged()), Qt::UniqueConnection);
 
     setUpLayout();
 }
@@ -717,12 +720,14 @@ QWidget* Dialog::createInterconnectModeSelector()
 //-----------------------------------------------------------------------------
 // Function: InterconnectGeneratorDialog::createRtlOutputSection()
 //-----------------------------------------------------------------------------
-QWidget* InterconnectGeneration::Dialog::createRtlOutputSection()
+QWidget* Dialog::createRtlOutputSection()
 {
     rtlGenerationGroup_ = new QGroupBox(tr("Generate RTL (for compatible abstraction definitions)"), this);
     rtlGenerationGroup_->setCheckable(true);
     rtlGenerationGroup_->setToolTip("RTL generation support is currently only provided for TUNI-authored abstractions for OBI and AXI4/AXI4LITE.");
     rtlGenerationGroup_->setChecked(false);
+
+    connect(rtlGenerationGroup_, SIGNAL(toggled(bool)), this, SLOT(onRtlGenerationToggled(bool)), Qt::UniqueConnection);
 
     // Set the style of disabled group box text to match other disabled widgets
     QPalette palette = QApplication::palette();
@@ -731,9 +736,23 @@ QWidget* InterconnectGeneration::Dialog::createRtlOutputSection()
 
     auto layout = new QVBoxLayout();
     rtlGenerationGroup_->setLayout(layout);
-
+    
     // Add file output stuff
     addToFileSet_ = new AddToFilesetWidget(this);
+    
+    // TODO add save location customization later
+    //auto fileSaveLayout = new QHBoxLayout();
+    //auto saveLocationLabel = new QLabel("RTL file output location:");
+    //rtlSaveLocationEdit_ = new QLineEdit(this);
+    //auto browseButton = new QPushButton(QIcon(":/icons/common/graphics/opened-folder.png"), QStringLiteral(""), this);
+
+    //connect(browseButton, SIGNAL(clicked()), this, SLOT(onRtlOutputBrowsePressed()), Qt::UniqueConnection);
+
+    //fileSaveLayout->addWidget(saveLocationLabel);
+    //fileSaveLayout->addWidget(rtlSaveLocationEdit_, 1);
+    //fileSaveLayout->addWidget(browseButton);
+    
+    //layout->addLayout(fileSaveLayout);
     layout->addWidget(addToFileSet_);
 
     return rtlGenerationGroup_;
@@ -873,9 +892,9 @@ void Dialog::accept()
     
     addrWidthValue_ = QString::fromStdString(parameterGroupBox_->getInterface()->getValueFormattedExpression(addrWidthParamName_.toStdString()));
 
-    // Get value of addr and data width, check if they are 32 or 64, complain if not (requirement of AXI4(LITE) implementation used)
     if (rtlGenerationSelected() && (config->busType == BusType::AXI4 || config->busType == BusType::AXI4LITE))
     {
+        // Get value of addr and data width, check if they are 32 or 64, complain if not (requirement of AXI4(LITE) implementation used)
         bool widthOk = false;
         auto val = expressionParser_->parseExpression(addrWidthValue_, &widthOk).toInt();
 
@@ -890,6 +909,34 @@ void Dialog::accept()
                 return;
             }
         }
+
+        // Get currently selected fileset, if selected
+        if (addToFileSet_->isChecked())
+        {
+            config_->filesetToGenerate = addToFileSet_->currentSelection();
+
+            // Generate with default name if empty
+            if (config_->filesetToGenerate.isEmpty())
+            {
+                config_->filesetToGenerate = QStringLiteral("rtl");
+            }
+        }
+
+        // TODO implement save location later 
+        // Check that save location exists
+        //auto savePath = rtlSaveLocationEdit_->text();
+        //auto lastSlash = savePath.lastIndexOf("/");
+        //auto dirPath = savePath.mid(0, lastSlash);
+
+        //auto expectedDefaultPath = KactusAPI::getDefaultLibraryPath() % "/" % vlnvEditor_->getVLNV().getVendor() % "/" % vlnvEditor_->getVLNV().getLibrary() % "/" % vlnvEditor_->getVLNV().getName() % "/" % vlnvEditor_->getVLNV().getVersion();
+
+        //QFileInfo saveInfo(dirPath);
+
+        //if (saveInfo.exists() == false && dirPath != expectedDefaultPath)
+        //{
+        //    QMessageBox::warning(this, "Save location", "Warning: RTL save location doesn't exist", QMessageBox::Ok);
+        //    return;
+        //}
     }
 
 
@@ -1170,4 +1217,63 @@ ConfigurableVLNVReference* Dialog::getCurrentlySelectedAbsDef()
     }
 
     return foundIt->data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Dialog::onRtlOutputBrowsePressed()
+//-----------------------------------------------------------------------------
+//void Dialog::onRtlOutputBrowsePressed()
+//{
+//    auto defaultLibPath = KactusAPI::getDefaultLibraryPath();
+//
+//    QFileDialog browseDialog(this, tr("Select file to save"), defaultLibPath);
+//    browseDialog.setFileMode(QFileDialog::AnyFile);
+//    browseDialog.setDefaultSuffix("v");
+//
+//    if (browseDialog.exec() == QDialog::Accepted)
+//    {
+//        rtlSaveLocationOverridden_ = true;
+//
+//        QStringList selectedFiles = browseDialog.selectedFiles();
+//        if (!selectedFiles.isEmpty())
+//        {
+//            rtlSaveLocationEdit_->setText(selectedFiles.first());
+//        }
+//    }
+//}
+
+//-----------------------------------------------------------------------------
+// Function: Dialog::onVlnvChanged()
+//-----------------------------------------------------------------------------
+void Dialog::onVlnvChanged()
+{
+    // TODO implement later
+    //if ((rtlGenerationGroup_->isChecked() && rtlSaveLocationOverridden_ == false) || 
+    //    (rtlSaveLocationOverridden_ && rtlSaveLocationEdit_->text().isEmpty()))
+    //{
+    //    rtlSaveLocationOverridden_ = false;
+    //    QString defaultPath = KactusAPI::getDefaultLibraryPath();
+    //    QString defaultSavePath = defaultPath % "/" % vlnvEditor_->getVLNV().getVendor() % "/" % vlnvEditor_->getVLNV().getLibrary() % "/" % vlnvEditor_->getVLNV().getName() % "/" % vlnvEditor_->getVLNV().getVersion() % "/";
+    //    QString fullSavePath = defaultSavePath % vlnvEditor_->getVLNV().getName() % ".v";
+    //    rtlSaveLocationEdit_->setText(fullSavePath);
+    //}
+}
+
+//-----------------------------------------------------------------------------
+// Function: Dialog::onRtlGenerationToggled()
+//-----------------------------------------------------------------------------
+void Dialog::onRtlGenerationToggled(bool on)
+{
+    if (on == false)
+    {
+        // TODO implement later
+        //rtlSaveLocationOverridden_ = false;
+        //rtlSaveLocationEdit_->clear();
+        addToFileSet_->clear();
+    }
+    else
+    {
+        // Fill default path
+        onVlnvChanged();
+    }
 }

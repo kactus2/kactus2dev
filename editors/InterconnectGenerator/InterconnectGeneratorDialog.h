@@ -147,6 +147,21 @@ namespace InterconnectGeneration
          */
         void onInterconnectSelectorToggled(bool checked);
 
+        /*!
+         *	Handle browsing for output file location.
+         */
+        //void onRtlOutputBrowsePressed();
+
+        /*!
+         *	Called on change to interconnect component VLNV
+         */
+        void onVlnvChanged();
+
+        /*!
+         *	Called when rtl generation is toggled.
+         */
+        void onRtlGenerationToggled(bool on);
+
     private:
 
         /*!
@@ -342,6 +357,12 @@ namespace InterconnectGeneration
 
         //! Checkbox to select if RTL code should be generated if compatible abs def is selected.
         QGroupBox* rtlGenerationGroup_;
+
+        //! Line edit for rtl file save location.
+        //QLineEdit* rtlSaveLocationEdit_;
+
+        //! Flag to control if default save location should be used or not.
+        //bool rtlSaveLocationOverridden_ = false;
 
         //! Widget for adding generated rtl to a file set.
         AddToFilesetWidget* addToFileSet_;

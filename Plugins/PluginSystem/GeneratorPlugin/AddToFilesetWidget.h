@@ -35,6 +35,11 @@ public:
     virtual ~AddToFilesetWidget() = default;
 
     /*!
+     *	Clear any file set selection and uncheck.
+     */
+    void clear();
+
+    /*!
      *	Set the available file sets.
      *  
      *    @param [in] fileSetNames     Available file set names.

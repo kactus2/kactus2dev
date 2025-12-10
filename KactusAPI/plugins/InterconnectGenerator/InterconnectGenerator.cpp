@@ -1,6 +1,8 @@
 #include "InterconnectGenerator.h"
 
 #include <IPXACTmodels/Component/Channel.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/File.h>
 
 #include <KactusAPI/KactusAPI.h>
 #include <KactusAPI/include/InterconnectRTLWriter.h>
@@ -79,6 +81,12 @@ void Generator::generate(ConfigStruct* config, const QHash<QString, QList<QShare
         interconComponent_->getVlnv().getName() + "/" + interconComponent_->getVlnv().getVersion();
 
     directory_ += vlnvDir;
+    
+    if (generateRtl && config_->filesetToGenerate.isEmpty() == false)
+    {
+        createFileAndFileset();
+    }
+    
     messager_->showMessage(QString("Writing component %1 to file").arg(interconComponent_->getVlnv().toString()));
 
     bool writeSucceeded = true;
@@ -833,4 +841,19 @@ void Generator::createAddressSpace(std::string spaceName, QString range, QString
         new AddressSpace(QString::fromStdString(spaceName), range, width));
 
     interconComponent_->getAddressSpaces()->append(addrSpace);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Generator::createFileAndFileset()
+//-----------------------------------------------------------------------------
+void Generator::createFileAndFileset()
+{
+    QSharedPointer<FileSet> newFileSet(new FileSet(config_->filesetToGenerate));
+    auto filePath = directory_ + "/" + interconComponent_->getVlnv().getName() + ".v";
+
+    QSharedPointer<File> rtlFile(new File(filePath, "verilog"));
+    rtlFile->setDescription("Generated interconnect RTL");
+
+    newFileSet->addFile(rtlFile);
+    interconComponent_->getFileSets()->append(newFileSet);
 }
