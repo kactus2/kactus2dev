@@ -3,7 +3,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
-#include <kactusAPI/KactusAPIGlobal.h>
+#include <KactusAPI/KactusAPIGlobal.h>
 
 #include <QtCore>
 #include <QDir>
