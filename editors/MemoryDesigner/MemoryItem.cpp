@@ -54,6 +54,22 @@ QString MemoryItem::getDisplayName() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryItem::setDescription()
+//-----------------------------------------------------------------------------
+void MemoryItem::setDescription(QString const& newDescription)
+{
+    description_ = newDescription;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getDescription()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getDescription() const
+{
+    return description_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryItem::setIdentifier()
 //-----------------------------------------------------------------------------
 void MemoryItem::setIdentifier(QString const& identifier)
@@ -102,6 +118,22 @@ QString MemoryItem::getAddress() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryItem::setFormattedAddressExpression()
+//-----------------------------------------------------------------------------
+void MemoryItem::setFormattedAddressExpression(QString const& newFormattedAddressExpression)
+{
+    formattedAddressExpression_ = newFormattedAddressExpression;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getFormattedAddressExpression()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getFormattedAddressExpression() const
+{
+    return formattedAddressExpression_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryItem::setRange()
 //-----------------------------------------------------------------------------
 void MemoryItem::setRange(QString const& range)
@@ -118,6 +150,22 @@ QString MemoryItem::getRange() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryItem::setFormattedRangeExpression()
+//-----------------------------------------------------------------------------
+void MemoryItem::setFormattedRangeExpression(QString const& newRangeExpression)
+{
+    formattedRangeExpressin_ = newRangeExpression;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getFormattedRangeExpression()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getFormattedRangeExpression() const
+{
+    return formattedRangeExpressin_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryItem::setWidth()
 //-----------------------------------------------------------------------------
 void MemoryItem::setWidth(QString const& width)
@@ -131,6 +179,38 @@ void MemoryItem::setWidth(QString const& width)
 QString MemoryItem::getWidth() const
 {
     return width_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setFormattedWidthExpression()
+//-----------------------------------------------------------------------------
+void MemoryItem::setFormattedWidthExpression(QString const& newWidthExpression)
+{
+    formattedWidthExpression_ = newWidthExpression;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getFormattedWidthExpression()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getFormattedWidthExpression() const
+{
+    return formattedWidthExpression_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setAccess()
+//-----------------------------------------------------------------------------
+void MemoryItem::setAccess(AccessTypes::Access const& newAccess)
+{
+    access_ = newAccess;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getAccess()
+//-----------------------------------------------------------------------------
+AccessTypes::Access MemoryItem::getAccess() const
+{
+    return access_;
 }
 
 //-----------------------------------------------------------------------------
@@ -163,6 +243,22 @@ void MemoryItem::setOffset(QString const& offset)
 QString MemoryItem::getOffset() const
 {
     return offset_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setFormattedOffsetExpression()
+//-----------------------------------------------------------------------------
+void MemoryItem::setFormattedOffsetExpression(QString const& newOffsetExpression)
+{
+    formattedOffsetExpression_ = newOffsetExpression;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getFormattedOffsetExpression()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getFormattedOffsetExpression() const
+{
+    return formattedOffsetExpression_;
 }
 
 //-----------------------------------------------------------------------------

@@ -35,44 +35,41 @@
     <Filter Include="Source Files\fileSaveDialog">
       <UniqueIdentifier>{96791d0b-4242-4c48-8995-dc759e173938}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{2b182065-7909-4047-b5ba-0b631bfcc244}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{01471689-4fe1-4eb1-aff5-66fae41f2c1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\memoryDesigner">
+      <UniqueIdentifier>{01e40c77-7557-4568-b84c-3db5dd57cb6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\memoryDesigner">
+      <UniqueIdentifier>{e45a822a-90b3-4a17-8e9a-deb3f69414ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memorymapheadergenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
-    
     <ClCompile Include="localheadersavemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="globalheadersavemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="localheadersavedelegate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="systemheadersavemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
-    
-    
     <ClCompile Include="fileSaveDialog\filesavedialogview.cpp">
       <Filter>Source Files\fileSaveDialog</Filter>
     </ClCompile>
     <ClCompile Include="fileSaveDialog\filesavedialog.cpp">
       <Filter>Source Files\fileSaveDialog</Filter>
     </ClCompile>
-    
-    
-    
-    
     <ClCompile Include="SystemMemoryMapHeaderWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -88,8 +85,36 @@
     <ClCompile Include="..\..\common\widgets\viewSelector\viewselector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
+    <ClCompile Include="..\common\ConnectivityGraphUtilities.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp">
+      <Filter>Source Files\memoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp">
+      <Filter>Source Files\memoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CpuRoutesContainer.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.cpp">
+      <Filter>Source Files\memoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp">
+      <Filter>Source Files\memoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp">
+      <Filter>Source Files\memoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraph.cpp">
+      <Filter>Source Files\memoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp">
+      <Filter>Source Files\memoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memorymapheadergenerator_global.h">
@@ -106,6 +131,36 @@
     </ClInclude>
     <ClInclude Include="BaseMemoryMapHeaderWriter.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ConnectivityGraphUtilities.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h">
+      <Filter>Header Files\memoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h">
+      <Filter>Header Files\memoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CpuRoutesContainer.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\SingleCpuRoutesContainer.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.h">
+      <Filter>Header Files\memoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityConnection.h">
+      <Filter>Header Files\memoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h">
+      <Filter>Header Files\memoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraph.h">
+      <Filter>Header Files\memoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h">
+      <Filter>Header Files\memoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

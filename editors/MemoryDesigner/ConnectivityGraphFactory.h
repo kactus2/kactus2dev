@@ -46,6 +46,7 @@ class ConnectivityInterface;
 class ExpressionParser;
 class MemoryItem;
 class MultipleParameterFinder;
+class ExpressionFormatter;
 
 #include <QString>
 #include <QSharedPointer>
@@ -199,7 +200,7 @@ private:
      *    @param [in] blockIdentifier         Identifier for the containing address block.
      *    @param [in/out] blockItem           The address block to the add register into.
      */
-    void addRegisterData(QSharedPointer<const Register> reg, int baseAddress, int addressableUnitBits,
+    void addRegisterData(QSharedPointer<const Register> reg, quint64 const& baseAddress, int addressableUnitBits,
         QString const& blockIdentifier, QSharedPointer<MemoryItem> blockItem) const;
 
     /*!
@@ -224,7 +225,7 @@ private:
      *    @return Representation for the field.
      */
     QSharedPointer<MemoryItem> createField(QSharedPointer<const Field> field, QString const& registerIdentifier,
-        int regAddress, int addressableUnitBits) const;
+        quint64 const& regAddress, int addressableUnitBits) const;
 
     /*!
      *  Creates a representation for an enumerated value within a field.
@@ -531,6 +532,9 @@ private:
 
     //! Parser for resolving expressions.
     ExpressionParser* expressionParser_;
+
+    //! Formatter for expressions.
+    ExpressionFormatter* formatter_;
 };
 
 //-----------------------------------------------------------------------------

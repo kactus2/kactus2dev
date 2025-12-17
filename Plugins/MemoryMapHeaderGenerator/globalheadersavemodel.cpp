@@ -12,6 +12,11 @@
 #include "globalheadersavemodel.h"
 
 #include <KactusAPI/include/LibraryInterface.h>
+
+#include <editors/MemoryDesigner/ConnectivityComponent.h>
+
+#include <Plugins/common/SingleCpuRoutesContainer.h>
+
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <QDir>
@@ -24,8 +29,7 @@ GlobalHeaderSaveModel::GlobalHeaderSaveModel( LibraryInterface* handler, QObject
 QAbstractTableModel(parent),
 handler_(handler),
 table_(),
-comp_(),
-design_()
+comp_()
 {
 
 }
@@ -35,7 +39,6 @@ design_()
 //-----------------------------------------------------------------------------
 GlobalHeaderSaveModel::~GlobalHeaderSaveModel()
 {
-	qDeleteAll(table_);
 	table_.clear();
 }
 
@@ -140,17 +143,15 @@ QVariant GlobalHeaderSaveModel::data( const QModelIndex& index, int role) const
         }
         else if (index.column() == GlobalHeaderSaveModel::FILE_PATH)
         {
-            Q_ASSERT(comp_);
-
             VLNV identifier = table_.at(index.row())->comp_;
 
             // display the relative path from xml directory to the header to be generated
             QDir xmlDir(handler_->getDirectoryPath(comp_->getVlnv()));
-            QString headerPath = table_.at(index.row())->fileInfo_.absoluteFilePath();
+			QString headerPath = table_.at(index.row())->fileInfo_.absoluteFilePath();
             QString relPath = xmlDir.relativeFilePath(headerPath);
 
             return relPath;
-        }
+		}
         else
         {
             return QVariant();
@@ -159,8 +160,6 @@ QVariant GlobalHeaderSaveModel::data( const QModelIndex& index, int role) const
 	// user role always returns the absolute file path
 	else if (Qt::UserRole == role)
     {
-		Q_ASSERT(comp_);
-
 		// if the header dir exists
 		QFileInfo headerInfo(table_.at(index.row())->fileInfo_.absolutePath());
 		if (headerInfo.exists())
@@ -173,7 +172,7 @@ QVariant GlobalHeaderSaveModel::data( const QModelIndex& index, int role) const
 		else
         {
 			return handler_->getDirectoryPath(comp_->getVlnv());
-		}		
+		}
 	}
 	else
     {
@@ -247,71 +246,54 @@ bool GlobalHeaderSaveModel::setData( const QModelIndex& index, const QVariant& v
 //-----------------------------------------------------------------------------
 // Function: globalheadersavemodel::getHeaderOptions()
 //-----------------------------------------------------------------------------
-const QList<GlobalHeaderSaveModel::SaveFileOptions*>& GlobalHeaderSaveModel::getHeaderOptions() const
+const QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> >& GlobalHeaderSaveModel::getHeaderOptions() const
 {
 	return table_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: globalheadersavemodel::setDesign()
+// Function: globalheadersavemodel::setCPUData()
 //-----------------------------------------------------------------------------
-void GlobalHeaderSaveModel::setDesign( QSharedPointer<Component> topComp, QSharedPointer<Design> design )
+void GlobalHeaderSaveModel::setCPUData(QSharedPointer<Component> topComponent, QVector<QSharedPointer<SingleCpuRoutesContainer>> const& cpuRoutes)
 {
 	beginResetModel();
 
 	// update the component and design used
-	comp_ = topComp;
-	design_ = design;
+	comp_ = topComponent;
 
 	// remove previous items
-	qDeleteAll(table_);
 	table_.clear();
 
-	foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
-    {
-		// parse the component model for the instance
-		VLNV compVLNV = *instance->getComponentRef();
-		QSharedPointer<const Document> libComp = handler_->getModelReadOnly(compVLNV);
-		QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
-		
-        // headers are only generated for CPUs and their master interfaces
-        if (!comp || !comp->isCpu())
-        {
-			continue;
-		}
-		
-		// create header for each master interface
-		QStringList masterInterfaces = comp->getInitiatorInterfaces();
-		foreach (QString interfaceName, masterInterfaces)
-        {
-			// if the operated interface is not connected to any other instance within the design
-			if (!design_->hasInterconnection(instance->getInstanceName(), interfaceName))
-            {
-				continue;
-			}
-			
-			GlobalHeaderSaveModel::SaveFileOptions* options = new SaveFileOptions();
+	for (auto singleCPU : cpuRoutes)
+	{
+		auto cpuInterface = singleCPU->getRoutes().first()->cpuInterface_;
+		auto cpuInstance = cpuInterface->getInstance();
 
-			options->instance_ = instance->getInstanceName();
-			options->interface_ = interfaceName;
-			options->comp_ = compVLNV;
-			options->instanceId_ = instance->getUuid();
+		auto interfaceName = cpuInterface->getName();
+		auto instanceName = cpuInstance->getName();
 
-			// the path to the directory containing the xml metadata
-			QString compPath(handler_->getDirectoryPath(topComp->getVlnv()));
+		VLNV cpuComponentVLNV(VLNV::COMPONENT, cpuInstance->getVlnv());
 
-			// the relative path from the xml dir to the header to generate
-			QString headerPath = QString("%1/%2/%3.h").arg(
-                tr("headers"), instance->getInstanceName(), interfaceName);
+		auto options = QSharedPointer<SaveFileOptions>::create();
+		options->instance_ = instanceName;
+		options->interface_ = interfaceName;
+		options->comp_ = cpuComponentVLNV;
+		options->instanceId_ = cpuInstance->getInstanceUuid();
+		options->cpuContainer_ = singleCPU;
 
-			// the absolute path to the header file
-			const QString fullPath = QString("%1/%2").arg(compPath, headerPath);
+		// the path to the directory containing the xml metadata
+		QString compPath(handler_->getDirectoryPath(topComponent->getVlnv()));
 
-			// create the file info instance
-			options->fileInfo_ = QFileInfo(fullPath);
+		// the relative path from the xml dir to the header to generate
+		QString headerPath = QString("%1/%2/%3.h").arg(tr("headers"), instanceName, interfaceName);
 
-			table_.append(options);
-		}
+		// the absolute path to the header file
+		const QString fullPath = QString("%1/%2").arg(compPath, headerPath);
+
+		// create the file info instance
+		options->fileInfo_ = QFileInfo(fullPath);
+
+		table_.append(options);
 	}
 
 	endResetModel();

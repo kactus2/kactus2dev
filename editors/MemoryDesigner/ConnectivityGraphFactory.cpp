@@ -20,6 +20,7 @@
 #include "ConnectivityGraph.h"
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/ParameterCache.h>
 #include <KactusAPI/include/ListParameterFinder.h>
 #include <KactusAPI/include/MultipleParameterFinder.h>
@@ -58,7 +59,8 @@
 ConnectivityGraphFactory::ConnectivityGraphFactory(LibraryInterface* library):
 library_(library),
 parameterFinder_(new MultipleParameterFinder()), 
-expressionParser_(new IPXactSystemVerilogParser(parameterFinder_))
+expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
+formatter_(new ExpressionFormatter(parameterFinder_))
 {
 
 }
@@ -165,12 +167,14 @@ QSharedPointer<ConnectivityComponent> ConnectivityGraphFactory::createInstanceDa
             QSharedPointer<ConnectivityComponent>(new ConnectivityComponent(instance->getInstanceName()));
         newInstance->setInstanceUuid(instance->getUuid());
         newInstance->setVlnv(instance->getComponentRef()->toString());
+        newInstance->setDescription(instance->description());
     }
     else
     {
         newInstance = QSharedPointer<ConnectivityComponent>(new ConnectivityComponent("top"));
         newInstance->setInstanceUuid("top");
         newInstance->setVlnv(component->getVlnv().toString());
+        newInstance->setDescription(component->getDescription());
     }
 
     newInstance->setActiveView(activeView);
@@ -340,16 +344,36 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryAddressBlockIte
     QSharedPointer<const AddressBlock> addressBlock, QString const& mapIdentifier, int addressableUnitBits) const
 {
     QString blockIdentifier = mapIdentifier + "." + addressBlock->name();
-    int baseAddress = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toInt();
 
     QSharedPointer<MemoryItem> blockItem(new MemoryItem(addressBlock->name(), MemoryDesignerConstants::ADDRESSBLOCK_TYPE));
     blockItem->setIdentifier(blockIdentifier);
     blockItem->setDisplayName(addressBlock->displayName());
+    blockItem->setDescription(addressBlock->description());
     blockItem->setAUB(QString::number(addressableUnitBits));
-    blockItem->setAddress(QString::number(baseAddress));
-    blockItem->setRange(expressionParser_->parseExpression(addressBlock->getRange()));
-    blockItem->setWidth(expressionParser_->parseExpression(addressBlock->getWidth()));
     blockItem->setUsage(addressBlock->getUsage());
+    blockItem->setAccess(addressBlock->getAccess());
+
+	auto baseAddressString = addressBlock->getBaseAddress();
+    auto baseAddress = expressionParser_->parseExpression(baseAddressString);
+	blockItem->setAddress(baseAddress);
+    if (expressionParser_->isPlainValue(baseAddressString) == false)
+    {
+        blockItem->setFormattedAddressExpression(formatter_->formatReferringExpression(baseAddressString));
+    }
+
+    auto blockRange = addressBlock->getRange();
+	blockItem->setRange(expressionParser_->parseExpression(blockRange));
+    if (expressionParser_->isPlainValue(blockRange) == false)
+    {
+        blockItem->setFormattedRangeExpression(formatter_->formatReferringExpression(blockRange));
+    }
+
+    auto blockWidth = addressBlock->getWidth();
+	blockItem->setWidth(expressionParser_->parseExpression(blockWidth));
+    if (expressionParser_->isPlainValue(blockWidth) == false)
+    {
+		blockItem->setFormattedWidthExpression(formatter_->formatReferringExpression(blockWidth));
+    }
 
     QString blockPresence = addressBlock->getIsPresent();
     if (blockPresence.isEmpty())
@@ -371,7 +395,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryAddressBlockIte
             QSharedPointer<Register> reg = registerBase.dynamicCast<Register>();
             if (reg)
             {
-                addRegisterData(reg, baseAddress, addressableUnitBits, blockIdentifier, blockItem);
+                addRegisterData(reg, baseAddress.toULongLong(), addressableUnitBits, blockIdentifier, blockItem);
             }
 
             //! What about register files?
@@ -415,8 +439,11 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemorySubSpaceMapItem
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::addRegisterData()
 //-----------------------------------------------------------------------------
-void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> reg, int baseAddress, 
-    int addressableUnitBits, QString const& blockIdentifier, QSharedPointer<MemoryItem> blockItem) const
+void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> reg,
+    quint64 const& baseAddress, 
+    int addressableUnitBits,
+    QString const& blockIdentifier,
+    QSharedPointer<MemoryItem> blockItem) const
 {
     quint64 registerOffset = expressionParser_->parseExpression(reg->getAddressOffset()).toULongLong();
     quint64 registerAddress = baseAddress + registerOffset;
@@ -437,10 +464,16 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> re
 
         regItem->setIdentifier(registerIdentifier);
         regItem->setDisplayName(reg->displayName());
+        regItem->setDescription(reg->description());
         regItem->setAUB(QString::number(addressableUnitBits));
         regItem->setAddress(QString::number(registerAddress));
         regItem->setOffset(QString::number(registerOffset));
         regItem->setSize(expressionParser_->parseExpression(reg->getSize()));
+
+        if (expressionParser_->isPlainValue(reg->getAddressOffset()) == false)
+        {
+            regItem->setFormattedOffsetExpression(formatter_->formatReferringExpression(reg->getAddressOffset()));
+        }
 
         QVector<QSharedPointer<MemoryItem> > fieldItems;
 
@@ -499,7 +532,9 @@ QMap<quint64, QSharedPointer<MemoryItem> > ConnectivityGraphFactory::getOrderedF
 // Function: ConnectivityGraphFactory::createField()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<const Field> field, 
-    QString const& registerIdentifier, int regAddress, int addressableUnitBits) const
+    QString const& registerIdentifier,
+    quint64 const& regAddress,
+    int addressableUnitBits) const
 {
     QString fieldIdentifier = registerIdentifier + "." + field->name();
     int bitOffset = expressionParser_->parseExpression(field->getBitOffset()).toInt();

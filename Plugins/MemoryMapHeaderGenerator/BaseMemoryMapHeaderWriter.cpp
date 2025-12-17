@@ -20,8 +20,10 @@
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 
-#include <IPXACTmodels/common/AccessTypes.h>
+#include <editors/MemoryDesigner/MemoryItem.h>
+#include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 
+#include <IPXACTmodels/common/AccessTypes.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
@@ -191,6 +193,26 @@ void BaseMemoryMapHeaderWriter::writeRegisterFromMemoryMap(QSharedPointer<Parame
 }
 
 //-----------------------------------------------------------------------------
+// Function: BaseMemoryMapHeaderWriter::writeRegisterFromMemoryMap()
+//-----------------------------------------------------------------------------
+void BaseMemoryMapHeaderWriter::writeRegisterFromMemoryMap(AddressContainer const& addressContainer,
+    QTextStream& stream,
+    QSharedPointer<MemoryItem> memoryItem,
+    bool useAddressBlockID,
+    QString const& idString /* = QString() */) const
+{
+    for (auto blockItem : memoryItem->getChildItems())
+	{
+        if (blockItem && blockItem->getType() == MemoryDesignerConstants::ADDRESSBLOCK_TYPE &&
+            (blockItem->getUsage() == General::REGISTER ||
+                (blockItem->getUsage() == General::USAGE_COUNT && blockItem->getChildItems().isEmpty() == false )))
+		{
+            writeRegistersFromAddressBlock(addressContainer, stream, blockItem, useAddressBlockID, idString);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Function: BaseMemoryMapHeaderWriter::writeRegistersFromAddressBlock()
 //-----------------------------------------------------------------------------
 void BaseMemoryMapHeaderWriter::writeRegistersFromAddressBlock(QSharedPointer<ExpressionParser> expressionParser,
@@ -236,6 +258,56 @@ void BaseMemoryMapHeaderWriter::writeRegistersFromAddressBlock(QSharedPointer<Ex
 }
 
 //-----------------------------------------------------------------------------
+// Function: BaseMemoryMapHeaderWriter::writeRegistersFromAddressBlock()
+//-----------------------------------------------------------------------------
+void BaseMemoryMapHeaderWriter::writeRegistersFromAddressBlock(AddressContainer const& addressContainer,
+    QTextStream& stream,
+    QSharedPointer<MemoryItem> blockItem,
+    bool useAddressBlockID,
+    QString const& idString /* = QString() */) const
+{
+    auto addressBlockOffset = blockItem->getAddress().toULongLong() + addressContainer.baseAddress_;
+
+    QString id;
+    if (!idString.isEmpty())
+    {
+        id = idString;
+        if (useAddressBlockID)
+        {
+            id.append(blockItem->getName().toUpper());
+        }
+    }
+
+    if (useAddressBlockID)
+    {
+        id.append(blockItem->getName().toUpper());
+    }
+
+    if (addressContainer.hasRemapRange_ && addressBlockOffset > addressContainer.lastAddress_)
+    {
+        return;
+    }
+
+    stream << "/*" << Qt::endl;
+	stream << " * Address block: " << blockItem->getName() << Qt::endl;
+    if (blockItem->getDescription().isEmpty() == false)
+    {
+        stream << " * Description:" << Qt::endl;
+		stream << " * " << blockItem->getDescription() << Qt::endl;
+    }
+    stream << "*/" << Qt::endl;
+
+    for (auto registerItem : blockItem->getChildItems())
+    {
+        if (registerItem && registerItem->getType() == MemoryDesignerConstants::REGISTER_TYPE)
+        {
+            writeRegister(addressBlockOffset, addressContainer, stream, registerItem, id);
+        }
+    }
+    stream << Qt::endl;
+}
+
+//-----------------------------------------------------------------------------
 // Function: BaseMemoryMapHeaderWriter::writeRegister()
 //-----------------------------------------------------------------------------
 void BaseMemoryMapHeaderWriter::writeRegister(QSharedPointer<ExpressionParser> expressionParser,
@@ -275,6 +347,58 @@ void BaseMemoryMapHeaderWriter::writeRegister(QSharedPointer<ExpressionParser> e
     {
         stream << idString.toUpper() << "_" << currentRegister->name().toUpper() << " " <<
             registerOffsetString;
+    }
+
+    stream << Qt::endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BaseMemoryMapHeaderWriter::writeRegister()
+//-----------------------------------------------------------------------------
+void BaseMemoryMapHeaderWriter::writeRegister(quint64 const& addressBlockOffset,
+    AddressContainer const& addressContainer,
+    QTextStream& stream,
+    QSharedPointer<MemoryItem> registerItem,
+    QString const& idString /* = QString() */) const
+{
+    auto registerOffsetInt = registerItem->getOffset().toULongLong() + addressBlockOffset;
+    QString registerOffsetString = QString::number(registerOffsetInt, 16);
+    registerOffsetString.prepend("0x");
+
+    if (addressContainer.hasRemapRange_ && registerOffsetInt > addressContainer.lastAddress_)
+    {
+        return;
+    }
+
+    stream << "/*" << Qt::endl;
+	stream << " * Register name: " << registerItem->getName() << Qt::endl;
+
+	if (!registerItem->getDescription().isEmpty())
+    {
+        stream << " * Description:" << Qt::endl;
+		stream << " * " << registerItem->getDescription() << Qt::endl;
+    }
+
+    QString offsetString = registerItem->getOffset();
+	auto offsetInteger = offsetString.toULongLong();
+    auto finalOffsetString = "0x" + QString::number(offsetInteger, 16);
+
+    if (registerItem->getFormattedOffsetExpression().isEmpty() == false)
+    {
+        finalOffsetString = registerItem->getFormattedOffsetExpression() + " = " + finalOffsetString;
+    }
+
+    stream << " * Offset: " << finalOffsetString;
+    stream << Qt::endl << "*/" << Qt::endl;
+    stream << "#define ";
+
+    if (idString.isEmpty())
+    {
+		stream << registerItem->getName().toUpper() << " " << registerOffsetString;
+    }
+    else
+    {
+		stream << idString.toUpper() << "_" << registerItem->getName().toUpper() << " " << registerOffsetString;
     }
 
     stream << Qt::endl;
@@ -345,6 +469,97 @@ void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFin
             if (!expressionParser->isPlainValue(currentAddressBlock->getBaseAddress()))
             {
                 stream << " // " << formatter->formatReferringExpression(currentAddressBlock->getBaseAddress());
+            }
+            stream << Qt::endl;
+            stream << "#define " << blockName << "_END " << endAddress << Qt::endl;
+            stream << Qt::endl;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BaseMemoryMapHeaderWriter::writeMemoryAddresses()
+//-----------------------------------------------------------------------------
+void BaseMemoryMapHeaderWriter::writeMemoryAddresses(AddressContainer const& addressContainer,
+    QTextStream& stream,
+    QSharedPointer<MemoryItem> memoryItem,
+    QString const& idString) const
+{
+    for (auto blockItem : memoryItem->getChildItems())
+    {
+        if (blockItem->getType() != MemoryDesignerConstants::ADDRESSBLOCK_TYPE)
+        {
+            continue;
+        }
+
+		if (blockItem->getUsage() == General::MEMORY || blockItem->getUsage() == General::RESERVED)
+        {
+            quint64 addressOffset = blockItem->getAddress().toULongLong() + addressContainer.baseAddress_;
+            QString addressStart = QString::number(addressOffset, 16);
+            addressStart.prepend("0x");
+
+            quint64 endAddressInt = addressOffset + blockItem->getRange().toULongLong();
+			if (endAddressInt > 0)
+			{
+				endAddressInt -= 1;
+			}
+
+            if (addressContainer.hasRemapRange_)
+            {
+                if (addressOffset > addressContainer.lastAddress_)
+                {
+                    //! Do not write when the address block starts beyond the address range.
+                    return;
+                }
+                else if (endAddressInt > addressContainer.lastAddress_)
+                {
+                    endAddressInt = addressContainer.lastAddress_;
+                }
+            }
+
+            QString endAddress = "0x" + QString::number(endAddressInt, 16);
+
+            stream << "/*" << Qt::endl;
+			if (blockItem->getUsage() == General::MEMORY)
+            {
+                stream << " * Memory block name: " << blockItem->getName() << Qt::endl;
+            }
+            else
+            {
+				stream << " * Reserved block name: " << blockItem->getName() << Qt::endl;
+            }
+
+			stream << " * Width: " << blockItem->getWidth();
+			if (blockItem->getFormattedWidthExpression().isEmpty() == false)
+			{
+				stream << " = " << blockItem->getFormattedWidthExpression();
+			}
+            stream << Qt::endl;
+
+			stream << " * Range: " << blockItem->getRange();
+			if (blockItem->getFormattedRangeExpression().isEmpty() == false)
+			{
+				stream << " = " << blockItem->getFormattedRangeExpression();
+			}
+            stream << Qt::endl;
+
+			if (auto accessString = AccessTypes::access2Str(blockItem->getAccess()); !accessString.isEmpty())
+            {
+                stream << " * Access: " << accessString << Qt::endl;
+            }
+            stream << "*/" << Qt::endl;
+
+			QString blockName = blockItem->getName().toUpper();
+            if (!idString.isEmpty())
+            {
+                blockName = idString.toUpper() + "_" + blockName;
+            }
+            
+            stream << "#define " << blockName << "_START " << addressStart;
+
+            if (blockItem->getFormattedAddressExpression().isEmpty() == false)
+            {
+				stream << " // " << blockItem->getFormattedAddressExpression();
             }
             stream << Qt::endl;
             stream << "#define " << blockName << "_END " << endAddress << Qt::endl;
