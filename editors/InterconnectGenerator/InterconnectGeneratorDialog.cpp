@@ -6,6 +6,9 @@
 
 #include <KactusAPI/KactusAPI.h>
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/PluginManager.h>
+#include <KactusAPI/include/CLIGenerator.h>
+#include <KactusAPI/include/IPlugin.h>
 
 #include <editors/common/ExpressionSet.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
@@ -15,6 +18,8 @@
 #include <editors/ComponentEditor/parameters/ParameterColumns.h>
 
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+
+#include <common/KactusColors.h>
 
 #include <QMessageBox>
 #include <QApplication>
@@ -34,8 +39,8 @@ Dialog::Dialog(DesignWidget* designWidget, LibraryHandler* library,
     vlnvEditor_(new VLNVEditor(VLNV::BUSDEFINITION, library, this, this)),
     instancesLayout_(new QVBoxLayout())
 {
-    setMinimumWidth(1300);
-    setMinimumHeight(900);
+    setMinimumWidth(1200);
+    setMinimumHeight(700);
 
     designVLNV_ = designWidget->getEditedComponent()->getVlnv().toString(":");
 
@@ -206,8 +211,6 @@ void Dialog::populateParameters()
             }
         }
     }
-
-    // TODO check addr width value in accept()
 }
 
 //-----------------------------------------------------------------------------
@@ -753,8 +756,20 @@ QWidget* Dialog::createRtlOutputSection()
     //fileSaveLayout->addWidget(browseButton);
     
     //layout->addLayout(fileSaveLayout);
-    layout->addWidget(addToFileSet_);
 
+    // TODO refine verilog generator warning look
+    if (verilogGeneratorAvailable() == false)
+    {
+        QLabel* verilogNotFoundLabel = new QLabel("Verilog generator not loaded");
+        auto labelPalette = verilogNotFoundLabel->palette();
+        labelPalette.setColor(QPalette::ColorRole::Text, KactusColors::ERROR);
+        verilogNotFoundLabel->setPalette(labelPalette);
+
+        layout->addWidget(verilogNotFoundLabel);
+        rtlGenerationGroup_->setEnabled(false);
+    }
+
+    layout->addWidget(addToFileSet_);
     return rtlGenerationGroup_;
 }
 
@@ -1276,4 +1291,23 @@ void Dialog::onRtlGenerationToggled(bool on)
         // Fill default path
         onVlnvChanged();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Dialog::findVerilogGenerator()
+//-----------------------------------------------------------------------------
+bool Dialog::verilogGeneratorAvailable()
+{
+    for (auto plugin : PluginManager::getInstance().getActivePlugins())
+    {
+        if (auto runnable = dynamic_cast<CLIGenerator*>(plugin))
+        {
+            if (runnable->getOutputFormat().toLower() == "verilog")
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }

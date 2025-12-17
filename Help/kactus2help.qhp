@@ -111,6 +111,7 @@
             <section title="Component Instance" ref="hwdesign/hwinstance2022.html" />
             <section title="Bus Interface" ref="hwdesign/busport2022.html" />
             <section title="Interconnection" ref="hwdesign/connection.html" />
+            <section title="Interconnect generator" ref="hwdesign/interconnectgenerator.html" />
             <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
             <section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" />
           </section>

@@ -297,6 +297,8 @@ namespace InterconnectGeneration
 
         ConfigurableVLNVReference* getCurrentlySelectedAbsDef();
 
+        bool verilogGeneratorAvailable();
+
         //-----------------------------------------------------------------------------
         // Data.
         //-----------------------------------------------------------------------------
