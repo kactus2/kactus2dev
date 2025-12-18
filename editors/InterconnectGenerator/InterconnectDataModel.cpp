@@ -268,21 +268,30 @@ void InterconnectDataModel::createInterfaceAdjacencyRules()
     
     // The following rules define initiator-adjacent combinations for bridges:
     initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::INITIATOR, InterconnectType::Bridge, EntityType::Instance });
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MASTER, InterconnectType::Bridge, EntityType::Instance });
     initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_TARGET, InterconnectType::Bridge, EntityType::Instance });
-    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::TARGET, InterconnectType::Bridge, EntityType::TopComponent });
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_SLAVE, InterconnectType::Bridge, EntityType::Instance });
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::SLAVE, InterconnectType::Bridge, EntityType::TopComponent });
 
     // The following rules define initiator-adjacent combinations for channels:
     initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::INITIATOR, InterconnectType::Channel, EntityType::Instance });
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MASTER, InterconnectType::Channel, EntityType::Instance });
     initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_INITIATOR, InterconnectType::Channel, EntityType::TopComponent });
+    initiatorAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_MASTER, InterconnectType::Channel, EntityType::TopComponent });
 
     // The following rules define target-adjacent combinations for bridges:
     targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::TARGET, InterconnectType::Bridge, EntityType::Instance });
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::SLAVE, InterconnectType::Bridge, EntityType::Instance });
     targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_INITIATOR, InterconnectType::Bridge, EntityType::Instance });
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_MASTER, InterconnectType::Bridge, EntityType::Instance });
     targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::INITIATOR, InterconnectType::Bridge, EntityType::TopComponent });
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MASTER, InterconnectType::Bridge, EntityType::TopComponent });
 
     // The following rules define target-adjacent combinations for channels:
     targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::TARGET, InterconnectType::Channel, EntityType::Instance });
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::SLAVE, InterconnectType::Channel, EntityType::Instance });
     targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_TARGET, InterconnectType::Channel, EntityType::TopComponent });
+    targetAdjacencyRules_.insert(InterfaceModeAdjacencyKey{ General::InterfaceMode::MIRRORED_SLAVE, InterconnectType::Channel, EntityType::TopComponent });
 }
 
 //-----------------------------------------------------------------------------

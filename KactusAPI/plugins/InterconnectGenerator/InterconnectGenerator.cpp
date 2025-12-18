@@ -613,6 +613,9 @@ void Generator::createPhysPorts(QSharedPointer<Component> comp, QString busName,
 
         QSharedPointer<Port> newPort(new Port(*port));
         newPort->setName(QString::fromStdString(prefix_) + newPort->name());
+        
+        // ICN component ports shouldn't have default values
+        newPort->setDefaultValue(QString());
 
         DirectionTypes::Direction newDir;
         if (isTop) 
