@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
-    ./editors/ComponentEditor/parameters/LockableParametersModel.h \
     ./common/NameGenerationPolicy.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
@@ -214,6 +213,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./Plugins/common/SingleCpuRoutesContainer.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
+    ./Plugins/PluginSystem/GeneratorPlugin/AddToFilesetWidget.h \
     ./library/LibraryInterface.h \
     ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryUtils.h \
@@ -291,6 +291,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
     ./editors/ComponentEditor/ports/PortsView.h \
     ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
+    ./editors/ComponentEditor/parameters/LockableParametersModel.h \
     ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.h \
     ./editors/ComponentEditor/parameters/parametersmodel.h \
@@ -911,7 +912,6 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
-    ./editors/ComponentEditor/parameters/LockableParametersModel.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1092,6 +1092,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/SingleCpuRoutesContainer.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
+    ./Plugins/PluginSystem/GeneratorPlugin/AddToFilesetWidget.cpp \
     ./library/ItemExporter.cpp \
     ./library/LibraryErrorModel.cpp \
     ./library/LibraryFilter.cpp \
@@ -1203,6 +1204,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/general/generaleditor.cpp \
     ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
+    ./editors/ComponentEditor/parameters/LockableParametersModel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
