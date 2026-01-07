@@ -17,6 +17,7 @@
 
 class LockableParametersModel : public ParametersModel
 {
+    Q_OBJECT
 public:
 
     /*!

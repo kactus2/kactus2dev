@@ -5875,9 +5875,6 @@
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h">
       <Filter>Header Files\common\layouts</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\parameters\LockableParametersModel.h">
-      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -6187,6 +6184,9 @@
     </QtMoc>
     <QtMoc Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h">
       <Filter>Header Files\Plugins\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\parameters\LockableParametersModel.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

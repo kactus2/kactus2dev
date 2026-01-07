@@ -200,7 +200,8 @@
             <section title="Component Instance" ref="hwdesign/hwinstance.html" />
             <section title="Bus Interface" ref="hwdesign/busport.html" />
             <section title="Interconnection" ref="hwdesign/connection.html" />
-            <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
+			<section title="Interconnect generator" ref="hwdesign/interconnectgenerator.html" />
+			<section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
             <section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" />
           </section>
         </section>

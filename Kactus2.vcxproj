@@ -1817,7 +1817,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.h">
     </QtMoc>
     <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h" />
-    <ClInclude Include="editors\ComponentEditor\parameters\LockableParametersModel.h" />
+    <QtMoc Include="editors\ComponentEditor\parameters\LockableParametersModel.h" />
     <ClInclude Include="editors\ComponentEditor\parameters\ParameterColumns.h" />
     <QtMoc Include="editors\ComponentEditor\parameters\ParameterDelegate.h">
     </QtMoc>

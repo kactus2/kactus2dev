@@ -21,45 +21,53 @@
 
     <h3>Generator dialog</h3>
     <h4>Interconnect component VLNV editor</h4>
+    <br>
     <img src="../images/icn-component-vlnv-editor.png" />
     <p>
         VLNV editor is used to define the VLNV for the interconnect component. The generated IP-XACT document will be placed in the default library with a path derived from the VLNV.
     </p>
 
     <h4>Interconnect Component Configuration</h4>
+    <br>
     <img src="../images/icn-component-configuration.png" />
     <p>
         The interconnect component requires that an abstraction definition is selected for the bus interfaces that are generated. The abstraction definition should generally match the 
         wanted interconnect type, such as AXI4 or OBI. The listed abstraction definition options are abstraction definitions in use by the bus interfaces of the component instances in the design.
     </p>
 
-    <h4>Generate RTL</h4>
+    <h4>Generate RTL (experimental)</h4>
+    <br>
     <img src="../images/icn-dialog-generate-rtl.png" />
     <p>
-        Apart from IP-XACT component description, a verilog RTL file can be automatically generated for supported configurations. RTL file generation requires use of compatible abstraction definition. 
-        Currently supported abstraction definitions are TUNI authored AXI4(LITE) and OBI abstractions. RTL generation is recommended for channel-type interconnect components, but bridges are also 
-        supported with limited address mapping capabilities. RTL generation also requires that the Verilog generator plugin is enabled. RTL code requires bit width information for address and data widths. 
-        This information can be automatically extracted from selected abstraction definition, more information in the Interconnect component parameters section below.
-        
+        Apart from IP-XACT component description, a verilog RTL file can be automatically generated for supported configurations. RTL file generation is still experimental and requires that interconnect 
+        uses a compatible abstraction definition. Currently supported abstraction definitions are TUNI authored AXI4(LITE) and OBI abstractions. RTL generation is recommended for channel-type 
+        interconnect components, but bridges are also supported with limited address mapping capabilities. RTL generation also requires that the Verilog generator plugin is enabled. Generated RTL code  
+        needs bit width information for address and data widths. This information can be automatically extracted from selected abstraction definition, more information in the Interconnect component parameters section below.
+    </p>
+    <p>
         The RTL file is generated to the interconnect component IP-XACT model location and the generated RTL can also be added to a file set by checking the "Add to fileset" checkbox and providing 
         a name for the fileset.
     </p>
 
     <h4>Interconnect component parameters</h4>
+    <br>
     <img src="../images/icn-dialog-parameters.png" />
     <p>
         It is possible to define parameters for the interconnect component. Some parameters are automatically created for RTL generation. These are the address and data bit widths. To automatically
-        extract widths, they must be parameterized in the selected abstraction definition. Address ports in abstraction definition should use the address width 
+        extract widths, they must be parameterized in the selected abstraction definition. The disabled fields (grey background) in the screenshot above are automatically extracted width parameters. 
+        If no width parameters are found, then they are automatically created with default names ADDR_WIDTH and DATA_WIDTH. Whether the parameters were extracted or created, they cannot be removed 
+        during interconnect generation and only the value field can be edited.
+    </p>
+    <p>
+        Address ports in abstraction definition should use the address width 
         parameter as the port width, and have address qualifier set. The same applies to data ports and data widths. As an example, below is a screenshot from TUNI AXI4LITE abstraction 
         definition:
     </p>
+    <br>
     <img src="../images/icn-dialog-addr-data-widths.png" />
-    <p>
-        The disabled fields are automatically extracted width parameters. If no width parameters are found, then they are automatically created with default names ADDR_WIDTH and DATA_WIDTH. Whether the 
-        parameters were extracted or created, they cannot be removed and only the value field can be edited.
-    </p>
 
     <h4>Interconnect mode</h4>
+    <br>
     <img src="../images/icn-dialog-modes.png" />
     <p>
         Interconnect modes select which type of component is created: one using transparent bridges as the internal mapping, or one that uses a channel. Address mapping is currently only available for 
@@ -67,18 +75,20 @@
     </p>
 
     <h4>Instances to connect</h4>
+    <br>
     <img src="../images/icn-dialog-instances.png" />
     <p>
         The <b>Instances to connect</b> section consists of a list where component instances found in the design can be selected to be connected to the interconnect component. Instance interfaces to connect 
         can be selected with the round checkboxes. 
-        
-        For both bridge mode and channel mode, at least one initiator-adjacent and one target-adjacent interface must be selected. Here, initiator-adjacent refers to an interface, which can be connected 
-        to a mirrored initiator interface of the interconnect component if channel mode is selected, or a target interface if bridge mode is selected. Target-adjacent refers to an interface that can be 
-        connected to a mirrored target interface if channel mode is selected, or an initiator interface if bridge mode is selected.
-
+    </p>
+    <p>
+        For both bridge mode and channel mode, at least one initiator/master-adjacent and one target/slave-adjacent interface must be selected. Here, initiator-adjacent refers to an interface, which can be connected 
+        to a mirrored initiator/master interface of the interconnect component if channel mode is selected, or a target/slave interface if bridge mode is selected. Target-adjacent refers to an interface that can be 
+        connected to a mirrored target/slave interface if channel mode is selected, or an initiator/master interface if bridge mode is selected.
+    </p>
+    <p>
         If channel mode is selected, it is possible to address-map the selected interfaces using the <b>Start</b> and <b>Range</b> editors. These editors accept IP-XACT expressions and parameters defined 
         in the parameter editor (see above).
     </p>
-
 </body>
 </html>
