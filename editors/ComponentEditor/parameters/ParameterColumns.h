@@ -9,6 +9,9 @@
 // Common declarations for editing parameters.
 //-----------------------------------------------------------------------------
 
+#ifndef PARAMETERCOLUMNS
+#define PARAMETERCOLUMNS
+
 namespace ParameterColumns
 {
     //! The editable columns in the parameter editor.
@@ -32,3 +35,5 @@ namespace ParameterColumns
         COLUMN_COUNT
     };
 }
+
+#endif

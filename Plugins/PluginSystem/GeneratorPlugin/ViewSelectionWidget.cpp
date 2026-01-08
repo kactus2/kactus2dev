@@ -24,11 +24,9 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<ViewSelection> model, QW
 QWidget(parent),
 	model_(model),
     viewSelection_(new QComboBox(this)),
-    addToFileset_(new QGroupBox(tr("Add file to fileset"))),
+    addToFileset_(new AddToFilesetWidget()),
 	instantiationSelection_(new QLabel),
-	instantiationLanguage_(new QLabel),
-    fileSetSelection_(new QComboBox(this)),
-    fileSetWarningLabel_(new QLabel)
+	instantiationLanguage_(new QLabel)
 {
 	// Make view selection its own layout.
 	QFormLayout* viewSelectionLayout = new QFormLayout();
@@ -40,39 +38,24 @@ QWidget(parent),
     // The names of available views are the view selection items.
     viewSelection_->addItems(model_->viewNames());
     // The names of available file sets are the file set selection items.
-    fileSetSelection_->addItems(model_->fileSetNames());
+    addToFileset_->setExistingFileSets(model_->fileSetNames());
 
     // Checkable group box used to include generated file in the IP-XACT component.
-    addToFileset_->setCheckable(true);
     addToFileset_->setChecked(model->getSaveToFileset() != 0);
-
-    // Is editable, in case a new entry is desired.
-    fileSetSelection_->setEditable(true);
-
-    QPalette p = fileSetSelection_->palette();
-    p.setColor(QPalette::Base, KactusColors::MANDATORY_FIELD);
-    fileSetSelection_->setPalette(p);
-
-	// It will have its own sub layout.
-	QFormLayout* filesetLayout = new QFormLayout();
-    addToFileset_->setLayout(filesetLayout);
-    filesetLayout->addRow(tr("Select file set:"), fileSetSelection_);
 
 	// Add everything it their proper position in the final layout.
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addLayout(viewSelectionLayout);
     topLayout->addWidget(addToFileset_);
     // Widget for warning messages.
-    topLayout->addWidget(fileSetWarningLabel_);
+    //topLayout->addWidget(fileSetWarningLabel_);
 
 	// Connect the relevant events to their handler functions.
     connect(addToFileset_, SIGNAL(toggled(bool)), 
         this, SLOT(onFileSetStateChanged(bool)), Qt::UniqueConnection);
     connect(viewSelection_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onViewChanged(QString const&)), Qt::UniqueConnection);
-	connect(fileSetSelection_, SIGNAL(currentTextChanged(QString const&)),
-		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);
-	connect(fileSetSelection_, SIGNAL(currentTextChanged(QString const&)),
+	connect(addToFileset_, SIGNAL(fileSetChanged(QString const&)),
 		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);
 
 	// Get the selected view.
@@ -90,18 +73,7 @@ QWidget(parent),
     }
 
     // Affects the selected file set.
-    int defaultFileSetIndex = fileSetSelection_->findText(model_->getFileSetName());
-
-    if (defaultFileSetIndex == -1)
-    {
-        // If none, just pick the topmost.
-        fileSetSelection_->setCurrentIndex(0);
-    }
-    else
-    {
-        // Else set the selection accordingly.
-        fileSetSelection_->setCurrentIndex(defaultFileSetIndex);
-    }
+    addToFileset_->selectDefaultFileSet(model_->getFileSetName());
 
     // Set the instantiation and the language.
     instantiationSelection_->setText(model_->getInstantiationName());
@@ -139,20 +111,9 @@ void ViewSelectionWidget::onViewChanged(QString const& selectedViewName)
     setLanguage(model_->getCurrentLanguage());
 
     // Affects the selected file set.
-    int defaultFileSetIndex = fileSetSelection_->findText(model_->getFileSetName());
+    addToFileset_->selectDefaultFileSet(model_->getFileSetName());
 
-    if (defaultFileSetIndex == -1)
-    {
-        // If none, just pick the topmost.
-        fileSetSelection_->setCurrentIndex(0);
-    }
-    else
-    {
-        // Else set the selection accordingly.
-        fileSetSelection_->setCurrentIndex(defaultFileSetIndex);
-    }
-
-    onFileSetChanged(fileSetSelection_->currentText());
+    onFileSetChanged(addToFileset_->currentSelection());
 
     emit viewChanged();
 }
@@ -196,13 +157,5 @@ void ViewSelectionWidget::setLanguage(QString selectedLanguage)
 void ViewSelectionWidget::onFileSetChanged(QString const& fileSetName)
 {
 	// Set to the configuration.
-	if (!model_->setFileSet(fileSetName) && !fileSetName.isEmpty())
-	{
-		// Warn user that a new file set will be created.
-		fileSetWarningLabel_->setText(tr("New file set '%1' will be created.").arg(fileSetName));
-	}
-	else
-	{
-		fileSetWarningLabel_->setText("");
-	}
+    model_->setFileSet(fileSetName);
 }

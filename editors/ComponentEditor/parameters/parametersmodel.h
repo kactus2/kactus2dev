@@ -66,7 +66,9 @@ public:
     /*!
      *  Reset the model.
      */
-    void resetModelItems();
+    virtual void resetModelItems();
+
+    void addParameterManually(QString const& parameterName);
 
 public slots:
 

@@ -244,7 +244,9 @@
     <ClCompile Include="..\..\common\expressions\utilities.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-  </ItemGroup>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Writer.h">
       <Filter>Header Files\common</Filter>
@@ -379,5 +381,10 @@
     <None Include="verilogGenerator.png">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

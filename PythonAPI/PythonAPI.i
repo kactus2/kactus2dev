@@ -39,6 +39,7 @@
 #include "../KactusAPI/include/PortAbstractionInterface.h"
 #include "../KactusAPI/include/PortMapInterface.h"
 #include "../KactusAPI/include/BusInterfaceInterface.h"
+#include "../KactusAPI/include/InterconnectGenerator.h"
 %}
 
 
@@ -73,6 +74,7 @@ namespace std {
 %include "../KactusAPI/include/PortAbstractionInterface.h"
 %include "../KactusAPI/include/PortMapInterface.h"
 %include "../KactusAPI/include/BusInterfaceInterface.h"
+#include "../KactusAPI/include/InterconnectGenerator.h"
 
 // Workaround fix for calling AddressBlockInterface/SubspaceMapInterface::addBlock(std::string const&) from python
 %extend AddressBlockInterface {

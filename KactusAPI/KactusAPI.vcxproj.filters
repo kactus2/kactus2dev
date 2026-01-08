@@ -55,6 +55,9 @@
     <Filter Include="Source Files\library">
       <UniqueIdentifier>{2f4a90c3-f66c-4301-bbde-ec7309e674bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\plugins\InterconnectGenerator">
+      <UniqueIdentifier>{9ff628aa-2962-4e53-9cba-88fa287f611c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AbstractionTypeInterface.h">
@@ -303,6 +306,15 @@
     <ClInclude Include="include\ModeConditionParserInterface.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\InterconnectGenerator.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ConfigJsonParser.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InterconnectRTLWriter.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -520,6 +532,15 @@
     </ClCompile>
     <ClCompile Include="expressions\ModeConditionParserInterface.cpp">
       <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\InterconnectGenerator\ConfigJsonParser.cpp">
+      <Filter>Source Files\plugins\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\InterconnectGenerator\InterconnectGenerator.cpp">
+      <Filter>Source Files\plugins\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\InterconnectGenerator\InterconnectRTLWriter.cpp">
+      <Filter>Source Files\plugins\InterconnectGenerator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

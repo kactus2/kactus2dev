@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp" />
     <ClCompile Include="vhdlcomponentdeclaration.cpp" />
@@ -155,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
     </QtMoc>

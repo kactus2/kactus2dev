@@ -1004,6 +1004,15 @@
     <Filter Include="Source Files\common\widgets\GroupBoxWithAlertSign">
       <UniqueIdentifier>{8783df90-961a-4171-916f-62da55f95112}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\InterconnectGenerator">
+      <UniqueIdentifier>{41453352-75c2-4c2b-be09-2e22922cea62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\InterconnectGenerator">
+      <UniqueIdentifier>{2de64eba-cd04-4c07-afc2-10efb43217fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\instanceWidgets">
+      <UniqueIdentifier>{b0a2d456-f4eb-4af6-91e7-2ef4f1d68d6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3393,6 +3402,30 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\ports\PortsImportSummaryEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.cpp">
+      <Filter>Source Files\common\widgets\EnumCollectionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\instanceWidgets\InstanceWidgets.cpp">
+      <Filter>Source Files\common\widgets\instanceWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectDataModel.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectAddressHelper.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InstanceInterfacesEditor.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\LockableParametersModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5836,6 +5869,12 @@
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h">
       <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </ClInclude>
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectDataModel.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectAddressHelper.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </ClInclude>
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h">
       <Filter>Header Files\common\layouts</Filter>
     </ClInclude>
@@ -6136,6 +6175,24 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\ports\PortsImportSummaryEditor.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h">
+      <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\instanceWidgets\InstanceWidgets.h">
+      <Filter>Source Files\common\widgets\instanceWidgets</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\interconnectgenerator\InstanceInterfacesEditor.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </QtMoc>
+    <QtMoc Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h">
+      <Filter>Header Files\Plugins\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\parameters\LockableParametersModel.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

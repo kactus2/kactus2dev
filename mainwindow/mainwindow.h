@@ -553,6 +553,11 @@ private slots:
      */
     void updateWorkspaceMenu();
 
+    /*!
+     *  Opens interconnect generator dialog.
+     */
+    void onInterconnectGenerate();
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -818,6 +823,9 @@ private:
 
     //! Action to open memory designer.
     QAction* openMemoryDesignerAction_;
+
+    //! Action to open interconnect generator.
+    QAction* openInterconnectGenerator_;
 
     //! Action to manage the workspaces.
     QAction* actWorkspaces_;
