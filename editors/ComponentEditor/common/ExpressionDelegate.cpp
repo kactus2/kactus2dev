@@ -15,7 +15,6 @@
 
 #include <editors/ComponentEditor/common/ExpressionLineEditor.h>
 
-
 #include <QAbstractItemView>
 #include <QCompleter>
 #include <QKeyEvent>
@@ -113,15 +112,15 @@ ExpressionEditor* ExpressionDelegate::createExpressionEditor(QWidget* parent) co
 //-----------------------------------------------------------------------------
 ExpressionLineEditor* ExpressionDelegate::createExpressionLineEditor(QWidget* parent) const
 {
-    ExpressionLineEditor* editor = new ExpressionLineEditor(parameterFinder_, parent);
+	auto editor = new ExpressionLineEditor(parameterFinder_, parent);
 
-    auto parameterCompleter = new QCompleter(editor);
-    parameterCompleter->setModel(completionModel_);
+	auto parameterCompleter = new QCompleter(editor);
+	parameterCompleter->setModel(completionModel_);
 
-    editor->setAppendingCompleter(parameterCompleter);
+	editor->setAppendingCompleter(parameterCompleter);
 
-    connect(editor, SIGNAL(increaseReference(QString)), this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(decreaseReference(QString)), this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+	connect(editor, SIGNAL(increaseReference(QString)), this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+	connect(editor, SIGNAL(decreaseReference(QString)), this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     return editor;
 }
