@@ -216,7 +216,7 @@ void MemoryMapHeaderGenerator::setLocalSaveFileOptions(QSharedPointer<MemoryMap>
 void MemoryMapHeaderGenerator::setGlobalSaveFileOptions(QSharedPointer<Component> component,
     QString const& instanceName, QString const& instanceId, QString const& masterInterfaceName, QFileInfo fileInfo)
 {
-    GlobalHeaderSaveModel::SaveFileOptions* newSaveOptions (new GlobalHeaderSaveModel::SaveFileOptions);
+	auto newSaveOptions = QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions>::create();
     newSaveOptions->comp_ = component->getVlnv();
     newSaveOptions->instance_ = instanceName;
     newSaveOptions->instanceId_ = instanceId;

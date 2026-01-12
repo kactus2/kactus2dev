@@ -181,7 +181,6 @@ void HDLGenerationDialog::onErrorMessage(QString const& message)
 void HDLGenerationDialog::onFileNameChanged(int const& itemIndex)
 {
     QSharedPointer<GenerationOutput> selection = configuration_->setupRenamedSelection(itemIndex);
-    onSelectedFileChanged(selection);
 }
 
 //-----------------------------------------------------------------------------

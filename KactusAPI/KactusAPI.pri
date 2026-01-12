@@ -21,6 +21,7 @@ HEADERS += ./KactusAPI.h \
     ./include/ComponentInstantiationInterface.h \
     ./include/ComponentInstantiationParameterFinder.h \
     ./include/ComponentParameterFinder.h \
+    ./include/ConfigJsonParser.h \
     ./include/ConsoleMediator.h \
     ./include/DesignParameterFinder.h \
     ./include/DocumentFileAccess.h \
@@ -41,7 +42,9 @@ HEADERS += ./KactusAPI.h \
     ./include/ImportColors.h \
     ./include/ImportPlugin.h \
     ./include/IncludeImportPlugin.h \
+    ./include/InterconnectGenerator.h \
     ./include/InterconnectionInterface.h \
+    ./include/InterconnectRTLWriter.h \
     ./include/IPlugin.h \
     ./include/IPluginUtility.h \
     ./include/IPXactSystemVerilogParser.h \
@@ -154,6 +157,9 @@ SOURCES += ./KactusAPI.cpp \
     ./plugins/ImportRunner.cpp \
     ./plugins/PluginManager.cpp \
     ./plugins/PluginUtilityAdapter.cpp \
+    ./plugins/InterconnectGenerator/ConfigJsonParser.cpp \
+    ./plugins/InterconnectGenerator/InterconnectGenerator.cpp \
+    ./plugins/InterconnectGenerator/InterconnectRTLWriter.cpp \
     ./utilities/ConsoleMediator.cpp \
     ./utilities/FileHandler.cpp \
     ./utilities/NullChannel.cpp \

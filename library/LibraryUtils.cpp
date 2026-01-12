@@ -418,6 +418,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
         instance->setUuid(element->getUuid());
 
         instance->setImported(true);
+        instance->setImportRef(hwDesignVLNV.toString() + "_" + element->getInstanceName());
 
         hwInstances->append(instance);
     }
@@ -440,10 +441,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
             continue;
         }
 
-        if (!swInstance->isImported())
-        {
-            swInstances.append(swInstance);
-        }
+        swInstances.append(swInstance);
 
         oldSWInstances.append(swInstance);
     }

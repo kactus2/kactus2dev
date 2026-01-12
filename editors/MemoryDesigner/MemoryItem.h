@@ -12,6 +12,7 @@
 #ifndef MEMORYITEM_H
 #define MEMORYITEM_H
 
+#include <IPXACTmodels/common/AccessTypes.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QString>
@@ -62,6 +63,20 @@ public:
     QString getDisplayName() const;
 
     /*!
+     *  Set the description
+     *
+     *    @param [in] newDescription    The new description.
+     */
+    void setDescription(QString const& newDescription);
+
+    /*!
+     *  Get the description
+     *
+     *    @return The description
+     */
+    QString getDescription() const;
+
+    /*!
      *  Sets an identifier for the memory.
      *
      *    @param [in] identifier   The identifier to set.
@@ -104,6 +119,20 @@ public:
     QString getAddress() const;
 
     /*!
+     *  Set the formatted address expression.
+     *
+     *    @param [in] newFormattedAddressExpression     The new formatted address expression.
+     */
+    void setFormattedAddressExpression(QString const& newFormattedAddressExpression);
+
+    /*!
+     *  Get the formatted address expression.
+     *
+     *    @return The formatted address expression.
+     */
+    QString getFormattedAddressExpression() const;
+
+    /*!
      * Sets the range for the memory.
      *
      *    @param [in] range   The range to set.
@@ -118,6 +147,20 @@ public:
     QString getRange() const;
 
     /*!
+     *  Set the formatted range expression.
+     *
+     *    @param [in] newFormattedRangeExpression   The new formatted range expression.
+     */
+    void setFormattedRangeExpression(QString const& newRangeExpression);
+
+    /*!
+     *  Get the formatted range expression.
+     *
+     *    @return The formatted range expression.
+     */
+    QString getFormattedRangeExpression() const;
+
+    /*!
      *  Sets the width for the memory.
      *
      *    @param [in] width   The memory width to set.
@@ -130,6 +173,34 @@ public:
      *    @return The width of the memory.
      */
     QString getWidth() const;
+
+    /*!
+     *  Set the formatted width expression.
+     *
+     *    @param [in] newFormattedWidthExpression   The new formatted width expression.
+     */
+    void setFormattedWidthExpression(QString const& newWidthExpression);
+
+    /*!
+     *  Get the formatted width expression.
+     *
+     *    @return The formatted width expression.
+     */
+    QString getFormattedWidthExpression() const;
+
+	/*!
+	 *  Set the access value.
+	 *
+	 *    @param [in] newAccess     The new access value.
+	 */
+	void setAccess(AccessTypes::Access const& newAccess);
+
+    /*!
+     *  Get the access value.
+     *
+     *    @return The access value.
+     */
+    AccessTypes::Access getAccess() const;
 
     /*!
      *  Sets the size for the memory.
@@ -158,6 +229,20 @@ public:
      *    @return The memory offset.
      */
     QString getOffset() const;
+
+    /*!
+     *  Set the formatted offset expression.
+     *
+     *    @param [in] newFormattedOffsetExpression  The new formatted offset expression.
+     */
+    void setFormattedOffsetExpression(QString const& newOffsetExpression);
+
+    /*!
+     *  Get the formatted offset expression.
+     *
+     *    @return The formatted offset expression.
+     */
+    QString getFormattedOffsetExpression() const;
 
     /*!
      *  Adds a sub-element for the memory.
@@ -288,6 +373,9 @@ private:
     //! The display name of the memory element.
     QString displayName_ = "";
 
+    //! Description of the memory element.
+    QString description_ = "";
+
     //! The type of the memory element.
     QString type_ = "";
 
@@ -300,11 +388,23 @@ private:
     //! The address for the memory.
     QString address_ = "";
 
+    //! Formatted address expression for the memory.
+    QString formattedAddressExpression_ = "";
+
     //! The range for the memory.
     QString range_ = "";
 
+	//! Formatted range expression for the memory.
+    QString formattedRangeExpressin_ = "";
+
     //! The bit width for the memory.
     QString width_ = "";
+
+	//! Formatted width expression for the memory.
+    QString formattedWidthExpression_ = "";
+
+    //! Access value of the memory.
+    AccessTypes::Access access_ = AccessTypes::ACCESS_COUNT;
 
     //! The size of the memory.
     QString size_ = "";
@@ -312,6 +412,10 @@ private:
     //! The offset of the memory.
     QString offset_ = "";
 
+	//! Formatted offset expression for the memory.
+    QString formattedOffsetExpression_ = "";
+
+    //! Value of the memory item.
     QString value_ = "";
 
     //! The dimension for the memory.

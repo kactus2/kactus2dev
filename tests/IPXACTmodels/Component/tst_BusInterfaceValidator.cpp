@@ -699,8 +699,7 @@ void tst_BusInterfaceValidator::testHasValidMasterInterface_data()
         false;
     QTest::newRow("Master not containing space reference is valid") << "" << "" << "" << "" << true << true;
     QTest::newRow("Master containing base address is valid") << "space" << "4+4" << "" << "" << true << true;
-    QTest::newRow("Master containing negative base address is not valid") << "space" << "-2" << "" << "" << true <<
-        false;
+    QTest::newRow("Master containing negative base address is valid") << "space" << "-2" << "" << "" << true << true;
 
     QTest::newRow("Present master referring present address space is valid") << "space" << "" << "1" << "1" <<
         true << true;
@@ -1284,8 +1283,7 @@ void tst_BusInterfaceValidator::testHasValidInitiatorInterface2022_data()
 
     QTest::newRow("Initiator not containing space reference is valid") << "" << "" << "" << true << true << "";
     QTest::newRow("Initiator containing base address is valid") << "space" << "4+4" << "" <<  true << true << "";
-    QTest::newRow("Initiator containing negative base address is not valid") << "space" << "-2" << "" << true <<
-        false << "Invalid base address set for initiator bus interface testBus";
+    QTest::newRow("Initiator containing negative base address is valid") << "space" << "-2" << "" << true << true  << "";
 
     QTest::newRow("Initiator containing long base address is valid") << "space" << "4000000000" << "" << true << true 
         << "";

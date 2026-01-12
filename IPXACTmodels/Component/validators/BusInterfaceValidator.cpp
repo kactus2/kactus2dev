@@ -244,9 +244,9 @@ bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<InitiatorInte
     {
         bool changeOk = true;
         bool expressionValid = false;
-        auto value = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
+        expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
 
-        if (!changeOk || !expressionValid || value < 0)
+        if (!changeOk || !expressionValid)
         {
             return false;
         }
@@ -277,9 +277,9 @@ bool BusInterfaceValidator::hasValidInitiatorInterface(QSharedPointer<InitiatorI
     {
         bool changeOk = true;
         bool expressionValid = false;
-        auto value = expressionParser_->parseExpression(initiator->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
+        expressionParser_->parseExpression(initiator->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
 
-        if (!changeOk || !expressionValid || value < 0)
+        if (!changeOk || !expressionValid)
         {
             return false;
         }
@@ -836,9 +836,9 @@ void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors
             bool changeOk = true;
             bool expressionValid = false;
 
-            int baseAddress = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toInt(&changeOk);
+            expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
 
-            if (!changeOk || !expressionValid || baseAddress < 0)
+            if (!changeOk || !expressionValid)
             {
                 errors.append(QObject::tr("Invalid base address set for %1").arg(context));
             }
@@ -884,9 +884,9 @@ void BusInterfaceValidator::findErrorsInInitiatorInterface(QVector<QString>& err
         bool changeOk = true;
         bool expressionValid = false;
 
-        int baseAddress = expressionParser_->parseExpression(initiator->getBaseAddress(), &expressionValid).toInt(&changeOk);
+        expressionParser_->parseExpression(initiator->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
 
-        if (!changeOk || !expressionValid || baseAddress < 0)
+        if (!changeOk || !expressionValid)
         {
             errors.append(QObject::tr("Invalid base address set for %1").arg(context));
         }

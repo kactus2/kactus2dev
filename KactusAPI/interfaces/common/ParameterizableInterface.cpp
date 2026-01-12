@@ -51,7 +51,7 @@ QString ParameterizableInterface::parseExpressionToBaseNumber(QString const& exp
 {
     if (baseNumber == 0)
     {
-        return ExpressionFormatter::format(expression, expressionParser_);
+        return ExpressionFormatter::format(expression, expressionParser_, expressionIsValid);
     }
     else
     {

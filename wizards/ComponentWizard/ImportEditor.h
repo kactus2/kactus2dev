@@ -28,7 +28,7 @@ class Component;
 class FileSelector;
 class ImportRunner;
 class LibraryInterface;
-class PortsEditor;
+class PortsImportSummaryEditor;
 class View;
 class BusInterfaceInterface;
 
@@ -197,7 +197,7 @@ private:
 	QSharedPointer<FileSet> selectedFileSet_;
 
 	//! Editor for the imported ports.
-	PortsEditor* portEditor_;
+	PortsImportSummaryEditor* portEditor_;
 
     //! Used to select the top-level source file.
     FileSelector* fileSelector_;

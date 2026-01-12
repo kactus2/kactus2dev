@@ -383,28 +383,45 @@ bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) cons
     {
         if (!this->isOffPage())
         {
-            return !(isConnectionBetweenPointsExist(other)||
-                (thisOffPage && otherOffPage && thisOffPage->isConnectionBetweenPointsExist(otherOffPage)));
+            return !(connectionToPointExists(other) ||
+                (thisOffPage && otherOffPage && thisOffPage->connectionToPointExists(otherOffPage)));
         }
         else 
         {
-            return !((otherOffPage && isConnectionBetweenPointsExist(otherOffPage) ||
-                thisParent->isConnectionBetweenPointsExist(other)));
+            return !((otherOffPage && connectionToPointExists(otherOffPage) ||
+                thisParent->connectionToPointExists(other)));
         }
     }
     else 
     {
         if (!this->isOffPage())
         {
-            return !(isConnectionBetweenPointsExist(otherParent) ||
-                (thisOffPage && thisOffPage->isConnectionBetweenPointsExist(other)));
+            return !(connectionToPointExists(otherParent) ||
+                (thisOffPage && thisOffPage->connectionToPointExists(other)));
         }
         else
         {
-            return !(isConnectionBetweenPointsExist(other) ||
-                (thisParent->isConnectionBetweenPointsExist(otherParent)));
+            return !(connectionToPointExists(other) ||
+                (thisParent->connectionToPointExists(otherParent)));
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::revalidateConnectionToEndpoint()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isExistingConnectionValid(ConnectionEndpoint const* other) const
+{
+	if (isInvalid() || (!isAdHoc() && isHierarchical() && other->isHierarchical()))
+	{
+		return false;
+	}
+
+	return std::any_of(other->getConnections().cbegin(), other->getConnections().cend(),
+		[this](GraphicsConnection const* connection)
+		{
+			return connection->endpoint1() == this || connection->endpoint2() == this;
+		});
 }
 
 //-----------------------------------------------------------------------------
@@ -414,14 +431,14 @@ void ConnectionEndpoint::revalidateConnections()
 {
     for (GraphicsConnection* conn : getConnections())
     {
-        conn->validate();
+		conn->reValidate();
     }
 
     if (getOffPageConnector() != nullptr)
     {
         for (GraphicsConnection* conn : getOffPageConnector()->getConnections())
         {
-            conn->validate();
+			conn->reValidate();
         }
     }
 }
@@ -464,11 +481,13 @@ void ConnectionEndpoint::endUpdateConnectionNames()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConnectionEndpoint::isConnectionBetweenPointsExist()
+// Function: ConnectionEndpoint::connectionToPointExists()
 //-----------------------------------------------------------------------------
-bool ConnectionEndpoint::isConnectionBetweenPointsExist(ConnectionEndpoint const* other) const
+bool ConnectionEndpoint::connectionToPointExists(ConnectionEndpoint const* other) const
 {
-    return std::any_of(other->getConnections().cbegin(), other->getConnections().cend(),
+    return std::any_of(
+        other->getConnections().cbegin(),
+        other->getConnections().cend(),
         [this](GraphicsConnection const* connection)
         {
             return connection->endpoint1() == this || connection->endpoint2() == this;

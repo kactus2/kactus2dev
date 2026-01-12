@@ -58,7 +58,7 @@ signals:
     void openMemoryDesign(QModelIndex const& index, QString const& viewName);
 
 	//! Open the system design of a component
-	void openSystemDesign(QModelIndex const& index);
+	void openSystemDesign(QModelIndex const& index, QString const& viewName);
 
 	//! Open the given object in the component editor
 	void openComponent(QModelIndex const& index);
@@ -123,7 +123,7 @@ public slots:
     void onOpenMemoryDesign(QAction* viewAction);
 
     //! Open the system design of a component
-    void onOpenSystemDesign();
+	void onOpenSystemDesign(QAction* viewAction);
 
     //! Open component editor
     void onOpenComponent();
@@ -218,6 +218,14 @@ private:
     //! Set up the actions for the context menu
     void setupActions();
 
+	/*!
+	 *  Setup the system actions for a context menu.
+	 *
+	 *    @param [in] component		The component containing the system views.
+	 *    @param [in] menu			The context menu.
+	 */
+	void setupSystemActionsForContextMenu(QSharedPointer<Component const> component, QMenu& menu);
+
 	//! The instance that gives the xml objects.
 	LibraryInterface* handler_;
 
@@ -282,6 +290,7 @@ private:
 
 	//! Open an existing system for editing.
 	QAction* openSystemAction_;
+	QMenu* openSystemMenu_;
 
 	//! Open the xml file to be viewed by the user.
 	QAction* openXmlAction_;

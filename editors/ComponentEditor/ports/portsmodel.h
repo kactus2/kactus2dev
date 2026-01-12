@@ -122,6 +122,11 @@ public:
     virtual QModelIndex index(QString const& portName) const;
 
     /*!
+     *  Reset the model.
+     */
+    void resetModel();
+
+    /*!
      *  Sets the edited model and locks all current ports.
      */
     void resetModelAndLockCurrentPorts();

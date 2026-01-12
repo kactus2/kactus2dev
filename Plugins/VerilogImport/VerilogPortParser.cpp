@@ -13,6 +13,8 @@
 
 #include "VerilogSyntax.h"
 
+#include <common/expressions/utilities.h>
+
 #include <KactusAPI/include//ImportColors.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
@@ -59,6 +61,27 @@ namespace
     const QRegularExpression PORT_1995("(" + PORT_DIRECTION + ")\\s+"
         "(?:(" + PORT_TYPE + ")\\s+)?(" + VerilogSyntax::RANGE + ")?\\s*"
         "(" + VerilogSyntax::NAMES + ")\\s*[;](?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?");
+
+	//! Declaration for verilog parameters.
+	const QString MODULE_PARAMETER_DECLARATION("\\s*#\\((\\s*parameter.*)+\\s*\\)");
+
+    //! Port declaration for Verilog-1995 style.
+    const QString PORT_DECLARATION_1995("\\((\\s*\\w*,)*\\s*\\w+\\s*\\);");
+
+    //! Combination declaration for verilog module and parameters.
+	const QString MODULE_AND_PARAMETERS_DECLARATION(VerilogSyntax::MODULE_BEGIN.pattern() + "(" + MODULE_PARAMETER_DECLARATION + ")?\\s*");
+
+    //! Full declaration for verilog-1995
+    const QString DECLARATION_1995(MODULE_AND_PARAMETERS_DECLARATION + PORT_DECLARATION_1995);
+
+    //! Modified module declaration for use in checking ports
+    const QString NEW_MODULE_DECLARATION("(?:^|\\r?\\n)[ \t]*(?:macro)?module\\s*\\w*");
+
+    //! Everything after module and parameter declaration.
+    const QString MODULE_DECLARATION_REST("\\s*\\([^;]*");
+
+    //! Full declaration of a verilog module.
+    const QString FULL_MODULE_DECLARATION(NEW_MODULE_DECLARATION + "(" + MODULE_PARAMETER_DECLARATION + ")?" + MODULE_DECLARATION_REST);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,9 +95,10 @@ VerilogPortParser::VerilogPortParser(): highlighter_(0), parser_(new NullParser)
 //-----------------------------------------------------------------------------
 // Function: VerilogPortParser::runParser()
 //-----------------------------------------------------------------------------
-void VerilogPortParser::import(QString const& input, QSharedPointer<Component> targetComponent,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
+void VerilogPortParser::import(QString const& input, QSharedPointer<Component> targetComponent)
 {
+    //! The existing ports are changed to phantom in order to keep the component error-free.
+    //! These ports can then be deleted later.
     foreach (QSharedPointer<Port> existingPort, *targetComponent->getPorts())
     {
         existingPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);
@@ -82,7 +106,7 @@ void VerilogPortParser::import(QString const& input, QSharedPointer<Component> t
 
     foreach (QString portDeclaration, findPortDeclarations(input))
     {
-        createPortFromDeclaration(portDeclaration, targetComponent, targetComponentInstantiation);
+		createPortFromDeclaration(portDeclaration, targetComponent);
         highlight(portDeclaration, input);
     }
 }
@@ -144,11 +168,21 @@ QString VerilogPortParser::findPortsSection(QString const& input) const
 //-----------------------------------------------------------------------------
 bool VerilogPortParser::hasVerilog1995Ports(QString const& input) const
 {
-    QString commentsRemoved = input;
-    commentsRemoved.remove(QRegularExpression(VerilogSyntax::COMMENT));
+	QString simplifiedAndCommentsRemoved = removeAllComments(input).simplified();
 
-    bool hasPortsAfterModuleDeclaration = (commentsRemoved.indexOf(PORT_1995, findStartOfPortList(commentsRemoved)) != -1);
-    return hasPortsAfterModuleDeclaration;
+    QRegularExpression declaractionExpression(DECLARATION_1995);
+    QRegularExpressionMatch match = declaractionExpression.match(simplifiedAndCommentsRemoved);
+
+    return match.hasMatch();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogPortParser::removeAllComments()
+//-----------------------------------------------------------------------------
+QString VerilogPortParser::removeAllComments(QString const& input) const
+{
+    auto commentsRemoved = input;
+    return commentsRemoved.remove(VerilogSyntax::MULTILINE_COMMENT).remove(QRegularExpression("\\/\\/.*"));
 }
 
 //-----------------------------------------------------------------------------
@@ -156,7 +190,23 @@ bool VerilogPortParser::hasVerilog1995Ports(QString const& input) const
 //-----------------------------------------------------------------------------
 int VerilogPortParser::findStartOfPortList(QString const& input) const
 {
-    return input.lastIndexOf('(', input.indexOf(VerilogSyntax::MODULE_BEGIN)) + 1;
+    auto portStartIndex = -1;
+
+    QRegularExpression moduleExpression(FULL_MODULE_DECLARATION);
+	if (auto moduleMatch = moduleExpression.match(input); moduleMatch.hasMatch())
+    {
+        auto moduleDeclaration = moduleMatch.captured();
+
+        QRegularExpression moduleAndParameterExpression(NEW_MODULE_DECLARATION + "(" + MODULE_PARAMETER_DECLARATION + ")?");
+		auto moduleWithoutPortsMatch = moduleAndParameterExpression.match(moduleDeclaration);
+        if (moduleWithoutPortsMatch.hasMatch())
+        {
+			auto moduleBeginIndex = moduleMatch.capturedStart();
+            portStartIndex = moduleBeginIndex + moduleWithoutPortsMatch.capturedEnd();
+        }
+    }
+
+    return portStartIndex;
 }
 
 //-----------------------------------------------------------------------------
@@ -166,14 +216,46 @@ QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& in
 {    
     QString section = input;
 
-    int startOfPortList = section.indexOf(QRegularExpression("[)]\\s*;"), findStartOfPortList(input)); 
-    int endOfModule = section.indexOf(VerilogSyntax::MODULE_END, startOfPortList);
-    
-    QRegularExpression lastPort(PORT_1995.pattern() + "(?!\\s*(" + VerilogSyntax::COMMENT + ")?\\s*" + PORT_1995.pattern() + ")");
+	QRegularExpression fullModuleExpression(FULL_MODULE_DECLARATION);
+    QString portDeclaration = "";
+    if (auto moduleMatch = fullModuleExpression.match(input); moduleMatch.hasMatch())
+    {
+        //! This can be used to find the port definitions from the declaration.
+        //! Just remove the module and parameter declarations. What is left is the port declarations.
+        portDeclaration = moduleMatch.captured();
 
-    int endOfPortList = qMin(lastPort.match(section, startOfPortList).capturedEnd(), endOfModule);
+        QRegularExpression moduleExpression(NEW_MODULE_DECLARATION);
+        QRegularExpression parameterExpression(MODULE_PARAMETER_DECLARATION);
 
-    return section.mid(startOfPortList, endOfPortList - startOfPortList);
+        portDeclaration.remove(moduleExpression);
+        portDeclaration.remove(parameterExpression);
+
+        portDeclaration = removeAllComments(portDeclaration).simplified().remove(" ");
+        portDeclaration = portDeclaration.mid(1, portDeclaration.size() - 2);
+    }
+
+	auto startOfDeclaration = findStartOfPortList(section);
+	auto endOfModule = section.indexOf(VerilogSyntax::MODULE_END, startOfDeclaration);
+
+    section = input.mid(startOfDeclaration, endOfModule - startOfDeclaration);
+
+	QString portSection = "";
+
+		for (auto const& currentPort : portDeclaration.split(','))
+		{
+			QRegularExpression currentPortExpression("(" + PORT_DIRECTION + ")\\s*.*\\s*" + currentPort + "\\s*;.*");
+			auto currentPortMatch = currentPortExpression.match(section);
+            if (currentPortMatch.hasMatch())
+            {
+                auto capturedPortMatch = currentPortMatch.captured();
+                if (PORT_1995.match(capturedPortMatch).hasMatch())
+                {
+					portSection.append(capturedPortMatch + "\n");
+                }
+            }
+		}
+
+    return portSection;
 }
 
 //-----------------------------------------------------------------------------
@@ -229,8 +311,7 @@ QStringList VerilogPortParser::portDeclarationsIn(QString const& portSection) co
 // Function: VerilogPortParser::createPortFromDeclaration()
 //-----------------------------------------------------------------------------
 void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration,
-    QSharedPointer<Component> targetComponent,
-    QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
+    QSharedPointer<Component> targetComponent) const
 {
     DirectionTypes::Direction direction = parseDirection(portDeclaration);
 

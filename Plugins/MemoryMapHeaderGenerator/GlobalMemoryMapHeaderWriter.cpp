@@ -12,11 +12,14 @@
 #include "GlobalMemoryMapHeaderWriter.h"
 
 #include <KactusAPI/include/LibraryInterface.h>
-
 #include <KactusAPI/include/IPluginUtility.h>
-#include <Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.h>
-
 #include <KactusAPI/include/ListParameterFinder.h>
+
+#include <editors/MemoryDesigner/MemoryItem.h>
+#include <editors/MemoryDesigner/MemoryDesignerConstants.h>
+
+#include <Plugins/common/ConnectivityGraphUtilities.h>
+#include <Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
@@ -56,17 +59,18 @@ GlobalMemoryMapHeaderWriter::~GlobalMemoryMapHeaderWriter()
 // Function: GlobalMemoryMapHeaderWriter::writeMemoryMapHeader()
 //-----------------------------------------------------------------------------
 void GlobalMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component> globalComponent,
-    QList<GlobalHeaderSaveModel::SaveFileOptions*> saveOptions)
+    QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> > saveOptions)
 {
+    auto viewName = ConnectivityGraphUtilities::getDesignViewName(globalComponent, componentDesign_, componentDesignConfig_);
+    auto defaultCPUs = ConnectivityGraphUtilities::getDefaultCPUs(utility_->getLibraryInterface(), globalComponent, viewName);
+
     saveOptions_ = saveOptions;
-    QList<GlobalHeaderSaveModel::SaveFileOptions*> options = saveOptions_;
+    QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> > options = saveOptions_;
 
     bool changed = false;
 
-	operatedInterfaces_.clear();
-    
     GlobalHeaderSaveModel model(utility_->getLibraryInterface(), parentObject_);
-    model.setDesign(globalComponent, componentDesign_);
+    model.setCPUData(globalComponent, defaultCPUs);
 
     if (options.isEmpty())
     {
@@ -74,10 +78,8 @@ void GlobalMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
         FileSaveDialog dialog(utility_->getParentWidget());
         dialog.setModel(&model);
 
-        int result = dialog.exec();
-
         // if user clicked cancel
-        if (result == QDialog::Rejected)
+		if (dialog.exec() == QDialog::Rejected)
         {
             informGenerationAbort();
             return;
@@ -85,10 +87,14 @@ void GlobalMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
         options = model.getHeaderOptions();
     }
+    else
+    {
+        setupRoutesForExistingOptions(options, defaultCPUs);
+    }
 
     informStartOfGeneration();
 
-	foreach (GlobalHeaderSaveModel::SaveFileOptions* headerOpt, options)
+	for(auto headerOpt : options)
     {
 		QFile file(headerOpt->fileInfo_.absoluteFilePath());
 
@@ -113,12 +119,7 @@ void GlobalMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
         writeTopOfHeaderFile(stream, headerOpt->fileInfo_.fileName(), headerGuard, description);
 
-		QSharedPointer<ActiveInterface> cpuMasterInterface(new ActiveInterface(headerOpt->instance_, 
-            headerOpt->interface_));
-		operatedInterfaces_.append(cpuMasterInterface);
-
-		// start the address parsing from the cpu's interface
-		parseInterface(0, stream, cpuMasterInterface);
+        parseRoutes(stream, headerOpt->cpuContainer_);
 
 		stream << "#endif /* " << headerGuard << " */" << Qt::endl << Qt::endl;
 
@@ -152,217 +153,187 @@ void GlobalMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 }
 
 //-----------------------------------------------------------------------------
-// Function: GlobalMemoryMapHeaderWriter::parseInterface()
+// Function: GlobalMemoryMapHeaderWriter::setupRoutesForExistingOptions()
 //-----------------------------------------------------------------------------
-void GlobalMemoryMapHeaderWriter::parseInterface(qint64 offset, QTextStream& stream, QSharedPointer<ActiveInterface> interface)
+void GlobalMemoryMapHeaderWriter::setupRoutesForExistingOptions(
+    QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> > options,
+    QVector<QSharedPointer<SingleCpuRoutesContainer> > cpuRoutes)
 {
-    Q_ASSERT(componentDesign_);
-    Q_ASSERT(componentDesign_->containsHWInstance(interface->getComponentReference()));
-
-	// parse the component containing the interface
-	VLNV compVLNV = componentDesign_->getHWComponentVLNV(interface->getComponentReference());
-	QSharedPointer<Document> libComp = utility_->getLibraryInterface()->getModel(compVLNV);
-	QSharedPointer<Component> component = libComp.dynamicCast<Component>();
-	Q_ASSERT(component);
-
-    QSharedPointer<BusInterface> busInterface = component->getBusInterface(interface->getBusReference());    
-    if (busInterface)
+    for (auto singleCPU : cpuRoutes)
     {
-        General::InterfaceMode interfaceMode = busInterface->getInterfaceMode();
-        if (interfaceMode == General::MASTER)
+        if (auto matchingOption = getSaveOptionForCPU(options, singleCPU); matchingOption)
         {
-            parseMasterInterface(offset, component, stream, interface);
+			matchingOption->cpuContainer_ = singleCPU;
         }
-        else if (interfaceMode == General::SLAVE)
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GlobalMemoryMapHeaderWriter::getSaveOptionForCPU()
+//-----------------------------------------------------------------------------
+QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> GlobalMemoryMapHeaderWriter::getSaveOptionForCPU(
+    QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> > options,
+    QSharedPointer<SingleCpuRoutesContainer> singleCPU)
+{
+    auto cpuInterface = singleCPU->getRoutes().first()->cpuInterface_;
+    auto cpuInstance = cpuInterface->getInstance();
+    
+    auto interfaceName = cpuInterface->getName();
+    auto instanceName = cpuInstance->getName();
+    
+    VLNV cpuComponentVLNV(VLNV::COMPONENT, cpuInstance->getVlnv());
+
+    for (auto saveOption : options)
+    {
+        if (saveOption->instance_ == instanceName &&
+            saveOption->interface_ == interfaceName &&
+            saveOption->comp_ == cpuComponentVLNV &&
+            saveOption->instanceId_ == cpuInstance->getInstanceUuid())
         {
-            parseSlaveInterface(offset, component, stream, interface);
+            return saveOption;
         }
-        else if (interfaceMode == General::MIRRORED_SLAVE)
+    }
+
+    return QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GlobalMemoryMapHeaderWriter::parseRoutes()
+//-----------------------------------------------------------------------------
+void GlobalMemoryMapHeaderWriter::parseRoutes(QTextStream& stream, QSharedPointer<SingleCpuRoutesContainer> container)
+{
+    if (!container)
+    {
+        return;
+    }
+
+    for (auto const& startingInterfaceRoutes : container->getRoutes())
+    {
+        for (auto const& interfaceRoutes : startingInterfaceRoutes->routes_)
         {
-            parseMirroredSlaveInterface(offset, component, stream, interface);
+            AddressContainer addressContainer;
+
+            //! A single route starts in here
+            for (auto currentInterface : interfaceRoutes)
+            {
+                auto interfaceMode = currentInterface->getMode();
+				if (interfaceMode == General::MASTER || interfaceMode == General::INITIATOR)
+				{
+					parseMasterInterface(addressContainer, currentInterface);
+				}
+				else if (interfaceMode == General::SLAVE || interfaceMode == General::TARGET)
+				{
+					parseTargetInterface(addressContainer, stream, currentInterface);
+				}
+				else if (interfaceMode == General::MIRRORED_SLAVE || interfaceMode == General::MIRRORED_TARGET)
+				{
+					parseMirroredTargetInterface(addressContainer, currentInterface);
+				}
+            }
         }
-        else if (interfaceMode == General::MIRRORED_MASTER)
-        {
-            parseMirroredMasterInterface(offset, component, stream, interface);
-        }
-    }    
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: GlobalMemoryMapHeaderWriter::parseMasterInterface()
 //-----------------------------------------------------------------------------
-void GlobalMemoryMapHeaderWriter::parseMasterInterface(qint64 offset, QSharedPointer<Component> component,
-    QTextStream& stream, QSharedPointer<ActiveInterface> interface)
+void GlobalMemoryMapHeaderWriter::parseMasterInterface(AddressContainer& addressContainer, QSharedPointer<const ConnectivityInterface> masterInterface) const
 {
-    QString instanceID = getInstanceID(interface->getComponentReference());
-    QSharedPointer<ListParameterFinder> finder = createParameterFinder(instanceID, component);
-
-    QString masterBaseAddress = component->getBusInterface(interface->getBusReference())->getMaster()->getBaseAddress();
-
-    offset += parsedValueFor(masterBaseAddress, finder).toInt();
-
-    QList<QSharedPointer<ActiveInterface> > connected = getConnectedInterfaces(interface);
-    foreach (QSharedPointer<ActiveInterface> targetInterface, connected)
-    {
-        if (!operatedInterfaces_.contains(targetInterface))
-        {
-            operatedInterfaces_.append(targetInterface);
-            parseInterface(offset, stream, targetInterface);
-        }
-    }
+    addressContainer.baseAddress_ += masterInterface->getBaseAddress().toULongLong();
 }
 
 //-----------------------------------------------------------------------------
-// Function: GlobalMemoryMapHeaderWriter::parseSlaveInterface()
+// Function: GlobalMemoryMapHeaderWriter::parseTargetInterface()
 //-----------------------------------------------------------------------------
-void GlobalMemoryMapHeaderWriter::parseSlaveInterface(qint64 offset, QSharedPointer<Component> component,
-    QTextStream& stream, QSharedPointer<ActiveInterface> interface)
+void GlobalMemoryMapHeaderWriter::parseTargetInterface(AddressContainer addressContainer,
+    QTextStream& stream,
+    QSharedPointer<const ConnectivityInterface> targetInterface)
 {
-    QSharedPointer<TargetInterface> slave = component->getBusInterface(interface->getBusReference())->getSlave();
-    Q_ASSERT(slave);
-
-    QSharedPointer<MemoryMap> memMap;
-    foreach (QSharedPointer<MemoryMap> availableMap, *component->getMemoryMaps())
+	auto memoryItem = targetInterface->getConnectedMemory();
+    if (targetInterface->isBridged() || !memoryItem)
     {
-        if (availableMap->name() == slave->getMemoryMapRef())
-        {
-            memMap = availableMap;
-            break;
-        }            
+        return;
     }
 
-    if (memMap && memMap->hasMemoryBlocks())
+	if (memoryItem->getType() == MemoryDesignerConstants::MEMORYMAP_TYPE && memoryItemContainsAddressBlocks(memoryItem))
     {
+        auto targetInstance = targetInterface->getInstance();
+
         stream << "/*" << Qt::endl;
-        stream << " * Instance: " << interface->getComponentReference() << " Interface: " << interface->getBusReference() << Qt::endl;
-        stream << " * Instance base address: 0x" << QString::number(offset, 16) << Qt::endl;
-        stream << " * Source component: " << component->getVlnv().toString() << Qt::endl;
+		stream << " * Instance: " << targetInstance->getName() << " Interface: " << targetInterface->getName() << Qt::endl;
+		stream << " * Instance base address: 0x" << QString::number(addressContainer.baseAddress_, 16) << Qt::endl;
+		stream << " * Source component: " << targetInstance->getVlnv() << Qt::endl;
 
         // if there is a description for the component instance
-        QString instanceDesc = componentDesign_->getHWInstanceDescription(interface->getComponentReference());
-        if (!instanceDesc.isEmpty())
+        auto instanceDescription = targetInstance->getDescription();
+        if (!instanceDescription.isEmpty())
         {
             stream << " * Description:" << Qt::endl;
-            stream << " * " << instanceDesc << Qt::endl;
+            stream << " * " << instanceDescription << Qt::endl;
         }
 
-        QString instanceID = getInstanceID(interface->getComponentReference());
-
-        QSharedPointer<ListParameterFinder> finder = createParameterFinder(instanceID, component);
-
-        stream << " * The defines for the memory map \"" << memMap->name() << "\":" << Qt::endl;
+		stream << " * The defines for the memory map \"" << memoryItem->getName() << "\":" << Qt::endl;
         stream << "*/" << Qt::endl << Qt::endl;
 
-        writeMemoryAddresses(finder, memMap, stream, offset, interface->getComponentReference());
+        writeMemoryAddresses(addressContainer, stream, memoryItem, targetInstance->getName());
 
         // if the registers within the instance are unique then do not concatenate with address block name
         /*QStringList regNames;
         if (memMap->uniqueRegisterNames(regNames))
         {*/
 
-        writeRegisterFromMemoryMap(finder, memMap, stream, false, offset, interface->getComponentReference());
-        
+        writeRegisterFromMemoryMap(addressContainer, stream, memoryItem, false, targetInstance->getName());
+
         /*}
         else
         {
             writeRegisterFromMemoryMap(finder, memMap, stream, true, offset, interface->getComponentReference());
         }*/
     }
-
-    if (slave->hasTransparentBridge())
-    {
-        QStringList masterNames = slave->getMasterReferences();
-        foreach (QString masterRef, masterNames)
-        {
-            if (!component->hasInterface(masterRef))
-            {
-                continue;
-            }
-
-            QSharedPointer<ActiveInterface> masterIF(new ActiveInterface(interface->getComponentReference(),
-                masterRef));
-            if (operatedInterfaces_.contains(masterIF))
-            {
-                continue;
-            }
-
-            operatedInterfaces_.append(masterIF);
-            parseInterface(offset, stream, masterIF);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: GlobalMemoryMapHeaderWriter::parseMirroredSlaveInterface()
+// Function: GlobalMemoryMapHeaderWriter::memoryItemContainsAddressBlocks()
 //-----------------------------------------------------------------------------
-void GlobalMemoryMapHeaderWriter::parseMirroredSlaveInterface(qint64 offset, QSharedPointer<Component> component,
-    QTextStream& stream, QSharedPointer<ActiveInterface> interface)
+bool GlobalMemoryMapHeaderWriter::memoryItemContainsAddressBlocks(QSharedPointer<MemoryItem> memoryItem) const
 {
-    // increase the offset by the remap address of the mirrored slave interface
-    QSharedPointer<BusInterface> busInterface = component->getBusInterface(interface->getBusReference());
-
-    QString instanceId = getInstanceID(interface->getComponentReference());
-    QSharedPointer<ListParameterFinder> finder = createParameterFinder(instanceId, component);
-
-    for (QSharedPointer<MirroredTargetInterface::RemapAddress> remap :
-        *busInterface->getMirroredSlave()->getRemapAddresses())
+    if (memoryItem->getChildItems().isEmpty() == false)
     {
-        QString remapValue = parsedValueFor(remap->remapAddress_, finder);
-        offset += remapValue.toInt();
-
-        QList<QSharedPointer<ActiveInterface> > connected = getConnectedInterfaces(interface);
-        for (QSharedPointer<ActiveInterface> targetInterface : connected)
+        for (auto childItem : memoryItem->getChildItems())
         {
-            if (!operatedInterfaces_.contains(targetInterface))
+            if (childItem->getType() != MemoryDesignerConstants::ADDRESSBLOCK_TYPE)
             {
-                operatedInterfaces_.append(targetInterface);
-                parseInterface(offset, stream, targetInterface);
+                return false;
             }
         }
+
+        return true;
     }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
-// Function: GlobalMemoryMapHeaderWriter::parseMirroredMaster()
+// Function: GlobalMemoryMapHeaderWriter::parseMirroredTargetInterface()
 //-----------------------------------------------------------------------------
-void GlobalMemoryMapHeaderWriter::parseMirroredMasterInterface(qint64 offset, QSharedPointer<Component> component,
-    QTextStream& stream, QSharedPointer<ActiveInterface> interface)
+void GlobalMemoryMapHeaderWriter::parseMirroredTargetInterface(AddressContainer& addressContainer,
+    QSharedPointer<const ConnectivityInterface> mirroredTargetInterface) const
 {
-    // mirrored master interfaces are connected via channels
-    // find the interfaces connected to the specified mirrored master interface
-    QStringList connectedInterfaceNames;
-    for (QSharedPointer<Channel> channel : *component->getChannels())
+    addressContainer.baseAddress_ += mirroredTargetInterface->getRemapAddress().toULongLong();
+
+    auto newLastAddress = addressContainer.baseAddress_ + mirroredTargetInterface->getRemapRange().toULongLong();
+    if (newLastAddress > 0)
     {
-        if (channel->getInterfaceNames().contains(interface->getBusReference()))
-        {
-            connectedInterfaceNames.append(channel->getInterfaceNames());
-        }
+        newLastAddress = newLastAddress - 1;
     }
 
-    connectedInterfaceNames.removeDuplicates();
-    connectedInterfaceNames.removeAll(interface->getBusReference());
-
-    QVector<QSharedPointer<const BusInterface> > connectedInterfaces;
-
-    for (QString const& interfaceName : connectedInterfaceNames)
+    if (addressContainer.hasRemapRange_ == false ||
+        (addressContainer.hasRemapRange_ && newLastAddress < addressContainer.lastAddress_))
     {
-        QSharedPointer<BusInterface> connectedInterface = component->getBusInterface(interfaceName);
-        if (connectedInterface)
-        {
-            connectedInterfaces.append(connectedInterface);
-        }
+        addressContainer.lastAddress_ = newLastAddress;
     }
 
-    for (QSharedPointer<const BusInterface> busif: connectedInterfaces)
-    {
-        QSharedPointer<ActiveInterface> connectedInterface(new ActiveInterface(interface->getComponentReference(),
-            busif->name()));
-        if (!operatedInterfaces_.contains(connectedInterface))
-        {
-            operatedInterfaces_.append(connectedInterface);
-            parseInterface(offset, stream, connectedInterface);
-        }
-    }
+    addressContainer.hasRemapRange_ = true;
 }
 
 //-----------------------------------------------------------------------------

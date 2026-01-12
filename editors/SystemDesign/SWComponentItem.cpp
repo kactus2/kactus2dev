@@ -165,33 +165,13 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         Q_ASSERT(stack != nullptr);
         stack->onReleaseItem(this);
 
-        QSharedPointer<QUndoCommand> cmd;
-
         if (scenePos() != oldPos_)
         {
-            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldStack_, diagram));
-        }
-        else
-        {
-            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
-        }
+            auto moveCommand = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldStack_, diagram));
 
-        // End the position update for all connections.
-        for (QGraphicsItem *item : scene()->items())
-        {
-            auto conn = dynamic_cast<GraphicsConnection*>(item);
+            diagram->getEditProvider()->addCommand(moveCommand);
 
-            if (conn != nullptr)
-            {
-                conn->endUpdatePosition(cmd.data());
-            }
-        }
-        
-        // Add the undo command to the edit stack only if it has at least some real changes.
-        if (cmd->childCount() > 0 || scenePos() != oldPos_)
-        {
-            diagram->getEditProvider()->addCommand(cmd);
-            cmd->redo();
+            moveCommand->redo();
         }
 
         oldStack_ = nullptr;

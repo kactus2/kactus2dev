@@ -25,6 +25,7 @@ struct GenerationOutput
 {
     //! The name for the file created from the output.
     QString fileName_;
+
     //! The VLNV of the component corresponding the output.
     QString vlnv_;
     //! The content of the output, ie. what will be written to the file.
@@ -102,6 +103,13 @@ public:
      *    @return The changed output if the change was successful.
      */
     QSharedPointer<GenerationOutput> changeFileName(int index, QString const& newName);
+
+    /*!
+     *  Write the contents of the selected file using the current base directory.
+     *
+     *    @param [in] index     The position of the output within the list.
+     */
+    void writeFileToCurrentPath(int const& index);
 
 private:
 

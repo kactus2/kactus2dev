@@ -490,6 +490,16 @@ QModelIndex PortsModel::index(QString const& portName) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortsModel::resetModel()
+//-----------------------------------------------------------------------------
+void PortsModel::resetModel()
+{
+    beginResetModel();
+    lockedIndexes_.clear();
+    endResetModel();
+}
+
+//-----------------------------------------------------------------------------
 // Function: portsmodel::resetModelAndLockCurrentPorts()
 //-----------------------------------------------------------------------------
 void PortsModel::resetModelAndLockCurrentPorts()
@@ -502,8 +512,8 @@ void PortsModel::resetModelAndLockCurrentPorts()
 
     for (auto const& portName : getInterface()->getItemNames())
     {
-        DirectionTypes::Direction portDirection = DirectionTypes::str2Direction(QString::fromStdString(
-            portsInterface_->getDirection(portName)), DirectionTypes::DIRECTION_INVALID);
+		DirectionTypes::Direction portDirection = DirectionTypes::str2Direction(QString::fromStdString(
+			portsInterface_->getDirection(portName)), DirectionTypes::DIRECTION_INVALID);
         if (portDirection != DirectionTypes::DIRECTION_PHANTOM)
         {
             lockPort(QString::fromStdString(portName));

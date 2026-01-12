@@ -258,3 +258,53 @@ QSharedPointer<const Component> ConnectivityGraphUtilities::getInterfacedCompone
 
     return interfaceComponent;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphUtilities::getDesignView()
+//-----------------------------------------------------------------------------
+QString ConnectivityGraphUtilities::getDesignViewName(
+    QSharedPointer<Component> mainComponent,
+    QSharedPointer<Design> availableDesign /*= nullptr*/,
+    QSharedPointer<DesignConfiguration> availableDesignConfiguration /*= nullptr*/)
+{
+    QString designViewName = "";
+    if (!availableDesign)
+    {
+        return designViewName;
+    }
+
+    QList<QSharedPointer<View> > availableViews;
+
+	for (auto view : *mainComponent->getViews())
+	{
+		if (QSharedPointer<DesignInstantiation> viewDesignInstantiation =
+			mainComponent->getModel()->findDesignInstantiation(view->getDesignInstantiationRef());
+			viewDesignInstantiation && *viewDesignInstantiation->getDesignReference() != availableDesign->getVlnv())
+		{
+			continue;
+		}
+
+		QSharedPointer<DesignConfigurationInstantiation> viewDesignConfigInstantiation =
+            mainComponent->getModel()->findDesignConfigurationInstantiation(view->getDesignConfigurationInstantiationRef());
+		if (!availableDesignConfiguration && viewDesignConfigInstantiation)
+		{
+			continue;
+		}
+
+		if ((availableDesignConfiguration && !viewDesignConfigInstantiation) ||
+			(viewDesignConfigInstantiation && *viewDesignConfigInstantiation->getDesignConfigurationReference() != availableDesignConfiguration->getVlnv()))
+		{
+			continue;
+		}
+
+		// If above conditions are satisfied, the view may be used for generation.
+		availableViews.append(view);
+	}
+
+    if (availableViews.size() > 0)
+    {
+		designViewName = availableViews.first()->name();
+    }
+
+    return designViewName;
+}

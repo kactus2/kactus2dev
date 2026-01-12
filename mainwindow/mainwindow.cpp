@@ -50,6 +50,9 @@
 #include <editors/SystemDesign/SystemDesignDiagram.h>
 #include <editors/MemoryDesigner/MemoryDesignDocument.h>
 
+#include <editors/InterconnectGenerator/InterconnectGeneratorDialog.h>
+#include <KactusAPI/include/InterconnectGenerator.h>
+
 #include <editors/AbstractionDefinitionEditor/AbstractionDefinitionEditor.h>
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <editors/BusDefinitionEditor/BusDefinitionEditor.h>
@@ -129,6 +132,7 @@ ribbon_(0),
 statusBar_(new QStatusBar(this)),
 scriptEditor_(new PythonSourceEditor(this)),
 actNew_(0),
+actMainSave_(0),
 actSave_(0),
 actSaveAs_(0),
 actSaveHierarchy_(0),
@@ -159,6 +163,7 @@ actFitInView_(0),
 actVisibleDocks_(0),
 actVisibilityControl_(0),
 openMemoryDesignerAction_(0),
+openInterconnectGenerator_(0),
 actWorkspaces_(0),
 protectGroup_(0),
 actRefresh_(0),
@@ -305,7 +310,7 @@ void MainWindow::setupActions()
     actNew_->setToolTip(tooltipNew);
     connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
 
-    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), QString(), this);
+    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), QString("Save"), this);
     actSave_->setShortcut(QKeySequence::Save);
     QString tooltipSave = tr("Save (%1)").arg(actSave_->shortcut().toString(QKeySequence::NativeText));
     actSave_->setToolTip(tooltipSave);
@@ -314,7 +319,12 @@ void MainWindow::setupActions()
     connect(designTabs_, SIGNAL(documentModifiedChanged(bool)),
         actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
-    actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), QString(), this);
+	actMainSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), QString(), this);
+	actMainSave_->setToolTip(tooltipSave);
+	actMainSave_->setEnabled(true);
+	connect(actMainSave_, SIGNAL(triggered()), this, SLOT(passSaveToActSave()));
+
+    actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), QString("Save as"), this);
     actSaveAs_->setShortcut(QKeySequence::SaveAs);
     QString tooltipSaveAs = tr("Save As");
     actSaveAs_->setToolTip(tooltipSaveAs);
@@ -335,9 +345,11 @@ void MainWindow::setupActions()
     connect(actSaveHierarchy_, SIGNAL(triggered()), this, SLOT(saveCurrentDocumentHierarchy()));
 
     auto saveMenu = new QMenu(this);
+    saveMenu->addAction(actSave_);
+    saveMenu->addAction(actSaveAs_);
     saveMenu->addAction(actSaveAll_);
     saveMenu->addAction(actSaveHierarchy_);
-    actSaveAs_->setMenu(saveMenu);
+	actMainSave_->setMenu(saveMenu);
 
     actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), QString(), this);
     actPrint_->setShortcut(QKeySequence::Print);
@@ -562,9 +574,14 @@ void MainWindow::setupActions()
     connect(&visibilityMenu_, SIGNAL(triggered(QAction*)), this, SLOT(onVisibilityControlToggled(QAction*)));
 
     // Initialize the action for opening memory designer.
-    openMemoryDesignerAction_ = new QAction(QIcon(":icons/common/graphics/memoryDesigner.png"), tr("Open Memory Designer"), this);
+    openMemoryDesignerAction_ = new QAction(QIcon(":icons/common/graphics/memoryDesigner.png"), tr("Memory Designer"), this);
     openMemoryDesignerAction_->setVisible(false);
     connect(openMemoryDesignerAction_, SIGNAL(triggered()), this, SLOT(openMemoryDesign()), Qt::UniqueConnection);
+
+    // Initialize the action for opening interconnect generator.
+    openInterconnectGenerator_ = new QAction(QIcon(":icons/common/graphics/interconnectGenerator.png"), tr("Interconnect Generator"), this);
+    openInterconnectGenerator_->setVisible(false);
+    connect(openInterconnectGenerator_, SIGNAL(triggered()), this, SLOT(onInterconnectGenerate()), Qt::UniqueConnection);
 
     // Initialize the action to manage workspaces.
     actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"),	tr("Workspaces"), this);
@@ -618,6 +635,17 @@ void MainWindow::setupActions()
 }
 
 //-----------------------------------------------------------------------------
+// Function: mainwindow::passSaveToActSave()
+//-----------------------------------------------------------------------------
+void MainWindow::passSaveToActSave()
+{
+    if (actSave_->isEnabled())
+    {
+        actSave_->trigger();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: mainwindow::onAdjustVisibilityInWindow()
 //-----------------------------------------------------------------------------
 void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show)
@@ -643,8 +671,7 @@ void MainWindow::setupMenus()
     // The "File" group.
     RibbonGroup* fileGroup = new RibbonGroup(tr("File"), ribbon_);
     fileGroup->addAction(actNew_);
-    fileGroup->addAction(actSave_);
-    fileGroup->addAction(actSaveAs_);
+    fileGroup->addAction(actMainSave_);
     fileGroup->addAction(actPrint_);
     fileGroup->addAction(actImageExport_);
     fileGroup->addAction(actRunImport_);
@@ -732,6 +759,7 @@ void MainWindow::setupMenus()
     configurationToolsGroup_ = new RibbonGroup(tr("Configuration Tools"), ribbon_);
     configurationToolsGroup_->addAction(actionConfigureViews_);
     configurationToolsGroup_->addAction(openMemoryDesignerAction_);
+    configurationToolsGroup_->addAction(openInterconnectGenerator_);
 
     configurationToolsAction_ = ribbon_->addGroup(configurationToolsGroup_);
     configurationToolsAction_->setVisible(false);
@@ -984,6 +1012,7 @@ void MainWindow::updateMenuStrip()
     actRunImport_->setVisible(isHWComp);
 
     openMemoryDesignerAction_->setVisible(isHWDesign);
+    openInterconnectGenerator_->setVisible(isHWDesign);
 
     configurationToolsAction_->setEnabled(unlocked);
     configurationToolsAction_->setVisible(doc != 0 && (isHWComp || isHWDesign));
@@ -2596,6 +2625,38 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
 }
 
 //-----------------------------------------------------------------------------
+// Function: mainwindow::onInterconnectGenerate()
+//-----------------------------------------------------------------------------
+
+void MainWindow::onInterconnectGenerate()
+{
+    auto doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+    if (!doc || doc->isProtected())
+    {
+        return;
+    }
+    auto designWidget = static_cast<DesignWidget*>(doc);
+
+    InterconnectGeneration::Dialog interconnectDialog(designWidget, libraryHandler_, messageChannel_, this);
+    if (interconnectDialog.exec() == QDialog::Accepted) {
+        auto config = interconnectDialog.getConfig();
+        if (!config) {
+            return;
+        }
+        auto const& startingPoints = interconnectDialog.getSelectedStartingPoints();
+        auto const& endPoints = interconnectDialog.getSelectedEndpoints();
+
+        bool generateRtl = interconnectDialog.rtlGenerationSelected();
+
+        LibraryInterface* lib = KactusAPI::getLibrary();
+        auto interconGen = InterconnectGeneration::Generator(lib, messageChannel_);
+        interconGen.generate(config, startingPoints, endPoints, generateRtl);
+        doc->refresh();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: mainwindow::onOpenComponentItem()
 //-----------------------------------------------------------------------------
 void MainWindow::onOpenComponentItem(const VLNV& componentVLNV, QVector<QString> identifierChain)
@@ -2666,8 +2727,8 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName)
     connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
         this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(destroyed(QObject*)), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(clearItemSelection()),
-        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+//     connect(designWidget, SIGNAL(clearItemSelection()),
+//         libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(clearItemSelection()), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(refreshed()), this, SLOT(onDesignDocumentRefreshed()), Qt::UniqueConnection);
@@ -2733,8 +2794,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
         this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(destroyed(QObject*)),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(clearItemSelection()),
-        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+//     connect(designWidget, SIGNAL(clearItemSelection()),
+//         libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(clearItemSelection()),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 

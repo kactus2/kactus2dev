@@ -4,9 +4,12 @@
 
 # This is a reminder that you are using a generated .pro file.
 # Remove it when you are finished editing this file.
+message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../Plugins/VerilogImport/VerilogPortParser.h \
-    ../../../Plugins/VerilogImport/VerilogSyntax.h
+    ../../../Plugins/VerilogImport/VerilogSyntax.h \
+    ../../../common/expressions/utilities.h
 SOURCES += ../../../Plugins/VerilogImport/VerilogPortParser.cpp \
-    ./tst_VerilogPortParser.cpp
+    ./tst_VerilogPortParser.cpp \
+    ../../../common/expressions/utilities.cpp

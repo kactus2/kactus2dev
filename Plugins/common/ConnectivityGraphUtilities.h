@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Cpu.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/ConnectivityComponent.h>
@@ -53,6 +55,19 @@ namespace ConnectivityGraphUtilities
      *    @return List of the component CPU routes.
      */
     QVector<QSharedPointer<SingleCpuRoutesContainer> > getDefaultCPUs(LibraryInterface* library, QSharedPointer<Component> component, QString const& viewName);
+
+    /*!
+     *  Get the name of the design view.
+     *
+     *    @param [in] mainComponent                 The selected component.
+     *    @param [in] availableDesign               The selected design.
+     *    @param [in] availableDesignConfiguration  The selected design configuration.
+     *
+     *    @return Name of the component view that uses the selected design and design configuration.
+     */
+    QString getDesignViewName(QSharedPointer<Component> mainComponent,
+        QSharedPointer<Design> availableDesign = nullptr,
+        QSharedPointer<DesignConfiguration> availableDesignConfiguration = nullptr);
 };
 
 #endif //CONNECTIVITYGRAPHUTILITIES_H

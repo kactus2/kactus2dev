@@ -117,6 +117,11 @@ public:
      */
     void validate();
 
+    /*!
+     *  Re validate the connection.
+     */
+    void reValidate();
+
     /*! 
      *  Disconnects the ends of the connection.
      */
@@ -323,6 +328,11 @@ private:
         SEGMENT,
         NONE
     };
+
+    /*!
+     *  Common validation functions for both the initial and re validation of a connection.
+     */
+    void commonValidation();
 
     /*!
      *  Sets the default graphics item settings.

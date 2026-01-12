@@ -91,6 +91,16 @@ namespace FileHandler
      *    @return True, if the input is a URI, otherwise false.
      */
     KACTUS2_API bool isURI(QString const& uri);
+
+    /*!
+     *  Modify the selected path to include the selected extension in the end.
+     *
+     *    @param [in] filePath      The selected file path.
+     *    @param [in] extension     The selected file extension.
+     *
+     *    @return The modified file path.
+     */
+    KACTUS2_API QString getModifiedPathWithExtension(QString const& filePath, QString const& extension);
 };
 
 #endif // FILEHANDLER_H

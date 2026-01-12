@@ -35,6 +35,13 @@ public:
     };
 
     /*!
+     *  Create a copy of the Structured.
+     *
+     *    @return A Structured identical to this.
+     */
+    Structured* clone() const;
+
+    /*!
      *  Set the structured port as packed.
      *
      *    @param [in] packed Packed or not.

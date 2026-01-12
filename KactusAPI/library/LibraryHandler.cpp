@@ -539,7 +539,7 @@ void LibraryHandler::onOpenSWDesign(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::onOpenSystemDesign()
 //-----------------------------------------------------------------------------
-void LibraryHandler::onOpenSystemDesign(VLNV const& vlnv)
+void LibraryHandler::onOpenSystemDesign(VLNV const& vlnv, QString const& activeView)
 {
     QSharedPointer<const Component> component = getModelReadOnly(vlnv).dynamicCast<const Component>();
     if (component.isNull())
@@ -548,11 +548,10 @@ void LibraryHandler::onOpenSystemDesign(VLNV const& vlnv)
         return;
     }
 
-    QStringList systemViews = component->getSystemViewNames();
-    if (!systemViews.isEmpty())
-    {
-        emit openSystemDesign(vlnv, systemViews.first());
-    }
+	if (component->getSystemViewNames().contains(activeView))
+	{
+		emit openSystemDesign(vlnv, activeView);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -639,16 +638,11 @@ void LibraryHandler::syncronizeModels()
 {
     // signals from tree model to library handler
  
-    connect(&treeModel_, SIGNAL(openDesign(const VLNV&, QString const&)),
-        this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(&treeModel_, SIGNAL(openMemoryDesign(const VLNV&, QString const&)),
-        this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(&treeModel_, SIGNAL(openSWDesign(const VLNV&)),
-        this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(&treeModel_, SIGNAL(openSystemDesign(const VLNV&)),
-        this, SLOT(onOpenSystemDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(&treeModel_, SIGNAL(editItem(const VLNV&)),
-        this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
+    connect(&treeModel_, SIGNAL(openDesign(const VLNV&, QString const&)), this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(&treeModel_, SIGNAL(openMemoryDesign(const VLNV&, QString const&)), this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(&treeModel_, SIGNAL(openSWDesign(const VLNV&)), this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(&treeModel_, SIGNAL(openSystemDesign(const VLNV&, QString const&)), this, SLOT(onOpenSystemDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(&treeModel_, SIGNAL(editItem(const VLNV&)), this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
     connect(this, SIGNAL(resetModel()),
         &treeModel_, SLOT(onResetModel()), Qt::UniqueConnection);

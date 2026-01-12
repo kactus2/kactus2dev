@@ -23,6 +23,7 @@
 #include <QFileInfo>
 
 class LibraryInterface;
+class SingleCpuRoutesContainer;
 
 //-----------------------------------------------------------------------------
 //! The model class to display the header files to be created for CPU instances within a design.
@@ -50,6 +51,9 @@ public:
 
 		//! Contains the path for the header file to be saved.
 		QFileInfo fileInfo_;
+
+		//! Container for routes from a single CPU interface.
+		QSharedPointer<SingleCpuRoutesContainer> cpuContainer_;
 	};
 
 	//! The column numbers for the table.
@@ -76,10 +80,11 @@ public:
 	/*!
      *  Set the design for which the global headers are generated.
 	 *
-	 *    @param [in] topComp     Pointer to the component which contains the design.
-	 *    @param [in] design      Pointer to the design which instantiates the components.
+	 *    @param [in] topComp		Pointer to the component which contains the design.
+	 *    @param [in] cpuRoutes		List of CPU interface routes.
 	 */
-	void setDesign(QSharedPointer<Component> topComp, QSharedPointer<Design> design);
+	void setCPUData(QSharedPointer<Component> topComponent,
+		QVector<QSharedPointer<SingleCpuRoutesContainer> > const& cpuRoutes);
 
 	/*!
      *  Get the number of rows an item contains.
@@ -145,7 +150,7 @@ public:
 	 *
 	 *    @return QList containing the save options.
 	 */
-	const QList<SaveFileOptions*>& getHeaderOptions() const;
+	const QList<QSharedPointer<SaveFileOptions> >& getHeaderOptions() const;
 
 private:
 	
@@ -163,13 +168,10 @@ private:
 	LibraryInterface* handler_;
 
 	//! Contains the instance and interface names and the file paths.
-	QList<SaveFileOptions*> table_;
+	QList<QSharedPointer<SaveFileOptions> > table_;
 
 	//! Pointer to the top component.
 	QSharedPointer<Component> comp_;
-
-	//! Pointer to the design containing the CPU instances.
-	QSharedPointer<Design> design_;
 };
 
 #endif // GLOBALHEADERSAVEMODEL_H

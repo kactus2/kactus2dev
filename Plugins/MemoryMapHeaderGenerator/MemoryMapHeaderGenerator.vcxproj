@@ -137,6 +137,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\widgets\viewSelector\viewselector.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraph.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp" />
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp" />
+    <ClCompile Include="..\common\ConnectivityGraphUtilities.cpp" />
+    <ClCompile Include="..\common\CpuRoutesContainer.cpp" />
+    <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp" />
     <ClCompile Include="BaseMemoryMapHeaderWriter.cpp" />
     <ClCompile Include="fileSaveDialog\filesavedialog.cpp" />
     <ClCompile Include="fileSaveDialog\filesavedialogview.cpp" />
@@ -152,6 +162,16 @@
   <ItemGroup>
     <QtMoc Include="..\..\common\widgets\viewSelector\viewselector.h">
     </QtMoc>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityConnection.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraph.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h" />
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h" />
+    <ClInclude Include="..\common\ConnectivityGraphUtilities.h" />
+    <ClInclude Include="..\common\CpuRoutesContainer.h" />
+    <ClInclude Include="..\common\SingleCpuRoutesContainer.h" />
     <ClInclude Include="BaseMemoryMapHeaderWriter.h" />
     <ClInclude Include="GlobalMemoryMapHeaderWriter.h" />
     <ClInclude Include="LocalMemoryMapHeaderWriter.h" />

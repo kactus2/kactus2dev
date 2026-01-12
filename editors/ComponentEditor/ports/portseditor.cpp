@@ -68,11 +68,11 @@ ItemEditor(component, handler, parent),
         busInterface,
         QString());
 
-    auto model = factory.createModel(this);
-    
+    model_ = factory.createModel(this);
+
     filter_ = factory.createFilter(this);
     
-    filter_->setSourceModel(model);
+    filter_->setSourceModel(model_);
 
     auto view = factory.createView(this);
     view->setModel(filter_);
@@ -81,26 +81,24 @@ ItemEditor(component, handler, parent),
 
 
 
-    connect(model, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+    connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(model, SIGNAL(errorMessage(const QString&)),
+    connect(model_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(model, SIGNAL(noticeMessage(const QString&)),
+    connect(model_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-    connect(view, SIGNAL(addWire()), model, SLOT(onAddWire()), Qt::UniqueConnection);
-    connect(view, SIGNAL(addTransactional()), model, SLOT(onAddTransactional()), Qt::UniqueConnection);
-    connect(view, SIGNAL(removeItem(const QModelIndex&)),
-        model, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(view, SIGNAL(addWire()), model_, SLOT(onAddWire()), Qt::UniqueConnection);
+    connect(view, SIGNAL(addTransactional()), model_, SLOT(onAddTransactional()), Qt::UniqueConnection);
+    connect(view, SIGNAL(removeItem(const QModelIndex&)), model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(view->itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view->itemDelegate(), SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(model, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(decreaseReferences(QString)), this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     //connect(delegate_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -109,7 +107,7 @@ ItemEditor(component, handler, parent),
     connect(filter_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
         this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(model, SIGNAL(portExtensionDataChanged(QModelIndex const&)),
+    connect(model_, SIGNAL(portExtensionDataChanged(QModelIndex const&)),
         this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
 
 	auto summaryLabel = new SummaryLabel(tr("Ports summary"), this);
@@ -148,6 +146,14 @@ void PortsEditor::showEvent(QShowEvent* event)
 }
 
 //-----------------------------------------------------------------------------
+// Function: portseditor::getModel()
+//-----------------------------------------------------------------------------
+PortsModel* PortsEditor::getModel() const
+{
+    return model_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortsEditor::setComponent()
 //-----------------------------------------------------------------------------
 void PortsEditor::setComponent(QSharedPointer<Component> component)
@@ -155,7 +161,6 @@ void PortsEditor::setComponent(QSharedPointer<Component> component)
     component_ = component;
 
     portsInterface_->setPorts(component_->getPorts());
-
 }
 
 //-----------------------------------------------------------------------------

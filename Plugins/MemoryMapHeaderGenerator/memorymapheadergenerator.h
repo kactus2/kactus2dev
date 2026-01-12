@@ -193,7 +193,7 @@ private:
     QList<LocalHeaderSaveModel::SaveFileOptions*> localSaveOptions_;
 
     //! Save file options for a global header writer
-    QList<GlobalHeaderSaveModel::SaveFileOptions*> globalSaveOptions_;
+    QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> > globalSaveOptions_;
 
 };
 

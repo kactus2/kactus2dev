@@ -28,6 +28,7 @@
 
 class LibraryInterface;
 class VhdlComponentDeclaration;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Represents one vhdl component instantiation.
@@ -44,12 +45,18 @@ public:
 	 *  @param [in] parent              Pointer to the owner of this component instance.
 	 *  @param [in] compDeclaration     Pointer to the component declaration of this instance.
 	 *  @param [in] instanceName        The name of the instance.
+	 *	@param [in] parser				The expression parser.
 	 *  @param [in] viewName            The active view used for this instance.
 	 *  @param [in] description         The description for the instance.
 	 */
-	VhdlComponentInstance(QObject* parent, LibraryInterface* handler, VhdlComponentDeclaration* compDeclaration,
-		const QString& instanceName, const QString& viewName = QString(), const QString& description = QString());
-	
+	VhdlComponentInstance(QObject* parent,
+		LibraryInterface* handler,
+		VhdlComponentDeclaration* compDeclaration,
+		const QString& instanceName,
+		QSharedPointer<ExpressionParser> parser,
+		const QString& viewName = QString(),
+		const QString& description = QString());
+
 	//! The destructor.
 	virtual ~VhdlComponentInstance();
 
@@ -255,6 +262,9 @@ private:
 	 *  Value: The name of the signal/top port and it's bounds the port is connected to.
 	 */
 	QMultiMap<VhdlPortMap, VhdlPortMap> portMap_;
+
+	//! The used expression parser.
+	QSharedPointer<ExpressionParser> parser_;
 };
 
 #endif // VHDLCOMPONENTINSTANCE_H

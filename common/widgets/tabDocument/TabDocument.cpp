@@ -543,9 +543,10 @@ void TabDocument::handleRefreshRequest()
                "Save changes and refresh?"),
             QMessageBox::Yes | QMessageBox::No, this);
 
-        if (msgBox.exec() == QMessageBox::No)
+		if (msgBox.exec() == QMessageBox::Yes)
         {
             loadChangesFromRelatedTab();
+            save();
             refresh();
             refreshRequested_ = false;
             return;
@@ -553,7 +554,6 @@ void TabDocument::handleRefreshRequest()
     }
     
     loadChangesFromRelatedTab();
-    save();
     refresh();
     refreshRequested_ = false;
 }

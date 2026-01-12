@@ -193,6 +193,8 @@ QString PortMapAutoConnector::getBestMatchingPhysicalPort(int logicalIndex,
 {
     QMultiMapIterator<double, QString> physicalIterator(possiblePairings.at(logicalIndex).possiblePhysicals_);
     physicalIterator.toBack();
+
+    QStringList skipTheseLogicals;
     while (physicalIterator.hasPrevious())
     {
         physicalIterator.previous();
@@ -206,9 +208,10 @@ QString PortMapAutoConnector::getBestMatchingPhysicalPort(int logicalIndex,
         {
             QString comparisonLogical = possiblePairings.at(j).logicalPort_;
             double comparisonValue = possiblePairings.at(j).possiblePhysicals_.key(physicalPort);
-            if (comparisonValue > comparisonWeight)
+            if (skipTheseLogicals.contains(comparisonLogical) == false && comparisonValue > comparisonWeight)
             {
                 physicalFound = false;
+                skipTheseLogicals.append(comparisonLogical);
             }
         }
 
@@ -225,9 +228,10 @@ QString PortMapAutoConnector::getBestMatchingPhysicalPort(int logicalIndex,
 //-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::getPortsByDirection()
 //-----------------------------------------------------------------------------
-QMap<QString, double> PortMapAutoConnector::getPortsByDirection(DirectionTypes::Direction logicalDirection) const
+QMap<QString, double> PortMapAutoConnector::getPortsByDirection(
+    DirectionTypes::Direction logicalDirection) const
 {
-    PortsInterface* portInterface = portMapInterface_->getPhysicalPortInterface();
+    PortsInterface const* portInterface = portMapInterface_->getPhysicalPortInterface();
     QMap<QString, double> availablePorts;
 
     for (auto portName : portInterface->getItemNames())
@@ -282,8 +286,22 @@ QMap<QString, double> PortMapAutoConnector::weightPortsByLogicalName(QString con
     QMap<QString, double> portList) const
 {
     const double JARO_WINKLER_THRESHOLD = 0.75;
+    const double JARO_BONUS = 0.75;
 
     QMap<QString, double> jaroDistancedPorts;
+
+    auto logicalIsPrefixed = false;
+    auto physicalIsPrefixed = false;
+
+	auto modifiedLogicalName = logicalName;
+    if (physicalPrefix_.isEmpty() == false)
+    {
+        if (modifiedLogicalName.startsWith(physicalPrefix_))
+        {
+            modifiedLogicalName = modifiedLogicalName.remove(0, physicalPrefix_.size());
+            logicalIsPrefixed = true;
+        }
+    }
 
     QMapIterator<QString, double> portIterator(portList);
     while (portIterator.hasNext())
@@ -291,7 +309,33 @@ QMap<QString, double> PortMapAutoConnector::weightPortsByLogicalName(QString con
         portIterator.next();        
         QString physicalName = portIterator.key();
 
-        double jaroDistance = JaroWinklerAlgorithm::calculateJaroWinklerDistance(physicalName, physicalPrefix_ + logicalName);
+        if (physicalPrefix_.isEmpty() == false)
+        {
+            if (physicalName.startsWith(physicalPrefix_))
+            {
+				physicalName = physicalName.remove(0, physicalPrefix_.size());
+                physicalIsPrefixed = true;
+            }
+            else
+            {
+                continue;
+            }
+        }
+
+		double jaroDistance = 0;
+        if (physicalPrefix_.isEmpty())
+        {
+			jaroDistance = JaroWinklerAlgorithm::calculateJaroWinklerDistance(physicalName, modifiedLogicalName);
+        }
+        else
+        {
+			jaroDistance = JaroWinklerAlgorithm::calculateJaroDistance(physicalName, modifiedLogicalName);
+        }
+
+        if (physicalIsPrefixed && logicalIsPrefixed)
+        {
+            jaroDistance += JARO_BONUS;
+        }
 
         if (jaroDistance >= JARO_WINKLER_THRESHOLD)
         {

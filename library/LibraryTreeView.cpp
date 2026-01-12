@@ -57,6 +57,7 @@ LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* f
     openComDefAction_(new QAction(tr("Open"), this)),
     openApiDefAction_(new QAction(tr("Open"), this)),
     openSystemAction_(new QAction(tr("Open System Design"), this)),
+	openSystemMenu_(new QMenu(tr("Open System Design"), this)),
     openXmlAction_(new QAction(tr("Open XML File"), this)),
     openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this)),
     expandChilds_(new QAction(tr("Expand Branches"), this)),
@@ -116,7 +117,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                 {
                     if (component->hasSystemViews())
                     {
-                        menu.addAction(openSystemAction_);
+						setupSystemActionsForContextMenu(component, menu);
                     }
                 }
                 else
@@ -130,6 +131,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                         {
                             openHWDesignMenu_->clear();
                             openMemoryDesignMenu_->clear();
+                            openSystemMenu_->clear();
 
                             for (QString const& viewName : hierarchicalViewNames)
                             {
@@ -156,7 +158,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
 
                         if (component->hasSystemViews())
                         {
-                            menu.addAction(openSystemAction_);
+                            setupSystemActionsForContextMenu(component, menu);
                         }
 
                         menuNew->addAction(createNewDesignAction_);
@@ -243,6 +245,28 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
     menu.addAction(collapseAllAction_);
 
 	menu.exec(event->globalPos());
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::setupSystemActionsForContextMenu()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::setupSystemActionsForContextMenu(QSharedPointer<Component const> component, QMenu& menu)
+{
+	auto systemViews = component->getSystemViewNames();
+	for (auto viewName : systemViews)
+	{
+		openSystemMenu_->addAction(new QAction(viewName, openSystemMenu_));
+	}
+
+	if (systemViews.count() == 1)
+	{
+		menu.addAction(openSystemAction_);
+		connect(openSystemAction_, SIGNAL(triggered()), openSystemMenu_->actions().first(), SLOT(trigger()));
+	}
+	else
+	{
+		menu.addMenu(openSystemMenu_);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -408,9 +432,9 @@ void LibraryTreeView::onOpenMemoryDesign(QAction* viewAction)
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeView::onOpenSystemDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeView::onOpenSystemDesign()
+void LibraryTreeView::onOpenSystemDesign(QAction* viewAction)
 {
-    emit openSystemDesign(filter_->mapToSource(currentIndex()));
+	emit openSystemDesign(filter_->mapToSource(currentIndex()), viewAction->text());
 }
 
 //-----------------------------------------------------------------------------
@@ -640,9 +664,9 @@ void LibraryTreeView::setupActions()
     openApiDefAction_->setToolTip(tr("Open"));
     connect(openApiDefAction_, SIGNAL(triggered()), this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
 
-    openSystemAction_->setStatusTip(tr("Open system design for editing"));
-    openSystemAction_->setToolTip(tr("Open system design for editing"));
-    connect(openSystemAction_, SIGNAL(triggered()),	this, SLOT(onOpenSystemDesign()), Qt::UniqueConnection);
+	openSystemMenu_->setStatusTip(tr("Open a system design"));
+    openSystemMenu_->setToolTip(tr("Open a system design"));
+	connect(openSystemMenu_, SIGNAL(triggered(QAction*)), this, SLOT(onOpenSystemDesign(QAction*)), Qt::UniqueConnection);
 
     connect(openXmlAction_, SIGNAL(triggered()), this, SLOT(onOpenXml()), Qt::UniqueConnection);
 

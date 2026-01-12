@@ -32,15 +32,6 @@ contentAssist_(new LineContentAssistWidget(this, parentWnd)) // NOTE: parent win
 }
 
 //-----------------------------------------------------------------------------
-// Function: AssistedLineEdit::~AssistedLineEdit()
-//-----------------------------------------------------------------------------
-AssistedLineEdit::~AssistedLineEdit()
-{
-    // Change parent of content assist from parent window to destroy object with the line edit
-    contentAssist_->setParent(this);
-}
-
-//-----------------------------------------------------------------------------
 // Function: keyPressEvent()
 //-----------------------------------------------------------------------------
 void AssistedLineEdit::keyPressEvent(QKeyEvent* e)

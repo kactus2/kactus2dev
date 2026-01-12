@@ -414,6 +414,12 @@ protected:
 
 
 private slots:
+
+    /*!
+     *  Save button checks from the save if a document can be saved.
+     */
+    void passSaveToActSave();
+
 	//! Handler for design widget's clearItemSelection signal.
 	void onClearItemSelection();
 
@@ -546,6 +552,11 @@ private slots:
      *  Updates the workspace menu.
      */
     void updateWorkspaceMenu();
+
+    /*!
+     *  Opens interconnect generator dialog.
+     */
+    void onInterconnectGenerate();
 
 private:
 	// Disable copying.
@@ -704,6 +715,9 @@ private:
 	//! Create a new document in the IP-Xact library
 	QAction* actNew_;
 
+    //! Action for containing all the save actions.
+    QAction* actMainSave_;
+
     //! Action to save the current design.
     QAction* actSave_;
 
@@ -809,6 +823,9 @@ private:
 
     //! Action to open memory designer.
     QAction* openMemoryDesignerAction_;
+
+    //! Action to open interconnect generator.
+    QAction* openInterconnectGenerator_;
 
     //! Action to manage the workspaces.
     QAction* actWorkspaces_;

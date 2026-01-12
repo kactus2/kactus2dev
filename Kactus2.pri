@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/NameGenerationPolicy.h \
+HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
+    ./common/NameGenerationPolicy.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/IEditProvider.h \
@@ -52,6 +53,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/viewSelector/viewselector.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
     ./common/widgets/EnumCollectionEditor/EnumerationEditor.h \
+    ./common/widgets/EnumCollectionEditor/InterfaceEnumEditor.h \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
     ./common/widgets/FileSelector/fileselector.h \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
@@ -211,6 +213,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./Plugins/common/SingleCpuRoutesContainer.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
+    ./Plugins/PluginSystem/GeneratorPlugin/AddToFilesetWidget.h \
     ./library/LibraryInterface.h \
     ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryUtils.h \
@@ -288,6 +291,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
     ./editors/ComponentEditor/ports/PortsView.h \
     ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
+    ./editors/ComponentEditor/parameters/LockableParametersModel.h \
     ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.h \
     ./editors/ComponentEditor/parameters/parametersmodel.h \
@@ -894,6 +898,10 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/AbstractionDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/AbstractionDefinitionEditor/QualifierEditor.h \
+    ./editors/InterconnectGenerator/InterconnectAddressHelper.h \
+    ./editors/InterconnectGenerator/InterconnectDataModel.h \
+    ./editors/InterconnectGenerator/InterconnectGeneratorDialog.h \
+    ./editors/InterconnectGenerator/InstanceInterfacesEditor.h \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.h \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.h \
     ./kactusGenerators/DocumentGenerator/MarkdownWriter.h \
@@ -903,7 +911,8 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h
+    ./PythonAPI/extensions/IOCatcher.h \
+    ./editors/ComponentEditor/ports/PortsImportSummaryEditor.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -956,6 +965,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/fileTypeSelector/filetypeselector.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
     ./common/widgets/EnumCollectionEditor/EnumerationEditor.cpp \
+    ./common/widgets/EnumCollectionEditor/InterfaceEnumEditor.cpp \
     ./common/widgets/FileSelector/fileselector.cpp \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
@@ -979,6 +989,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.cpp \
     ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.cpp \
     ./common/widgets/GroupBoxWithAlertSign/StyleOptionGroupBoxWithAlertSign.cpp \
+    ./common/widgets/instanceWidgets/InstanceWidgets.cpp \
     ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
@@ -1083,6 +1094,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/SingleCpuRoutesContainer.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
+    ./Plugins/PluginSystem/GeneratorPlugin/AddToFilesetWidget.cpp \
     ./library/ItemExporter.cpp \
     ./library/LibraryErrorModel.cpp \
     ./library/LibraryFilter.cpp \
@@ -1194,6 +1206,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/general/generaleditor.cpp \
     ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
+    ./editors/ComponentEditor/parameters/LockableParametersModel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
@@ -1691,6 +1704,10 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsDelegate.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsSortFilter.cpp \
     ./editors/AbstractionDefinitionEditor/QualifierEditor.cpp \
+    ./editors/InterconnectGenerator/InstanceInterfacesEditor.cpp \
+    ./editors/InterconnectGenerator/InterconnectAddressHelper.cpp \
+    ./editors/InterconnectGenerator/InterconnectDataModel.cpp \
+    ./editors/InterconnectGenerator/InterconnectGeneratorDialog.cpp \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.cpp \
@@ -1699,5 +1716,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./editors/ComponentEditor/ports/PortsImportSummaryEditor.cpp
 RESOURCES += kactus.qrc

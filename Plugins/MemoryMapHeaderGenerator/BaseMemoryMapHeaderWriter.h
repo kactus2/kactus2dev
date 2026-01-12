@@ -32,6 +32,7 @@ class ExpressionParser;
 class ExpressionFormatter;
 class ParameterFinder;
 class MemoryMapBase;
+class MemoryItem;
 
 //-----------------------------------------------------------------------------
 //! The base implementation for memory map header writer.
@@ -54,6 +55,19 @@ public:
     virtual ~BaseMemoryMapHeaderWriter();
 
 protected:
+
+    //! The container for address data.
+    struct AddressContainer
+    {
+        //! Base address
+        quint64 baseAddress_ = 0;
+
+        //! Last address
+        quint64 lastAddress_ = 0;
+
+        //! Flag for contained remap range.
+        bool hasRemapRange_ = false;
+    };
 
     /*!
      *  Check that the directory structure exists for the file.
@@ -114,6 +128,21 @@ protected:
         quint64 offset, QString const& idString = QString());
 
     /*!
+     *  Write the registers contained in a memory map.
+     *
+     *    @param [in] addressContainer      Container for the address values changed during the route inspection.
+     *    @param [in] stream                The text stream to write into.
+     *    @param [in] memoryItem            Memory item containing the registers.
+     *    @param [in] useAddressBlockID     Flag for using an address block ID.
+     *    @param [in] idString              Helps to identify non-unique registers.
+     */
+    void writeRegisterFromMemoryMap(AddressContainer const& addressContainer,
+		QTextStream& stream,
+		QSharedPointer<MemoryItem> memoryItem,
+        bool useAddressBlockID,
+		QString const& idString = QString()) const;
+
+    /*!
      *  Write registers contained in an address block.
      *
      *    @param [in] expressionParser        The expression parser.
@@ -127,6 +156,21 @@ protected:
     void writeRegistersFromAddressBlock(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<AddressBlock> currentAddressBlock,
         QTextStream& stream, bool useAddressBlockID, quint64 offset, QString const& idString = QString());
+
+    /*!
+     *  Write registers contained in an address block.
+     *
+	 *    @param [in] addressContainer      Container for the address values changed during the route inspection.
+	 *    @param [in] stream                The text stream to write into.
+	 *    @param [in] blockItem             Address block item containing the registers.
+	 *    @param [in] useAddressBlockID     Flag for using an address block ID.
+	 *    @param [in] idString              Helps to identify non-unique registers.
+     */
+    void writeRegistersFromAddressBlock(AddressContainer const& addressContainer,
+        QTextStream& stream,
+        QSharedPointer<MemoryItem> blockItem,
+        bool useAddressBlockID,
+        QString const& idString = QString()) const;
 
     /*!
      *  Write the register information to a text stream.
@@ -143,6 +187,21 @@ protected:
         quint64 addressBlockOffset, QString const& idString = QString());
 
     /*!
+     *  Write the register information to a text stream.
+     *
+     *    @param [in] addressBlockOffset    Offset of the containing address block.
+     *    @param [in] addressContainer      Container for the address values changed during the route inspection.
+     *    @param [in] stream                The text stream to write into.
+     *    @param [in] registerItem          Register item to be written.
+     *    @param [in] idString              Helps to identify non-unique registers.
+     */
+    void writeRegister(quint64 const& addressBlockOffset,
+        AddressContainer const& addressContainer,
+        QTextStream& stream,
+        QSharedPointer<MemoryItem> registerItem,
+		QString const& idString = QString()) const;
+
+    /*!
      *  Write the memory names and given addresses.
      *
      *    @param [in] finder              The parameter finder containing the referenced parameters.
@@ -156,16 +215,31 @@ protected:
         QString const& idString = QString()) const;
 
     /*!
+     *  Write the memory names and given addresses.
+     *
+     *    @param [in] addressContainer  Container for the address values changed during the route inspection.
+     *    @param [in] stream            The text stream to write into.
+     *    @param [in] memoryItem        The selected memory item.
+     *    @param [in] idString          Helps to identify non-unique elements.
+     */
+    void writeMemoryAddresses(AddressContainer const& addressContainer,
+        QTextStream& stream,
+        QSharedPointer<MemoryItem> memoryItem,
+        QString const& idString = QString()) const;
+
+    /*!
      *  Gets the ending address of an address block.
      *
-     *    @param [in] targetAddressBlock  The address block being examined.
-     *    @param [in] expressionParser    The expression parser.
+     *      @param [in] offset              The current offset
+     *      @param [in] targetAddressBlock  The address block being examined.
+     *      @param [in] expressionParser    The expression parser.
      *
-     *    @return The ending address of the address block.
+     *      @return The ending address of the address block.
      */
-    QString getAddressBlockLastAddress(QSharedPointer<AddressBlock> targetAddressBlock,
-        QSharedPointer<ExpressionParser> expressionParser) const;
-    
+	QString getAddressBlockLastAddress(quint64 const& offset,
+        QSharedPointer<AddressBlock> targetAddressBlock,
+		QSharedPointer<ExpressionParser> expressionParser) const;
+
     /*!
      *  Get the parsed value for a given expression.
      *

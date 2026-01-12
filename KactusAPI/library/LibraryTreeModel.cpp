@@ -636,7 +636,7 @@ void LibraryTreeModel::onOpenSWDesign(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeModel::onOpenSystemDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onOpenSystemDesign(QModelIndex const& index)
+void LibraryTreeModel::onOpenSystemDesign(QModelIndex const& index, QString const& viewName)
 {
     if (!index.isValid())
     {
@@ -648,7 +648,7 @@ void LibraryTreeModel::onOpenSystemDesign(QModelIndex const& index)
 
     if (vlnv.isValid())
     {
-        emit openSystemDesign(vlnv);
+        emit openSystemDesign(vlnv, viewName);
     }
 }
 

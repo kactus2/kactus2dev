@@ -199,7 +199,7 @@ CreateHelp
     </ResourceCompile>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>IPXACTmodels.lib;python310.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>IPXACTmodels.lib;Python310.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>executable\Kactus2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -274,11 +274,13 @@ CreateHelp
     <ClCompile Include="common\widgets\DirectoryListSelector\DirectoryListSelector.cpp" />
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.cpp" />
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumerationEditor.cpp" />
+    <ClCompile Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.cpp" />
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp" />
     <ClCompile Include="common\widgets\fileTypeSelector\filetypeselector.cpp" />
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.cpp" />
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.cpp" />
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.cpp" />
+    <ClCompile Include="common\widgets\instanceWidgets\InstanceWidgets.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.cpp" />
@@ -672,6 +674,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\parameters\Array\ParameterArrayModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\ComponentParameterModel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\parameters\LockableParametersModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.cpp" />
     <ClCompile Include="editors\ComponentEditor\parameters\parameterseditor.cpp" />
@@ -681,6 +684,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\ports\portsdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\portseditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortsFilter.cpp" />
+    <ClCompile Include="editors\ComponentEditor\ports\PortsImportSummaryEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\portsmodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortSummaryDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortSummaryEditorFactory.cpp" />
@@ -861,6 +865,10 @@ CreateHelp
     <ClCompile Include="editors\HWDesign\undoCommands\ReplaceComponentCommand.cpp" />
     <ClCompile Include="editors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp" />
     <ClCompile Include="editors\HWDesign\WarningSymbol.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InstanceInterfacesEditor.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectAddressHelper.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectDataModel.cpp" />
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressBlockGraphicsItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.cpp" />
@@ -992,6 +1000,7 @@ CreateHelp
     <ClCompile Include="Plugins\common\LanguageHighlighter.cpp" />
     <ClCompile Include="Plugins\common\SingleCpuRoutesContainer.cpp" />
     <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp" />
+    <ClCompile Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp" />
     <ClCompile Include="PythonAPI\ChannelRelay.cpp" />
     <ClCompile Include="PythonAPI\extensions\IOCatcher.cpp" />
     <ClCompile Include="PythonAPI\FileChannel.cpp" />
@@ -1300,7 +1309,9 @@ CreateHelp
     <QtMoc Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.h" />
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.h" />
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.h" />
+    <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h" />
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h" />
+    <QtMoc Include="common\widgets\instanceWidgets\InstanceWidgets.h" />
     <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.h" />
@@ -1809,6 +1820,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.h">
     </QtMoc>
     <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h" />
+    <QtMoc Include="editors\ComponentEditor\parameters\LockableParametersModel.h" />
     <ClInclude Include="editors\ComponentEditor\parameters\ParameterColumns.h" />
     <QtMoc Include="editors\ComponentEditor\parameters\ParameterDelegate.h">
     </QtMoc>
@@ -1871,6 +1883,7 @@ CreateHelp
     </QtMoc>
     <ClInclude Include="editors\ComponentEditor\ports\PortsEditorFactory.h" />
     <QtMoc Include="editors\ComponentEditor\ports\PortSummaryModel.h" />
+    <QtMoc Include="editors\ComponentEditor\ports\PortsImportSummaryEditor.h" />
     <ClInclude Include="editors\ComponentEditor\ports\PortSummaryColumns.h" />
     <QtMoc Include="editors\ComponentEditor\ports\PortSummaryFilter.h" />
     <QtMoc Include="editors\ComponentEditor\ports\PortSummaryDelegate.h" />
@@ -2103,6 +2116,10 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <QtMoc Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.h" />
+    <QtMoc Include="editors\interconnectgenerator\InstanceInterfacesEditor.h" />
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectAddressHelper.h" />
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectDataModel.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressBlockGraphicsItem.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.h" />
     <ClInclude Include="editors\MemoryDesigner\AddressSpaceGraphicsItem.h" />
@@ -2257,6 +2274,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="PythonAPI\ChannelRelay.h">
     </QtMoc>
+    <QtMoc Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h" />
     <ClInclude Include="PythonAPI\extensions\IOCatcher.h" />
     <QtMoc Include="PythonAPI\FileChannel.h">
     </QtMoc>

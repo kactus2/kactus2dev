@@ -31,11 +31,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    
-    
-    
-    
-    
     <ClCompile Include="vhdlconnectionendpoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -75,22 +70,19 @@
     <ClCompile Include="VHDLGeneratorDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="VHDLGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -165,5 +157,10 @@
     <None Include="VHDLGenerator.json">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

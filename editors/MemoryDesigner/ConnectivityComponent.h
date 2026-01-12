@@ -52,6 +52,20 @@ public:
     QString getName() const;
 
     /*!
+     *  Set a new description for the component instance.
+     *
+     *    @param [in] newDescription    The new description.
+     */
+    void setDescription(QString const& newDescription);
+
+    /*!
+     *  Gets the description of the instance.
+     *
+     *    @return The instance description.
+     */
+    QString getDescription() const;
+
+    /*!
      *  Sets the identifier for the instance.
      *
      *    @param [in] uuid   The identifier to set.
@@ -120,6 +134,9 @@ private:
 
     //! The name of the instance.
     QString name_;
+
+    //! The description of the instance.
+    QString description_;
 
     //! The VLNV of the instance.
     QString vlnv_;

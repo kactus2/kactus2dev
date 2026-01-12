@@ -1,12 +1,12 @@
                                 README : Kactus2
-				   Copyright (c) 2012-2025 Tampere University
+				   Copyright (c) 2012-2026 Tampere University
                   https://research.tuni.fi/system-on-chip/tools
 
 ## Summary
 ![Kactus2 logo](common/graphics/appicon.png)
 
 Kactus2 is a toolset for designing SoCs. The aim is easier IP reusability and integration for both hardware and
-software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
+software. The tool supports both the IEEE 1685-2014 and IEEE 1685-2022 "IP-XACT" standards.
 
 Windows installer and tar-package for Linux are available in 
 [SourceForge](https://sourceforge.net/projects/kactus2/)

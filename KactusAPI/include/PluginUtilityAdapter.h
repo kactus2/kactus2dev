@@ -12,7 +12,8 @@
 #ifndef PLUGINUTILITYADAPTER_H
 #define PLUGINUTILITYADAPTER_H
 
-#include "IPluginUtility.h"
+#include <KactusAPI/KactusAPIGlobal.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 #include <QObject>
 #include <QWidget>
@@ -23,7 +24,7 @@ class MessageMediator;
 //-----------------------------------------------------------------------------
 // class PluginUtilityAdapter.
 //-----------------------------------------------------------------------------
-class PluginUtilityAdapter : public IPluginUtility
+class KACTUS2_API PluginUtilityAdapter : public IPluginUtility
 {
 public:
 

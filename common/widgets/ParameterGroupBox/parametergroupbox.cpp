@@ -18,6 +18,7 @@
 #include <editors/ComponentEditor/parameters/ParameterDelegate.h>
 #include <editors/ComponentEditor/parameters/ParameterEditorHeaderView.h>
 #include <editors/ComponentEditor/parameters/parametersmodel.h>
+#include <editors/ComponentEditor/parameters/LockableParametersModel.h>
 #include <KactusAPI/include/ParametersInterface.h>
 
 #include <KactusAPI/include/ComponentParameterFinder.h>
@@ -37,7 +38,7 @@
 //-----------------------------------------------------------------------------
 ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, Document::Revision docRevision, QWidget *parent) :
+    QSharedPointer<ExpressionFormatter> expressionFormatter, Document::Revision docRevision, bool lockableParameters, QWidget *parent) :
 QGroupBox(tr("Parameters"), parent),
 view_(new ParametersView(this)),
 proxy_(new QSortFilterProxyModel(this)),
@@ -63,7 +64,14 @@ parameterInterface_()
     parameterInterface_->setParameters(parameters);
     parameterInterface_->setChoices(choices);
 
-    model_ = new ParametersModel(parameterInterface_, expressionParser, parameterFinder, this);
+    if (lockableParameters)
+    {
+        model_ = new LockableParametersModel(parameterInterface_, expressionParser, parameterFinder_, parent);
+    }
+    else
+    {
+        model_ = new ParametersModel(parameterInterface_, expressionParser, parameterFinder, this);
+    }
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -165,4 +173,33 @@ void ParameterGroupBox::setNewParameters(QSharedPointer<QList<QSharedPointer<Par
     {
         listFinder->setParameterList(newParameters);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterGroupBox::lockParameterColumn()
+//-----------------------------------------------------------------------------
+void ParameterGroupBox::lockParameterColumn(QString const& parameterName, ParameterColumns::columns column)
+{
+    auto modelCast = dynamic_cast<LockableParametersModel*>(model_);
+    
+    Q_ASSERT_X(dynamic_cast<LockableParametersModel*>(model_), "ParameterGroupBox", "Call to lockParameterColumn() with model not of type LockableParametersModel");
+
+    if (modelCast)
+        modelCast->lockParameterColumn(parameterName, column);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterGroupBox::getInterface()
+//-----------------------------------------------------------------------------
+ParametersInterface* ParameterGroupBox::getInterface() const
+{
+    return parameterInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterGroupBox::addParameter()
+//-----------------------------------------------------------------------------
+void ParameterGroupBox::addParameter(QString const& parameterName)
+{
+    model_->addParameterManually(parameterName);
 }

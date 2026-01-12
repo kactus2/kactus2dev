@@ -17,6 +17,7 @@
 #include <QProcessEnvironment>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QDir>
 
 //-----------------------------------------------------------------------------
 // Function: FileHandler::constructFileSuffixTable()
@@ -130,4 +131,24 @@ bool FileHandler::filePathExists(QString const& relativeTo, QString const& fileP
 bool FileHandler::isURI(QString const& uri)
 {
     return URL_VALIDITY_REG_EXP.match(uri).hasMatch();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileHandler::getModifiedPathWithExtension()
+//-----------------------------------------------------------------------------
+KACTUS2_API QString FileHandler::getModifiedPathWithExtension(QString const& filePath, QString const& extension)
+{
+	auto nativeFilePath = QDir::toNativeSeparators(filePath);
+	auto nativeSeparator = QDir::separator();
+
+	if (auto lastSeparatorIndex = nativeFilePath.lastIndexOf(nativeSeparator); lastSeparatorIndex > 0)
+	{
+		auto fileName = nativeFilePath.last(nativeFilePath.size() - (lastSeparatorIndex + 1));
+        fileName.append("." + extension);
+
+		nativeFilePath = nativeFilePath.left(lastSeparatorIndex + 1);
+		nativeFilePath.append(fileName);
+	}
+
+    return nativeFilePath;
 }

@@ -200,6 +200,11 @@ qreal HWMappingItem::getWidth() noexcept
 //-----------------------------------------------------------------------------
 void HWMappingItem::addItem(QGraphicsItem* item, bool load)
 {
+	if (item->parentItem() != 0)
+	{
+		dynamic_cast<IGraphicsItemStack*>(item->parentItem())->removeItem(item);
+	}
+
     // Map the position to the column's local coordinate system
     // and constrain the item to the horizontal center of the column.
     QPointF pos = mapFromScene(item->scenePos());

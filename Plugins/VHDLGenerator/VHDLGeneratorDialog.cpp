@@ -74,7 +74,7 @@ void VHDLGeneratorDialog::onBrowse()
 {
     QString filePath = QFileDialog::getSaveFileName(this, tr("Select output file for generation"), 
         fileEditor_->text(), 
-        QStringLiteral("VHDL files (.vhd)"));
+        QStringLiteral("VHDL files (*.vhd)"));
 
     if (!filePath.isEmpty())
     {

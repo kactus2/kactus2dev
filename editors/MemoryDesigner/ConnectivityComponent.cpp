@@ -52,6 +52,22 @@ QString ConnectivityComponent::getName() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectivityComponent::setDescription()
+//-----------------------------------------------------------------------------
+void ConnectivityComponent::setDescription(QString const& newDescription)
+{
+    description_ = newDescription;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityComponent::getDescription()
+//-----------------------------------------------------------------------------
+QString ConnectivityComponent::getDescription() const
+{
+    return description_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectivityComponent::setInstanceUuid()
 //-----------------------------------------------------------------------------
 void ConnectivityComponent::setInstanceUuid(QString const& uuid)

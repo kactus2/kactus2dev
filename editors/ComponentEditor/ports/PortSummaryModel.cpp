@@ -300,9 +300,17 @@ bool PortSummaryModel::indexedItemIsLocked(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: PortSummaryModel::getLockedPortIndexes()
 //-----------------------------------------------------------------------------
-QModelIndexList PortSummaryModel::getLockedPortIndexes(QModelIndex const& /*portIndex*/) const
+QModelIndexList PortSummaryModel::getLockedPortIndexes(QModelIndex const& portIndex) const
 {
-    return QModelIndexList();
+	QModelIndexList lockedIndexes;
+
+	QModelIndex nameIndex = portIndex.sibling(portIndex.row(), PortSummaryColumns::NAME);
+	QModelIndex typeIndex = portIndex.sibling(portIndex.row(), PortSummaryColumns::TYPE);
+
+	lockedIndexes.append(nameIndex);
+	lockedIndexes.append(typeIndex);
+
+	return lockedIndexes;
 }
 
 //-----------------------------------------------------------------------------

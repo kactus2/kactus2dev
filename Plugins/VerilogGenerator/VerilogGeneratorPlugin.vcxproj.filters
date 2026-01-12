@@ -157,17 +157,12 @@
     <ClCompile Include="common\WriterGroup.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    
     <ClCompile Include="VerilogGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="TextBodyWriter\TextBodyWriter.cpp">
       <Filter>Source Files\TextBodyWrite</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="..\common\PortSorter\InterfaceDirectionNameSorter.cpp">
       <Filter>Source Files\PortSorter</Filter>
     </ClCompile>
@@ -177,8 +172,6 @@
     <ClCompile Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.cpp">
       <Filter>Source Files\VerilogInterconnectionWriter</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="VerilogWriterFactory\VerilogWriterFactory.cpp">
       <Filter>Source Files\VerilogWriterFactory</Filter>
     </ClCompile>
@@ -212,15 +205,9 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.cpp">
       <Filter>Source Files\Widgets</Filter>
     </ClCompile>
-    
-    
-    
-    
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp">
       <Filter>Source Files\Widgets</Filter>
     </ClCompile>
@@ -239,8 +226,6 @@
     <ClCompile Include="VerilogSourceHighlight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="..\..\editors\common\TopComponentParameterFinder.cpp">
       <Filter>Source Files\editors\common</Filter>
     </ClCompile>
@@ -256,7 +241,12 @@
     <ClCompile Include="VerilogPortWriter\VerilogTopDefaultWriter.cpp">
       <Filter>Source Files\VerilogPortWriter</Filter>
     </ClCompile>
-  </ItemGroup>
+    <ClCompile Include="..\..\common\expressions\utilities.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Writer.h">
       <Filter>Header Files\common</Filter>
@@ -354,6 +344,9 @@
     <ClInclude Include="VerilogPortWriter\VerilogTopDefaultWriter.h">
       <Filter>Header Files\VerilogPortWriter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\common\expressions\utilities.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="VerilogGenerator.qrc">
@@ -388,5 +381,10 @@
     <None Include="verilogGenerator.png">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\AddToFilesetWidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

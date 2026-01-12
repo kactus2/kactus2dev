@@ -181,8 +181,8 @@ void ItemMoveCommand::redo()
         }
     }
 
-    // Execute child commands.
-    QUndoCommand::redo();
+	// Execute child commands.
+	QUndoCommand::redo();
 
     if (item_->scenePos().y() + GraphicsColumnConstants::MIN_Y_PLACEMENT > item_->scene()->height())
     {

@@ -148,6 +148,8 @@ void QuartusPinImportPlugin::import(QString const& input, QString const& /*compo
         highlighter_->applyFontColor(input, QColor("gray"));
     }
 
+    //! The existing ports are changed to phantom in order to keep the component error-free.
+    //! These ports can then be deleted later.
     foreach (QSharedPointer<Port> existingPort, *targetComponent->getPorts())
     {
         existingPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);

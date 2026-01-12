@@ -19,6 +19,7 @@
 #include <KactusAPI/include/ParameterFinder.h>
 #include <KactusAPI/include/SystemVerilogSyntax.h>
 
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>
 
 //-----------------------------------------------------------------------------
@@ -60,6 +61,12 @@ QString MasterExpressionEditor::getExpression() const
 //-----------------------------------------------------------------------------
 void MasterExpressionEditor::setExpression(QString const& expression)
 {
+    auto parameterModel = dynamic_cast<ComponentParameterModel*>(nameCompleter_->model());
+    if (parameterModel)
+    {
+        parameterModel->resetParameterModel();
+    }
+
     expression_ = expression;
 }
 

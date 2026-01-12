@@ -50,6 +50,25 @@ void ParametersModel::resetModelItems()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParametersModel::addParameterManually()
+//-----------------------------------------------------------------------------
+void ParametersModel::addParameterManually(QString const& parameterName)
+{
+
+    ParametersInterface* parameterInterface = dynamic_cast<ParametersInterface*>(getInterface());
+    if (parameterInterface)
+    {
+        int row = parameterInterface->itemCount();
+        beginInsertRows(QModelIndex(), row, row);
+        parameterInterface->addParameter(row, parameterName.toStdString());
+        endInsertRows();
+
+        // tell also parent widget that contents have been changed
+        emit contentChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParametersModel::onAddItem()
 //-----------------------------------------------------------------------------
 void ParametersModel::onAddItem(QModelIndex const& index)

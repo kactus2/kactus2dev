@@ -6,7 +6,7 @@
 // Date: 16.08.2016
 //
 // Description:
-// Memory designer connection item between address spaces and memory maps.
+// Memory designer connection item between.
 //-----------------------------------------------------------------------------
 
 #include "MemoryConnectionItem.h"
@@ -28,9 +28,11 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::MemoryConnectionItem()
 //-----------------------------------------------------------------------------
-MemoryConnectionItem::MemoryConnectionItem(
-    MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
-    MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
+MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem,
+    quint64 firstStartValue, quint64 firstEndValue,
+    quint64 secondStartValue, quint64 secondEndvalue,
+    MainMemoryGraphicsItem* endItem,
+    QGraphicsScene* containingScene,
     qreal yTransfer,
     QGraphicsItem* parent):
 QGraphicsPathItem(parent),
@@ -45,7 +47,7 @@ connectionLastAddress_(firstEndValue),
 connectionWidth_(getConnectionWidth()),
 yTransfer_(yTransfer)
 {
-    setupLabels(firstStartValue, firstEndValue);
+    setupLabels(firstStartValue, firstEndValue, secondStartValue, secondEndvalue);
 
     if (connectionBaseAddress_ == connectionLastAddress_)
     {
@@ -536,19 +538,41 @@ void MemoryConnectionItem::repositionLabels()
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::setupLabels()
 //-----------------------------------------------------------------------------
-void MemoryConnectionItem::setupLabels(quint64 startValue, quint64 endValue)
+void MemoryConnectionItem::setupLabels(quint64 const& leftStartValue, quint64 const& leftEndValue, quint64 const& rightStartValue, quint64 const& rightEndValue)
 {
-    QString startValueInHexa = QString::number(startValue, 16).toUpper();
-    QString endValueInHexa = QString::number(endValue, 16).toUpper();
+    QString leftStartValueInHexa = QString::number(leftStartValue, 16).toUpper();
+    QString leftEndValueInHexa = QString::number(leftEndValue, 16).toUpper();
+    QString rightStartValueInHexa = QString::number(rightStartValue, 16).toUpper();
+    QString rightEndValueInHexa = QString::number(rightEndValue, 16).toUpper();
 
-    int amountOfNumbers = MemoryDesignerConstants::getAmountOfNumbersInRange(startValueInHexa, endValueInHexa);
-    startValueInHexa = MemoryDesignerConstants::getValueWithZerosAdded(startValueInHexa, amountOfNumbers);
-    endValueInHexa = MemoryDesignerConstants::getValueWithZerosAdded(endValueInHexa, amountOfNumbers);
+    int amountOfNumbersLeft = MemoryDesignerConstants::getAmountOfNumbersInRange(leftStartValueInHexa, leftEndValueInHexa);
+    leftStartValueInHexa = MemoryDesignerConstants::getValueWithZerosAdded(leftStartValueInHexa, amountOfNumbersLeft);
+    leftEndValueInHexa = MemoryDesignerConstants::getValueWithZerosAdded(leftEndValueInHexa, amountOfNumbersLeft);
+    int amountOfNumbersRight = MemoryDesignerConstants::getAmountOfNumbersInRange(rightStartValueInHexa, rightEndValueInHexa);
+    rightStartValueInHexa = MemoryDesignerConstants::getValueWithZerosAdded(rightStartValueInHexa, amountOfNumbersRight);
+    rightEndValueInHexa = MemoryDesignerConstants::getValueWithZerosAdded(rightEndValueInHexa, amountOfNumbersRight);
 
-    firstItemStartLabel_->setPlainText(startValueInHexa);
-    firstItemEndLabel_->setPlainText(endValueInHexa);
-    secondItemStartLabel_->setPlainText(startValueInHexa);
-    secondItemEndLabel_->setPlainText(endValueInHexa);
+    firstItemStartLabel_->setPlainText(leftStartValueInHexa);
+    firstItemEndLabel_->setPlainText(leftEndValueInHexa);
+    secondItemStartLabel_->setPlainText(rightStartValueInHexa);
+    secondItemEndLabel_->setPlainText(rightEndValueInHexa);
+
+    if (startItem_->getBaseAddress() == leftStartValue)
+    {
+        firstItemStartLabel_->hide();
+    }
+	if (startItem_->getLastAddress() == leftEndValue)
+	{
+		firstItemEndLabel_->hide();
+	}
+	if (endItem_->getBaseAddress() == rightStartValue)
+	{
+		secondItemStartLabel_->hide();
+	}
+	if (endItem_->getLastAddress() == rightEndValue)
+	{
+		secondItemEndLabel_->hide();
+	}
 }
 
 //-----------------------------------------------------------------------------

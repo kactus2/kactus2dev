@@ -33,6 +33,7 @@
 
 class IPluginUtility;
 class ListParameterFinder;
+class ConnectivityInterface;
 
 //-----------------------------------------------------------------------------
 //! The implementation for creating c-headers of global memory maps.
@@ -65,7 +66,7 @@ public:
      *    @param [in] saveOptions         The save options for the memory map header.
      */
     virtual void writeMemoryMapHeader(QSharedPointer<Component> globalComponent,
-        QList<GlobalHeaderSaveModel::SaveFileOptions*> saveOptions);
+        QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> > saveOptions);
 
 protected:
     
@@ -79,63 +80,75 @@ protected:
 private:
 
 	//! No copying
-    GlobalMemoryMapHeaderWriter(const GlobalMemoryMapHeaderWriter& other);
-
 	//! No assignment
+    GlobalMemoryMapHeaderWriter(const GlobalMemoryMapHeaderWriter& other);
     GlobalMemoryMapHeaderWriter& operator=(const GlobalMemoryMapHeaderWriter& other);
 
     /*!
-	 *  Parse the interface and its connections.
-	 *
-	 *    @param [in] offset      The current offset.
-	 *    @param [in] stream      The text stream to write into.
-	 *    @param [in] interface   Identifies the current interface to parse.
-	 */
-	void parseInterface(qint64 offset, QTextStream& stream, QSharedPointer<ActiveInterface> interface);
+     *  Setup the CPU route containers for existing save file options.
+     *
+     *    @param [in] options       The existing save file options.
+     *    @param [in] cpuRoutes     The located CPU route containers.
+     */
+    void setupRoutesForExistingOptions(
+        QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> > options,
+        QVector<QSharedPointer<SingleCpuRoutesContainer> > cpuRoutes);
+
+    /*!
+     *  Get the matching save file option for the selected CPU container.
+     *
+     *    @param [in] options       List of available save file options.
+     *    @param [in] singleCPU     The selected CPU container.
+     *
+     *    @return The matching save file option.
+     */
+    QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> getSaveOptionForCPU(
+        QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> > options,
+        QSharedPointer<SingleCpuRoutesContainer> singleCPU);
+
+    /*!
+     *  Parse the CPU route.
+     *
+     *    @param [in] stream        Text stream to write into.
+     *    @param [in] container     Container for address calculations.
+     */
+    void parseRoutes(QTextStream& stream, QSharedPointer<SingleCpuRoutesContainer> container);
 
     /*!
      *  Parse the master interface.
      *
-     *    @param [in] offset      The current offset.
-     *    @param [in] component   The component in use.
-     *    @param [in] stream      The text stream to write into.
-     *    @param [in] interFace   Identifies the current interface to parse.
+     *    @param [in] addressContainer  Container for address calculations.
+     *    @param [in] masterInterface   The selected master interface.
      */
-    void parseMasterInterface(qint64 offset, QSharedPointer<Component> component, QTextStream& stream,
-        QSharedPointer<ActiveInterface> interface);
+	void parseMasterInterface(AddressContainer& addressContainer, QSharedPointer<const ConnectivityInterface> masterInterface) const;
 
     /*!
      *  Parse the slave interface.
      *
-     *    @param [in] offset      The current offset.
-     *    @param [in] component   The component in use.
-     *    @param [in] stream      The text stream to write into.
-     *    @param [in] interFace   Identifies the current interface to parse.
+     *    @param [in] addressContainer  Container for address calculations.
+     *    @param [in] stream            The text stream to write into.
+     *    @param [in] targetInterFace   The selected target interface.
      */
-    void parseSlaveInterface(qint64 offset, QSharedPointer<Component> component, QTextStream& stream,
-        QSharedPointer<ActiveInterface> interface);
+	void parseTargetInterface(AddressContainer addressContainer, QTextStream& stream,
+		QSharedPointer<const ConnectivityInterface> targetInterface);
+
+    /*!
+     *  Check if the selected memory item contains address blocks.
+     *
+     *    @param [in] memoryItem    The selected memory item.
+     *
+     *    @return True, if the memory item contains address blocks, false otherwise.
+     */
+    bool memoryItemContainsAddressBlocks(QSharedPointer<MemoryItem> memoryItem) const;
 
     /*!
      *  Parse the mirrored slave interface.
      *
-     *    @param [in] offset      The current offset.
-     *    @param [in] component   The component in use.
-     *    @param [in] stream      The text stream to write into.
-     *    @param [in] interFace   Identifies the current interface to parse.
+     *    @param [in] addressContainer          Container for address calculations.
+     *    @param [in] mirroredTargetInterFace   The selected mirrored target interface.
      */
-    void parseMirroredSlaveInterface(qint64 offset, QSharedPointer<Component> component, QTextStream& stream,
-        QSharedPointer<ActiveInterface> interface);
-
-    /*!
-     *  Parse the mirrored master interface.
-     *
-     *    @param [in] offset      The current offset.
-     *    @param [in] component   The component in use.
-     *    @param [in] stream      The text stream to write into.
-     *    @param [in] interFace   Identifies the current interface to parse.
-     */
-    void parseMirroredMasterInterface(qint64 offset, QSharedPointer<Component> component, QTextStream& stream,
-        QSharedPointer<ActiveInterface> interface);
+	void parseMirroredTargetInterface(AddressContainer& addressContainer,
+		QSharedPointer<const ConnectivityInterface> mirroredTargetInterface) const;
 
     /*!
      *  Creates the parameter finder using configurable element values of the instance.
@@ -192,7 +205,7 @@ private:
     QList<QSharedPointer<ActiveInterface> > operatedInterfaces_;
 
     //! A list of save options for the writer.
-    QList<GlobalHeaderSaveModel::SaveFileOptions*> saveOptions_;
+    QList<QSharedPointer<GlobalHeaderSaveModel::SaveFileOptions> > saveOptions_;
 };
 
 #endif // GLOBALMEMORYMAPHEADERWRITER_H

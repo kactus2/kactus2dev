@@ -69,6 +69,8 @@ void ExpressionEditor::setExpression(QString const& expression)
 
     QString word = expression.mid(0, delimiterIndex);
 
+	blockSignals(true);
+
     insertWord(word, cursor);
 
     while(delimiterIndex != -1)
@@ -83,7 +85,9 @@ void ExpressionEditor::setExpression(QString const& expression)
 
         delimiterIndex = wordEndIndex + operation.length();
     }
-    
+
+    blockSignals(false);
+
     MasterExpressionEditor::setExpression(expression);
     previousExpression_ = expression;
 }

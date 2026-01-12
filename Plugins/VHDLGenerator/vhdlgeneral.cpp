@@ -239,8 +239,8 @@ QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, c
 		QString result(originalDefaultValue.simplified());
 
 		// if the first letter is a decimal digit
-		if (result.at(0).isDigit())
-        {
+		if (result.at(0) != charToAdd)
+		{
 			result.prepend(charToAdd);
 		}
 
