@@ -199,9 +199,16 @@ void SingleAddressBlockEditor::refresh()
 void SingleAddressBlockEditor::onBaseAddressChanged()
 {
     baseAddressEditor_->finishEditingCurrentWord();
+    auto previousExpression = QString::fromStdString(blockInterface_->getBaseAddressExpression(blockName_));
+    auto currentExpression = baseAddressEditor_->getExpression();
 
-    blockInterface_->setBaseAddress(blockName_, baseAddressEditor_->getExpression().toStdString());
-    baseAddressEditor_->setToolTip(QString::fromStdString(blockInterface_->getBaseAddressValue(blockName_)));
+    if (previousExpression.compare(currentExpression, Qt::CaseSensitive) != 0)
+    {
+        blockInterface_->setBaseAddress(blockName_, currentExpression.toStdString());
+        baseAddressEditor_->setToolTip(QString::fromStdString(blockInterface_->getBaseAddressValue(blockName_)));
+        emit addressingChanged(true); // visualization needs redraw
+        emit graphicsChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -210,9 +217,16 @@ void SingleAddressBlockEditor::onBaseAddressChanged()
 void SingleAddressBlockEditor::onRangeChanged()
 {
     rangeEditor_->finishEditingCurrentWord();
+    auto previousExpression = QString::fromStdString(blockInterface_->getRangeExpression(blockName_));
+    auto currentExpression = rangeEditor_->getExpression();
 
-    blockInterface_->setRange(blockName_, rangeEditor_->getExpression().toStdString());
-    rangeEditor_->setToolTip(QString::fromStdString(blockInterface_->getRangeValue(blockName_)));
+    if (previousExpression.compare(currentExpression, Qt::CaseSensitive) != 0)
+    {
+        blockInterface_->setRange(blockName_, currentExpression.toStdString());
+        rangeEditor_->setToolTip(QString::fromStdString(blockInterface_->getRangeValue(blockName_)));
+        emit addressingChanged(true); // visualization needs redraw
+        emit graphicsChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -221,16 +235,14 @@ void SingleAddressBlockEditor::onRangeChanged()
 void SingleAddressBlockEditor::onWidthChanged()
 {
     widthEditor_->finishEditingCurrentWord();
+    auto previousExpression = QString::fromStdString(blockInterface_->getWidthExpression(blockName_));
     auto currentExpression = widthEditor_->getExpression();
-
-    blockInterface_->setWidth(blockName_, currentExpression.toStdString());
-    widthEditor_->setToolTip(QString::fromStdString(blockInterface_->getWidthValue(blockName_)));
-
-    auto previousExpression = widthEditor_->getPreviousExpression();
-
+    
     if (previousExpression.compare(currentExpression, Qt::CaseSensitive) != 0)
     {
-        emit addressingChanged(false);
+        blockInterface_->setWidth(blockName_, currentExpression.toStdString());
+        widthEditor_->setToolTip(QString::fromStdString(blockInterface_->getWidthValue(blockName_)));
+        emit addressingChanged(false); // visualization doesn't need redraw, only range labels
         emit graphicsChanged();
     }
 }
@@ -241,10 +253,16 @@ void SingleAddressBlockEditor::onWidthChanged()
 void SingleAddressBlockEditor::onIsPresentEdited()
 {
     isPresentEditor_->finishEditingCurrentWord();
+    auto previousExpression = QString::fromStdString(blockInterface_->getIsPresentExpression(blockName_));
+    auto newExpression = isPresentEditor_->getExpression();
 
-    blockInterface_->setIsPresent(blockName_, isPresentEditor_->getExpression().toStdString());
-    isPresentEditor_->setToolTip(
-        QString::fromStdString(blockInterface_->getIsPresentValue(blockName_)));
+    if (previousExpression.compare(newExpression, Qt::CaseSensitive) != 0)
+    {
+        blockInterface_->setIsPresent(blockName_, newExpression.toStdString());
+        isPresentEditor_->setToolTip(QString::fromStdString(blockInterface_->getIsPresentValue(blockName_)));
+        emit addressingChanged(true); // visualization needs redraw
+        emit graphicsChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -253,21 +271,28 @@ void SingleAddressBlockEditor::onIsPresentEdited()
 void SingleAddressBlockEditor::onDimensionChanged()
 {
     dimensionEditor_->finishEditingCurrentWord();
+    auto oldDimensionExpression = QString::fromStdString(blockInterface_->getDimensionExpression(blockName_));
     auto newDimension = dimensionEditor_->getExpression();
     auto formattedDimension = formattedValueFor(newDimension);
 
-    blockInterface_->setDimension(blockName_, newDimension.toStdString());
-    dimensionEditor_->setToolTip(formattedDimension);
+    if (oldDimensionExpression.compare(newDimension, Qt::CaseSensitive) != 0)
+    {
+        blockInterface_->setDimension(blockName_, newDimension.toStdString());
+        dimensionEditor_->setToolTip(formattedDimension);
 
-    if (formattedDimension.compare(QStringLiteral("n/a")) != 0 && formattedDimension.toULongLong() > 1)
-    {
-        strideEditor_->setEnabled(true);
-    }
-    else
-    {
-        strideEditor_->setExpression(QString());
-        strideEditor_->setToolTip(QString());
-        strideEditor_->setEnabled(false);
+        if (formattedDimension.compare(QStringLiteral("n/a")) != 0 && formattedDimension.toULongLong() > 1)
+        {
+            strideEditor_->setEnabled(true);
+        }
+        else
+        {
+            strideEditor_->setExpression(QString());
+            strideEditor_->setToolTip(QString());
+            strideEditor_->setEnabled(false);
+        }
+
+        emit addressingChanged(true); // visualization needs redraw
+        emit graphicsChanged();
     }
 }
 
@@ -277,10 +302,16 @@ void SingleAddressBlockEditor::onDimensionChanged()
 void SingleAddressBlockEditor::onStrideChanged()
 {
     strideEditor_->finishEditingCurrentWord();
+    auto previousStride = QString::fromStdString(blockInterface_->getStrideExpression(blockName_));
     auto newStride = strideEditor_->getExpression();
 
-    blockInterface_->setStride(blockName_, newStride.toStdString());
-    strideEditor_->setToolTip(formattedValueFor(newStride));
+    if (previousStride.compare(newStride, Qt::CaseSensitive) != 0)
+    {
+        blockInterface_->setStride(blockName_, newStride.toStdString());
+        strideEditor_->setToolTip(formattedValueFor(newStride));
+        emit addressingChanged(true); // visualization needs redraw
+        emit graphicsChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -323,33 +354,6 @@ void SingleAddressBlockEditor::onVolatileSelected(QString const& newVolatileValu
     blockInterface_->setVolatile(blockName_, newVolatileValue.toStdString());
 
     emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleAddressBlockEditor::onAddressingMaybeChanged()
-//-----------------------------------------------------------------------------
-void SingleAddressBlockEditor::onAddressingMaybeChanged()
-{
-    // Emit signal only if expression actually changed
-    if (auto senderEditor = dynamic_cast<ExpressionEditor*>(sender()))
-    {
-        auto previousExpression = senderEditor->getPreviousExpression();
-        auto currentExpression = senderEditor->getExpression();
-
-        if (previousExpression.compare(currentExpression, Qt::CaseSensitive) != 0)
-        {
-            emit addressingChanged(true);
-            emit graphicsChanged();
-        }
-        //else
-        //{
-        //    emit addressingChanged(false);
-        //}
-    }
-    else
-    {
-        emit addressingChanged(false);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -526,23 +530,8 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(registerFilesEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
     connect(registerFilesEditor_, SIGNAL(childAddressingChanged(int)), this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
 
-    //connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
-    
-    //connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(rangeEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
-
-    //connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-
-    //connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
-
-    //connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(strideEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
-
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onAddressingMaybeChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onAddressBlockNameChanged()), Qt::UniqueConnection);
 

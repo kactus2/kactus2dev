@@ -204,7 +204,10 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
             // Mark name as valid, if not found in map.
             if (auto found = foundNames[targetRegister->name()])
             {
+                // Mark current register invalid...
                 registerValidator_->setChildItemValidity(targetRegister, false);
+
+                // ...and whatever other register with same name was earlier found
                 markItemInvalid(foundNames[targetRegister->name()]);
                 errorFound = true;
             }
@@ -783,7 +786,7 @@ void AddressBlockValidator::setupMemoryAreas(QSharedPointer<AddressBlock> addres
         else if (auto asRegFile = regBase.dynamicCast<RegisterFile>())
         {
             regBaseSizeAU = getExpressionParser()->parseExpression(asRegFile->getRange()).toULongLong();
-            setChildItemValidity(asRegFile, true);
+            registerFileValidator_->setChildItemValidity(asRegFile, true);
         }
 
         // Stride empty

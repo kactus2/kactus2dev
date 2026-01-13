@@ -181,8 +181,6 @@ private slots:
      */
     void onVolatileSelected(QString const& newVolatileValue);
 
-    void onAddressingMaybeChanged();
-
 private:
 
     /*!

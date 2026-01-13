@@ -89,15 +89,6 @@ void ExpressionEditor::setExpression(QString const& expression)
     blockSignals(false);
 
     MasterExpressionEditor::setExpression(expression);
-    previousExpression_ = expression;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ExpressionEditor::getPreviousExpression()
-//-----------------------------------------------------------------------------
-QString ExpressionEditor::getPreviousExpression() const
-{
-    return previousExpression_;
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +129,6 @@ void ExpressionEditor::keyPressEvent(QKeyEvent* keyEvent)
 //-----------------------------------------------------------------------------
 void ExpressionEditor::focusInEvent(QFocusEvent* focusEvent)
 {
-    previousExpression_ = getExpression();
     QTextEdit::focusInEvent(focusEvent);
 
     if (focusEvent->reason() != Qt::PopupFocusReason )
