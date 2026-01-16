@@ -8,6 +8,31 @@
               * Changed or Information
 ===============================================================================
 
+08/01/2026 3.14.0
+----------------------------------------------------
++ Added first version of interconnect generator (for HW designs)
+  + For generating IP-XACT interconnect components and corresponding RTL automatically (RTL generation is experimental)
+  + More info can be found in help pages
++ Python scripts can be run on CLI startup with option -i
++ Desired system view can be selected when opening a system design
++ Changed save functions to be under a single button
++ Enabled memory map header generator for IP-XACT 2022
++ Improved bus interface editor
++ Improved port map auto connector prefixes
++ Improved the path searching algorithm
++ Updated structured port validation and writing
++ Enabled existing path search algorithms for memory map header generator
+- Changes to ports and bus interfaces in component editor do not delete connections in HW design
+- Fixes to expression parser
+- Fixes to verilog, VHDL and memory map header generators
+- Fixed VLNV editor crash in some situations
+- Fixes to SW design editor
+- Fixed documents containing the same components to not overwrite changes
+- Fixed meta component parameter parsing
+- Fixed Verilog importer port parsing
+* Changed File naming in VHDL / Verilog generator
+* Changed memory designer address range visualization when connection and item share ranges
+
 08/05/2025 3.13.5
 ----------------------------------------------------
 - Fixed bug introduced in 3.13.4 where rows couldn't be removed in some table editors
