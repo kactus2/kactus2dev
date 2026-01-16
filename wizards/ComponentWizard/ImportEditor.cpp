@@ -172,6 +172,10 @@ void ImportEditor::onBrowseFile()
     {
         path = QFileInfo(componentXmlPath_).absolutePath();
     }
+    else
+    {
+		path = QFileInfo(General::getAbsolutePath(componentXmlPath_, selectedSourceFile_)).canonicalPath();
+    }
 
     QFileDialog browseDialog(this, tr("Select file to import"), path, getFileBrowsingFilters());
     if (browseDialog.exec() == QDialog::Accepted)

@@ -50,9 +50,7 @@ editor_(new ImportEditor(component, handler, parameterFinder, expressionFormatte
     connect(editor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    QLineEdit *dummy = new QLineEdit(this);
-    dummy->setVisible(false);
-    registerField(InstanceData::VERILOGINSTANCES, dummy);
+    registerField(InstanceData::VERILOGINSTANCES, this);
 }
 
 //-----------------------------------------------------------------------------

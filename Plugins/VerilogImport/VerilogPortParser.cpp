@@ -348,11 +348,15 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
         port->setDirection(direction);
         port->setLeftBound(vectorBounds.first);
         port->setRightBound(vectorBounds.second);
-        port->setTypeName(type);
-        port->setTypeDefinition(type, typeDefinition);
         port->setArrayLeft(arrayBounds.first);
         port->setArrayRight(arrayBounds.second);
         port->setDescription(description);
+
+		port->setTypeName(type);
+		if (type.isEmpty() == false && typeDefinition.isEmpty() == false)
+		{
+			port->setTypeDefinition(type, typeDefinition);
+		}
     }
 }
 
