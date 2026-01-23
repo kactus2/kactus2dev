@@ -131,6 +131,12 @@ QVector<InstanceData::instanceData> ComponentWizardImportPage::getVerilogInstanc
         if (extensionGroup)
         {
             InstanceData::instanceData newInstance;
+
+            if (auto vlnvString = getInstanceString(InstanceData::COMPONENTVLNV, extensionGroup); vlnvString.isEmpty() == false)
+            {
+                newInstance.componentVLNV_ = VLNV(VLNV::COMPONENT, vlnvString);
+            }
+
             newInstance.instanceName_ = getInstanceString(InstanceData::INSTANCENAME, extensionGroup);
             newInstance.moduleName_ = getInstanceString(InstanceData::MODULENAME, extensionGroup);
             newInstance.parameters_ =
