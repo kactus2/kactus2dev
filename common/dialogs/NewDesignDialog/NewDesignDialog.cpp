@@ -52,8 +52,6 @@ QDialog(parent),
 {
     setWindowFlags(windowFlags() &= ~Qt::WindowContextHelpButtonHint);
 
-    setStyleSheet(QString("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }"));
-
     introLabel_->setWordWrap(true);
     introLabel_->setText(tr("<b>Create a new design for the component.</b><br>"
         "A new view will be added for the design in the component. An optional qualifier can be "

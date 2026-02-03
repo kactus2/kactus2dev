@@ -49,8 +49,6 @@ QDialog(parent, Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowCloseB
     Q_ASSERT(component);
     Q_ASSERT(handler);
 
-    setStyleSheet(QString("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }"));
-
     QSettings settings;
     QStringList suggestedNames;
     QStringList reservedNames;

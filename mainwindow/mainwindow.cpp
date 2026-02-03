@@ -31,6 +31,7 @@
 #include <mainwindow/SaveHierarchy/DocumentTreeBuilder.h>
 #include <mainwindow/SaveHierarchy/SaveHierarchyDialog.h>
 
+#include <common/KactusColors.h>
 #include <common/NameGenerationPolicy.h>
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
@@ -117,6 +118,7 @@
 #include <QPainter>
 #include <QDateTime>
 #include <QStatusBar>
+#include <QStyleHints>
 
 //-----------------------------------------------------------------------------
 // Function: MainWindow::MainWindow()
@@ -197,18 +199,8 @@ messageChannel_(messageChannel)
     resize(1024, 768);
     setWindowState(Qt::WindowMaximized);
 
-    QString defaultStyleSheet(
-        "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
-        "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
-        "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
-        "QGroupBox::title { subcontrol-origin: margin; margin: 0 8px; }"
-        "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"        
-        "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
-        "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
-        "QTableView::indicator:unchecked {image: none;}"
-        "QDockWidget::title {background-color: #89B6E2; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
-        "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
-    setStyleSheet(defaultStyleSheet);
+    // Query system theme and modify style accordingly
+    applyStyling();
 
     setupToolbars();
     setContextMenuPolicy(Qt::NoContextMenu);
@@ -2657,6 +2649,14 @@ void MainWindow::onInterconnectGenerate()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MainWindow::onPaletteChanged()
+//-----------------------------------------------------------------------------
+void MainWindow::onPaletteChanged()
+{
+    // TODO handle theme change (dark => light / light => dark)
+}
+
+//-----------------------------------------------------------------------------
 // Function: mainwindow::onOpenComponentItem()
 //-----------------------------------------------------------------------------
 void MainWindow::onOpenComponentItem(const VLNV& componentVLNV, QVector<QString> identifierChain)
@@ -3629,9 +3629,6 @@ void MainWindow::runComponentWizard(QSharedPointer<Component> component, QString
     // Open the component wizard.
     ComponentWizard wizard(component, directory, libraryHandler_, this);
 
-    QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
-    wizard.setStyleSheet(styleSheet);
-
     if (wizard.exec() == QDialog::Accepted)
     {
         // Save wizard changes.
@@ -3732,6 +3729,74 @@ void MainWindow::setPluginVisibilities()
     }
 
     generationAction_->setVisible(isGenerationGroupVisible && doc);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::applyStyling()
+//-----------------------------------------------------------------------------
+void MainWindow::applyStyling()
+{
+    // Get current theme
+    auto styleHints = QGuiApplication::styleHints();
+    bool isDarkTheme = styleHints->colorScheme() == Qt::ColorScheme::Dark;
+
+    auto appStyle = QApplication::style()->name();
+
+    // Dark mode is not enabled for windows vista style
+    if (isDarkTheme && appStyle.compare("windowsvista") != 0)
+    {
+        // Set ribbon style
+        auto palette = QGuiApplication::palette();
+        auto windowBG = palette.color(QPalette::ColorRole::Window);
+
+        // Set ribbon colors to lighter variants of window background color
+        KactusColors::RibbonTheme::GRADIENTTOP = windowBG;
+        KactusColors::RibbonTheme::GRADIENTBOTTOM = palette.color(QPalette::ColorRole::Window).lighter(125);
+        KactusColors::RibbonTheme::GROUPTITLEGRADIENTTOP = windowBG;
+        KactusColors::RibbonTheme::GROUPTITLEGRADIENTBOTTOM = palette.color(QPalette::ColorRole::Window).lighter(175);
+        KactusColors::RibbonTheme::GROUPTITLETEXT = palette.color(QPalette::ColorRole::WindowText);
+
+        auto dockWidgetTitleColor = windowBG.lighter(150);
+        auto dockWidgetTileColorRGB = QString::number(dockWidgetTitleColor.red()) % "," % 
+            QString::number(dockWidgetTitleColor.green()) % "," % QString::number(dockWidgetTitleColor.blue());
+
+        QString defaultStyleSheet(
+            "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
+            "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
+            "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
+            "QGroupBox::title { subcontrol-origin: margin; margin: 0 8px; }"
+            "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"
+            "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
+            "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
+            "QTableView::indicator:unchecked {image: none;}"
+            "QDockWidget::title {background-color: rgb(" % dockWidgetTileColorRGB % "); font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
+            "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
+        setStyleSheet(defaultStyleSheet);
+    }
+    else
+    {
+        // Light theme. Classic Kactus2 look
+
+        // Set ribbon style
+        KactusColors::RibbonTheme::GRADIENTTOP = QColor(218, 225, 233);
+        KactusColors::RibbonTheme::GRADIENTBOTTOM = QColor(160, 193, 226);
+        KactusColors::RibbonTheme::GROUPTITLEGRADIENTTOP = QColor(33, 135, 237);
+        KactusColors::RibbonTheme::GROUPTITLEGRADIENTBOTTOM = QColor(17, 127, 237);
+        KactusColors::RibbonTheme::GROUPTITLETEXT = Qt::white;
+
+        QString defaultStyleSheet(
+            "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
+            "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
+            "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
+            "QGroupBox::title { subcontrol-origin: margin; margin: 0 8px; }"
+            "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"
+            "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
+            "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
+            "QTableView::indicator:unchecked {image: none;}"
+            "QDockWidget::title {background-color: #89B6E2; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
+            "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
+        setStyleSheet(defaultStyleSheet);
+    }
 }
 
 //-----------------------------------------------------------------------------

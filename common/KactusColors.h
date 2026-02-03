@@ -91,6 +91,16 @@ namespace KactusColors
     QColor const DEPENDECY_ADDED = QColor(0, 222, 0); // Added dependency.
     QColor const DEPENDECY_COVERAGE = QColor(0, 158, 255); // Used to illustrate the extent of dependencies.
     QColor const ROW_SEPARATOR = QColor(200, 200, 200); // Used to separate rows on a list.
+
+    // Colors for ribbon
+    namespace RibbonTheme
+    {
+        inline QColor GRADIENTTOP(218, 225, 233);
+        inline QColor GRADIENTBOTTOM(160, 193, 226);
+	    inline QColor GROUPTITLEGRADIENTTOP(33, 135, 237);
+	    inline QColor GROUPTITLEGRADIENTBOTTOM(17, 127, 237);
+	    inline QColor GROUPTITLETEXT = Qt::white;
+    }
 }
 
 //-----------------------------------------------------------------------------

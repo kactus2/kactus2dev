@@ -558,6 +558,11 @@ private slots:
      */
     void onInterconnectGenerate();
 
+    /*!
+     *	Color theme/palette has been changed
+     */
+    void onPaletteChanged();
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -683,6 +688,12 @@ private:
 	 *  Set the visibilities for the plug ins.
 	 */
 	void setPluginVisibilities();
+
+    /*!
+     *	Apply style/theme based on platform style and theme
+     */
+    void applyStyling();
+
 
     //-----------------------------------------------------------------------------
     // Data.

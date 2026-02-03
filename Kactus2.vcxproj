@@ -80,7 +80,7 @@
     <QtModules>core;gui;widgets;help;printsupport;svg;xml</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtInstall>6.2.4</QtInstall>
+    <QtInstall>6.6.2_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets;help;printsupport;svg;xml</QtModules>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -2250,7 +2250,6 @@ CreateHelp
     <QtMoc Include="library\VLNVDialer\ValidityGroup.h" />
     <QtMoc Include="library\VLNVDialer\RevisionGroup.h" />
     <ClInclude Include="mainwindow\CommandLineParser.h" />
-    <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h" />
     <ClInclude Include="mainwindow\SaveHierarchy\DocumentTreeBuilder.h" />
     <QtMoc Include="mainwindow\SaveHierarchy\HierarchicalSaveBuildStrategy.h">
     </QtMoc>
