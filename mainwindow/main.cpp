@@ -68,11 +68,11 @@ namespace
             QApplication* guiApplication = new QApplication(argc, argv);        
 
             // Set the palette to use nice pastel colors.
-            QPalette palette = guiApplication->palette();
-            palette.setColor(QPalette::Active, QPalette::Highlight, QColor(33, 135, 237));
-            palette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(166, 200, 234));
-            palette.setColor(QPalette::Inactive, QPalette::Highlight, QColor(166, 200, 234));
-            guiApplication->setPalette(palette);
+            // QPalette palette = guiApplication->palette();
+            // palette.setColor(QPalette::Active, QPalette::Highlight, QColor(33, 135, 237));
+            // palette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(166, 200, 234));
+            // palette.setColor(QPalette::Inactive, QPalette::Highlight, QColor(166, 200, 234));
+            // guiApplication->setPalette(palette);
 
             application =  guiApplication;
         }

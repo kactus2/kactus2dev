@@ -789,13 +789,10 @@ void MainWindow::setupMenus()
 //-----------------------------------------------------------------------------
 void MainWindow::setupToolbars()
 {
-    QString toolbarStyle = "background-color: #DAE1E9";
-
     leftToolbar_->setObjectName("leftToolBar");
     leftToolbar_->setOrientation(Qt::Vertical);
     leftToolbar_->setMovable(false);
     leftToolbar_->setIconSize(QSize(32, 32));
-    leftToolbar_->setStyleSheet(toolbarStyle);
 
     addToolBar(Qt::LeftToolBarArea, leftToolbar_);
 
@@ -803,7 +800,6 @@ void MainWindow::setupToolbars()
     rightToolbar_->setOrientation(Qt::Vertical);
     rightToolbar_->setMovable(false);
     rightToolbar_->setIconSize(QSize(32, 32));
-    rightToolbar_->setStyleSheet(toolbarStyle);
 
     addToolBar(Qt::RightToolBarArea, rightToolbar_);
 }
@@ -3745,6 +3741,8 @@ void MainWindow::applyStyling()
     // Dark mode is not enabled for windows vista style
     if (isDarkTheme && appStyle.compare("windowsvista") != 0)
     {
+        // Set main window colors
+
         // Set ribbon style
         auto palette = QGuiApplication::palette();
         auto windowBG = palette.color(QPalette::ColorRole::Window);
@@ -3757,10 +3755,10 @@ void MainWindow::applyStyling()
         KactusColors::RibbonTheme::GROUPTITLETEXT = palette.color(QPalette::ColorRole::WindowText);
 
         auto dockWidgetTitleColor = windowBG.lighter(150);
-        auto dockWidgetTileColorRGB = QString::number(dockWidgetTitleColor.red()) % "," % 
+        QString dockWidgetTitleColorRGB = QString::number(dockWidgetTitleColor.red()) % "," % 
             QString::number(dockWidgetTitleColor.green()) % "," % QString::number(dockWidgetTitleColor.blue());
 
-        QString defaultStyleSheet(
+        QString defaultStyleSheet =
             "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
             "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
             "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
@@ -3769,20 +3767,28 @@ void MainWindow::applyStyling()
             "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
             "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
             "QTableView::indicator:unchecked {image: none;}"
-            "QDockWidget::title {background-color: rgb(" % dockWidgetTileColorRGB % "); font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
-            "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
+            "QDockWidget::title {background-color: rgb(" % dockWidgetTitleColorRGB % "); font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
+            "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }";
         setStyleSheet(defaultStyleSheet);
+
+        // Set slightly muted highlight color (for selections)
+        auto currentHighlight = palette.highlight().color();
+        palette.setColor(QPalette::ColorRole::Highlight, currentHighlight.darker(150));
+        QGuiApplication::setPalette(palette);
+
+        // Set text color
+        KactusColors::REGULAR_TEXT = palette.windowText().color();
+
+        // Set colors for HW design
+        KactusColors::DIAGRAM_GRID = palette.windowText().color().darker(250);
+        KactusColors::REGULAR_CONNECTION = QColor(Qt::white).darker(150);
+        KactusColors::HW_COMPONENT = KactusColors::HW_COMPONENT.darker(175);
+        KactusColors::DIAGRAM_COLUMN_HEADER = KactusColors::DIAGRAM_COLUMN_HEADER.darker(175);
     }
     else
     {
         // Light theme. Classic Kactus2 look
-
-        // Set ribbon style
-        KactusColors::RibbonTheme::GRADIENTTOP = QColor(218, 225, 233);
-        KactusColors::RibbonTheme::GRADIENTBOTTOM = QColor(160, 193, 226);
-        KactusColors::RibbonTheme::GROUPTITLEGRADIENTTOP = QColor(33, 135, 237);
-        KactusColors::RibbonTheme::GROUPTITLEGRADIENTBOTTOM = QColor(17, 127, 237);
-        KactusColors::RibbonTheme::GROUPTITLETEXT = Qt::white;
+        // KactusColors contains default values for original style
 
         QString defaultStyleSheet(
             "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"

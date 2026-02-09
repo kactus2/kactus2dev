@@ -133,7 +133,6 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/mainwindow.h \
     ./mainwindow/MessageConsole/messageconsole.h \
-    ./mainwindow/Ribbon/RibbonTheme.h \
     ./mainwindow/Ribbon/Ribbon.h \
     ./mainwindow/Ribbon/RibbonGroup.h \
     ./mainwindow/NewPages/NewCatalogPage.h \

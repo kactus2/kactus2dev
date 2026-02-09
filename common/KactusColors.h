@@ -27,9 +27,9 @@ namespace KactusColors
     QColor const WARNING = QColor(255, 102, 45);
 
     //! Colors used in text.
-    QColor const REGULAR_TEXT = Qt::black; // Regular text.
-    QColor const DISABLED_TEXT = Qt::darkGray; // Text in disabled or uneditable elements.
-    QColor const REGULAR_MESSAGE = Qt::blue; // Regular console messages.
+    QColor inline REGULAR_TEXT = Qt::black; // Regular text.
+    QColor inline DISABLED_TEXT = Qt::darkGray; // Text in disabled or uneditable elements.
+    QColor inline REGULAR_MESSAGE = Qt::blue; // Regular console messages.
 
     //! Colors used as field backgrounds.
     QColor const REGULAR_FIELD = Qt::white; // Backgrounds and regular fields.
@@ -46,7 +46,7 @@ namespace KactusColors
     QColor const STRING_HIGHLIGHT = QColor(Qt::gray); // "Character strings."
 
     //! Colors used in design diagram interconnections.
-    QColor const REGULAR_CONNECTION = Qt::black; // Most connections.
+    QColor inline REGULAR_CONNECTION = Qt::black; // Most connections.
     QColor const BROKEN_CONNECTION = ERROR; // Broken/invalid connections.
     QColor const COM_CONNECTION = QColor(49, 132, 61); // COM connections.
     QColor const CONNECTION_UNDERCROSSING = QColor(160, 160, 160);  // Used for crossing interconnections.
@@ -67,14 +67,16 @@ namespace KactusColors
     QColor const MISSING_COMPONENT = QColor(240, 180, 180); // The component of the instance does not exist.
     QColor const DRAFT_COMPONENT = QColor(217, 217, 217); // The instance is a draft for a new component.
     QColor const HW_BUS_COMPONENT = QColor(0xce,0xdf,0xff); // The component of the instance is a bus or a bridge.
-    QColor const HW_COMPONENT = QColor(0xa5,0xc3,0xef); // The component of the instance is hardware component.
+    QColor inline HW_COMPONENT = QColor(0xa5,0xc3,0xef); // The component of the instance is hardware component.
     QColor const SW_COMPONENT = QColor(0xc5,0xff, 0xab); // The component of the instance is software component.
 
     //! Other colors used in design.
     QColor const DIAGRAM_SELECTION = Qt::blue; // Selections in design diagrams.
     QColor const DIAGRAM_ALLOWED_INTERFACE = Qt::magenta; // Highlights allowed interface for a connection.
-    QColor const DIAGRAM_COLUMN_HEADER = QColor(160, 193, 226); // Background color for column headers.
+    QColor inline DIAGRAM_COLUMN_HEADER = QColor(160, 193, 226); // Background color for column headers.
     QColor const STICKY_NOTE_BACKGROUND = QColor(QStringLiteral("lemonChiffon")); // Sticky note background
+
+    inline QColor DIAGRAM_GRID = Qt::gray;
 
     //! Colors used for memory/address sections in the memory designer.
     QColor const MEMORY_BLOCK = QColor(0xd6, 0xba, 0xff);

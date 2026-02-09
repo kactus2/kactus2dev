@@ -21,3 +21,4 @@ GeneratedFiles/
 
 *.obj
 *.tlog
+*.o

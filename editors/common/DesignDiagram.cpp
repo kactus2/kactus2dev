@@ -15,6 +15,8 @@
 
 #include <common/IEditProvider.h>
 
+#include <common/KactusColors.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
@@ -327,7 +329,7 @@ QStringList DesignDiagram::getUsedInstanceNames() const
 void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 {
     painter->setWorldMatrixEnabled(true);
-    painter->setPen(QPen(Qt::gray, 0));
+    painter->setPen(QPen(KactusColors::DIAGRAM_GRID, 0));
 
     qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
     qreal top = int(rect.top()) - (int(rect.top()) % GridSize );
