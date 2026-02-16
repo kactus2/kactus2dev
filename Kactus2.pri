@@ -9,7 +9,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/NameGenerationPolicy.h \
-    ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/IEditProvider.h \
     ./common/GenericEditProvider.h \
@@ -213,7 +212,6 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
     ./Plugins/PluginSystem/GeneratorPlugin/AddToFilesetWidget.h \
-    ./library/LibraryInterface.h \
     ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryUtils.h \
     ./library/ObjectSelectionListItem.h \
@@ -667,7 +665,6 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./editors/CatalogEditor/CatalogFileDelegate.h \
     ./editors/CatalogEditor/CatalogFileFilter.h \
     ./editors/CatalogEditor/CatalogFileView.h \
-    ./editors/BusDefinitionEditor/LogicalPortColumns.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
     ./editors/BusDefinitionEditor/BusDefinitionParameterReferenceTree.h \
