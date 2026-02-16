@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QStringBuilder>
 #include <QIcon>
@@ -276,7 +276,7 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
         }
     	else
         {
-    		return KactusColors::ERROR;
+    		return KactusColors::ERROR_COLOR;
         }
     }
     else if (role == Qt::ToolTipRole)

@@ -13,7 +13,7 @@
 
 #include <editors/ComponentEditor/ports/PortWireTypeColumns.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/Wire.h>
@@ -509,7 +509,7 @@ QVariant PortWireTypeModel::blackForValidRedForInvalid(QModelIndex const& index,
     }
     else
     {
-        return KactusColors::ERROR;
+        return KactusColors::ERROR_COLOR;
     }
 }
 

@@ -11,7 +11,7 @@
 
 #include "PeripheralTemplateModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QColor>
 #include <QCoreApplication>
@@ -236,7 +236,7 @@ QVariant PeripheralTemplateModel::blackForValidRedForInvalidIndex(QModelIndex co
         QString templatePath = QCoreApplication::applicationDirPath() + "/" + index.data().toString();
         if (!QFile::exists(templatePath))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
     }
 

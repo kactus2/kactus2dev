@@ -22,7 +22,7 @@
 
 
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: OtherClockDriversModel::OtherClockDriversModel()
@@ -145,7 +145,7 @@ QVariant OtherClockDriversModel::data(QModelIndex const&  index, int role) const
 		}
 		else
         {
-			return KactusColors::ERROR;
+			return KactusColors::ERROR_COLOR;
 		}
 	}
 

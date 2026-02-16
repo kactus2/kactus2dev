@@ -12,7 +12,7 @@
 #include "FieldAccessPoliciesModel.h"
 #include "FieldAccessPolicyColumns.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 using ModeRefList = std::vector<std::pair<unsigned int, std::string> >;
 

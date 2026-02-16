@@ -26,7 +26,7 @@
 #include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayView.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QComboBox>
 #include <QCompleter>

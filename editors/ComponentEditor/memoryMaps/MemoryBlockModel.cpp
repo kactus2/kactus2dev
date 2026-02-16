@@ -14,7 +14,7 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 #include <KactusAPI/include/MemoryBlockInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QRegularExpression>
 

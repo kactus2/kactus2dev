@@ -17,7 +17,7 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 #include <common/graphicsItems/visualizeritem.h>
 
 #include <QBrush>

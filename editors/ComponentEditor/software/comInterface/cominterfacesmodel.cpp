@@ -24,7 +24,7 @@
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/DocumentUtils.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 
 #include <QMimeData>
@@ -197,7 +197,7 @@ QVariant ComInterfacesModel::data(QModelIndex const& index, int role) const
         }
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
     }
     else if (role == Qt::BackgroundRole)

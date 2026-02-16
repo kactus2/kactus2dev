@@ -11,7 +11,7 @@
 
 #include "EnumerationModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/ComponentEditor/choices/EnumerationColumns.h>
 
@@ -265,7 +265,7 @@ QVariant EnumerationModel::getForegroundColorForEnumeration(QSharedPointer<Enume
 {
     if (enumeration->getValue().isEmpty())
     {
-        return KactusColors::ERROR;
+        return KactusColors::ERROR_COLOR;
     }
     else
     {

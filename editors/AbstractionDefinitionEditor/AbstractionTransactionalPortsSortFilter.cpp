@@ -11,7 +11,7 @@
 
 #include "AbstractionTransactionalPortsSortFilter.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/PortAbstractionInterface.h>
 #include <editors/AbstractionDefinitionEditor/LogicalPortColumns.h>

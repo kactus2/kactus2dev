@@ -18,7 +18,7 @@
 
 #include <IPXACTmodels/common/FileBuilder.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: filebuildersmodel::FileBuildersModel()

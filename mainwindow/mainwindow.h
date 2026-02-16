@@ -692,7 +692,7 @@ private:
     /*!
      *	Apply style/theme based on platform style and theme
      */
-    void applyStyling();
+    void applyTheme();
 
 
     //-----------------------------------------------------------------------------

@@ -19,7 +19,7 @@
 #include <QStringList>
 #include <QRegularExpression>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortSliceModel::PortSliceModel()

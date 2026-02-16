@@ -44,6 +44,8 @@
 #include "PythonAPI/StdInputListener.h"
 #include "PythonAPI/FileChannel.h"
 
+#include <QStyleFactory>
+
 //-----------------------------------------------------------------------------
 //! Private utility functions for main.
 //-----------------------------------------------------------------------------
@@ -73,6 +75,8 @@ namespace
             // palette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(166, 200, 234));
             // palette.setColor(QPalette::Inactive, QPalette::Highlight, QColor(166, 200, 234));
             // guiApplication->setPalette(palette);
+
+            //guiApplication->setStyle(QStyleFactory::create("Fusion"));
 
             application =  guiApplication;
         }

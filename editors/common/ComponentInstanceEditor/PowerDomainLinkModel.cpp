@@ -15,7 +15,7 @@
 #include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/common/validators/ChoiceValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: PowerDomainLinkModel::PowerDomainLinkModel()

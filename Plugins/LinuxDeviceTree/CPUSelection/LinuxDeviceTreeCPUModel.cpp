@@ -15,7 +15,7 @@
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/ConnectivityComponent.h>

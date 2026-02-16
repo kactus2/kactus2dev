@@ -11,7 +11,7 @@
 
 #include "ConfigurableElementsModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 
@@ -140,7 +140,7 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
     {
         if (element->getEvaluatedDefaultValue().isEmpty())
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else if (index.column() == ConfigurableElementsColumns::VALUE && isParameterEditable(index))
         {

@@ -5185,9 +5185,6 @@
     <ClInclude Include="common\widgets\vlnvEditor\VLNVDataTree.h">
       <Filter>Header Files\common\widgets\vlnvEditor</Filter>
     </ClInclude>
-    <ClInclude Include="common\KactusColors.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="common\TextEditProvider.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>

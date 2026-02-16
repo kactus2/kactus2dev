@@ -26,7 +26,7 @@
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QRegularExpression>
 #include <QApplication>
@@ -222,7 +222,7 @@ QVariant MemoryMapsModel::data(QModelIndex const& index, int role) const
         {
             if (index.data(Qt::DisplayRole).toString() == "None")
             {
-                return KactusColors::ERROR;
+                return KactusColors::ERROR_COLOR;
             }
 
             return KactusColors::DISABLED_TEXT;

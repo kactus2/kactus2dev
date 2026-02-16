@@ -24,7 +24,7 @@
 #include <IPXACTmodels/common/AccessTypes.h>
 #include <IPXACTmodels/common/Choice.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QRegularExpression>
 #include <QApplication>
@@ -208,7 +208,7 @@ QVariant RegisterFileModel::data(QModelIndex const& index, int role) const
         }
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
     }
     else if (role == Qt::BackgroundRole)

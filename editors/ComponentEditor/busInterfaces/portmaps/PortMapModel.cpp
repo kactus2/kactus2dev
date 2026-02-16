@@ -13,7 +13,7 @@
 
 #include "PortMapsColumns.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/PortMapInterface.h>
 

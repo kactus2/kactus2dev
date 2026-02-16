@@ -11,7 +11,7 @@
 
 #include "VendorExtensionAttributesModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesColumns.h>
 

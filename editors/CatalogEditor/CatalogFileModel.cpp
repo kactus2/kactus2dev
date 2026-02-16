@@ -14,7 +14,7 @@
 #include "CatalogFileColumns.h"
 
 #include <KactusAPI/include/FileHandler.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -293,13 +293,13 @@ QVariant CatalogFileModel::data(QModelIndex const& index, int role) const
             {
                 if (!isValidPath(file->getName()))
                 {
-                    return KactusColors::ERROR;
+                    return KactusColors::ERROR_COLOR;
                 }
             }
             else if (library_->getDocumentType(file->getVlnv()) != 
                 CatalogFileColumns::CATEGORY_TYPES[index.parent().row()])
             {
-                return KactusColors::ERROR;
+                return KactusColors::ERROR_COLOR;
             }
         }
     }

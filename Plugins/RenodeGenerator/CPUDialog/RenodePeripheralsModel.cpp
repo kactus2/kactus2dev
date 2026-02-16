@@ -11,7 +11,7 @@
 
 #include "RenodePeripheralsModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QColor>
 #include <QIcon>

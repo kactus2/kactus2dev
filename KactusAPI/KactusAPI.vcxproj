@@ -61,6 +61,7 @@
     <ClInclude Include="include\IPluginUtility.h" />
     <ClInclude Include="include\IPXactSystemVerilogParser.h" />
     <QtMoc Include="include\LibraryHandler.h" />
+    <ClInclude Include="include\KactusColors.h" />
     <ClInclude Include="include\LibraryInterface.h" />
     <QtMoc Include="include\LibraryItem.h" />
     <ClInclude Include="include\LibraryLoader.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="plugins\PluginUtilityAdapter.cpp" />
     <ClCompile Include="utilities\ConsoleMediator.cpp" />
     <ClCompile Include="utilities\FileHandler.cpp" />
+    <ClCompile Include="utilities\KactusColors.cpp" />
     <ClCompile Include="utilities\NullChannel.cpp" />
     <ClCompile Include="utilities\utils.cpp" />
     <ClCompile Include="utilities\VersionHelper.cpp" />

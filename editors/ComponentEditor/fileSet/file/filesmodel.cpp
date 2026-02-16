@@ -13,7 +13,7 @@
 #include "FileColumns.h"
 
 #include <KactusAPI/include/FileHandler.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
@@ -181,7 +181,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         {
             if (fileName.empty())
             {
-                return KactusColors::ERROR;
+                return KactusColors::ERROR_COLOR;
             }
             else
             {
@@ -191,7 +191,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         if (index.column() == FileColumns::PATH_COLUMN && 
             !(FileHandler::isValidURI(handler_->getPath(component_->getVlnv()),QString::fromStdString(fileName))))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
 	}
 

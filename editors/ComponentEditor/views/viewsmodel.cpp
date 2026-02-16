@@ -18,7 +18,7 @@
 
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ViewsModel::ViewsModel()
@@ -177,7 +177,7 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == ViewColumns::NAME_COLUMN && !viewValidator_->hasValidName(view->name()))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else
         {

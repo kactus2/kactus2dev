@@ -16,7 +16,7 @@
 #include <QTextBlock>
 #include <QSettings>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <PythonAPI/WriteChannel.h>
 

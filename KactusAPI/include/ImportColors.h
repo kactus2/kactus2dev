@@ -13,7 +13,7 @@
 #define IMPORTCOLORS_H
 
 #include <QColor>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 namespace ImportColors
 {

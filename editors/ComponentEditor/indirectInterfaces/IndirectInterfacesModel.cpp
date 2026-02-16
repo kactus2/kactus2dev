@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QCoreApplication>
 #include <QMap>
@@ -230,7 +230,7 @@ QVariant IndirectInterfacesModel::data(QModelIndex const& index, int role) const
         }
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
 	}
 	else if (role == Qt::BackgroundRole)

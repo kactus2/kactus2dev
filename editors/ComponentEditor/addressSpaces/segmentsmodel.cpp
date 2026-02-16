@@ -22,7 +22,7 @@
 #include <QClipboard>
 #include <QMimeData>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentsModel::SegmentsModel()

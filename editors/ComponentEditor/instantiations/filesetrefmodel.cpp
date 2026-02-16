@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/FileSetInterface.h>
 
@@ -85,7 +85,7 @@ QVariant FileSetRefModel::data( const QModelIndex& index, int role /*= Qt::Displ
         // if the file set does not exist.
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
     }
     // if unsupported role

@@ -13,7 +13,7 @@
 #include <KactusAPI/include/IPlugin.h>
 #include <KactusAPI/include/PluginManager.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QColor>
 #include <QStringList>

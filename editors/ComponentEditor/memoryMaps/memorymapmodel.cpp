@@ -16,7 +16,7 @@
 #include <KactusAPI/include/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QRegularExpression>
 #include <QApplication>

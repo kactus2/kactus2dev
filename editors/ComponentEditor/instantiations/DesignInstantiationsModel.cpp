@@ -16,7 +16,7 @@
 
 #include <QRegularExpression>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 #include <IPXACTmodels/common/DocumentUtils.h>
@@ -184,7 +184,7 @@ QVariant DesignInstantiationsModel::data(QModelIndex const& index, int role) con
         if (index.column() == DesignInstantiationsColumns::NAME && 
             !validator_->hasValidName(instantiation->name()))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else
         {

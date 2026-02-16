@@ -14,7 +14,7 @@
 #include <editors/ComponentEditor/memoryMaps/ResetColumns.h>
 #include <KactusAPI/include/ResetInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ResetsModel::ResetsModel()
@@ -141,7 +141,7 @@ QVariant ResetsModel::data(const QModelIndex& index, int role) const
         }
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
     }
     else if (Qt::BackgroundRole == role)

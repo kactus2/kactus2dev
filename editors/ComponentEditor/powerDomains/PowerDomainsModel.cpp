@@ -18,7 +18,7 @@
 
 #include <IPXACTmodels/Component/validators/PowerDomainValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: PowerDomainsModel::PowerDomainsModel()

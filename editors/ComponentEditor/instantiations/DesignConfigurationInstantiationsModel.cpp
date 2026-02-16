@@ -20,7 +20,7 @@
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 #include <IPXACTmodels/common/DocumentUtils.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -182,7 +182,7 @@ QVariant DesignConfigurationInstantiationsModel::data(QModelIndex const& index, 
         if (index.column() == DesignInstantiationsColumns::NAME && 
             !validator_->hasValidName(instantiation->name()))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else
         {

@@ -11,7 +11,7 @@
 
 #include "AbstractionTypesModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesConstants.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
@@ -374,7 +374,7 @@ QVariant AbstractionTypesModel::blackForValidRedForInvalid(QModelIndex const& in
     }
     else
     {
-        return KactusColors::ERROR;
+        return KactusColors::ERROR_COLOR;
     }
 }
 

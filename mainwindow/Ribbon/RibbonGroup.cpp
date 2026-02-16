@@ -12,7 +12,7 @@
 #include "RibbonGroup.h"
 #include "Ribbon.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QPainter>
 #include <QToolButton>

@@ -15,7 +15,7 @@
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 
 #include <QApplication>
@@ -143,7 +143,7 @@ QVariant EnumeratedValueModel::data( const QModelIndex& index, int role /*= Qt::
         }
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
 	}
 

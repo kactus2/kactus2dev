@@ -11,7 +11,7 @@
 
 #include "ParameterizableTable.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
@@ -83,7 +83,7 @@ QVariant ParameterizableTable::blackForValidOrRedForInvalidIndex(QModelIndex con
     }
     else
     {
-        return KactusColors::ERROR;
+        return KactusColors::ERROR_COLOR;
     }
 }
 

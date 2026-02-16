@@ -11,7 +11,7 @@
 
 #include "ComponentPreviewBox.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/SystemDesign/SWComponentItem.h>
 #include <editors/HWDesign/HWComponentItem.h>

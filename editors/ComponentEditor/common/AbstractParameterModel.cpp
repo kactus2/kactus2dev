@@ -13,7 +13,7 @@
 
 #include <KactusAPI/include/AbstractParameterInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QFont>
 #include <QMessageBox>

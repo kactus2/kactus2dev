@@ -11,7 +11,7 @@
 
 #include "messageconsole.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QMenu>
 
@@ -48,7 +48,7 @@ void MessageConsole::onErrorMessage(QString const& message)
 	moveCursor(QTextCursor::End);
 
 	// errors are printed in red color
-	setTextColor(KactusColors::ERROR);
+	setTextColor(KactusColors::ERROR_COLOR);
     appendPlainText(message);
 }
 

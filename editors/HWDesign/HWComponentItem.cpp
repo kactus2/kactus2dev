@@ -17,7 +17,7 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/IEditProvider.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/graphicsItems/GraphicsConnection.h>

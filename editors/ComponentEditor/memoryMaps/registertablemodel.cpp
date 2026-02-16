@@ -18,7 +18,7 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 #include <KactusAPI/include/FieldInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QRegularExpression>
 #include <QApplication>
@@ -229,7 +229,7 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
         }
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
 	}
 	else if (Qt::BackgroundRole == role) 

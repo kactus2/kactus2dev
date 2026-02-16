@@ -20,7 +20,7 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QSharedPointer>
 #include <QBrush>
@@ -211,7 +211,7 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
         }
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
     }
 

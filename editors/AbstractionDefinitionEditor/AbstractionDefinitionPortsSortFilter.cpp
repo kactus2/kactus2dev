@@ -11,7 +11,7 @@
 
 #include "AbstractionDefinitionPortsSortFilter.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include "AbstractionPortsModel.h"
 #include "LogicalPortColumns.h"
@@ -139,7 +139,7 @@ bool AbstractionDefinitionPortsSortFilter::undefinedMode(QModelIndex const& inde
 
         QVariant modeData = modeIndex.data(Qt::ForegroundRole);
         QColor modeColor = modeData.value<QColor>();
-        if (modeColor == KactusColors::ERROR)
+        if (modeColor == KactusColors::ERROR_COLOR)
         {
             return true;
         }

@@ -26,7 +26,7 @@
 
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/PortAbstractionInterface.h>
 

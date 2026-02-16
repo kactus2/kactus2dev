@@ -28,7 +28,7 @@
 #include <IPXACTmodels/Design/ActiveInterface.h>
 #include <IPXACTmodels/Design/Design.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: InterfacePortMapModel::InterfacePortMapModel()
@@ -249,7 +249,7 @@ QVariant InterfacePortMapModel::data(QModelIndex const& index, int role) const
             (index.column() == InterfacePortMapColumns::INTERFACE_PHYSICAL_NAME &&
             !mappingItems_.at(index.row()).physicalIsOk_))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
     }
     else if (role == Qt::BackgroundRole)

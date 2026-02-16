@@ -26,7 +26,7 @@
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QCoreApplication>
 #include <QMap>
@@ -215,7 +215,7 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
         }
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
 	}
 	else if (role == Qt::BackgroundRole)

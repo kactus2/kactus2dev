@@ -11,7 +11,7 @@
 
 #include "RegisterGraphicsItem.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/MemoryDesigner/MemoryItem.h>
 #include <editors/MemoryDesigner/MemoryDesignerConstants.h>

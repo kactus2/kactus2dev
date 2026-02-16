@@ -16,7 +16,7 @@
 #include "StickyNoteEditCommand.h"
 
 #include <common/GenericEditProvider.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/common/diagramgrid.h>
 #include <editors/common/Association/Association.h>

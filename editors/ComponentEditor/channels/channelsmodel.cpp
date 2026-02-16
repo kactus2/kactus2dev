@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/validators/ChannelValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QStringList>
 
@@ -160,7 +160,7 @@ QVariant ChannelsModel::data(QModelIndex const& index, int role) const
         if (index.column() == ChannelColumns::INTERFACES && 
             !validator_->hasValidBusInterfaceReferences(channels_->at(index.row())))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else
         {

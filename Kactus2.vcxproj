@@ -2722,7 +2722,6 @@ CreateHelp
     <QtMoc Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.h">
     </QtMoc>
     <ClInclude Include="common\dialogs\NewBusDialog\NewBusDialog.h" />
-    <ClInclude Include="common\KactusColors.h" />
     <ClInclude Include="common\TextEditProvider.h" />
     <QtMoc Include="common\widgets\fileTypeSelector\filetypeselector.h">
     </QtMoc>

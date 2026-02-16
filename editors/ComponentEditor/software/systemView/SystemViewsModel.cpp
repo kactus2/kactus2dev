@@ -20,7 +20,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 
 #include <QMimeData>
@@ -166,7 +166,7 @@ QVariant SystemViewsModel::data(QModelIndex const& index, int role) const
 		}
 		else
         {
-			return KactusColors::ERROR;
+			return KactusColors::ERROR_COLOR;
 		}
 	}
 

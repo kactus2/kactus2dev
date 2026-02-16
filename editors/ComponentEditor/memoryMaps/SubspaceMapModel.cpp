@@ -14,7 +14,7 @@
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapColumns.h>
 #include <KactusAPI/include/SubspaceMapInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QRegularExpression>
 #include <QApplication>

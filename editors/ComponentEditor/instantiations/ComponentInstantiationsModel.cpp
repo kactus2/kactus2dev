@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 #include <KactusAPI/include/ComponentInstantiationInterface.h>
@@ -174,7 +174,7 @@ QVariant ComponentInstantiationsModel::data(QModelIndex const& index, int role) 
         if (index.column() == ComponentInstantiationsColumns::NAME &&
             !instantiationInterface_->itemHasValidName(instantiationName))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else
         {

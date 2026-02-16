@@ -11,7 +11,7 @@
 
 #include "VerilogSourceHighlight.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogSourceHighlight::VerilogSourceHighlight()

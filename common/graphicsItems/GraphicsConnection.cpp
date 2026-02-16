@@ -15,7 +15,7 @@
 #include "ConnectionUndoCommands.h"
 
 #include <common/GenericEditProvider.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/HWDesign/OffPageConnectorItem.h>
 #include <editors/common/DesignDiagram.h>

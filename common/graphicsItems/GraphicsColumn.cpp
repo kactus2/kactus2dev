@@ -15,7 +15,7 @@
 #include "GraphicsColumnLayout.h"
 
 #include <common/IEditProvider.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <common/layouts/VStackedLayout.h>
 #include <common/layouts/VCollisionLayout.h>
