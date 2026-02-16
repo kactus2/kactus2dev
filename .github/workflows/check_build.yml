@@ -12,7 +12,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        version: 6.2.4
+        version: 6.6.2
     - name: Configure build
       run: ./configure
     - name: Build sources
