@@ -86,7 +86,7 @@ VerilogImport.subdir = Plugins/VerilogImport
 VerilogImport.depends = IPXACTmodels KactusAPI
 
 VerilogIncludeImport.subdir = Plugins/VerilogIncludeImport
-VerilogIncludeImport.depends = IPXACTmodels
+VerilogIncludeImport.depends = IPXACTmodels KactusAPI
 
 VerilogSourceAnalyzer.subdir = Plugins/VerilogSourceAnalyzer
 VerilogSourceAnalyzer.depends = IPXACTmodels
