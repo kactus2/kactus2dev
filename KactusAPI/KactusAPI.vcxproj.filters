@@ -315,6 +315,9 @@
     <ClInclude Include="include\InterconnectRTLWriter.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\ParameterConfigurableElementFinder.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -541,6 +544,9 @@
     </ClCompile>
     <ClCompile Include="plugins\InterconnectGenerator\InterconnectRTLWriter.cpp">
       <Filter>Source Files\plugins\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ParameterConfigurableElementFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

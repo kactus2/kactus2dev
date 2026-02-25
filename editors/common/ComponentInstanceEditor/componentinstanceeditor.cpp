@@ -41,22 +41,22 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent):
 QWidget(parent)
 {
     QSharedPointer<MultipleParameterFinder> parameterFinder(new MultipleParameterFinder());
-    parameterFinder->addFinder(instanceFinder_);
+	parameterFinder->addFinder(instanceFinder_);
     parameterFinder->addFinder(designParameterFinder_);
 
     QSharedPointer<IPXactSystemVerilogParser> parameterParser(new IPXactSystemVerilogParser(parameterFinder));
     ExpressionSet parameterExpressions({ parameterFinder , parameterParser,
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder)) });
 
-    QSharedPointer<IPXactSystemVerilogParser> defaultParser (new IPXactSystemVerilogParser(instanceFinder_));
-    ExpressionSet defaultExpressions({ instanceFinder_ , defaultParser,
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(instanceFinder_)) });
+    QSharedPointer<IPXactSystemVerilogParser> defaultParser (new IPXactSystemVerilogParser(componentFinder_));
+    ExpressionSet defaultExpressions({ componentFinder_, defaultParser,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(componentFinder_)) });
 
     QSharedPointer<IPXactSystemVerilogParser> designParameterParser(
         new IPXactSystemVerilogParser(parameterFinder));
 
-    auto completionModel = new ComponentParameterModel(designParameterFinder_, this);
-    completionModel->setExpressionParser(designParameterParser);
+	auto completionModel = new ComponentParameterModel(parameterFinder, this);
+	completionModel->setExpressionParser(parameterParser);
 
     configurableElements_ = new ComponentInstanceConfigurableElementsEditor(parameterExpressions, 
         defaultExpressions, defaultExpressions, completionModel, this);
@@ -121,7 +121,10 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
     designParameterFinder_->setParameterList(design->getParameters());
     containingDesign_ = design;
 	component_ = componentItem;
-	instanceFinder_->setComponent(componentItem->componentModel());
+    componentFinder_->setComponent(componentItem->componentModel());
+
+    instanceFinder_->setParameterList(componentItem->componentModel()->getParameters());
+    instanceFinder_->setCEVList(componentItem->getComponentInstance()->getConfigurableElementValues());
 
     auto instanceViewName = QString();
 
