@@ -20,9 +20,9 @@
 //-----------------------------------------------------------------------------
 ImplementationGroup::ImplementationGroup(QWidget* parent) :
     FilterGroup(tr("Implementation"), parent),
-    hwBox_(QIcon(":icons/common/graphics/transistor.png"), QString(), this),
-    swBox_(QIcon(":icons/common/graphics/sw-component48x48.png"), QString(), this),
-    systemBox_(QIcon(":icons/common/graphics/system-component.png"), QString(), this),
+    hwBox_(tr(":icons/common/graphics/transistor.png"), QString(), this),
+    swBox_(tr(":icons/common/graphics/sw-component48x48.png"), QString(), this),
+    systemBox_(tr(":icons/common/graphics/system-component.png"), QString(), this),
     options_()
 {
     setupButton(&hwBox_, tr("HW"));
@@ -30,12 +30,12 @@ ImplementationGroup::ImplementationGroup(QWidget* parent) :
     setupButton(&systemBox_, tr("System"));
 
     hwBox_.setChecked(true);
-	swBox_.setChecked(true);
-	systemBox_.setChecked(true);
+    swBox_.setChecked(true);
+    systemBox_.setChecked(true);
 
-	connect(&hwBox_, SIGNAL(clicked(bool)),	this, SLOT(onHWChanged(bool)), Qt::UniqueConnection);
-	connect(&swBox_, SIGNAL(clicked(bool)),	this, SLOT(onSWChanged(bool)), Qt::UniqueConnection);
-	connect(&systemBox_, SIGNAL(clicked(bool)),	this, SLOT(onSystemChanged(bool)), Qt::UniqueConnection);
+    connect(&hwBox_, SIGNAL(clicked(bool)), this, SLOT(onHWChanged(bool)), Qt::UniqueConnection);
+    connect(&swBox_, SIGNAL(clicked(bool)), this, SLOT(onSWChanged(bool)), Qt::UniqueConnection);
+    connect(&systemBox_, SIGNAL(clicked(bool)), this, SLOT(onSystemChanged(bool)), Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -74,7 +74,7 @@ void ImplementationGroup::selectAll(bool select)
     options.hw_ = select;
     options.sw_ = select;
     options.system_ = select;
-    
+
     setImplementation(options);
 }
 
@@ -83,8 +83,8 @@ void ImplementationGroup::selectAll(bool select)
 //-----------------------------------------------------------------------------
 void ImplementationGroup::onHWChanged(bool checked)
 {
-	options_.hw_ = checked;
-	emit optionsChanged(options_);
+    options_.hw_ = checked;
+    emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,8 +92,8 @@ void ImplementationGroup::onHWChanged(bool checked)
 //-----------------------------------------------------------------------------
 void ImplementationGroup::onSWChanged(bool checked)
 {
-	options_.sw_ = checked;
-	emit optionsChanged(options_);
+    options_.sw_ = checked;
+    emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
@@ -101,8 +101,8 @@ void ImplementationGroup::onSWChanged(bool checked)
 //-----------------------------------------------------------------------------
 void ImplementationGroup::onSystemChanged(bool checked)
 {
-	options_.system_ = checked;
-	emit optionsChanged(options_);
+    options_.system_ = checked;
+    emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------

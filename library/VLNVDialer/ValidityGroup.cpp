@@ -20,8 +20,8 @@
 //-----------------------------------------------------------------------------
 ValidityGroup::ValidityGroup(QWidget *parent):
 FilterGroup(tr("Correctness"), parent),
-validBox_(QIcon(":/icons/common/graphics/pass.png"), QString(), this),
-nonvalidBox_(QIcon(":/icons/common/graphics/fail.png"), QString(), this),
+validBox_(tr(":/icons/common/graphics/pass.png"), QString(), this),
+nonvalidBox_(tr(":/icons/common/graphics/fail.png"), QString(), this),
 options_()
 {
     setupButton(&validBox_, tr("Valid"));

@@ -15,8 +15,9 @@
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/common/TagData.h>
 
+#include <common/widgets/ThemeableIconWidgets/ThemeableIconWidgets.h>
+
 #include <QGroupBox>
-#include <QComboBox>
 #include <QLabel>
 
 class TagContainer;
@@ -98,13 +99,13 @@ private:
     QLabel* prodHierLabel_;
 
     //! Product hierarchy combo box.
-    QComboBox* prodHierCombo_;
+    ThemeableComboBox* prodHierCombo_;
 
     //! Firmness label.
     QLabel* firmnessLabel_;
 
     //! Firmness combo box.
-    QComboBox* firmnessCombo_;
+    ThemeableComboBox* firmnessCombo_;
 
     //! Implementation label.
     QLabel* implementationLabel_;

@@ -23,9 +23,9 @@
 //-----------------------------------------------------------------------------
 KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Kactus attributes"), parent),
     prodHierLabel_(new QLabel(tr("Product Hierarchy:"), this)), 
-    prodHierCombo_(new QComboBox(this)),
+    prodHierCombo_(new ThemeableComboBox(this)),
     firmnessLabel_(new QLabel(tr("Firmness:"), this)),
-    firmnessCombo_(new QComboBox(this)),
+    firmnessCombo_(new ThemeableComboBox(this)),
     implementationLabel_(new QLabel(tr("Implementation:"), this)), 
     implementationValue_(new QLabel(tr(""), this)),
     tagEditor_(new TagEditorContainer(this))
@@ -36,16 +36,19 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     implementationLabel_->setVisible(false);
     implementationValue_->setVisible(false);
 
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/square.png"), "Flat");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/box.png"), "Product");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/circuit.png"), "Board");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/chip.png"), "Chip");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/soc.png"), "SoC");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/capacitor.png"), "IP");
+    prodHierCombo_->addItem(":icons/common/graphics/square.png", "Flat");
+    prodHierCombo_->addItem(":icons/common/graphics/box.png", "Product");
+    prodHierCombo_->addItem(":icons/common/graphics/circuit.png", "Board");
+    prodHierCombo_->addItem(":icons/common/graphics/chip.png", "Chip");
+    prodHierCombo_->addItem(":icons/common/graphics/soc.png", "SoC");
+    prodHierCombo_->addItem(":icons/common/graphics/capacitor.png", "IP");
 
-    firmnessCombo_->addItem(QIcon(":icons/common/graphics/mutable.png"), "Mutable");
-    firmnessCombo_->addItem(QIcon(":icons/common/graphics/template.png"), "Template");
-    firmnessCombo_->addItem(QIcon(":icons/common/graphics/fixed.png"), "Fixed");
+    firmnessCombo_->addItem(":icons/common/graphics/mutable.png", "Mutable");
+    firmnessCombo_->addItem(":icons/common/graphics/template.png", "Template");
+    firmnessCombo_->addItem(":icons/common/graphics/fixed.png", "Fixed");
+
+    prodHierCombo_->styleIconToTheme();
+    firmnessCombo_->styleIconToTheme();
 
     QFormLayout* layout = new QFormLayout(this);
     layout->addRow(prodHierLabel_, prodHierCombo_);

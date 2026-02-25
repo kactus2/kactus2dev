@@ -12,6 +12,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/TextEditProvider.h \
     ./common/IEditProvider.h \
     ./common/GenericEditProvider.h \
+    ./common/KactusUtils.h \
     ./common/widgets/listManager/dirlistmanagermodel.h \
     ./common/widgets/listManager/listmanagermodel.h \
     ./common/widgets/listManager/listmanager.h \
@@ -70,6 +71,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/widgets/tagEditor/TagSelector.h \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.h \
     ./common/widgets/segmentComboBox/SegmentComboBox.h \
+    ./common/widgets/ThemeableIconWidgets/ThemeableIconWidgets.h \
     ./common/widgets/TreeItemSelector/TreeItem.h \
     ./common/widgets/TreeItemSelector/TreeItemEditor.h \
     ./common/widgets/TreeItemSelector/TreeItemModel.h \
@@ -910,6 +912,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./editors/ComponentEditor/ports/PortsImportSummaryEditor.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
+    ./common/KactusUtils.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -978,6 +981,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/tagEditor/TagSelectorContainer.cpp \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
     ./common/widgets/segmentComboBox/SegmentComboBox.cpp \
+    ./common/widgets/ThemeableIconWidgets/ThemeableIconWidgets.cpp \
     ./common/widgets/TreeItemSelector/FramedTreeItemEditor.cpp \
     ./common/widgets/TreeItemSelector/TreeItemEditor.cpp \
     ./common/widgets/TreeItemSelector/TreeItemModel.cpp \

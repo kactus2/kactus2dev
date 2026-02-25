@@ -14,10 +14,10 @@
 
 #include "FilterGroup.h"
 
+#include <common/widgets/ThemeableIconWidgets/ThemeableIconWidgets.h>
 #include <KactusAPI/include/utils.h>
 
 #include <QGroupBox>
-#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Contains the check boxes to set the hierarchy options for VLNVDialer.
@@ -107,22 +107,22 @@ private slots:
 private:
 
 	//! Check box to select global components in/out of search results.
-	QPushButton flatBox_;
+	ThemeablePushButton flatBox_;
 
 	//! Check box to select product components in/out of search results.
-	QPushButton productBox_;
+	ThemeablePushButton productBox_;
 
 	//! Check box to select board components in/out of search results.
-	QPushButton boardBox_;
+	ThemeablePushButton boardBox_;
 
 	//! Check box to select chip components in/out of search results.
-	QPushButton chipBox_;
+	ThemeablePushButton chipBox_;
 
 	//! Check box to select SoC components in/out of search results.
-	QPushButton socBox_;
+	ThemeablePushButton socBox_;
 
 	//! Check box to select IP components in/out of search results.
-	QPushButton ipBox_;
+	ThemeablePushButton ipBox_;
 
 	//! Contains the current search settings for hierarchy
 	Utils::HierarchyOptions options_;

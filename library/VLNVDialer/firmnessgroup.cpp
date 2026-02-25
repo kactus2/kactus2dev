@@ -15,23 +15,25 @@
 
 #include <common/widgets/tagEditor/FlowLayout.h>
 
+#include <common/KactusUtils.h>
+
 //-----------------------------------------------------------------------------
 // Function: FirmnessGroup::FirmnessGroup()
 //-----------------------------------------------------------------------------
-FirmnessGroup::FirmnessGroup(QWidget *parent):
-FilterGroup(tr("Firmness"), parent),
-templateBox_(QIcon(":/icons/common/graphics/template.png"), QString(), this),
-mutableBox_(QIcon(":/icons/common/graphics/mutable.png"), QString(), this),
-fixedBox_(QIcon(":/icons/common/graphics/fixed.png"), QString(), this),
-options_()
+FirmnessGroup::FirmnessGroup(QWidget* parent) :
+    FilterGroup(tr("Firmness"), parent),
+    templateBox_(":/icons/common/graphics/template.png", QString(), this),
+    mutableBox_(":/icons/common/graphics/mutable.png", QString(), this),
+    fixedBox_(":/icons/common/graphics/fixed.png", QString(), this),
+    options_()
 {
     setupButton(&templateBox_, tr("Template"));
     setupButton(&mutableBox_, tr("Mutable"));
     setupButton(&fixedBox_, tr("Fixed"));
 
-	templateBox_.setChecked(true);
-	mutableBox_.setChecked(true);
-	fixedBox_.setChecked(true);
+    templateBox_.setChecked(true);
+    mutableBox_.setChecked(true);
+    fixedBox_.setChecked(true);
 
     connect(&templateBox_, SIGNAL(clicked(bool)), this, SLOT(onTemplateChanged(bool)), Qt::UniqueConnection);
     connect(&mutableBox_, SIGNAL(clicked(bool)), this, SLOT(onMutableChanged(bool)), Qt::UniqueConnection);
@@ -47,7 +49,7 @@ options_()
 // Function: FirmnessGroup::setFirmness()
 //-----------------------------------------------------------------------------
 void FirmnessGroup::setFirmness(Utils::FirmnessOptions options)
-{    
+{
     templateBox_.setChecked(options.templates_);
     mutableBox_.setChecked(options.mutable_);
     fixedBox_.setChecked(options.fixed_);
@@ -86,8 +88,8 @@ void FirmnessGroup::selectAll(bool select)
 //-----------------------------------------------------------------------------
 void FirmnessGroup::onTemplateChanged(bool checked)
 {
-	options_.templates_ = checked;
-	emit optionsChanged(options_);
+    options_.templates_ = checked;
+    emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,8 +97,8 @@ void FirmnessGroup::onTemplateChanged(bool checked)
 //-----------------------------------------------------------------------------
 void FirmnessGroup::onMutableChanged(bool checked)
 {
-	options_.mutable_ = checked;
-	emit optionsChanged(options_);
+    options_.mutable_ = checked;
+    emit optionsChanged(options_);
 }
 
 //-----------------------------------------------------------------------------
@@ -104,6 +106,6 @@ void FirmnessGroup::onMutableChanged(bool checked)
 //-----------------------------------------------------------------------------
 void FirmnessGroup::onConfigurationChanged(bool checked)
 {
-	options_.fixed_ = checked;
-	emit optionsChanged(options_);
+    options_.fixed_ = checked;
+    emit optionsChanged(options_);
 }

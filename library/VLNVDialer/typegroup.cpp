@@ -20,11 +20,11 @@
 //-----------------------------------------------------------------------------
 TypeGroup::TypeGroup(QWidget *parent):
 FilterGroup(tr("Type"), parent),
-componentBox_(QIcon(":icons/common/graphics/hw-component.png"), QString(), this),
-busBox_(QIcon(":icons/common/graphics/bus-def.png"), QString(), this),
-catalogBox_(QIcon(":icons/common/graphics/catalog.png"), QString(), this),
-apiComBox_(QIcon(":icons/common/graphics/new-com_definition.png"), QString(), this),
-advancedBox_(QIcon(":icons/common/graphics/hw-design.png"), QString(), this),
+componentBox_(tr(":icons/common/graphics/hw-component.png"), QString(), this),
+busBox_(tr(":icons/common/graphics/bus-def.png"), QString(), this),
+catalogBox_(tr(":icons/common/graphics/catalog.png"), QString(), this),
+apiComBox_(tr(":icons/common/graphics/new-com_definition.png"), QString(), this),
+advancedBox_(tr(":icons/common/graphics/hw-design.png"), QString(), this),
 options_()
 {
     setupButton(&componentBox_, tr("Component"));
