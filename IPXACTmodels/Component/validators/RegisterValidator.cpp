@@ -323,9 +323,9 @@ bool RegisterValidator::fieldHasValidAccess(QSharedPointer<RegisterDefinition> s
     QSharedPointer<Field> field) const
 {
     AccessTypes::Access registerAccess = selectedRegsiter->getAccess();
-    AccessTypes::Access fieldAccess = field->getAccess();
 
-     if ((registerAccess == AccessTypes::READ_ONLY && fieldAccess == AccessTypes::READ_ONLY) ||
+	if (AccessTypes::Access fieldAccess = field->getAccess();
+		(registerAccess == AccessTypes::READ_ONLY && fieldAccess == AccessTypes::READ_ONLY) ||
         (registerAccess == AccessTypes::WRITE_ONLY && (fieldAccess == AccessTypes::WRITE_ONLY ||
             fieldAccess == AccessTypes::WRITEONCE)) ||
         (registerAccess == AccessTypes::READ_WRITEONCE && (fieldAccess == AccessTypes::READ_ONLY ||
