@@ -19,11 +19,19 @@ namespace KactusUtils
 {
 
     /*!
-     *  Get an icon with given path stylized to current theme.
+     *  Get an icon with given path stylized to current theme. Returns default icon
+     *  if dark mode is not enabled, and stylized icon for dark mode.
      *
      *    @param[in] srcPath   The icon source path.
      *
      *    @return An icon whose color is changed to match the system theme.
      */
     QIcon getIconStyledToTheme(QString const& srcPath);
+
+    /*!
+     *  Checks if dark mode is enabled.
+     * 
+     *    @return True, if darkmode is enabled
+     */
+    bool darkThemeEnabled();
 }

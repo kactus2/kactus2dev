@@ -13,6 +13,7 @@
 
 #include <QPainter>
 #include <QApplication>
+#include <QStyleHints>
 #include <QPalette>
 
 static QPixmap getRecoloredPixmap(const QPixmap& src, const QColor& color)
@@ -36,11 +37,22 @@ static QPixmap getRecoloredPixmap(const QPixmap& src, const QColor& color)
 
 QIcon KactusUtils::getIconStyledToTheme(QString const& srcPath)
 {
-    QPixmap base(srcPath);
-    QIcon icon;
-    auto pal = QApplication::palette();
-    auto normalCol = pal.color(QPalette::ButtonText);
+    if (darkThemeEnabled())
+    {
+        QPixmap base(srcPath);
+        QIcon icon;
+        auto pal = QApplication::palette();
+        auto normalCol = pal.color(QPalette::ButtonText);
+        
+        icon.addPixmap(getRecoloredPixmap(base, normalCol), QIcon::Normal, QIcon::Off);
+        return icon;
+    }
 
-    icon.addPixmap(getRecoloredPixmap(base, normalCol), QIcon::Normal, QIcon::Off);
-    return icon;
+    return QIcon(srcPath);
+}
+
+bool KactusUtils::darkThemeEnabled()
+{
+    static const bool isDarkMode = QApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
+    return isDarkMode;
 }

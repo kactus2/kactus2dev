@@ -11,18 +11,10 @@
 
 #include "ThemeableIconWidgets.h"
 
-#include <QApplication>
-#include <QStyleHints>
-
 ThemeableItemWithIcon::ThemeableItemWithIcon(QString const& iconPath) :
     iconPath_(iconPath)
 {
 
-}
-
-bool ThemeableItemWithIcon::darkThemeEnabled()
-{
-    return QApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
 }
 
 ThemeablePushButton::ThemeablePushButton(QString const& iconPath, QString const& buttonText, QWidget* parent) :
@@ -35,8 +27,7 @@ ThemeablePushButton::ThemeablePushButton(QString const& iconPath, QString const&
 
 void ThemeablePushButton::styleIconToTheme()
 {
-    if (darkThemeEnabled())
-        setIcon(KactusUtils::getIconStyledToTheme(iconPath_));
+    setIcon(KactusUtils::getIconStyledToTheme(iconPath_));
 }
 
 ThemeableAction::ThemeableAction(QString const& iconPath, QString const& tooltip, QWidget* parent) :
@@ -48,8 +39,7 @@ ThemeableAction::ThemeableAction(QString const& iconPath, QString const& tooltip
 
 void ThemeableAction::styleIconToTheme()
 {
-    if (darkThemeEnabled())
-        setIcon(KactusUtils::getIconStyledToTheme(iconPath_));
+    setIcon(KactusUtils::getIconStyledToTheme(iconPath_));
 }
 
 ThemeableComboBox::ThemeableComboBox(QWidget* parent) :
@@ -61,12 +51,9 @@ ThemeableComboBox::ThemeableComboBox(QWidget* parent) :
 
 void ThemeableComboBox::styleIconToTheme()
 {
-    if (darkThemeEnabled())
-    {   
-        for (int i = 0; i < count(); ++i)
-        {
-            setItemIcon(i, KactusUtils::getIconStyledToTheme(itemIconPaths_.at(i)));
-        }
+    for (int i = 0; i < count(); ++i)
+    {
+        setItemIcon(i, KactusUtils::getIconStyledToTheme(itemIconPaths_.at(i)));
     }
 }
 

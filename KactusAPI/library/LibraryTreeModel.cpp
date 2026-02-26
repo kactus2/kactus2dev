@@ -20,6 +20,8 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include <common/KactusUtils.h>
+
 #include <KactusAPI/include/KactusColors.h>
 
 #include <QSharedPointer>
@@ -261,58 +263,58 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
                 {
                     if (component->getImplementation() == KactusAttribute::SYSTEM)
                     {
-                        return QIcon(":/icons/common/graphics/system-component.png");
+                        return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/system-component.png");
                     }
                     else if (component->getImplementation() == KactusAttribute::SW)
                     {
                         if (component->isHierarchical())
                         {
-                            return QIcon(":/icons/common/graphics/hier-sw-component.png");
+                            return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hier-sw-component.png");
                         }
                         else
                         {
-                            return QIcon(":/icons/common/graphics/sw-component48x48.png");
+                            return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/sw-component48x48.png");
                         }
                     }
                     else
                     {
                         if (component->isHierarchical())
                         {
-                            return QIcon(":/icons/common/graphics/hier-hw-component.png");
+                            return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hier-hw-component.png");
                         }
                         else
                         {
-                            return QIcon(":/icons/common/graphics/hw-component.png");
+                            return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hw-component.png");
                         }
                     }
                 }
 
-                return QIcon(":/icons/common/graphics/hw-component.png");
+                return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hw-component.png");
             }
 
             else if (documentType == VLNV::ABSTRACTIONDEFINITION)
             {
-                return QIcon(":/icons/common/graphics/abs-def.png");
+                return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/abs-def.png");
             }
 
             else if (documentType == VLNV::BUSDEFINITION)
             {
-                return QIcon(":/icons/common/graphics/bus-def.png");
+                return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/bus-def.png");
             }
 
             else if (documentType == VLNV::CATALOG)
             {
-                return QIcon(":/icons/common/graphics/catalog.png");
+                return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/catalog.png");
             }
 
             else if (documentType == VLNV::COMDEFINITION)
             {
-                return QIcon(":/icons/common/graphics/new-com_definition.png");
+                return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/new-com_definition.png");
             }
 
             else if (documentType == VLNV::APIDEFINITION)
             {
-                return QIcon(":/icons/common/graphics/new-api_definition.png");
+                return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/new-api_definition.png");
             }
 
             else if (documentType == VLNV::DESIGN)
@@ -322,17 +324,17 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
                 if (design && (design->getImplementation() == KactusAttribute::SW ||
                     design->getImplementation() == KactusAttribute::SYSTEM))
                 {
-                    return QIcon(":/icons/common/graphics/sw-design48x48.png");
+                    return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/sw-design48x48.png");
                 }
                 else
                 {               
-                    return QIcon(":/icons/common/graphics/hw-design.png");
+                    return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hw-design.png");
                 }
             }
 
             else if (documentType == VLNV::DESIGNCONFIGURATION)
             {
-                return QIcon(":/icons/common/graphics/configuration.png");
+                return KactusUtils::getIconStyledToTheme(":/icons/common/graphics/configuration.png");
             }
         }
     }

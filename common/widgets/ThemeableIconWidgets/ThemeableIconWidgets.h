@@ -43,13 +43,6 @@ public:
 
 protected:
 
-    /*!
-     *  Checks if dark mode is enabled.
-     * 
-     *    @return True, if darkmode is enabled
-     */
-    bool darkThemeEnabled();
-
     //! Path of the widget icon.
     QString iconPath_;
 };
