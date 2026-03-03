@@ -37,8 +37,6 @@ ScriptViewEditor::ScriptViewEditor(QWidget* parent):
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::printInput(QString const& input)
 {
-    printWithColor(input, QColor(KactusColors::REGULAR_TEXT));
-
     if (input.endsWith(QChar('\n')) == false)
     {
         QTextCursor cursor = textCursor();
