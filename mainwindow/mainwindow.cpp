@@ -32,6 +32,7 @@
 #include <mainwindow/SaveHierarchy/SaveHierarchyDialog.h>
 
 #include <KactusAPI/include/KactusColors.h>
+#include <common/KactusUtils.h>
 #include <common/NameGenerationPolicy.h>
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
@@ -199,8 +200,8 @@ messageChannel_(messageChannel)
     resize(1024, 768);
     setWindowState(Qt::WindowMaximized);
 
-    // Query system theme and modify style accordingly
-    applyTheme();
+    // Set the main window theme
+    applyThemeToMainWindow();
 
     setupToolbars();
     setContextMenuPolicy(Qt::NoContextMenu);
@@ -3728,32 +3729,19 @@ void MainWindow::setPluginVisibilities()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainWindow::applyTheme()
+// Function: MainWindow::applyThemeToMainWindow()
 //-----------------------------------------------------------------------------
-void MainWindow::applyTheme()
+void MainWindow::applyThemeToMainWindow()
 {
     // Get current theme
-    auto styleHints = QGuiApplication::styleHints();
-    bool isDarkTheme = styleHints->colorScheme() == Qt::ColorScheme::Dark;
-
     auto appStyle = QApplication::style()->name();
-
     QString appStyleSheet;
 
     // Dark mode is not enabled for windows vista style
-    if (isDarkTheme && appStyle.compare("windowsvista") != 0)
+    if (KactusUtils::darkThemeEnabled() && appStyle.compare("windowsvista") != 0)
     {
-        // Set main window colors
-
         auto palette = QGuiApplication::palette();
         auto windowBG = palette.color(QPalette::ColorRole::Window);
-
-        // Set ribbon colors to lighter variants of window background color
-        KactusColors::RibbonTheme::GRADIENTTOP = windowBG;
-        KactusColors::RibbonTheme::GRADIENTBOTTOM = palette.color(QPalette::ColorRole::Window).lighter(125);
-        KactusColors::RibbonTheme::GROUPTITLEGRADIENTTOP = windowBG;
-        KactusColors::RibbonTheme::GROUPTITLEGRADIENTBOTTOM = palette.color(QPalette::ColorRole::Window).lighter(175);
-        KactusColors::RibbonTheme::GROUPTITLETEXT = palette.color(QPalette::ColorRole::WindowText);
 
         auto dockWidgetTitleColor = windowBG.lighter(150);
         QString dockWidgetTitleColorRGB = QString::number(dockWidgetTitleColor.red()) % "," % 
@@ -3770,27 +3758,10 @@ void MainWindow::applyTheme()
             "QTableView::indicator:unchecked {image: none;}"
             "QDockWidget::title {background-color: rgb(" % dockWidgetTitleColorRGB % "); font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
             "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }";
-
-        // Set slightly muted highlight color (for selections)
-        auto currentHighlight = palette.highlight().color();
-        palette.setColor(QPalette::ColorRole::Highlight, currentHighlight.darker(150));
-        QGuiApplication::setPalette(palette);
-
-        // Set text color
-        KactusColors::REGULAR_TEXT = palette.windowText().color();
-        KactusColors::REGULAR_MESSAGE = KactusColors::REGULAR_TEXT;
-
-        // Set colors for HW design
-        KactusColors::DIAGRAM_GRID = palette.windowText().color().darker(250);
-        KactusColors::REGULAR_CONNECTION = QColor(Qt::white).darker(150);
-        KactusColors::HW_COMPONENT = KactusColors::HW_COMPONENT.darker(175);
-        KactusColors::DIAGRAM_COLUMN_HEADER = KactusColors::DIAGRAM_COLUMN_HEADER.darker(175);
     }
     else
     {
         // Light theme. Classic Kactus2 look
-        // KactusColors contains default values for original style
-
         appStyleSheet = QStringLiteral(
             "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
             "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"

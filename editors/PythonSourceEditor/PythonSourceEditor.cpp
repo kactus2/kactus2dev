@@ -23,6 +23,7 @@
 #include <QSettings>
 #include <QApplication>
 
+#include <common/KactusUtils.h>
 #include <common/widgets/assistedTextEdit/AssistedTextEdit.h>
 #include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
@@ -389,7 +390,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     toolBar_.setOrientation(Qt::Horizontal);
     toolBar_.setIconSize(QSize(20, 20));
 
-    QAction* newAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-new.png"), QString(), this, SLOT(onNewAction()));
+    QAction* newAction = toolBar_.addAction(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/script-new.png"), QString(), this, SLOT(onNewAction()));
     newAction->setShortcut(QKeySequence::New);
     newAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     QString tooltipNew = tr("New script (%1)").arg(newAction->shortcut().toString(QKeySequence::NativeText));
@@ -397,7 +398,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     newAction->setStatusTip(tooltipNew);
     addAction(newAction);
 
-    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/opened-folder.png"), QString(), this, SLOT(onOpenAction()));
+    QAction* openAction = toolBar_.addAction(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/opened-folder.png"), QString(), this, SLOT(onOpenAction()));
     openAction->setShortcut(QKeySequence::Open);
     openAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     QString tooltipOpen = tr("Open script from file... (%1)").arg(openAction->shortcut().toString(QKeySequence::NativeText));
@@ -405,7 +406,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     openAction->setStatusTip(tooltipOpen);
     addAction(openAction);
 
-    QAction* saveAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(), this, SLOT(onSaveAction()));
+    QAction* saveAction = toolBar_.addAction(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/script-save.png"), QString(), this, SLOT(onSaveAction()));
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     QString tooltipSave = tr("Save script (%1)").arg(saveAction->shortcut().toString(QKeySequence::NativeText));
@@ -413,7 +414,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     saveAction->setStatusTip(tooltipSave);
     addAction(saveAction);
 
-    QAction* saveAsAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save-as.png"), QString(), this, SLOT(onSaveAsAction()));
+    QAction* saveAsAction = toolBar_.addAction(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/script-save-as.png"), QString(), this, SLOT(onSaveAsAction()));
     saveAsAction->setToolTip(tr("Save script as..."));
     addAction(saveAsAction);
 
@@ -446,7 +447,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     runAction->setEnabled(enableRun);
     addAction(runAction);
 
-    QAction* runAllAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run-all.png"), QString(), this, SLOT(onRunAllAction()));
+    QAction* runAllAction = toolBar_.addAction(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/script-run-all.png"), QString(), this, SLOT(onRunAllAction()));
     runAllAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
     runAllAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     QString tooltipRunAll = tr("Run all (%1)").arg(runAllAction->shortcut().toString(QKeySequence::NativeText));
@@ -455,7 +456,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     runAllAction->setEnabled(enableRun);
     addAction(runAllAction);
 
-    QAction* runFileAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run-file.png"), QString(),
+    QAction* runFileAction = toolBar_.addAction(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/script-run-file.png"), QString(),
         this, SLOT(onRunFileAction()));
     runFileAction->setToolTip(tr("Run file..."));
     runFileAction->setEnabled(enableRun);
@@ -463,7 +464,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
 
     toolBar_.addSeparator();
 
-    QAction* clearAction = toolBar_.addAction(QIcon(":/icons/common/graphics/cleanup.png"), QString(),
+    QAction* clearAction = toolBar_.addAction(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/cleanup.png"), QString(),
         &scriptView_, SLOT(clear()));
     clearAction->setToolTip(tr("Clear output"));
     addAction(clearAction);

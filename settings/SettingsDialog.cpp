@@ -19,6 +19,8 @@
 #include "k2envvariablesettingspage.h"
 #include "ComponentEditorSettingsPage.h"
 
+#include <common/KactusUtils.h>
+
 //-----------------------------------------------------------------------------
 // Function: SettingsDialog()
 //-----------------------------------------------------------------------------
@@ -27,25 +29,25 @@ PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST, APPLY_ALL, parent)
 {
     setWindowTitle(tr("Settings"));
 
-    addPage(QIcon(":icons/common/graphics/configuration.png"), tr("General"),
+    addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/configuration.png"), tr("General"),
         new GeneralSettingsPage(settings_));
 
-    addPage(QIcon(":icons/common/graphics/naming-policy.png"), tr("Naming Policies"),
+    addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/naming-policy.png"), tr("Naming Policies"),
         new NamingPolicySettingsPage(settings_));
 
-	addPage(QIcon(":icons/common/graphics/settings-code_editor.png"), tr("Code Editor"),
+	addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
 
-    addPage(QIcon(":icons/common/graphics/settings-visibilities.png"), tr("Component Editor Visibilities"),
+    addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/settings-visibilities.png"), tr("Component Editor Visibilities"),
         new ComponentEditorSettingsPage(settings_));
 
-    addPage(QIcon(":icons/common/graphics/settings-file_types.png"), tr("File Types"),
+    addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/settings-file_types.png"), tr("File Types"),
             new FileTypeSettingsPage(settings_));
 
-    addPage(QIcon(":icons/common/graphics/settings-plugins.png"), tr("Plugins"),
+    addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/settings-plugins.png"), tr("Plugins"),
             new PluginSettingsPage(settings_));
 
-	 addPage(QIcon(":icons/common/graphics/settings-environment_vars.png"), tr("Environment variables"),
+	 addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/settings-environment_vars.png"), tr("Environment variables"),
 		 new K2EnvVariableSettingsPage(settings_));
 
     finalizePages();

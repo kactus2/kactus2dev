@@ -34,4 +34,9 @@ namespace KactusUtils
      *    @return True, if darkmode is enabled
      */
     bool darkThemeEnabled();
+
+    /*!
+     *	Set palette colors based on platform style and theme with slight modifications.
+     */
+    void applyThemeToPalette();
 }

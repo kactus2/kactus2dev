@@ -690,9 +690,9 @@ private:
 	void setPluginVisibilities();
 
     /*!
-     *	Apply style/theme based on platform style and theme
+     *	Apply theme to stylesheet based on platform style and theme
      */
-    void applyTheme();
+    void applyThemeToMainWindow();
 
 
     //-----------------------------------------------------------------------------

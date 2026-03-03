@@ -20,6 +20,7 @@
 #include <KactusAPI/include/MessageMediator.h>
 #include <KactusAPI/include/ConsoleMediator.h>
 #include <common/ui/GraphicalMessageMediator.h>
+#include <common/KactusUtils.h>
 
 #include <KactusAPI/KactusAPI.h>
 
@@ -155,6 +156,9 @@ int main(int argc, char *argv[])
 
     if (startGui(argc))
     {
+        // Apply theme before constructing any UI
+        KactusUtils::applyThemeToPalette();
+
         // Create the main window and close the splash after 1.5 seconds.
         MainWindow mainWindow(&library, mediator.data());
 
