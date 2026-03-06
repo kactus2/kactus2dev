@@ -1409,12 +1409,12 @@ void MainWindow::createNew()
     NewBusDefinitionPage* busPage = new NewBusDefinitionPage(libraryHandler_, &dialog);
     connect(busPage, SIGNAL(createBus(VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createBus(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/bus-def.png"), tr("Bus Definition"), busPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/bus-def.png"), tr("Bus Definition"), busPage);
 
     NewCatalogPage* catalogPage = new NewCatalogPage(libraryHandler_, &dialog);
     connect(catalogPage, SIGNAL(createCatalog(VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createCatalog(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/catalog.png"), tr("Catalog"), catalogPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/catalog.png"), tr("Catalog"), catalogPage);
 
     // Add pages to the dialog.
     NewComponentPage* compPage = new NewComponentPage(libraryHandler_, &dialog);
@@ -1422,39 +1422,39 @@ void MainWindow::createNew()
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)));
-    dialog.addPage(QIcon(":icons/common/graphics/hw-component.png"), tr("HW Component"), compPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/hw-component.png"), tr("HW Component"), compPage);
 
     NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
     connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)));
-    dialog.addPage(QIcon(":icons/common/graphics/hw-design.png"), tr("HW Design"), designPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/hw-design.png"), tr("HW Design"), designPage);
 
     NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
     connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createSWComponent(VLNV const&, Document::Revision, QString const&)));
-    dialog.addPage(QIcon(":icons/common/graphics/sw-component48x48.png"), tr("SW Component"), swCompPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/sw-component48x48.png"), tr("SW Component"), swCompPage);
 
     NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
     connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, Document::Revision, QString const&)),
             this, SLOT(createSWDesign(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/sw-design48x48.png"), tr("SW Design"), swDesignPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/sw-design48x48.png"), tr("SW Design"), swDesignPage);
 
     NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
     connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, Document::Revision, QString const&)));
-    dialog.addPage(QIcon(":icons/common/graphics/system-component.png"), tr("System"), sysPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/system-component.png"), tr("System"), sysPage);
 
     NewApiDefinitionPage* apiDefPage = new NewApiDefinitionPage(libraryHandler_, &dialog);
     connect(apiDefPage, SIGNAL(createApiDefinition(VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createApiDefinition(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
 
     NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);
     connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, Document::Revision, QString const&)),
             this, SLOT(createComDefinition(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
 
     dialog.finalizePages();
 
@@ -3757,7 +3757,7 @@ void MainWindow::applyThemeToMainWindow()
             "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
             "QTableView::indicator:unchecked {image: none;}"
             "QDockWidget::title {background-color: rgb(" % dockWidgetTitleColorRGB % "); font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
-            "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }";
+            "*[mandatoryField=\"true\"] { background-color: LemonChiffon; color: Black }"; // force mandatory field text color to black for visibility
     }
     else
     {
