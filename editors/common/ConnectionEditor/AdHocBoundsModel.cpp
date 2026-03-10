@@ -25,31 +25,32 @@
 #include <editors/HWDesign/HWChangeCommands.h>
 #include <editors/HWDesign/undoCommands/AdHocBoundsChangeCommand.h>
 
+#include <KactusAPI/include/ExpressionParser.h>
+
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsModel::AdHocBoundsModel()
 //-----------------------------------------------------------------------------
-AdHocBoundsModel::AdHocBoundsModel(QObject *parent) : QAbstractTableModel(parent),
-    editProvider_(),
-    connection_(0)
+AdHocBoundsModel::AdHocBoundsModel(QObject *parent) :
+QAbstractTableModel(parent),
+editProvider_()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocBoundsModel::~AdHocBoundsModel()
-//-----------------------------------------------------------------------------
-AdHocBoundsModel::~AdHocBoundsModel()
-{
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsModel::setConnection()
 //-----------------------------------------------------------------------------
-void AdHocBoundsModel::setConnection(QSharedPointer<AdHocConnection> connection, QSharedPointer<IEditProvider> editProvider)
+void AdHocBoundsModel::setConnection(QSharedPointer<AdHocConnection> connection,
+	QSharedPointer<endPointParser> firstEndpointParser,
+	QSharedPointer<endPointParser> secondEndpointParser,
+    QSharedPointer<IEditProvider> editProvider)
 {
     editProvider_ = editProvider;
     connection_ = connection;
-    
+
+    firstEndpointParser_ = firstEndpointParser;
+	secondEndpointParser_ = secondEndpointParser;
+
     beginResetModel();
     endResetModel();
 }
@@ -93,57 +94,139 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role) const
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-        QSharedPointer<PortReference> port = getEndpoint(index.row());
-
-        if (index.column() == AdHocBoundColumns::NAME)
-        {
-            QString portName = port->getPortRef();
-            if (port->getComponentRef().isEmpty())
-            {
-                portName.append(QStringLiteral(" (external)"));
-            }
-
-            return portName;
-        }
-
-        else if (index.column() == AdHocBoundColumns::LEFT_BOUND)
-        {
-            QSharedPointer<PartSelect> part = port->getPartSelect();
-
-            if (part)
-            {
-                return part->getLeftRange();
-            }
-            /*else if (index.row() == 0)
-            {
-                return connection_->endpoint1()->getPort()->getLeftBound();
-            }
-            else if (index.row() == 1)
-            {
-                return connection_->endpoint2()->getPort()->getLeftBound();
-            }*/
-        }
-
-        else if (index.column() == AdHocBoundColumns::RIGHT_BOUND)
-        {
-            QSharedPointer<PartSelect> part = port->getPartSelect();
-
-            if (part)
-            {
-                return part->getRightRange();
-            }
-            /*else if (index.row() == 0)
-            {
-                return connection_->endpoint1()->getPort()->getRightBound();
-            }
-            else if (index.row() == 1)
-            {
-                return connection_->endpoint2()->getPort()->getRightBound();
-            }*/
-        }
-    }   
+        return valueForIndex(index);
+    }
 
     return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsModel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant AdHocBoundsModel::valueForIndex(QModelIndex const& index) const
+{
+    QSharedPointer<PortReference> port = getEndpoint(index.row());
+
+    if (index.column() == AdHocBoundColumns::NAME)
+    {
+        QString portName = port->getPortRef();
+        if (port->getComponentRef().isEmpty())
+        {
+            portName.append(QStringLiteral(" (external)"));
+        }
+
+        return portName;
+    }
+    else if (index.column() == AdHocBoundColumns::LEFT_BOUND)
+    {
+        QSharedPointer<PartSelect> part = port->getPartSelect();
+
+        if (part)
+        {
+            return part->getLeftRange();
+        }
+        else
+        {
+            return getOriginalPortLeftBound(port);
+        }
+    }
+    else if (index.column() == AdHocBoundColumns::RIGHT_BOUND)
+    {
+        QSharedPointer<PartSelect> part = port->getPartSelect();
+
+        if (part)
+        {
+            return part->getRightRange();
+        }
+        else
+        {
+            return getOriginalPortRightBound(port);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsModel::getOriginalPortLeftBound()
+//-----------------------------------------------------------------------------
+QVariant AdHocBoundsModel::getOriginalPortLeftBound(QSharedPointer<PortReference> port) const
+{
+	if (portUsesParser(port, firstEndpointParser_))
+	{
+        return getLeftBoundWithParser(port, firstEndpointParser_);
+	}
+	else if (portUsesParser(port, secondEndpointParser_))
+	{
+        return getLeftBoundWithParser(port, secondEndpointParser_);
+	}
+
+    return QString("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsModel::portUsesParser()
+//-----------------------------------------------------------------------------
+bool AdHocBoundsModel::portUsesParser(QSharedPointer<PortReference> port,
+    QSharedPointer<AdHocBoundsModel::endPointParser> endpointParser) const
+{
+    if (port && endpointParser)
+    {
+		return endpointParser->endPoint_ == port->getPortRef() && endpointParser->containingInstanceName_ == port->getComponentRef();
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsModel::getLeftBoundWithParser()
+//-----------------------------------------------------------------------------
+QVariant AdHocBoundsModel::getLeftBoundWithParser(QSharedPointer<PortReference> port, QSharedPointer<AdHocBoundsModel::endPointParser> endpointParser) const
+{
+	if (endpointParser)
+	{
+		auto componentPort = endpointParser->instancedComponent_->getPort(port->getPortRef());
+		if (componentPort.isNull() == false)
+		{
+			return endpointParser->instanceParser_->parseExpression(componentPort->getLeftBound());
+		}
+	}
+
+	return QString("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsModel::getOriginalPortRightBound()
+//-----------------------------------------------------------------------------
+QVariant AdHocBoundsModel::getOriginalPortRightBound(QSharedPointer<PortReference> port) const
+{
+	if (portUsesParser(port, firstEndpointParser_))
+	{
+		return getRightBoundWithParser(port, firstEndpointParser_);
+	}
+	else if (portUsesParser(port, secondEndpointParser_))
+	{
+		return getRightBoundWithParser(port, secondEndpointParser_);
+	}
+
+	return QString("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsModel::getOriginalPortRightBound()
+//-----------------------------------------------------------------------------
+QVariant AdHocBoundsModel::getRightBoundWithParser(QSharedPointer<PortReference> port, QSharedPointer<AdHocBoundsModel::endPointParser> endpointParser) const
+{
+	if (endpointParser)
+	{
+		auto componentPort = endpointParser->instancedComponent_->getPort(port->getPortRef());
+		if (componentPort.isNull() == false)
+		{
+			return endpointParser->instanceParser_->parseExpression(componentPort->getRightBound());
+		}
+	}
+
+	return QString("");
 }
 
 //-----------------------------------------------------------------------------

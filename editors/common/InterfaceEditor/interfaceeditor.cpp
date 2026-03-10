@@ -66,7 +66,7 @@ absType_(this, VLNV(), true),
 busNameEditor_(this),
 modeSelector_(this),
 portMapsView_(this),
-portMapsModel_(new InterfacePortMapModel(handler, this)),
+portMapsModel_(new InterfacePortMapModel(designParameterFinder_, handler, this)),
 busDescriptionEditor_(this),
 comType_(this, VLNV(), true),
 comNameEditor_(this),
@@ -120,6 +120,8 @@ void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer
     containingConfiguration_ = configuration;
     editProvider_ = editProvider;
     locked_ = locked;
+
+    designParameterFinder_->setParameterList(containingDesign_->getParameters());
 
     // Fill the rest of the editors based on the interface type.
     if (interface_->isBus())

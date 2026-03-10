@@ -38,6 +38,10 @@ class BusInterface;
 class Component;
 class ConnectionEndpoint;
 class ComponentInstance;
+class ParameterConfigurableElementFinder;
+class MultipleParameterFinder;
+class ListParameterFinder;
+class AbstractionDefinition;
 
 //-----------------------------------------------------------------------------
 //! Editor to display/edit details of a connection.
@@ -100,8 +104,40 @@ private:
      */
     VLNV findAbstractionVLNV(ConnectionEndpoint* endPoint, QSharedPointer<BusInterface> busInterface) const;
 
-	//! Set port maps so that editor displays the connected physical ports.
-	void setPortMaps();
+	/*!
+	 *  Set port maps so that editor displays the connected physical ports.
+	 *
+	 *    @param [in] firstInstanceParser   Parser for the first connected end point.
+	 *    @param [in] secondInstanceParser  Parser for the second connected end point.
+	 */
+	void setPortMaps(QSharedPointer<ExpressionParser> firstInstanceParser, QSharedPointer<ExpressionParser> secondInstanceParser);
+
+    /*!
+     *  Create an expression parser for the selected component end point.
+     *
+     *    @param [in] component     Component containing the end point.
+     *    @param [in] endPoint      The selected end point.
+     *    @param [in] designFinder  Parameter finder for design parameters.
+     *
+     *    @return Expression parser for the selected end point.
+     */
+    QSharedPointer<ExpressionParser> createInstanceParser(
+        QSharedPointer<Component> component,
+        ConnectionEndpoint const* endPoint,
+        QSharedPointer<ListParameterFinder> designFinder);
+
+    /*!
+     *  Create an expression parser data set for the selected ad-hoc end point.
+     *
+     *    @param [in] endPoint              The selected ad-hoc end point.
+     *    @param [in] instanceParser        Expression parser for the component instance containing the selected end point.
+     *    @param [in] containingComponent   The component containing the end point.
+     *
+     *    @return Expression parser data set for the selected ad-hoc end point.
+     */
+    QSharedPointer<AdHocBoundsModel::endPointParser> createAdHocBoundsParser(ConnectionEndpoint const* endPoint,
+        QSharedPointer<ExpressionParser> instanceParser,
+        QSharedPointer<Component> containingComponent) const;
 
     //! Sets the headers for the port connection table.
     void setTableHeaders();
@@ -117,19 +153,32 @@ private:
     QStringList getAllLogicalPorts(QList<QSharedPointer<PortMap> > const& portMaps1, 
         QList<QSharedPointer<PortMap> > const& portMaps2) const;
 
-	/*! Add a mapping for physical ports to port widget for two given port maps.
+	/*!
+	 *  Add a mapping for physical ports to port widget for two given port maps.
 	 *
-	 *    @param [in/out] row             The row to insert the physical map to.
-	 *    @param [in]     invalid         Defines if this map is already been declared as invalid.
-	 *    @param [in]     portMap1        The first port map.
-	 *    @param [in]     component1      The component that contains the port map1.
-	 *    @param [in]     portMap2        The second port map.
-	 *    @param [in]     component2      The component that contains the port map2.
-	 *
+	 *    @param [in] portMap1          The first port map.
+	 *    @param [in] component1        The component that contains the port map1.
+	 *    @param [in] firstBus          The bus interface containing the first port map.
+	 *    @param [in] firstParser       Parser for the first component instance.
+	 *    @param [in] portMap2          The second port map.
+	 *    @param [in] component2        The component that contains the port map2.
+	 *    @param [in] secondBus         The bus interface containing the second port map.
+	 *    @param [in] secondParser      Parser for the second component instance.
+	 *    @param [in] absDef            The used abstraction definition.
+	 *    @param [in] absDefParser      Parser for the abstraction definition.
+	 *    @param [in] validAbstraction  Flag for valid abstraction definitions.
 	 */
-	void addMap(QSharedPointer<PortMap> portMap1, QSharedPointer<Component> component1,
-        QSharedPointer<PortMap> portMap2, QSharedPointer<Component> component2, 
-        QSharedPointer<ExpressionParser> expressionParser, bool validAbstraction);
+	void addMap(QSharedPointer<PortMap> portMap1,
+        QSharedPointer<Component> component1,
+        QSharedPointer<BusInterface> firstBus,
+		QSharedPointer<ExpressionParser> firstParser,
+		QSharedPointer<PortMap> portMap2,
+        QSharedPointer<Component> component2,
+		QSharedPointer<BusInterface> secondBus,
+		QSharedPointer<ExpressionParser> secondParser,
+        QSharedPointer<AbstractionDefinition> absDef,
+        QSharedPointer<ExpressionParser> absDefParser,
+        bool validAbstraction);
 
     /*!
      *  Creates an item for the port connectivity table.
@@ -170,13 +219,20 @@ private:
     /*!
      *  Calculate the mapped logical port bounds.
      *
-     *    @param [in] parser              The used expression parser.
-     *    @param [in] containingPortMap   The port map containing the logical port.
+     *    @param [in] instanceParser        Expression parser for the containing component instance.
+     *    @param [in] containingPortMap     The port map containing the logical port.
+     *    @param [in] absDefParser          Parser for the used abstraction definition.
+     *    @param [in] absDef                The used abstraction definition.
+     *    @param [in] busInterface          The end point bus interface.
      *
      *    @return Integer pair, where the first value is the higher bound and the second value is the lower bound.
      */
-    QPair<int, int> calculateMappedLogicalPortBounds(QSharedPointer<ExpressionParser> parser,
-        QSharedPointer<PortMap> containingPortMap);
+    QPair<int, int> calculateMappedLogicalPortBounds(
+        QSharedPointer<ExpressionParser> instanceParser,
+        QSharedPointer<PortMap> containingPortMap,
+		QSharedPointer<ExpressionParser> absDefParser,
+		QSharedPointer<AbstractionDefinition> absDef,
+        QSharedPointer<BusInterface> busInterface);
     
     /*!
      *  Sets the editor layout.
@@ -201,7 +257,7 @@ private:
      *
      *    @return The name of the active view containing the selected end point item.
      */
-    QString getActiveViewForEndPoint(ConnectionEndpoint* endPoint) const;
+    QString getActiveViewForEndPoint(ConnectionEndpoint const* endPoint) const;
 
     //-----------------------------------------------------------------------------
     // Data.
