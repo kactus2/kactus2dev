@@ -18,6 +18,7 @@
 #include <QStyleHints>
 #include <QPalette>
 #include <QStyle>
+#include <QtVersionChecks>
 
 static QPixmap getRecoloredPixmap(const QPixmap& src, const QColor& color)
 {
@@ -56,8 +57,12 @@ QIcon KactusUtils::getIconStyledToTheme(QString const& srcPath)
 
 bool KactusUtils::darkThemeEnabled()
 {
+// Dark mode support for kactus2 requires at least Qt 6.5
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
     static const bool isDarkMode = QApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
     return isDarkMode;
+#endif
+    return false;
 }
 
 void KactusUtils::applyThemeToPalette()

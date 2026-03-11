@@ -18,6 +18,7 @@ IPXACTmodels/GeneratedFiles
 PythonAPI/x64/
 GeneratedFiles/
 .vs
+.qtc_clangd
 
 *.obj
 *.tlog
