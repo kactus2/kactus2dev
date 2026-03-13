@@ -3,28 +3,42 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = VerilogImport
 
 QT += core xml widgets gui
-CONFIG += c++11 release
+CONFIG += c++11
 
 DEFINES += VERILOGIMPORT_LIB
 
 INCLUDEPATH += ./../.. \
-    ./generatedFiles \
-    . \
-    ./generatedFiles/release
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels \
-    -lKactusAPI
+    ./GeneratedFiles \
+    .
+
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd \
+        -L../../executable -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = VerilogImportd
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../executable -lIPXACTmodels \
+        -L../../executable -lKactusAPI
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = VerilogImport
+}
 
 DESTDIR = ../../executable/Plugins
 
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/release
-OBJECTS_DIR += release
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
+UI_DIR += ./GeneratedFiles
+RCC_DIR += ./GeneratedFiles
 
 include(VerilogImport.pri)
 

@@ -3,28 +3,40 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = VerilogGeneratorPlugin
 
 QT += core xml widgets gui
-CONFIG += c++11 release
+CONFIG += c++11
 DEFINES += VERILOGGENERATORPLUGIN_LIB
 
-INCLUDEPATH += ./generatedFiles \
+INCLUDEPATH += ./GeneratedFiles \
     ./../.. \
-    . \
-    ./generatedFiles/release
+    .
 
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels \
-    -lKactusAPI
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd \
+        -L../../executable -lKactusAPId
 
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = VerilogGeneratorPlugind
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../executable -lIPXACTmodels \
+        -L../../executable -lKactusAPI
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = VerilogGeneratorPlugin
+}
 DESTDIR = ../../executable/Plugins
 
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/release
-OBJECTS_DIR += release
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
+UI_DIR += ./GeneratedFiles
+RCC_DIR += ./GeneratedFiles
 
 include(VerilogGeneratorPlugin.pri)
 
