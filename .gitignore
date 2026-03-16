@@ -19,5 +19,8 @@ PythonAPI/x64/
 GeneratedFiles/
 .vs
 
+.qtc_clangd
+moc_*
+*.o
 *.obj
 *.tlog
