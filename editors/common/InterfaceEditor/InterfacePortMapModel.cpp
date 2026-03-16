@@ -20,30 +20,37 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Interconnection.h>
 #include <IPXACTmodels/Design/ActiveInterface.h>
 #include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 
 #include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: InterfacePortMapModel::InterfacePortMapModel()
 //-----------------------------------------------------------------------------
-InterfacePortMapModel::InterfacePortMapModel(LibraryInterface* library, QObject *parent):
+InterfacePortMapModel::InterfacePortMapModel(
+    QSharedPointer<ParameterFinder> designParameterFinder,
+    LibraryInterface* library,
+    QObject* parent):
 QAbstractTableModel(parent),
 libraryHandler_(library),
 mappingItems_(),
-componentFinder_(new ComponentParameterFinder(QSharedPointer<Component>())),
-parser_(new IPXactSystemVerilogParser(componentFinder_)),
+instanceValueParser_(new IPXactSystemVerilogParser(instanceValueFinder_)),
+absDefValueParser_(new IPXactSystemVerilogParser(absDefValueFinder_)),
 activeInterfaces_(),
 endPoint_(),
 locked_(true)
 {
-
+    instanceValueFinder_->addFinder(designParameterFinder);
+    instanceValueFinder_->addFinder(instanceCEVFinder_);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,8 +71,9 @@ void InterfacePortMapModel::setLock(bool locked)
 //-----------------------------------------------------------------------------
 // Function: InterfacePortMapModel::setData()
 //-----------------------------------------------------------------------------
-void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem, QString const& activeView,
-    QList<QSharedPointer<ActiveInterface> > activeInterfaces)
+void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem,
+    QString const& activeView,
+    QList<QSharedPointer<ActiveInterface>> activeInterfaces)
 {
     beginResetModel();
 
@@ -99,7 +107,7 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem, QStrin
 
         // get the component that contains the selected interface
         QSharedPointer<Component> component = busItem->getOwnerComponent();
-        componentFinder_->setComponent(component);
+        setupFinders(busItem, component, absDef);
 
         foreach (QSharedPointer<PortMap> portMap, portMaps)
         {
@@ -112,17 +120,17 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem, QStrin
                 newItem.logicalIsOk_ = absDef && absDef->hasPort(logicalPortName, busInterface->getInterfaceMode());
 
                 int logicalSize = 1;
-                // if the logical port is vectored
-                if (portMap->getLogicalPort()->range_)
+                if (portMap->getLogicalPort()->range_ || absDef->hasPort(logicalPortName, busInterface->getInterfaceMode()))
                 {
-                    QString logicalLeft = parser_->parseExpression(portMap->getLogicalPort()->range_->getLeft());
-                    QString logicalRight = parser_->parseExpression(portMap->getLogicalPort()->range_->getRight());
+                    auto logicalBounds = getLogicalBounds(busInterface, logicalPortName, portMap, absDef);
 
-                    logicalSize = abs(logicalLeft.toInt() - logicalRight.toInt()) + 1;
-
-                    logicalPortName += "[" + logicalLeft + ".." + logicalRight + "]";
+                    logicalSize = abs(logicalBounds.leftBound_.toInt() - logicalBounds.rightBound_.toInt()) + 1;
+                    if (logicalSize > 1)
+                    {
+						logicalPortName += "[" + logicalBounds.leftBound_ + ".." + logicalBounds.rightBound_ + "]";
+                    }
                 }
-                               
+
                 newItem.logicalPort_ = logicalPortName;
 
                 // display at least the name of physical port
@@ -137,8 +145,8 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem, QStrin
                 QSharedPointer<PortMap::PhysicalPort> physicalPort = portMap->getPhysicalPort();
                 if (portMap->getPhysicalPort()->partSelect_)
                 {
-                    physicalLeft = parser_->parseExpression(physicalPort->partSelect_->getLeftRange()).toInt();
-                    physicalRight = parser_->parseExpression(physicalPort->partSelect_->getRightRange()).toInt();
+                    physicalLeft = instanceValueParser_->parseExpression(physicalPort->partSelect_->getLeftRange()).toInt();
+                    physicalRight = instanceValueParser_->parseExpression(physicalPort->partSelect_->getRightRange()).toInt();
 
                     physicalSize = abs(physicalLeft - physicalRight) + 1;
                 }
@@ -147,8 +155,8 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem, QStrin
                 {
                     QSharedPointer<Port> componentPort = component->getPort(physicalPortName);
 
-                    physicalLeft = parser_->parseExpression(componentPort->getLeftBound()).toInt();
-                    physicalRight = parser_->parseExpression(componentPort->getRightBound()).toInt();
+                    physicalLeft = instanceValueParser_->parseExpression(componentPort->getLeftBound()).toInt();
+                    physicalRight = instanceValueParser_->parseExpression(componentPort->getRightBound()).toInt();
 
                     physicalSize = abs(physicalLeft - physicalRight) + 1;
                 }
@@ -171,6 +179,62 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem, QStrin
     }
 
     endResetModel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterfacePortMapModel::setupFinders()
+//-----------------------------------------------------------------------------
+void InterfacePortMapModel::setupFinders(ConnectionEndpoint* busItem, QSharedPointer<Component> component, QSharedPointer<AbstractionDefinition> absDef)
+{
+	instanceCEVFinder_->setParameterList(component->getParameters());
+    instanceCEVFinder_->setCEVList(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >());
+	if (busItem->parentItem())
+	{
+		auto componentItem = dynamic_cast<ComponentItem*>(busItem->parentItem());
+		if (componentItem)
+		{
+			instanceCEVFinder_->setCEVList(componentItem->getComponentInstance()->getConfigurableElementValues());
+		}
+	}
+
+	if (absDef)
+	{
+		absDefValueFinder_->setParameterList(absDef->getParameters());
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterfacePortMapModel::getLogicalBounds()
+//-----------------------------------------------------------------------------
+InterfacePortMapModel::PortBounds InterfacePortMapModel::getLogicalBounds(
+    QSharedPointer<BusInterface> busInterface,
+    QString const& logicalPortName,
+    QSharedPointer<PortMap> portMap,
+    QSharedPointer<AbstractionDefinition> absDef) const
+{
+    InterfacePortMapModel::PortBounds portBounds;
+	if (portMap->getLogicalPort()->range_)
+	{
+		portBounds.leftBound_ = instanceValueParser_->parseExpression(portMap->getLogicalPort()->range_->getLeft());
+        portBounds.rightBound_ = instanceValueParser_->parseExpression(portMap->getLogicalPort()->range_->getRight());
+	}
+	else if (absDef->hasPort(logicalPortName, busInterface->getInterfaceMode()))
+	{
+        auto logicalPort = absDef->getPort(logicalPortName);
+        QString logicalWidth = "";
+        if (logicalPort->hasWire())
+        {
+            logicalWidth = absDefValueParser_->parseExpression(logicalPort->getWire()->getWidth(busInterface->getInterfaceMode(), busInterface->getSystem()));
+        }
+        else if (logicalPort->hasTransactional())
+        {
+            logicalWidth = absDefValueParser_->parseExpression(logicalPort->getTransactional()->getWidth(busInterface->getInterfaceMode(), busInterface->getSystem()));
+        }
+
+        portBounds.leftBound_ = QString::number(logicalWidth.toInt() - 1);
+	}
+
+    return portBounds;
 }
 
 //-----------------------------------------------------------------------------

@@ -28,6 +28,7 @@ class ExpressionParser;
 class ParameterFinder;
 class ConfigurableElementValue;
 class ConfigurableElementsFilter;
+class ParameterConfigurableElementFinder;
 
 //-----------------------------------------------------------------------------
 //! Editor for configurable elements of a single category.
@@ -51,13 +52,9 @@ public:
 	 *    @param [in] parent              The parent widget.
 	 */
     InstantiationConfigurableElementEditor(
-         QSharedPointer<ConfigurableElementFinder> elementFinder,
+        QSharedPointer<ParameterConfigurableElementFinder> elementFinder,
         ExpressionSet elementExpressions,
-        ExpressionSet parameterExpressions,
-//         QSharedPointer<ParameterFinder> parameterFinder,
-//         QSharedPointer<ExpressionFormatter> elementFormatter,
-//         QSharedPointer<ExpressionFormatter> parameterFormatter,
-//         QSharedPointer<ExpressionParser> elementParser, QSharedPointer<ExpressionParser> parameterParser,
+        ExpressionSet designExpressions,
         QAbstractItemModel* completionModel, QWidget* parent);
 
 	//! The destructor.
@@ -66,9 +63,10 @@ public:
     /*!
      *  Setup the configurable element values for the model.
      *
-     *    @param [in] containerName   Name of the item containing the parameters.
-     *    @param [in] parameters      List of the selected parameters.
-     *    @param [in] storedElements  List of the stored configurable element values.
+     *    @param [in] containerName     Name of the item containing the parameters.
+     *    @param [in] parameters        List of the selected parameters.
+     *    @param [in] docRevision       Version of the used IP-XACT standard.
+     *    @param [in] storedElements    List of the stored configurable element values.
      */
     void setParameters(QString const& containerName, QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         Document::Revision docRevision,
@@ -82,8 +80,9 @@ private:
 
 
     //! The used configurable element finder.
-    QSharedPointer<ConfigurableElementFinder> elementFinder_;
+	QSharedPointer<ParameterConfigurableElementFinder> elementFinder_;
 
+    //! Version of the used IP-XACT standard.
     Document::Revision docRevision_;
 
 };

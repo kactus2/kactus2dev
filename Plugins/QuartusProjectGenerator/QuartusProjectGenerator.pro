@@ -3,29 +3,39 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = QuartusProjectGenerator
 
 QT += core xml widgets gui printsupport
-CONFIG += c++11 plugin release
+CONFIG += c++11 plugin
 
 DEFINES += QUARTUSGENERATOR_LIB QT_NO_CAST_FROM_ASCII
-INCLUDEPATH += ./generatedFiles \
+INCLUDEPATH += ./GeneratedFiles \
     . \
-    ./../.. \
-    $(QTDIR)/../qttools/include \
-    $(QTDIR)/../qttools/include/QtHelp \
-    ./generatedFiles/Release
+    ./../..
 
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = QuartusProjectGeneratord
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../executable -lIPXACTmodels
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = QuartusProjectGenerator
+}
 
 DESTDIR = ../../executable/Plugins
 
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/release
-OBJECTS_DIR += release
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
+UI_DIR += ./GeneratedFiles
+RCC_DIR += ./GeneratedFiles
 
 include(QuartusProjectGenerator.pri)
 

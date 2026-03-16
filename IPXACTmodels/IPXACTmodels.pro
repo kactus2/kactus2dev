@@ -3,22 +3,29 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = IPXACTmodels
 
-QT += core xml gui
-CONFIG += c++17 release dll
+QT += core xml
+CONFIG += c++17 dll
 
 DEFINES += IPXACTMODELS_LIB QT_NO_CAST_FROM_ASCII
-INCLUDEPATH += ./GeneratedFiles \
-    . \
-    ./GeneratedFiles/Release \
-    ..
+INCLUDEPATH += ./ ./..
+
+CONFIG(debug, debug|release) {
+    # debug mode
+    TARGET = IPXACTmodelsd
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+} else {
+    # release mode 
+    TARGET = IPXACTmodels
+    #INCLUDEPATH += ./GeneratedFiles/Release
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+}
 
 DESTDIR = ../executable
 
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
-OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 

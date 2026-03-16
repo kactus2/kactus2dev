@@ -3,23 +3,38 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = LinuxDeviceTreeGenerator
 DESTDIR = ../../executable/Plugins
 QT += core widgets gui xml
-CONFIG += c++11 plugin release
+CONFIG += c++11 plugin
 DEFINES += QT_DLL LINUXDEVICETREEGENERATOR_LIB
 
 INCLUDEPATH += ./../..
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels \
-    -lKactusAPI
+
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd \
+        -L../../executable -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = LinuxDeviceTreeGeneratord
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../executable -lIPXACTmodels \
+        -L../../executable -lKactusAPI
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = LinuxDeviceTreeGenerator
+}
 
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
 
-OBJECTS_DIR += release
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
+UI_DIR += ./GeneratedFiles
+RCC_DIR += ./GeneratedFiles
 include(LinuxDeviceTreeGenerator.pri)
 
 target.path = $$plugin_path

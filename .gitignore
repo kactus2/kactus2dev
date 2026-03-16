@@ -20,6 +20,9 @@ GeneratedFiles/
 .vs
 .qtc_clangd
 
+.qtc_clangd
+moc_*
+*.o
 *.obj
 *.tlog
 *.o

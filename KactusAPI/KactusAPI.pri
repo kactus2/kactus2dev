@@ -22,6 +22,7 @@ HEADERS += ./KactusAPI.h \
     ./include/ComponentInstantiationParameterFinder.h \
     ./include/ComponentParameterFinder.h \
     ./include/ConfigJsonParser.h \
+    ./include/ParameterConfigurableElementFinder.h \
     ./include/ConsoleMediator.h \
     ./include/DesignParameterFinder.h \
     ./include/DocumentFileAccess.h \
@@ -106,6 +107,7 @@ SOURCES += ./KactusAPI.cpp \
     ./expressions/ComponentInstanceParameterFinder.cpp \
     ./expressions/ComponentInstantiationParameterFinder.cpp \
     ./expressions/ComponentParameterFinder.cpp \
+    ./expressions/ParameterConfigurableElementFinder.cpp \
     ./expressions/DesignParameterFinder.cpp \
     ./expressions/ExpressionFormatter.cpp \
     ./expressions/ExpressionFormatterFactoryImplementation.cpp \

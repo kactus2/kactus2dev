@@ -315,7 +315,9 @@
     <ClInclude Include="include\InterconnectRTLWriter.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\KactusColors.h">
+      <ClInclude Include="include\KactusColors.h">
+    </ClInclude>
+    <ClInclude Include="include\ParameterConfigurableElementFinder.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -547,6 +549,9 @@
     </ClCompile>
     <ClCompile Include="utilities\KactusColors.cpp">
       <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ParameterConfigurableElementFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -86,6 +86,7 @@
     <ClInclude Include="include\NameGroupInterface.h" />
     <ClInclude Include="include\NullChannel.h" />
     <ClInclude Include="include\NullParser.h" />
+    <ClInclude Include="include\ParameterConfigurableElementFinder.h" />
     <ClInclude Include="include\ParameterFinder.h" />
     <ClInclude Include="include\ParameterizableInterface.h" />
     <ClInclude Include="include\ParametersInterface.h" />
@@ -129,6 +130,7 @@
     <ClCompile Include="expressions\MultipleParameterFinder.cpp" />
     <ClCompile Include="expressions\NullParser.cpp" />
     <ClCompile Include="expressions\ParameterCache.cpp" />
+    <ClCompile Include="expressions\ParameterConfigurableElementFinder.cpp" />
     <ClCompile Include="expressions\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\RegisterFileExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\SystemVerilogExpressionParser.cpp" />

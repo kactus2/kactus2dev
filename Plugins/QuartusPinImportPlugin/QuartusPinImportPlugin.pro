@@ -3,29 +3,40 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = QuartusPinImportPlugin
 
 QT += core xml widgets gui
-CONFIG += c++11 plugin release
+CONFIG += c++11 plugin
 DEFINES += QUARTUSPINIMPORTPLUGIN_LIB
 
-INCLUDEPATH += ./generatedFiles \
+INCLUDEPATH += ./GeneratedFiles \
     . \
-    $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
-    $(QTDIR)/../qtxmlpatterns/include \
-    $(QTDIR)/../qttools/include \
     ./../..
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels \
-    -lKactusAPI
+
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = QuartusPinImportPlugind
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../executable -lIPXACTmodels
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = QuartusPinImportPlugin
+}
 
 DESTDIR = ../../executable/Plugins
 
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/release
 OBJECTS_DIR += release
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
+UI_DIR += ./GeneratedFiles
+RCC_DIR += ./GeneratedFiles
 
 include(QuartusPinImportPlugin.pri)
 
