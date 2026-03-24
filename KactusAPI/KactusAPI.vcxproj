@@ -65,7 +65,7 @@
     <ClInclude Include="include\LibraryInterface.h" />
     <QtMoc Include="include\LibraryItem.h" />
     <ClInclude Include="include\LibraryLoader.h" />
-    <QtMoc Include="include\LibraryTreeModel.h" />
+    <QtMoc Include="include\LibraryModel.h" />
     <ClInclude Include="include\ListHelper.h" />
     <ClInclude Include="include\ListParameterFinder.h" />
     <ClInclude Include="include\MasterPortInterface.h" />
@@ -173,7 +173,7 @@
     <ClCompile Include="library\LibraryHandler.cpp" />
     <ClCompile Include="library\LibraryItem.cpp" />
     <ClCompile Include="library\LibraryLoader.cpp" />
-    <ClCompile Include="library\LibraryTreeModel.cpp" />
+    <ClCompile Include="library\LibraryModel.cpp" />
     <ClCompile Include="library\TagManager.cpp" />
     <ClCompile Include="plugins\ImportHighlighter.cpp" />
     <ClCompile Include="plugins\ImportRunner.cpp" />

@@ -222,6 +222,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./library/LibraryErrorModel.h \
     ./library/ItemExporter.h \
     ./library/LibraryTreeFilter.h \
+    ./library/LibraryTreeModel.h \
     ./library/LibraryTreeWidget.h \
     ./library/LibraryTreeView.h \
     ./library/LibraryWidget.h \
@@ -1099,6 +1100,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./library/LibraryFilter.cpp \
     ./library/LibraryItemSelectionFactory.cpp \
     ./library/LibraryTreeFilter.cpp \
+    ./library/LibraryTreeModel.cpp \
     ./library/LibraryTreeView.cpp \
     ./library/LibraryTreeWidget.cpp \
     ./library/LibraryUtils.cpp \

@@ -315,7 +315,7 @@
     <ClInclude Include="include\InterconnectRTLWriter.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
-      <ClInclude Include="include\KactusColors.h">
+    <ClInclude Include="include\KactusColors.h">
     </ClInclude>
     <ClInclude Include="include\ParameterConfigurableElementFinder.h">
       <Filter>Header Files\include</Filter>
@@ -511,9 +511,6 @@
     <ClCompile Include="library\LibraryItem.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
-    <ClCompile Include="library\LibraryTreeModel.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
     <ClCompile Include="library\hierarchyitem.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
@@ -553,6 +550,9 @@
     <ClCompile Include="expressions\ParameterConfigurableElementFinder.cpp">
       <Filter>Source Files\expressions</Filter>
     </ClCompile>
+    <ClCompile Include="library\LibraryModel.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ComponentInstanceInterface.h">
@@ -581,13 +581,13 @@
     <QtMoc Include="include\hierarchymodel.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
-    <QtMoc Include="include\LibraryTreeModel.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
     <QtMoc Include="include\LibraryItem.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\ComponentInstanceParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\LibraryModel.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
   </ItemGroup>

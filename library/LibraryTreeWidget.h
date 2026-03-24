@@ -18,7 +18,7 @@
 
 #include <QWidget>
 
-class LibraryTreeModel;
+class LibraryModel;
 class LibraryInterface;
 class LibraryTreeFilter;
 
@@ -40,7 +40,7 @@ public:
 	 *    @param [in] dataModel  The dataModel instance that holds the data to be displayed in the view.
 	 *    @param [in] parent     The owner of this widget.
 	 */
-    LibraryTreeWidget(LibraryInterface* handler, LibraryTreeModel* dataModel, QWidget* parent);
+    LibraryTreeWidget(LibraryInterface* handler, LibraryModel* dataModel, QWidget* parent);
 
     //! The destructor
     virtual ~LibraryTreeWidget();
@@ -82,7 +82,7 @@ private:
 	LibraryTreeWidget& operator=(const LibraryTreeWidget& other);
 
 	//! Set up the connections between child widgets.
-	void setupConnections(LibraryTreeModel* dataModel);
+	void setupConnections(LibraryModel* dataModel);
    
     //! The filter between the view and data model.
     LibraryTreeFilter* filter_;
@@ -91,7 +91,7 @@ private:
 	LibraryTreeView view_;
 
 	//! The model for the filter.
-	LibraryTreeModel* dataModel_;
+	LibraryModel* dataModel_;
 
 };
 

@@ -14,7 +14,8 @@
 
 #include "LibraryInterface.h"
 #include "LibraryLoader.h"
-#include "LibraryTreeModel.h"
+#include "LibraryModel.h"
+
 #include "hierarchymodel.h"
 
 #include "NullChannel.h"
@@ -61,6 +62,8 @@ public:
     ~LibraryHandler() final = default;
 
     void setOutputChannel(MessageMediator* messageChannel);
+
+    void replaceModel(LibraryModel* model);
 
     /*! Get a model that matches given VLNV.
      *
@@ -251,7 +254,7 @@ public:
 
     HierarchyModel* getHierarchyModel();
 
-    LibraryTreeModel* getTreeModel();
+    LibraryModel* getTreeModel();
 
     /*!
      *  Find errors in the given document.
@@ -569,7 +572,8 @@ private:
     DocumentValidator validator_{ this };
 
     //! The model for the tree view
-    LibraryTreeModel treeModel_{ this, this };
+    //! Use non-gui model by default.
+    QScopedPointer<LibraryModel> treeModel_ = QScopedPointer<LibraryModel>{ new LibraryModel(this) };
 
     //! The model for the hierarchy view
     HierarchyModel hierarchyModel_{ this, this };

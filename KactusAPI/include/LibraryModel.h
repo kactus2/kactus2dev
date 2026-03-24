@@ -9,8 +9,8 @@
 // The model that contains the LibraryItems to display library hierarchically.
 //-----------------------------------------------------------------------------
 
-#ifndef LIBRARYTREEMODEL_H
-#define LIBRARYTREEMODEL_H
+#ifndef LIBRARYMODEL_H
+#define LIBRARYMODEL_H
 
 #include "LibraryItem.h"
 
@@ -29,7 +29,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! The model that contains the LibraryItems to display library hierarchically.
 //-----------------------------------------------------------------------------
-class KACTUS2_API LibraryTreeModel : public QAbstractItemModel
+class KACTUS2_API LibraryModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -41,10 +41,10 @@ public:
 	*    @param [in] parent           The owner of this class
 	*
 	*/
-    LibraryTreeModel(LibraryInterface* handler, QObject* parent = 0);
+    LibraryModel(LibraryInterface* handler, QObject* parent = 0);
 
 	//! The destructor
-	virtual ~LibraryTreeModel();
+    virtual ~LibraryModel();
 
 	/*! Get the data for the headers of this model.
 	*
@@ -231,13 +231,18 @@ public slots:
     */
     void onDocumentUpdated(VLNV const& vlnv);
 
+protected:
+
+    //! The instance that manages the library.
+    LibraryInterface* handler_;
+
 private:
 
 	//! No copying
-	LibraryTreeModel(const LibraryTreeModel& other);
+    LibraryModel(const LibraryModel& other);
 
 	//! No assignment
-	LibraryTreeModel& operator=(const LibraryTreeModel& other);
+    LibraryModel& operator=(const LibraryModel& other);
 
 	/*! Removes an item from the treeModel
 	*
@@ -264,8 +269,6 @@ private:
 	*/
 	LibraryItem* rootItem_;
 
-	//! The instance that manages the library.
-	LibraryInterface* handler_;
 };
 
-#endif // LIBRARYTREEMODEL_H
+#endif // LIBRARYMODEL_H

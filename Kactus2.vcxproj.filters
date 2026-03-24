@@ -1013,6 +1013,12 @@
     <Filter Include="Source Files\common\widgets\instanceWidgets">
       <UniqueIdentifier>{b0a2d456-f4eb-4af6-91e7-2ef4f1d68d6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\ThemeableIconWidgets">
+      <UniqueIdentifier>{1578a077-d2dc-4433-be2c-10f3878e7104}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\ThemeableIconWidgets">
+      <UniqueIdentifier>{bfbc5c25-4413-4bf0-a876-c8c178f44c6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3427,6 +3433,15 @@
     <ClCompile Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp">
       <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
+    <ClCompile Include="library\LibraryTreeModel.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="common\KactusUtils.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.cpp">
+      <Filter>Source Files\common\widgets\ThemeableIconWidgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5386,9 +5401,6 @@
     <ClInclude Include="settings\FileTypeColumns.h">
       <Filter>Header Files\settings</Filter>
     </ClInclude>
-    <ClInclude Include="library\LibraryInterface.h">
-      <Filter>Header Files\library</Filter>
-    </ClInclude>
     <ClInclude Include="library\LibraryUtils.h">
       <Filter>Header Files\library</Filter>
     </ClInclude>
@@ -5872,6 +5884,9 @@
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h">
       <Filter>Header Files\common\layouts</Filter>
     </ClInclude>
+    <ClInclude Include="common\KactusUtils.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -6187,6 +6202,12 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\parameters\LockableParametersModel.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </QtMoc>
+    <QtMoc Include="library\LibraryTreeModel.h">
+      <Filter>Header Files\library</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.h">
+      <Filter>Header Files\common\widgets\ThemeableIconWidgets</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

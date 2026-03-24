@@ -59,7 +59,7 @@ LibraryHandler& LibraryHandler::getInstance()
 LibraryHandler::LibraryHandler():
 QObject(nullptr),
 LibraryInterface()
-{
+{   
     // create the connections between models and library handler
     syncronizeModels();
 }
@@ -70,6 +70,30 @@ LibraryInterface()
 void LibraryHandler::setOutputChannel(MessageMediator* messageChannel)
 {
     messageChannel_ = messageChannel;
+}
+
+void LibraryHandler::replaceModel(LibraryModel* model)
+{
+    Q_ASSERT_X(model, "LibraryHandler::replaceModel", "Replaced with invalid model");
+
+    // Unlink old model
+    disconnect(treeModel_.data(), SIGNAL(openDesign(const VLNV&, QString const&)), this, SLOT(onOpenDesign(const VLNV&, QString const&)));
+    disconnect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, QString const&)), this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)));
+    disconnect(treeModel_.data(), SIGNAL(openSWDesign(const VLNV&)), this, SLOT(onOpenSWDesign(const VLNV&)));
+    disconnect(treeModel_.data(), SIGNAL(openSystemDesign(const VLNV&, QString const&)), this, SLOT(onOpenSystemDesign(const VLNV&, QString const&)));
+    disconnect(treeModel_.data(), SIGNAL(editItem(const VLNV&)), this, SLOT(onEditItem(const VLNV&)));
+    disconnect(this, SIGNAL(resetModel()), treeModel_.data(), SLOT(onResetModel()));
+
+    // Replace with new model
+    treeModel_.reset(model);
+
+    // Relink with new model
+    connect(treeModel_.data(), SIGNAL(openDesign(const VLNV&, QString const&)), this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, QString const&)), this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openSWDesign(const VLNV&)), this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openSystemDesign(const VLNV&, QString const&)), this, SLOT(onOpenSystemDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(editItem(const VLNV&)), this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
+    connect(this, SIGNAL(resetModel()), treeModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -174,7 +198,7 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
 
     // the hierarchy model must be re-built
     hierarchyModel_.onResetModel();
-    treeModel_.onAddVLNV(vlnv);
+    treeModel_->onAddVLNV(vlnv);
     
     return true;
 }
@@ -257,7 +281,7 @@ void LibraryHandler::getDependencyFiles(VLNV const& vlnv, QStringList& list)
 //-----------------------------------------------------------------------------
 LibraryItem const* LibraryHandler::getTreeRoot() const
 {
-    return treeModel_.getRoot();
+    return treeModel_->getRoot();
 }
 
 //-----------------------------------------------------------------------------
@@ -381,9 +405,9 @@ HierarchyModel* LibraryHandler::getHierarchyModel()
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::getTreeModel()
 //-----------------------------------------------------------------------------
-LibraryTreeModel* LibraryHandler::getTreeModel()
+LibraryModel* LibraryHandler::getTreeModel()
 {
-    return &treeModel_;
+    return treeModel_.data();
 }
 
 //-----------------------------------------------------------------------------
@@ -568,7 +592,7 @@ void LibraryHandler::removeObject(VLNV const& vlnv)
 
     documentCache_.remove(vlnv);
 
-    treeModel_.onRemoveVLNV(vlnv);
+    treeModel_->onRemoveVLNV(vlnv);
     hierarchyModel_.onRemoveVLNV(vlnv);
 
     removeFile(path);
@@ -627,7 +651,7 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
     QSharedPointer<Document> model = getModel(vlnv);
     documentCache_.insert(vlnv, DocumentInfo(getPath(vlnv), model, validateDocument(model, getPath(vlnv))));
     
-    treeModel_.onDocumentUpdated(vlnv);
+    treeModel_->onDocumentUpdated(vlnv);
     hierarchyModel_.onDocumentUpdated(vlnv);
 }
 
@@ -638,14 +662,14 @@ void LibraryHandler::syncronizeModels()
 {
     // signals from tree model to library handler
  
-    connect(&treeModel_, SIGNAL(openDesign(const VLNV&, QString const&)), this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(&treeModel_, SIGNAL(openMemoryDesign(const VLNV&, QString const&)), this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(&treeModel_, SIGNAL(openSWDesign(const VLNV&)), this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(&treeModel_, SIGNAL(openSystemDesign(const VLNV&, QString const&)), this, SLOT(onOpenSystemDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(&treeModel_, SIGNAL(editItem(const VLNV&)), this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openDesign(const VLNV&, QString const&)), this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, QString const&)), this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openSWDesign(const VLNV&)), this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openSystemDesign(const VLNV&, QString const&)), this, SLOT(onOpenSystemDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(editItem(const VLNV&)), this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
     connect(this, SIGNAL(resetModel()),
-        &treeModel_, SLOT(onResetModel()), Qt::UniqueConnection);
+        treeModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
     // connect the signals from the hierarchy model

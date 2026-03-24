@@ -132,7 +132,7 @@
     </PreLinkEvent>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>IPXACTmodelsd.lib;KactusAPId.lib;python310_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>IPXACTmodelsd.lib;KactusAPId.lib;python314_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>executable\Kactus2_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -252,6 +252,7 @@ CreateHelp
     <ClCompile Include="common\expressions\utilities.cpp" />
     <ClCompile Include="common\GenericEditProvider.cpp" />
     <ClCompile Include="common\graphicsItems\GraphicsColumnAddCommand.cpp" />
+    <ClCompile Include="common\KactusUtils.cpp" />
     <ClCompile Include="common\NameGenerationPolicy.cpp" />
     <ClCompile Include="common\TextEditProvider.cpp" />
     <ClCompile Include="common\ui\GraphicalMessageMediator.cpp" />
@@ -301,6 +302,7 @@ CreateHelp
     <ClCompile Include="common\widgets\tagEditor\TagLabel.cpp" />
     <ClCompile Include="common\widgets\tagEditor\TagSelector.cpp" />
     <ClCompile Include="common\widgets\tagEditor\TagSelectorContainer.cpp" />
+    <ClCompile Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.cpp" />
     <ClCompile Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.cpp" />
     <ClCompile Include="common\widgets\TreeItemSelector\TreeItemEditor.cpp" />
     <ClCompile Include="common\widgets\TreeItemSelector\TreeItemModel.cpp" />
@@ -949,6 +951,7 @@ CreateHelp
     <ClCompile Include="library\LibraryFilter.cpp" />
     <ClCompile Include="library\LibraryItemSelectionFactory.cpp" />
     <ClCompile Include="library\LibraryTreeFilter.cpp" />
+    <ClCompile Include="library\LibraryTreeModel.cpp" />
     <ClCompile Include="library\LibraryTreeView.cpp" />
     <ClCompile Include="library\LibraryTreeWidget.cpp" />
     <ClCompile Include="library\LibraryUtils.cpp" />
@@ -1242,6 +1245,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="common\KactusUtils.h" />
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h" />
     <ClInclude Include="common\NameGenerationPolicy.h" />
     <QtMoc Include="common\views\EditableTreeView\EditableTreeView.h">
@@ -1311,6 +1315,7 @@ CreateHelp
     <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h" />
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h" />
     <QtMoc Include="common\widgets\instanceWidgets\InstanceWidgets.h" />
+    <QtMoc Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.h" />
     <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.h" />
@@ -2214,7 +2219,6 @@ CreateHelp
     </QtMoc>
     <ClInclude Include="kactusGenerators\DocumentGenerator\HtmlWriter.h" />
     <ClInclude Include="kactusGenerators\DocumentGenerator\MarkdownWriter.h" />
-    <ClInclude Include="library\LibraryInterface.h" />
     <QtMoc Include="library\LibraryTreeFilter.h">
     </QtMoc>
     <QtMoc Include="library\LibraryTreeWidget.h">
@@ -2222,6 +2226,7 @@ CreateHelp
     <QtMoc Include="library\LibraryTreeView.h">
     </QtMoc>
     <ClInclude Include="library\LibraryItemSelectionFactory.h" />
+    <QtMoc Include="library\LibraryTreeModel.h" />
     <ClInclude Include="library\LibraryUtils.h" />
     <QtMoc Include="library\LibraryWidget.h">
     </QtMoc>
