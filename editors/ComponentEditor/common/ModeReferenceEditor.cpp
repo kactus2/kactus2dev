@@ -60,17 +60,7 @@ ModeReferenceEditor::ModeReferenceEditor(ModeReferenceInterface* modeRefInterfac
 //-----------------------------------------------------------------------------
 void ModeReferenceEditor::setupLayout()
 {
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    QScrollArea* scrollArea = new QScrollArea();
-    scrollArea->setContentsMargins(0, 0, 0, 0);
+    auto topLayout = new QVBoxLayout(this);
     topLayout->setContentsMargins(0, 0, 0, 0);
-
-    topLayout->addWidget(scrollArea);
-
-    QHBoxLayout* scrollLayout = new QHBoxLayout();
-    scrollLayout->setContentsMargins(0, 0, 0, 0);
-    scrollLayout->addWidget(view_);
-    scrollArea->setLayout(scrollLayout);
-
-    view_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    topLayout->addWidget(view_);
 }
