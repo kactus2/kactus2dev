@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: hierarchymodel.h
+// File: HierarchyModelBase.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,8 +9,8 @@
 // Contains the items to display the library component hierarchy to user.
 //-----------------------------------------------------------------------------
 
-#ifndef HIERARCHYMODEL_H
-#define HIERARCHYMODEL_H
+#ifndef HIERARCHYMODELBASE_H
+#define HIERARCHYMODELBASE_H
 
 #include "hierarchyitem.h"
 
@@ -25,7 +25,7 @@ class LibraryData;
 //-----------------------------------------------------------------------------
 //! Contains the items to display the library component hierarchy to user.
 //-----------------------------------------------------------------------------
-class KACTUS2_API HierarchyModel : public QAbstractItemModel
+class KACTUS2_API HierarchyModelBase : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -44,10 +44,10 @@ public:
      *    @param [in] handler         The instance that manages the library.
      *    @param [in] parent          The owner of this model.
      */
-    HierarchyModel(LibraryInterface* handler, QObject* parent);
+    HierarchyModelBase(LibraryInterface* handler, QObject* parent);
     
     //! The destructor
-    virtual ~HierarchyModel() = default;
+    virtual ~HierarchyModelBase() = default;
 
     /*! Get the data for the headers of this model.
      *
@@ -260,18 +260,20 @@ signals:
     //! Refresh the item filtering because changes have been made
     void invalidateFilter();
 
-private:
-    //! No copying
-    HierarchyModel(const HierarchyModel& other);
-
-    //! No assignment
-    HierarchyModel& operator=(const HierarchyModel& other);
-
-    //! The root item of the model
-    HierarchyItem* rootItem_;
+protected:
 
     //! The instance that manages the library.
     LibraryInterface* handler_;
+
+private:
+    //! No copying
+    HierarchyModelBase(const HierarchyModelBase& other);
+
+    //! No assignment
+    HierarchyModelBase& operator=(const HierarchyModelBase& other);
+
+    //! The root item of the model
+    HierarchyItem* rootItem_;
 };
 
-#endif // HIERARCHYMODEL_H
+#endif // HIERARCHYMODELBASE_H

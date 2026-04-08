@@ -45,7 +45,7 @@
     <ClInclude Include="include\FileInterface.h" />
     <ClInclude Include="include\FileSetInterface.h" />
     <QtMoc Include="include\hierarchyitem.h" />
-    <QtMoc Include="include\hierarchymodel.h" />
+    <QtMoc Include="include\HierarchyModelBase.h" />
     <ClInclude Include="include\Highlighter.h" />
     <ClInclude Include="include\HighlightSource.h" />
     <ClInclude Include="include\IGeneratorPlugin.h" />
@@ -169,7 +169,7 @@
     <ClCompile Include="library\DocumentFileAccess.cpp" />
     <ClCompile Include="library\DocumentValidator.cpp" />
     <ClCompile Include="library\hierarchyitem.cpp" />
-    <ClCompile Include="library\hierarchymodel.cpp" />
+    <ClCompile Include="library\HierarchyModelBase.cpp" />
     <ClCompile Include="library\LibraryHandler.cpp" />
     <ClCompile Include="library\LibraryItem.cpp" />
     <ClCompile Include="library\LibraryLoader.cpp" />

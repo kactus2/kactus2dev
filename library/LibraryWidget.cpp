@@ -18,8 +18,6 @@
 #include "LibraryTreeWidget.h"
 #include "LibraryHandler.h"
 
-#include <KactusAPI/include/hierarchymodel.h>
-
 #include "objectremovedialog.h"
 #include "ObjectSelectionListItem.h"
 #include "LibraryItemSelectionFactory.h"
@@ -60,7 +58,7 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     connectLibraryFilter(treeWidget_->getFilter());
 
     searchBar_->setPlaceholderText(tr("Search"));
-    searchBar_->addAction(QIcon(":/icons/common/graphics/search.png"), QLineEdit::LeadingPosition);
+    searchBar_->addAction(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/search.png"), QLineEdit::LeadingPosition);
     searchBar_->setClearButtonEnabled(true);
 
     connect(searchBar_, SIGNAL(textChanged(QString const&)),

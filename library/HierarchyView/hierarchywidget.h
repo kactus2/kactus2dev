@@ -19,7 +19,7 @@
 
 #include <QWidget>
 
-class HierarchyModel;
+class HierarchyModelBase;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ public:
 	 *    @param [in] handler     The instance that manages library.
 	 *    @param [in] dataModel   The model that provides data to view and filter.
 	 */
-    HierarchyWidget(LibraryInterface* handler, HierarchyModel* dataModel, QWidget* parent);
+    HierarchyWidget(LibraryInterface* handler, HierarchyModelBase* dataModel, QWidget* parent);
 	
 	//! The destructor
 	virtual ~HierarchyWidget();
@@ -78,7 +78,7 @@ private:
 	HierarchyWidget& operator=(const HierarchyWidget& other);
 
 	//! Set up the connections between child widgets
-	void setupConnections(HierarchyModel* dataModel);
+	void setupConnections(HierarchyModelBase* dataModel);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -91,7 +91,7 @@ private:
 	HierarchyView view_;
 
 	//! The model that contains the items to display.
-	HierarchyModel* model_;
+	HierarchyModelBase* model_;
 };
 
 #endif // HIERARCHYWIDGET_H

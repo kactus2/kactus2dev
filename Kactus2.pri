@@ -226,6 +226,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./library/LibraryTreeWidget.h \
     ./library/LibraryTreeView.h \
     ./library/LibraryWidget.h \
+    ./library/HierarchyModel.h \
     ./library/objectremovedialog.h \
     ./library/ObjectSelectionDialog.h \
     ./library/ObjectExportDialog.h \
@@ -1105,6 +1106,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./library/LibraryTreeWidget.cpp \
     ./library/LibraryUtils.cpp \
     ./library/LibraryWidget.cpp \
+    ./library/HierarchyModel.cpp \
     ./library/ObjectExportDialog.cpp \
     ./library/objectremovedialog.cpp \
     ./library/TableViewDialog.cpp \

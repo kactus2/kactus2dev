@@ -23,6 +23,7 @@
 #include <common/KactusUtils.h>
 
 #include <library/LibraryTreeModel.h>
+#include <library/HierarchyModel.h>
 
 #include <KactusAPI/KactusAPI.h>
 
@@ -40,8 +41,6 @@
 #include <QTimer>
 #include <QObject>
 
-
-#include <iostream>
 
 #include "PythonAPI/PythonInterpreter.h"
 #include "PythonAPI/StdInputListener.h"
@@ -80,8 +79,8 @@ namespace
             // guiApplication->setPalette(palette);
 
             //guiApplication->setStyle(QStyleFactory::create("Fusion"));
-
-            application =  guiApplication;
+            
+            application = guiApplication;
         }
         else
         {
@@ -149,6 +148,9 @@ int main(int argc, char *argv[])
         // Library handler takes ownership of model.
         LibraryTreeModel* libraryModel = new LibraryTreeModel(&library);
         library.replaceModel(libraryModel);
+
+        HierarchyModel* hierModel = new HierarchyModel(&library, &library);
+        library.replaceHierarchyModel(hierModel);
     }
 
     library.setOutputChannel(mediator.data());
@@ -179,7 +181,7 @@ int main(int argc, char *argv[])
 #endif
 
         // the release mode
-#ifdef NDEBUG
+#ifdef QT_NO_DEBUG
 
         // Show the splash screen.
         SplashScreen splash(VersionHelper::createVersionString());

@@ -96,6 +96,49 @@ void LibraryHandler::replaceModel(LibraryModel* model)
     connect(this, SIGNAL(resetModel()), treeModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
 }
 
+void LibraryHandler::replaceHierarchyModel(HierarchyModelBase* model)
+{
+    Q_ASSERT_X(model, "LibraryHandler::replaceHierarchyModel", "Replaced with invalid model");
+
+    // disconnect old model
+    disconnect(hierarchyModel_.data(), SIGNAL(openDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openDesign(const VLNV&, const QString&)));
+
+    disconnect(hierarchyModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
+        this, SLOT(onOpenMemoryDesign(const VLNV&, const QString&)));
+
+    disconnect(hierarchyModel_.data(), SIGNAL(openSWDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openSWDesign(const VLNV&, const QString&)));
+    disconnect(hierarchyModel_.data(), SIGNAL(openSystemDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openSystemDesign(const VLNV&, const QString&)));
+
+    disconnect(hierarchyModel_.data(), SIGNAL(editItem(const VLNV&)),
+        this, SLOT(onEditItem(const VLNV&)));
+
+    disconnect(this, SIGNAL(resetModel()),
+        hierarchyModel_.data(), SLOT(onResetModel()));
+
+    hierarchyModel_.reset(model);
+
+    // connect new model
+    connect(hierarchyModel_.data(), SIGNAL(openDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+
+    connect(hierarchyModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
+        this, SLOT(onOpenMemoryDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+
+    connect(hierarchyModel_.data(), SIGNAL(openSWDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(hierarchyModel_.data(), SIGNAL(openSystemDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+
+    connect(hierarchyModel_.data(), SIGNAL(editItem(const VLNV&)),
+        this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(resetModel()),
+        hierarchyModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
+}
+
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::getModel()
 //-----------------------------------------------------------------------------
@@ -197,7 +240,7 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
     }
 
     // the hierarchy model must be re-built
-    hierarchyModel_.onResetModel();
+    hierarchyModel_->onResetModel();
     treeModel_->onAddVLNV(vlnv);
     
     return true;
@@ -304,7 +347,7 @@ VLNV::IPXactType LibraryHandler::getDocumentType(VLNV const& vlnv)
 int LibraryHandler::referenceCount(VLNV const& vlnv) const
 {
     QList<VLNV> list;
-    return hierarchyModel_.getOwners(list, vlnv);
+    return hierarchyModel_->getOwners(list, vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -312,7 +355,7 @@ int LibraryHandler::referenceCount(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 int LibraryHandler::getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const
 {
-    return hierarchyModel_.getOwners(list, vlnvToSearch);
+    return hierarchyModel_->getOwners(list, vlnvToSearch);
 }
 
 //-----------------------------------------------------------------------------
@@ -325,7 +368,7 @@ int LibraryHandler::getChildren(QList<VLNV>& list, VLNV const& vlnvToSearch) con
         return 0;
     }
 
-    hierarchyModel_.getChildren(list, vlnvToSearch);
+    hierarchyModel_->getChildren(list, vlnvToSearch);
     return list.size();
 }
 
@@ -397,9 +440,9 @@ bool LibraryHandler::isValid(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::getHierarchyModel()
 //-----------------------------------------------------------------------------
-HierarchyModel* LibraryHandler::getHierarchyModel()
+HierarchyModelBase* LibraryHandler::getHierarchyModel()
 {
-    return &hierarchyModel_;
+    return hierarchyModel_.data();
 }
 
 //-----------------------------------------------------------------------------
@@ -593,7 +636,7 @@ void LibraryHandler::removeObject(VLNV const& vlnv)
     documentCache_.remove(vlnv);
 
     treeModel_->onRemoveVLNV(vlnv);
-    hierarchyModel_.onRemoveVLNV(vlnv);
+    hierarchyModel_->onRemoveVLNV(vlnv);
 
     removeFile(path);
 }
@@ -652,7 +695,7 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
     documentCache_.insert(vlnv, DocumentInfo(getPath(vlnv), model, validateDocument(model, getPath(vlnv))));
     
     treeModel_->onDocumentUpdated(vlnv);
-    hierarchyModel_.onDocumentUpdated(vlnv);
+    hierarchyModel_->onDocumentUpdated(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -675,23 +718,23 @@ void LibraryHandler::syncronizeModels()
     // connect the signals from the hierarchy model
     //-----------------------------------------------------------------------------
 
-    connect(&hierarchyModel_, SIGNAL(openDesign(const VLNV&, const QString&)),
+    connect(hierarchyModel_.data(), SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
-    connect(&hierarchyModel_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
+    connect(hierarchyModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(onOpenMemoryDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
-    connect(&hierarchyModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),
+    connect(hierarchyModel_.data(), SIGNAL(openSWDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(&hierarchyModel_, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
+    connect(hierarchyModel_.data(), SIGNAL(openSystemDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
-    connect(&hierarchyModel_, SIGNAL(editItem(const VLNV&)),
+    connect(hierarchyModel_.data(), SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
 
     connect(this, SIGNAL(resetModel()),
-        &hierarchyModel_, SLOT(onResetModel()), Qt::UniqueConnection);
+        hierarchyModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

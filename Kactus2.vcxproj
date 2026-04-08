@@ -943,6 +943,7 @@ CreateHelp
     <ClCompile Include="kactusGenerators\DocumentGenerator\documentgenerator.cpp" />
     <ClCompile Include="kactusGenerators\DocumentGenerator\HtmlWriter.cpp" />
     <ClCompile Include="kactusGenerators\DocumentGenerator\MarkdownWriter.cpp" />
+    <ClCompile Include="library\HierarchyModel.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchyfilter.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchyview.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchywidget.cpp" />
@@ -2225,6 +2226,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="library\LibraryTreeView.h">
     </QtMoc>
+    <QtMoc Include="library\HierarchyModel.h" />
     <ClInclude Include="library\LibraryItemSelectionFactory.h" />
     <QtMoc Include="library\LibraryTreeModel.h" />
     <ClInclude Include="library\LibraryUtils.h" />

@@ -505,9 +505,6 @@
     <ClCompile Include="utilities\utils.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="library\hierarchymodel.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
     <ClCompile Include="library\LibraryItem.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
@@ -553,6 +550,9 @@
     <ClCompile Include="library\LibraryModel.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
+    <ClCompile Include="library\HierarchyModelBase.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ComponentInstanceInterface.h">
@@ -578,9 +578,6 @@
     <QtMoc Include="include\hierarchyitem.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
-    <QtMoc Include="include\hierarchymodel.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
     <QtMoc Include="include\LibraryItem.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
@@ -588,6 +585,9 @@
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\LibraryModel.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\HierarchyModelBase.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
   </ItemGroup>

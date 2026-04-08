@@ -92,7 +92,7 @@ HEADERS += ./KactusAPI.h \
     ./include/VersionHelper.h \
     ./include/ComponentInstanceParameterFinder.h \
     ./include/hierarchyitem.h \
-    ./include/hierarchymodel.h \
+    ./include/HierarchyModelBase.h \
     ./include/ImportHighlighter.h \
     ./include/ImportRunner.h \
     ./include/LibraryHandler.h \
@@ -170,7 +170,7 @@ SOURCES += ./KactusAPI.cpp \
     ./library/DocumentFileAccess.cpp \
     ./library/DocumentValidator.cpp \
     ./library/hierarchyitem.cpp \
-    ./library/hierarchymodel.cpp \
+    ./library/HierarchyModelBase.cpp \
     ./library/LibraryHandler.cpp \
     ./library/LibraryItem.cpp \
     ./library/LibraryLoader.cpp \

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: hierarchymodel.cpp
+// File: HierarchyModelBase.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,7 +9,7 @@
 // Contains the items to display the library component hierarchy to user.
 //-----------------------------------------------------------------------------
 
-#include "hierarchymodel.h"
+#include "HierarchyModelBase.h"
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -18,13 +18,15 @@
 
 #include <KactusAPI/include/KactusColors.h>
 
+#include <common/KactusUtils.h>
+
 #include <QStringBuilder>
 #include <QIcon>
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::HierarchyModel()
+// Function: HierarchyModelBase::HierarchyModelBase()
 //-----------------------------------------------------------------------------
-HierarchyModel::HierarchyModel(LibraryInterface* handler, QObject* parent):
+HierarchyModelBase::HierarchyModelBase(LibraryInterface* handler, QObject* parent):
 QAbstractItemModel(parent),
     rootItem_(new HierarchyItem(handler, this)),
     handler_(handler)
@@ -36,9 +38,9 @@ QAbstractItemModel(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onResetModel()
+// Function: HierarchyModelBase::onResetModel()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onResetModel()
+void HierarchyModelBase::onResetModel()
 {
     beginResetModel();
 
@@ -84,17 +86,17 @@ void HierarchyModel::onResetModel()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::headerData()
+// Function: HierarchyModelBase::headerData()
 //-----------------------------------------------------------------------------
-QVariant HierarchyModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant HierarchyModelBase::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
-        if (section == HierarchyModel::OBJECT_COLUMN)
+        if (section == HierarchyModelBase::OBJECT_COLUMN)
         {
             return tr("Library items");
         }
-        else if (section == HierarchyModel::INSTANCE_COLUMN)
+        else if (section == HierarchyModelBase::INSTANCE_COLUMN)
         {
             return tr("Instances");
         }
@@ -104,17 +106,17 @@ QVariant HierarchyModel::headerData(int section, Qt::Orientation orientation, in
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::columnCount()
+// Function: HierarchyModelBase::columnCount()
 //-----------------------------------------------------------------------------
-int HierarchyModel::columnCount(QModelIndex const&) const
+int HierarchyModelBase::columnCount(QModelIndex const&) const
 {
-    return HierarchyModel::COLUMN_COUNT;
+    return HierarchyModelBase::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::rowCount()
+// Function: HierarchyModelBase::rowCount()
 //-----------------------------------------------------------------------------
-int HierarchyModel::rowCount(QModelIndex const& parent) const
+int HierarchyModelBase::rowCount(QModelIndex const& parent) const
 {
     // only one column exists
     if (parent.column() > 0)
@@ -138,9 +140,9 @@ int HierarchyModel::rowCount(QModelIndex const& parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::index()
+// Function: HierarchyModelBase::index()
 //-----------------------------------------------------------------------------
-QModelIndex HierarchyModel::index(int row, int column, QModelIndex const& parent) const
+QModelIndex HierarchyModelBase::index(int row, int column, QModelIndex const& parent) const
 {
     if (!hasIndex(row, column, parent))
     {
@@ -171,9 +173,9 @@ QModelIndex HierarchyModel::index(int row, int column, QModelIndex const& parent
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::index()
+// Function: HierarchyModelBase::index()
 //-----------------------------------------------------------------------------
-QModelIndex HierarchyModel::index(HierarchyItem* item) const
+QModelIndex HierarchyModelBase::index(HierarchyItem* item) const
 {
     if (!item)
     {
@@ -191,9 +193,9 @@ QModelIndex HierarchyModel::index(HierarchyItem* item) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::findIndexes()
+// Function: HierarchyModelBase::findIndexes()
 //-----------------------------------------------------------------------------
-QModelIndexList HierarchyModel::findIndexes(VLNV const& vlnv)
+QModelIndexList HierarchyModelBase::findIndexes(VLNV const& vlnv)
 {
     QModelIndexList list;
 
@@ -206,9 +208,9 @@ QModelIndexList HierarchyModel::findIndexes(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::parent()
+// Function: HierarchyModelBase::parent()
 //-----------------------------------------------------------------------------
-QModelIndex HierarchyModel::parent(QModelIndex const& child) const
+QModelIndex HierarchyModelBase::parent(QModelIndex const& child) const
 {
     if (!child.isValid())
     {
@@ -236,142 +238,18 @@ QModelIndex HierarchyModel::parent(QModelIndex const& child) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::data()
+// Function: HierarchyModelBase::data()
 //-----------------------------------------------------------------------------
-QVariant HierarchyModel::data(QModelIndex const& index, int role) const
+QVariant HierarchyModelBase::data(QModelIndex const& index, int role) const
 {
-    if (!index.isValid())
-    {
-    	return QVariant();
-    }
-
-    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
-
-    if (role == Qt::DisplayRole) 
-    {
-        if (index.column() == HierarchyModel::OBJECT_COLUMN)
-        {
-            VLNV const& vlnv = item->getVLNV();
-            if (vlnv.isValid())
-            {
-                return vlnv.toString();
-            }
-        }
-        else if (index.column() == HierarchyModel::INSTANCE_COLUMN)
-        {
-            int count = item->instanceCount();
-            if (count > 0)
-            {
-                return count;
-            }
-        }        
-        
-        return QVariant();
-    }
-    else if (role == Qt::ForegroundRole)
-    {
-    	if (item->isValid()) 
-        {
-    		return KactusColors::REGULAR_TEXT;
-        }
-    	else
-        {
-    		return KactusColors::ERROR_COLOR;
-        }
-    }
-    else if (role == Qt::ToolTipRole)
-    {
-        VLNV vlnv = item->getVLNV();
-
-        QString text = "<b>Vendor:</b> " % vlnv.getVendor() % "<br>" %
-                       "<b>Library:</b> " % vlnv.getLibrary() % "<br>" %
-                       "<b>Name:</b> " % vlnv.getName() % "<br>" %
-                       "<b>Version:</b> " % vlnv.getVersion() % "<br>";
-
-        QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
-        
-        text += "<br><b>Compatibility:</b> " + Document::toString(document->getRevision());
-
-        if (document != 0 && !document->getDescription().isEmpty())
-        {
-            text += "<br><b>Description:</b><br>" % document->getDescription();
-        }
-
-        text += QString("<br><b>File Path:</b><br>%1").arg(handler_->getPath(vlnv));
-        return text;
-    }
-    else if (role == Qt::DecorationRole && index.column() == HierarchyModel::OBJECT_COLUMN)
-    {
-        if (item->type() == HierarchyItem::COMPONENT)
-        {
-            if (item->getImplementation() == KactusAttribute::SYSTEM)
-            {
-                return QIcon(QStringLiteral(":/icons/common/graphics/system-component.png"));
-            }
-            else if (item->getImplementation() == KactusAttribute::SW)
-            {
-                if (item->isHierarchical())
-                {
-                    return QIcon(QStringLiteral(":/icons/common/graphics/hier-sw-component.png"));
-                }
-                else
-                {
-                    return QIcon(QStringLiteral(":/icons/common/graphics/sw-component48x48.png"));
-                }
-            }
-            else
-            {
-                if (item->isHierarchical()) 
-                {
-                    return QIcon(QStringLiteral(":/icons/common/graphics/hier-hw-component.png"));
-                }
-                else
-                {
-                    return QIcon(QStringLiteral(":/icons/common/graphics/hw-component.png"));
-                }		
-            }
-        }
-        else if (item->type() == HierarchyItem::CATALOG)
-        {
-            return QIcon(QStringLiteral(":/icons/common/graphics/catalog.png"));
-        }
-        else if (item->type() == HierarchyItem::COMDEFINITION)
-        {
-            return QIcon(QStringLiteral(":/icons/common/graphics/new-com_definition.png"));
-        }
-        else if (item->type() == HierarchyItem::APIDEFINITION)
-        {
-            return QIcon(QStringLiteral(":/icons/common/graphics/new-api_definition.png"));
-        }
-    	else if (item->type() == HierarchyItem::HW_DESIGN)
-        {
-    		return QIcon(QStringLiteral(":/icons/common/graphics/hw-design.png"));
-    	}
-    	else if (item->type() == HierarchyItem::SW_DESIGN || item->type() == HierarchyItem::SYS_DESIGN)
-        {
-            return QIcon(QStringLiteral(":/icons/common/graphics/sw-design48x48.png"));
-    	}
-        else if (item->type() == HierarchyItem::ABSDEFINITION)
-        {
-            return QIcon(QStringLiteral(":/icons/common/graphics/abs-def.png"));
-        }
-        else if (item->type() == HierarchyItem::BUSDEFINITION)
-        {
-            return QIcon(QStringLiteral(":/icons/common/graphics/bus-def.png"));
-        }
-        else
-        {
-            return QIcon(QStringLiteral(":/icons/common/graphics/cross.png"));
-        }
-    }
-
+    // Overridden by HierarchyModel
     return QVariant();
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::hasChildren()
+// Function: HierarchyModelBase::hasChildren()
 //-----------------------------------------------------------------------------
-bool HierarchyModel::hasChildren(QModelIndex const& parent) const
+bool HierarchyModelBase::hasChildren(QModelIndex const& parent) const
 {
     // only one column exists
     if (parent.column() > 0)
@@ -395,11 +273,11 @@ bool HierarchyModel::hasChildren(QModelIndex const& parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::flags()
+// Function: HierarchyModelBase::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags HierarchyModel::flags(QModelIndex const& index) const
+Qt::ItemFlags HierarchyModelBase::flags(QModelIndex const& index) const
 {
-    if (!index.isValid() || index.column() == HierarchyModel::INSTANCE_COLUMN)
+    if (!index.isValid() || index.column() == HierarchyModelBase::INSTANCE_COLUMN)
     {
     	return Qt::NoItemFlags;
     }
@@ -408,9 +286,9 @@ Qt::ItemFlags HierarchyModel::flags(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onOpenDesign()
+// Function: HierarchyModelBase::onOpenDesign()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onOpenDesign(QModelIndex const& index)
+void HierarchyModelBase::onOpenDesign(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -458,9 +336,9 @@ void HierarchyModel::onOpenDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onOpenMemoryDesign()
+// Function: HierarchyModelBase::onOpenMemoryDesign()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onOpenMemoryDesign(QModelIndex const& index)
+void HierarchyModelBase::onOpenMemoryDesign(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -494,9 +372,9 @@ void HierarchyModel::onOpenMemoryDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onOpenItem()
+// Function: HierarchyModelBase::onOpenItem()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onOpenItem(QModelIndex const& index)
+void HierarchyModelBase::onOpenItem(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -513,9 +391,9 @@ void HierarchyModel::onOpenItem(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onCreateNewDesign()
+// Function: HierarchyModelBase::onCreateNewDesign()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onCreateNewDesign(QModelIndex const& index)
+void HierarchyModelBase::onCreateNewDesign(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -531,9 +409,9 @@ void HierarchyModel::onCreateNewDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onCreateNewSWDesign()
+// Function: HierarchyModelBase::onCreateNewSWDesign()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onCreateNewSWDesign(QModelIndex const& index)
+void HierarchyModelBase::onCreateNewSWDesign(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -549,9 +427,9 @@ void HierarchyModel::onCreateNewSWDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onCreateNewSystemDesign()
+// Function: HierarchyModelBase::onCreateNewSystemDesign()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onCreateNewSystemDesign(QModelIndex const& index)
+void HierarchyModelBase::onCreateNewSystemDesign(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -567,9 +445,9 @@ void HierarchyModel::onCreateNewSystemDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onCreateNewAbsDef()
+// Function: HierarchyModelBase::onCreateNewAbsDef()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onCreateNewAbsDef(QModelIndex const& index)
+void HierarchyModelBase::onCreateNewAbsDef(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -585,9 +463,9 @@ void HierarchyModel::onCreateNewAbsDef(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onExportItem()
+// Function: HierarchyModelBase::onExportItem()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onExportItem(QModelIndex const& index)
+void HierarchyModelBase::onExportItem(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -602,7 +480,7 @@ void HierarchyModel::onExportItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeModel::onDeleteItem()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onDeleteItem(QModelIndex const& index)
+void HierarchyModelBase::onDeleteItem(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -618,9 +496,9 @@ void HierarchyModel::onDeleteItem(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onRemoveVLNV()
+// Function: HierarchyModelBase::onRemoveVLNV()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onRemoveVLNV(VLNV const& vlnv)
+void HierarchyModelBase::onRemoveVLNV(VLNV const& vlnv)
 {
     if (!vlnv.isValid())
     {
@@ -633,17 +511,17 @@ void HierarchyModel::onRemoveVLNV(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::referenceCount()
+// Function: HierarchyModelBase::referenceCount()
 //-----------------------------------------------------------------------------
-int HierarchyModel::referenceCount(VLNV const& vlnv) const
+int HierarchyModelBase::referenceCount(VLNV const& vlnv) const
 {
     return rootItem_->referenceCount(vlnv);
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onDocumentUpdated()
+// Function: HierarchyModelBase::onDocumentUpdated()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onDocumentUpdated(VLNV const& vlnv)
+void HierarchyModelBase::onDocumentUpdated(VLNV const& vlnv)
 {
     bool isValid = handler_->isValid(vlnv);
     for (HierarchyItem* updatedItem : rootItem_->findItems(vlnv))
@@ -653,26 +531,26 @@ void HierarchyModel::onDocumentUpdated(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::getOwners()
+// Function: HierarchyModelBase::getOwners()
 //-----------------------------------------------------------------------------
-int HierarchyModel::getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const
+int HierarchyModelBase::getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const
 {
     rootItem_->getOwners(list, vlnvToSearch);
     return list.size();
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::getChildren()
+// Function: HierarchyModelBase::getChildren()
 //-----------------------------------------------------------------------------
-void HierarchyModel::getChildren(QList<VLNV>& childList, VLNV const& owner) const
+void HierarchyModelBase::getChildren(QList<VLNV>& childList, VLNV const& owner) const
 {
     rootItem_->getChildren(childList, owner);
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onShowErrors()
+// Function: HierarchyModelBase::onShowErrors()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onShowErrors(QModelIndex const& index)
+void HierarchyModelBase::onShowErrors(QModelIndex const& index)
 {
     if (!index.isValid())
     {
