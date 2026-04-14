@@ -28,6 +28,9 @@ namespace KactusColors
     //! Errors.
     extern KACTUS2_API QColor ERROR_COLOR;
 
+    //! Default window background color assigned by style/theme
+    extern KACTUS2_API QColor DEFAULT_WINDOW_BG;
+
     //! Warnings.
     extern KACTUS2_API QColor WARNING;
 
@@ -100,14 +103,11 @@ namespace KactusColors
     extern KACTUS2_API QColor ROW_SEPARATOR; // Used to separate rows on a list.
 
     // Colors for ribbon
-    namespace RibbonTheme
-    {
-        extern KACTUS2_API QColor GRADIENTTOP;
-        extern KACTUS2_API QColor GRADIENTBOTTOM;
-        extern KACTUS2_API QColor GROUPTITLEGRADIENTTOP;
-        extern KACTUS2_API QColor GROUPTITLEGRADIENTBOTTOM;
-        extern KACTUS2_API QColor GROUPTITLETEXT;
-    }
+    extern KACTUS2_API QColor RIBBON_GRADIENT_TOP;
+    extern KACTUS2_API QColor RIBBON_GRADIENT_BOTTOM;
+    extern KACTUS2_API QColor RIBBONGROUP_TITLE_GRADIENT_TOP;
+    extern KACTUS2_API QColor RIBBONGROUP_TITLE_GRADIENT_BOTTOM;
+    extern KACTUS2_API QColor RIBBONGROUP_TITLE_TEXT;
 }
 
 //-----------------------------------------------------------------------------

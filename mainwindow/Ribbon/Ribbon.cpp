@@ -52,6 +52,6 @@ void Ribbon::paintEvent(QPaintEvent* /*event*/)
 {
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing);
-    painter.fillRect(rect(), KactusColors::RibbonTheme::GRADIENTBOTTOM);
+    painter.fillRect(rect(), KactusColors::RIBBON_GRADIENT_BOTTOM);
 }
 

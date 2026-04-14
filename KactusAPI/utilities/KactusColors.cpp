@@ -23,6 +23,8 @@ QColor KactusColors::ERROR_COLOR = Qt::red;
 //! Warnings.
 QColor KactusColors::WARNING = QColor(255, 102, 45);
 
+QColor KactusColors::DEFAULT_WINDOW_BG = QColor(255, 255, 255);
+
 //! Colors used in text.
 QColor KactusColors::REGULAR_TEXT = Qt::black; // Regular text.
 QColor KactusColors::DISABLED_TEXT = Qt::darkGray; // Text in disabled or uneditable elements.
@@ -91,8 +93,8 @@ QColor KactusColors::DEPENDECY_ADDED = QColor(0, 222, 0); // Added dependency.
 QColor KactusColors::DEPENDECY_COVERAGE = QColor(0, 158, 255); // Used to illustrate the extent of dependencies.
 QColor KactusColors::ROW_SEPARATOR = QColor(200, 200, 200); // Used to separate rows on a list.
 
-QColor KactusColors::RibbonTheme::GRADIENTTOP = QColor(218, 225, 233);
-QColor KactusColors::RibbonTheme::GRADIENTBOTTOM = QColor(160, 193, 226);
-QColor KactusColors::RibbonTheme::GROUPTITLEGRADIENTTOP = QColor(33, 135, 237);
-QColor KactusColors::RibbonTheme::GROUPTITLEGRADIENTBOTTOM = QColor(17, 127, 237);
-QColor KactusColors::RibbonTheme::GROUPTITLETEXT = Qt::white;
+QColor KactusColors::RIBBON_GRADIENT_TOP = QColor(218, 225, 233);
+QColor KactusColors::RIBBON_GRADIENT_BOTTOM = QColor(160, 193, 226);
+QColor KactusColors::RIBBONGROUP_TITLE_GRADIENT_TOP = QColor(33, 135, 237);
+QColor KactusColors::RIBBONGROUP_TITLE_GRADIENT_BOTTOM = QColor(17, 127, 237);
+QColor KactusColors::RIBBONGROUP_TITLE_TEXT = Qt::white;

@@ -69,20 +69,22 @@ void KactusUtils::applyThemeToPalette()
 {
     // Get current theme
     auto appStyle = QApplication::style()->name();
+    auto palette = QGuiApplication::palette();
+
+    // Set main window colors
+    auto windowBG = palette.color(QPalette::ColorRole::Window);
+    KactusColors::DEFAULT_WINDOW_BG = windowBG;
 
     // Dark mode is not enabled for windows vista style
     if (darkThemeEnabled() && appStyle.compare("windowsvista") != 0)
     {
-        // Set main window colors
-        auto palette = QGuiApplication::palette();
-        auto windowBG = palette.color(QPalette::ColorRole::Window);
 
         // Set ribbon colors to lighter variants of window background color
-        KactusColors::RibbonTheme::GRADIENTTOP = windowBG;
-        KactusColors::RibbonTheme::GRADIENTBOTTOM = palette.color(QPalette::ColorRole::Window).lighter(125);
-        KactusColors::RibbonTheme::GROUPTITLEGRADIENTTOP = windowBG;
-        KactusColors::RibbonTheme::GROUPTITLEGRADIENTBOTTOM = palette.color(QPalette::ColorRole::Window).lighter(175);
-        KactusColors::RibbonTheme::GROUPTITLETEXT = palette.color(QPalette::ColorRole::WindowText);
+        KactusColors::RIBBON_GRADIENT_TOP = windowBG;
+        KactusColors::RIBBON_GRADIENT_BOTTOM = palette.color(QPalette::ColorRole::Window).lighter(125);
+        KactusColors::RIBBONGROUP_TITLE_GRADIENT_TOP = windowBG;
+        KactusColors::RIBBONGROUP_TITLE_GRADIENT_BOTTOM = palette.color(QPalette::ColorRole::Window).lighter(175);
+        KactusColors::RIBBONGROUP_TITLE_TEXT = palette.color(QPalette::ColorRole::WindowText);
 
         // Set slightly muted highlight color (for selections)
         auto currentHighlight = palette.highlight().color();

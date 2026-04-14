@@ -39,4 +39,6 @@ namespace KactusUtils
      *	Set palette colors based on platform style and theme with slight modifications.
      */
     void applyThemeToPalette();
+
+    QString colorToRgbString(QColor const& color);
 }
