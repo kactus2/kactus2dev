@@ -31,7 +31,7 @@ DesignConfigurationInstantiationsModel::DesignConfigurationInstantiationsModel(
     QSharedPointer<QList<QSharedPointer<DesignConfigurationInstantiation> > > instantiations,
     QSharedPointer<InstantiationsValidator> validator, QSharedPointer<Component> component,
     LibraryInterface* library, QObject* parent) :
-QAbstractTableModel(parent),
+TableModelBase(parent),
 instantiations_(instantiations),
 validator_(validator),
 containingComponent_(component),
@@ -177,34 +177,8 @@ QVariant DesignConfigurationInstantiationsModel::data(QModelIndex const& index, 
             return QVariant();
         }
 	}
-	else if (role == Qt::ForegroundRole)
-    {
-        if (index.column() == DesignInstantiationsColumns::NAME && 
-            !validator_->hasValidName(instantiation->name()))
-        {
-            return KactusColors::ERROR_COLOR;
-        }
-        else
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-	}
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == DesignInstantiationsColumns::NAME ||
-            index.column() == DesignInstantiationsColumns::VLNV_REFERENCE)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-    else 
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -359,4 +333,23 @@ void DesignConfigurationInstantiationsModel::onRemoveItem(QModelIndex const& ind
 
 	emit designConfigurationInstantiationRemoved(index.row());
 	emit contentChanged();
+}
+
+bool DesignConfigurationInstantiationsModel::validateIndex(QModelIndex const& index) const
+{
+    auto instantiation = instantiations_->at(index.row());
+    
+    if (index.column() == DesignInstantiationsColumns::NAME &&
+        !validator_->hasValidName(instantiation->name()))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool DesignConfigurationInstantiationsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == DesignInstantiationsColumns::NAME ||
+        index.column() == DesignInstantiationsColumns::VLNV_REFERENCE;
 }

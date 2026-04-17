@@ -35,7 +35,7 @@
 //-----------------------------------------------------------------------------
 FilesModel::FilesModel(LibraryInterface* handler, QSharedPointer<Component> component,
     FileInterface* fileInterface, QObject* parent):
-QAbstractTableModel(parent),
+TableModelBase(parent),
 handler_(handler),
 component_(component),
 fileInterface_(fileInterface)
@@ -174,27 +174,6 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
             }
         }
 	}
-
-	else if (role == Qt::ForegroundRole)
-    {
-        if (index.column() == FileColumns::NAME_COLUMN)
-        {
-            if (fileName.empty())
-            {
-                return KactusColors::ERROR_COLOR;
-            }
-            else
-            {
-                return KactusColors::REGULAR_TEXT;
-            }
-        }
-        if (index.column() == FileColumns::PATH_COLUMN && 
-            !(FileHandler::isValidURI(handler_->getPath(component_->getVlnv()),QString::fromStdString(fileName))))
-        {
-            return KactusColors::ERROR_COLOR;
-        }
-	}
-
     else if (role == Qt::ToolTipRole)
     {
         if (index.column() == FileColumns::DESCRIPTION)
@@ -208,13 +187,33 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         }
     }
 
-    else if (role == Qt::BackgroundRole && (index.column() == FileColumns::PATH_COLUMN ||
-        index.column() == FileColumns::TYPES_COLUMN))
+    return TableModelBase::data(index, role);
+}
+
+bool FilesModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == FileColumns::PATH_COLUMN ||
+        index.column() == FileColumns::TYPES_COLUMN;
+}
+
+bool FilesModel::validateIndex(QModelIndex const& index) const
+{
+    std::string fileName = fileInterface_->getIndexedItemName(index.row());
+
+    if (index.column() == FileColumns::NAME_COLUMN)
     {
-        return KactusColors::MANDATORY_FIELD;
+        if (fileName.empty())
+        {
+            return false;
+        }
+    }
+    else if (index.column() == FileColumns::PATH_COLUMN && 
+        !(FileHandler::isValidURI(handler_->getPath(component_->getVlnv()),QString::fromStdString(fileName))))
+    {
+        return false;
     }
 
-    return QVariant();
+    return true;
 }
 
 //-----------------------------------------------------------------------------

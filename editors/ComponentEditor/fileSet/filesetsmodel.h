@@ -12,7 +12,8 @@
 #ifndef FILESETSMODEL_H
 #define FILESETSMODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
+
 #include <QList>
 #include <QSharedPointer>
 
@@ -24,7 +25,7 @@ class FileSetInterface;
 //-----------------------------------------------------------------------------
 //! The model class to manage the objects for FileSetsEditor.
 //-----------------------------------------------------------------------------
-class FileSetsModel : public QAbstractTableModel
+class FileSetsModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -154,10 +155,28 @@ signals:
     void decreaseReferences(QString valueId) const;
 
 private:
+
 	//! No copying
 	FileSetsModel(const FileSetsModel& other);
 	FileSetsModel& operator=(const FileSetsModel& other);
 
+	/*!
+	*  Checks if the given index is marked mandatory.
+	*
+	*    @param[in] index   Model index to check.
+	*
+	*    @return True, if the index is a mandatory item, otherwise false.
+	*/
+	bool indexIsMandatory(QModelIndex const& index) const override;
+
+	/*!
+	*  Validates the data in an index.
+	*
+	*    @param [in] index   The index whose data to validate
+	*
+	*    @return True, if the data in the index is valid, otherwise false.
+	*/
+	bool validateIndex(QModelIndex const& index) const { return true; }
     /*!
      *  Remove the references from the selected file set.
      *

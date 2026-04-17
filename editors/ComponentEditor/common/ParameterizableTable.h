@@ -92,24 +92,6 @@ protected:
      *    @return The expression for the index if available, otherwise the value for the given index.
      */
     virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const = 0; 
-  
-    /*!
-     *  Validates the data in an index.
-     *
-     *    @param [in] index   The index whose data to validate
-     *
-     *    @return True, if the data in the index is valid, otherwise false.
-     */
-    virtual bool validateIndex(QModelIndex const& index) const = 0;
-
-    /*!
-     *  Gets a black color for valid index and red color for invalid index.
-     *
-     *    @param [in] index   The index for which to get the color.
-     *
-     *    @return Black for valid index, red for invalid index.
-     */
-    QVariant blackForValidOrRedForInvalidIndex(QModelIndex const& index) const;
 
     /*!
      *  Checks if the value is a valid expression.

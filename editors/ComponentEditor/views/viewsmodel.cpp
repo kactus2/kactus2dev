@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 ViewsModel::ViewsModel(QSharedPointer<Component> component, QSharedPointer<ViewValidator> viewValidator,
     QObject* parent):
-QAbstractTableModel(parent),
+TableModelBase(parent),
 component_(component),
 views_(component->getViews()),
 viewValidator_(viewValidator)
@@ -169,36 +169,8 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
 	}   
-	else if (role == Qt::ForegroundRole)
-    {
-        if (index.column() == ViewColumns::TYPE_COLUMN)
-        {
-            return KactusColors::DISABLED_TEXT;
-        }
-        else if (index.column() == ViewColumns::NAME_COLUMN && !viewValidator_->hasValidName(view->name()))
-        {
-            return KactusColors::ERROR_COLOR;
-        }
-        else
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-	}
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == ViewColumns::NAME_COLUMN)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-    else 
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -284,4 +256,26 @@ void ViewsModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool ViewsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == ViewColumns::NAME_COLUMN;
+}
+
+bool ViewsModel::validateIndex(QModelIndex const& index) const
+{
+    auto view = views_->at(index.row());
+
+    if (index.column() == ViewColumns::NAME_COLUMN && !viewValidator_->hasValidName(view->name()))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool ViewsModel::indexIsGreyedOut(QModelIndex const& index) const
+{
+    return index.column() == ViewColumns::TYPE_COLUMN;
 }

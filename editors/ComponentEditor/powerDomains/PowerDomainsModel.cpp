@@ -98,22 +98,8 @@ QVariant PowerDomainsModel::data(QModelIndex const&  index, int role) const
 
         return expressionOrValueForIndex(index);
     }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == PowerDomainColumns::NAME)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
 
-        return KactusColors::REGULAR_FIELD;
-    }
-
-    else if (role == Qt::ForegroundRole)
-    {
-        return blackForValidOrRedForInvalidIndex(index);
-    }
-
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -306,6 +292,11 @@ bool PowerDomainsModel::validateIndex(QModelIndex const& index) const
     }
 
     return true;
+}
+
+bool PowerDomainsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == PowerDomainColumns::NAME;
 }
 
 //-----------------------------------------------------------------------------

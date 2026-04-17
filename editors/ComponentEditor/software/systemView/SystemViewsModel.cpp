@@ -29,7 +29,7 @@
 // Function: SystemViewsModel::SystemViewsModel()
 //-----------------------------------------------------------------------------
 SystemViewsModel::SystemViewsModel(QSharedPointer<Component> component, LibraryInterface* library, QObject* parent) :
-QAbstractTableModel(parent),
+TableModelBase(parent),
     views_(component->getSystemViews()),
     component_(component),
     library_(library)
@@ -155,37 +155,7 @@ QVariant SystemViewsModel::data(QModelIndex const& index, int role) const
         }
     }
 
-    else if (role == Qt::ForegroundRole)
-    {
-        QStringList fileSetNames = component_->getFileSetNames();
-		QStringList viewNames = component_->getViewNames();
-
-		if (views_.at(index.row())->isValid(fileSetNames, viewNames))
-        {
-			return KactusColors::REGULAR_TEXT;
-		}
-		else
-        {
-			return KactusColors::ERROR_COLOR;
-		}
-	}
-
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == SystemViewsDelegate::NAME_COLUMN || 
-            index.column() == SystemViewsDelegate::HIER_REF_COLUMN)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-    else
-    {
-        return QVariant();
-    }
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -357,4 +327,23 @@ void SystemViewsModel::onRemoveItem(QModelIndex const& index)
 
 	emit viewRemoved(index.row());
 	emit contentChanged();
+}
+
+bool SystemViewsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == SystemViewsDelegate::NAME_COLUMN ||
+        index.column() == SystemViewsDelegate::HIER_REF_COLUMN;
+}
+
+bool SystemViewsModel::validateIndex(QModelIndex const& index) const
+{
+    auto fileSetNames = component_->getFileSetNames();
+    auto viewNames = component_->getViewNames();
+
+    if (!views_.at(index.row())->isValid(fileSetNames, viewNames))
+    {
+        return false;
+    }
+
+    return true;
 }

@@ -253,6 +253,7 @@ CreateHelp
     <ClCompile Include="common\GenericEditProvider.cpp" />
     <ClCompile Include="common\graphicsItems\GraphicsColumnAddCommand.cpp" />
     <ClCompile Include="common\KactusUtils.cpp" />
+    <ClCompile Include="common\models\TableModelBase.cpp" />
     <ClCompile Include="common\NameGenerationPolicy.cpp" />
     <ClCompile Include="common\TextEditProvider.cpp" />
     <ClCompile Include="common\ui\GraphicalMessageMediator.cpp" />
@@ -1248,6 +1249,7 @@ CreateHelp
     </CustomBuild>
     <ClInclude Include="common\KactusUtils.h" />
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h" />
+    <QtMoc Include="common\models\TableModelBase.h" />
     <ClInclude Include="common\NameGenerationPolicy.h" />
     <QtMoc Include="common\views\EditableTreeView\EditableTreeView.h">
     </QtMoc>

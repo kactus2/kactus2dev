@@ -284,7 +284,25 @@ protected:
     virtual bool validateIndex(QModelIndex const& index) const;
 
 private:
-    
+
+    /*!
+	 *  Checks if the given index is marked mandatory.
+	 *
+	 *    @param[in] index   Model index to check.
+	 *
+	 *    @return True, if the index is a mandatory item, otherwise false.
+	 */
+    bool indexIsMandatory(QModelIndex const& index) const;
+
+    /*!
+     *  Gets a black color for valid index and red color for invalid index.
+     *
+     *    @param [in] index   The index for which to get the color.
+     *
+     *    @return Black for valid index, red for invalid index.
+     */
+    QVariant blackForValidOrRedForInvalidIndex(QModelIndex const& index) const;
+
     /*!
      *  Get the formatted value of an expression in the selected index.
      *

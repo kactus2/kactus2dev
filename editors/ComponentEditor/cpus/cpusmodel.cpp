@@ -180,26 +180,8 @@ QVariant CpusModel::data(QModelIndex const& index, int role) const
     {
         return cpu->getAddressSpaceRefs();
     }
-    else if (role == Qt::ForegroundRole)
-    {
 
-        return blackForValidOrRedForInvalidIndex(index);
-    }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (column == CpuColumns::NAME || column == CpuColumns::ADDRSPACE ||
-            column == CpuColumns::MEMORY_MAP || column == CpuColumns::RANGE || column == CpuColumns::WIDTH)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-
-    // if unsupported role
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -276,6 +258,13 @@ bool CpusModel::setData(QModelIndex const& index, QVariant const& value, int rol
     {
 		return false;
 	}
+}
+
+bool CpusModel::indexIsMandatory(QModelIndex const& index) const
+{
+    int column = index.column();
+    return column == CpuColumns::NAME || column == CpuColumns::ADDRSPACE ||
+        column == CpuColumns::MEMORY_MAP || column == CpuColumns::RANGE || column == CpuColumns::WIDTH;
 }
 
 //-----------------------------------------------------------------------------

@@ -189,43 +189,8 @@ QVariant RegisterFileModel::data(QModelIndex const& index, int role) const
             return valueForIndex(index).toString();
         }
     }
-    else if (role == Qt::ForegroundRole)
-    {
-        if (validateIndex(index))
-        {
-            QSharedPointer<RegisterFile> regFile = items_.at(index.row());
 
-            if (index.column() != RegisterFileColumns::IS_PRESENT &&
-                (!regFile->getIsPresent().isEmpty() && 
-                    parseExpressionToDecimal(regFile->getIsPresent()).toInt() != 1))
-            {
-                return KactusColors::DISABLED_TEXT;
-            }
-            else
-            {
-                return KactusColors::REGULAR_TEXT;
-            }            
-        }
-        else
-        {
-            return KactusColors::ERROR_COLOR;
-        }
-    }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == RegisterFileColumns::NAME ||
-            index.column() == RegisterFileColumns::ADDRESS_OFFSET ||
-            index.column() == RegisterFileColumns::RANGE)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -389,6 +354,27 @@ QStringList RegisterFileModel::mimeTypes() const
     types << "text/xml/ipxact:registerFile";
 
     return types;
+}
+
+bool RegisterFileModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == RegisterFileColumns::NAME ||
+        index.column() == RegisterFileColumns::ADDRESS_OFFSET ||
+        index.column() == RegisterFileColumns::RANGE;
+}
+
+bool RegisterFileModel::indexIsGreyedOut(QModelIndex const& index) const
+{
+    auto regFile = items_.at(index.row());
+
+    if (index.column() != RegisterFileColumns::IS_PRESENT &&
+        (!regFile->getIsPresent().isEmpty() && 
+            parseExpressionToDecimal(regFile->getIsPresent()).toInt() != 1))
+    {
+        return true;
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

@@ -3744,8 +3744,10 @@ void MainWindow::applyThemeToMainWindow()
         auto windowBG = palette.color(QPalette::ColorRole::Window);
 
         auto dockWidgetTitleColor = windowBG.lighter(150);
-        QString dockWidgetTitleColorRGB = QString::number(dockWidgetTitleColor.red()) % "," % 
-            QString::number(dockWidgetTitleColor.green()) % "," % QString::number(dockWidgetTitleColor.blue());
+        QString dockWidgetTitleColorRGB = KactusUtils::colorToRgbString(dockWidgetTitleColor);
+
+        auto tableGridlineColorRGB = dockWidgetTitleColorRGB;
+        auto mandatoryFieldColorRGB = KactusUtils::colorToRgbString(KactusColors::MANDATORY_FIELD);
 
         appStyleSheet =
             "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
@@ -3756,8 +3758,9 @@ void MainWindow::applyThemeToMainWindow()
             "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
             "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
             "QTableView::indicator:unchecked {image: none;}"
-            "QDockWidget::title {background-color: rgb(" % dockWidgetTitleColorRGB % "); font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
-            "*[mandatoryField=\"true\"] { background-color: LemonChiffon; color: Black }"; // force mandatory field text color to black for visibility
+            "QDockWidget::title {background-color: " % dockWidgetTitleColorRGB % "; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
+            "*[mandatoryField=\"true\"] { background-color: " % mandatoryFieldColorRGB % "; color: Black }" // force mandatory field text color to black for visibility
+            "QTableView { gridline-color: " % tableGridlineColorRGB % " }";
     }
     else
     {

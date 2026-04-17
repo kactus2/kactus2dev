@@ -102,30 +102,8 @@ QVariant FileBuildersModel::data( const QModelIndex& index, int role /*= Qt::Dis
     {
         return valueForIndex(index);
     }
-	else if (Qt::BackgroundRole == role)
-    {
-		if (index.column() == 0)
-        {
-			return KactusColors::MANDATORY_FIELD;
-		}
-		else
-        {
-			return KactusColors::REGULAR_FIELD;
-		}
-	}
-	else if (Qt::ForegroundRole == role)
-    {
-// 		if (fileBuilders_->at(index.row())->isValid())
-//         {
-			return KactusColors::REGULAR_TEXT;
-// 		}
-// 		else
-//         {
-// 			return KactusColors::ERROR;
-// 		}
-	}
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -298,6 +276,11 @@ void FileBuildersModel::onAddItem( const QModelIndex& index )
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool FileBuildersModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == FileBuilderColumns::FILETYPE_COLUMN;
 }
 
 //-----------------------------------------------------------------------------

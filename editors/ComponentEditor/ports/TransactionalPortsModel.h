@@ -95,7 +95,7 @@ protected:
      *
      *      return True, if column can have expressions, false otherwise.
      */
-    virtual bool isValidExpressionColumn(QModelIndex const& index) const override final;
+    bool isValidExpressionColumn(QModelIndex const& index) const final;
 
     bool isPortTypeColumn(QModelIndex const& index) const final;
 
@@ -106,7 +106,7 @@ protected:
      *
      *      return Expression in the given index, or plain value.
      */
-    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const override final;
+    QVariant expressionOrValueForIndex(QModelIndex const& index) const final;
 
     /*!
      *  Get the formatted value of an expression in the selected index.
@@ -115,7 +115,7 @@ protected:
      *
      *    @return The formatted value of an expression in the selected index.
      */
-    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const override final;
+    QVariant formattedExpressionForIndex(QModelIndex const& index) const final;
 
     /*!
      *  Get the expression of the selected index.
@@ -124,7 +124,7 @@ protected:
      *
      *    @return The expression of the selected index.
      */
-    virtual QVariant expressionForIndex(QModelIndex const& index) const override final;
+    QVariant expressionForIndex(QModelIndex const& index) const final;
 
     /*!
      *  Gets the value for the given index.
@@ -133,7 +133,7 @@ protected:
      *
      *      return The data in the given index.
      */
-    virtual QVariant valueForIndex(QModelIndex const& index) const override final;
+    QVariant valueForIndex(QModelIndex const& index) const final;
 
     /*!
      *  Validates the data in the cell given by the column.
@@ -142,7 +142,7 @@ protected:
      *
      *      return True, if the data in the parameter is valid, false otherwise.
      */
-    virtual bool validateIndex(QModelIndex const& index) const override final;
+    bool validateIndex(QModelIndex const& index) const final;
 
 private:
 
@@ -151,56 +151,56 @@ private:
      *
      *    @return Row number column.
      */
-    virtual int rowNumberColumn() const override final;
+    int rowNumberColumn() const final;
 
     /*!
      *  Get the column for name.
      *
      *    @return Name column.
      */
-    virtual int nameColumn() const override final;
+    int nameColumn() const final;
 
     /*!
      *  Get the column for type definitions.
      *
      *    @return Type definitions column.
      */
-    virtual int typeColumn() const override final;
+    int typeColumn() const final;
 
     /*!
      *  Get the column for array left.
      *
      *    @return Array left column.
      */
-    virtual int arrayLeftColumn() const override final;
+    int arrayLeftColumn() const final;
 
     /*!
      *  Get the column for array right.
      *
      *    @return Array right column.
      */
-    virtual int arrayRightColum() const override final;
+    int arrayRightColum() const final;
 
     /*!
      *  Get the column for tags.
      *
      *    @return Tags column.
      */
-    virtual int tagColumn() const override final;
+    int tagColumn() const final;
 
     /*!
      *  Get the column for ad hoc visibility.
      *
      *    @return Ad hoc visibility column.
      */
-    virtual int adHocColumn() const override final;
+    int adHocColumn() const final;
 
     /*!
      *  Get the column for description.
      *
      *    @return Description column.
      */
-    virtual int descriptionColumn() const override final;
+    int descriptionColumn() const final;
 
     /*!
      *  Check if the selected item is disabled.
@@ -209,7 +209,7 @@ private:
      *
      *    @return True, if the indexed item is disabled, false otherwise.
      */
-    virtual bool indexedItemIsDisabled(QModelIndex const& index) const override final;
+    bool indexedItemIsDisabled(QModelIndex const& index) const final;
 
     /*!
      *  Check if the selected item is mandatory.
@@ -218,7 +218,7 @@ private:
      *
      *    @return True, if the indexed item is mandatory, false otherwise.
      */
-    virtual bool indexedItemIsMandatory(QModelIndex const& index) const override final;
+    bool indexIsMandatory(QModelIndex const& index) const final;
 
     /*!
      *  Check if the selected item is locked.
@@ -227,7 +227,7 @@ private:
      *
      *    @return True, if the indexed item is locked, false otherwise.
      */
-    virtual bool indexedItemIsLocked(QModelIndex const& index) const override final;
+    bool indexedItemIsLocked(QModelIndex const& index) const final;
 
     /*!
      *  Get a list of the locked port indexes from the selected index.
@@ -236,12 +236,12 @@ private:
      *
      *    @return List of the locked port indexes.
      */
-    virtual QModelIndexList getLockedPortIndexes(QModelIndex const& portIndex) const override final;
+    QModelIndexList getLockedPortIndexes(QModelIndex const& portIndex) const final;
 
     /*!
      *  Add a new transactional port.
      */
-    virtual void addNewPort() override final;
+    void addNewPort() final;
 };
 
 #endif // TRANSACTIONALPORTSMODEL_H

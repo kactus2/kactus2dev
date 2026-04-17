@@ -101,8 +101,6 @@ QVariant MemoryBlockModel::data(QModelIndex const& index, int role) const
 		return QVariant();
 	}
 
-    std::string blockName = blockInterface_->getIndexedItemName(index.row());
-
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole)
     {
         if (isValidExpressionColumn(index) && role == Qt::DisplayRole)
@@ -123,42 +121,12 @@ QVariant MemoryBlockModel::data(QModelIndex const& index, int role) const
         return expressionOrValueForIndex(index);
     }
 
-	else if (role == Qt::ForegroundRole)
-    {
-        std::string blockPresence = blockInterface_->getIsPresentExpression(blockName);
-        qint64 blockPresenceValue =
-            QString::fromStdString(blockInterface_->getIsPresentValue(blockName, 10)).toLongLong();
-
-        if (index.column() != isPresentColumn() && (!blockPresence.empty() && blockPresenceValue != 1))
-        {
-            return KactusColors::DISABLED_TEXT;
-        }
-
-        return blackForValidOrRedForInvalidIndex(index);
-    }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == nameColumn() || index.column() == baseAddressColumn())
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else if (index.flags() == (Qt::ItemIsSelectable | Qt::ItemIsEnabled))
-        {
-            return KactusColors::DISABLED_FIELD;
-        }
-        else 
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
     else if (role == Qt::FontRole)
     {
         return italicForEvaluatedValue(index);
     }
-    else 
-    {
-        return QVariant();
-    }
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -445,6 +413,26 @@ void MemoryBlockModel::onPasteRows()
     increaseReferencesInPastedExpressions(pastedExpressions);
 
     emit contentChanged();
+}
+
+bool MemoryBlockModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == nameColumn() || index.column() == baseAddressColumn();
+}
+
+bool MemoryBlockModel::indexIsGreyedOut(QModelIndex const& index) const
+{
+    auto const& blockName = blockInterface_->getIndexedItemName(index.row());
+    auto const& blockPresence = blockInterface_->getIsPresentExpression(blockName);
+    qint64 blockPresenceValue =
+        QString::fromStdString(blockInterface_->getIsPresentValue(blockName, 10)).toLongLong();
+
+    if (index.column() != isPresentColumn() && (!blockPresence.empty() && blockPresenceValue != 1))
+    {
+        return true;
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

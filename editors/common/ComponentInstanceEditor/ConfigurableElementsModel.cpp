@@ -33,7 +33,7 @@ ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFin
     QSharedPointer<ExpressionFormatter> defaultValueFormatter,
     QSharedPointer<ExpressionParser> configurableElementExpressionParser,
     QSharedPointer<ExpressionParser> defaultValueParser, QObject *parent):
-QAbstractItemModel(parent),
+TableModelBase(parent),
 ParameterizableTable(parameterFinder),
 configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
 configurableElementExpressionParser_(configurableElementExpressionParser),
@@ -184,7 +184,7 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
         return parameterIDForIndex(index);
     }
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------

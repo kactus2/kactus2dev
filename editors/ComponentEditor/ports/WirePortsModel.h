@@ -218,7 +218,7 @@ private:
      *
      *    @return True, if the indexed item is mandatory, false otherwise.
      */
-    virtual bool indexedItemIsMandatory(QModelIndex const& index) const override final;
+    virtual bool indexIsMandatory(QModelIndex const& index) const override final;
 
     /*!
      *  Check if the selected item is locked.

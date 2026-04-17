@@ -1019,6 +1019,12 @@
     <Filter Include="Source Files\common\widgets\ThemeableIconWidgets">
       <UniqueIdentifier>{bfbc5c25-4413-4bf0-a876-c8c178f44c6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\models">
+      <UniqueIdentifier>{a10d637b-7268-42c8-bf7a-2e6c7c08cb75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\models">
+      <UniqueIdentifier>{967b596d-95ce-4a8c-a1d2-029b9792fffd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3441,6 +3447,9 @@
     </ClCompile>
     <ClCompile Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.cpp">
       <Filter>Source Files\common\widgets\ThemeableIconWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="common\models\TableModelBase.cpp">
+      <Filter>Source Files\common\models</Filter>
     </ClCompile>
     <ClCompile Include="library\HierarchyModel.cpp">
       <Filter>Source Files\library</Filter>
@@ -6211,6 +6220,9 @@
     </QtMoc>
     <QtMoc Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.h">
       <Filter>Header Files\common\widgets\ThemeableIconWidgets</Filter>
+    </QtMoc>
+    <QtMoc Include="common\models\TableModelBase.h">
+      <Filter>Header Files\common\models</Filter>
     </QtMoc>
     <QtMoc Include="library\HierarchyModel.h">
       <Filter>Header Files\library</Filter>

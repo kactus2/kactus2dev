@@ -12,7 +12,8 @@
 #ifndef SYSTEMVIEWSMODEL_H
 #define SYSTEMVIEWSMODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
+
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
@@ -23,7 +24,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! The model to manage the system views for a table view
 //-----------------------------------------------------------------------------
-class SystemViewsModel : public QAbstractTableModel
+class SystemViewsModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -171,12 +172,30 @@ signals:
 	void stdRevisionMismatch() const;
 
 private:
-	
+
 	//! No copying
 	SystemViewsModel(const SystemViewsModel& other);
 
 	//! No assignment
 	SystemViewsModel& operator=(const SystemViewsModel& other);
+
+	/*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+	bool indexIsMandatory(QModelIndex const& index) const override;
+
+	/*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+	bool validateIndex(QModelIndex const& index) const override;
 
 	//! Contains the software views to edit.
 	QList<QSharedPointer<SystemView> > views_;

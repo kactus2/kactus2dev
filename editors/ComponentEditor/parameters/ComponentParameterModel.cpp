@@ -96,7 +96,7 @@ QVariant ComponentParameterModel::data(QModelIndex const& index, int role) const
         }
     }
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------

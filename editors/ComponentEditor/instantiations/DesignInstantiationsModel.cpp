@@ -33,7 +33,7 @@ DesignInstantiationsModel::DesignInstantiationsModel(
     QSharedPointer<Component> component,
     LibraryInterface* library,
     QObject* parent) :
-QAbstractTableModel(parent),
+TableModelBase(parent),
     instantiations_(instantiations),
     validator_(validator),
     containingComponent_(component),
@@ -179,34 +179,8 @@ QVariant DesignInstantiationsModel::data(QModelIndex const& index, int role) con
             return QVariant();
         }
 	}
-	else if (role == Qt::ForegroundRole)
-    {
-        if (index.column() == DesignInstantiationsColumns::NAME && 
-            !validator_->hasValidName(instantiation->name()))
-        {
-            return KactusColors::ERROR_COLOR;
-        }
-        else
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-	}
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == DesignInstantiationsColumns::NAME ||
-            index.column() == DesignInstantiationsColumns::VLNV_REFERENCE)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-    else 
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -355,4 +329,23 @@ void DesignInstantiationsModel::onRemoveItem(QModelIndex const& index)
 
 	emit designInstantiationRemoved(index.row());
 	emit contentChanged();
+}
+
+bool DesignInstantiationsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == DesignInstantiationsColumns::NAME ||
+        index.column() == DesignInstantiationsColumns::VLNV_REFERENCE;
+}
+
+bool DesignInstantiationsModel::validateIndex(QModelIndex const& index) const
+{
+    auto instantiation = instantiations_->at(index.row());
+    
+    if (index.column() == DesignInstantiationsColumns::NAME &&
+        !validator_->hasValidName(instantiation->name()))
+    {
+        return false;
+    }
+
+    return true;
 }

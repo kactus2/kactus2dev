@@ -111,13 +111,6 @@ QVariant SubspaceMapModel::data(QModelIndex const& index, int role) const
         return QVariant();
     }
 
-    std::string blockName = subspaceInterface_->getIndexedItemName(index.row());
-
-    if (role == Qt::BackgroundRole && index.column() == SubspaceMapColumns::INITIATORREFERENCE)
-    {
-        return KactusColors::MANDATORY_FIELD;
-    }
-
     return MemoryBlockModel::data(index, role);
 }
 
@@ -226,6 +219,12 @@ QStringList SubspaceMapModel::mimeTypes() const
     types << "text/xml/ipxact:subspaceMap";
 
     return types;
+}
+
+bool SubspaceMapModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == SubspaceMapColumns::INITIATORREFERENCE ||
+        MemoryBlockModel::indexIsMandatory(index);
 }
 
 //-----------------------------------------------------------------------------

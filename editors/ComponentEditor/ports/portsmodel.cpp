@@ -109,13 +109,9 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::ForegroundRole)
     {
-        if (isLocked(index))
+        if (indexedItemIsLocked(index))
         {
             return KactusColors::DISABLED_TEXT;
-        }
-        else
-        {
-            return blackForValidOrRedForInvalidIndex(index);
         }
     }
 	else if (role == Qt::BackgroundRole)
@@ -124,16 +120,8 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
         {
             return KactusColors::DISABLED_FIELD;
         }
-        else if (indexedItemIsMandatory(index))
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
     }
-    else if (Qt::CheckStateRole == role)
+    else if (role == Qt::CheckStateRole)
     {
         if (index.column() == adHocColumn())
         {
@@ -157,8 +145,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
         return int(Qt::AlignRight | Qt::AlignVCenter);
     }
 
-	// if unsupported role
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -233,7 +220,7 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
     std::string portName = portsInterface_->getIndexedItemName(index.row());
     if (role == Qt::EditRole)
     {
-        if (isLocked(index))
+        if (indexedItemIsLocked(index))
         {
             return false;
         }
@@ -348,7 +335,7 @@ Qt::ItemFlags PortsModel::flags(QModelIndex const& index) const
 
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-    if (isLocked(index) || indexedItemIsLocked(index))
+    if (indexedItemIsLocked(index) || indexedItemIsDisabled(index))
     {
         return flags;
     }
@@ -379,7 +366,7 @@ bool PortsModel::isValid() const
 void PortsModel::onRemoveRow(int row)
 {
 	// if row is invalid
-    if (row < 0 || row >= portsInterface_->itemCount() || rowIsLocked(row))
+    if (row < 0 || row >= portsInterface_->itemCount())
     {
 		return;
     }
@@ -404,8 +391,7 @@ void PortsModel::onRemoveRow(int row)
 void PortsModel::onRemoveItem(QModelIndex const& index)
 {
 	// don't remove anything if index is invalid
-    if (!index.isValid() || index.row() < 0 || index.row() >= portsInterface_->itemCount() ||
-        rowIsLocked(index.row()))
+    if (!index.isValid() || index.row() < 0 || index.row() >= portsInterface_->itemCount())
     {
 		return;
 	}
@@ -497,100 +483,6 @@ void PortsModel::resetModel()
     beginResetModel();
     lockedIndexes_.clear();
     endResetModel();
-}
-
-//-----------------------------------------------------------------------------
-// Function: portsmodel::resetModelAndLockCurrentPorts()
-//-----------------------------------------------------------------------------
-void PortsModel::resetModelAndLockCurrentPorts()
-{
-    beginResetModel();
-
-    lockedIndexes_.clear();
-
-    endResetModel();
-
-    for (auto const& portName : getInterface()->getItemNames())
-    {
-		DirectionTypes::Direction portDirection = DirectionTypes::str2Direction(QString::fromStdString(
-			portsInterface_->getDirection(portName)), DirectionTypes::DIRECTION_INVALID);
-        if (portDirection != DirectionTypes::DIRECTION_PHANTOM)
-        {
-            lockPort(QString::fromStdString(portName));
-        }
-    }
-
-    emit contentChanged();
-    emit portCountChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: lockPort()
-//-----------------------------------------------------------------------------
-void PortsModel::lockPort(QString const& portName)
-{
-    QModelIndex portIndex = index(portName);
-    QModelIndexList lockedPortIndexes = getLockedPortIndexes(portIndex);
-
-    for (auto const& index : lockedPortIndexes)
-    {
-        if (index.isValid())
-        {
-            lockIndex(index);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: unlockPort()
-//-----------------------------------------------------------------------------
-void PortsModel::unlockPort(QString const& portName)
-{
-    QModelIndex portIndex = index(portName);
-    QModelIndexList lockedPortIndexes = getLockedPortIndexes(portIndex);
-    for (auto const& index : lockedPortIndexes)
-    {
-        if (index.isValid())
-        {
-            unlockIndex(index);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: lockIndex()
-//-----------------------------------------------------------------------------
-void PortsModel::lockIndex(QModelIndex const& index)
-{
-    if(!isLocked(index))
-    {
-        lockedIndexes_.append(QPersistentModelIndex(index));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: unlockIndex()
-//-----------------------------------------------------------------------------
-void PortsModel::unlockIndex(QModelIndex const& index)
-{
-    lockedIndexes_.removeAll(QPersistentModelIndex(index));
-}
-
-//-----------------------------------------------------------------------------
-// Function: isLocked()
-//-----------------------------------------------------------------------------
-bool PortsModel::isLocked(QModelIndex const& index) const
-{
-    return lockedIndexes_.contains(QPersistentModelIndex(index));
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsModel::rowIsLocked()
-//-----------------------------------------------------------------------------
-bool PortsModel::rowIsLocked(int row) const
-{
-    QModelIndex nameIndex = QAbstractTableModel::index(row, nameColumn(), QModelIndex());
-    return nameIndex.isValid() && isLocked(nameIndex);
 }
 
 //-----------------------------------------------------------------------------

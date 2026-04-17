@@ -95,11 +95,26 @@ void KactusUtils::applyThemeToPalette()
         KactusColors::REGULAR_TEXT = palette.windowText().color();
         KactusColors::REGULAR_MESSAGE = KactusColors::REGULAR_TEXT;
 
+        // Field colors
+        KactusColors::MANDATORY_FIELD = KactusColors::MANDATORY_FIELD.darker(140);
+        KactusColors::DISABLED_FIELD = KactusColors::DISABLED_FIELD.darker(300);
+        KactusColors::REGULAR_FIELD = KactusColors::DEFAULT_WINDOW_BG;
+        KactusColors::LOGICAL_PORT_FIELD = KactusColors::LOGICAL_PORT_FIELD.darker(180);
+
         // Set colors for HW design
         KactusColors::DIAGRAM_GRID = palette.windowText().color().darker(250);
         KactusColors::REGULAR_CONNECTION = QColor(Qt::white).darker(150);
         KactusColors::HW_COMPONENT = KactusColors::HW_COMPONENT.darker(175);
+        KactusColors::HW_BUS_COMPONENT = KactusColors::HW_BUS_COMPONENT.darker(125);
         KactusColors::DIAGRAM_COLUMN_HEADER = KactusColors::DIAGRAM_COLUMN_HEADER.darker(175);
     }
-    // KactusColors contains default values for original style if not using darkmode
+
+    // KactusColors contains default values for most original style if not using darkmode
+}
+
+QString KactusUtils::colorToRgbString(QColor const& color)
+{
+    return QStringLiteral("rgb(") % QString::number(color.red()) % QLatin1Char(',') %
+        QString::number(color.green()) % QLatin1Char(',') % QString::number(color.blue()) %
+        QLatin1Char(')');
 }

@@ -14,7 +14,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
+
 #include <QList>
 #include <QSharedPointer>
 
@@ -26,7 +27,7 @@ class ComponentInstantiationInterface;
 //-----------------------------------------------------------------------------
 //! Model for component instantiations summary.
 //-----------------------------------------------------------------------------
-class ComponentInstantiationsModel : public QAbstractTableModel
+class ComponentInstantiationsModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -146,7 +147,25 @@ private:
 	ComponentInstantiationsModel(const ComponentInstantiationsModel& other);
 	ComponentInstantiationsModel& operator=(const ComponentInstantiationsModel& other);
 
-    /*!
+	/*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+	bool indexIsMandatory(QModelIndex const& index) const override;
+
+	/*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+	bool validateIndex(QModelIndex const& index) const override;
+	
+	/*!
      *  Remove references made in the selected component instantiation.
      *
      *    @param [in] instantiationName   Name of the selected component instantiation.

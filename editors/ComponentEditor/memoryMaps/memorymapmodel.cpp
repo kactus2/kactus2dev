@@ -121,14 +121,6 @@ QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
 		return QVariant();
 	}
 
-    std::string blockName = localBlockInterface_->getIndexedItemName(index.row());
-
-    if (role == Qt::BackgroundRole &&
-        (index.column() == MemoryMapColumns::RANGE_COLUMN || index.column() == MemoryMapColumns::WIDTH_COLUMN))
-    {
-        return KactusColors::MANDATORY_FIELD;
-    }
-
     return MemoryBlockModel::data(index, role);
 }
 
@@ -352,6 +344,13 @@ QStringList MemoryMapModel::mimeTypes() const
     types << "text/xml/ipxact:addressBlock";
 
     return types;
+}
+
+bool MemoryMapModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == MemoryMapColumns::RANGE_COLUMN ||
+        index.column() == MemoryMapColumns::WIDTH_COLUMN ||
+        MemoryBlockModel::indexIsMandatory(index);
 }
 
 //-----------------------------------------------------------------------------

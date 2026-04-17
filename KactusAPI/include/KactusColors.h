@@ -31,6 +31,9 @@ namespace KactusColors
     //! Default window background color assigned by style/theme
     extern KACTUS2_API QColor DEFAULT_WINDOW_BG;
 
+    //! Table view gridline color
+    extern KACTUS2_API QColor TABLE_GRIDLINE;
+
     //! Warnings.
     extern KACTUS2_API QColor WARNING;
 

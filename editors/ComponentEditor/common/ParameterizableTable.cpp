@@ -73,21 +73,6 @@ QVariant ParameterizableTable::italicForEvaluatedValue(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterizableTable::blackForValidOrRefForInavlidIndex()
-//-----------------------------------------------------------------------------
-QVariant ParameterizableTable::blackForValidOrRedForInvalidIndex(QModelIndex const& index) const
-{
-    if (validateIndex(index))
-    {
-        return KactusColors::REGULAR_TEXT;
-    }
-    else
-    {
-        return KactusColors::ERROR_COLOR;
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterizableTable::isValidExpression()
 //-----------------------------------------------------------------------------
 bool ParameterizableTable::isValidExpression(QString const& value) const

@@ -144,8 +144,6 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
         return QVariant();
     }
 
-    std::string registerName = registerInterface_->getIndexedItemName(index.row());
-
     if (role == Qt::DisplayRole)
     {
         if (isValidExpressionColumn(index))
@@ -162,64 +160,20 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
             return valueForIndex(index);
         }
     }
-
     else if (role == Qt::EditRole)
     {
         return expressionOrValueForIndex(index);
     }
-
     else if (role == Qt::ToolTipRole)
     {
         return valueForIndex(index);
-    }
-    else if (role == Qt::ForegroundRole)
-    {
-        if (validateIndex(index))
-        {
-            std::string registerPresence = registerInterface_->getIsPresentExpression(registerName);
-            qint64 registerPresenceValue =
-                QString::fromStdString(registerInterface_->getIsPresentValue(registerName, 10)).toLongLong();
-
-            if (index.column() != AddressBlockColumns::IS_PRESENT && 
-                (!registerPresence.empty() && registerPresenceValue == 0))
-            {
-                return KactusColors::DISABLED_TEXT;
-            }
-            else
-            {
-                return KactusColors::REGULAR_TEXT;
-            }
-        }
-        else
-        {
-            return KactusColors::ERROR_COLOR;
-        }
-    }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable) &&
-            index.column() == AddressBlockColumns::REGISTER_ACCESS)
-        {
-            return KactusColors::DISABLED_FIELD;
-        }
-
-        if (index.column() == AddressBlockColumns::NAME ||
-            index.column() == AddressBlockColumns::REGISTER_OFFSET ||
-            index.column() == AddressBlockColumns::REGISTER_SIZE)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
     }
     else if (role == Qt::FontRole)
     {
         return italicForEvaluatedValue(index);
     }
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -690,4 +644,27 @@ void AddressBlockModel::increaseReferencesInPastedRegister(QString const& regist
             emit increaseReferences(refParameterIterator.key());
         }
     }
+}
+
+bool AddressBlockModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == AddressBlockColumns::NAME ||
+        index.column() == AddressBlockColumns::REGISTER_OFFSET ||
+        index.column() == AddressBlockColumns::REGISTER_SIZE;
+}
+
+bool AddressBlockModel::indexIsGreyedOut(QModelIndex const& index) const
+{
+    auto const& registerName = registerInterface_->getIndexedItemName(index.row());
+    auto const& registerPresence = registerInterface_->getIsPresentExpression(registerName);
+    qint64 registerPresenceValue =
+        QString::fromStdString(registerInterface_->getIsPresentValue(registerName, 10)).toLongLong();
+
+    if (index.column() != AddressBlockColumns::IS_PRESENT && 
+        (!registerPresence.empty() && registerPresenceValue == 0))
+    {
+        return true;
+    }
+
+    return false;
 }

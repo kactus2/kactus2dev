@@ -119,7 +119,7 @@ bool TransactionalPortsModel::setData(QModelIndex const& index, QVariant const& 
 
 	if (role == Qt::EditRole)
     {
-        if (isLocked(index))
+        if (indexedItemIsLocked(index))
         {
             return false;
         }
@@ -420,7 +420,7 @@ bool TransactionalPortsModel::indexedItemIsDisabled(QModelIndex const& index) co
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsModel::indexedItemIsMandatory()
 //-----------------------------------------------------------------------------
-bool TransactionalPortsModel::indexedItemIsMandatory(QModelIndex const& index) const
+bool TransactionalPortsModel::indexIsMandatory(QModelIndex const& index) const
 {
     return index.column() == TransactionalPortColumns::NAME ||
         index.column() == TransactionalPortColumns::INITIATIVE;

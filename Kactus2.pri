@@ -108,6 +108,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/graphicsItems/ComponentItem.h \
     ./common/delegates/ComboDelegate/combodelegate.h \
     ./common/delegates/LineEditDelegate/lineeditdelegate.h \
+    ./common/models/TableModelBase.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
     ./common/views/EditableTreeView/EditableTreeView.h \
@@ -927,6 +928,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
+    ./common/models/TableModelBase.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \

@@ -30,7 +30,7 @@ AbstractionDefinitionPortsSortFilter(portInterface, parent)
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex()
 //-----------------------------------------------------------------------------
-QColor AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
+QVariant AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
 {
     if (index.column() == LogicalPortColumns::PROTOCOLTYPE && indexedRowContainsPayload(index))
     {
