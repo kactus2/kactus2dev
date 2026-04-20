@@ -100,6 +100,7 @@ void KactusUtils::applyThemeToPalette()
         KactusColors::DISABLED_FIELD = KactusColors::DISABLED_FIELD.darker(300);
         KactusColors::REGULAR_FIELD = KactusColors::DEFAULT_WINDOW_BG;
         KactusColors::LOGICAL_PORT_FIELD = KactusColors::LOGICAL_PORT_FIELD.darker(180);
+        KactusColors::STRONG_FIELD = KactusColors::STRONG_FIELD.darker(200);
 
         // Set colors for HW design
         KactusColors::DIAGRAM_GRID = palette.windowText().color().darker(250);

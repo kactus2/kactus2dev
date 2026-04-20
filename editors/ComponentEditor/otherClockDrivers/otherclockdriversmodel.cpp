@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 OtherClockDriversModel::OtherClockDriversModel(QSharedPointer<Component> component,
     QSharedPointer<OtherClockDriverValidator> clockValidator, QObject *parent):
-QAbstractTableModel(parent),
+TableModelBase(parent),
 component_(component), 
 table_(component->getOtherClockDrivers()),
 clockValidator_(clockValidator)
@@ -123,36 +123,8 @@ QVariant OtherClockDriversModel::data(QModelIndex const&  index, int role) const
             return QVariant();
         }
     }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == OtherClockDriverColumns::NAME ||
-            index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||
-            index.column() == OtherClockDriverColumns::PULSE_OFFSET ||
-            index.column() == OtherClockDriverColumns::PULSE_VALUE ||
-            index.column() == OtherClockDriverColumns::PULSE_DURATION)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-            return KactusColors::REGULAR_FIELD;
-    }
 
-    else if (role == Qt::ForegroundRole)
-    {
-        if (validateIndex(index))
-        {
-            return KactusColors::REGULAR_TEXT;
-		}
-		else
-        {
-			return KactusColors::ERROR_COLOR;
-		}
-	}
-
-	else
-    {
-		return QVariant();
-	}
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -381,4 +353,13 @@ bool OtherClockDriversModel::validateIndex(QModelIndex const& index) const
     }
 
     return true;
+}
+
+bool OtherClockDriversModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == OtherClockDriverColumns::NAME ||
+        index.column() == OtherClockDriverColumns::CLOCK_PERIOD ||
+        index.column() == OtherClockDriverColumns::PULSE_OFFSET ||
+        index.column() == OtherClockDriverColumns::PULSE_VALUE ||
+        index.column() == OtherClockDriverColumns::PULSE_DURATION;
 }

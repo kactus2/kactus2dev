@@ -21,7 +21,7 @@
 // Function: EnumerationModel::EnumerationModel()
 //-----------------------------------------------------------------------------
 EnumerationModel::EnumerationModel(QObject* parent):
-QAbstractTableModel (parent),
+TableModelBase(parent),
 enumerations_()
 {
 
@@ -86,24 +86,27 @@ QVariant EnumerationModel::data(QModelIndex const& index, int role) const
     {
         return QVariant();
     }
-    
-    if (index.column() == EnumerationColumns::ENUMERATION)
+
+    QSharedPointer<Enumeration> enumeration = enumerations_->at(index.row());
+    auto column = index.column();
+
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-        return getEnumerationColumnData(index.row(), role);
-    } 
-    else if (index.column() == EnumerationColumns::TEXT)
-    {
-        return getTextColumnData(index.row(), role);
+        if (column == EnumerationColumns::ENUMERATION)
+        {
+            return enumeration->getValue();
+        }
+        else if (column == EnumerationColumns::TEXT)
+        {
+            return enumeration->getText();
+        }
+        else if (column == EnumerationColumns::HELP)
+        {
+            return enumeration->getHelp();
+        }
     }
-    else if (index.column() == EnumerationColumns::HELP)
-    {
-        return getHelpColumnData(index.row(), role);
-    }
-    else
-    {
-        Q_ASSERT_X(false, "data()", "Undefined column requested.");
-        return QVariant();
-    }
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -228,85 +231,20 @@ void EnumerationModel::onRemoveItem(QModelIndex const& index)
     emit contentChanged();
 }
 
+bool EnumerationModel::validateIndex(QModelIndex const& index) const
+{
+    return enumerations_->at(index.row())->getValue().isEmpty() == false;
+}
+
+bool EnumerationModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == EnumerationColumns::ENUMERATION;
+}
+
 //-----------------------------------------------------------------------------
 // Function: EnumerationModel::isNotValidIndex()
 //-----------------------------------------------------------------------------
 bool EnumerationModel::isNotValidIndex(QModelIndex const& index) const
 {
     return !index.isValid() ||  index.row() > enumerations_->size() || index.column() < 0 || index.column() >= EnumerationColumns::COLUMN_COUNT;
-}
-
-//-----------------------------------------------------------------------------
-// Function: EnumerationModel::getEnumerationColumnData()
-//-----------------------------------------------------------------------------
-QVariant EnumerationModel::getEnumerationColumnData(int row, int role) const
-{
-    QSharedPointer<Enumeration> enumeration = enumerations_->at(row);
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
-    {
-        return enumeration->getValue();
-    }
-    else if (role == Qt::ForegroundRole)
-    {
-        return getForegroundColorForEnumeration(enumeration);
-    }
-    else if (role == Qt::BackgroundRole)
-    {
-        return KactusColors::MANDATORY_FIELD;
-    }
-    
-    return QVariant();
-}
-
-//-----------------------------------------------------------------------------
-// Function: EnumerationModel::getForegroundColorForEnumeration()
-//-----------------------------------------------------------------------------
-QVariant EnumerationModel::getForegroundColorForEnumeration(QSharedPointer<Enumeration> enumeration) const
-{
-    if (enumeration->getValue().isEmpty())
-    {
-        return KactusColors::ERROR_COLOR;
-    }
-    else
-    {
-        return KactusColors::REGULAR_TEXT;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: EnumerationModel::getTextColumnData()
-//-----------------------------------------------------------------------------
-QVariant EnumerationModel::getTextColumnData(int row, int role) const
-{
-    QSharedPointer<Enumeration> enumeration = enumerations_->at(row);
-    
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
-    {
-        return enumeration->getText();
-    }
-    else if (role == Qt::ForegroundRole)
-    {
-        return getForegroundColorForEnumeration(enumeration);
-    }
-    
-    return QVariant();
-}
-
-//-----------------------------------------------------------------------------
-// Function: EnumerationModel::getHelpColumnData()
-//-----------------------------------------------------------------------------
-QVariant EnumerationModel::getHelpColumnData(int row, int role) const
-{
-    QSharedPointer<Enumeration> enumeration = enumerations_->at(row);
-    
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
-    {
-        return enumeration->getHelp();
-    }
-    else if (role == Qt::ForegroundRole)
-    {
-        return getForegroundColorForEnumeration(enumeration);
-    }
-
-    return QVariant();
 }

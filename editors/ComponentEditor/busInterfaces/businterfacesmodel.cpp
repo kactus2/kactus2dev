@@ -43,7 +43,7 @@
 //-----------------------------------------------------------------------------
 BusInterfacesModel::BusInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, BusInterfaceInterface* busInterface, QObject *parent) :
-QAbstractTableModel(parent),
+TableModelBase(parent),
 libHandler_(libHandler),
 busInterface_(busInterface),
 parameterFinder_(parameterFinder),
@@ -190,51 +190,8 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
     {
         return QString::fromStdString(busInterface_->getDescription(busName));
     }
-	else if (role == Qt::ForegroundRole)
-    {
-        if (index.column() == BusInterfaceColumns::NAME && busInterface_->itemHasValidName(busName))
-        {
-            return KactusColors::REGULAR_TEXT;     
-        }
-        else if (index.column() == BusInterfaceColumns::BUSDEF && busInterface_->hasValidBusType(busName))
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-        else if (index.column() == BusInterfaceColumns::ABSDEF && busInterface_->hasValidAbstractionTypes(busName))
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-        else if (index.column() == BusInterfaceColumns::INTERFACE_MODE &&
-            busInterface_->getMode(busName) != General::INTERFACE_MODE_COUNT)
-        {
-            return KactusColors::REGULAR_TEXT;  
-        }
-        else if (index.column() == BusInterfaceColumns::DESCRIPTION)
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-        else
-        {
-            return KactusColors::ERROR_COLOR;
-        }
-	}
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == BusInterfaceColumns::NAME ||
-            index.column() == BusInterfaceColumns::BUSDEF ||
-            index.column() == BusInterfaceColumns::INTERFACE_MODE)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-	}
-	else 
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -454,6 +411,37 @@ void BusInterfacesModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool BusInterfacesModel::validateIndex(QModelIndex const& index) const
+{
+    std::string busName = busInterface_->getIndexedItemName(index.row());
+
+    if (index.column() == BusInterfaceColumns::NAME)
+    {
+        return busInterface_->itemHasValidName(busName);
+    }
+    else if (index.column() == BusInterfaceColumns::BUSDEF)
+    {
+        return busInterface_->hasValidBusType(busName);
+    }
+    else if (index.column() == BusInterfaceColumns::ABSDEF)
+    {
+        return busInterface_->hasValidAbstractionTypes(busName);
+    }
+    else if (index.column() == BusInterfaceColumns::INTERFACE_MODE)
+    {
+        return busInterface_->getMode(busName) != General::INTERFACE_MODE_COUNT;
+    }
+
+    return true;
+}
+
+bool BusInterfacesModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == BusInterfaceColumns::NAME ||
+        index.column() == BusInterfaceColumns::BUSDEF ||
+        index.column() == BusInterfaceColumns::INTERFACE_MODE;
 }
 
 //-----------------------------------------------------------------------------

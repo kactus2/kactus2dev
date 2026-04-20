@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------------
 ChannelsModel::ChannelsModel(QSharedPointer<QList<QSharedPointer<Channel> > > channels, 
     QSharedPointer<ChannelValidator> validator, QObject *parent ) :
-QAbstractTableModel(parent),
+TableModelBase(parent),
     channels_(channels),
     validator_(validator)
 {
@@ -154,35 +154,7 @@ QVariant ChannelsModel::data(QModelIndex const& index, int role) const
 		return channels_->at(index.row())->getInterfaceNames();
 	}
 
-	else if (role == Qt::ForegroundRole)
-    {
-
-        if (index.column() == ChannelColumns::INTERFACES && 
-            !validator_->hasValidBusInterfaceReferences(channels_->at(index.row())))
-        {
-            return KactusColors::ERROR_COLOR;
-        }
-        else
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-	}
-
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == ChannelColumns::NAME || index.column() == ChannelColumns::INTERFACES)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-	else 
-    {
-		return QVariant();
-	}
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -288,4 +260,19 @@ void ChannelsModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool ChannelsModel::validateIndex(QModelIndex const& index) const
+{
+    if (index.column() == ChannelColumns::INTERFACES)
+    {
+        return validator_->hasValidBusInterfaceReferences(channels_->at(index.row()));
+    }
+
+    return true;
+}
+
+bool ChannelsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == ChannelColumns::NAME || index.column() == ChannelColumns::INTERFACES;
 }

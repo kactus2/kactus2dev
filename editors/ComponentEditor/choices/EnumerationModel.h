@@ -12,7 +12,7 @@
 #ifndef ENUMERATIONMODEL_H
 #define ENUMERATIONMODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
 
 #include <QSharedPointer>
 #include <QList>
@@ -22,7 +22,7 @@ class Enumeration;
 //-----------------------------------------------------------------------------
 // class EnumerationModel.
 //-----------------------------------------------------------------------------
-class EnumerationModel : public QAbstractTableModel 
+class EnumerationModel : public TableModelBase 
 {
 	Q_OBJECT
 
@@ -142,6 +142,24 @@ private:
 	EnumerationModel& operator=(EnumerationModel const& rhs);
 
     /*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+    bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
+
+    /*!
      *  Checks if the given index is not valid and outside the model.
      *
      *    @param [in] index   The model index to check.
@@ -149,45 +167,6 @@ private:
      *    @return True, if the index is invalid, otherwise false.
      */
     bool isNotValidIndex(QModelIndex const& index) const;
-
-    /*!
-     *  Gets the data in the enumeration column.
-     *
-     *    @param [in] row     The row of data to be returned.
-     *    @param [in] role    The role for which data is returned.
-     *
-     *    @return The data in enumeration column for the given row and role.
-     */
-    QVariant getEnumerationColumnData(int row, int role) const;
-
-    /*!
-     *  Gets the foreground color for the given enumeration.
-     *
-     *    @param [in] enumeration   The enumeration for which the foreground color is fetched.
-     *
-     *    @return The foreground color for the enumeration cells.
-     */
-    QVariant getForegroundColorForEnumeration(QSharedPointer<Enumeration> enumeration) const;
-
-    /*!
-     *  Gets the data in the text column.
-     *
-     *    @param [in] row     The row of data to be returned.
-     *    @param [in] role    The role for which data is returned.
-     *
-     *    @return The data in text column for the given row and role.
-     */
-    QVariant getTextColumnData(int row, int role) const;
-    
-    /*!
-     *  Gets the data in the help column.
-     *
-     *    @param [in] row     The row of data to be returned.
-     *    @param [in] role    The role for which data is returned.
-     *
-     *    @return The data in help column for the given row and role.
-     */
-    QVariant getHelpColumnData(int row, int role) const;
 
     //-----------------------------------------------------------------------------
 	// Data.

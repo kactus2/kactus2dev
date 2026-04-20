@@ -26,6 +26,8 @@
 #include <KactusAPI/include/PluginManager.h>
 #include <KactusAPI/include/ISourceAnalyzerPlugin.h>
 
+#include <common/KactusUtils.h>
+
 #include <QApplication>
 #include <QVBoxLayout>
 #include <QIcon>
@@ -416,21 +418,21 @@ void FileDependencyEditor::setupToolbar()
     toolbar_.setStyleSheet(QString("QToolBar { border: none; }"));
 
     // Create the filter buttons in the toolbar.
-    addFilterButton(QIcon(":/icons/common/graphics/dependency_twoway.png"),
+    addFilterButton(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/dependency_twoway.png"),
         tr("Show Bidirectional Dependencies"),
         FileDependencyGraphView::FILTER_TWO_WAY);
-    addFilterButton(QIcon(":/icons/common/graphics/dependency_oneway.png"), 
+    addFilterButton(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/dependency_oneway.png"), 
         tr("Show Unidirectional Dependencies"),
         FileDependencyGraphView::FILTER_ONE_WAY);
     addFilterButton(QIcon(":/icons/common/graphics/dependency_manual.png"), 
         tr("Show Manual Dependencies"),
         FileDependencyGraphView::FILTER_MANUAL);
-    addFilterButton(QIcon(":/icons/common/graphics/dependency_auto.png"), 
+    addFilterButton(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/dependency_auto.png"), 
         tr("Show Analyzed Dependencies"),
         FileDependencyGraphView::FILTER_AUTOMATIC);
-    addFilterButton(QIcon(":/icons/common/graphics/external.png"), tr("Show External"),
+    addFilterButton(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/external.png"), tr("Show External"),
         FileDependencyGraphView::FILTER_EXTERNAL);
-    addFilterButton(QIcon(":/icons/common/graphics/diff.png"), tr("Show Differences"),
+    addFilterButton(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/diff.png"), tr("Show Differences"),
         FileDependencyGraphView::FILTER_DIFFERENCE);
 
     connect(&filterActions_, SIGNAL(triggered(QAction*)), this, SLOT(filterToggle(QAction*)));

@@ -12,7 +12,7 @@
 #ifndef INDIRECT_INTERFACES_MODEL_H
 #define INDIRECT_INTERFACES_MODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
 
 #include <QSharedPointer>
 #include <QList>
@@ -26,7 +26,7 @@ class Parameter;
 //-----------------------------------------------------------------------------
 //! Data model for component indirect interfaces.
 //-----------------------------------------------------------------------------
-class IndirectInterfacesModel : public QAbstractTableModel
+class IndirectInterfacesModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -154,7 +154,25 @@ signals:
 
 private:
 
-    //-----------------------------------------------------------------------------
+	/*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+    bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
+	
+	//-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
