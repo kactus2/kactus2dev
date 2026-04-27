@@ -59,8 +59,7 @@ QWidget(parent),
     timer_(0)
 {
     // Initialize the widgets.
-    progressBar_.setStyleSheet("QProgressBar:horizontal { margin: 0px; border: none; background: #cccccc; } "
-                               "QProgressBar::chunk:horizontal { background: #009eff;}");
+    progressBar_.setStyleSheet("QProgressBar::chunk:horizontal { background: #009eff;}");
     progressBar_.setFixedHeight(2);
     progressBar_.setTextVisible(false);
     progressBar_.setContentsMargins(0, 0, 0, 0);

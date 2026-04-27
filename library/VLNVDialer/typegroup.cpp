@@ -11,6 +11,7 @@
 
 #include "typegroup.h"
 
+#include <common/KactusUtils.h>
 #include <common/widgets/tagEditor/FlowLayout.h>
 
 #include <QIcon>
@@ -20,11 +21,11 @@
 //-----------------------------------------------------------------------------
 TypeGroup::TypeGroup(QWidget *parent):
 FilterGroup(tr("Type"), parent),
-componentBox_(tr(":icons/common/graphics/hw-component.png"), QString(), this),
-busBox_(tr(":icons/common/graphics/bus-def.png"), QString(), this),
-catalogBox_(tr(":icons/common/graphics/catalog.png"), QString(), this),
-apiComBox_(tr(":icons/common/graphics/new-com_definition.png"), QString(), this),
-advancedBox_(tr(":icons/common/graphics/hw-design.png"), QString(), this),
+componentBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/hw-component.png"), QString(), this),
+busBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/bus-def.png"), QString(), this),
+catalogBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/catalog.png"), QString(), this),
+apiComBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/new-com_definition.png"), QString(), this),
+advancedBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/hw-design.png"), QString(), this),
 options_()
 {
     setupButton(&componentBox_, tr("Component"));

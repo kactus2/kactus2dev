@@ -13,6 +13,8 @@
 
 #include <KactusAPI/include/utils.h>
 
+#include <common/KactusUtils.h>
+
 #include <common/widgets/tagEditor/FlowLayout.h>
 
 //-----------------------------------------------------------------------------
@@ -20,12 +22,12 @@
 //-----------------------------------------------------------------------------
 HierarchyGroup::HierarchyGroup(QWidget *parent):
 	FilterGroup(tr("Product Hierarchy"), parent),
-flatBox_(tr(":icons/common/graphics/square.png"), QString(), this),
-productBox_(tr(":icons/common/graphics/box.png"), QString(), this),
-boardBox_(tr(":icons/common/graphics/circuit.png"), QString(), this),
-chipBox_(tr(":icons/common/graphics/chip.png"), QString(), this),
-socBox_(tr(":icons/common/graphics/soc.png"), QString(), this),
-ipBox_(tr(":icons/common/graphics/capacitor.png"), QString(), this),
+flatBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/square.png"), QString(), this),
+productBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/box.png"), QString(), this),
+boardBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/circuit.png"), QString(), this),
+chipBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/chip.png"), QString(), this),
+socBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/soc.png"), QString(), this),
+ipBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/capacitor.png"), QString(), this),
 options_()
 {
     setupButton(&flatBox_, tr("Flat"));

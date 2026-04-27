@@ -27,6 +27,8 @@ QColor KactusColors::DEFAULT_WINDOW_BG = QColor(255, 255, 255);
 
 QColor KactusColors::TABLE_GRIDLINE = Qt::lightGray; // Gridline color used in table editors
 
+QColor KactusColors::DOCK_WIDGET_TITLE_BG = QColor(137, 182, 226); // Default kactus2 blue
+
 //! Colors used in text.
 QColor KactusColors::REGULAR_TEXT = Qt::black; // Regular text.
 QColor KactusColors::DISABLED_TEXT = Qt::darkGray; // Text in disabled or uneditable elements.

@@ -12,6 +12,7 @@
 #include "implementationgroup.h"
 
 #include <common/widgets/tagEditor/FlowLayout.h>
+#include <common/KactusUtils.h>
 
 #include <QIcon>
 
@@ -20,9 +21,9 @@
 //-----------------------------------------------------------------------------
 ImplementationGroup::ImplementationGroup(QWidget* parent) :
     FilterGroup(tr("Implementation"), parent),
-    hwBox_(tr(":icons/common/graphics/transistor.png"), QString(), this),
-    swBox_(tr(":icons/common/graphics/sw-component48x48.png"), QString(), this),
-    systemBox_(tr(":icons/common/graphics/system-component.png"), QString(), this),
+    hwBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/transistor.png"), QString(), this),
+    swBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/sw-component48x48.png"), QString(), this),
+    systemBox_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/system-component.png"), QString(), this),
     options_()
 {
     setupButton(&hwBox_, tr("HW"));

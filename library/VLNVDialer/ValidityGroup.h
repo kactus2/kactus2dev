@@ -14,10 +14,10 @@
 
 #include "FilterGroup.h"
 
-#include <common/widgets/ThemeableIconWidgets/ThemeableIconWidgets.h>
 #include <KactusAPI/include/utils.h>
 
 #include <QGroupBox>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Contains the check boxes to set the re-usability options for VLNVDialer.
@@ -88,10 +88,10 @@ private slots:
 private:
 
 	//! Check box to select valid items in/out of search results.
-	ThemeablePushButton validBox_;
+	QPushButton validBox_;
 
 	//! Check box to select invalid items in/out of search results.
-	ThemeablePushButton nonvalidBox_;
+	QPushButton nonvalidBox_;
 
 	//! Contains the current validity settings.
 	Utils::ValidityOptions options_;

@@ -14,10 +14,9 @@
 
 #include "FilterGroup.h"
 
-#include <common/widgets/ThemeableIconWidgets/ThemeableIconWidgets.h>
-
 #include <KactusAPI/include/utils.h>
 
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Contains check boxes to set the implementation options for VLNVDialer.
@@ -95,13 +94,13 @@ private:
     void setupLayout();
 
 	//! Check box to select hardware components in/out of search results.
-	ThemeablePushButton hwBox_;
+	QPushButton hwBox_;
 
 	//! Check box to select software component in/out of search results.
-	ThemeablePushButton swBox_;
+	QPushButton swBox_;
 
 	//! Check box to select system components in/out of search results.
-	ThemeablePushButton systemBox_;
+	QPushButton systemBox_;
 
 	//! Contains the current search settings.
 	Utils::ImplementationOptions options_;

@@ -34,6 +34,9 @@ namespace KactusColors
     //! Table view gridline color
     extern KACTUS2_API QColor TABLE_GRIDLINE;
 
+    //! Dock widget
+    extern KACTUS2_API QColor DOCK_WIDGET_TITLE_BG;
+
     //! Warnings.
     extern KACTUS2_API QColor WARNING;
 

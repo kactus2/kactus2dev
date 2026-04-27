@@ -1013,12 +1013,6 @@
     <Filter Include="Source Files\common\widgets\instanceWidgets">
       <UniqueIdentifier>{b0a2d456-f4eb-4af6-91e7-2ef4f1d68d6e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\widgets\ThemeableIconWidgets">
-      <UniqueIdentifier>{1578a077-d2dc-4433-be2c-10f3878e7104}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\ThemeableIconWidgets">
-      <UniqueIdentifier>{bfbc5c25-4413-4bf0-a876-c8c178f44c6b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common\models">
       <UniqueIdentifier>{a10d637b-7268-42c8-bf7a-2e6c7c08cb75}</UniqueIdentifier>
     </Filter>
@@ -3444,9 +3438,6 @@
     </ClCompile>
     <ClCompile Include="common\KactusUtils.cpp">
       <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.cpp">
-      <Filter>Source Files\common\widgets\ThemeableIconWidgets</Filter>
     </ClCompile>
     <ClCompile Include="common\models\TableModelBase.cpp">
       <Filter>Source Files\common\models</Filter>
@@ -6217,9 +6208,6 @@
     </QtMoc>
     <QtMoc Include="library\LibraryTreeModel.h">
       <Filter>Header Files\library</Filter>
-    </QtMoc>
-    <QtMoc Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.h">
-      <Filter>Header Files\common\widgets\ThemeableIconWidgets</Filter>
     </QtMoc>
     <QtMoc Include="common\models\TableModelBase.h">
       <Filter>Header Files\common\models</Filter>

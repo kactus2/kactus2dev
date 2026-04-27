@@ -14,10 +14,10 @@
 
 #include "FilterGroup.h"
 
-#include <common/widgets/ThemeableIconWidgets/ThemeableIconWidgets.h>
 #include <KactusAPI/include/utils.h>
 
 #include <QGroupBox>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Contains the check boxes to set the type options for VLNVDialer.
@@ -101,19 +101,19 @@ private:
     void setupLayout();
 
 	//! Check box to select components in/out of search results.
-	ThemeablePushButton componentBox_;
+	QPushButton componentBox_;
 
 	//! Check box to select buses/APIs in/out of search results.
-    ThemeablePushButton busBox_;
+    QPushButton busBox_;
 
     //! Check box to select buses/APIs in/out of search results.
-    ThemeablePushButton catalogBox_;
+    QPushButton catalogBox_;
 
     //! Check box to select buses/APIs in/out of search results.
-    ThemeablePushButton apiComBox_;
+    QPushButton apiComBox_;
 
 	//! Check box to select other IP-Xact types in/out of search results.
-    ThemeablePushButton advancedBox_;
+    QPushButton advancedBox_;
 
 	//! Contains the current search settings for type.
 	Utils::TypeOptions options_;

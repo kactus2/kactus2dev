@@ -3737,18 +3737,14 @@ void MainWindow::applyThemeToMainWindow()
     auto appStyle = QApplication::style()->name();
     QString appStyleSheet;
 
+    auto dockWidgetTitleColorRGB = KactusUtils::colorToRgbString(KactusColors::DOCK_WIDGET_TITLE_BG);
+    auto tableGridlineColorRGB = KactusUtils::colorToRgbString(KactusColors::TABLE_GRIDLINE);
+    auto mandatoryFieldColorRGB = KactusUtils::colorToRgbString(KactusColors::MANDATORY_FIELD);
+
     // Dark mode is not enabled for windows vista style
     if (KactusUtils::darkThemeEnabled() && appStyle.compare("windowsvista") != 0)
     {
-        auto palette = QGuiApplication::palette();
-        auto windowBG = palette.color(QPalette::ColorRole::Window);
-
-        auto dockWidgetTitleColor = windowBG.lighter(150);
-        QString dockWidgetTitleColorRGB = KactusUtils::colorToRgbString(dockWidgetTitleColor);
-
-        auto tableGridlineColorRGB = dockWidgetTitleColorRGB;
-        auto mandatoryFieldColorRGB = KactusUtils::colorToRgbString(KactusColors::MANDATORY_FIELD);
-
+        auto textEditBorderColorRGB = tableGridlineColorRGB;
         appStyleSheet =
             "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
             "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
@@ -3760,12 +3756,15 @@ void MainWindow::applyThemeToMainWindow()
             "QTableView::indicator:unchecked {image: none;}"
             "QDockWidget::title {background-color: " % dockWidgetTitleColorRGB % "; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
             "*[mandatoryField=\"true\"] { background-color: " % mandatoryFieldColorRGB % "; color: Black }" // force mandatory field text color to black for visibility
-            "QTableView { gridline-color: " % tableGridlineColorRGB % " }";
+            "QTableView { gridline-color: " % tableGridlineColorRGB % " }"
+            "QPlainTextEdit { border: 1px solid " % textEditBorderColorRGB % "; }"
+            "QLineEdit { border: 1px solid " % textEditBorderColorRGB % "; border-radius: 3px }"
+            "QTextEdit { border: 1px solid " % textEditBorderColorRGB % "; border-radius: 3px }";
     }
     else
     {
         // Light theme. Classic Kactus2 look
-        appStyleSheet = QStringLiteral(
+        appStyleSheet =
             "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
             "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
             "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
@@ -3774,8 +3773,8 @@ void MainWindow::applyThemeToMainWindow()
             "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
             "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
             "QTableView::indicator:unchecked {image: none;}"
-            "QDockWidget::title {background-color: #89B6E2; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
-            "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
+            "QDockWidget::title {background-color: "% dockWidgetTitleColorRGB %"; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
+            "*[mandatoryField=\"true\"] { background-color: "% mandatoryFieldColorRGB %"; }";
     }
 
     setStyleSheet(appStyleSheet);

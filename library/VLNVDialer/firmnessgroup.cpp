@@ -22,9 +22,9 @@
 //-----------------------------------------------------------------------------
 FirmnessGroup::FirmnessGroup(QWidget* parent) :
     FilterGroup(tr("Firmness"), parent),
-    templateBox_(":/icons/common/graphics/template.png", QString(), this),
-    mutableBox_(":/icons/common/graphics/mutable.png", QString(), this),
-    fixedBox_(":/icons/common/graphics/fixed.png", QString(), this),
+    templateBox_(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/template.png"), QString(), this),
+    mutableBox_(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/mutable.png"), QString(), this),
+    fixedBox_(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/fixed.png"), QString(), this),
     options_()
 {
     setupButton(&templateBox_, tr("Template"));

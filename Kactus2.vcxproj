@@ -303,7 +303,6 @@ CreateHelp
     <ClCompile Include="common\widgets\tagEditor\TagLabel.cpp" />
     <ClCompile Include="common\widgets\tagEditor\TagSelector.cpp" />
     <ClCompile Include="common\widgets\tagEditor\TagSelectorContainer.cpp" />
-    <ClCompile Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.cpp" />
     <ClCompile Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.cpp" />
     <ClCompile Include="common\widgets\TreeItemSelector\TreeItemEditor.cpp" />
     <ClCompile Include="common\widgets\TreeItemSelector\TreeItemModel.cpp" />
@@ -1318,7 +1317,6 @@ CreateHelp
     <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h" />
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h" />
     <QtMoc Include="common\widgets\instanceWidgets\InstanceWidgets.h" />
-    <QtMoc Include="common\widgets\ThemeableIconWidgets\ThemeableIconWidgets.h" />
     <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.h" />

@@ -99,7 +99,7 @@ void KactusUtils::applyThemeToPalette()
         KactusColors::MANDATORY_FIELD = KactusColors::MANDATORY_FIELD.darker(140);
         KactusColors::DISABLED_FIELD = KactusColors::DISABLED_FIELD.darker(300);
         KactusColors::REGULAR_FIELD = KactusColors::DEFAULT_WINDOW_BG;
-        KactusColors::LOGICAL_PORT_FIELD = KactusColors::LOGICAL_PORT_FIELD.darker(180);
+        KactusColors::LOGICAL_PORT_FIELD = KactusColors::LOGICAL_PORT_FIELD.darker(200);
         KactusColors::STRONG_FIELD = KactusColors::STRONG_FIELD.darker(200);
 
         // Set colors for HW design
@@ -108,6 +108,9 @@ void KactusUtils::applyThemeToPalette()
         KactusColors::HW_COMPONENT = KactusColors::HW_COMPONENT.darker(175);
         KactusColors::HW_BUS_COMPONENT = KactusColors::HW_BUS_COMPONENT.darker(125);
         KactusColors::DIAGRAM_COLUMN_HEADER = KactusColors::DIAGRAM_COLUMN_HEADER.darker(175);
+
+        KactusColors::DOCK_WIDGET_TITLE_BG = KactusColors::DEFAULT_WINDOW_BG.lighter(150);
+        KactusColors::TABLE_GRIDLINE = KactusColors::DOCK_WIDGET_TITLE_BG;
     }
 
     // KactusColors contains default values for most original style if not using darkmode

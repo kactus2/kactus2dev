@@ -15,9 +15,9 @@
 #include "FilterGroup.h"
 
 #include <KactusAPI/include/utils.h>
-#include <common/widgets/ThemeableIconWidgets/ThemeableIconWidgets.h>
 
 #include <QGroupBox>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Contains the check boxes to set the re-usability options for VLNVDialer.
@@ -92,13 +92,13 @@ private slots:
 private:
 
 	//! Check box to select templates in/out of search results.
-	ThemeablePushButton templateBox_;
+	QPushButton templateBox_;
 
 	//! Check box to select mutable in/out of search results.
-	ThemeablePushButton mutableBox_;
+	QPushButton mutableBox_;
 
 	//! Check box to select fixed in/out of search results.
-	ThemeablePushButton fixedBox_;
+	QPushButton fixedBox_;
 
 	//! Contains the current re-usability settings.
 	Utils::FirmnessOptions options_;

@@ -13,6 +13,7 @@
 
 #include <KactusAPI/include/utils.h>
 
+#include <common/KactusUtils.h>
 #include <common/widgets/tagEditor/FlowLayout.h>
 
 //-----------------------------------------------------------------------------
@@ -20,8 +21,8 @@
 //-----------------------------------------------------------------------------
 ValidityGroup::ValidityGroup(QWidget *parent):
 FilterGroup(tr("Correctness"), parent),
-validBox_(tr(":/icons/common/graphics/pass.png"), QString(), this),
-nonvalidBox_(tr(":/icons/common/graphics/fail.png"), QString(), this),
+validBox_(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/pass.png"), QString(), this),
+nonvalidBox_(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/fail.png"), QString(), this),
 options_()
 {
     setupButton(&validBox_, tr("Valid"));

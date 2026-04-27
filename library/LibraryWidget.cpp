@@ -22,6 +22,7 @@
 #include "ObjectSelectionListItem.h"
 #include "LibraryItemSelectionFactory.h"
 
+#include <common/KactusUtils.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include "HierarchyView/hierarchywidget.h"
