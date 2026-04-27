@@ -124,11 +124,11 @@ protected:
     /*!
      *  Gives a format for a given text color.
      *
-     *    @param [in] textColor   The name of the color in the format.
+     *    @param [in] textColor   The color in the format.
      *
      *    @return The format for the given color.
      */
-    QTextCharFormat colorFormat(Qt::GlobalColor textColor) const;
+    QTextCharFormat colorFormat(QColor const& textColor) const;
 
     /*!
      *  Replaces a word in a given index with another.
