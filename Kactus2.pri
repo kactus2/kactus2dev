@@ -13,6 +13,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/IEditProvider.h \
     ./common/GenericEditProvider.h \
     ./common/KactusUtils.h \
+    ./common/KactusProxyStyle.h \
     ./common/widgets/listManager/dirlistmanagermodel.h \
     ./common/widgets/listManager/listmanagermodel.h \
     ./common/widgets/listManager/listmanager.h \
@@ -915,6 +916,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusUtils.cpp \
+    ./common/KactusProxyStyle.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \

@@ -39,16 +39,22 @@ static QPixmap getRecoloredPixmap(const QPixmap& src, const QColor& color)
     return result;
 }
 
-QIcon KactusUtils::getIconStyledToTheme(QString const& srcPath)
+QIcon KactusUtils::getIconStyledToTheme(QString const& srcPath, QColor* iconColorOverride /*= nullptr*/)
 {
     if (darkThemeEnabled())
     {
         QPixmap base(srcPath);
         QIcon icon;
         auto pal = QApplication::palette();
-        auto normalCol = pal.color(QPalette::ButtonText);
+
+        QColor newColor = pal.color(QPalette::ButtonText);
+
+        if (iconColorOverride)
+        {
+            newColor = *iconColorOverride;
+        }
         
-        icon.addPixmap(getRecoloredPixmap(base, normalCol), QIcon::Normal, QIcon::Off);
+        icon.addPixmap(getRecoloredPixmap(base, newColor), QIcon::Normal, QIcon::Off);
         return icon;
     }
 

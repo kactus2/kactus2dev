@@ -3445,6 +3445,9 @@
     <ClCompile Include="library\HierarchyModel.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
+    <ClCompile Include="common\KactusProxyStyle.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5888,6 +5891,9 @@
       <Filter>Header Files\common\layouts</Filter>
     </ClInclude>
     <ClInclude Include="common\KactusUtils.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\KactusProxyStyle.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>

@@ -21,6 +21,7 @@
 #include <KactusAPI/include/ConsoleMediator.h>
 #include <common/ui/GraphicalMessageMediator.h>
 #include <common/KactusUtils.h>
+#include <common/KactusProxyStyle.h>
 
 #include <library/LibraryTreeModel.h>
 #include <library/HierarchyModel.h>
@@ -46,8 +47,6 @@
 #include "PythonAPI/StdInputListener.h"
 #include "PythonAPI/FileChannel.h"
 
-#include <QStyleFactory>
-
 //-----------------------------------------------------------------------------
 //! Private utility functions for main.
 //-----------------------------------------------------------------------------
@@ -71,14 +70,8 @@ namespace
         {
             QApplication* guiApplication = new QApplication(argc, argv);        
 
-            // Set the palette to use nice pastel colors.
-            // QPalette palette = guiApplication->palette();
-            // palette.setColor(QPalette::Active, QPalette::Highlight, QColor(33, 135, 237));
-            // palette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(166, 200, 234));
-            // palette.setColor(QPalette::Inactive, QPalette::Highlight, QColor(166, 200, 234));
-            // guiApplication->setPalette(palette);
-
-            //guiApplication->setStyle(QStyleFactory::create("Fusion"));
+            auto proxyStyle = new KactusProxyStyle(guiApplication->style());
+            guiApplication->setStyle(proxyStyle);
             
             application = guiApplication;
         }

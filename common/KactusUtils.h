@@ -26,7 +26,7 @@ namespace KactusUtils
      *
      *    @return An icon whose color is changed to match the system theme.
      */
-    QIcon getIconStyledToTheme(QString const& srcPath);
+    QIcon getIconStyledToTheme(QString const& srcPath, QColor* iconColorOverride = nullptr);
 
     /*!
      *  Checks if dark mode is enabled.

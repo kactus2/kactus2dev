@@ -158,6 +158,9 @@
         <file>common/graphics/pass.png</file>
         <file>common/graphics/filterMemoryOverlap.png</file>
         <file>common/graphics/interconnectGenerator.png</file>
+        <file>common/graphics/dock-widget-close.png</file>
+        <file>common/graphics/dock-widget-attach.png</file>
+        <file>common/graphics/dock-widget-detach.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>
