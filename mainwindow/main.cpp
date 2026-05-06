@@ -69,10 +69,15 @@ namespace
         if (startGui(argc))
         {
             QApplication* guiApplication = new QApplication(argc, argv);        
+            auto defaultStyle = guiApplication->style();
 
-            auto proxyStyle = new KactusProxyStyle(guiApplication->style());
-            guiApplication->setStyle(proxyStyle);
-            
+            // Set style override if not using windows
+            if (defaultStyle->name().compare("windowsvista") != 0)
+            {
+                auto proxyStyle = new KactusProxyStyle(defaultStyle);
+                guiApplication->setStyle(proxyStyle);
+            }
+
             application = guiApplication;
         }
         else
