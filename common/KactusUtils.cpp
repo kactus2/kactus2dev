@@ -18,7 +18,8 @@
 #include <QStyleHints>
 #include <QPalette>
 #include <QStyle>
-#include <QtVersionChecks>
+#include <QtGlobal>
+#include <QStringBuilder>
 
 static QPixmap getRecoloredPixmap(const QPixmap& src, const QColor& color)
 {

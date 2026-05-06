@@ -16,6 +16,8 @@
 
 #include <common/KactusUtils.h>
 
+#include <QStringBuilder>
+
 HierarchyModel::HierarchyModel(LibraryInterface* handler, QObject* parent) :
     HierarchyModelBase(handler, parent)
 {

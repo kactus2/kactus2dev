@@ -54,6 +54,7 @@
 #include <QString>
 #include <QHelpEngine>
 #include <QApplication>
+#include <QStringBuilder>
 
 namespace 
 {
