@@ -65,6 +65,7 @@ QColor KactusColors::MIRROREDSYSTEM_INTERFACE = QColor(201, 189, 233);
 QColor KactusColors::MONITOR_INTERFACE = QColor(0xfd, 0xfd, 0xfd);
 QColor KactusColors::INVALID_INTERFACE = ERROR_COLOR; // The interface is somehow invalid, eg. lacks a mode or type.
 QColor KactusColors::ENDPOINT_TYPE_API = QColor(0xcb, 0xfd, 0xfd); // The interface is for API connections.
+QColor KactusColors::ADHOC_PORT = QColor(Qt::black);
 
 //! Colors used in component instances.
 QColor KactusColors::MISSING_COMPONENT = QColor(240, 180, 180); // The component of the instance does not exist.

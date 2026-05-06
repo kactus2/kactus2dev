@@ -76,6 +76,7 @@ namespace KactusColors
     extern KACTUS2_API QColor MONITOR_INTERFACE;
     extern KACTUS2_API QColor INVALID_INTERFACE; // The interface is somehow invalid, eg. lacks a mode or type.
     extern KACTUS2_API QColor ENDPOINT_TYPE_API; // The interface is for API connections.
+    extern KACTUS2_API QColor ADHOC_PORT;
 
     //! Colors used in component instances.
     extern KACTUS2_API QColor MISSING_COMPONENT; // The component of the instance does not exist.

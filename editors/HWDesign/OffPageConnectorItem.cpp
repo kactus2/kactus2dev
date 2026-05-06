@@ -18,6 +18,8 @@
 
 #include <IPXACTmodels/Component/BusInterface.h>
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <QBrush>
 #include <QPen>
 
@@ -43,6 +45,7 @@ parent_(parent)
     line->setFlag(ItemStacksBehindParent);
     
     QPen newPen = line->pen();
+    newPen.setColor(KactusColors::REGULAR_CONNECTION);
     newPen.setWidth(3);
     line->setPen(newPen);
 

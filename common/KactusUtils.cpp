@@ -112,9 +112,11 @@ void KactusUtils::applyThemeToPalette()
         // Set colors for HW design
         KactusColors::DIAGRAM_GRID = palette.windowText().color().darker(250);
         KactusColors::REGULAR_CONNECTION = QColor(Qt::white).darker(150);
+        KactusColors::ADHOC_PORT = KactusColors::REGULAR_CONNECTION;
         KactusColors::HW_COMPONENT = KactusColors::HW_COMPONENT.darker(175);
         KactusColors::HW_BUS_COMPONENT = KactusColors::HW_BUS_COMPONENT.darker(125);
         KactusColors::DIAGRAM_COLUMN_HEADER = KactusColors::DIAGRAM_COLUMN_HEADER.darker(175);
+        KactusColors::CONNECTION_UNDERCROSSING = KactusColors::CONNECTION_UNDERCROSSING.darker(150);
 
         KactusColors::DOCK_WIDGET_TITLE_BG = KactusColors::DEFAULT_WINDOW_BG.lighter(150);
         KactusColors::TABLE_GRIDLINE = KactusColors::DOCK_WIDGET_TITLE_BG;

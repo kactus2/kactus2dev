@@ -16,6 +16,8 @@
 #include <editors/common/DesignDiagram.h>
 #include <editors/common/GraphicsItemLabel.h>
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <QPen>
 #include <QFont>
 #include <QGraphicsDropShadowEffect>
@@ -116,7 +118,7 @@ void AdHocItem::updateEndPointGraphics()
 {
     if (adhocPortIsValid())
     {
-        setBrush(QBrush(Qt::black));
+        setBrush(QBrush(KactusColors::ADHOC_PORT));
     }
     else
     {
