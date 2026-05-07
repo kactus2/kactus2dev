@@ -77,10 +77,11 @@ QColor KactusColors::SW_COMPONENT = QColor(0xc5, 0xff, 0xab); // The component o
 //! Other colors used in design.
 QColor KactusColors::DIAGRAM_SELECTION = Qt::blue; // Selections in design diagrams.
 QColor KactusColors::DIAGRAM_ALLOWED_INTERFACE = Qt::magenta; // Highlights allowed interface for a connection.
+QColor KactusColors::DIAGRAM_GRID = Qt::gray;
 QColor KactusColors::DIAGRAM_COLUMN_HEADER = QColor(160, 193, 226); // Background color for column headers.
 QColor KactusColors::STICKY_NOTE_BACKGROUND = QColor(QStringLiteral("lemonChiffon")); // Sticky note background
-
-QColor KactusColors::DIAGRAM_GRID = Qt::gray;
+QColor KactusColors::STICKY_NOTE_TEXT = Qt::black;
+QColor KactusColors::ASSOCIATION_LINE = Qt::black;
 
 //! Colors used for memory/address sections in the memory designer.
 QColor KactusColors::MEMORY_BLOCK = QColor(0xd6, 0xba, 0xff);

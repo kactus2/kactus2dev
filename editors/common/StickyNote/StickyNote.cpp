@@ -16,6 +16,7 @@
 #include "StickyNoteEditCommand.h"
 
 #include <common/GenericEditProvider.h>
+#include <common/KactusUtils.h>
 #include <KactusAPI/include/KactusColors.h>
 
 #include <editors/common/diagramgrid.h>
@@ -301,6 +302,7 @@ void StickyNote::createWritableArea()
     textArea_->setFill(KactusColors::STICKY_NOTE_BACKGROUND);
     textArea_->setTextWidth(DEFAULT_WIDTH);
     textArea_->setPos(0, TOP_OFFSET);
+    textArea_->setDefaultTextColor(KactusColors::STICKY_NOTE_TEXT);
 
     addToGroup(textArea_);
 }

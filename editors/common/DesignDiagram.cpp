@@ -298,6 +298,9 @@ void DesignDiagram::onBeginAssociation(Associable* startingPoint)
 
     QPointF start = startingPoint->connectionPoint();
     associationLine_ = new QGraphicsLineItem(QLineF(start, start));
+    auto pen = associationLine_->pen();
+    pen.setColor(KactusColors::ASSOCIATION_LINE);
+    associationLine_->setPen(pen);
     addItem(associationLine_);
 }
 

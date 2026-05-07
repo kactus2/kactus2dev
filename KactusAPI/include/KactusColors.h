@@ -88,10 +88,11 @@ namespace KactusColors
     //! Other colors used in design.
     extern KACTUS2_API QColor DIAGRAM_SELECTION; // Selections in design diagrams.
     extern KACTUS2_API QColor DIAGRAM_ALLOWED_INTERFACE; // Highlights allowed interface for a connection.
+    extern KACTUS2_API QColor DIAGRAM_GRID;           // Diagram background dot grid color  
     extern KACTUS2_API QColor DIAGRAM_COLUMN_HEADER; // Background color for column headers.
     extern KACTUS2_API QColor STICKY_NOTE_BACKGROUND; // Sticky note background
-
-    extern KACTUS2_API QColor DIAGRAM_GRID;
+    extern KACTUS2_API QColor STICKY_NOTE_TEXT;       // Sticky note text color
+    extern KACTUS2_API QColor ASSOCIATION_LINE;     // Association line color
 
     //! Colors used for memory/address sections in the memory designer.
     extern KACTUS2_API QColor MEMORY_BLOCK;

@@ -40,22 +40,31 @@ static QPixmap getRecoloredPixmap(const QPixmap& src, const QColor& color)
     return result;
 }
 
-QIcon KactusUtils::getIconStyledToTheme(QString const& srcPath, QColor* iconColorOverride /*= nullptr*/)
+QPixmap KactusUtils::getPixmapStyledToTheme(const QString& srcPath, QColor* colorOverride /*= nullptr*/)
 {
     if (darkThemeEnabled())
     {
         QPixmap base(srcPath);
-        QIcon icon;
         auto pal = QApplication::palette();
 
         QColor newColor = pal.color(QPalette::ButtonText);
-
-        if (iconColorOverride)
+        if (colorOverride)
         {
-            newColor = *iconColorOverride;
+            newColor = *colorOverride;
         }
-        
-        icon.addPixmap(getRecoloredPixmap(base, newColor), QIcon::Normal, QIcon::Off);
+
+        return getRecoloredPixmap(srcPath, newColor);
+    }
+
+    return QPixmap(srcPath);
+}
+
+QIcon KactusUtils::getIconStyledToTheme(QString const& srcPath, QColor* colorOverride /*= nullptr*/)
+{
+    if (darkThemeEnabled())
+    {
+        QIcon icon;
+        icon.addPixmap(getPixmapStyledToTheme(srcPath, colorOverride));
         return icon;
     }
 
@@ -112,11 +121,20 @@ void KactusUtils::applyThemeToPalette()
         // Set colors for HW design
         KactusColors::DIAGRAM_GRID = palette.windowText().color().darker(250);
         KactusColors::REGULAR_CONNECTION = QColor(Qt::white).darker(150);
+        KactusColors::BROKEN_CONNECTION = KactusColors::BROKEN_CONNECTION.darker(140);
         KactusColors::ADHOC_PORT = KactusColors::REGULAR_CONNECTION;
         KactusColors::HW_COMPONENT = KactusColors::HW_COMPONENT.darker(175);
         KactusColors::HW_BUS_COMPONENT = KactusColors::HW_BUS_COMPONENT.darker(125);
+        KactusColors::HW_BUS_COMPONENT = KactusColors::HW_BUS_COMPONENT.darker(125);
+
+        KactusColors::MASTER_INTERFACE = KactusColors::MASTER_INTERFACE.darker(120);
+        KactusColors::MIRROREDMASTER_INTERFACE = KactusColors::MIRROREDMASTER_INTERFACE.darker(120);
+        KactusColors::MIRROREDSLAVE_INTERFACE = KactusColors::MIRROREDSLAVE_INTERFACE.darker(130);
+
         KactusColors::DIAGRAM_COLUMN_HEADER = KactusColors::DIAGRAM_COLUMN_HEADER.darker(175);
         KactusColors::CONNECTION_UNDERCROSSING = KactusColors::CONNECTION_UNDERCROSSING.darker(150);
+
+        KactusColors::ASSOCIATION_LINE = KactusColors::REGULAR_CONNECTION;
 
         KactusColors::DOCK_WIDGET_TITLE_BG = KactusColors::DEFAULT_WINDOW_BG.lighter(150);
         KactusColors::TABLE_GRIDLINE = KactusColors::DOCK_WIDGET_TITLE_BG;
