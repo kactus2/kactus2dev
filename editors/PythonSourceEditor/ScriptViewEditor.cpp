@@ -57,7 +57,7 @@ void ScriptViewEditor::print(QString const& input)
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::printError(QString const& input)
 {
-    printWithColor(input, QColor(Qt::red).lighter(120));
+    printWithColor(input, KactusColors::ERROR_COLOR);
 }
 
 //-----------------------------------------------------------------------------

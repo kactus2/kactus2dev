@@ -111,6 +111,8 @@ void KactusUtils::applyThemeToPalette()
         KactusColors::REGULAR_TEXT = palette.windowText().color();
         KactusColors::REGULAR_MESSAGE = KactusColors::REGULAR_TEXT;
 
+        KactusColors::ERROR_COLOR = KactusColors::ERROR_COLOR.lighter(120);
+
         // Field colors
         KactusColors::MANDATORY_FIELD = KactusColors::MANDATORY_FIELD.darker(140);
         KactusColors::DISABLED_FIELD = KactusColors::DISABLED_FIELD.darker(300);
@@ -132,7 +134,7 @@ void KactusUtils::applyThemeToPalette()
         KactusColors::MIRROREDSLAVE_INTERFACE = KactusColors::MIRROREDSLAVE_INTERFACE.darker(130);
 
         KactusColors::DIAGRAM_COLUMN_HEADER = KactusColors::DIAGRAM_COLUMN_HEADER.darker(175);
-        KactusColors::CONNECTION_UNDERCROSSING = KactusColors::CONNECTION_UNDERCROSSING.darker(150);
+        KactusColors::CONNECTION_UNDERCROSSING = KactusColors::CONNECTION_UNDERCROSSING.darker(140);
 
         KactusColors::ASSOCIATION_LINE = KactusColors::REGULAR_CONNECTION;
 
