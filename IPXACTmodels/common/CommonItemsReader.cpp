@@ -68,7 +68,10 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > CommonItemsReader::parseAndCr
         int parameterCount = parameterNodeList.count();
         for (int parameterIndex = 0;parameterIndex < parameterCount; parameterIndex++)
         {
-            newParameters->append(ParameterReader::createParameterFrom(parameterNodeList.at(parameterIndex), revision));
+            if (parameterNodeList.at(parameterIndex).isComment() == false)
+            {
+				newParameters->append(ParameterReader::createParameterFrom(parameterNodeList.at(parameterIndex), revision));
+            }
         }
     }
     return newParameters;
