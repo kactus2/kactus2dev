@@ -248,6 +248,11 @@ void SWComponentItem::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
     event->accept();
 }
 
+QColor SWComponentItem::getNameLabelColor() const
+{
+    return Qt::black;
+}
+
 //-----------------------------------------------------------------------------
 // Function: openCSource()
 //-----------------------------------------------------------------------------

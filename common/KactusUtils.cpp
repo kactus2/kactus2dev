@@ -140,6 +140,20 @@ void KactusUtils::applyThemeToPalette()
 
         KactusColors::DOCK_WIDGET_TITLE_BG = KactusColors::DEFAULT_WINDOW_BG.lighter(150);
         KactusColors::TABLE_GRIDLINE = KactusColors::DOCK_WIDGET_TITLE_BG;
+
+        // Memory designer color overrides
+        KactusColors::MEMORY_BLOCK = KactusColors::MEMORY_BLOCK.darker(140);
+        KactusColors::ADDRESS_SEGMENT = KactusColors::ADDRESS_SEGMENT.darker(140);
+        KactusColors::ADDRESS_SEGMENT_UNSEGMENTED = KactusColors::ADDRESS_SEGMENT_UNSEGMENTED.darker(140);
+        KactusColors::MEM_MAP_COLOR = KactusColors::MEM_MAP_COLOR.darker(140);
+        KactusColors::ADDR_BLOCK_COLOR = KactusColors::ADDR_BLOCK_COLOR.darker(140);
+        KactusColors::REGISTER_FILE_COLOR = KactusColors::REGISTER_FILE_COLOR.darker(140);
+        KactusColors::REGISTER_COLOR = KactusColors::REGISTER_COLOR.darker(140);
+        KactusColors::FIELD_COLOR = KactusColors::FIELD_COLOR.darker(140);
+        KactusColors::MEM_ITEM_EXTENSION = KactusColors::DEFAULT_WINDOW_BG.lighter(230);
+
+        KactusColors::MEM_DESIGNER_CONNECTION = KactusColors::REGULAR_CONNECTION.darker(140);
+
     }
 
     // KactusColors contains default values for most original style if not using darkmode

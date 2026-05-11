@@ -13,8 +13,11 @@
 
 #include <editors/MemoryDesigner/MemoryItem.h>
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <QBrush>
 #include <QFont>
+#include <QPen>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem()
@@ -81,9 +84,13 @@ void MemoryDesignerChildGraphicsItem::setColors(QColor itemColor, bool itemIsEmp
 {
     QBrush itemBrush(itemColor);
 
+    auto itemPen = pen();
+    itemPen.setColor(KactusColors::MEM_DESIGNER_CONNECTION);
+    setPen(itemPen);
+
     if (itemIsEmpty)
     {
-        itemBrush.setColor(QColor("whiteSmoke"));
+        itemBrush.setColor(KactusColors::MEM_ITEM_EXTENSION);
 
         QColor emptyTextColor (180, 180, 180);
         getNameLabel()->setDefaultTextColor(emptyTextColor);

@@ -93,6 +93,12 @@ QColor KactusColors::ADDR_BLOCK_COLOR = QColor(194, 214, 244);
 QColor KactusColors::REGISTER_FILE_COLOR = QColor(203, 219, 244);
 QColor KactusColors::REGISTER_COLOR = QColor(216, 229, 248);
 QColor KactusColors::FIELD_COLOR = QColor(235, 241, 251);
+QColor KactusColors::MEM_ITEM_EXTENSION= QColor("whiteSmoke");
+
+QColor KactusColors::MEMORY_DESIGNER_TEXT = Qt::black;
+QColor KactusColors::MEM_DESIGNER_CONNECTION = Qt::black;
+QColor KactusColors::MEM_DESIGNER_LOCAL_MAP_CONNECTION = QColor(0, 128, 255);
+QColor KactusColors::MEM_DESIGNER_ADDR_SPACE_CONNECTION = QColor(60, 153, 60);
 
 //! Colors used in dependency analysis.
 QColor KactusColors::DEPENDECY_ADDED = QColor(0, 222, 0); // Added dependency.

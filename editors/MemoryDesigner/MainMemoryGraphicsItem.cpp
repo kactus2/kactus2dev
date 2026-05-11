@@ -11,6 +11,8 @@
 
 #include "MainMemoryGraphicsItem.h"
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <editors/common/diagramgrid.h>
 
 #include <editors/MemoryDesigner/MemoryItem.h>
@@ -66,6 +68,7 @@ void MainMemoryGraphicsItem::setupDuringConstruction()
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemSendsScenePositionChanges);
 
+    instanceNameLabel_->setDefaultTextColor(KactusColors::MEMORY_DESIGNER_TEXT);
     QFont labelFont = getNameLabel()->font();
     instanceNameLabel_->setFont(labelFont);
 }

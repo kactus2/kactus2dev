@@ -104,17 +104,18 @@ QPainterPath MemoryConnectionItem::createConnectionPath(QPointF const& highStart
         path.lineTo(highEndPoint);
         path.moveTo(lowStartPoint);
         path.lineTo(lowEndPoint);
+        connectionPen.setColor(KactusColors::MEM_DESIGNER_CONNECTION);
     }
     else
     {
         bool connectionIsLocal = isLocalMapConnection();
         if (connectionIsLocal)
         {
-            connectionPen.setColor(QColor(0, 128, 255));
+            connectionPen.setColor(KactusColors::MEM_DESIGNER_LOCAL_MAP_CONNECTION);
         }
         else
         {
-            connectionPen.setColor(QColor(60, 153, 60));
+            connectionPen.setColor(KactusColors::MEM_DESIGNER_ADDR_SPACE_CONNECTION);
         }
 
         path = createCollidingPathForUnusualConnection(

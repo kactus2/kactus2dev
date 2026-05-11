@@ -80,6 +80,7 @@ void FieldGraphicsItem::setupFieldItem(QFont const& labelFont)
 
     getNameLabel()->setFont(labelFont);
     combinedRangeLabel_->setFont(labelFont);
+    combinedRangeLabel_->setDefaultTextColor(KactusColors::MEMORY_DESIGNER_TEXT);
 
     setupGraphicsItem(fieldOffset_, fieldLastBit_, QStringLiteral("Field"));
     setLabelPositions();

@@ -79,6 +79,8 @@ void RegisterGraphicsItem::setLabelPositions()
 {
     qreal nameX = 0;
     QRectF registerRectangle = boundingRect();
+
+    fitLabel(getNameLabel());
     QRectF nameRectangle = getNameLabel()->boundingRect();
 
     if (filterFields_)

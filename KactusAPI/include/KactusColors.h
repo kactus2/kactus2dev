@@ -104,6 +104,12 @@ namespace KactusColors
     extern KACTUS2_API QColor REGISTER_FILE_COLOR;
     extern KACTUS2_API QColor REGISTER_COLOR;
     extern KACTUS2_API QColor FIELD_COLOR;
+    extern KACTUS2_API QColor MEM_ITEM_EXTENSION;
+    
+    extern KACTUS2_API QColor MEMORY_DESIGNER_TEXT;
+    extern KACTUS2_API QColor MEM_DESIGNER_CONNECTION;
+    extern KACTUS2_API QColor MEM_DESIGNER_LOCAL_MAP_CONNECTION;
+    extern KACTUS2_API QColor MEM_DESIGNER_ADDR_SPACE_CONNECTION;
 
     //! Colors used in dependency analysis.
     extern KACTUS2_API QColor DEPENDECY_ADDED; // Added dependency.
