@@ -154,6 +154,7 @@ void KactusUtils::applyThemeToPalette()
 
         KactusColors::MEM_DESIGNER_CONNECTION = KactusColors::REGULAR_CONNECTION.darker(140);
 
+        KactusColors::MEM_GRAPH_ITEM_BORDER = KactusColors::MEM_GRAPH_ITEM_BORDER.darker(140);
     }
 
     // KactusColors contains default values for most original style if not using darkmode

@@ -27,7 +27,7 @@ MemoryVisualizationItem::MemoryVisualizationItem(QSharedPointer<ExpressionParser
 ExpandableItem(parent),
     expressionParser_(expressionParser)
 {
-    QPen pen(Qt::gray);
+    QPen pen(KactusColors::MEM_GRAPH_ITEM_BORDER);
     setPen(pen);
     setExpansionPen(pen);
 }

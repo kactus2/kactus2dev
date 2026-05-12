@@ -111,6 +111,9 @@ namespace KactusColors
     extern KACTUS2_API QColor MEM_DESIGNER_LOCAL_MAP_CONNECTION;
     extern KACTUS2_API QColor MEM_DESIGNER_ADDR_SPACE_CONNECTION;
 
+    //! Memory visualizer
+    extern KACTUS2_API QColor MEM_GRAPH_ITEM_BORDER;
+
     //! Colors used in dependency analysis.
     extern KACTUS2_API QColor DEPENDECY_ADDED; // Added dependency.
     extern KACTUS2_API QColor DEPENDECY_COVERAGE; // Used to illustrate the extent of dependencies.

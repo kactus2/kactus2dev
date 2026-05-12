@@ -13,6 +13,9 @@
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
+#include <common/KactusUtils.h>
+#include <KactusAPI/include/KactusColors.h>
+
 #include <QBrush>
 
 //-----------------------------------------------------------------------------
@@ -21,9 +24,25 @@
 MemoryGapItem::MemoryGapItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
 MemoryVisualizationItem(expressionParser, parent)
 {
-	setDefaultBrush(QBrush(QColor(Qt::white)));
+	setDefaultBrush(QBrush(KactusColors::MEM_ITEM_EXTENSION));
 
-    setShowExpandableItem(false);
+	// Color labels of gap items differently if dark mode is enabled
+    if (KactusUtils::darkThemeEnabled())
+    {
+        auto topTextBrush = getTopLabel()->brush();
+        topTextBrush.setColor(KactusColors::REGULAR_TEXT);
+        getTopLabel()->setBrush(topTextBrush);
+
+        auto bottomTextBrush = getBottomLabel()->brush();
+        bottomTextBrush.setColor(KactusColors::REGULAR_TEXT);
+        getBottomLabel()->setBrush(bottomTextBrush);
+
+        auto nameTextBrush = getNameLabel()->brush();
+        nameTextBrush.setColor(KactusColors::REGULAR_TEXT);
+        getNameLabel()->setBrush(nameTextBrush);
+    }
+
+	setShowExpandableItem(false);
 
 	setName(QStringLiteral("Reserved"));
     setToolTip("This memory block is reserved for future use.");
