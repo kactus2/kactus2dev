@@ -188,7 +188,7 @@ void ExpressionEditor::colorCurrentWordRed()
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-    cursor.setCharFormat(colorFormat(Qt::red));
+    cursor.setCharFormat(colorFormat(KactusColors::ERROR_COLOR));
 }
 
 //-----------------------------------------------------------------------------
@@ -199,7 +199,7 @@ void ExpressionEditor::colorCurrentWordBlack()
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-    cursor.setCharFormat(colorFormat(Qt::black));
+    cursor.setCharFormat(colorFormat(KactusColors::REGULAR_TEXT));
 }
 
 //-----------------------------------------------------------------------------
@@ -248,7 +248,7 @@ void ExpressionEditor::handleParentKeyPressEvent(QKeyEvent* keyEvent)
     if (keyEvent->text().isEmpty() == false)
     {
         auto cursor = textCursor();
-        cursor.setCharFormat(colorFormat(Qt::black));
+        cursor.setCharFormat(colorFormat(KactusColors::REGULAR_TEXT));
         setTextCursor(cursor);
     }
 
