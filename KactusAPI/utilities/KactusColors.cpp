@@ -113,3 +113,6 @@ QColor KactusColors::RIBBON_GRADIENT_BOTTOM = QColor(160, 193, 226);
 QColor KactusColors::RIBBONGROUP_TITLE_GRADIENT_TOP = QColor(33, 135, 237);
 QColor KactusColors::RIBBONGROUP_TITLE_GRADIENT_BOTTOM = QColor(17, 127, 237);
 QColor KactusColors::RIBBONGROUP_TITLE_TEXT = Qt::white;
+
+//! Portmap editor alt row color
+QColor KactusColors::PORTMAP_ALT_ROW = KactusColors::FIELD_COLOR;

@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Design/Design.h>
 
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/KactusUtils.h>
 
 #include <editors/common/ComponentItemAutoConnector/AutoConnector.h>
 #include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
@@ -232,7 +233,7 @@ QWidget* ComponentItemAutoConnector::setupIntroWidget(QString const& introName, 
     introLabel->setFont(introFont);
 
     QLabel* iconLabel = new QLabel();
-    iconLabel->setPixmap(QPixmap(QString(":/icons/common/graphics/autoConnect.png")));
+    iconLabel->setPixmap(KactusUtils::getPixmapStyledToTheme(QString(":/icons/common/graphics/autoConnect.png")));
 
     QVBoxLayout* introTextLayout = new QVBoxLayout();
     introTextLayout->addWidget(introLabel);
@@ -243,7 +244,6 @@ QWidget* ComponentItemAutoConnector::setupIntroWidget(QString const& introName, 
     mainIntroLayout->addWidget(iconLabel);
 
     QWidget* introWidget = new QWidget();
-    introWidget->setStyleSheet("background-color: white");
     introWidget->setLayout(mainIntroLayout);
 
     return introWidget;

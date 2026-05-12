@@ -57,7 +57,7 @@ protected:
      *
      *    @return Background color for the selected index.
      */
-    virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
+    virtual QVariant getBackgroundColorForIndex(QModelIndex const& index, int role) const;
 
 private:
     //! No copying. No assignment.

@@ -125,6 +125,9 @@ namespace KactusColors
     extern KACTUS2_API QColor RIBBONGROUP_TITLE_GRADIENT_TOP;
     extern KACTUS2_API QColor RIBBONGROUP_TITLE_GRADIENT_BOTTOM;
     extern KACTUS2_API QColor RIBBONGROUP_TITLE_TEXT;
+    
+    //! Portmap editor alternate color
+    extern KACTUS2_API QColor PORTMAP_ALT_ROW;
 }
 
 //-----------------------------------------------------------------------------

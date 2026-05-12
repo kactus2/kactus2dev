@@ -699,3 +699,18 @@ int PortMapModel::getAllReferencesToIdInItemOnRow(const int& row, QString const&
     return portMapInterface_->getAllReferencesToIdInItem(
         portMapInterface_->getIndexedItemName(row), valueID.toStdString());
 }
+
+bool PortMapModel::indexIsMandatory(QModelIndex const& index) const
+{
+    std::string logicalTieOff = portMapInterface_->getLogicalTieOffValue(index.row());
+    bool physicalPortExists = portMapInterface_->hasPhysicalPort(index.row());
+
+    if (index.column() == PortMapsColumns::LOGICAL_PORT ||
+        (index.column() == PortMapsColumns::PHYSICAL_PORT && logicalTieOff.empty()) ||
+        (index.column() == PortMapsColumns::TIEOFF && !physicalPortExists))
+    {
+        return true;
+    }
+
+    return false;
+}
