@@ -93,6 +93,7 @@ QColor KactusColors::ADDR_BLOCK_COLOR = QColor(194, 214, 244);
 QColor KactusColors::REGISTER_FILE_COLOR = QColor(203, 219, 244);
 QColor KactusColors::REGISTER_COLOR = QColor(216, 229, 248);
 QColor KactusColors::FIELD_COLOR = QColor(235, 241, 251);
+QColor KactusColors::SUBSPACE_MAP_COLOR = KactusColors::MIRROREDSYSTEM_INTERFACE;
 QColor KactusColors::MEM_ITEM_EXTENSION= QColor("whiteSmoke");
 
 QColor KactusColors::MEMORY_DESIGNER_TEXT = Qt::black;

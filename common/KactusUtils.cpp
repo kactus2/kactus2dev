@@ -150,6 +150,7 @@ void KactusUtils::applyThemeToPalette()
         KactusColors::REGISTER_FILE_COLOR = KactusColors::REGISTER_FILE_COLOR.darker(140);
         KactusColors::REGISTER_COLOR = KactusColors::REGISTER_COLOR.darker(140);
         KactusColors::FIELD_COLOR = KactusColors::FIELD_COLOR.darker(140);
+        KactusColors::SUBSPACE_MAP_COLOR = KactusColors::SUBSPACE_MAP_COLOR.darker(140);
         KactusColors::MEM_ITEM_EXTENSION = KactusColors::DEFAULT_WINDOW_BG.lighter(230);
 
         KactusColors::MEM_DESIGNER_CONNECTION = KactusColors::REGULAR_CONNECTION.darker(140);

@@ -27,7 +27,7 @@ MemoryBlockGraphItem(expressionParser, parent),
 submapInterface_(submapInterface),
 subspaceName_(subspaceName.toStdString())
 {
-    setDefaultBrush(QBrush(KactusColors::MIRROREDSYSTEM_INTERFACE));
+    setDefaultBrush(QBrush(KactusColors::SUBSPACE_MAP_COLOR));
     updateDisplay();
 }
 
