@@ -40,7 +40,7 @@ lockEnabledBox_(new QCheckBox(this))
     auto defaultRevision = settings.value("General/Revision", Document::toString(Document::Revision::Std22)).toString();
     revisionEdit_->setCurrentText(defaultRevision);
 
-    bool lockEnabled = settings.value("General/EnableLocking", false).toBool();
+    bool lockEnabled = settings.value("General/EditorLocking", false).toBool();
     lockEnabledBox_->setChecked(lockEnabled);
 
     // Setup the layout.
@@ -78,5 +78,5 @@ void GeneralSettingsPage::apply()
     // Save the settings.
     settings().setValue("General/Username", usernameEdit_->text());
     settings().setValue("General/Revision", revisionEdit_->currentText());
-    settings().setValue("General/EnableLocking", lockEnabledBox_->isChecked());
+    settings().setValue("General/EditorLocking", lockEnabledBox_->isChecked());
 }
