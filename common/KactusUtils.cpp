@@ -75,8 +75,9 @@ bool KactusUtils::darkThemeEnabled()
 {
 // Dark mode support for kactus2 requires at least Qt 6.5
 #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-    static const bool isDarkMode = QApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
-    return isDarkMode;
+// Dark mode does not work with windows vista style
+    return QApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark
+        && QApplication::style()->name().compare("windowsvista") != 0;
 #endif
     return false;
 }
@@ -91,8 +92,7 @@ void KactusUtils::applyThemeToPalette()
     auto windowBG = palette.color(QPalette::ColorRole::Window);
     KactusColors::DEFAULT_WINDOW_BG = windowBG;
 
-    // Dark mode is not enabled for windows vista style
-    if (darkThemeEnabled() && appStyle.compare("windowsvista") != 0)
+    if (darkThemeEnabled())
     {
 
         // Set ribbon colors to lighter variants of window background color
@@ -158,6 +158,15 @@ void KactusUtils::applyThemeToPalette()
         KactusColors::MEM_GRAPH_ITEM_BORDER = KactusColors::MEM_GRAPH_ITEM_BORDER.darker(140);
 
         KactusColors::PORTMAP_ALT_ROW = KactusColors::REGULAR_FIELD.lighter(130);
+
+        KactusColors::TEXT_BODY_HIGHLIGHT = KactusColors::TEXT_BODY_HIGHLIGHT.darker(330);
+
+        // Color overrides for import plugins
+        KactusColors::Importer::PORT = KactusColors::Importer::PORT.darker(300);
+        KactusColors::Importer::MODELPARAMETER = KactusColors::Importer::MODELPARAMETER.darker(300);
+        KactusColors::Importer::PARAMETER = KactusColors::Importer::PARAMETER.darker(300);
+        KactusColors::Importer::VIEWNAME = KactusColors::Importer::VIEWNAME.darker(200);
+        KactusColors::Importer::INSTANCECOLOR = KactusColors::Importer::INSTANCECOLOR.darker(170);
     }
 
     // KactusColors contains default values for most original style if not using darkmode

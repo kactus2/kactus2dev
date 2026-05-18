@@ -129,6 +129,16 @@ namespace KactusColors
     
     //! Portmap editor alternate color
     extern KACTUS2_API QColor PORTMAP_ALT_ROW;
+
+    //! Colors for importer plugins
+    namespace Importer
+    {
+        extern KACTUS2_API QColor PORT;
+        extern KACTUS2_API QColor MODELPARAMETER;
+        extern KACTUS2_API QColor PARAMETER;
+        extern KACTUS2_API QColor VIEWNAME;
+        extern KACTUS2_API QColor INSTANCECOLOR;
+    }
 }
 
 //-----------------------------------------------------------------------------

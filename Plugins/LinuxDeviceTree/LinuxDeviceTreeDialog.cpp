@@ -20,6 +20,8 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
+#include <common/KactusUtils.h>
+
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <Plugins/common/ConnectivityGraphUtilities.h>
@@ -302,7 +304,7 @@ void LinuxDeviceTreeDialog::setupLayout()
     fileSetGroup_->setLayout(fileSetLayout);
 
     QPushButton* openFolderButton(
-        new QPushButton(QIcon(":icons/common/graphics/opened-folder.png"), QString(), this));
+        new QPushButton(KactusUtils::getIconStyledToTheme(":icons/common/graphics/opened-folder.png"), QString(), this));
 
     QHBoxLayout* fileLayout = new QHBoxLayout();
     fileLayout->addWidget(new QLabel(tr("Output file:"), this));

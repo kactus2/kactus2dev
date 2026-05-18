@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: K2EnvVarModel::K2EnvVarModel()
 //-----------------------------------------------------------------------------
-K2EnvVarModel::K2EnvVarModel(QSettings& settings, QObject *parent): QAbstractTableModel(parent), table_()
+K2EnvVarModel::K2EnvVarModel(QSettings& settings, QObject *parent): TableModelBase(parent), table_()
 {
     loadData(settings);
 }
@@ -173,19 +173,8 @@ QVariant K2EnvVarModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
     }
-    else if (Qt::BackgroundRole == role)
-    {
-        if (index.column() == K2EnvVarModel::NAME_COLUMN)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -312,6 +301,16 @@ bool K2EnvVarModel::containsEmptyVariables() const
 
     // no empty variables defined
     return false;
+}
+
+bool K2EnvVarModel::validateIndex(QModelIndex const& index) const
+{
+    return true;
+}
+
+bool K2EnvVarModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == K2EnvVarModel::NAME_COLUMN;
 }
 
 //-----------------------------------------------------------------------------

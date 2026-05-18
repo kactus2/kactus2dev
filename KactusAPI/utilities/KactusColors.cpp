@@ -117,3 +117,10 @@ QColor KactusColors::RIBBONGROUP_TITLE_TEXT = Qt::white;
 
 //! Portmap editor alt row color
 QColor KactusColors::PORTMAP_ALT_ROW = KactusColors::FIELD_COLOR;
+
+//! Importer plugin colors
+QColor KactusColors::Importer::PORT = KactusColors::SW_COMPONENT;
+QColor KactusColors::Importer::MODELPARAMETER = KactusColors::HW_BUS_COMPONENT;
+QColor KactusColors::Importer::PARAMETER = KactusColors::MEMORY_BLOCK;
+QColor KactusColors::Importer::VIEWNAME = QColor("Moccasin");
+QColor KactusColors::Importer::INSTANCECOLOR = QColor(201, 82, 251);

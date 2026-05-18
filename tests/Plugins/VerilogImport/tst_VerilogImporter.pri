@@ -9,7 +9,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../KactusAPI/include/ExpressionParser.h \
     ../../../KactusAPI/include/ExpressionSupport.h \
-    ../../../KactusAPI/include/ImportColors.h \
     ../../../common/NameGenerationPolicy.h \
     ../../../IPXACTmodels/utilities/Search.h \
     ../../../Plugins/VerilogImport/VerilogInstanceParser.h \

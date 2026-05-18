@@ -12,16 +12,16 @@
 #ifndef K2ENVVARMODEL_H
 #define K2ENVVARMODEL_H
 
+#include <common/models/TableModelBase.h>
 #include <KactusAPI/include/PluginManager.h>
 
-#include <QAbstractTableModel>
 #include <QSettings>
 #include <QList>
 
 //-----------------------------------------------------------------------------
 //!  Manages the K2 environment variables displayed in the settings dialog.
 //-----------------------------------------------------------------------------
-class K2EnvVarModel : public QAbstractTableModel
+class K2EnvVarModel : public TableModelBase
 {
     Q_OBJECT
 
@@ -132,7 +132,24 @@ public slots:
     virtual void onRemoveItem(QModelIndex const& index);
 
 private:
-    
+
+    /*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+    bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
 
     // Loads the model data in place.
     void loadData(QSettings& settings);

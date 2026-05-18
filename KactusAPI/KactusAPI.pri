@@ -40,7 +40,6 @@ HEADERS += ./KactusAPI.h \
     ./include/Highlighter.h \
     ./include/HighlightSource.h \
     ./include/IGeneratorPlugin.h \
-    ./include/ImportColors.h \
     ./include/ImportPlugin.h \
     ./include/IncludeImportPlugin.h \
     ./include/InterconnectGenerator.h \
