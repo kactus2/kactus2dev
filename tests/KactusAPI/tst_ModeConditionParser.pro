@@ -11,36 +11,38 @@
 
 TEMPLATE = app
 
-TARGET = tst_ModeConditionParser
-
 QT += core xml testlib
 QT -= gui widgets
 CONFIG += c++17 testcase console
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels -lKactusAPI
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd -lKactusAPId
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels -lKactusAPI
-    DESTDIR = ./release
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd \
+        -L../../executable -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_ModeConditionParserd
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../executable -lIPXACTmodels \
+        -L../../executable -lKactusAPI
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_ModeConditionParser
 }
 
-INCLUDEPATH += $$PWD/../../
-INCLUDEPATH += $$PWD/../../executable
+INCLUDEPATH += ../../
+INCLUDEPATH += ../../executable
 INCLUDEPATH += $$DESTDIR
 
-DEPENDPATH += $$PWD/../../
-DEPENDPATH += $$PWD/../../executable
+DEPENDPATH += ../../
+DEPENDPATH += ../../executable
 DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_ModeConditionParser.pri)

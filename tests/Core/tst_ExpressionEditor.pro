@@ -11,26 +11,30 @@
 
 TEMPLATE = app
 
-TARGET = tst_ExpressionEditor
-
 QT += core xml gui testlib widgets
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
 QMAKE_EXPORTED_VARIABLES += MAKE_TESTARGS
 MAKE_TESTARGS.name = TESTARGS
 MAKE_TESTARGS.value = "-platform offscreen"
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels -lKactusAPI
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd -lKactusAPId
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels -lKactusAPI
-    DESTDIR = ./release
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_ExpressionEditord
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../executable -lIPXACTmodels -lKactusAPI
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_ExpressionEditor
 }
 
 INCLUDEPATH += $$PWD/../../
@@ -40,9 +44,5 @@ DEPENDPATH += $$PWD/../../
 DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 
 include(tst_ExpressionEditor.pri)

@@ -11,23 +11,27 @@
 
 TEMPLATE = app
 
-TARGET = tst_SystemVerilogExpressionParser
-
 QT += core xml gui testlib
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
 	
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lKactusAPI
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lKactusAPId
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../executable/ -lKactusAPI
-    DESTDIR = ./release
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_SystemVerilogExpressionParserd
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../executable -lIPXACTmodels -lKactusAPI
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_SystemVerilogExpressionParser
 }
 
 INCLUDEPATH += $$DESTDIR
@@ -38,8 +42,4 @@ DEPENDPATH += .
 DEPENDPATH += ../../
 
 OBJECTS_DIR += $$DESTDIR
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_SystemVerilogExpressionParser.pri)

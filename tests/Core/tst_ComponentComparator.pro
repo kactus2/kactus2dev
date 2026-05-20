@@ -11,24 +11,28 @@
 
 TEMPLATE = app
 
-TARGET = tst_ComponentComparator
-
 QT += core xml testlib
 QT -= gui
 
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_ComponentComparatord
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../executable -lIPXACTmodels -lKactusAPI
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_ComponentComparator
 }
 
 INCLUDEPATH += $$PWD/../
@@ -42,8 +46,4 @@ DEPENDPATH += $$PWD/../../executable
 DEPENDPATH += $$PWD/../../executable/Plugins
 
 OBJECTS_DIR += $$DESTDIR
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_ComponentComparator.pri)

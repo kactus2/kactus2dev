@@ -14,23 +14,29 @@ TEMPLATE = app
 TARGET = tst_HierarchicalSaveBuildStrategy
 
 QT += core xml gui testlib widgets
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
 QMAKE_EXPORTED_VARIABLES += MAKE_TESTARGS
 MAKE_TESTARGS.name = TESTARGS
 MAKE_TESTARGS.value = "-platform offscreen"
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_HierarchicalSaveBuildStrategyd
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../executable -lIPXACTmodels
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_HierarchicalSaveBuildStrategy
 }
 
 INCLUDEPATH += $$DESTDIR
@@ -40,8 +46,4 @@ DEPENDPATH += .
 DEPENDPATH += ../../
 
 OBJECTS_DIR += $$DESTDIR
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_HierarchicalSaveBuildStrategy.pri)
