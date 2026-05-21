@@ -19,7 +19,7 @@ CONFIG += c++17 testcase console
 CONFIG(debug, debug|release) {
     # debug mode
     LIBS += \
-        -L../../executable -lIPXACTmodelsd -lKactusAPId
+        -L../../executable -lIPXACTmodelsd
 
     MOC_DIR += ./GeneratedFiles/Debug
     DESTDIR += Debug
@@ -28,7 +28,7 @@ CONFIG(debug, debug|release) {
 } else {
     # release mode
     LIBS += \
-        -L../../executable -lIPXACTmodels -lKactusAPI
+        -L../../executable -lIPXACTmodels
 
     MOC_DIR += ./GeneratedFiles/Release
     DESTDIR += Release

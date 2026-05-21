@@ -28,8 +28,6 @@ CONFIG(debug, debug|release) {
     TARGET = tst_DocumentGenerator
 }
 
-#DESTDIR = ./release
-
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += $$PWD/../../
 INCLUDEPATH += $$PWD/../../KactusAPI/include

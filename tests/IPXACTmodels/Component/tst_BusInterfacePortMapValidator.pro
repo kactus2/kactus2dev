@@ -37,8 +37,6 @@ CONFIG(debug, debug|release) {
     TARGET = tst_BusInterfacePortMapValidator
 }
 
-DESTDIR = ./release
-
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../
 

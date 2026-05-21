@@ -27,7 +27,7 @@ CONFIG(debug, debug|release) {
 } else {
     # release mode
     LIBS += \
-        -L../../../executable -lIPXACTmodels -lKactusAPId
+        -L../../../executable -lIPXACTmodels -lKactusAPI
 
     MOC_DIR += ./GeneratedFiles/Release
     DESTDIR += Release
