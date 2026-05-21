@@ -29,13 +29,14 @@ GeneralSettingsPage::GeneralSettingsPage(QSettings& settings):
 SettingsPage(settings),
 usernameEdit_(new QLineEdit(this)),
 revisionEdit_(new QComboBox(this)),
-lockEnabledBox_(new QCheckBox(this))
+lockEnabledBox_(new QCheckBox(this)),
+foceFusionStyleToggle_(new QCheckBox(this))
 {
     QString username = settings.value("General/Username", Utils::getCurrentUser()).toString();
     usernameEdit_->setText(username);
 
     revisionEdit_->addItem(Document::toString(Document::Revision::Std22));
-    revisionEdit_->addItem(Document::toString(Document::Revision::Std14));
+    revisionEdit_->addItem(Document::toString(Document::Revision::Std14));    
 
     auto defaultRevision = settings.value("General/Revision", Document::toString(Document::Revision::Std22)).toString();
     revisionEdit_->setCurrentText(defaultRevision);
@@ -43,12 +44,16 @@ lockEnabledBox_(new QCheckBox(this))
     bool lockEnabled = settings.value("General/EditorLocking", false).toBool();
     lockEnabledBox_->setChecked(lockEnabled);
 
+    auto fusionStyleValue = settings.value("General/FusionStyleEnabled", false).toBool();
+    foceFusionStyleToggle_->setChecked(fusionStyleValue);
+
     // Setup the layout.
     auto layout = new QFormLayout(this);
     layout->addRow(tr("Settings file:"), new QLabel(settings.fileName(), this));
     layout->addRow(tr("User name:"), usernameEdit_);
     layout->addRow(tr("Default IP-XACT version:"), revisionEdit_);
     layout->addRow(tr("Enable editor locking:"), lockEnabledBox_);
+    layout->addRow(tr("Force Fusion style:\n(enables dark mode support on Windows)"), foceFusionStyleToggle_);
 }
 
 //-----------------------------------------------------------------------------
@@ -79,4 +84,12 @@ void GeneralSettingsPage::apply()
     settings().setValue("General/Username", usernameEdit_->text());
     settings().setValue("General/Revision", revisionEdit_->currentText());
     settings().setValue("General/EditorLocking", lockEnabledBox_->isChecked());
+
+    // Diplay info box
+    auto fusionStylePrevious = settings().value("General/FusionStyleEnabled", false).toBool();
+    if (foceFusionStyleToggle_->isChecked() != fusionStylePrevious)
+    {
+        QMessageBox::information(this, "Restart required", "Style change is applied after restart", QMessageBox::Ok);
+    }
+    settings().setValue("General/FusionStyleEnabled", foceFusionStyleToggle_->isChecked());
 }

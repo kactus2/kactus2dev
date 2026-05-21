@@ -41,6 +41,7 @@
 #include <QPalette>
 #include <QTimer>
 #include <QObject>
+#include <QStyleFactory>
 
 
 #include "PythonAPI/PythonInterpreter.h"
@@ -60,6 +61,26 @@ namespace
         return argc == 1;
     }
 
+    void setAppStyle()
+    {
+        auto defaultStyle = QApplication::style();
+
+        QSettings settings;
+
+        // Override style with fusion, if setting is enabled
+        if (settings.value("General/FusionStyleEnabled", false).toBool())
+        {
+            defaultStyle = QStyleFactory::create("fusion");
+        }
+
+        // Set style override if not using windows style
+        if (defaultStyle != nullptr && defaultStyle->name().compare("windowsvista") != 0)
+        {
+            auto proxyStyle = new KactusProxyStyle(defaultStyle);
+            QApplication::setStyle(proxyStyle);
+        }
+    }
+
     //-----------------------------------------------------------------------------
     // Function: createApplication()
     //-----------------------------------------------------------------------------
@@ -68,17 +89,7 @@ namespace
         QCoreApplication* application = nullptr; 
         if (startGui(argc))
         {
-            QApplication* guiApplication = new QApplication(argc, argv);        
-            auto defaultStyle = guiApplication->style();
-
-            // Set style override if not using windows
-            if (defaultStyle->name().compare("windowsvista") != 0)
-            {
-                auto proxyStyle = new KactusProxyStyle(defaultStyle);
-                guiApplication->setStyle(proxyStyle);
-            }
-
-            application = guiApplication;
+            application = new QApplication(argc, argv);
         }
         else
         {
@@ -135,6 +146,9 @@ int main(int argc, char *argv[])
 
     QSettings settings;
     SettingsUpdater::runUpgrade(settings, mediator.data());
+
+    if (startGui(argc))
+        setAppStyle();
 
     loadPlugins(settings);
 
