@@ -310,7 +310,7 @@ void DockWidgetHandler::setupContextHelp()
     helpWnd_ = new HelpWindow(helpEngine, mainWindow_);
 
     // Create the context help browser.
-    contextHelpBrowser_ = new ContextHelpBrowser(helpEngine, "qthelp://com.tut.kactus2.2.0/doc",
+    contextHelpBrowser_ = new ContextHelpBrowser(helpEngine, "qthelp://fi.tuni.kactus2.2.0/doc",
         contextHelpDock_);
 
     auto borderColor = KactusUtils::colorToRgbString(KactusColors::TABLE_GRIDLINE);
