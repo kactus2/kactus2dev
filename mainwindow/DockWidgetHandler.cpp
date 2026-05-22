@@ -21,6 +21,9 @@
 
 #include <common/ui/GraphicalMessageMediator.h>
 
+#include <KactusAPI/include/KactusColors.h>
+#include <common/KactusUtils.h>
+
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
@@ -51,6 +54,7 @@
 #include <QString>
 #include <QHelpEngine>
 #include <QApplication>
+#include <QStringBuilder>
 
 namespace 
 {
@@ -296,8 +300,8 @@ void DockWidgetHandler::setupContextHelp()
     if (helpDirectory.isRelative())
     {
         helpPath.prepend(QLatin1Char('/'));
-        helpPath.prepend(QCoreApplication::applicationDirPath());        
-    }  
+        helpPath.prepend(QCoreApplication::applicationDirPath());
+    }
 
     QHelpEngine* helpEngine = new QHelpEngine(helpPath + "/Kactus2Help.qhc", mainWindow_);
     helpEngine->setupData();
@@ -306,12 +310,14 @@ void DockWidgetHandler::setupContextHelp()
     helpWnd_ = new HelpWindow(helpEngine, mainWindow_);
 
     // Create the context help browser.
-    contextHelpBrowser_ = new ContextHelpBrowser(helpEngine, "qthelp://com.tut.kactus2.2.0/doc",
+    contextHelpBrowser_ = new ContextHelpBrowser(helpEngine, "qthelp://fi.tuni.kactus2.2.0/doc",
         contextHelpDock_);
 
+    auto borderColor = KactusUtils::colorToRgbString(KactusColors::TABLE_GRIDLINE);
     QColor bgColor = QApplication::palette().color(QPalette::Window);
-    QString style = QString("QTextBrowser { border: 5px solid transparent; "
-        "background-color: #%1}").arg(bgColor.rgb() & 0x00FFFFFF, 0, 16);
+    QString style = QString("QTextBrowser { border: 1px solid " % borderColor % "; background-color: #%1 }")
+        .arg(bgColor.rgb() & 0x00FFFFFF, 0, 16);
+    
     contextHelpBrowser_->setStyleSheet(style);
 
     contextHelpDock_->setWidget(contextHelpBrowser_);

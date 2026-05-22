@@ -18,7 +18,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 
 #include <QStringList>
@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------------
 FileSetsModel::FileSetsModel(FileSetInterface* fileSetInterface, QSharedPointer<ParameterFinder> parameterFinder,
     QObject *parent):
-QAbstractTableModel(parent),
+TableModelBase(parent),
 parameterFinder_(parameterFinder),
 fileSetInterface_(fileSetInterface)
 {
@@ -156,21 +156,8 @@ QVariant FileSetsModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
     }
-	else if (Qt::BackgroundRole == role)
-    {
-        if (index.column() == FileSetColumns::NAME_COLUMN)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-		}
-	}
-	else
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -276,6 +263,11 @@ void FileSetsModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool FileSetsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == FileSetColumns::NAME_COLUMN;
 }
 
 //-----------------------------------------------------------------------------

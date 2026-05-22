@@ -80,7 +80,7 @@
     <QtModules>core;gui;widgets;help;printsupport;svg;xml</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtInstall>6.2.4</QtInstall>
+    <QtInstall>6.6.2_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets;help;printsupport;svg;xml</QtModules>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
@@ -132,7 +132,7 @@
     </PreLinkEvent>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>IPXACTmodelsd.lib;KactusAPId.lib;python310_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>IPXACTmodelsd.lib;KactusAPId.lib;python314_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>executable\Kactus2_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -252,6 +252,9 @@ CreateHelp
     <ClCompile Include="common\expressions\utilities.cpp" />
     <ClCompile Include="common\GenericEditProvider.cpp" />
     <ClCompile Include="common\graphicsItems\GraphicsColumnAddCommand.cpp" />
+    <ClCompile Include="common\KactusProxyStyle.cpp" />
+    <ClCompile Include="common\KactusUtils.cpp" />
+    <ClCompile Include="common\models\TableModelBase.cpp" />
     <ClCompile Include="common\NameGenerationPolicy.cpp" />
     <ClCompile Include="common\TextEditProvider.cpp" />
     <ClCompile Include="common\ui\GraphicalMessageMediator.cpp" />
@@ -942,6 +945,7 @@ CreateHelp
     <ClCompile Include="kactusGenerators\DocumentGenerator\documentgenerator.cpp" />
     <ClCompile Include="kactusGenerators\DocumentGenerator\HtmlWriter.cpp" />
     <ClCompile Include="kactusGenerators\DocumentGenerator\MarkdownWriter.cpp" />
+    <ClCompile Include="library\HierarchyModel.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchyfilter.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchyview.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchywidget.cpp" />
@@ -950,6 +954,7 @@ CreateHelp
     <ClCompile Include="library\LibraryFilter.cpp" />
     <ClCompile Include="library\LibraryItemSelectionFactory.cpp" />
     <ClCompile Include="library\LibraryTreeFilter.cpp" />
+    <ClCompile Include="library\LibraryTreeModel.cpp" />
     <ClCompile Include="library\LibraryTreeView.cpp" />
     <ClCompile Include="library\LibraryTreeWidget.cpp" />
     <ClCompile Include="library\LibraryUtils.cpp" />
@@ -1243,7 +1248,10 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="common\KactusProxyStyle.h" />
+    <ClInclude Include="common\KactusUtils.h" />
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h" />
+    <QtMoc Include="common\models\TableModelBase.h" />
     <ClInclude Include="common\NameGenerationPolicy.h" />
     <QtMoc Include="common\views\EditableTreeView\EditableTreeView.h">
     </QtMoc>
@@ -2216,14 +2224,15 @@ CreateHelp
     </QtMoc>
     <ClInclude Include="kactusGenerators\DocumentGenerator\HtmlWriter.h" />
     <ClInclude Include="kactusGenerators\DocumentGenerator\MarkdownWriter.h" />
-    <ClInclude Include="library\LibraryInterface.h" />
     <QtMoc Include="library\LibraryTreeFilter.h">
     </QtMoc>
     <QtMoc Include="library\LibraryTreeWidget.h">
     </QtMoc>
     <QtMoc Include="library\LibraryTreeView.h">
     </QtMoc>
+    <QtMoc Include="library\HierarchyModel.h" />
     <ClInclude Include="library\LibraryItemSelectionFactory.h" />
+    <QtMoc Include="library\LibraryTreeModel.h" />
     <ClInclude Include="library\LibraryUtils.h" />
     <QtMoc Include="library\LibraryWidget.h">
     </QtMoc>
@@ -2252,7 +2261,6 @@ CreateHelp
     <QtMoc Include="library\VLNVDialer\ValidityGroup.h" />
     <QtMoc Include="library\VLNVDialer\RevisionGroup.h" />
     <ClInclude Include="mainwindow\CommandLineParser.h" />
-    <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h" />
     <ClInclude Include="mainwindow\SaveHierarchy\DocumentTreeBuilder.h" />
     <QtMoc Include="mainwindow\SaveHierarchy\HierarchicalSaveBuildStrategy.h">
     </QtMoc>
@@ -2725,7 +2733,6 @@ CreateHelp
     <QtMoc Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.h">
     </QtMoc>
     <ClInclude Include="common\dialogs\NewBusDialog\NewBusDialog.h" />
-    <ClInclude Include="common\KactusColors.h" />
     <ClInclude Include="common\TextEditProvider.h" />
     <QtMoc Include="common\widgets\fileTypeSelector\filetypeselector.h">
     </QtMoc>

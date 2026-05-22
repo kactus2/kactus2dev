@@ -11,7 +11,9 @@
 
 #include "PeripheralTemplateModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
+
+#include <common/KactusUtils.h>
 
 #include <QColor>
 #include <QCoreApplication>
@@ -143,7 +145,7 @@ QVariant PeripheralTemplateModel::data(QModelIndex const& index, int role) const
     else if (role == Qt::DecorationRole &&
         (index.column() == PeripheralTemplateColumns::TEMPLATE || index.column() == PeripheralTemplateColumns::PATH))
     {
-        return QIcon(QString(":/icons/common/graphics/opened-folder.png"));
+        return KactusUtils::getIconStyledToTheme(QString(":/icons/common/graphics/opened-folder.png"));
     }
 
     return QVariant();
@@ -236,7 +238,7 @@ QVariant PeripheralTemplateModel::blackForValidRedForInvalidIndex(QModelIndex co
         QString templatePath = QCoreApplication::applicationDirPath() + "/" + index.data().toString();
         if (!QFile::exists(templatePath))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
     }
 

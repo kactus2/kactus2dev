@@ -14,6 +14,8 @@
 #include <editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h>
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <QLineEdit>
 #include <QPainter>
 #include <QPen>
@@ -137,7 +139,7 @@ void MemoryMapsDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     QStyledItemDelegate::paint(painter, option, index);
 
     QPen oldPen = painter->pen();
-    QPen newPen(Qt::lightGray);
+    QPen newPen(KactusColors::TABLE_GRIDLINE);
     newPen.setWidth(1);
     painter->setPen(newPen);
 

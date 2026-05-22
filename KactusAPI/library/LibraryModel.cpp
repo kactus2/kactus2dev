@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: librarytreemodel.cpp
+// File: LibraryModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,7 +9,7 @@
 // The model that contains the LibraryItems to display library hierarchically.
 //-----------------------------------------------------------------------------
 
-#include "LibraryTreeModel.h"
+#include "LibraryModel.h"
 #include "LibraryItem.h"
 #include "LibraryInterface.h"
 
@@ -20,7 +20,9 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <common/KactusColors.h>
+#include <common/KactusUtils.h>
+
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QSharedPointer>
 #include <QBrush>
@@ -28,28 +30,28 @@
 #include <QIcon>
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::LibraryTreeModel()
+// Function: LibraryModel::LibraryModel()
 //-----------------------------------------------------------------------------
-LibraryTreeModel::LibraryTreeModel(LibraryInterface* handler, QObject* parent):
+LibraryModel::LibraryModel(LibraryInterface* handler, QObject* parent):
 QAbstractItemModel(parent),
-    rootItem_(),
-    handler_(handler)
+    handler_(handler),
+    rootItem_()
 {
     onResetModel();
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::~LibraryTreeModel()
+// Function: LibraryModel::~LibraryModel()
 //-----------------------------------------------------------------------------
-LibraryTreeModel::~LibraryTreeModel()
+LibraryModel::~LibraryModel()
 {
     delete rootItem_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::headerData()
+// Function: LibraryModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant LibraryTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant LibraryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (section == 0 && orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
@@ -60,17 +62,17 @@ QVariant LibraryTreeModel::headerData(int section, Qt::Orientation orientation, 
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::columnCount()
+// Function: LibraryModel::columnCount()
 //-----------------------------------------------------------------------------
-int LibraryTreeModel::columnCount(QModelIndex const&) const 
+int LibraryModel::columnCount(QModelIndex const&) const
 {
     return 1;
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::rowCount()
+// Function: LibraryModel::rowCount()
 //-----------------------------------------------------------------------------
-int LibraryTreeModel::rowCount(QModelIndex const& parent) const
+int LibraryModel::rowCount(QModelIndex const& parent) const
 {
     // only one column exists
     if (parent.column() > 0)
@@ -95,9 +97,9 @@ int LibraryTreeModel::rowCount(QModelIndex const& parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::index()
+// Function: LibraryModel::index()
 //-----------------------------------------------------------------------------
-QModelIndex LibraryTreeModel::index(int row, int column, QModelIndex const& parent) const
+QModelIndex LibraryModel::index(int row, int column, QModelIndex const& parent) const
 {
     if (!hasIndex(row, column, parent))
     {
@@ -136,9 +138,9 @@ QModelIndex LibraryTreeModel::index(int row, int column, QModelIndex const& pare
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::index()
+// Function: LibraryModel::index()
 //-----------------------------------------------------------------------------
-QModelIndex LibraryTreeModel::index(LibraryItem* item) 
+QModelIndex LibraryModel::index(LibraryItem* item)
 {
     // if pointer is null
     if (!item)
@@ -158,9 +160,9 @@ QModelIndex LibraryTreeModel::index(LibraryItem* item)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::parent()
+// Function: LibraryModel::parent()
 //-----------------------------------------------------------------------------
-QModelIndex LibraryTreeModel::parent(QModelIndex const& child) const
+QModelIndex LibraryModel::parent(QModelIndex const& child) const
 {
     if(!child.isValid())
     {
@@ -187,9 +189,9 @@ QModelIndex LibraryTreeModel::parent(QModelIndex const& child) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::data()
+// Function: LibraryModel::data()
 //-----------------------------------------------------------------------------
-QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
+QVariant LibraryModel::data(QModelIndex const& index, int role) const
 {
     if (!index.isValid())
     {
@@ -202,148 +204,14 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
     {
         return item->name();
     }
-
-    else if (role == Qt::ForegroundRole)
-    {
-        if (item->isValid())
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-        else
-        {
-            return KactusColors::ERROR;
-        }
-    }
-
-    else if (role == Qt::ToolTipRole)
-    {
-        VLNV vlnv = item->getVLNV();
-
-        // if item can identify a single library object
-        if (vlnv.isValid())
-        {
-            QString text = "<b>Vendor:</b> " + vlnv.getVendor() + "<br>" +
-                "<b>Library:</b> " + vlnv.getLibrary() + "<br>" + 
-                "<b>Name:</b> " + vlnv.getName() + "<br>" +
-                "<b>Version:</b> " + vlnv.getVersion() + "<br>";
-
-            QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
-
-            text += "<br><b>Compatibility:</b> " + Document::toString(document->getRevision());
-
-            if (document != 0 && !document->getDescription().isEmpty())
-            {
-                text += "<br><b>Description:</b><br>" + document->getDescription();
-            }
-
-            text += "<br><b>File Path:</b><br>" + handler_->getPath(vlnv);
-            return text;
-        }
-
-        // if item did not represent a single vlnv item
-        return QVariant();
-    }
-    
-    else if (role == Qt::DecorationRole)
-    {        
-        VLNV vlnv = item->getVLNV();
-        
-        // if item represents a single vlnv object
-        if (vlnv.isValid())
-        {
-            VLNV::IPXactType documentType = vlnv.getType();
-            if (documentType == VLNV::COMPONENT)
-            {
-                QSharedPointer<Component const> component = 
-                    handler_->getModelReadOnly(vlnv).staticCast<Component const>();
-
-                if (component != 0)
-                {
-                    if (component->getImplementation() == KactusAttribute::SYSTEM)
-                    {
-                        return QIcon(":/icons/common/graphics/system-component.png");
-                    }
-                    else if (component->getImplementation() == KactusAttribute::SW)
-                    {
-                        if (component->isHierarchical())
-                        {
-                            return QIcon(":/icons/common/graphics/hier-sw-component.png");
-                        }
-                        else
-                        {
-                            return QIcon(":/icons/common/graphics/sw-component48x48.png");
-                        }
-                    }
-                    else
-                    {
-                        if (component->isHierarchical())
-                        {
-                            return QIcon(":/icons/common/graphics/hier-hw-component.png");
-                        }
-                        else
-                        {
-                            return QIcon(":/icons/common/graphics/hw-component.png");
-                        }
-                    }
-                }
-
-                return QIcon(":/icons/common/graphics/hw-component.png");
-            }
-
-            else if (documentType == VLNV::ABSTRACTIONDEFINITION)
-            {
-                return QIcon(":/icons/common/graphics/abs-def.png");
-            }
-
-            else if (documentType == VLNV::BUSDEFINITION)
-            {
-                return QIcon(":/icons/common/graphics/bus-def.png");
-            }
-
-            else if (documentType == VLNV::CATALOG)
-            {
-                return QIcon(":/icons/common/graphics/catalog.png");
-            }
-
-            else if (documentType == VLNV::COMDEFINITION)
-            {
-                return QIcon(":/icons/common/graphics/new-com_definition.png");
-            }
-
-            else if (documentType == VLNV::APIDEFINITION)
-            {
-                return QIcon(":/icons/common/graphics/new-api_definition.png");
-            }
-
-            else if (documentType == VLNV::DESIGN)
-            {
-                // Determine the design type.
-                QSharedPointer<const Design> design = handler_->getModelReadOnly<Design>(vlnv);
-                if (design && (design->getImplementation() == KactusAttribute::SW ||
-                    design->getImplementation() == KactusAttribute::SYSTEM))
-                {
-                    return QIcon(":/icons/common/graphics/sw-design48x48.png");
-                }
-                else
-                {               
-                    return QIcon(":/icons/common/graphics/hw-design.png");
-                }
-            }
-
-            else if (documentType == VLNV::DESIGNCONFIGURATION)
-            {
-                return QIcon(":/icons/common/graphics/configuration.png");
-            }
-        }
-    }
     
     return QVariant();
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::flags()
+// Function: LibraryModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags LibraryTreeModel::flags(QModelIndex const& index) const
+Qt::ItemFlags LibraryModel::flags(QModelIndex const& index) const
 {
     if (!index.isValid())
     {
@@ -354,9 +222,9 @@ Qt::ItemFlags LibraryTreeModel::flags(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::hasChildren()
+// Function: LibraryModel::hasChildren()
 //-----------------------------------------------------------------------------
-bool LibraryTreeModel::hasChildren(QModelIndex const& parent) const
+bool LibraryModel::hasChildren(QModelIndex const& parent) const
 {
     // only one column exists
     if (parent.column() > 0)
@@ -381,9 +249,9 @@ bool LibraryTreeModel::hasChildren(QModelIndex const& parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onExportItem()
+// Function: LibraryModel::onExportItem()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onExportItem(QModelIndex const& index)
+void LibraryModel::onExportItem(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -396,9 +264,9 @@ void LibraryTreeModel::onExportItem(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onDeleteItem()
+// Function: LibraryModel::onDeleteItem()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onDeleteItem(QModelIndex const& index)
+void LibraryModel::onDeleteItem(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -413,9 +281,9 @@ void LibraryTreeModel::onDeleteItem(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onRemoveVLNV()
+// Function: LibraryModel::onRemoveVLNV()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onRemoveVLNV(VLNV const& vlnv)
+void LibraryModel::onRemoveVLNV(VLNV const& vlnv)
 {
     if (!vlnv.isValid())
     {
@@ -432,9 +300,9 @@ void LibraryTreeModel::onRemoveVLNV(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onAddVLNV()
+// Function: LibraryModel::onAddVLNV()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onAddVLNV(VLNV const& vlnv)
+void LibraryModel::onAddVLNV(VLNV const& vlnv)
 {
     if (!vlnv.isValid())
     {
@@ -462,9 +330,9 @@ void LibraryTreeModel::onAddVLNV(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::removeLibraryItem()
+// Function: LibraryModel::removeLibraryItem()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::removeLibraryItem(LibraryItem* toRemove)
+void LibraryModel::removeLibraryItem(LibraryItem* toRemove)
 {
     int row = toRemove->parent()->getIndexOf(toRemove);
 
@@ -479,9 +347,9 @@ void LibraryTreeModel::removeLibraryItem(LibraryItem* toRemove)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onResetModel()
+// Function: LibraryModel::onResetModel()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onResetModel()
+void LibraryModel::onResetModel()
 {    
     beginResetModel();
 
@@ -513,9 +381,9 @@ void LibraryTreeModel::onResetModel()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onDocumentUpdated()
+// Function: LibraryModel::onDocumentUpdated()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onDocumentUpdated(VLNV const& vlnv)
+void LibraryModel::onDocumentUpdated(VLNV const& vlnv)
 {
     LibraryItem* item = rootItem_->findHighestUnique(vlnv);
     if (item)
@@ -528,17 +396,17 @@ void LibraryTreeModel::onDocumentUpdated(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::getRoot()
+// Function: LibraryModel::getRoot()
 //-----------------------------------------------------------------------------
-LibraryItem* LibraryTreeModel::getRoot() const
+LibraryItem* LibraryModel::getRoot() const
 {
     return rootItem_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onCreateAbsDef()
+// Function: LibraryModel::onCreateAbsDef()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onCreateAbsDef(QModelIndex const& index)
+void LibraryModel::onCreateAbsDef(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -555,9 +423,9 @@ void LibraryTreeModel::onCreateAbsDef(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onOpenDocument()
+// Function: LibraryModel::onOpenDocument()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onOpenDocument(QModelIndex const& index)
+void LibraryModel::onOpenDocument(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -574,9 +442,9 @@ void LibraryTreeModel::onOpenDocument(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onOpenDesign()
+// Function: LibraryModel::onOpenDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onOpenDesign(QModelIndex const& index, QString const& viewName)
+void LibraryModel::onOpenDesign(QModelIndex const& index, QString const& viewName)
 {
     if (!index.isValid())
     {
@@ -593,9 +461,9 @@ void LibraryTreeModel::onOpenDesign(QModelIndex const& index, QString const& vie
 }
 
 //-----------------------------------------------------------------------------
-// Function: librarytreemodel::onOpenMemoryDesign()
+// Function: LibraryModel::onOpenMemoryDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onOpenMemoryDesign(QModelIndex const& index, QString const& viewName)
+void LibraryModel::onOpenMemoryDesign(QModelIndex const& index, QString const& viewName)
 {
     if (!index.isValid())
     {
@@ -615,9 +483,9 @@ void LibraryTreeModel::onOpenMemoryDesign(QModelIndex const& index, QString cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onOpenSWDesign()
+// Function: LibraryModel::onOpenSWDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onOpenSWDesign(QModelIndex const& index)
+void LibraryModel::onOpenSWDesign(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -634,9 +502,9 @@ void LibraryTreeModel::onOpenSWDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onOpenSystemDesign()
+// Function: LibraryModel::onOpenSystemDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onOpenSystemDesign(QModelIndex const& index, QString const& viewName)
+void LibraryModel::onOpenSystemDesign(QModelIndex const& index, QString const& viewName)
 {
     if (!index.isValid())
     {
@@ -653,9 +521,9 @@ void LibraryTreeModel::onOpenSystemDesign(QModelIndex const& index, QString cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onCreateNewDesign()
+// Function: LibraryModel::onCreateNewDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onCreateNewDesign(QModelIndex const& index)
+void LibraryModel::onCreateNewDesign(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -672,9 +540,9 @@ void LibraryTreeModel::onCreateNewDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onCreateNewSWDesign()
+// Function: LibraryModel::onCreateNewSWDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onCreateNewSWDesign(QModelIndex const& index)
+void LibraryModel::onCreateNewSWDesign(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -691,9 +559,9 @@ void LibraryTreeModel::onCreateNewSWDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onCreateNewSystemDesign()
+// Function: LibraryModel::onCreateNewSystemDesign()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onCreateNewSystemDesign(QModelIndex const& index)
+void LibraryModel::onCreateNewSystemDesign(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -712,7 +580,7 @@ void LibraryTreeModel::onCreateNewSystemDesign(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: HierarchyModel::onShowErrors()
 //-----------------------------------------------------------------------------
-void LibraryTreeModel::onShowErrors(QModelIndex const& index)
+void LibraryModel::onShowErrors(QModelIndex const& index)
 {
     if (!index.isValid())
     {
@@ -724,9 +592,9 @@ void LibraryTreeModel::onShowErrors(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::validate()
+// Function: LibraryModel::validate()
 //-----------------------------------------------------------------------------
-bool LibraryTreeModel::validate(LibraryItem* item)
+bool LibraryModel::validate(LibraryItem* item)
 {
     bool isValid = false;
     if (item->getLevel() == LibraryItem::Level::VERSION)

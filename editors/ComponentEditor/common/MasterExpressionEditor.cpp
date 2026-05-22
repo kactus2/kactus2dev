@@ -246,7 +246,7 @@ bool MasterExpressionEditor::wordIsMathFunction(QString const& word)
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::colorFormat()
 //-----------------------------------------------------------------------------
-QTextCharFormat MasterExpressionEditor::colorFormat(Qt::GlobalColor textColor) const
+QTextCharFormat MasterExpressionEditor::colorFormat(QColor const& textColor) const
 {
     QTextCharFormat format;
     format.setForeground(textColor);

@@ -17,10 +17,11 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/IEditProvider.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/graphicsItems/GraphicsConnection.h>
+#include <common/KactusUtils.h>
 
 #include <editors/common/diagramgrid.h>
 #include <editors/common/DesignDiagram.h>
@@ -596,4 +597,14 @@ void HWComponentItem::hideAdhocPort(AdHocItem* portItem)
 
         emit adHocVisibilitiesChanged();
     }
+}
+
+QColor HWComponentItem::getNameLabelColor() const
+{
+    if (KactusUtils::darkThemeEnabled() && componentModel()->isBus())
+    {
+        return ComponentItem::getNameLabelColor().darker(110);
+    }
+
+    return ComponentItem::getNameLabelColor();
 }

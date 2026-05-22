@@ -3,26 +3,38 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = RenodeGeneratorPlugin
 
 QT += core xml widgets gui
-CONFIG += plugin release c++17
+CONFIG += plugin c++17
 DEFINES += QT_DLL QT_XML_LIB RENODEGENERATORPLUGIN_LIB QT_WIDGETS_LIB
 
-INCLUDEPATH += ./generatedFiles \
+INCLUDEPATH += ./GeneratedFiles \
     ./../.. \
-    . \
-    ./generatedFiles/Debug
+    .
 
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels \
-    -lKactusAPI
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd \
+        -L../../executable -lKactusAPId
 
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = RenodeGeneratorPlugind
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../executable -lIPXACTmodels \
+        -L../../executable -lKactusAPI
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = RenodeGeneratorPlugin
+}
 DESTDIR = ../../executable/Plugins
 
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
-OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 

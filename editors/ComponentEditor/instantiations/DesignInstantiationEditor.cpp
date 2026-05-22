@@ -13,12 +13,14 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h>
-#include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
 #include <KactusAPI/include/MultipleParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ParameterConfigurableElementFinder.h>
+
+#include <editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h>
+#include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
@@ -46,27 +48,27 @@ elementEditor_(0),
 designParameterFinder_(new ListParameterFinder())
 {
 
-    QSharedPointer<ConfigurableElementFinder> elementFinder(new ConfigurableElementFinder());
+	QSharedPointer<ParameterConfigurableElementFinder> elementFinder(new ParameterConfigurableElementFinder());
 
     QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
     multiFinder->addFinder(componentParameterFinder);
     multiFinder->addFinder(elementFinder);
 
-    QSharedPointer<IPXactSystemVerilogParser> multiParser(new IPXactSystemVerilogParser(multiFinder));
+    QSharedPointer<IPXactSystemVerilogParser> cevElementParser(new IPXactSystemVerilogParser(multiFinder));
     QSharedPointer<IPXactSystemVerilogParser> designParameterParser(
         new IPXactSystemVerilogParser(designParameterFinder_));
 
-    ComponentParameterModel* designParametersModel = new ComponentParameterModel(componentParameterFinder, this);
-    designParametersModel->setExpressionParser(designParameterParser);
+	ComponentParameterModel* designParametersModel = new ComponentParameterModel(multiFinder, this);
+	designParametersModel->setExpressionParser(cevElementParser);
 
-    ExpressionSet parameterExpressions({ multiFinder , multiParser, 
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)) });
-    ExpressionSet designExpressions({ multiFinder ,designParameterParser,
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designParameterFinder_)) });
+	ExpressionSet cevElementExpressions ({ multiFinder , cevElementParser,
+		QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)) });
+	ExpressionSet designExpressions({ designParameterFinder_, designParameterParser,
+		QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designParameterFinder_)) });
 
-    elementEditor_ = new InstantiationConfigurableElementEditor(elementFinder, 
-        parameterExpressions, designExpressions,
-        designParametersModel, this);
+	elementEditor_ = new InstantiationConfigurableElementEditor(elementFinder,
+		cevElementExpressions, designExpressions,
+		designParametersModel, this);
 
     designEditor_ = new VLNVEditor(VLNV::DESIGN, libHandler, this, this);
     designEditor_->setTitle(tr("Design reference"));

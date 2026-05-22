@@ -130,6 +130,7 @@ void AddressSpaceGeneralEditor::refresh(QStringList masterInterfaceNames)
     isPresentEditor_->blockSignals(true);
 
     addrUnitEditor_.setText(addrSpace_->getAddressUnitBits());
+	addrUnitEditor_.setToolTip(format(addrSpace_->getAddressUnitBits()));
 
     widthEditor_->setExpression(addrSpace_->getWidth());
     widthEditor_->setToolTip(format(addrSpace_->getWidth()));

@@ -14,7 +14,7 @@
 
 #include <common/expressions/utilities.h>
 
-#include <KactusAPI/include//ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <wizards/ComponentWizard/InstanceData.h>
 
@@ -52,17 +52,28 @@ void VerilogInstanceParser::import(QString const& input, QString const& componen
 
     if (!instanceDeclarations.isEmpty())
     {
+		QString vlnvIdentifier = "IP-XACT VLNV:";
         QSharedPointer<Kactus2Group> instancesGroup(new Kactus2Group(InstanceData::VERILOGINSTANCES));
 
         for (auto& instanceMatch : instanceDeclarations)
         {
-            QString instanceModuleName = instanceMatch.captured(1);
-            QString parameterDeclarations = instanceMatch.captured(2);
-            QString instanceName = instanceMatch.captured(3);
-            QString connectionDeclarations = instanceMatch.captured(4);
+			QString instanceModuleName = instanceMatch.captured(2);
+			QString parameterDeclarations = instanceMatch.captured(3);
+			QString instanceName = instanceMatch.captured(4);
+			QString connectionDeclarations = instanceMatch.captured(5);
 
             QSharedPointer<Kactus2Group> instanceExtension(new Kactus2Group(InstanceData::SINGLEINSTANCE));
 
+			QString instanceVLNV = instanceMatch.captured(1);
+            if (instanceVLNV.isEmpty() == false)
+            {
+				instanceVLNV = instanceVLNV.remove(0, instanceVLNV.indexOf(vlnvIdentifier) + vlnvIdentifier.size()).simplified().remove(" ");
+				
+                QSharedPointer<Kactus2Value> componentVLNVExtension(new Kactus2Value(
+					InstanceData::COMPONENTVLNV, instanceVLNV));
+
+				instanceExtension->addToGroup(componentVLNVExtension);
+            }
             QSharedPointer<Kactus2Value> instanceNameExtension(new Kactus2Value(
                 InstanceData::INSTANCENAME, instanceName));
             QSharedPointer<Kactus2Value> moduleExtension(new Kactus2Value(
@@ -110,11 +121,15 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
     QString inspect = componentDeclaration;
 
     QRegularExpression multilineComment(VerilogSyntax::MULTILINE_COMMENT);
-    QRegularExpression strayComment(VerilogSyntax::COMMENT);
-    inspect = inspect.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment).remove(strayComment);
+//     QRegularExpression strayComment(VerilogSyntax::COMMENT);
+//     inspect = inspect.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment).remove(strayComment);
+    QRegularExpression commentsWithoutVLNVs("[\\n\\r]?[\\t\\f\\cK ]*[/]{2}(?! IP-XACT VLNV:).*");
+    inspect = inspect.remove(commentsWithoutVLNVs).remove(multilineComment);
 
+    QString VLNVString = "(\\/\\/\\s*IP-XACT VLNV:\\s*.*\\s*)?";
     QString expressionString =
         "\\b([a-zA-Z_][\\w$]*)(\\s+#(?:(?:.|\\n)(?!(?:[)]\\s*[a-zA-Z_]|;)))*(?:.|\\n)\\))?\\s+([a-zA-Z_][\\w$]*)\\s*(\\((?:(?:.|\\n)(?!\\);))*\\s*\\)+;)";
+    expressionString = VLNVString + expressionString;
     QRegularExpression instanceExpression(expressionString);
     QRegularExpressionMatchIterator instanceMatchIterator = instanceExpression.globalMatch(inspect);
 
@@ -125,7 +140,7 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
         QRegularExpressionMatch instanceMatch = instanceMatchIterator.next();
 
         QString instanceModuleName = instanceMatch.captured(1);
-        if (instanceMatch.captured(1).compare(QStringLiteral("module"), Qt::CaseInsensitive) != 0)
+		if (instanceMatch.captured(2).compare(QStringLiteral("module"), Qt::CaseInsensitive) != 0)
         {
             instances.append(instanceMatch);
             highlightInstance(input, componentDeclaration, instanceMatch, multilineCommentIterator);
@@ -141,8 +156,8 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
 void VerilogInstanceParser::highlightInstance(QString const& input, QString const& /*moduleDeclaration*/,
     QRegularExpressionMatch const& instanceMatch, QRegularExpressionMatchIterator const& multilineCommentIterator)
 {
-    QString instanceModuleName = instanceMatch.captured(1);
-    QString instanceName = instanceMatch.captured(3);
+    QString instanceModuleName = instanceMatch.captured(2);
+    QString instanceName = instanceMatch.captured(4);
 
     QRegularExpression inputInstanceExpression("\\b(" + instanceModuleName +
         "\\s+(?:[^;])*?" +
@@ -164,9 +179,9 @@ void VerilogInstanceParser::highlightInstance(QString const& input, QString cons
             int instanceNameEndIndex = instanceNameBeginIndex + instanceName.length();
 
             highlighter_->applyHighlight(
-                instanceModuleBeginIndex, instanceModuleEndIndex, ImportColors::INSTANCECOLOR);
+                instanceModuleBeginIndex, instanceModuleEndIndex, KactusColors::Importer::INSTANCECOLOR);
             highlighter_->applyHighlight(
-                instanceNameBeginIndex, instanceNameEndIndex, ImportColors::INSTANCECOLOR);
+                instanceNameBeginIndex, instanceNameEndIndex, KactusColors::Importer::INSTANCECOLOR);
         }
     }
 }

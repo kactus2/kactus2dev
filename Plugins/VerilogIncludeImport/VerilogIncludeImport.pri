@@ -4,7 +4,6 @@
 
 
 HEADERS += ../../common/expressions/utilities.h \
-    ../PluginSystem/ImportPlugin/ImportColors.h \
     ../VerilogImport/VerilogParameterParser.h \
     ./verilogincludeimport_global.h \
     ./VerilogIncludeImport.h

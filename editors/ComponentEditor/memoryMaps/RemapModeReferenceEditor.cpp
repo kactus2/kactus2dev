@@ -21,10 +21,10 @@
 //-----------------------------------------------------------------------------
 RemapModeReferenceEditor::RemapModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent, bool isRemap):
     GroupBoxWithAlertSign(tr("Mode references"), parent),
-    modeRefInterface_(modeRefInterface),
-    modeReferencesEditor_(new ModeReferenceEditor(modeRefInterface, parent))
+    modeReferencesEditor_(new ModeReferenceEditor(modeRefInterface, parent)),
+	modeRefInterface_(modeRefInterface)
 {
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    auto topLayout = new QVBoxLayout(this);
     topLayout->addWidget(modeReferencesEditor_);
 
     modeReferencesEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

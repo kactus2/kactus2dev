@@ -13,7 +13,7 @@
 
 #include <KactusAPI/include/AbstractParameterInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QFont>
 #include <QMessageBox>
@@ -93,20 +93,16 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
     }
     else if (role == Qt::BackgroundRole) 
     {
-        return backgroundColorForIndex(index);
-    }
-    else if (role == Qt::ForegroundRole)
-    {
-        return blackForValidOrRedForInvalidIndex(index);
+        if (auto overriddenColor = backgroundColorForIndex(index);
+            overriddenColor != QVariant())
+            return overriddenColor;
     }
     else if (role == Qt::FontRole)
     {
         return italicForEvaluatedValue(index);
     }
-    else // if unsupported role
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -367,9 +363,9 @@ Qt::ItemFlags AbstractParameterModel::flags(QModelIndex const& index ) const
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::isMandatoryColumn()
 //-----------------------------------------------------------------------------
-bool AbstractParameterModel::isMandatoryColumn(int column) const
+bool AbstractParameterModel::indexIsMandatory(QModelIndex const& index) const
 {
-    return column == nameColumn() || column == valueColumn();
+    return index.column() == nameColumn() || index.column() == valueColumn();
 }
 
 //-----------------------------------------------------------------------------
@@ -640,21 +636,15 @@ QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& inde
     std::string parameterName = parameterInterface_->getIndexedItemName(index.row());
     std::string parameterType = parameterInterface_->getType(parameterName);
 
-    if (isMandatoryColumn(index.column())) 
-    {
-        return KactusColors::MANDATORY_FIELD;
-    }
-    else if (((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
+    if (((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
         (parameterType.empty() || parameterType == "bit" || parameterType == "string")) ||
         ((index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn()) &&
             parameterType != "bit"))
     {
         return KactusColors::DISABLED_FIELD;
     }
-    else
-    {
-        return KactusColors::REGULAR_FIELD;
-    }
+
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------

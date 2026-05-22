@@ -23,7 +23,7 @@
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QCompleter>
 #include <QHeaderView>

@@ -11,7 +11,9 @@
 
 #include "RenodePeripheralsModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
+
+#include <common/KactusUtils.h>
 
 #include <QColor>
 #include <QIcon>
@@ -200,7 +202,7 @@ QVariant RenodePeripheralsModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::DecorationRole && index.column() == PeripheralColumns::FILEPATH)
     {
-        return QIcon(QString(":/icons/common/graphics/opened-folder.png"));
+        return KactusUtils::getIconStyledToTheme(QString(":/icons/common/graphics/opened-folder.png"));
     }
 
     return QVariant();

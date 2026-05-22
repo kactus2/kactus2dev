@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Component/ResetType.h>
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QStringList>
 
@@ -144,7 +144,7 @@ QVariant ResetTypesModel::data(QModelIndex const& index, int role) const
         if (index.column() == ResetTypeColumns::NAME_COLUMN &&
             !validator_->singleResetTypeIsValid(resetType, resetTypes_))
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else
         {

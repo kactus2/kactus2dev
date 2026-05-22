@@ -22,7 +22,7 @@
 #include <KactusAPI/include/PluginManager.h>
 #include <KactusAPI/include/ISourceAnalyzerPlugin.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QIcon>
 #include <QDir>
@@ -252,7 +252,7 @@ QVariant FileDependencyModel::data(QModelIndex const& index, int role) const
         {
             if (FileHandler::isValidURI(basePath_, item->getPath()) == false)
             {
-                return KactusColors::ERROR;
+                return KactusColors::ERROR_COLOR;
             }
             else if (item->getFileSetNames().isEmpty())
             {

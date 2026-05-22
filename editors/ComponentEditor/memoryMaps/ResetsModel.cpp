@@ -14,7 +14,7 @@
 #include <editors/ComponentEditor/memoryMaps/ResetColumns.h>
 #include <KactusAPI/include/ResetInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ResetsModel::ResetsModel()
@@ -133,32 +133,16 @@ QVariant ResetsModel::data(const QModelIndex& index, int role) const
     {
         return valueForIndex(index);
     }
-    else if (Qt::ForegroundRole == role)
-    {
-        if (validateIndex(index))
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-        else
-        {
-            return KactusColors::ERROR;
-        }
-    }
-    else if (Qt::BackgroundRole == role)
-    {
-        if (index.column() == ResetColumns::RESETVALUE_COLUMN)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-    else
-    {
-        return QVariant();
-    }
+
+    return TableModelBase::data(index, role);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ResetsModel::indexIsMandatory()
+//-----------------------------------------------------------------------------
+bool ResetsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == ResetColumns::RESETVALUE_COLUMN;
 }
 
 //-----------------------------------------------------------------------------

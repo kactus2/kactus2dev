@@ -11,43 +11,43 @@
 
 TEMPLATE = app
 
-TARGET = tst_VerilogWriterFactory
-
 QT += core xml gui testlib
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
 DEFINES += VERILOGGENERATORPLUGIN_LIB
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-    LIBS += -L$$PWD/../../../executable/ -lKactusAPI
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
-    LIBS += -L$$PWD/../../../executable/ -lKactusAPId
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-    LIBS += -L$$PWD/../../../executable/ -lKactusAPI
-    DESTDIR = ./release
+CONFIG (debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../../executable -lIPXACTmodelsd \
+        -L../../../executable -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_VerilogWriterFactoryd
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../../executable -lIPXACTmodels \
+        -L../../../executable -lKactusAPI
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_VerilogWriterFactory
 }
 
-INCLUDEPATH += $$PWD/../../../
-INCLUDEPATH += $$PWD/../../../executable
-INCLUDEPATH += $$PWD/../../../executable/Plugins
-INCLUDEPATH += $$PWD/../../../KactusAPI/include
-INCLUDEPATH += $$DESTDIR
+INCLUDEPATH += ../../../
+INCLUDEPATH += ../../../executable
+INCLUDEPATH += ../../../executable/Plugins
+INCLUDEPATH += ../../../KactusAPI/include
+INCLUDEPATH += .
 
-DEPENDPATH += $$PWD/../../../
-DEPENDPATH += $$PWD/../../../executable
-DEPENDPATH += $$PWD/../../../executable/Plugins
+DEPENDPATH += ../../../
+DEPENDPATH += ../../../executable
+DEPENDPATH += ../../../executable/Plugins
 DEPENDPATH += .
 
-OBJECTS_DIR += $$DESTDIR
+OBJECTS_DIR = $$DESTDIR
 
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_VerilogWriterFactory.pri)

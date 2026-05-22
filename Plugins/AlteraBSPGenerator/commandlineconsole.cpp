@@ -6,7 +6,7 @@
 */
 
 #include "commandlineconsole.h"
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 CommandLineConsole::CommandLineConsole(QWidget *parent):
 QTextEdit(parent) {
@@ -40,7 +40,7 @@ void CommandLineConsole::printError( const QString& text ) {
 	moveCursor(QTextCursor::End);
 
 	// errors are printed in red color
-	setTextColor(KactusColors::ERROR);
+	setTextColor(KactusColors::ERROR_COLOR);
 	insertPlainText(text);
 
 	// set cursor to the end of the text

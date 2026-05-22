@@ -14,13 +14,11 @@
 #include "AdHocBoundColumns.h"
 
 #include <common/IEditProvider.h>
-#include <common/graphicsItems/ConnectionUndoCommands.h>
-
+#include <common/KactusUtils.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/ComponentItem.h>
 
 #include <editors/common/DesignDiagram.h>
-
 #include <editors/HWDesign/AdHocConnectionItem.h>
 #include <editors/HWDesign/HWConnectionEndpoint.h>
 #include <editors/HWDesign/HWChangeCommands.h>
@@ -28,26 +26,26 @@
 #include <KactusAPI/include/ParameterCache.h>
 #include <KactusAPI/include/MultipleParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
-
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ParameterConfigurableElementFinder.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-
 #include <IPXACTmodels/common/Vector.h>
 #include <IPXACTmodels/common/VLNV.h>
-
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-
-#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
-#include <IPXACTmodels/kactusExtensions/ComInterface.h>
-
+#include <IPXACTmodels/common/validators/namevalidator.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
-
+#include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
-
-#include <IPXACTmodels/common/validators/namevalidator.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <QFormLayout>
 #include <QVBoxLayout>
@@ -102,9 +100,10 @@ connectionTypeTable_(new QStackedWidget())
 	portWidget_.horizontalHeader()->setStretchLastSection(true);
 	portWidget_.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	portWidget_.verticalHeader()->hide();
-	portWidget_.setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-	descriptionEdit_.setMaximumHeight(50);
+    portWidget_.setEditTriggers(QAbstractItemView::NoEditTriggers);
+    portWidget_.setStyleSheet("QTableWidget::item { color: " % KactusUtils::colorToRgbString(KactusColors::REGULAR_TEXT) % "};");
+    
+    descriptionEdit_.setMaximumHeight(50);
 
     // Set settings for the table view.
     adHocBoundsTable_.setSortingEnabled(true);
@@ -151,7 +150,10 @@ void ConnectionEditor::clear()
 	nameEdit_.clear();
 	descriptionEdit_.clear();
 	portWidget_.clearContents();
-    adHocBoundsModel_.setConnection(QSharedPointer<AdHocConnection>(), QSharedPointer<IEditProvider>());
+    adHocBoundsModel_.setConnection(QSharedPointer<AdHocConnection>(),
+        QSharedPointer<AdHocBoundsModel::endPointParser>(),
+        QSharedPointer<AdHocBoundsModel::endPointParser>(),
+        QSharedPointer<IEditProvider>());
 
 	// set objects as hidden
 	type_.hide();
@@ -171,7 +173,7 @@ void ConnectionEditor::clear()
 void ConnectionEditor::refresh()
 {
 	Q_ASSERT(connection_);
-	setConnection(connection_, diagram_);
+    setConnection(connection_, diagram_);
 }
 
 //-----------------------------------------------------------------------------
@@ -193,14 +195,25 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
 	connection_ = connection;
     diagram_ = diagram;
 
-	ConnectionEndpoint* endpoint1 = connection->endpoint1();
-    ConnectionEndpoint* endpoint2 = connection->endpoint2();
+	auto endpoint1 = connection->endpoint1();
+	auto endpoint2 = connection->endpoint2();
 	Q_ASSERT(endpoint1);
 
     if (!endpoint1 || !endpoint2)
     {
         return;
     }
+
+	QSharedPointer<Component> component1 = endpoint1->getOwnerComponent();
+	QSharedPointer<Component> component2 = endpoint2->getOwnerComponent();
+
+	QSharedPointer<ListParameterFinder> designFinder(new ListParameterFinder());
+	if (diagram_ && diagram_->getDesign())
+	{
+		designFinder->setParameterList(diagram_->getDesign()->getParameters());
+	}
+	auto firstInstanceParser = createInstanceParser(component1, endpoint1, designFinder);
+	auto secondInstanceParser = createInstanceParser(component2, endpoint2, designFinder);
 
     if (endpoint1->isCom())
     {
@@ -234,13 +247,16 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
         type_.setVLNV(endpoint1->getBusInterface()->getBusType());
         absType_.setVLNV(findAbstractionVLNV(endpoint1, endpoint1->getBusInterface()));
 
-        setPortMaps();
+        setPortMaps(firstInstanceParser, secondInstanceParser);
         portWidget_.scrollToTop();
     }
     else if (endpoint1->isAdHoc())
     {
-        AdHocConnectionItem* adHoc = static_cast<AdHocConnectionItem*>(connection_);
-        adHocBoundsModel_.setConnection(adHoc->getInterconnection(), diagram->getEditProvider());
+        auto firstEndPointParser = createAdHocBoundsParser(endpoint1, firstInstanceParser, component1);
+        auto secondEndPointParser = createAdHocBoundsParser(endpoint2, secondInstanceParser, component2);
+
+		auto adHoc = static_cast<AdHocConnectionItem*>(connection_);
+        adHocBoundsModel_.setConnection(adHoc->getInterconnection(), firstEndPointParser, secondEndPointParser, diagram->getEditProvider());
         adHocBoundsTable_.resizeRowsToContents();
     }
 
@@ -297,6 +313,27 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
 }
 
 //-----------------------------------------------------------------------------
+// Function: connectioneditor::createAdHocBoundsParser()
+//-----------------------------------------------------------------------------
+QSharedPointer<AdHocBoundsModel::endPointParser> ConnectionEditor::createAdHocBoundsParser(
+    ConnectionEndpoint const* endPoint,
+    QSharedPointer<ExpressionParser> instanceParser,
+    QSharedPointer<Component> containingComponent) const
+{
+	auto endPointParser = QSharedPointer<AdHocBoundsModel::endPointParser>(new AdHocBoundsModel::endPointParser());
+    endPointParser->endPoint_ = endPoint->name();
+    endPointParser->instanceParser_ = instanceParser;
+    endPointParser->instancedComponent_ = containingComponent;
+
+	if (auto containingComponentItem = dynamic_cast<ComponentItem*>(endPoint->parentItem()); containingComponentItem)
+	{
+		endPointParser->containingInstanceName_ = containingComponentItem->name();
+	}
+
+    return endPointParser;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectionEditor::onNameOrDescriptionChanged()
 //-----------------------------------------------------------------------------
 void ConnectionEditor::onNameOrDescriptionChanged()
@@ -335,7 +372,9 @@ VLNV ConnectionEditor::findAbstractionVLNV(ConnectionEndpoint* endPoint,
 //-----------------------------------------------------------------------------
 // Function: ConnectionEditor::setPortMaps()
 //-----------------------------------------------------------------------------
-void ConnectionEditor::setPortMaps()
+void ConnectionEditor::setPortMaps(
+    QSharedPointer<ExpressionParser> firstInstanceParser,
+    QSharedPointer<ExpressionParser> secondInstanceParser)
 {
 	portWidget_.clearContents();
     portWidget_.setSortingEnabled(false);
@@ -363,15 +402,6 @@ void ConnectionEditor::setPortMaps()
 
     setTableHeaders();
 
-    QSharedPointer<ComponentParameterFinder> firstFinder(new ParameterCache(component1));
-    QSharedPointer<ComponentParameterFinder> secondFinder(new ParameterCache(component2));
-
-    QSharedPointer<MultipleParameterFinder> parameterFinder(new MultipleParameterFinder());
-    parameterFinder->addFinder(firstFinder);
-    parameterFinder->addFinder(secondFinder);
-
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-
     QList<QSharedPointer<PortMap> > portMaps1 = getPortMapsForEndPoint(endPoint1, busIf1);
     QList<QSharedPointer<PortMap> > portMaps2 = getPortMapsForEndPoint(endPoint2, busIf2);
 
@@ -379,9 +409,12 @@ void ConnectionEditor::setPortMaps()
     VLNV absDefVLNV = findAbstractionVLNV(endPoint1, busIf1);
     
     QSharedPointer<AbstractionDefinition> absDef;
+	auto absDefFinder = QSharedPointer<ListParameterFinder>(new ListParameterFinder());
+    auto absDefParser = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(absDefFinder));
     if (library_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
     {
         absDef = library_->getModel(absDefVLNV).staticCast<AbstractionDefinition>();
+		absDefFinder->setParameterList(absDef->getParameters());
     }
 
     General::InterfaceMode mode1 = busIf1->getInterfaceMode();
@@ -404,7 +437,9 @@ void ConnectionEditor::setPortMaps()
                         if (map1->getLogicalPort() && map1->getPhysicalPort() &&
                             map2->getLogicalPort() && map2->getPhysicalPort())
                         {
-                            addMap(map1, component1, map2, component2, expressionParser, validAbstraction);
+							addMap(map1, component1, busIf1, firstInstanceParser,
+                                map2, component2, busIf2, secondInstanceParser,
+                                absDef, absDefParser, validAbstraction);
                         }
 					}
 				}
@@ -414,6 +449,35 @@ void ConnectionEditor::setPortMaps()
 
 	// Finally, set sorting back on.
 	portWidget_.setSortingEnabled(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEditor::createInstanceFinder()
+//-----------------------------------------------------------------------------
+QSharedPointer<ExpressionParser> ConnectionEditor::createInstanceParser(
+    QSharedPointer<Component> component,
+    ConnectionEndpoint const* endPoint,
+    QSharedPointer<ListParameterFinder> designFinder)
+{
+	QSharedPointer<ParameterConfigurableElementFinder> cevFinder(new ParameterConfigurableElementFinder());
+    cevFinder->setParameterList(component->getParameters());
+	if (endPoint->parentItem())
+	{
+		auto firstComponentItem = dynamic_cast<ComponentItem*>(endPoint->parentItem());
+		if (firstComponentItem)
+		{
+            cevFinder->setCEVList(firstComponentItem->getComponentInstance()->getConfigurableElementValues());
+		}
+	}
+
+	QString activeView = getActiveViewForEndPoint(endPoint);
+
+    auto instanceFinder = QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder());
+    instanceFinder->addFinder(cevFinder);
+    instanceFinder->addFinder(designFinder);
+
+	auto expressionParser = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(instanceFinder));
+    return expressionParser;
 }
 
 //-----------------------------------------------------------------------------
@@ -434,7 +498,7 @@ QList<QSharedPointer<PortMap> > ConnectionEditor::getPortMapsForEndPoint(Connect
 //-----------------------------------------------------------------------------
 // Function: connectioneditor::getActiveViewForComponentInstance()
 //-----------------------------------------------------------------------------
-QString ConnectionEditor::getActiveViewForEndPoint(ConnectionEndpoint* endPoint) const
+QString ConnectionEditor::getActiveViewForEndPoint(ConnectionEndpoint const* endPoint) const
 {
     QString activeView;
 
@@ -510,26 +574,29 @@ QStringList ConnectionEditor::getAllLogicalPorts(QList<QSharedPointer<PortMap> >
 // Function: ConnectionEditor::addMap()
 //-----------------------------------------------------------------------------
 void ConnectionEditor::addMap(QSharedPointer<PortMap> portMap1,
-    QSharedPointer<Component> component1, QSharedPointer<PortMap> portMap2, QSharedPointer<Component> component2, 
-    QSharedPointer<ExpressionParser> expressionParser, bool validAbstraction)
+    QSharedPointer<Component> component1,
+	QSharedPointer<BusInterface> firstBus,
+    QSharedPointer<ExpressionParser> firstParser,
+    QSharedPointer<PortMap> portMap2,
+    QSharedPointer<Component> component2,
+	QSharedPointer<BusInterface> secondBus,
+    QSharedPointer<ExpressionParser> secondParser,
+	QSharedPointer<AbstractionDefinition> absDef,
+	QSharedPointer<ExpressionParser> absDefParser,
+    bool validAbstraction)
 {
-    QPair<int, int> firstMappedBounds = calculateMappedPhysicalPortBounds(expressionParser, portMap1, component1);
-    int left1 = qMax(firstMappedBounds.first, firstMappedBounds.second);
-    int right1 = qMin(firstMappedBounds.first, firstMappedBounds.second);
+	auto [firstLeftBound, firstRightBound]  = calculateMappedPhysicalPortBounds(firstParser, portMap1, component1);
+	int left1 = qMax(firstLeftBound, firstRightBound);
+	int right1 = qMin(firstLeftBound, firstRightBound);
 
-    QPair<int, int> secondMappedBounds = calculateMappedPhysicalPortBounds(expressionParser, portMap2, component2);
-    int left2 = qMax(secondMappedBounds.first, secondMappedBounds.second);
-    int right2 = qMin(secondMappedBounds.first, secondMappedBounds.second);
-    
+	auto [secondLeftBound, secondRightBound] = calculateMappedPhysicalPortBounds(secondParser, portMap2, component2);
+	int left2 = qMax(secondLeftBound, secondRightBound);
+	int right2 = qMin(secondLeftBound, secondRightBound);
+
     if (portMap1->getLogicalPort()->range_ && portMap2->getLogicalPort()->range_)
     {
-        QPair<int, int> firstLogicalBounds = calculateMappedLogicalPortBounds(expressionParser, portMap1);
-        int firstLogicalHigh = firstLogicalBounds.first;
-        int firstLogicalLow = firstLogicalBounds.second;
-
-        QPair<int, int> secondLogicalBounds = calculateMappedLogicalPortBounds(expressionParser, portMap2);
-        int secondLogicalHigh = secondLogicalBounds.first;
-        int secondLogicalLow = secondLogicalBounds.second;
+		auto [firstLogicalHigh, firstLogicalLow] = calculateMappedLogicalPortBounds(firstParser, portMap1, absDefParser, absDef, firstBus);
+		auto [secondLogicalHigh, secondLogicalLow] = calculateMappedLogicalPortBounds(secondParser, portMap2, absDefParser, absDef, secondBus);
 
         if (firstLogicalLow > secondLogicalHigh || firstLogicalHigh < secondLogicalLow)
         {
@@ -631,19 +698,39 @@ bool ConnectionEditor::isValidPhysicalPort(QSharedPointer<PortMap> containingPor
 //-----------------------------------------------------------------------------
 // Function: connectioneditor::calculateMappedLogicalPortBounds()
 //-----------------------------------------------------------------------------
-QPair<int, int> ConnectionEditor::calculateMappedLogicalPortBounds(QSharedPointer<ExpressionParser> parser,
-    QSharedPointer<PortMap> containingPortMap)
+QPair<int, int> ConnectionEditor::calculateMappedLogicalPortBounds(
+    QSharedPointer<ExpressionParser> instanceParser,
+    QSharedPointer<PortMap> containingPortMap,
+    QSharedPointer<ExpressionParser> absDefParser,
+	QSharedPointer<AbstractionDefinition> absDef,
+	QSharedPointer<BusInterface> busInterface)
 {
     int logicalHigh = 0;
     int logicalLow = 0;
 
     if (containingPortMap->getLogicalPort()->range_)
     {
-        int logicalLeft = parser->parseExpression(containingPortMap->getLogicalPort()->range_->getLeft()).toInt();
-        int logicalRight = parser->parseExpression(containingPortMap->getLogicalPort()->range_->getRight()).toInt();
+        int logicalLeft = instanceParser->parseExpression(containingPortMap->getLogicalPort()->range_->getLeft()).toInt();
+        int logicalRight = instanceParser->parseExpression(containingPortMap->getLogicalPort()->range_->getRight()).toInt();
 
         logicalHigh = qMax(logicalLeft, logicalRight);
         logicalLow = qMin(logicalLeft, logicalRight);
+    }
+	else if (auto portName = containingPortMap->getLogicalPort()->name_;
+		absDef && absDef->hasPort(portName, busInterface->getInterfaceMode()))
+    {
+		auto logicalPort = absDef->getPort(portName);
+		QString logicalWidth = "";
+		if (logicalPort->hasWire())
+		{
+			logicalWidth = absDefParser->parseExpression(logicalPort->getWire()->getWidth(busInterface->getInterfaceMode(), busInterface->getSystem()));
+		}
+		else if (logicalPort->hasTransactional())
+		{
+			logicalWidth = absDefParser->parseExpression(logicalPort->getTransactional()->getWidth(busInterface->getInterfaceMode(), busInterface->getSystem()));
+		}
+
+        logicalHigh = logicalWidth.toInt() - 1;
     }
 
     QPair<int, int> logicalBounds(logicalHigh, logicalLow);

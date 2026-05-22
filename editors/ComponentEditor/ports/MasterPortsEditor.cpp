@@ -145,15 +145,6 @@ void MasterPortsEditor::setAllowImportExport(bool allow)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MasterPortsEditor::setComponent()
-//-----------------------------------------------------------------------------
-void MasterPortsEditor::setComponent(QSharedPointer<Component> component)
-{
-    model_->resetModelAndLockCurrentPorts();
-    delegate_->setComponent(component);
-}
-
-//-----------------------------------------------------------------------------
 // Function: MasterPortsEditor::getIndexedPort()
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> MasterPortsEditor::getIndexedPort(QModelIndex const& portIndex) const

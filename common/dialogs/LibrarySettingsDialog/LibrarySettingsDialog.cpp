@@ -14,6 +14,8 @@
 
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h>
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QFileDialog>
@@ -78,7 +80,7 @@ checkMarkIcon_(":/icons/common/graphics/checkMark.png")
         "read into the library."), this));
 
     QPalette introPalette = introWidget->palette();
-    introPalette.setColor(QPalette::Window, Qt::white);
+    introPalette.setColor(QPalette::Window, KactusColors::DEFAULT_WINDOW_BG);
     introWidget->setPalette(introPalette);
     introWidget->setAutoFillBackground(true);
 
@@ -90,16 +92,12 @@ checkMarkIcon_(":/icons/common/graphics/checkMark.png")
     locationLayout->addWidget(libLocationsTable_);
     locationLayout->addWidget(listButtonBox);
 
-    QGroupBox* separator = new QGroupBox(this);
-    separator->setFlat(true);
-
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                                        Qt::Horizontal, this);
     // Setup the layout.
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(introWidget);
     topLayout->addWidget(locationGroup, 1);
-    topLayout->addWidget(separator);
     topLayout->addWidget(buttonBox);
 
     resize(700, sizeHint().height() + 50);

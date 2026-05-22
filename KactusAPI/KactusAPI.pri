@@ -22,6 +22,7 @@ HEADERS += ./KactusAPI.h \
     ./include/ComponentInstantiationParameterFinder.h \
     ./include/ComponentParameterFinder.h \
     ./include/ConfigJsonParser.h \
+    ./include/ParameterConfigurableElementFinder.h \
     ./include/ConsoleMediator.h \
     ./include/DesignParameterFinder.h \
     ./include/DocumentFileAccess.h \
@@ -39,7 +40,6 @@ HEADERS += ./KactusAPI.h \
     ./include/Highlighter.h \
     ./include/HighlightSource.h \
     ./include/IGeneratorPlugin.h \
-    ./include/ImportColors.h \
     ./include/ImportPlugin.h \
     ./include/IncludeImportPlugin.h \
     ./include/InterconnectGenerator.h \
@@ -91,14 +91,16 @@ HEADERS += ./KactusAPI.h \
     ./include/VersionHelper.h \
     ./include/ComponentInstanceParameterFinder.h \
     ./include/hierarchyitem.h \
-    ./include/hierarchymodel.h \
+    ./include/HierarchyModelBase.h \
     ./include/ImportHighlighter.h \
     ./include/ImportRunner.h \
     ./include/LibraryHandler.h \
     ./include/LibraryItem.h \
     ./include/LibraryTreeModel.h \
-    ./include/ParameterCache.h \
     ./include/ArrayableMemoryInterface.h
+    ./include/LibraryModel.h \
+    ./include/ParameterCache.h \
+    ./include/KactusColors.h
 SOURCES += ./KactusAPI.cpp \
     ./expressions/AddressBlockExpressionsGatherer.cpp \
     ./expressions/AddressSpaceExpressionsGatherer.cpp \
@@ -106,6 +108,7 @@ SOURCES += ./KactusAPI.cpp \
     ./expressions/ComponentInstanceParameterFinder.cpp \
     ./expressions/ComponentInstantiationParameterFinder.cpp \
     ./expressions/ComponentParameterFinder.cpp \
+    ./expressions/ParameterConfigurableElementFinder.cpp \
     ./expressions/DesignParameterFinder.cpp \
     ./expressions/ExpressionFormatter.cpp \
     ./expressions/ExpressionFormatterFactoryImplementation.cpp \
@@ -168,10 +171,12 @@ SOURCES += ./KactusAPI.cpp \
     ./library/DocumentFileAccess.cpp \
     ./library/DocumentValidator.cpp \
     ./library/hierarchyitem.cpp \
-    ./library/hierarchymodel.cpp \
+    ./library/HierarchyModelBase.cpp \
     ./library/LibraryHandler.cpp \
     ./library/LibraryItem.cpp \
     ./library/LibraryLoader.cpp \
     ./library/LibraryTreeModel.cpp \
-    ./library/TagManager.cpp \
     ./interfaces/component/ArrayableMemoryInterface.cpp
+    ./library/LibraryModel.cpp \
+    ./library/TagManager.cpp \
+    ./utilities/KactusColors.cpp

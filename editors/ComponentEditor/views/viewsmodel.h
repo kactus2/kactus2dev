@@ -15,7 +15,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
+
 #include <QList>
 #include <QSharedPointer>
 
@@ -23,7 +24,7 @@ class ViewValidator;
 //-----------------------------------------------------------------------------
 //! The model to manage the views summary.
 //-----------------------------------------------------------------------------
-class ViewsModel : public QAbstractTableModel
+class ViewsModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -138,6 +139,33 @@ private:
 	//! No copying.
 	ViewsModel(const ViewsModel& other);
 	ViewsModel& operator=(const ViewsModel& other);
+
+	/*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+	bool indexIsMandatory(QModelIndex const& index) const override;
+
+	/*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+	bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+	 *  Checks if the given index corresponds to a table cell whose text should be grayed out.
+	 *
+	 *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is supposed to be greyed out, otherwise false.
+     */
+    bool indexIsGreyedOut(QModelIndex const& index) const override;
 
 	//! Pointer to the component being edited.
 	QSharedPointer<Component> component_;

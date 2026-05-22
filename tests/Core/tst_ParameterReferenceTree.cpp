@@ -11,7 +11,7 @@
 
 #include <QtTest>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.h>

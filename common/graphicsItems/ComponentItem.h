@@ -217,6 +217,12 @@ protected:
      */
     virtual void updateNameLabel();
 
+    /*!
+     *  Gets the desired name label color. Override, if other than default color is needed.
+     *
+     *    @return Color that the name label should use.
+     */
+    virtual QColor getNameLabelColor() const;
 
     /*!
      *  Adds an interface item to component side determined by the item position.

@@ -19,7 +19,7 @@
 #include <QStringList>
 #include <QRegularExpression>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortSliceModel::PortSliceModel()
@@ -159,22 +159,7 @@ QVariant PortSliceModel::data(QModelIndex const& index, int role) const
         }
     }
 
-    else if (role == Qt::ForegroundRole)
-    {
-            return blackForValidOrRedForInvalidIndex(index);
-    }
-
-    else if (role == Qt::BackgroundRole)
-    {
-        if (column == PortSliceColumns::NAME ||
-            column == PortSliceColumns::PORT_REF)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-    }
-
-
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -260,6 +245,12 @@ void PortSliceModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool PortSliceModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == PortSliceColumns::NAME ||
+        index.column() == PortSliceColumns::PORT_REF;
 }
 
 //-----------------------------------------------------------------------------

@@ -91,6 +91,9 @@ navigationView_(libHandler, component->getVlnv(), &navigationSplitter_),
 proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
 visualizerSlot_(&editorVisualizerSplitter_),
+//! 
+//! This is the reason for weird sorting of the parameters, parameter cache uses uuid as the key, which is semi-random and causes weird sorting behaviour.
+//! 
 parameterFinder_(new ParameterCache(component_)),
 fullParameterFinder_(QSharedPointer<ComponentAndInstantiationsParameterFinder>(
     new ComponentAndInstantiationsParameterFinder(component))),

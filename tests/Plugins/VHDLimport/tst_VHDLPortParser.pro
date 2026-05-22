@@ -11,36 +11,40 @@
 
 TEMPLATE = app
 
-TARGET = tst_VHDLPortParser
-
 QT += core xml testlib
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-    LIBS += -L$$PWD/../../../executable/ -lKactusAPI
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
-    LIBS += -L$$PWD/../../../executable/ -lKactusAPId
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-    LIBS += -L$$PWD/../../../executable/ -lKactusAPI
-    DESTDIR = ./release
+INCLUDEPATH += ../../../ \
+    ./GeneratedFiles \
+    .
+
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../../executable -lIPXACTmodelsd \
+        -L../../../executable -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_VHDLPortParserd
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../../executable -lIPXACTmodels \
+        -L../../../executable -lKactusAPI
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_VHDLPortParser
 }
 
-INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../../
-INCLUDEPATH += $$PWD/../../../KactusAPI/include
+OBJECTS_DIR = $$DESTDIR
+
+INCLUDEPATH += .
+INCLUDEPATH += ../../../KactusAPI/include
 
 DEPENDPATH += .
 DEPENDPATH += ../../../
 
-OBJECTS_DIR += $$DESTDIR
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_VHDLPortParser.pri)

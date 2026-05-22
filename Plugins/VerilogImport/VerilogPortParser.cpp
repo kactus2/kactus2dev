@@ -15,7 +15,7 @@
 
 #include <common/expressions/utilities.h>
 
-#include <KactusAPI/include//ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 #include <KactusAPI/include/NullParser.h>
@@ -348,11 +348,15 @@ void VerilogPortParser::createPortFromDeclaration(QString const& portDeclaration
         port->setDirection(direction);
         port->setLeftBound(vectorBounds.first);
         port->setRightBound(vectorBounds.second);
-        port->setTypeName(type);
-        port->setTypeDefinition(type, typeDefinition);
         port->setArrayLeft(arrayBounds.first);
         port->setArrayRight(arrayBounds.second);
         port->setDescription(description);
+
+		port->setTypeName(type);
+		if (type.isEmpty() == false && typeDefinition.isEmpty() == false)
+		{
+			port->setTypeDefinition(type, typeDefinition);
+		}
     }
 }
 
@@ -363,7 +367,7 @@ void VerilogPortParser::highlight(QString const& portDeclaration, QString const&
 {
     if (highlighter_)
     {
-        highlighter_->applyHighlight(portDeclaration, ImportColors::PORT, componentDeclaration);
+        highlighter_->applyHighlight(portDeclaration, KactusColors::Importer::PORT, componentDeclaration);
     }
 }
 

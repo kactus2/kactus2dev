@@ -15,7 +15,7 @@
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeConstants.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QApplication>
 #include <QMouseEvent>

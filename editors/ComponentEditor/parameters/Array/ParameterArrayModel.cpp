@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/Enumeration.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterArrayModel::ParameterArrayModel()
@@ -165,20 +165,6 @@ QVariant ParameterArrayModel::data(const QModelIndex &index, int role) const
         {
             return valueBackGroundColor_;
         }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-
-    else if (role == Qt::ForegroundRole)
-    {
-        if (isValidExpressionColumn(index))
-        {
-            return blackForValidOrRedForInvalidIndex(index);
-        }
-
-        return QVariant();
     }
 
     else if (role == Qt::TextAlignmentRole)
@@ -192,10 +178,7 @@ QVariant ParameterArrayModel::data(const QModelIndex &index, int role) const
         else return QVariant();
     }
 
-    else
-    {
-        return QVariant();
-    }
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -243,6 +226,11 @@ Qt::ItemFlags ParameterArrayModel::flags(QModelIndex const& index) const
 bool ParameterArrayModel::indexIsNotValid(QModelIndex const& index) const
 {
     return !index.isValid() || index.row() > sizeOfArray_ || index.column() >= ArrayColumns::COLUMN_COUNT;
+}
+
+bool ParameterArrayModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == ArrayColumns::VALUE;
 }
 
 //-----------------------------------------------------------------------------

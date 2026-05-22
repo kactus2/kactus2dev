@@ -11,7 +11,7 @@
 
 #include "configurableelementdelegate.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayView.h>

@@ -14,7 +14,7 @@
 #include <QPlainTextEdit>
 
 #include <Plugins/VerilogIncludeImport/VerilogIncludeImport.h>
-#include <KactusAPI/include/ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/ImportHighlighter.h>
 
@@ -365,9 +365,9 @@ void tst_VerilogIncludeImport::testDefineIsHighlighted()
 
     int begin = input.indexOf(defineDeclaration);
 
-    verifyNotHighlightedBeforeDeclaration(begin, ImportColors::MODELPARAMETER);
-    verifyDeclarationIsHighlighted(begin, defineDeclaration.length(), ImportColors::MODELPARAMETER);
-    verifyNotHighlightedAfterDeclartion(begin, defineDeclaration.length(), ImportColors::MODELPARAMETER);
+    verifyNotHighlightedBeforeDeclaration(begin, KactusColors::Importer::MODELPARAMETER);
+    verifyDeclarationIsHighlighted(begin, defineDeclaration.length(), KactusColors::Importer::MODELPARAMETER);
+    verifyNotHighlightedAfterDeclartion(begin, defineDeclaration.length(), KactusColors::Importer::MODELPARAMETER);
 }
 
 //-----------------------------------------------------------------------------

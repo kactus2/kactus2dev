@@ -3,27 +3,40 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = VHDLimport
 
 QT += core xml widgets gui
-CONFIG += c++11 release
+CONFIG += c++11
 
 DEFINES += VHDLIMPORT_LIB
 
-INCLUDEPATH += ./generatedFiles \
+INCLUDEPATH += ./GeneratedFiles \
     . \
-    ./generatedFiles/release \
     ./../..
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels
+
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = VHDLimportd
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../executable -lIPXACTmodels
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = VHDLimport
+}
 
 DESTDIR = ../../executable/Plugins
 
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/release
-OBJECTS_DIR += release
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
+UI_DIR += ./GeneratedFiles
+RCC_DIR += ./GeneratedFiles
 
 include(VHDLimport.pri)
 

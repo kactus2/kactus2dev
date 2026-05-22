@@ -86,13 +86,6 @@ public:
 	void setAllowImportExport(bool allow);
 
     /*!
-     *  Sets the edited component.
-     *
-     *    @param [in] component   The component whose ports to edit.
-     */
-    void setComponent(QSharedPointer<Component> component);
-
-    /*!
      *  Get the port for the selected index.
      *
      *    @param [in] portIndex   The selected index.

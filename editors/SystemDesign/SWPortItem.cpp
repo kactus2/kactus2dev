@@ -14,7 +14,7 @@
 #include "SystemComponentItem.h"
 #include "HWMappingItem.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
 

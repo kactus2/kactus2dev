@@ -11,6 +11,8 @@
 
 #include "ComponentPreviewBox.h"
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <editors/SystemDesign/SWComponentItem.h>
 #include <editors/HWDesign/HWComponentItem.h>
 #include <editors/common/diagramgrid.h>
@@ -60,7 +62,7 @@ namespace
     void GridScene::drawBackground(QPainter* painter, QRectF const& rect)
     {
         painter->setWorldMatrixEnabled(true);
-        painter->setBrush(Qt::lightGray);
+        painter->setPen(QPen(KactusColors::DIAGRAM_GRID, 0));
 
         qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
         qreal top = int(rect.top()) - (int(rect.top()) % GridSize );

@@ -26,7 +26,8 @@
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
+#include <common/KactusUtils.h>
 
 #include <QRegularExpression>
 #include <QApplication>
@@ -222,7 +223,7 @@ QVariant MemoryMapsModel::data(QModelIndex const& index, int role) const
         {
             if (index.data(Qt::DisplayRole).toString() == "None")
             {
-                return KactusColors::ERROR;
+                return KactusColors::ERROR_COLOR;
             }
 
             return KactusColors::DISABLED_TEXT;
@@ -819,6 +820,36 @@ bool MemoryMapsModel::validateIndex(QModelIndex const& index) const
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsModel::indexIsMandatory()
+//-----------------------------------------------------------------------------
+bool MemoryMapsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == MemoryMapsColumns::NAME_COLUMN ||
+        index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN;
+}
+
+QVariant MemoryMapsModel::blackForValidOrRedForInvalidIndex(QModelIndex const& index) const
+{
+    // This function is reimplemented here, as this model can't inherit TableModelBase (as it is not a table model at heart)
+
+    if (validateIndex(index))
+    {
+        // Return black text for light mode or if index is mandatory (always light background)
+        if (KactusUtils::darkThemeEnabled() == false || indexIsMandatory(index))
+        {
+            return QColor(Qt::black);
+        }
+
+        // Otherwise return defined color
+        return KactusColors::REGULAR_TEXT;
+    }
+    else
+    {
+        return KactusColors::ERROR_COLOR;
+    }
 }
 
 //-----------------------------------------------------------------------------

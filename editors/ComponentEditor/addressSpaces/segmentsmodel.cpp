@@ -22,7 +22,7 @@
 #include <QClipboard>
 #include <QMimeData>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentsModel::SegmentsModel()
@@ -128,22 +128,6 @@ QVariant SegmentsModel::data( QModelIndex const& index, int role) const
     {
         return expressionOrValueForIndex(index);
     }
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == SegmentColumns::NAME || index.column() ==  SegmentColumns::OFFSET ||
-            index.column() == SegmentColumns::RANGE)
-        {            
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-	else if (role == Qt::ForegroundRole)
-    {
-        return blackForValidOrRedForInvalidIndex(index);
-    }
     else if (role == Qt::ToolTipRole)
     {
         if (isValidExpressionColumn(index))
@@ -153,10 +137,8 @@ QVariant SegmentsModel::data( QModelIndex const& index, int role) const
 
         return expressionOrValueForIndex(index);
     }
-	else // if unsupported role
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -457,6 +439,12 @@ void SegmentsModel::onPasteRows()
             emit contentChanged();
         }
     }
+}
+
+bool SegmentsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == SegmentColumns::NAME || index.column() == SegmentColumns::OFFSET ||
+        index.column() == SegmentColumns::RANGE;
 }
 
 //-----------------------------------------------------------------------------

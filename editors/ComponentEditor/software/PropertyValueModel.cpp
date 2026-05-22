@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QFont>
 #include <QRegularExpression>
@@ -187,7 +187,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
             }
 
             // Use red to indicate property values that are not found in the allowed properties.
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
 
         else if (index.column() == 1)
@@ -216,7 +216,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
                     }
                     else
                     {
-                        return KactusColors::ERROR;
+                        return KactusColors::ERROR_COLOR;
                     }
                 }
             }

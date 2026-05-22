@@ -20,6 +20,11 @@
 #include <KactusAPI/include/MessageMediator.h>
 #include <KactusAPI/include/ConsoleMediator.h>
 #include <common/ui/GraphicalMessageMediator.h>
+#include <common/KactusUtils.h>
+#include <common/KactusProxyStyle.h>
+
+#include <library/LibraryTreeModel.h>
+#include <library/HierarchyModel.h>
 
 #include <KactusAPI/KactusAPI.h>
 
@@ -36,9 +41,8 @@
 #include <QPalette>
 #include <QTimer>
 #include <QObject>
+#include <QStyleFactory>
 
-
-#include <iostream>
 
 #include "PythonAPI/PythonInterpreter.h"
 #include "PythonAPI/StdInputListener.h"
@@ -57,6 +61,26 @@ namespace
         return argc == 1;
     }
 
+    void setAppStyle()
+    {
+        auto defaultStyle = QApplication::style();
+
+        QSettings settings;
+
+        // Override style with fusion, if setting is enabled
+        if (settings.value("General/FusionStyleEnabled", false).toBool())
+        {
+            defaultStyle = QStyleFactory::create("fusion");
+        }
+
+        // Set style override if not using windows style
+        if (defaultStyle != nullptr && defaultStyle->name().compare("windowsvista") != 0)
+        {
+            auto proxyStyle = new KactusProxyStyle(defaultStyle);
+            QApplication::setStyle(proxyStyle);
+        }
+    }
+
     //-----------------------------------------------------------------------------
     // Function: createApplication()
     //-----------------------------------------------------------------------------
@@ -65,16 +89,7 @@ namespace
         QCoreApplication* application = nullptr; 
         if (startGui(argc))
         {
-            QApplication* guiApplication = new QApplication(argc, argv);        
-
-            // Set the palette to use nice pastel colors.
-            QPalette palette = guiApplication->palette();
-            palette.setColor(QPalette::Active, QPalette::Highlight, QColor(33, 135, 237));
-            palette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(166, 200, 234));
-            palette.setColor(QPalette::Inactive, QPalette::Highlight, QColor(166, 200, 234));
-            guiApplication->setPalette(palette);
-
-            application =  guiApplication;
+            application = new QApplication(argc, argv);
         }
         else
         {
@@ -132,9 +147,24 @@ int main(int argc, char *argv[])
     QSettings settings;
     SettingsUpdater::runUpgrade(settings, mediator.data());
 
+    if (startGui(argc))
+        setAppStyle();
+
     loadPlugins(settings);
 
     auto& library = LibraryHandler::getInstance();
+
+    if (startGui(argc))
+    {
+        // Override default non-gui library model.
+        // Library handler takes ownership of model.
+        LibraryTreeModel* libraryModel = new LibraryTreeModel(&library);
+        library.replaceModel(libraryModel);
+
+        HierarchyModel* hierModel = new HierarchyModel(&library, &library);
+        library.replaceHierarchyModel(hierModel);
+    }
+
     library.setOutputChannel(mediator.data());
 
     QScopedPointer<KactusAPI> coreAPI(new KactusAPI(mediator.data()));
@@ -151,6 +181,9 @@ int main(int argc, char *argv[])
 
     if (startGui(argc))
     {
+        // Apply theme before constructing any UI
+        KactusUtils::applyThemeToPalette();
+
         // Create the main window and close the splash after 1.5 seconds.
         MainWindow mainWindow(&library, mediator.data());
 
@@ -160,7 +193,7 @@ int main(int argc, char *argv[])
 #endif
 
         // the release mode
-#ifdef NDEBUG
+#ifdef QT_NO_DEBUG
 
         // Show the splash screen.
         SplashScreen splash(VersionHelper::createVersionString());
@@ -181,12 +214,11 @@ int main(int argc, char *argv[])
         mainWindow.onLibrarySearch();
 
 #endif
-
         return QCoreApplication::exec();
     }
 
     else // Run console.
-    {        
+    {
         QStringList arguments = application->arguments();
         CommandLineParser parser;
 

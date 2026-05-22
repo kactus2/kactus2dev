@@ -14,7 +14,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QIcon>
 
@@ -94,7 +94,7 @@ QVariant ViewListModel::data(QModelIndex const& index, int role) const
     {
         if (component_->getViewNames().count(viewName) > 1 || viewName.isEmpty())
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else
         {

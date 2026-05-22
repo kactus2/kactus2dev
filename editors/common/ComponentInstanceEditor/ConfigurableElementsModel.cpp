@@ -11,7 +11,7 @@
 
 #include "ConfigurableElementsModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 
@@ -33,7 +33,7 @@ ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFin
     QSharedPointer<ExpressionFormatter> defaultValueFormatter,
     QSharedPointer<ExpressionParser> configurableElementExpressionParser,
     QSharedPointer<ExpressionParser> defaultValueParser, QObject *parent):
-QAbstractItemModel(parent),
+TableModelBase(parent),
 ParameterizableTable(parameterFinder),
 configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
 configurableElementExpressionParser_(configurableElementExpressionParser),
@@ -140,7 +140,7 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
     {
         if (element->getEvaluatedDefaultValue().isEmpty())
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else if (index.column() == ConfigurableElementsColumns::VALUE && isParameterEditable(index))
         {
@@ -184,7 +184,7 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
         return parameterIDForIndex(index);
     }
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------

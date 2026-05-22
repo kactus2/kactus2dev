@@ -68,6 +68,9 @@ private:
 
     //! Checkbox for enabling/disabling the editor lock feature.
     QCheckBox* lockEnabledBox_;
+
+    //! For forcing the fusion style. Enables dark mode support on windows.
+    QCheckBox* foceFusionStyleToggle_;
 };
 
 //-----------------------------------------------------------------------------

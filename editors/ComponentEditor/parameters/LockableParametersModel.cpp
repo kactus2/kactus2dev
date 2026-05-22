@@ -13,7 +13,7 @@
 #include "LockableParametersModel.h"
 #include <KactusAPI/include/ParametersInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: LockableParametersModel::LockableParametersModel()

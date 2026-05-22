@@ -15,6 +15,7 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <common/widgets/LineEditEx/LineEditEx.h>
+#include <common/KactusUtils.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -48,8 +49,6 @@ QDialog(parent, Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowCloseB
 {
     Q_ASSERT(component);
     Q_ASSERT(handler);
-
-    setStyleSheet(QString("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }"));
 
     QSettings settings;
     QStringList suggestedNames;
@@ -224,17 +223,12 @@ void CreateConfigurationDialog::setupLayout()
     introLabel->setWordWrap(true);
 
     QLabel* configurationIcon = new QLabel(this);
-    configurationIcon->setPixmap(QPixmap(":icons/common/graphics/configuration.png"));
+    configurationIcon->setPixmap(KactusUtils::getPixmapStyledToTheme(":icons/common/graphics/configuration.png"));
     
     QWidget* introWidget = new QWidget(this);
     QHBoxLayout* introLayout = new QHBoxLayout(introWidget);
     introLayout->addWidget(introLabel, 9);
     introLayout->addWidget(configurationIcon, 1);    
-
-    QPalette introPalette = introWidget->palette();
-    introPalette.setColor(QPalette::Window, Qt::white);
-    introWidget->setPalette(introPalette);
-    introWidget->setAutoFillBackground(true);
 
     QGroupBox* nameGroup = new QGroupBox(tr("Configuration settings"), this);
     QHBoxLayout* nameLayout = new QHBoxLayout(nameGroup);

@@ -5,18 +5,37 @@
 TEMPLATE = lib
 TARGET = PythonAPI
 DESTDIR = .
-CONFIG += c++11 release dll
+CONFIG += c++11 dll
 DEFINES += PYTHONAPI_LIB
 QT += core gui widgets xml
-LIBS += -L"$(SolutionDir)x64/executable" \
-    -L$$(PWD)/../executable -lIPXACTmodels \
-    -L$$(PWD)/../executable -lKactusAPI
+
 DEPENDPATH += ..
 INCLUDEPATH += ..\
     ../KactusAPI/include 
 
-MOC_DIR += ./GeneratedFiles
-OBJECTS_DIR += release
+
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../executable -lIPXACTmodelsd \
+        -L../executable -lKactusAPId
+            
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = PythonAPId
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../executable -lIPXACTmodels \
+        -L../executable -lKactusAPI
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = PythonAPI
+}
+
+
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 
@@ -33,10 +52,17 @@ swig.path = .
 QMAKE_EXTRA_TARGETS += swig
 
 # Rename shared library for SWIG wrapper.
-unix:QMAKE_POST_LINK = ln -s -f libPythonAPI.so.1.0.0 _pythonAPI.so
+CONFIG(debug, debug|release) {
+    unix:QMAKE_POST_LINK = ln -s -f libPythonAPId.so.1.0.0 _pythonAPId.so
+} else {
+    unix:QMAKE_POST_LINK = ln -s -f libPythonAPI.so.1.0.0 _pythonAPI.so
+}
 
 # Install target
 target.path = $$lib_path
-target.files = _pythonAPI.so pythonAPI.py
-
+CONFIG(debug, debug|release) {
+    target.files += _pythonAPId.so pythonAPI.py
+} else {
+    target.files += _pythonAPI.so pythonAPI.py
+}
 INSTALLS += target

@@ -12,7 +12,7 @@
 #ifndef ENUMERATEDVALUEMODEL_H
 #define ENUMERATEDVALUEMODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
 #include <QSharedPointer>
 
 class EnumeratedValue;
@@ -21,7 +21,7 @@ class EnumeratedValueValidator;
 //-----------------------------------------------------------------------------
 //! The model to manage the enumerated values of a field.
 //-----------------------------------------------------------------------------
-class EnumeratedValueModel : public QAbstractTableModel
+class EnumeratedValueModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -152,6 +152,24 @@ private:
 
 	//! No assignment.
 	EnumeratedValueModel& operator=(const EnumeratedValueModel& other);
+
+	/*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+    bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
 
     /*!
      *  Gets the value for the given index.

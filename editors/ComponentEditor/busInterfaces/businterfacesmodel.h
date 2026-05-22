@@ -12,7 +12,7 @@
 #ifndef BUSINTERFACESMODEL_H
 #define BUSINTERFACESMODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
 #include <QSharedPointer>
 #include <QList>
 
@@ -25,7 +25,7 @@ class Component;
 //-----------------------------------------------------------------------------
 //! The model that manages the objects for BusInterfacesEditor.
 //-----------------------------------------------------------------------------
-class BusInterfacesModel : public QAbstractTableModel
+class BusInterfacesModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -222,9 +222,27 @@ signals:
 private:
 
     //! No copying. No assignment.
-	BusInterfacesModel(const BusInterfacesModel& other);
-	BusInterfacesModel& operator=(const BusInterfacesModel& other);
+    BusInterfacesModel(const BusInterfacesModel& other);
+    BusInterfacesModel& operator=(const BusInterfacesModel& other);
 
+    /*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+    bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
+     
     /*!
      *  Remove references from the expressions contained within the removed bus interface.
      *

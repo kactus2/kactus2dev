@@ -19,7 +19,7 @@
 #include <QStringList>
 #include <QRegularExpression>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: FieldSliceModel::FieldSliceModel()
@@ -160,22 +160,9 @@ QVariant FieldSliceModel::data(QModelIndex const& index, int role) const
         {
             return expressionOrValueForIndex(index);
         }
-    }
+    }     
 
-    else if (role == Qt::ForegroundRole)
-    {
-        return blackForValidOrRedForInvalidIndex(index);
-    }
-     
-    else if (role == Qt::BackgroundRole)
-    {
-        if (column == FieldSliceColumns::NAME || column == FieldSliceColumns::FIELD_REF)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-    }
-
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -263,6 +250,11 @@ void FieldSliceModel::onRemoveItem(QModelIndex const& index)
 	emit contentChanged();
 }
 
+bool FieldSliceModel::indexIsMandatory(QModelIndex const& index) const
+{
+    int column = index.column();
+    return column == FieldSliceColumns::NAME || column == FieldSliceColumns::FIELD_REF;
+}
 
 //-----------------------------------------------------------------------------
 // Function: FieldSliceModel::validateIndex()

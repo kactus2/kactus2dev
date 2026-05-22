@@ -13,8 +13,10 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include <common/KactusUtils.h>
 #include <common/widgets/tagEditor/TagEditorContainer.h>
 
+#include <QComboBox>
 #include <QFormLayout>
 #include <QString>
 
@@ -36,16 +38,16 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     implementationLabel_->setVisible(false);
     implementationValue_->setVisible(false);
 
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/square.png"), "Flat");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/box.png"), "Product");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/circuit.png"), "Board");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/chip.png"), "Chip");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/soc.png"), "SoC");
-    prodHierCombo_->addItem(QIcon(":icons/common/graphics/capacitor.png"), "IP");
+    prodHierCombo_->addItem(KactusUtils::getIconStyledToTheme(":icons/common/graphics/square.png"), "Flat");
+    prodHierCombo_->addItem(KactusUtils::getIconStyledToTheme(":icons/common/graphics/box.png"), "Product");
+    prodHierCombo_->addItem(KactusUtils::getIconStyledToTheme(":icons/common/graphics/circuit.png"), "Board");
+    prodHierCombo_->addItem(KactusUtils::getIconStyledToTheme(":icons/common/graphics/chip.png"), "Chip");
+    prodHierCombo_->addItem(KactusUtils::getIconStyledToTheme(":icons/common/graphics/soc.png"), "SoC");
+    prodHierCombo_->addItem(KactusUtils::getIconStyledToTheme(":icons/common/graphics/capacitor.png"), "IP");
 
-    firmnessCombo_->addItem(QIcon(":icons/common/graphics/mutable.png"), "Mutable");
-    firmnessCombo_->addItem(QIcon(":icons/common/graphics/template.png"), "Template");
-    firmnessCombo_->addItem(QIcon(":icons/common/graphics/fixed.png"), "Fixed");
+    firmnessCombo_->addItem(KactusUtils::getIconStyledToTheme(":icons/common/graphics/mutable.png"), "Mutable");
+    firmnessCombo_->addItem(KactusUtils::getIconStyledToTheme(":icons/common/graphics/template.png"), "Template");
+    firmnessCombo_->addItem(KactusUtils::getIconStyledToTheme(":icons/common/graphics/fixed.png"), "Fixed");
 
     QFormLayout* layout = new QFormLayout(this);
     layout->addRow(prodHierLabel_, prodHierCombo_);

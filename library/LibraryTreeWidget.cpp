@@ -11,7 +11,7 @@
 
 #include "LibraryTreeWidget.h"
 #include "LibraryTreeView.h"
-#include "LibraryTreeModel.h"
+#include "LibraryModel.h"
 
 #include <QObject>
 #include <QVBoxLayout>
@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeWidget::LibraryTreeWidget()
 //-----------------------------------------------------------------------------
-LibraryTreeWidget::LibraryTreeWidget(LibraryInterface* handler, LibraryTreeModel* dataModel, QWidget* parent):
+LibraryTreeWidget::LibraryTreeWidget(LibraryInterface* handler, LibraryModel* dataModel, QWidget* parent):
 QWidget(parent),
     filter_(new LibraryTreeFilter(handler, this)),
     view_(handler, filter_, this),
@@ -96,7 +96,7 @@ void LibraryTreeWidget::onSearchTextChanged(QString const& text)
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeWidget::setupConnections()
 //-----------------------------------------------------------------------------
-void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel)
+void LibraryTreeWidget::setupConnections(LibraryModel* dataModel)
 {
     connect(&view_, SIGNAL(errorMessage(QString const&)),
         this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);

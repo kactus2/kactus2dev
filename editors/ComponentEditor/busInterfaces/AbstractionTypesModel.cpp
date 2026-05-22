@@ -11,7 +11,7 @@
 
 #include "AbstractionTypesModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesConstants.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 AbstractionTypesModel::AbstractionTypesModel(AbstractionTypeInterface* abstractionInterface, 
     QSharedPointer<Component> component, LibraryInterface* library, QObject* parent) :
-QAbstractTableModel(parent),
+TableModelBase(parent),
 abstractionInterface_(abstractionInterface),
 containingComponent_(component),
 library_(library)
@@ -123,21 +123,7 @@ QVariant AbstractionTypesModel::data(QModelIndex const& index, int role) const
             return QString::fromStdString(abstractionInterface_->getCombinedViews(index.row()));
         }
     }
-    else if (Qt::ForegroundRole == role)
-    {
-        return blackForValidRedForInvalid(index);
-    }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
+
     else if (!index.parent().isValid() && role == Qt::FontRole)
     {
         QFont font;
@@ -145,7 +131,7 @@ QVariant AbstractionTypesModel::data(QModelIndex const& index, int role) const
         return font;
     }
     
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -364,21 +350,6 @@ void AbstractionTypesModel::addNewAbstractionTypeWithVLNV(VLNV const& newAbstrac
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTypesModel::blackForValidRedForInvalid()
-//-----------------------------------------------------------------------------
-QVariant AbstractionTypesModel::blackForValidRedForInvalid(QModelIndex const& index) const
-{
-    if (validateIndex(index))
-    {
-        return KactusColors::REGULAR_TEXT;
-    }
-    else
-    {
-        return KactusColors::ERROR;
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::validateIndex()
 //-----------------------------------------------------------------------------
 bool AbstractionTypesModel::validateIndex(QModelIndex const& index) const
@@ -393,6 +364,11 @@ bool AbstractionTypesModel::validateIndex(QModelIndex const& index) const
     }
 
     return true;
+}
+
+bool AbstractionTypesModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION;
 }
 
 //-----------------------------------------------------------------------------

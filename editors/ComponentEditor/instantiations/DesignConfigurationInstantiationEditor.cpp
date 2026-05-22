@@ -18,12 +18,12 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/ListParameterFinder.h>
 #include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ParameterConfigurableElementFinder.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-
-#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -92,27 +92,26 @@ designConfigurationParameterFinder_(new ListParameterFinder())
 void DesignConfigurationInstantiationEditor::createConfigurableElementEditor(
     QSharedPointer<ParameterFinder> parameterFinder)
 {
-    QSharedPointer<ConfigurableElementFinder> elementFinder(new ConfigurableElementFinder());
+	QSharedPointer<ParameterConfigurableElementFinder> elementFinder(new ParameterConfigurableElementFinder());
 
-    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-    multiFinder->addFinder(elementFinder);
-    multiFinder->addFinder(parameterFinder);
+    QSharedPointer<MultipleParameterFinder> cevElementFinder(new MultipleParameterFinder());
+    cevElementFinder->addFinder(elementFinder);
+    cevElementFinder->addFinder(parameterFinder);
 
-    QSharedPointer<IPXactSystemVerilogParser> multiParser(new IPXactSystemVerilogParser(multiFinder));
-    QSharedPointer<IPXactSystemVerilogParser> configurationParameterParser(
-        new IPXactSystemVerilogParser(designConfigurationParameterFinder_));
+    QSharedPointer<IPXactSystemVerilogParser> cevElementParser(new IPXactSystemVerilogParser(cevElementFinder));
+	QSharedPointer<IPXactSystemVerilogParser> defaultElementParser(
+		new IPXactSystemVerilogParser(designConfigurationParameterFinder_));
 
-    QSharedPointer<IPXactSystemVerilogParser> referenceParser(new IPXactSystemVerilogParser(parameterFinder));
-    ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
-    completionModel->setExpressionParser(referenceParser);
+	auto completionModel = new ComponentParameterModel(cevElementFinder, this);
+	completionModel->setExpressionParser(cevElementParser);
 
-    ExpressionSet parameterExpressions({ multiFinder , multiParser,
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)) });
-    ExpressionSet elementExpressions({ multiFinder ,configurationParameterParser,
+    ExpressionSet cevElementExpressions({ cevElementFinder , cevElementParser,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(cevElementFinder)) });
+    ExpressionSet defaultElementExpressions({ designConfigurationParameterFinder_,defaultElementParser,
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designConfigurationParameterFinder_)) });
 
     elementEditor_ = new InstantiationConfigurableElementEditor(elementFinder, 
-        parameterExpressions, elementExpressions, completionModel, this);
+        cevElementExpressions, defaultElementExpressions, completionModel, this);
 }
 
 //-----------------------------------------------------------------------------

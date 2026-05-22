@@ -149,7 +149,9 @@ HEADERS += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ../../common/delegates/LineEditDelegate/lineeditdelegate.h \
     ../../common/dialogs/newObjectDialog/newobjectdialog.h \
     ../../editors/ComponentEditor/itemvisualizer.h \
-    ../../common/widgets/vlnvEditor/vlnveditor.h
+    ../../common/widgets/vlnvEditor/vlnveditor.h \
+    ../../common/models/TableModelBase.h \
+    ../../common/KactusUtils.h
 SOURCES += ../../editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ../../editors/HWDesign/ActivePortItem.cpp \
     ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
@@ -299,4 +301,6 @@ SOURCES += ../../editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ../../common/dialogs/newObjectDialog/newobjectdialog.cpp \
     ../../common/widgets/vlnvEditor/vlnveditor.cpp \
     ../../editors/ComponentEditor/itemvisualizer.cpp \
+    ../../common/models/TableModelBase.cpp \
+    ../../common/KactusUtils.cpp \
     ./tst_MarkdownGenerator.cpp

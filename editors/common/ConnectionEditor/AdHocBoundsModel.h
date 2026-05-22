@@ -16,9 +16,10 @@
 #include <QSharedPointer>
 
 class PortReference;
-
 class AdHocConnection;
 class IEditProvider;
+class ExpressionParser;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
@@ -29,6 +30,22 @@ class AdHocBoundsModel : public QAbstractTableModel
 
 public:
 
+	//! Container for the end point parser data.
+	struct endPointParser
+	{
+		//! Name of the end point.
+		QString endPoint_ = "";
+
+		//! Name of the containing instance.
+		QString containingInstanceName_ = "";
+
+		//! Component containing the end point.
+		QSharedPointer<Component> instancedComponent_ = nullptr;
+
+		//! Parser for the component instance.
+		QSharedPointer<ExpressionParser> instanceParser_ = nullptr;
+	};
+
 	/*!
      *  Constructor.
 	 *
@@ -38,15 +55,22 @@ public:
 	AdHocBoundsModel(QObject *parent);
 	
 	//! The destructor.
-	virtual ~AdHocBoundsModel();
+	virtual ~AdHocBoundsModel() = default;
 
-    /*!
-     *  Sets the ad-hoc connection being edited.
-     *
-     *    @param [in] connection      The connection.
-     *    @param [in] editProvider    The edit provider for undo/redo.
-     */
-    void setConnection(QSharedPointer<AdHocConnection> connection, QSharedPointer<IEditProvider> editProvider);
+	/*!
+	 *  Sets the ad-hoc connection being edited.
+	 *
+	 *    @param [in] connection			The ad-hoc connection.
+	 *    @param [in] firstEndpointParser	Expression parser for the first end point.
+	 *    @param [in] secondEndpointParser	Expression parser for the second end point.
+	 *    @param [in] editProvider			The edit provider for undo/redo.
+	 *
+	 *    @return 
+	 */
+	void setConnection(QSharedPointer<AdHocConnection> connection,
+		QSharedPointer<endPointParser> firstEndpointParser,
+		QSharedPointer<endPointParser> secondEndpointParser,
+		QSharedPointer<IEditProvider> editProvider);
 
 	/*!
      *  Returns the number of rows in the model.
@@ -117,6 +141,63 @@ private:
     AdHocBoundsModel(AdHocBoundsModel const& rhs);
     AdHocBoundsModel& operator=(AdHocBoundsModel const& rhs);
 
+	/*!
+	 *  Get the value for the selected index.
+	 *
+	 *    @param [in] index		The selected index.
+	 *
+	 *    @return Value for the selected index.
+	 */
+	QVariant valueForIndex(QModelIndex const& index) const;
+
+	/*!
+	 *  Get the original left bound value of the selected port.
+	 *
+	 *    @param [in] port	The selected port.
+	 *
+	 *    @return The original left bound value of the selected port.
+	 */
+	QVariant getOriginalPortLeftBound(QSharedPointer<PortReference> port) const;
+
+	/*!
+	 *  Get the calculated left bound value of the selected port.
+	 *
+	 *    @param [in] port				The selected port.
+	 *    @param [in] endpointParser	Parser for the component instance containing the selected port.
+	 *
+	 *    @return The calculated left bound value of the selected port.
+	 */
+	QVariant getLeftBoundWithParser(QSharedPointer<PortReference> port, QSharedPointer<AdHocBoundsModel::endPointParser> endpointParser) const;
+
+	/*!
+	 *  Get the original right bound value of the selected port.
+	 *
+	 *    @param [in] port	The selected port.
+	 *
+	 *    @return The original right bound value of the selected port.
+	 */
+	QVariant getOriginalPortRightBound(QSharedPointer<PortReference> port) const;
+
+	/*!
+	 *  Get the calculated right bound value of the selected port.
+	 *
+	 *    @param [in] port				The selected port.
+	 *    @param [in] endpointParser	Parser for the component instance containing the selected port.
+	 *
+	 *    @return The calculated right bound value of the selected port.
+	 */
+	QVariant getRightBoundWithParser(QSharedPointer<PortReference> port, QSharedPointer<AdHocBoundsModel::endPointParser> endpointParser) const;
+
+	/*!
+	 *  Check if the selected port is contained within the selected end point parser.
+	 *
+	 *    @param [in] port				The selected port.
+	 *    @param [in] endpointParser	The selected end point parser.
+	 *
+	 *    @return True, if the port is contained within the parser, false otherwise.
+	 */
+	bool portUsesParser(QSharedPointer<PortReference> port, QSharedPointer<AdHocBoundsModel::endPointParser> endpointParser) const;
+
     /*!
      *  Finds the number of endpoint in the ad-hoc connection.
      *
@@ -136,6 +217,12 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+	//! The first end point parser.
+	QSharedPointer<endPointParser> firstEndpointParser_ = nullptr;
+
+	//! The second end point parser.
+	QSharedPointer<endPointParser> secondEndpointParser_ = nullptr;
 
     //! The edit provider for undo/redo to use.
     QSharedPointer<IEditProvider> editProvider_;

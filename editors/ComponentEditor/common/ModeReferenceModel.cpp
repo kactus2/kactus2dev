@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/Mode.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceModel::ModeReferenceModel()
@@ -138,7 +138,7 @@ QVariant ModeReferenceModel::data(const QModelIndex& index, int role /*= Qt::Dis
             isValid = interface_->modeReferenceValueIsValid(index.row());
         }
 
-        return isValid ? KactusColors::REGULAR_TEXT : KactusColors::ERROR;
+        return isValid ? KactusColors::REGULAR_TEXT : KactusColors::ERROR_COLOR;
 
     }
 

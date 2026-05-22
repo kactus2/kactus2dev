@@ -14,7 +14,7 @@
 #include <KactusAPI/include/RegisterInterface.h>
 #include <KactusAPI/include/AccessPolicyInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 using ModeRefList = std::vector<std::pair<unsigned int, std::string> >;
 
@@ -124,7 +124,7 @@ QVariant AccessPoliciesModel::data(const QModelIndex& index, int role /*= Qt::Di
             return KactusColors::REGULAR_TEXT;
         }
         
-        return KactusColors::ERROR;
+        return KactusColors::ERROR_COLOR;
     }
 
     else if (role == Qt::UserRole)

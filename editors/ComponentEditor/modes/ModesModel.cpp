@@ -19,14 +19,14 @@
 #include <QStringList>
 #include <QRegularExpression>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ModesModel::ModesModel()
 //-----------------------------------------------------------------------------
 ModesModel::ModesModel(QSharedPointer<Component> component, 
     QObject* parent): 
-    QAbstractTableModel(parent),
+    TableModelBase(parent),
     modes_(component->getModes())
 {
 
@@ -135,16 +135,8 @@ QVariant ModesModel::data(QModelIndex const& index, int role) const
             return mode->description();
         }
     }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (column == ModeColumns::NAME)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-    }
 
-    // if unsupported role
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -231,4 +223,14 @@ void ModesModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool ModesModel::validateIndex(QModelIndex const& index) const
+{
+    return true;
+}
+
+bool ModesModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == ModeColumns::NAME;
 }

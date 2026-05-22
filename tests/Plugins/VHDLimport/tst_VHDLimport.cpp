@@ -19,7 +19,7 @@
 
 #include <Plugins/VHDLimport/VHDLimport.h>
 
-#include <KactusAPI/include/ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 #include <KactusAPI/include/ImportHighlighter.h>
 
 #include <QPlainTextEdit>
@@ -313,9 +313,9 @@ void tst_VHDLimport::testPortIsHighlighted()
 
     int begin = fileContent.indexOf(portDeclaration);
         
-    verifyNotHighlightedBeforeDeclaration(begin, ImportColors::PORT);
-    verifyDeclarationIsHighlighted(begin, portDeclaration.length(), ImportColors::PORT);
-    verifyNotHighlightedAfterDeclartion(begin, portDeclaration.length(), ImportColors::PORT);
+    verifyNotHighlightedBeforeDeclaration(begin, KactusColors::Importer::PORT);
+    verifyDeclarationIsHighlighted(begin, portDeclaration.length(), KactusColors::Importer::PORT);
+    verifyNotHighlightedAfterDeclartion(begin, portDeclaration.length(), KactusColors::Importer::PORT);
 }
 
 //-----------------------------------------------------------------------------
@@ -448,9 +448,9 @@ void tst_VHDLimport::testGenericIsHighlighted()
 
     runParser(fileContent);
 
-    verifyNotHighlightedBeforeDeclaration(declarationStartIndex, ImportColors::MODELPARAMETER);
-    verifyDeclarationIsHighlighted(declarationStartIndex, declarationLength, ImportColors::MODELPARAMETER);
-    verifyNotHighlightedAfterDeclartion(declarationStartIndex, declarationLength, ImportColors::MODELPARAMETER);
+    verifyNotHighlightedBeforeDeclaration(declarationStartIndex, KactusColors::Importer::MODELPARAMETER);
+    verifyDeclarationIsHighlighted(declarationStartIndex, declarationLength, KactusColors::Importer::MODELPARAMETER);
+    verifyNotHighlightedAfterDeclartion(declarationStartIndex, declarationLength, KactusColors::Importer::MODELPARAMETER);
 }
 
 //-----------------------------------------------------------------------------
@@ -897,7 +897,7 @@ void tst_VHDLimport::testModelNameAndEnvironmentIsImportedToView()
 
     verifySectionFontColorIs(fileContent.indexOf(architecture), architecture.length(), QColor("black"));
     verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
-        ImportColors::VIEWNAME);    
+        KactusColors::Importer::VIEWNAME);    
 }
 
 //-----------------------------------------------------------------------------
@@ -936,7 +936,7 @@ void tst_VHDLimport::testArchitecturePrecedesConfigurationForModelName()
 
     verifySectionFontColorIs(fileContent.indexOf(architecture), architecture.length(), QColor("black"));
     verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
-        ImportColors::VIEWNAME);    
+        KactusColors::Importer::VIEWNAME);    
 }
 
 //-----------------------------------------------------------------------------
@@ -964,7 +964,7 @@ void tst_VHDLimport::testConfigurationIsImportedToViewIfNoArchitectureAvailable(
 
     verifySectionFontColorIs(fileContent.indexOf(configuration), configuration.length(), QColor("black"));
     verifyDeclarationIsHighlighted(fileContent.indexOf(modelNameSection), modelNameSection.length(), 
-        ImportColors::VIEWNAME);    
+        KactusColors::Importer::VIEWNAME);    
 }
 
 

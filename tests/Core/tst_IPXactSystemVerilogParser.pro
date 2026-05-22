@@ -11,23 +11,27 @@
 
 TEMPLATE = app
 
-TARGET = tst_IPXactSystemVerilogParser
-
 QT += core xml testlib
 QT -= gui widgets
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels -lKactusAPI
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd -lKactusAPId
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels -lKactusAPI
-    DESTDIR = ./release
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_IPXactSystemVerilogParserd
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../executable -lIPXACTmodels -lKactusAPI
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_IPXactSystemVerilogParserd
 }
 
 INCLUDEPATH += $$PWD/../../
@@ -39,8 +43,4 @@ DEPENDPATH += $$PWD/../../executable
 DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_IPXactSystemVerilogParser.pri)

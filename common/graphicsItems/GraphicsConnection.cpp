@@ -15,7 +15,7 @@
 #include "ConnectionUndoCommands.h"
 
 #include <common/GenericEditProvider.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/HWDesign/OffPageConnectorItem.h>
 #include <editors/common/DesignDiagram.h>
@@ -81,7 +81,8 @@ GraphicsConnection::GraphicsConnection(QPointF const& p1, QVector2D const& dir1,
 {
     setItemSettings();
     pathPoints_ = DefaultRouting::createRoute(p1, p2, dir1, dir2);
-    setRoute(pathPoints_);        
+    setRoute(pathPoints_);
+    setDefaultColor();
 }
 
 //-----------------------------------------------------------------------------
@@ -907,12 +908,12 @@ void GraphicsConnection::drawOverlapWithConnection(QPainter* painter, GraphicsCo
 //-----------------------------------------------------------------------------
 void GraphicsConnection::drawJunctionPoint(QPainter* painter, QPointF const& intersectionPoint)
 {
-    painter->setPen(QPen(Qt::black, 0));
+    painter->setPen(QPen(KactusColors::REGULAR_CONNECTION, 0));
 
     QPainterPath circlePath;
     circlePath.addEllipse(intersectionPoint, 5.0, 5.0);
 
-    painter->fillPath(circlePath, QBrush(Qt::black));
+    painter->fillPath(circlePath, QBrush(KactusColors::REGULAR_CONNECTION));
 }
 
 //-----------------------------------------------------------------------------

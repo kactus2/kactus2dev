@@ -3,24 +3,34 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = CppSourceAnalyzer
 
 QT += core xml widgets gui
 
-CONFIG += c++11 plugin release
+CONFIG += c++11 plugin
 DEFINES += CPPSOURCEANALYZER_LIB
 
-INCLUDEPATH += ./generatedFiles \
+INCLUDEPATH += ./GeneratedFiles \
     . \
     ./../.. 
 
 DESTDIR = ../../executable/Plugins
 
+CONFIG(debug, debug|release) {
+    # debug mode
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = CppSourceAnalyzerd
+
+} else {
+    # release mode     
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = CppSourceAnalyzer
+}
+
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/release
-OBJECTS_DIR += release
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
+UI_DIR += ./GeneratedFiles
+RCC_DIR += ./GeneratedFiles
 
 include(CppSourceAnalyzer.pri)
 

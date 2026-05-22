@@ -16,6 +16,8 @@
 #include <editors/MemoryDesigner/AddressSpaceGraphicsItem.h>
 #include <editors/MemoryDesigner/MemoryMapGraphicsItem.h>
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <QPen>
 #include <QBrush>
 
@@ -76,9 +78,10 @@ void MemoryExtensionGraphicsItem::setPenAndBrush()
 {
     QPen extensionPen = pen();
     extensionPen.setStyle(Qt::DashLine);
+    extensionPen.setColor(KactusColors::MEM_DESIGNER_CONNECTION);
     setPen(extensionPen);
 
-    QBrush extensionBrush(QColor("whiteSmoke"));
+    QBrush extensionBrush(KactusColors::MEM_ITEM_EXTENSION);
     setBrush(extensionBrush);
 }
 

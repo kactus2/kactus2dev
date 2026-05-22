@@ -14,12 +14,12 @@
 
 #include <KactusAPI/include/ParameterFinder.h>
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
 
 //-----------------------------------------------------------------------------
 //! Base class for table model properties for editable tables.
 //-----------------------------------------------------------------------------
-class ReferencingTableModel : public QAbstractTableModel
+class ReferencingTableModel : public TableModelBase
 {
     Q_OBJECT
 

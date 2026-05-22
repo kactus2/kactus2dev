@@ -22,7 +22,7 @@
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 
 #include <QRegularExpression>
@@ -189,27 +189,6 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
     {
 		return component_->getInitiatorInterfaces(addressSpaces_->at(index.row())->name());
 	}
-	else if (Qt::ForegroundRole == role)
-    {
-        if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
-        {
-            return KactusColors::DISABLED_TEXT;
-        }
-        
-        return blackForValidOrRedForInvalidIndex(index);
-    }
-    else if (Qt::BackgroundRole == role)
-    {
-        if (index.column() == AddressSpaceColumns::NAME || index.column() ==  AddressSpaceColumns::AUB ||
-            index.column() ==  AddressSpaceColumns::WIDTH || index.column() ==  AddressSpaceColumns::RANGE)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
     else if (role == Qt::ToolTipRole)
     {
         if (isValidExpressionColumn(index))
@@ -219,10 +198,8 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
 
         return expressionOrValueForIndex(index);        
     }
-    else
-    {
-        return QVariant();
-    }
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -324,6 +301,17 @@ void AddressSpacesModel::onRemoveItem(QModelIndex const& index )
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool AddressSpacesModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == AddressSpaceColumns::NAME || index.column() == AddressSpaceColumns::AUB ||
+        index.column() == AddressSpaceColumns::WIDTH || index.column() == AddressSpaceColumns::RANGE;
+}
+
+bool AddressSpacesModel::indexIsGreyedOut(QModelIndex const& index) const
+{
+    return index.column() == AddressSpaceColumns::INTERFACE_BINDING;
 }
 
 //-----------------------------------------------------------------------------

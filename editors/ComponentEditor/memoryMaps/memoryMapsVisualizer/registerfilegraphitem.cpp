@@ -13,7 +13,7 @@
 #include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QStringBuilder>
 #include <QBrush>

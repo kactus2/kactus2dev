@@ -18,7 +18,7 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 #include <KactusAPI/include/FieldInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QRegularExpression>
 #include <QApplication>
@@ -209,54 +209,34 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
         }
     }
 
-	else if (Qt::ForegroundRole == role) 
-    {
-        if (validateIndex(index))
-        {
-            std::string fieldPresence = fieldInterface_->getIsPresentExpression(fieldName);
-            qint64 fieldPresenceValue =
-                QString::fromStdString(fieldInterface_->getIsPresentValue(fieldName, 10)).toLongLong();
-
-            if (index.column() != RegisterColumns::IS_PRESENT_COLUMN &&
-                (!fieldPresence.empty() && fieldPresenceValue != 1))
-            {
-                return KactusColors::DISABLED_TEXT;
-            }
-            else
-            {
-                return KactusColors::REGULAR_TEXT;
-            }
-        }
-        else
-        {
-            return KactusColors::ERROR;
-        }
-	}
-	else if (Qt::BackgroundRole == role) 
-    {
-        if (index.column() == RegisterColumns::NAME_COLUMN || index.column() == RegisterColumns::OFFSET_COLUMN ||
-            index.column() == RegisterColumns::WIDTH_COLUMN)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else if (index.column() == RegisterColumns::RESETS_COLUMN ||
-            index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
-        {
-            return KactusColors::DISABLED_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-		}
-	}
     else if (role == Qt::FontRole)
     {
         return italicForEvaluatedValue(index);
     }
-	else 
+
+    return TableModelBase::data(index, role);
+}
+
+bool RegisterTableModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == RegisterColumns::NAME_COLUMN || index.column() == RegisterColumns::OFFSET_COLUMN ||
+        index.column() == RegisterColumns::WIDTH_COLUMN;
+}
+
+bool RegisterTableModel::indexIsGreyedOut(QModelIndex const& index) const
+{
+    auto const& fieldName = fieldInterface_->getIndexedItemName(index.row());
+    auto const& fieldPresence = fieldInterface_->getIsPresentExpression(fieldName);
+    qint64 fieldPresenceValue =
+        QString::fromStdString(fieldInterface_->getIsPresentValue(fieldName, 10)).toLongLong();
+
+    if (index.column() != RegisterColumns::IS_PRESENT_COLUMN &&
+        (!fieldPresence.empty() && fieldPresenceValue != 1))
     {
-		return QVariant();
-	}
+        return true;
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

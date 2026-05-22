@@ -132,7 +132,16 @@ signals:
 	void contentChanged();
 
 protected:
-	    
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+	bool indexIsMandatory(QModelIndex const& index) const override;
+
 	/*!
      *  Gets the number of all the references made to a selected id on the selected row.
      *

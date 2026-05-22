@@ -12,14 +12,14 @@
 #ifndef VENDOREXTENSIONATTRIBUTESMODEL_H
 #define VENDOREXTENSIONATTRIBUTESMODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
 
 class GenericVendorExtension;
 
 //-----------------------------------------------------------------------------
 // class ParameterArrayModel.
 //-----------------------------------------------------------------------------
-class VendorExtensionAttributesModel : public QAbstractTableModel
+class VendorExtensionAttributesModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -164,6 +164,25 @@ private:
      *    @return True, if the name exists in the selected attributes, false otherwise.
      */
     bool nameExistsInAttributes(QString const& attributeName) const;
+
+    /*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+    bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
+
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -9,6 +9,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../KactusAPI/include/ImportHighlighter.h \
     ../../../common/NameGenerationPolicy.h \
+    ../../../common/KactusUtils.h \
     ../../../Plugins/VHDLimport/VHDLSyntax.h \
     ../../../Plugins/VHDLimport/vhdlimport_global.h \
     ../../../Plugins/VHDLimport/VHDLGenericParser.h \
@@ -16,6 +17,7 @@ HEADERS += ../../../KactusAPI/include/ImportHighlighter.h \
     ../../../Plugins/VHDLimport/VHDLimport.h
 SOURCES += ../../../KactusAPI/plugins/ImportHighlighter.cpp \
     ../../../common/NameGenerationPolicy.cpp \
+    ../../../common/KactusUtils.cpp \
     ../../../Plugins/VHDLimport/VHDLGenericParser.cpp \
     ../../../Plugins/VHDLimport/VHDLPortParser.cpp \
     ../../../Plugins/VHDLimport/VHDLimport.cpp \

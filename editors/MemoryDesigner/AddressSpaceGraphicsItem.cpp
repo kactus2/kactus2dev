@@ -11,7 +11,7 @@
 
 #include "AddressSpaceGraphicsItem.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/MemoryDesigner/MemoryItem.h>
 #include <editors/MemoryDesigner/ConnectivityComponent.h>
@@ -43,6 +43,10 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/settings-code_e
     QBrush addressSpaceBrush(KactusColors::ADDRESS_SEGMENT);
     setBrush(addressSpaceBrush);
 
+    auto itemPen = pen();
+    itemPen.setColor(KactusColors::MEM_DESIGNER_CONNECTION);
+    setPen(itemPen);
+
     spaceRangeInt_ = memoryItem->getRange().toULongLong();
     int spaceWidth = MemoryDesignerConstants::ITEMWIDTH;
 
@@ -68,6 +72,7 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/settings-code_e
 spaceRangeInt_(other.spaceRangeInt_)
 {
     setBrush(other.brush());
+    setPen(other.pen());
 
     int spaceWidth = MemoryDesignerConstants::ITEMWIDTH;
 

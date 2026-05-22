@@ -13,7 +13,7 @@
 
 #include "PortMapsColumns.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/PortMapInterface.h>
 
@@ -162,14 +162,6 @@ QVariant PortMapModel::data(QModelIndex const& index, int role) const
     {
         return valueForIndex(index);
     }
-    else if (role == Qt::ForegroundRole)
-    {
-        if (index.column() == PortMapsColumns::LOGICAL_PRESENCE)
-        {
-            return KactusColors::DISABLED_TEXT;
-        }
-        return blackForValidOrRedForInvalidIndex(index);
-    }
     else if (role == Qt::DecorationRole)
     {
         if (!index.parent().isValid() && index.column() == PortMapsColumns::LOGICAL_PORT)
@@ -190,8 +182,12 @@ QVariant PortMapModel::data(QModelIndex const& index, int role) const
         return portMapInterface_->logicalPortExists(portMapIndex);
     }
 
-    // Unsupported role.
-    return QVariant();
+    return TableModelBase::data(index, role);
+}
+
+bool PortMapModel::indexIsGreyedOut(QModelIndex const& index) const
+{
+    return index.column() == PortMapsColumns::LOGICAL_PRESENCE;
 }
 
 //-----------------------------------------------------------------------------
@@ -702,4 +698,19 @@ int PortMapModel::getAllReferencesToIdInItemOnRow(const int& row, QString const&
 {
     return portMapInterface_->getAllReferencesToIdInItem(
         portMapInterface_->getIndexedItemName(row), valueID.toStdString());
+}
+
+bool PortMapModel::indexIsMandatory(QModelIndex const& index) const
+{
+    std::string logicalTieOff = portMapInterface_->getLogicalTieOffValue(index.row());
+    bool physicalPortExists = portMapInterface_->hasPhysicalPort(index.row());
+
+    if (index.column() == PortMapsColumns::LOGICAL_PORT ||
+        (index.column() == PortMapsColumns::PHYSICAL_PORT && logicalTieOff.empty()) ||
+        (index.column() == PortMapsColumns::TIEOFF && !physicalPortExists))
+    {
+        return true;
+    }
+
+    return false;
 }

@@ -48,7 +48,7 @@ protected:
      *
      *    @return Background color for the selected index.
      */
-    virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
+    virtual QVariant getBackgroundColorForIndex(QModelIndex const& index) const;
 
     /*!
      *  Check if the filter should accept the selected row.

@@ -11,7 +11,7 @@
 
 #include "AbstractionTransactionalPortsSortFilter.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/PortAbstractionInterface.h>
 #include <editors/AbstractionDefinitionEditor/LogicalPortColumns.h>
@@ -30,7 +30,7 @@ AbstractionDefinitionPortsSortFilter(portInterface, parent)
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex()
 //-----------------------------------------------------------------------------
-QColor AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
+QVariant AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
 {
     if (index.column() == LogicalPortColumns::PROTOCOLTYPE && indexedRowContainsPayload(index))
     {

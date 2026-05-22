@@ -12,7 +12,7 @@
 #include "HDLGenerationDialog.h"
 #include "GenerationControl.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QFileDialog>

@@ -17,7 +17,7 @@
 
 #include <common/NameGenerationPolicy.h>
 
-#include <KactusAPI/include/ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QString>
 

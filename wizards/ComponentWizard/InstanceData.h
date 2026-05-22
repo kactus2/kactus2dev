@@ -12,6 +12,8 @@
 #ifndef INSTANCEDATA_H
 #define INSTANCEDATA_H
 
+#include <IPXACTmodels/common/VLNV.h>
+
 #include <QString>
 #include <QVector>
 #include <QMetaType>
@@ -24,6 +26,9 @@ namespace InstanceData
     //! The parsed instance data.
     struct instanceData
     {
+        //! VLNV
+        VLNV componentVLNV_;
+
         //! Name.
         QString instanceName_;
 
@@ -41,6 +46,7 @@ namespace InstanceData
     const QString VERILOGINSTANCES("verilogInstances");
     const QString SINGLEINSTANCE("instance");
 
+    const QString COMPONENTVLNV("componentVLNV");
     const QString INSTANCENAME("instanceName");
     const QString MODULENAME("moduleName");
     const QString PARAMETERS("parameters");

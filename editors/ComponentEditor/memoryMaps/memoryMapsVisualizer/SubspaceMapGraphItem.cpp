@@ -13,7 +13,7 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QStringBuilder>
 #include <QBrush>
@@ -27,7 +27,7 @@ MemoryBlockGraphItem(expressionParser, parent),
 submapInterface_(submapInterface),
 subspaceName_(subspaceName.toStdString())
 {
-    setDefaultBrush(QBrush(KactusColors::MIRROREDSYSTEM_INTERFACE));
+    setDefaultBrush(QBrush(KactusColors::SUBSPACE_MAP_COLOR));
     updateDisplay();
 }
 

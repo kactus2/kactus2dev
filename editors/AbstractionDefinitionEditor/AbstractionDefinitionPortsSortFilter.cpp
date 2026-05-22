@@ -11,7 +11,7 @@
 
 #include "AbstractionDefinitionPortsSortFilter.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include "AbstractionPortsModel.h"
 #include "LogicalPortColumns.h"
@@ -45,10 +45,10 @@ QVariant AbstractionDefinitionPortsSortFilter::data(const QModelIndex &index, in
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex()
 //-----------------------------------------------------------------------------
-QColor AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
+QVariant AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
 {
     bool systemGroupIsMandatory = isSystemGroupMandatory(index);
-    if (index.column() == LogicalPortColumns::NAME || systemGroupIsMandatory)
+    if (systemGroupIsMandatory)
     {
         return KactusColors::MANDATORY_FIELD;
     }
@@ -58,12 +58,19 @@ QColor AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIn
         return KactusColors::DISABLED_FIELD;
     }
 
+    // Handle name column in model data method
+    if (index.column() == LogicalPortColumns::NAME)
+    {
+        return QSortFilterProxyModel::data(index, Qt::BackgroundRole);
+    }
+
+    // Color port rows with alternating background color, but color logical signals of same port with same color
     int previousRow = index.row() - 1;
     QString previousName("");
     QColor previousColor = KactusColors::REGULAR_FIELD;
     if (previousRow < 0)
     {
-        return previousColor;
+        return QVariant(previousColor);
     }
     else
     {
@@ -81,7 +88,7 @@ QColor AbstractionDefinitionPortsSortFilter::getBackgroundColorForIndex(QModelIn
     }
     else if (previousColor == KactusColors::REGULAR_FIELD)
     {
-        return KactusColors::FIELD_COLOR;
+        return KactusColors::LOGICAL_PORT_FIELD;
     }
     
     return KactusColors::REGULAR_FIELD;
@@ -139,7 +146,7 @@ bool AbstractionDefinitionPortsSortFilter::undefinedMode(QModelIndex const& inde
 
         QVariant modeData = modeIndex.data(Qt::ForegroundRole);
         QColor modeColor = modeData.value<QColor>();
-        if (modeColor == KactusColors::ERROR)
+        if (modeColor == KactusColors::ERROR_COLOR)
         {
             return true;
         }

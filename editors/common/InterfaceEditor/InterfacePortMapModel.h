@@ -15,16 +15,20 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ParameterConfigurableElementFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+
 class PortMap;
 class BusInterface;
 class LibraryInterface;
 class ConnectionEndpoint;
 class AbstractionDefinition;
 class Component;
-class ComponentParameterFinder;
 class ExpressionParser;
 class Design;
 class ActiveInterface;
+class ComponentItem;
 
 //-----------------------------------------------------------------------------
 //! Table model for visualizing interface port maps.
@@ -38,11 +42,12 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *    @param [in] handler     The library handler.
-     *    @param [in] parent      Pointer to the owner of this model.
+     *    @param [in] designParameterFinder     Parameter finder for design parameters.
+     *    @param [in] library                   The library interface.
+     *    @param [in] parent                    Pointer to the owner of this model.
 	 */
-	InterfacePortMapModel(LibraryInterface* library, QObject *parent);
-	
+	InterfacePortMapModel(QSharedPointer<ParameterFinder> designParameterFinder, LibraryInterface* library, QObject* parent);
+
 	/*!
      *  The destructor.
      */
@@ -57,8 +62,9 @@ public:
      *    @param [in] activeView          The active view of the item containing the selected bus item..
      *    @param [in] activeInterfaces    A list of active interfaces containing a reference to the selected item.
      */
-    void setInterfaceData(ConnectionEndpoint* busItem, QString const& activeView,
-        QList<QSharedPointer<ActiveInterface> > activeInterfaces);
+	void setInterfaceData(ConnectionEndpoint* busItem,
+        QString const& activeView,
+		QList<QSharedPointer<ActiveInterface> > activeInterfaces);
 
 	/*!
      *  Returns the number of rows in the model.
@@ -143,6 +149,37 @@ private:
      */
     bool portIsExcluded(QString const& portName) const;
     
+    /*!
+     *  Setup the parameter finders for the selected end point.
+     *
+     *    @param [in] busItem       The selected end point.
+     *    @param [in] component     The component containing the end point.
+     *    @param [in] absDef        Abstraction definition of the end point.
+     */
+    void setupFinders(ConnectionEndpoint* busItem, QSharedPointer<Component> component, QSharedPointer<AbstractionDefinition> absDef);
+
+    //! Container for logical port bounds.
+    struct PortBounds
+    {
+        //! The left bound value.
+        QString leftBound_ = "0";
+
+		//! The right bound value.
+		QString rightBound_ = "0";
+    };
+
+    /*!
+     *  Get the logical bounds of the selected bus interface.
+     *
+     *    @param [in] busInterface      The selected bus interface.
+     *    @param [in] logicalPortName   Name of the mapped logical port.
+     *    @param [in] portMap           Port map containing the logical port.
+     *    @param [in] absDef            Abstraction definition of the bus interface.
+     *
+     *    @return 
+     */
+    PortBounds getLogicalBounds(QSharedPointer<BusInterface> busInterface, QString const& logicalPortName, QSharedPointer<PortMap> portMap, QSharedPointer<AbstractionDefinition> absDef) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -175,11 +212,20 @@ private:
     //! List of the mapped port items.
     QList<MappingItem> mappingItems_;
 
-    //! The component parameter finder.
-    QSharedPointer<ComponentParameterFinder> componentFinder_;
+    //! Parameter finder for component parameters, design parameters and CEVs.
+	QSharedPointer<MultipleParameterFinder> instanceValueFinder_ = QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder());
 
-    //! The used expression parser.
-    QSharedPointer<ExpressionParser> parser_;
+    //! Parameter finder for component parameters and CEVs
+    QSharedPointer<ParameterConfigurableElementFinder> instanceCEVFinder_ = QSharedPointer<ParameterConfigurableElementFinder>(new ParameterConfigurableElementFinder());
+
+	//! Parameter finder for abstraction definition parameters.
+    QSharedPointer<ListParameterFinder> absDefValueFinder_ = QSharedPointer<ListParameterFinder>(new ListParameterFinder());
+
+    //! The expression parser for a component instance.
+    QSharedPointer<ExpressionParser> instanceValueParser_;
+
+    //! The expression parser for an abstraction definition.
+    QSharedPointer<ExpressionParser> absDefValueParser_;
 
     //! List of the active interfaces referencing the selected end point.
     QList<QSharedPointer<ActiveInterface> > activeInterfaces_;

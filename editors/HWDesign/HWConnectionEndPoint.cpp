@@ -17,7 +17,7 @@
 #include <editors/HWDesign/HWComponentItem.h>
 #include <editors/HWDesign/OffPageConnectorItem.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 

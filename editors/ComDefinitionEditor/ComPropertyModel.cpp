@@ -18,7 +18,7 @@
 
 #include <QRegularExpression>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 QString const ComPropertyModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
     "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
@@ -28,9 +28,9 @@ QString const ComPropertyModel::TIME_UNIT_REGEX("^(fs|ps|ns|us|µs|ms|sec|s)$");
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::ComPropertyModel()
 //-----------------------------------------------------------------------------
-ComPropertyModel::ComPropertyModel(QObject *parent)
-    : QAbstractTableModel(parent),
-      table_()
+ComPropertyModel::ComPropertyModel(QObject* parent) :
+    TableModelBase(parent),
+    table_()
 {
 }
 
@@ -129,56 +129,8 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
     }
-    else if (role == Qt::ForegroundRole)
-    {
-        if (index.column() == ComPropertyColumns::DEFAULT_VALUE)
-        {
-            // Validate the default value against the data type.
-            QString const& value = table_.at(index.row())->getDefaultValue();
-            QString const& type = table_.at(index.row())->getType();
-            bool ok = true;
 
-            if (type == QLatin1String("integer"))
-            {
-                value.toInt(&ok);
-            }
-            else if (type == QLatin1String("ip_address"))
-            {
-                ok = value.contains(QRegularExpression(IP_ADDRESS_REGEX));
-            }
-
-            if (ok)
-            {
-                return KactusColors::REGULAR_TEXT;
-            }
-            else
-            {
-                return KactusColors::ERROR;
-            }
-        }
-
-        else
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-    }
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == ComPropertyColumns::NAME ||
-            index.column() == ComPropertyColumns::REQUIRED ||
-            index.column() == ComPropertyColumns::TYPE)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-	}
-    else
-    {
-        return QVariant();
-    }
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -345,4 +297,35 @@ void ComPropertyModel::onRemoveItem(QModelIndex const& index )
     endRemoveRows();
 
     emit contentChanged();
+}
+
+bool ComPropertyModel::validateIndex(QModelIndex const& index) const
+{
+    if (index.column() == ComPropertyColumns::DEFAULT_VALUE)
+    {
+        // Validate the default value against the data type.
+        QString const& value = table_.at(index.row())->getDefaultValue();
+        QString const& type = table_.at(index.row())->getType();
+        bool ok = true;
+
+        if (type == QLatin1String("integer"))
+        {
+            value.toInt(&ok);
+        }
+        else if (type == QLatin1String("ip_address"))
+        {
+            ok = value.contains(QRegularExpression(IP_ADDRESS_REGEX));
+        }
+
+        return ok;
+    }
+
+    return true;
+}
+
+bool ComPropertyModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == ComPropertyColumns::NAME ||
+        index.column() == ComPropertyColumns::REQUIRED ||
+        index.column() == ComPropertyColumns::TYPE;
 }

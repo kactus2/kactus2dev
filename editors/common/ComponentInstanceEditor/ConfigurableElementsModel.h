@@ -16,11 +16,12 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
+#include <common/models/TableModelBase.h>
+
 #include <editors/common/ComponentInstanceEditor/EditorConfigurableElement.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
-#include <QAbstractItemModel>
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
@@ -32,7 +33,7 @@ class ConfigurableElementValue;
 //-----------------------------------------------------------------------------
 //! Model class to manage the configurable element values being edited.
 //-----------------------------------------------------------------------------
-class ConfigurableElementsModel : public QAbstractItemModel, public ParameterizableTable
+class ConfigurableElementsModel : public TableModelBase, public ParameterizableTable
 {
 	Q_OBJECT
 

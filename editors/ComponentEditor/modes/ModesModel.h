@@ -17,7 +17,8 @@
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
+
 #include <QSharedPointer>
 #include <QList>
 
@@ -28,7 +29,7 @@ class ModeValidator;
 //-----------------------------------------------------------------------------
 //! Model for Mode elements within a component.
 //-----------------------------------------------------------------------------
-class ModesModel : public QAbstractTableModel
+class ModesModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -136,6 +137,24 @@ signals:
 
 private:
 
+	/*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+    bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
+	
 	//! Gets the value of the cell in index.
     QVariant valueForIndex(QModelIndex const& index) const;
 

@@ -64,15 +64,7 @@ bool LinuxDeviceTreeCPUDelegate::editorEvent(QEvent *event, QAbstractItemModel* 
     // Handle the mouse button events.
     if (event->type() == QEvent::MouseButtonPress)
     {
-        const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
-
-        QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
-            option.decorationSize,
-            QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
-            option.rect.width() - (2 * textMargin),
-            option.rect.height()));
-
-        if (!checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
+        if (!option.rect.contains(static_cast<QMouseEvent*>(event)->pos()))
         {
             return false;
         }
@@ -88,15 +80,7 @@ bool LinuxDeviceTreeCPUDelegate::editorEvent(QEvent *event, QAbstractItemModel* 
             return false;
         }
 
-        const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
-
-        QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
-            option.decorationSize,
-            QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
-            option.rect.width() - (2 * textMargin),
-            option.rect.height()));
-
-        if (!checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
+        if (!option.rect.contains(static_cast<QMouseEvent*>(event)->pos()))
         {
             return false;
         }
@@ -129,8 +113,6 @@ void LinuxDeviceTreeCPUDelegate::paint(QPainter* painter, QStyleOptionViewItem c
 
     if (index.column() == LinuxDeviceTreeCPUColumns::CREATEDEVICETREE)
     {
-        painter->fillRect(option.rect, Qt::white);
-
         const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
 
         QRect newRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,

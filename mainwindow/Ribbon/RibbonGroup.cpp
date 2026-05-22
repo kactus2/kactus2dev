@@ -11,7 +11,8 @@
 
 #include "RibbonGroup.h"
 #include "Ribbon.h"
-#include "RibbonTheme.h"
+
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QPainter>
 #include <QToolButton>
@@ -49,22 +50,22 @@ void RibbonGroup::paintEvent(QPaintEvent* /*event*/)
     QPainter painter(this);
 
     painter.setRenderHints(QPainter::Antialiasing);
-    painter.fillRect(rect(), RibbonTheme::GRADIENTTOP);
+    painter.fillRect(rect(), KactusColors::RIBBON_GRADIENT_TOP);
 
     // Draw a nice frame around the group area.
-	painter.setPen(QPen(RibbonTheme::GROUPTITLEGRADIENTTOP, 1));
+	painter.setPen(QPen(KactusColors::RIBBONGROUP_TITLE_GRADIENT_TOP, 1));
     painter.drawRect(rect());
 
     // Draw the title background.
     QRect titleRect = rect();
     titleRect.setTop(rect().height() - TITLE_HEIGHT);
 
-    painter.fillRect(titleRect, RibbonTheme::GROUPTITLEGRADIENTBOTTOM);
+    painter.fillRect(titleRect, KactusColors::RIBBONGROUP_TITLE_GRADIENT_BOTTOM);
 
     // Draw the title text.
     QTextOption opt;
     opt.setAlignment(Qt::AlignCenter);
 
-	painter.setPen(QPen(RibbonTheme::GROUPTITLETEXT));
+	painter.setPen(QPen(KactusColors::RIBBONGROUP_TITLE_TEXT));
     painter.drawText(titleRect, title_, opt);
 }

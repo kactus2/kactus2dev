@@ -50,9 +50,7 @@ editor_(new ImportEditor(component, handler, parameterFinder, expressionFormatte
     connect(editor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    QLineEdit *dummy = new QLineEdit(this);
-    dummy->setVisible(false);
-    registerField(InstanceData::VERILOGINSTANCES, dummy);
+    registerField(InstanceData::VERILOGINSTANCES, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -133,6 +131,12 @@ QVector<InstanceData::instanceData> ComponentWizardImportPage::getVerilogInstanc
         if (extensionGroup)
         {
             InstanceData::instanceData newInstance;
+
+            if (auto vlnvString = getInstanceString(InstanceData::COMPONENTVLNV, extensionGroup); vlnvString.isEmpty() == false)
+            {
+                newInstance.componentVLNV_ = VLNV(VLNV::COMPONENT, vlnvString);
+            }
+
             newInstance.instanceName_ = getInstanceString(InstanceData::INSTANCENAME, extensionGroup);
             newInstance.moduleName_ = getInstanceString(InstanceData::MODULENAME, extensionGroup);
             newInstance.parameters_ =

@@ -17,6 +17,7 @@
 #include <editors/ComponentEditor/software/PropertyValueEditor.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <QWidget>
 #include <QLineEdit>
@@ -168,6 +169,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! Parameter finder for design parameters.
+    QSharedPointer<ListParameterFinder> designParameterFinder_ = QSharedPointer<ListParameterFinder>(new ListParameterFinder());
 
     //! The currently active top component view.
     QString activeTopView_;

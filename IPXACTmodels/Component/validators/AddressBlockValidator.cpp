@@ -328,13 +328,15 @@ bool AddressBlockValidator::hasValidAccessWithRegister(QSharedPointer<AddressBlo
     QSharedPointer<Register> targetRegister) const
 {
     AccessTypes::Access blockAccess = addressBlock->getAccess();
-    AccessTypes::Access registerAccess = targetRegister->getAccess();
-    if ((blockAccess == AccessTypes::READ_ONLY && registerAccess != AccessTypes::READ_ONLY) ||
+
+	if (AccessTypes::Access registerAccess = targetRegister->getAccess();
+        registerAccess != AccessTypes::ACCESS_COUNT &&
+		((blockAccess == AccessTypes::READ_ONLY && registerAccess != AccessTypes::READ_ONLY) ||
         (blockAccess == AccessTypes::WRITE_ONLY && (registerAccess != AccessTypes::WRITE_ONLY &&
             registerAccess != AccessTypes::WRITEONCE)) ||
         (blockAccess == AccessTypes::READ_WRITEONCE && (registerAccess != AccessTypes::READ_ONLY &&
             registerAccess != AccessTypes::READ_WRITEONCE && registerAccess != AccessTypes::WRITEONCE)) ||
-        (blockAccess == AccessTypes::WRITEONCE && registerAccess != AccessTypes::WRITEONCE))
+        (blockAccess == AccessTypes::WRITEONCE && registerAccess != AccessTypes::WRITEONCE)))
     {
         return false;
     }
@@ -398,6 +400,7 @@ bool AddressBlockValidator::hasValidUsage(QSharedPointer<AddressBlock> addressBl
         {
             return false;
         }
+/*
         else if (addressBlock->getUsage() == General::MEMORY)
         {
             for (QSharedPointer<RegisterBase> const& registerData : *addressBlock->getRegisterData())
@@ -413,6 +416,7 @@ bool AddressBlockValidator::hasValidUsage(QSharedPointer<AddressBlock> addressBl
                 }
             }
         }
+*/
     }
 
     return true;
@@ -570,6 +574,7 @@ void AddressBlockValidator::findErrorsInUsage(QVector<QString>& errors, QSharedP
         errors.append(QObject::tr("Registers cannot be contained in address block %1 with usage %2 within %3")
             .arg(addressBlock->name()).arg(General::usage2Str(addressBlock->getUsage())).arg(context));
     }
+/*
     else if (addressBlock->getUsage() == General::MEMORY)
     {
         for (QSharedPointer<RegisterBase> const& registerData : *addressBlock->getRegisterData())
@@ -587,6 +592,7 @@ void AddressBlockValidator::findErrorsInUsage(QVector<QString>& errors, QSharedP
             }
         }
     }
+*/
 }
 
 //-----------------------------------------------------------------------------

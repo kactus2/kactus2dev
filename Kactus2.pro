@@ -3,29 +3,46 @@
 # ------------------------------------------------------
 
 TEMPLATE = app
-TARGET = kactus2
 
 QT += core xml widgets gui printsupport help svg
-CONFIG += c++17 release
+CONFIG += c++17
 
 DEFINES += _WINDOWS QT_DLL QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2
 
 INCLUDEPATH += . \
     ./GeneratedFiles \
     ./KactusAPI/include
-LIBS += -L./executable \
-    -lIPXACTmodels \
-    -L./executable \
-    -lKactusAPI \
-    $$PYTHON_LIBS
+
+LIBS += $$PYTHON_LIBS
 
 QMAKE_CXXFLAGS += $$PYTHON_C_FLAGS
 
 DESTDIR = ./executable
 DEPENDPATH += .
 
-MOC_DIR += ./GeneratedFiles
-OBJECTS_DIR += release
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += -L"./executable" \
+        -lIPXACTmodelsd \
+        -L"./executable" \
+        -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = kactus2d
+
+} else {
+    # release mode 
+    LIBS += -L"./executable" \
+        -lIPXACTmodels \
+        -L"./executable" \
+        -lKactusAPI
+
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = kactus2
+}
+
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 

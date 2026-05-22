@@ -119,7 +119,10 @@ private:
     // Disable copying.
     SWComponentItem(SWComponentItem const& rhs);
     SWComponentItem& operator=(SWComponentItem const& rhs);
-    
+
+
+    QColor getNameLabelColor() const override;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -11,7 +11,7 @@
 
 #include "MemoryMapGraphicsItem.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/MemoryDesigner/MemoryItem.h>
 #include <editors/MemoryDesigner/ConnectivityComponent.h>
@@ -80,6 +80,7 @@ void MemoryMapGraphicsItem::setupMemoryMapItem(quint64 const& baseAddress, quint
 {
     QBrush memoryMapBrush(KactusColors::MEM_MAP_COLOR);
     setBrush(memoryMapBrush);
+    setPen(KactusColors::MEM_DESIGNER_CONNECTION);
 
     quint64 memoryHeight = (lastAddress - baseAddress + 1);
     int memoryWidth = MemoryDesignerConstants::MEMORYMAPFULLWIDTH;

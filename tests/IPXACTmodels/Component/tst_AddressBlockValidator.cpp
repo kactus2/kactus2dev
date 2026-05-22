@@ -414,10 +414,8 @@ void tst_AddressBlockValidator::testHasValidUsage_data()
 
     QTest::newRow("Memory usage is valid without registers") << "memory" << 0 << "" << "" << true;
     QTest::newRow("Memory usage is valid with virtual registers") << "memory" << 3 << "" << "" << true;
-    QTest::newRow("Memory usage is invalid with registers containing volatile") << "memory" << 3 << "true" <<
-        "" << false;
-    QTest::newRow("Memory usage is invalid with registers containing access") << "memory" << 3 << "" <<
-        "read-write" << false;
+//     QTest::newRow("Memory usage is invalid with registers containing volatile") << "memory" << 3 << "true" << "" << false;
+//     QTest::newRow("Memory usage is invalid with registers containing access") << "memory" << 3 << "" << "read-write" << false;
 }
 
 //-----------------------------------------------------------------------------

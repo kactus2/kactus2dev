@@ -11,17 +11,31 @@
 
 #include "TagContainer.h"
 
+#include <common/KactusUtils.h>
 #include <common/widgets/tagEditor/TagDisplay.h>
 #include <common/widgets/tagEditor/FlowLayout.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <KactusAPI/include/KactusColors.h>
+
+#include <QApplication>
+
 //-----------------------------------------------------------------------------
 // Function: TagContainer::TagContainer()
 //-----------------------------------------------------------------------------
 TagContainer::TagContainer(QWidget* parent):
-QWidget(parent)
+    QWidget(parent)
 {
+    if (KactusUtils::darkThemeEnabled())
+    {
+        auto appPalette = QApplication::palette();
+        auto windowBgColor = appPalette.color(QPalette::Button);
+        auto tagPalette = additionTag_->palette();
+        tagPalette.setColor(QPalette::Window, windowBgColor.lighter(150));
+        additionTag_->setPalette(tagPalette);
+    }
+
     additionTag_->setToolTip(tr("Create new tag"));
     connect(additionTag_, SIGNAL(clicked(TagLabel*)), this, SLOT(createNewTag()), Qt::UniqueConnection);
 

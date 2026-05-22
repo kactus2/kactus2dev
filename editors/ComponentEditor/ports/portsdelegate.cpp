@@ -233,8 +233,6 @@ void PortsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option,
 
     if (index.column() == adHocColumn())
     {
-        painter->fillRect(option.rect, Qt::white);
-
         const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
 
         QRect newRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,

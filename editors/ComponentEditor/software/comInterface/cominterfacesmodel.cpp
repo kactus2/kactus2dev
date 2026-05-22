@@ -24,7 +24,7 @@
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/DocumentUtils.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 
 #include <QMimeData>
@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------
 ComInterfacesModel::ComInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
     QObject *parent):
-QAbstractTableModel(parent),
+TableModelBase(parent),
     libHandler_(libHandler),
     component_(component),
     comIfs_(component->getComInterfaces())
@@ -189,33 +189,8 @@ QVariant ComInterfacesModel::data(QModelIndex const& index, int role) const
         // and return the transfer types specified in the com definition
         return *comDef->getTransferTypes();
     }
-    else if (role == Qt::ForegroundRole)
-    {
-        if (comIfs_.at(index.row())->isValid())
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-        else
-        {
-            return KactusColors::ERROR;
-        }
-    }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == ComInterfaceColumns::NAME ||
-            index.column() == ComInterfaceColumns::DIRECTION)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-    else
-    {
-        return QVariant();
-    }
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -389,4 +364,15 @@ void ComInterfacesModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool ComInterfacesModel::validateIndex(QModelIndex const& index) const
+{
+    return comIfs_.at(index.row())->isValid();
+}
+
+bool ComInterfacesModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == ComInterfaceColumns::NAME ||
+        index.column() == ComInterfaceColumns::DIRECTION;
 }

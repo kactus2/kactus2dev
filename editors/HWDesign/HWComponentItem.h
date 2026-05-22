@@ -210,6 +210,13 @@ private:
      */
     virtual void hideAdhocPort(AdHocItem* portItem);
 
+    /*!
+     *  Override default name label color depending on if component is bus or not
+     *
+     *    @return The new name label color.
+     */
+    QColor getNameLabelColor() const override;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

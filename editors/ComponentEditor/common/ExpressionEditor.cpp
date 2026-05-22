@@ -16,6 +16,7 @@
 #include <QRegularExpression>
 #include <QTextCursor>
 
+#include <KactusAPI/include/KactusColors.h>
 #include <KactusAPI/include/ParameterFinder.h>
 #include <KactusAPI/include/SystemVerilogSyntax.h>
 
@@ -81,7 +82,7 @@ void ExpressionEditor::setExpression(QString const& expression)
         insertWord(term, cursor);
 
         QString operation = delimiter.match(expression, delimiterIndex).captured();
-        cursor.insertText(operation, colorFormat(Qt::black));
+        cursor.insertText(operation, colorFormat(KactusColors::REGULAR_TEXT));
 
         delimiterIndex = wordEndIndex + operation.length();
     }
@@ -164,11 +165,18 @@ void ExpressionEditor::insertWord(QString const& word, QTextCursor& cursor)
     }
     else if (wordIsConstant(word) || getReservedWords().contains(word, Qt::CaseInsensitive) || wordIsMathFunction(word))
     {
-        cursor.insertText(word, colorFormat(Qt::black));
+        if (property("mandatoryField") == true)
+        {
+            cursor.insertText(word, colorFormat(Qt::black));
+        }
+        else
+        {
+            cursor.insertText(word, colorFormat(KactusColors::REGULAR_TEXT));
+        }
     }
     else
     {
-        cursor.insertText(word, colorFormat(Qt::red));
+        cursor.insertText(word, colorFormat(KactusColors::ERROR_COLOR));
     }
 }
 
@@ -180,7 +188,7 @@ void ExpressionEditor::colorCurrentWordRed()
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-    cursor.setCharFormat(colorFormat(Qt::red));
+    cursor.setCharFormat(colorFormat(KactusColors::ERROR_COLOR));
 }
 
 //-----------------------------------------------------------------------------
@@ -191,7 +199,7 @@ void ExpressionEditor::colorCurrentWordBlack()
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-    cursor.setCharFormat(colorFormat(Qt::black));
+    cursor.setCharFormat(colorFormat(KactusColors::REGULAR_TEXT));
 }
 
 //-----------------------------------------------------------------------------
@@ -240,7 +248,7 @@ void ExpressionEditor::handleParentKeyPressEvent(QKeyEvent* keyEvent)
     if (keyEvent->text().isEmpty() == false)
     {
         auto cursor = textCursor();
-        cursor.setCharFormat(colorFormat(Qt::black));
+        cursor.setCharFormat(colorFormat(KactusColors::REGULAR_TEXT));
         setTextCursor(cursor);
     }
 

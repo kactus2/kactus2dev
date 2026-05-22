@@ -3,28 +3,41 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = SVDGeneratorPlugin
 
 QT += core xml widgets gui
-CONFIG += c++11 release
+CONFIG += c++11
 DEFINES += SVDGENERATORPLUGIN_LIB
 
-INCLUDEPATH += ./generatedFiles \
+INCLUDEPATH += ./GeneratedFiles \
     ./../.. \
-    . \
-    ./generatedFiles/Debug
+    .
 
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels \
-    -lKactusAPI
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd \
+        -L../../executable -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = SVDGeneratorPlugind
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../executable -lIPXACTmodels \
+        -L../../executable -lKactusAPI
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = SVDGeneratorPlugin
+}
 
 DESTDIR = ../../executable/Plugins
 
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/debug
-OBJECTS_DIR += debug
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
+UI_DIR += ./GeneratedFiles
+RCC_DIR += ./GeneratedFiles
 
 include(SVDGeneratorPlugin.pri)
 

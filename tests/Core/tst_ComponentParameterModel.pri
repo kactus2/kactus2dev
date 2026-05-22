@@ -6,9 +6,13 @@ HEADERS += ../../editors/ComponentEditor/parameters/ComponentParameterColumns.h 
     ../../editors/ComponentEditor/common/ParameterizableTable.h \
     ../../IPXACTmodels/common/validators/ValueFormatter.h \
     ../../editors/ComponentEditor/parameters/ComponentParameterModel.h \
-    ../../editors/ComponentEditor/common/ReferencingTableModel.h
+    ../../editors/ComponentEditor/common/ReferencingTableModel.h \
+    ../../common/models/TableModelBase.h \
+    ../../common/KactusUtils.h
 SOURCES += ../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ../../editors/ComponentEditor/common/ParameterizableTable.cpp \
     ../../editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ../../IPXACTmodels/common/validators/ValueFormatter.cpp \
+    ../../common/models/TableModelBase.cpp \
+    ../../common/KactusUtils.cpp \
     ./tst_ComponentParameterModel.cpp

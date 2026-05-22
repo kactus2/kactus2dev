@@ -244,6 +244,13 @@ void ComponentItem::updateNameLabel()
     }
 
     nameLabel_->setHtml(QStringLiteral("<center>") + text + QStringLiteral("</center>"));
+    nameLabel_->setDefaultTextColor(getNameLabelColor());
+}
+
+QColor ComponentItem::getNameLabelColor() const
+{
+    // Override if needed, return palette color by default
+    return nameLabel_->defaultTextColor();
 }
 
 //-----------------------------------------------------------------------------

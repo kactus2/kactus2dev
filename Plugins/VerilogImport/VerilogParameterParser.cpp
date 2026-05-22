@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/utilities/Search.h>
 
-#include <KactusAPI/include/ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
@@ -240,7 +240,7 @@ QStringList VerilogParameterParser::findParameterDeclarations(QString const& com
         {
             if (highlighter_)
             {
-                highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER, componentDeclaration);
+                highlighter_->applyHighlight(declaration, KactusColors::Importer::MODELPARAMETER, componentDeclaration);
             }
 
             declarations.append(declaration);

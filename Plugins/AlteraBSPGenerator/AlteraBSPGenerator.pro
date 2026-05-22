@@ -3,28 +3,41 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = AlteraBSPGenerator
 
 QT += core xml widgets gui printsupport
-CONFIG += c++11 plugin release
+CONFIG += c++11 plugin
 
 DEFINES += ALTERABSPGENERATOR_LIB
 
-INCLUDEPATH += ./generatedFiles \
+INCLUDEPATH += ./GeneratedFiles \
     . \
     ./../.. \
-    ./generatedFiles/Release
-
-LIBS += -L"./../../executable" \
-    -lIPXACTmodels
 
 DESTDIR = ../../executable/Plugins
 
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = AlteraBSPGeneratord
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../executable -lIPXACTmodels
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = AlteraBSPGenerator
+}
+
+
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/release
-OBJECTS_DIR += release
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
+UI_DIR += ./GeneratedFiles
+RCC_DIR += ./GeneratedFiles
 include(AlteraBSPGenerator.pri)
 
 target.path = $$plugin_path

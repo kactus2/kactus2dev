@@ -20,6 +20,7 @@
 
 #include <KactusAPI/include/ComponentParameterFinder.h>
 #include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ParameterConfigurableElementFinder.h>
 
 #include <editors/ComponentEditor/software/PropertyValueEditor.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
@@ -177,8 +178,12 @@ private:
 	//! Pointer to the generic edit provider that manages the undo/redo stack.
 	QSharedPointer<IEditProvider> editProvider_ = nullptr;
 
+    //! Parameter finder for configurable element values.
+    QSharedPointer<ParameterConfigurableElementFinder> instanceFinder_ = 
+        QSharedPointer<ParameterConfigurableElementFinder>(new ParameterConfigurableElementFinder());
+
     //! The parameter finder for component instances.
-    QSharedPointer<ComponentParameterFinder> instanceFinder_ =
+    QSharedPointer<ComponentParameterFinder> componentFinder_ =
         QSharedPointer<ComponentParameterFinder>(new ComponentParameterFinder(nullptr));
 
     //! The parameter finder for component instances.

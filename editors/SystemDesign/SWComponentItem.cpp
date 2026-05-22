@@ -25,7 +25,7 @@
 #include <common/graphicsItems/IGraphicsItemStack.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 
 #include <QBrush>
@@ -246,6 +246,11 @@ void SWComponentItem::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 
     menu.exec(event->screenPos());
     event->accept();
+}
+
+QColor SWComponentItem::getNameLabelColor() const
+{
+    return Qt::black;
 }
 
 //-----------------------------------------------------------------------------

@@ -14,8 +14,8 @@
 //-----------------------------------------------------------------------------
 // Function: FilterGroup::FilterGroup()
 //-----------------------------------------------------------------------------
-FilterGroup::FilterGroup(QString const& title, QWidget *parent):
-QGroupBox(title, parent)
+FilterGroup::FilterGroup(QString const& title, QWidget* parent) :
+    QGroupBox(title, parent)
 {
     setFlat(true);
 }

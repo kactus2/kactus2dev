@@ -280,12 +280,10 @@ void ImportInstancesEditor::createInstanceVLNVItems(QVector<InstanceData::instan
         QSharedPointer<const Component> componentCandidate = getComponentFromVLNV(vlnv);
         if (componentCandidate)
         {
-            QString vlnvName = vlnv.getName();
-
             for (auto const& singleInstance : instances)
             {
-                if (vlnvName.compare(singleInstance.moduleName_) == 0 &&
-                    instanceDataMatchesComponentPorts(singleInstance, componentCandidate))
+				if (vlnv == singleInstance.componentVLNV_ &&
+					instanceDataMatchesComponentPorts(singleInstance, componentCandidate))
                 {
                     instanceComponentMatches.insert(singleInstance.instanceName_, componentCandidate);
                 }
@@ -316,7 +314,7 @@ void ImportInstancesEditor::createInstanceVLNVItems(QVector<InstanceData::instan
             QString newItemFileName =
                 newItemVLNV.getName() + QLatin1Char('.') + newItemVLNV.getVersion() + QLatin1String(".xml");
             vlnvPath =
-                defaultPath_ + newItemVLNV.toString(QStringLiteral("/")) + QLatin1Char('/') + newItemFileName;
+                defaultPath_ + QLatin1Char('/') + newItemVLNV.toString(QStringLiteral("/")) + QLatin1Char('/') + newItemFileName;
         }
         else
         {

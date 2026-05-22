@@ -12,7 +12,7 @@
 #ifndef OTHERCLOCKDRIVERSMODEL_H
 #define OTHERCLOCKDRIVERSMODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
 
 #include <QList>
 #include <QSharedPointer>
@@ -23,7 +23,7 @@ class OtherClockDriverValidator;
 //-----------------------------------------------------------------------------
 //! Table model that contains the items to edit otherClockDrivers of a component.
 //-----------------------------------------------------------------------------
-class OtherClockDriversModel : public QAbstractTableModel
+class OtherClockDriversModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -157,7 +157,16 @@ private:
      *
      *    @return True, if the data is valid, otherwise false.
      */
-    bool validateIndex(QModelIndex const& index) const;
+    bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
 
     //-----------------------------------------------------------------------------
     // Data.

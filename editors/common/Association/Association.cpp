@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <QPen>
 
 //-----------------------------------------------------------------------------
@@ -26,7 +28,7 @@ Association::Association(Associable* startItem, Associable* endItem,
     endpointPosition_(endpointExtension)
 {        
     setFlag(ItemIsSelectable);
-    setPen(QPen(Qt::black, 1, Qt::DashLine));
+    setPen(QPen(KactusColors::ASSOCIATION_LINE, 1, Qt::DashLine));
 
     setZValue(-1.0);
 

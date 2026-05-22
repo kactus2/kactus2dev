@@ -1,0 +1,180 @@
+//-----------------------------------------------------------------------------
+// File: KactusUtils.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Anton Hagqvist
+// Date: 26.02.2026
+//
+// Description:
+// Common utility functions used by main Kactus2 application.
+//-----------------------------------------------------------------------------
+
+#include "KactusUtils.h"
+
+#include <KactusAPI/include/KactusColors.h>
+
+#include <QPainter>
+#include <QApplication>
+#include <QStyleHints>
+#include <QPalette>
+#include <QStyle>
+#include <QtGlobal>
+#include <QStringBuilder>
+
+static QPixmap getRecoloredPixmap(const QPixmap& src, const QColor& color)
+{
+    // Create an ARGB pixmap to draw on
+    QPixmap result(src.size());
+    result.fill(Qt::transparent);
+
+    QPainter p(&result);
+
+    // Fill with the target color
+    p.fillRect(result.rect(), color);
+
+    // Keep only the alpha from the source (masking)
+    p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    p.drawPixmap(0, 0, src); // the src alpha is applied
+    p.end();
+
+    return result;
+}
+
+QPixmap KactusUtils::getPixmapStyledToTheme(const QString& srcPath, QColor* colorOverride /*= nullptr*/)
+{
+    if (darkThemeEnabled())
+    {
+        QPixmap base(srcPath);
+        auto pal = QApplication::palette();
+
+        QColor newColor = pal.color(QPalette::ButtonText);
+        if (colorOverride)
+        {
+            newColor = *colorOverride;
+        }
+
+        return getRecoloredPixmap(srcPath, newColor);
+    }
+
+    return QPixmap(srcPath);
+}
+
+QIcon KactusUtils::getIconStyledToTheme(QString const& srcPath, QColor* colorOverride /*= nullptr*/)
+{
+    if (darkThemeEnabled())
+    {
+        QIcon icon;
+        icon.addPixmap(getPixmapStyledToTheme(srcPath, colorOverride));
+        return icon;
+    }
+
+    return QIcon(srcPath);
+}
+
+bool KactusUtils::darkThemeEnabled()
+{
+// Dark mode support for kactus2 requires at least Qt 6.5
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+// Dark mode does not work with windows vista style
+    return QApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark
+        && QApplication::style()->name().compare("windowsvista") != 0;
+#endif
+    return false;
+}
+
+void KactusUtils::applyThemeToPalette()
+{
+    // Get current theme
+    auto appStyle = QApplication::style()->name();
+    auto palette = QGuiApplication::palette();
+
+    // Set main window colors
+    auto windowBG = palette.color(QPalette::ColorRole::Window);
+    KactusColors::DEFAULT_WINDOW_BG = windowBG;
+
+    if (darkThemeEnabled())
+    {
+
+        // Set ribbon colors to lighter variants of window background color
+        KactusColors::RIBBON_GRADIENT_TOP = windowBG;
+        KactusColors::RIBBON_GRADIENT_BOTTOM = palette.color(QPalette::ColorRole::Window).lighter(125);
+        KactusColors::RIBBONGROUP_TITLE_GRADIENT_TOP = windowBG;
+        KactusColors::RIBBONGROUP_TITLE_GRADIENT_BOTTOM = palette.color(QPalette::ColorRole::Window).lighter(175);
+        KactusColors::RIBBONGROUP_TITLE_TEXT = palette.color(QPalette::ColorRole::WindowText);
+
+        // Set slightly muted highlight color (for selections)
+        auto currentHighlight = palette.highlight().color();
+        palette.setColor(QPalette::ColorRole::Highlight, currentHighlight.darker(150));
+        QGuiApplication::setPalette(palette);
+
+        // Set text color
+        KactusColors::REGULAR_TEXT = palette.windowText().color();
+        KactusColors::REGULAR_MESSAGE = KactusColors::REGULAR_TEXT;
+
+        KactusColors::ERROR_COLOR = KactusColors::ERROR_COLOR.lighter(120);
+
+        // Field colors
+        KactusColors::MANDATORY_FIELD = KactusColors::MANDATORY_FIELD.darker(140);
+        KactusColors::DISABLED_FIELD = KactusColors::DISABLED_FIELD.darker(300);
+        KactusColors::REGULAR_FIELD = KactusColors::DEFAULT_WINDOW_BG;
+        KactusColors::LOGICAL_PORT_FIELD = KactusColors::LOGICAL_PORT_FIELD.darker(200);
+        KactusColors::STRONG_FIELD = KactusColors::STRONG_FIELD.darker(200);
+
+        // Set colors for HW design
+        KactusColors::DIAGRAM_GRID = palette.windowText().color().darker(250);
+        KactusColors::REGULAR_CONNECTION = QColor(Qt::white).darker(150);
+        KactusColors::BROKEN_CONNECTION = KactusColors::BROKEN_CONNECTION.darker(140);
+        KactusColors::ADHOC_PORT = KactusColors::REGULAR_CONNECTION;
+        KactusColors::HW_COMPONENT = KactusColors::HW_COMPONENT.darker(175);
+        KactusColors::HW_BUS_COMPONENT = KactusColors::HW_BUS_COMPONENT.darker(125);
+        KactusColors::HW_BUS_COMPONENT = KactusColors::HW_BUS_COMPONENT.darker(125);
+
+        KactusColors::MASTER_INTERFACE = KactusColors::MASTER_INTERFACE.darker(120);
+        KactusColors::MIRROREDMASTER_INTERFACE = KactusColors::MIRROREDMASTER_INTERFACE.darker(120);
+        KactusColors::MIRROREDSLAVE_INTERFACE = KactusColors::MIRROREDSLAVE_INTERFACE.darker(130);
+
+        KactusColors::DIAGRAM_COLUMN_HEADER = KactusColors::DIAGRAM_COLUMN_HEADER.darker(175);
+        KactusColors::CONNECTION_UNDERCROSSING = KactusColors::CONNECTION_UNDERCROSSING.darker(140);
+
+        KactusColors::ASSOCIATION_LINE = KactusColors::REGULAR_CONNECTION;
+
+        KactusColors::DOCK_WIDGET_TITLE_BG = KactusColors::DEFAULT_WINDOW_BG.lighter(150);
+        KactusColors::TABLE_GRIDLINE = KactusColors::DOCK_WIDGET_TITLE_BG;
+
+        // Memory designer color overrides
+        KactusColors::MEMORY_BLOCK = KactusColors::MEMORY_BLOCK.darker(140);
+        KactusColors::ADDRESS_SEGMENT = KactusColors::ADDRESS_SEGMENT.darker(140);
+        KactusColors::ADDRESS_SEGMENT_UNSEGMENTED = KactusColors::ADDRESS_SEGMENT_UNSEGMENTED.darker(140);
+        KactusColors::MEM_MAP_COLOR = KactusColors::MEM_MAP_COLOR.darker(140);
+        KactusColors::ADDR_BLOCK_COLOR = KactusColors::ADDR_BLOCK_COLOR.darker(140);
+        KactusColors::REGISTER_FILE_COLOR = KactusColors::REGISTER_FILE_COLOR.darker(140);
+        KactusColors::REGISTER_COLOR = KactusColors::REGISTER_COLOR.darker(140);
+        KactusColors::FIELD_COLOR = KactusColors::FIELD_COLOR.darker(140);
+        KactusColors::SUBSPACE_MAP_COLOR = KactusColors::SUBSPACE_MAP_COLOR.darker(140);
+        KactusColors::MEM_ITEM_EXTENSION = KactusColors::DEFAULT_WINDOW_BG.lighter(230);
+
+        KactusColors::MEM_DESIGNER_CONNECTION = KactusColors::REGULAR_CONNECTION.darker(140);
+
+        KactusColors::MEM_GRAPH_ITEM_BORDER = KactusColors::MEM_GRAPH_ITEM_BORDER.darker(140);
+
+        KactusColors::PORTMAP_ALT_ROW = KactusColors::REGULAR_FIELD.lighter(130);
+
+        KactusColors::TEXT_BODY_HIGHLIGHT = KactusColors::TEXT_BODY_HIGHLIGHT.darker(330);
+
+        // Color overrides for import plugins
+        KactusColors::Importer::PORT = KactusColors::Importer::PORT.darker(300);
+        KactusColors::Importer::MODELPARAMETER = KactusColors::Importer::MODELPARAMETER.darker(300);
+        KactusColors::Importer::PARAMETER = KactusColors::Importer::PARAMETER.darker(300);
+        KactusColors::Importer::VIEWNAME = KactusColors::Importer::VIEWNAME.darker(200);
+        KactusColors::Importer::INSTANCECOLOR = KactusColors::Importer::INSTANCECOLOR.darker(170);
+    }
+
+    // KactusColors contains default values for most original style if not using darkmode
+}
+
+QString KactusUtils::colorToRgbString(QColor const& color)
+{
+    return QStringLiteral("rgb(") % QString::number(color.red()) % QLatin1Char(',') %
+        QString::number(color.green()) % QLatin1Char(',') % QString::number(color.blue()) %
+        QLatin1Char(')');
+}

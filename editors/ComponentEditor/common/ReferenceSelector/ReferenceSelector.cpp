@@ -7,7 +7,7 @@
 
 #include "ReferenceSelector.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QPalette>
 #include <QEvent>
@@ -73,7 +73,7 @@ void ReferenceSelector::selectItem(QString const& itemName)
         addItem(itemName);
         index = findText(itemName);
 
-        setItemData(index, KactusColors::ERROR, Qt::ForegroundRole);
+        setItemData(index, KactusColors::ERROR_COLOR, Qt::ForegroundRole);
         setItemIcon(index, QIcon(QPixmap(":/icons/common/graphics/exclamation.png")));
     }
     else if (!isEnabled())
