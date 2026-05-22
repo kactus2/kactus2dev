@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Change this to your Qt binaries directory.
-QTBIN_PATH="/home/Qt/6.6.2/gcc_64/bin/"
+QTBIN_PATH=""
 
 echo "Configuring Kactus2..."
 echo ""
