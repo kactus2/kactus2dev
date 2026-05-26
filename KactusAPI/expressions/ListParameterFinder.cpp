@@ -15,7 +15,7 @@
 // Function: ListParameterFinder::ListParameterFinder()
 //-----------------------------------------------------------------------------
 ListParameterFinder::ListParameterFinder():
-ParameterFinder()
+ListFinder()
 {
 
 }

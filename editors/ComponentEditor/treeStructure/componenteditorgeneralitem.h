@@ -21,6 +21,7 @@ class ComponentEditorTreeModel;
 class ItemEditor;
 class Component;
 class ComponentPreviewBox;
+class ListParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! The general-item in the component editor navigation tree.
@@ -34,13 +35,20 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *    @param [in] model       Pointer to the model that owns the items.
-	 *    @param [in] libHandler  Pointer to the instance that manages the library.
-	 *    @param [in] component   Pointer to the component being edited.
-	 *    @param [in] parent      Pointer to the parent item.
+	 *    @param [in] model         Pointer to the model that owns the items.
+	 *    @param [in] libHandler    Pointer to the instance that manages the library.
+	 *    @param [in] component     Pointer to the component being edited.
+	 *    @param [in] absDefFinder  Parameter finder for abstraction definition expressions.
+	 *    @param [in] absDefParser  Parser for abstraction definition expressions.
+	 *    @param [in] parent        Pointer to the parent item.
 	 */
-	ComponentEditorGeneralItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-        QSharedPointer<Component> component, ComponentEditorItem* parent);
+	ComponentEditorGeneralItem(
+		ComponentEditorTreeModel* model,
+		LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+		QSharedPointer<ListParameterFinder> absDefFinder,
+		QSharedPointer<ExpressionParser> absDefParser,
+		ComponentEditorItem* parent);
 
 	//! The destructor.
 	~ComponentEditorGeneralItem() override = default;
@@ -100,6 +108,12 @@ private:
 
 	//! Component preview for visualization.
 	ComponentPreviewBox* previewBox_;
+
+    //!Parameter finder for abstraction definition expressions.
+    QSharedPointer<ListParameterFinder> absDefFinder_ = nullptr;
+    
+    //! Parser for abstraction definition expressions.
+    QSharedPointer<ExpressionParser> absDefParser_ = nullptr;
 };
 
 #endif // COMPONENTEDITORGENERALITEM_H

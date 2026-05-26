@@ -54,6 +54,7 @@
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
 #include <KactusAPI/include/ModeConditionParserInterface.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/comboSelector/comboselector.h>
@@ -101,8 +102,10 @@ referenceCounter_(QSharedPointer<ComponentParameterReferenceCounter>(new Compone
     fullParameterFinder_, component))),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
+absDefFinder_(new ListParameterFinder()),
+absDefParser_(new IPXactSystemVerilogParser(absDefFinder_)),
 modeConditionParserInterface_(new ModeConditionParserInterface(parameterFinder_)),
-validator_(new ComponentValidator(expressionParser_, modeConditionParserInterface_, getLibHandler(), component->getRevision()))
+validator_(new ComponentValidator(expressionParser_, absDefParser_, absDefFinder_, modeConditionParserInterface_, getLibHandler(), component->getRevision()))
 {
     QSharedPointer<ExpressionFormatter> fullFormatter(new ExpressionFormatter(fullParameterFinder_));
     parameterReferenceTree_ =
@@ -640,11 +643,11 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
 
     root->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(new ComponentEditorMemMapsItem(
         &navigationModel_, getLibHandler(), component_, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser_, root)));
+        expressionParser_, absDefFinder_, absDefParser_, root)));
 
     root->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(new ComponentEditorAddrSpacesItem(
         &navigationModel_, getLibHandler(), component_, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser_, root)));
+        expressionParser_, absDefFinder_, absDefParser_, root)));
 
     root->addChildItem(createInstantiationsItem(root));
 
@@ -656,7 +659,7 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
         root)));
 
     auto busInterface = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_, expressionFormatter_,
-        expressionParser_, component_, getLibHandler());
+        expressionParser_, absDefFinder_, absDefParser_, component_, getLibHandler());
 
     auto absTypeInterface = busInterface->getAbstractionTypeInterface();
     Q_ASSERT(absTypeInterface);
@@ -717,7 +720,7 @@ QSharedPointer<ComponentEditorGeneralItem> ComponentEditor::createGeneralItem(
     ComponentEditorRootItem* root)
 {
     QSharedPointer<ComponentEditorGeneralItem> generalItem(new ComponentEditorGeneralItem(&navigationModel_,
-        getLibHandler(), component_, root));
+        getLibHandler(), component_, absDefFinder_, absDefParser_, root));
 
     connect(generalItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
         this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
@@ -803,9 +806,11 @@ QSharedPointer<ComponentEditorBusInterfacesItem> ComponentEditor::createBusInter
     ComponentEditorRootItem* root, BusInterfaceInterface* busInterface, PortMapInterface* portMapInterface)
 {
     QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem(
-        new ComponentEditorBusInterfacesItem(busInterface, portMapInterface, &navigationModel_,
-            getLibHandler(), component_, referenceCounter_,
+        new ComponentEditorBusInterfacesItem(busInterface, portMapInterface,
+            &navigationModel_, getLibHandler(),
+            component_, referenceCounter_,
             ExpressionSet({ parameterFinder_, expressionParser_, expressionFormatter_ }),
+            absDefFinder_, absDefParser_,
             root, parentWidget()));
 
     connect(busInterfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),

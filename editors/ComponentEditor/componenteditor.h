@@ -59,6 +59,7 @@ class PluginManager;
 class Component;
 class ExpressionParser;
 class ParameterFinder;
+class ListParameterFinder;
 class ExpressionFormatter;
 class ParameterReferenceTreeWindow;
 class ComponentParameterReferenceTree;
@@ -399,6 +400,12 @@ private:
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+	//! Parameter finder for abstraction definition expressions.
+	QSharedPointer<ListParameterFinder> absDefFinder_;
+
+	//! Parser for abstraction definition expressions.
+	QSharedPointer<ExpressionParser> absDefParser_;
 
 	//! The mode condition parser interface to use in the component validator.
 	QSharedPointer<ModeConditionParserInterface> modeConditionParserInterface_;

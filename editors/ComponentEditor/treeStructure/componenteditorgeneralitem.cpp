@@ -20,10 +20,17 @@
 //-----------------------------------------------------------------------------
 // Function: componenteditorgeneralitem::ComponentEditorGeneralItem()
 //-----------------------------------------------------------------------------
-ComponentEditorGeneralItem::ComponentEditorGeneralItem( ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent ):
+ComponentEditorGeneralItem::ComponentEditorGeneralItem(
+	ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler,
+	QSharedPointer<Component> component,
+	QSharedPointer<ListParameterFinder> absDefFinder,
+	QSharedPointer<ExpressionParser> absDefParser,
+	ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-previewBox_(new ComponentPreviewBox(libHandler, nullptr))
+previewBox_(new ComponentPreviewBox(libHandler, nullptr)),
+absDefFinder_(absDefFinder),
+absDefParser_(absDefParser)
 {
     previewBox_->setInteractive(true);
     previewBox_->setComponent(component);
@@ -65,7 +72,7 @@ ItemEditor* ComponentEditorGeneralItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new GeneralEditor(libHandler_, component_);
+		editor_ = new GeneralEditor(libHandler_, absDefFinder_, absDefParser_, component_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));

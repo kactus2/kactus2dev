@@ -12,8 +12,8 @@
 #include "PortMapValidator.h"
 
 #include <KactusAPI/include/ExpressionParser.h>
-
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ListFinder.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
@@ -33,9 +33,14 @@
 //-----------------------------------------------------------------------------
 // Function: PortMapValidator::PortMapValidator()
 //-----------------------------------------------------------------------------
-PortMapValidator::PortMapValidator(QSharedPointer<ExpressionParser> parser,
-    QSharedPointer<QList<QSharedPointer<Port> > > ports, LibraryInterface* libraryHandler) :
-expressionParser_(parser),
+PortMapValidator::PortMapValidator(QSharedPointer<ExpressionParser> componentParser,
+    QSharedPointer<ExpressionParser> absDefParser,
+	QSharedPointer<ListFinder> absDefFinder,
+    QSharedPointer<QList<QSharedPointer<Port>>> ports,
+    LibraryInterface* libraryHandler):
+componentParser_(componentParser),
+absDefParser_(absDefParser),
+absDefFinder_(absDefFinder),
 availablePorts_(ports),
 libraryHandler_(libraryHandler)
 {
@@ -57,6 +62,8 @@ void PortMapValidator::busInterfaceChanged(QSharedPointer<ConfigurableVLNVRefere
         abstractionDefinition_.clear();
     }
 
+	setupAbstractionParameterFinder();
+
     interfaceMode_ = newInterfaceMode;
     systemGroup_ = newSystemGroup;
 }
@@ -70,9 +77,25 @@ void PortMapValidator::abstractionDefinitionChanged(QSharedPointer<AbstractionDe
     if (newDefinition)
     {
         abstractionDefinition_ = newDefinition;
+		setupAbstractionParameterFinder();
     }
 
     interfaceMode_ = newInterfaceMode;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::setupAbstractionParameterFinder()
+//-----------------------------------------------------------------------------
+void PortMapValidator::setupAbstractionParameterFinder()
+{
+    if (abstractionDefinition_)
+    {
+		absDefFinder_->setParameterList(abstractionDefinition_->getParameters());
+    }
+    else
+    {
+		absDefFinder_->setParameterList(QSharedPointer < QList<QSharedPointer<Parameter> > >());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -116,7 +139,7 @@ bool PortMapValidator::validate(QSharedPointer<PortMap> const& portMap) const
 //-----------------------------------------------------------------------------
 bool PortMapValidator::hasValidIsPresent(QSharedPointer<PortMap> const& portMap) const
 {
-    return CommonItemsValidator::hasValidIsPresent(portMap->getIsPresent(), expressionParser_);
+    return CommonItemsValidator::hasValidIsPresent(portMap->getIsPresent(), componentParser_);
 }
 
 //-----------------------------------------------------------------------------
@@ -191,11 +214,11 @@ quint64 PortMapValidator::getLogicalPortWidth(QSharedPointer<PortAbstraction> co
 {
     if (logicalPort->hasWire())
     {
-        return logicalPort->getWire()->getWidth(interfaceMode_, systemGroup_).toULongLong();
+        return absDefParser_->parseExpression(logicalPort->getWire()->getWidth(interfaceMode_, systemGroup_)).toULongLong();
     }
     else if (logicalPort->hasTransactional())
     {
-        return logicalPort->getTransactional()->getWidth(interfaceMode_, systemGroup_).toULongLong();
+		return absDefParser_->parseExpression(logicalPort->getTransactional()->getWidth(interfaceMode_, systemGroup_)).toULongLong();
     }
 
     return 0;
@@ -371,13 +394,13 @@ bool PortMapValidator::physicalPortHasValidPartSelect(QSharedPointer<PartSelect>
     if (referencedPort->getWire())
     {
         return rangeIsValidInWire(leftValue, rightValue,
-            expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
-            expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong());
+            componentParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
+            componentParser_->parseExpression(referencedPort->getRightBound()).toULongLong());
     }
     else if (referencedPort->getTransactional())
     {
-        return rangeIsWithinWidth(leftValue, rightValue, expressionParser_->parseExpression(
-            referencedPort->getTransactional()->getBusWidth()).toULongLong());
+        return rangeIsWithinWidth(leftValue, rightValue,
+            componentParser_->parseExpression(referencedPort->getTransactional()->getBusWidth()).toULongLong());
     }
   
      return false;
@@ -666,11 +689,10 @@ void PortMapValidator::findErrorsInPhysicalPort(QVector<QString>& errors,
             if (leftValid && rightValid)
             {
                 if ((referencedPort->getWire() && !rangeIsValidInWire(rangeLeft, rangeRight,
-                    expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
-                    expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong())) ||
-                    ((referencedPort->getTransactional() && !rangeIsWithinWidth(rangeLeft, rangeRight,
-                        expressionParser_->parseExpression(
-                            referencedPort->getTransactional()->getBusWidth()).toULongLong()))))
+                    componentParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
+                    componentParser_->parseExpression(referencedPort->getRightBound()).toULongLong())) ||
+                    (referencedPort->getTransactional() && !rangeIsWithinWidth(rangeLeft, rangeRight,
+                        componentParser_->parseExpression(referencedPort->getTransactional()->getBusWidth()).toULongLong())))
                 {
                     errors.append(QObject::tr(
                         "Range is not within the referenced port width in mapped physical port %1 in %2")
@@ -736,7 +758,7 @@ std::pair<bool, quint64> PortMapValidator::checkAndParseExpression(QString const
 {
     bool expressionValid = false;
     bool conversionValid = false;
-    quint64 value = expressionParser_->parseExpression(expression, &expressionValid).toULongLong(&conversionValid);
+    quint64 value = componentParser_->parseExpression(expression, &expressionValid).toULongLong(&conversionValid);
 
     return std::make_pair(expressionValid && conversionValid, value);
 }

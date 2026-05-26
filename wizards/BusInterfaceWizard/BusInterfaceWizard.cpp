@@ -24,6 +24,7 @@
 #include <KactusAPI/include/ComponentParameterFinder.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
@@ -51,6 +52,9 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
+	QSharedPointer<ListParameterFinder> absDefFinder(new ListParameterFinder());
+	QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(
         expressionParser, component->getChoices(), component->getRevision()));
 
@@ -63,7 +67,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     }
 
     BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
-        parameterFinder, expressionFormatter, expressionParser, component, handler);
+        parameterFinder, expressionFormatter, expressionParser, absDefFinder, absDefParser, component, handler);
 
     AbstractionTypeInterface const* absTypeInterface = busInterface->getAbstractionTypeInterface();
     if (absTypeInterface)

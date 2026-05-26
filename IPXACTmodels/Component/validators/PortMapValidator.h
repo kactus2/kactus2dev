@@ -23,9 +23,11 @@
 class AbstractionDefinition;
 class LibraryInterface;
 class ExpressionParser;
+class ListFinder;
 class ConfigurableVLNVReference;
 class Port;
 class PortAbstraction;
+
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:portMap.
 //-----------------------------------------------------------------------------
@@ -36,11 +38,15 @@ public:
     /*!
      *  The constructor.
      *
-     *    @param [in] parser                  The parse to use for solving expressions.
-     *    @param [in] ports                   The available ports.
-     *    @param [in] libraryHandler          The library interface.
+     *    @param [in] parser            The parse to use for solving expressions.
+	 *    @param [in] absDefParser      Parser for abstraction definition expressions.
+	 *    @param [in] absDefFinder      Parameter finder for abstraction definition expressions.
+     *    @param [in] ports             The available ports.
+     *    @param [in] libraryHandler    The library interface.
      */
-    PortMapValidator(QSharedPointer<ExpressionParser> parser,
+    PortMapValidator(QSharedPointer<ExpressionParser> componentParser,
+        QSharedPointer<ExpressionParser> absDefParser,
+        QSharedPointer<ListFinder> absDefFinder,
         QSharedPointer<QList<QSharedPointer<Port> > > ports,
         LibraryInterface* libraryHandler);
 
@@ -213,6 +219,11 @@ public:
 private:
 
     /*!
+     *  Setup the abstraction definition parameter finder for new abstraction definition parameters.
+     */
+    void setupAbstractionParameterFinder();
+
+    /*!
      *  Checks if both of the given range values exist.
      *
      *    @param [in] leftRange   The selected left range.
@@ -341,8 +352,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The expression parser to use.
-    QSharedPointer<ExpressionParser> expressionParser_;
+    //! The expression parser to use for component expressions.
+	QSharedPointer<ExpressionParser> componentParser_;
+
+	//! Parser for abstraction definition expressions.
+    QSharedPointer<ExpressionParser> absDefParser_;
+
+    //! Parameter finder for abstraction definition expressions.
+    QSharedPointer<ListFinder> absDefFinder_;
 
     //! The currently available ports.
     QSharedPointer<QList<QSharedPointer<Port> > > availablePorts_;

@@ -45,6 +45,7 @@ class ParameterValidator;
 class AssertionValidator;
 
 class ExpressionParser;
+class ListFinder;
 class LibraryInterface;
 class ModeConditionParserBaseInterface;
 
@@ -58,11 +59,15 @@ public:
     /*!
      *  The constructor.
      *
-     *    @param [in] parser                       The used expression parser.
-     *    @param [in] modeConditionParserInterface The interface used to create and manage the mode condition parser.
-     *    @param [in] library                      The used library interface.
+     *    @param [in] parser                        The used expression parser.
+     *    @param [in] absDefParser                  Parser for abstraction definition expressions.
+     *    @param [in] absDefFinder                  Parameter finder for abstraction definition expressions.
+     *    @param [in] modeConditionParserInterface  The interface used to create and manage the mode condition parser.
+     *    @param [in] library                       The used library interface.
      */
-    ComponentValidator(QSharedPointer<ExpressionParser> parser, 
+    ComponentValidator(QSharedPointer<ExpressionParser> parser,
+        QSharedPointer<ExpressionParser> absDefParser,
+        QSharedPointer<ListFinder> absDefFinder,
         QSharedPointer<ModeConditionParserBaseInterface> modeConditionParserInterface,
         LibraryInterface* library, Document::Revision docRevision);
 

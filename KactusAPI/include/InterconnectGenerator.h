@@ -23,6 +23,7 @@
 #include <KactusAPI/include/AdHocConnectionInterface.h>
 #include <KactusAPI/include/MessageMediator.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <QSharedPointer>
 #include <QHash>
@@ -340,6 +341,12 @@ namespace InterconnectGeneration
         //! Expression parser.
         QSharedPointer<ExpressionParser> expressionParser_{
             new IPXactSystemVerilogParser(parameterFinder_) };
+
+		//! Parameter finder for abstraction definition expressions.
+        QSharedPointer<ListParameterFinder> absDefParameterFinder_{new ListParameterFinder()};
+
+		//! Parser for abstraction definition expressions.
+        QSharedPointer<ExpressionParser> absDefExpressionParser_{new IPXactSystemVerilogParser(absDefParameterFinder_)};
 
         //! Expression formatter.
         QSharedPointer<ExpressionFormatter> expressionFormatter_{

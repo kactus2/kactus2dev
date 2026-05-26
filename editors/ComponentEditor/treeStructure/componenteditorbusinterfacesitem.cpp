@@ -28,16 +28,26 @@
 //-----------------------------------------------------------------------------
 // Function: componenteditorbusinterfacesitem::ComponentEditorBusInterfacesItem()
 //-----------------------------------------------------------------------------
-ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(BusInterfaceInterface* busInterface,
-    PortMapInterface* portMapInterface, ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-    QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
-    ExpressionSet expressions, ComponentEditorItem* parent, QWidget* parentWnd):
+ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(
+    BusInterfaceInterface* busInterface,
+    PortMapInterface* portMapInterface,
+    ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler,
+    QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    ExpressionSet expressions,
+	QSharedPointer<ListFinder> absDefFinder,
+	QSharedPointer<ExpressionParser> absDefParser,
+    ComponentEditorItem* parent,
+    QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
 parentWnd_(parentWnd),
 expressions_(expressions),
 busInterface_(busInterface),
-portMapInterface_(portMapInterface)
+portMapInterface_(portMapInterface),
+absDefFinder_(absDefFinder),
+absDefParser_(absDefParser)
 {
     createBusInterfaceValidator();
 
@@ -64,7 +74,7 @@ portMapInterface_(portMapInterface)
 void ComponentEditorBusInterfacesItem::createBusInterfaceValidator()
 {
     QSharedPointer<PortMapValidator> portMapValidator(
-        new PortMapValidator(expressions_.parser, component_->getPorts(), libHandler_));
+        new PortMapValidator(expressions_.parser, absDefParser_, absDefFinder_, component_->getPorts(), libHandler_));
 
     QSharedPointer<ParameterValidator> parameterValidator(
         new ParameterValidator(expressions_.parser, component_->getChoices(), component_->getRevision()));

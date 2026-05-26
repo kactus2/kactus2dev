@@ -44,16 +44,24 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem()
 //-----------------------------------------------------------------------------
-ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, 
-    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
+ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(
+    ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler,
+    QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ListFinder> absDefFinder,
+    QSharedPointer<ExpressionParser> absDefParser,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addressSpaces_(component->getAddressSpaces()),
 expressionParser_(expressionParser),
 spaceValidator_(),
-blockInterface_()
+blockInterface_(),
+absDefFinder_(absDefFinder),
+absDefParser_(absDefParser)
 {
     createAddressSpaceValidator();
 
@@ -247,7 +255,8 @@ BusInterfaceInterface* ComponentEditorAddrSpacesItem::createInterfaceForBus(
     QSharedPointer<ParameterValidator> parameterValidator)
 {
     QSharedPointer<PortMapValidator> portMapValidator(
-        new PortMapValidator(expressionParser_, component_->getPorts(), libHandler_));
+        new PortMapValidator(expressionParser_, absDefParser_, absDefFinder_, component_->getPorts(), libHandler_));
+
     QSharedPointer<BusInterfaceValidator> busValidator(new BusInterfaceValidator(expressionParser_,
         component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
         component_->getMemoryMaps(), component_->getBusInterfaces(), component_->getFileSets(),

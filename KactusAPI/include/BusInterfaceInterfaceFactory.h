@@ -24,6 +24,7 @@ class ParameterValidator;
 class PortMapValidator;
 
 class ParameterFinder;
+class ListFinder;
 class ExpressionFormatter;
 class ExpressionParser;
 
@@ -43,18 +44,22 @@ namespace BusInterfaceInterfaceFactory
     /*!
      *  Create the interface for accessing bus interfaces.
      *
-     *    @param [in] parameterFinder         The parameter finder.
-     *    @param [in] expressionFormatter     Formatter for expressions.
-     *    @param [in] expressionParser        Parser for expressions.
-     *    @param [in] component               The containing component.
-     *    @param [in] library                 Interface for accessing the library.
+     *    @param [in] componentParameterFinder      The parameter finder.
+     *    @param [in] componentExpressionFormatter  Formatter for expressions.
+     *    @param [in] componentParameterParser      Parser for expressions.
+	 *    @param [in] absDefFinder                  Parameter finder for abstraction definition expressions.
+	 *    @param [in] absDefParser                  Parser for abstraction definition expressions.
+     *    @param [in] component                     The containing component.
+     *    @param [in] library                       Interface for accessing the library.
      *
      *    @return Interface for accessing bus interfaces.
      */
     KACTUS2_API BusInterfaceInterface* createBusInterface(
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> componentParameterFinder,
+        QSharedPointer<ExpressionFormatter> componentExpressionFormatter,
+        QSharedPointer<ExpressionParser> componentParameterParser,
+        QSharedPointer<ListFinder> absDefFinder,
+        QSharedPointer<ExpressionParser> absDefParser,
         QSharedPointer<Component> component,
         LibraryInterface* library);
 

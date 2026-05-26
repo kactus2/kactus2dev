@@ -43,17 +43,22 @@
 // Function: BusInterfaceInterfaceFactory::createBusInterface()
 //-----------------------------------------------------------------------------
 BusInterfaceInterface* BusInterfaceInterfaceFactory::createBusInterface(
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> componentParameterFinder,
+    QSharedPointer<ExpressionFormatter> componentExpressionFormatter,
+    QSharedPointer<ExpressionParser> componentParameterParser,
+    QSharedPointer<ListFinder> absDefFinder,
+    QSharedPointer<ExpressionParser> absDefParser,
+    QSharedPointer<Component> component,
     LibraryInterface* library)
 {
     QSharedPointer<PortMapValidator> portMapValidator(
-        new PortMapValidator(expressionParser, component->getPorts(), library));
+        new PortMapValidator(componentParameterParser, absDefParser, absDefFinder, component->getPorts(), library));
 
     AbstractionTypeInterface* abstractionInterface = Details::createAbstractionTypeInterface(
-        parameterFinder, expressionFormatter, expressionParser, portMapValidator, component, library);
+        componentParameterFinder, componentExpressionFormatter, componentParameterParser, portMapValidator, component, library);
 
-    return Details::createCommonBusInterfaceItems(parameterFinder, expressionFormatter, expressionParser,
+    return Details::createCommonBusInterfaceItems(
+        componentParameterFinder, componentExpressionFormatter, componentParameterParser,
         component, library, portMapValidator, abstractionInterface);
 }
 

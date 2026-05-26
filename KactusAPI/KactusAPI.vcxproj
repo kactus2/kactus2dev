@@ -65,6 +65,7 @@
     <QtMoc Include="include\LibraryItem.h" />
     <ClInclude Include="include\LibraryLoader.h" />
     <QtMoc Include="include\LibraryTreeModel.h" />
+    <ClInclude Include="include\ListFinder.h" />
     <ClInclude Include="include\ListHelper.h" />
     <ClInclude Include="include\ListParameterFinder.h" />
     <ClInclude Include="include\MasterPortInterface.h" />

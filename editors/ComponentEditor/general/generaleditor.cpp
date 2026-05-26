@@ -18,6 +18,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 #include <KactusAPI/include/ParameterCache.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ModeConditionParserInterface.h>
 
@@ -37,17 +38,26 @@
 //-----------------------------------------------------------------------------
 // Function: GeneralEditor::GeneralEditor()
 //-----------------------------------------------------------------------------
-GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget* parent) :
-    ItemEditor(component, libHandler, parent),
-    nameGroupEditor_(new DocumentNameGroupEditor(this)),
-    attributeEditor_(new KactusAttributeEditor(this)),
-    authorEditor_(new QLineEdit(this)),
-    licenseEditor_(new QLineEdit(this)),
-    headerEditor_(new QPlainTextEdit(this)),
-    finder_(new ParameterCache(component)),
-    parser_(new IPXactSystemVerilogParser(finder_)),
-    modeConditionParserInterface_(new ModeConditionParserInterface(finder_)),
-    validator_(new ComponentValidator(parser_, modeConditionParserInterface_, libHandler, component->getRevision())),
+GeneralEditor::GeneralEditor(LibraryInterface* libHandler,
+	QSharedPointer<ListParameterFinder> absDefFinder,
+	QSharedPointer<ExpressionParser> absDefParser,
+    QSharedPointer<Component> component,
+    QWidget* parent) :
+ItemEditor(component, libHandler, parent),
+nameGroupEditor_(new DocumentNameGroupEditor(this)),
+attributeEditor_(new KactusAttributeEditor(this)),
+authorEditor_(new QLineEdit(this)),
+licenseEditor_(new QLineEdit(this)),
+headerEditor_(new QPlainTextEdit(this)),
+finder_(new ParameterCache(component)),
+parser_(new IPXactSystemVerilogParser(finder_)),
+modeConditionParserInterface_(new ModeConditionParserInterface(finder_)),
+validator_(new ComponentValidator(parser_,
+    absDefParser,
+    absDefFinder,
+    modeConditionParserInterface_,
+    libHandler,
+    component->getRevision())),
     library_(libHandler)
 {
     Q_ASSERT(libHandler != 0);

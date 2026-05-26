@@ -12,7 +12,7 @@
 #ifndef LISTPARAMETERFINDER_H
 #define LISTPARAMETERFINDER_H
 
-#include "ParameterFinder.h"
+#include "ListFinder.h"
 
 #include <IPXACTmodels/common/Parameter.h>
 
@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters from a list with the correct ID.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ListParameterFinder : public ParameterFinder
+class KACTUS2_API ListParameterFinder : public ListFinder
 {
 
 public:

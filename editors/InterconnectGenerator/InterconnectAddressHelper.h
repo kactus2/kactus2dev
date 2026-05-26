@@ -171,73 +171,79 @@ private:
     MessageMediator* messager_;
 
     //! Parses expressions (e.g., widths or addresses) into evaluated forms.
-    QSharedPointer<ExpressionParser> expressionParser_;
+    QSharedPointer<ExpressionParser> expressionParser_ = nullptr;
 
     //! Formats expressions into human-readable strings.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+    QSharedPointer<ExpressionFormatter> expressionFormatter_ = nullptr;
 
     //! Finds parameter values within a component, supports expression evaluation.
-    QSharedPointer<ListParameterFinder> listParameterFinder_;
+    QSharedPointer<ListParameterFinder> listParameterFinder_ = nullptr;
+
+    //!Parameter finder for abstraction definition expressions.
+    QSharedPointer<ListParameterFinder> absDefFinder_ = nullptr;
+
+    //! Parser for abstraction definition expressions.
+    QSharedPointer<ExpressionParser> absDefParser_ = nullptr;
 
     //! Access to the IP-XACT library and all registered documents.
-    LibraryHandler* library_;
+    LibraryHandler* library_ = nullptr;
 
     //! Validates parameter expressions and types against IP-XACT constraints.
-    QSharedPointer<ParameterValidator> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_ = nullptr;
 
     //! Validates enumerated values within fields and registers.
-    QSharedPointer<EnumeratedValueValidator> enumValidator_;
+    QSharedPointer<EnumeratedValueValidator> enumValidator_ = nullptr;
 
     //! Validates individual fields within a register.
-    QSharedPointer<FieldValidator> fieldValidator_;
+    QSharedPointer<FieldValidator> fieldValidator_ = nullptr;
 
     //! Validates complete registers, including fields and constraints.
-    QSharedPointer<RegisterValidator> registerValidator_;
+    QSharedPointer<RegisterValidator> registerValidator_ = nullptr;
 
     //! Validates register files, including nested structures and register sets.
-    QSharedPointer<RegisterFileValidator> registerFileValidator_;
+    QSharedPointer<RegisterFileValidator> registerFileValidator_ = nullptr;
 
     //! Validates address blocks, their layout, and contents.
-    QSharedPointer<AddressBlockValidator> addressBlockValidator_;
+    QSharedPointer<AddressBlockValidator> addressBlockValidator_ = nullptr;
 
     //! Validates subspace maps and address translations.
-    QSharedPointer<SubspaceMapValidator> subspaceValidator_;
+    QSharedPointer<SubspaceMapValidator> subspaceValidator_ = nullptr;
 
     //! Validates memory maps and their address layout.
-    QSharedPointer<MemoryMapValidator> memoryMapValidator_;
+    QSharedPointer<MemoryMapValidator> memoryMapValidator_ = nullptr;
 
     //! Validates port map bindings and directionality.
-    QSharedPointer<PortMapValidator> portMapValidator_;
+    QSharedPointer<PortMapValidator> portMapValidator_ = nullptr;
 
     //! Validates bus interfaces including ports, views, and connections.
-    QSharedPointer<BusInterfaceValidator> busValidator_;
+    QSharedPointer<BusInterfaceValidator> busValidator_ = nullptr;
 
     //! Interface for interacting with memory maps.
-    QSharedPointer<MemoryMapInterface> memoryMapInterface_;
+    QSharedPointer<MemoryMapInterface> memoryMapInterface_ = nullptr;
 
     //! Interface for interacting with address blocks.
-    QSharedPointer<AddressBlockInterface> addressBlockInterface_;
+    QSharedPointer<AddressBlockInterface> addressBlockInterface_ = nullptr;
 
     //! Interface for handling reset types and default values.
-    ResetInterface* resetInterface_;
+    ResetInterface* resetInterface_ = nullptr;
 
     //! Interface for accessing and editing register fields.
-    FieldInterface* fieldInterface_;
+    FieldInterface* fieldInterface_ = nullptr;
 
     //! Interface for accessing component mode definitions.
-    ModeReferenceInterface* modeRefInterface_;
+    ModeReferenceInterface* modeRefInterface_ = nullptr;
 
     //! Interface for resolving access policies based on active modes.
-    AccessPolicyInterface* accessPolicyInterface_;
+    AccessPolicyInterface* accessPolicyInterface_ = nullptr;
 
     //! Interface for resolving bus interface structure and metadata.
-    BusInterfaceInterface* busInfInterface_;
+    BusInterfaceInterface* busInfInterface_ = nullptr;
 
     //! Interface for interacting with parameters in a component.
-    QSharedPointer<ParametersInterface> parameterInterface_;
+    QSharedPointer<ParametersInterface> parameterInterface_ = nullptr;
 
     //! Interface for accessing registers and register fields.
-    RegisterInterface* registerInterface_;
+    RegisterInterface* registerInterface_ = nullptr;
 
     //! Interface for reading and writing system-level interconnect data.
     InterconnectionInterface* connectionInterface_{ new InterconnectionInterface() };
@@ -249,7 +255,7 @@ private:
     ComponentInstanceInterface* instanceInterface_{ new ComponentInstanceInterface(connectionInterface_, adhocConnectionInterface_) };
 
     //! The currently loaded component for address evaluation.
-    QSharedPointer<Component> currentComponent_;
+    QSharedPointer<Component> currentComponent_ = nullptr;
 
     //! Stores address ranges assigned to each component instance.
     QHash<QString, QPair<quint64, quint64>> usedAddressRanges_;

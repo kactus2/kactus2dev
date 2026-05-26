@@ -29,6 +29,7 @@
 #include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <KactusAPI/include/PortsInterface.h>
 #include <KactusAPI/include/ParametersInterface.h>
@@ -810,9 +811,16 @@ private:
     //! Interface for accessing the component ports. 
     PortsInterface* portsInterface_{ new PortsInterface(portValidator_, expressionParser_, expressionFormatter_) };
 
+	//! Parameter finder for abstraction definition expressions.
+    QSharedPointer<ListParameterFinder> absDefFinder_{ new ListParameterFinder() };
+
+	//! Parser for abstraction definition expressions.
+    QSharedPointer<ExpressionParser> absDefParser_{ new IPXactSystemVerilogParser(absDefFinder_)};
+
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_{ BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_,
         expressionFormatter_, expressionParser_,
+        absDefFinder_, absDefParser_,
         QSharedPointer<Component>(new Component(VLNV(), Document::Revision::Unknown)), library_) };
 
     //! Interface for accessing the component parameters.

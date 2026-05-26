@@ -31,10 +31,10 @@
 
 class Component;
 class LibraryInterface;
+class ListParameterFinder;
 class Document;
 class KactusAttributeEditor;
 class ModeConditionParserInterface;
-
 
 //-----------------------------------------------------------------------------
 //! GeneralEditor class.
@@ -47,11 +47,17 @@ public:
     /*!
      *  Constructor.
      *
-     *    @param [in] libHandler The library handler.
-     *    @param [in] component  The component model to edit.
-     *    @param [in] parent     The parent widget.
+     *    @param [in] libHandler    The library handler.
+	 *    @param [in] absDefFinder  Parameter finder for abstraction definition expressions.
+	 *    @param [in] absDefParser  Parser for abstraction definition expressions.
+     *    @param [in] component     The component model to edit.
+     *    @param [in] parent        The parent widget.
 	 */
-	GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget *parent = 0);
+	GeneralEditor(LibraryInterface* libHandler,
+        QSharedPointer<ListParameterFinder> absDefFinder,
+        QSharedPointer<ExpressionParser> absDefParser,
+        QSharedPointer<Component> component,
+        QWidget *parent = 0);
 
     /*!
      *  Destructor.

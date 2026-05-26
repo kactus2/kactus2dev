@@ -24,6 +24,7 @@ class AddressSpacesValidator;
 class AddressBlockInterface;
 class BusInterfaceInterface;
 class ParameterValidator;
+class ListFinder;
 
 //-----------------------------------------------------------------------------
 //! The Address spaces-item in the component editor navigation tree.
@@ -37,14 +38,16 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *    @param [in] model                   The model that owns the items.
-	 *    @param [in] libHandler              The instance that manages the library.
-	 *    @param [in] component               The component being edited.
-     *    @param [in] referenceCounter        The instance for counting references to parameters.
-	 *    @param [in] parameterFinder         The parameter finder.
-	 *    @param [in] expressionFormatter     The expression formatter.
-     *    @param [in] expressionParser        The expression parser to use.
-	 *    @param [in] parent                  The parent item.
+	 *    @param [in] model                 The model that owns the items.
+	 *    @param [in] libHandler            The instance that manages the library.
+	 *    @param [in] component             The component being edited.
+     *    @param [in] referenceCounter      The instance for counting references to parameters.
+	 *    @param [in] parameterFinder       The parameter finder.
+	 *    @param [in] expressionFormatter	The expression formatter.
+     *    @param [in] expressionParser      The expression parser to use.
+	 *    @param [in] absDefFinder			Parameter finder for abstraction definition expressions.
+	 *    @param [in] absDefParser			Parser for abstraction definition expressions.
+	 *    @param [in] parent                The parent item.
 	 */
 	ComponentEditorAddrSpacesItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
@@ -53,6 +56,8 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+		QSharedPointer<ListFinder> absDefFinder,
+		QSharedPointer<ExpressionParser> absDefParser,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -152,6 +157,12 @@ private:
 
     //! Interface for address blocks.
     AddressBlockInterface* blockInterface_;
+
+	//! Parameter finder for abstraction definition expressions.
+	QSharedPointer<ListFinder> absDefFinder_;
+
+	//! Parser for abstraction definition expressions.
+	QSharedPointer<ExpressionParser> absDefParser_;
 };
 
 #endif // COMPONENTEDITORADDRSPACESITEM_H

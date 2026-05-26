@@ -27,17 +27,8 @@
 // Function: InterconnectAddressHelper::InterconnectAddressHelper()
 //-----------------------------------------------------------------------------
 InterconnectAddressHelper::InterconnectAddressHelper(VLNV designVLNV,
-    LibraryHandler* library, MessageMediator* messager)
-    : library_(library),
-    messager_(messager), 
-    expressionParser_(0),
-    expressionFormatter_(0),
-    accessPolicyInterface_(0),
-    busInfInterface_(0),
-    fieldInterface_(0),
-    modeRefInterface_(0),
-    registerInterface_(0),
-    resetInterface_(0)
+    LibraryHandler* library, MessageMediator* messager):
+messager_(messager)
 {
     QSharedPointer<Document> designCompDocument = library_->getModel(designVLNV);
 
@@ -57,6 +48,8 @@ InterconnectAddressHelper::InterconnectAddressHelper(VLNV designVLNV,
     expressionFormatter_ = QSharedPointer<ExpressionFormatter>::create(listParameterFinder_);
     expressionParser_ = QSharedPointer<IPXactSystemVerilogParser>::create(listParameterFinder_);
 
+    absDefFinder_ = QSharedPointer<ListParameterFinder>::create();
+    absDefParser_ = QSharedPointer<IPXactSystemVerilogParser>::create(absDefFinder_);
 }
 
 //-----------------------------------------------------------------------------
@@ -278,7 +271,7 @@ void InterconnectAddressHelper::createValidators(QSharedPointer<Component> compo
         expressionParser_, addressBlockValidator_, subspaceValidator_, component);
     memoryMapValidator_->componentChange(component);
 
-    portMapValidator_ = QSharedPointer<PortMapValidator>::create(expressionParser_, component->getPorts(), library_);
+	portMapValidator_ = QSharedPointer<PortMapValidator>::create(expressionParser_, absDefParser_, absDefFinder_, component->getPorts(), library_);
 
     busValidator_ = QSharedPointer<BusInterfaceValidator>::create(expressionParser_,
         component->getChoices(), component->getViews(), component->getPorts(), component->getAddressSpaces(),

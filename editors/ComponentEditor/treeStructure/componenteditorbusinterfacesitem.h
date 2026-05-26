@@ -20,9 +20,9 @@ class BusInterface;
 class BusInterfaceValidator;
 class BusInterfacesValidator;
 class ExpressionParser;
+class ListFinder;
 class PortMapInterface;
 class BusInterfaceInterface;
-class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! The Bus interfaces-item in the component editor's navigation tree.
@@ -36,17 +36,19 @@ public:
     /*!
 	 *  The constructor.
 	 *
-     *    @param [in] busInterface            Interface for accessing bus interfaces.
-     *    @param [in] portMapInterface        Interface for accessing port maps.
-     *    @param [in] model                   The model that owns the items.
-	 *    @param [in] libHandler              The instance that manages the library.
-	 *    @param [in] component               The component being edited.
-	 *    @param [in] referenceCounter        The reference counter.
-	 *    @param [in] parameterFinder         The parameter finder.
-	 *    @param [in] expressionFormatter     The expression formatter.
-	 *    @param [in] expressionParser        The expression parser.
-	 *    @param [in] parent                  The owner of this item.
-	 *    @param [in] parentWnd               The parent window.
+     *    @param [in] busInterface          Interface for accessing bus interfaces.
+     *    @param [in] portMapInterface      Interface for accessing port maps.
+     *    @param [in] model                 The model that owns the items.
+	 *    @param [in] libHandler            The instance that manages the library.
+	 *    @param [in] component             The component being edited.
+	 *    @param [in] referenceCounter      The reference counter.
+	 *    @param [in] parameterFinder       The parameter finder.
+	 *    @param [in] expressionFormatter   The expression formatter.
+	 *    @param [in] expressionParser      The expression parser.
+	 *    @param [in] absDefFinder			Parameter finder for abstraction definition expressions.
+	 *    @param [in] absDefParser			Parser for abstraction definition expressions.
+	 *    @param [in] parent                The owner of this item.
+	 *    @param [in] parentWnd             The parent window.
 	 */
 	ComponentEditorBusInterfacesItem(
         BusInterfaceInterface* busInterface,
@@ -56,6 +58,8 @@ public:
 		QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter,
 		ExpressionSet expressions,
+		QSharedPointer<ListFinder> absDefFinder,
+		QSharedPointer<ExpressionParser> absDefParser,
         ComponentEditorItem* parent,
         QWidget* parentWnd);
 
@@ -150,6 +154,12 @@ private:
 
     //! Interface for accessing port maps.
     PortMapInterface* portMapInterface_;
+	
+	//!Parameter finder for abstraction definition expressions.
+	QSharedPointer<ListFinder> absDefFinder_;
+	
+	//! Parser for abstraction definition expressions.
+	QSharedPointer<ExpressionParser> absDefParser_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACESITEM_H

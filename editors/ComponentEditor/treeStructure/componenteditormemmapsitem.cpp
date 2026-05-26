@@ -42,10 +42,16 @@
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapsitem::ComponentEditorMemMapsItem()
 //-----------------------------------------------------------------------------
-ComponentEditorMemMapsItem::ComponentEditorMemMapsItem(ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+ComponentEditorMemMapsItem::ComponentEditorMemMapsItem(
+    ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler,
+    QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
+	QSharedPointer<ListFinder> absDefFinder,
+	QSharedPointer<ExpressionParser> absDefParser,
     ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
     memoryMaps_(component->getMemoryMaps()),
@@ -53,7 +59,9 @@ ComponentEditorItem(model, libHandler, component, parent),
     expressionParser_(expressionParser),
     memoryMapsValidator_(),
     memoryMapValidator_(),
-    mapInterface_()
+    mapInterface_(),
+	absDefFinder_(absDefFinder),
+    absDefParser_(absDefParser)
 {
     createValidators();
 
@@ -281,7 +289,7 @@ BusInterfaceInterface* ComponentEditorMemMapsItem::createInterfaceForBus(
     QSharedPointer<ParameterValidator> parameterValidator)
 {
     QSharedPointer<PortMapValidator> portMapValidator(
-        new PortMapValidator(expressionParser_, component_->getPorts(), libHandler_));
+        new PortMapValidator(expressionParser_, absDefParser_, absDefFinder_, component_->getPorts(), libHandler_));
     QSharedPointer<BusInterfaceValidator> busValidator(new BusInterfaceValidator(expressionParser_,
         component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
         memoryMaps_, component_->getBusInterfaces(), component_->getFileSets(), component_->getRemapStates(),

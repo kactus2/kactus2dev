@@ -20,6 +20,7 @@
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
@@ -52,8 +53,11 @@ referenceCounter_(new ParameterReferenceCounter(updatingFinder_))
 
     QSharedPointer<ExpressionParser> parser(new IPXactSystemVerilogParser(multiFinder));
 
+    QSharedPointer<ListParameterFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParameterParser(new IPXactSystemVerilogParser(absDefFinder));
+
     BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
-        multiFinder, multipleExpressionFormatter, parser, component, handler);
+        multiFinder, multipleExpressionFormatter, parser, absDefFinder, absDefParameterParser, component, handler);
 
     ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, 
         updatingFinder_, singleExpressionFormatter, busInterface, this);

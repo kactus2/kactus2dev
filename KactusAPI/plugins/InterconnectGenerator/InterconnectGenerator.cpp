@@ -155,8 +155,10 @@ void Generator::createInterconComponent(VLNV VLNV)
 
     interconComponent_->getParameters()->append(config_->interconnectParams);
 
-    busInfInterface_ = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_,
-        expressionFormatter_, expressionParser_, interconComponent_, library_);
+    busInfInterface_ = BusInterfaceInterfaceFactory::createBusInterface(
+        parameterFinder_, expressionFormatter_, expressionParser_,
+        absDefParameterFinder_, absDefExpressionParser_,
+        interconComponent_, library_);
 
     busInfInterface_->setBusInterfaces(interconComponent_);
     absTypeInf_ = busInfInterface_->getAbstractionTypeInterface();

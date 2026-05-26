@@ -65,8 +65,12 @@ bool DocumentValidator::validate(QSharedPointer<Document> document)
 
         QSharedPointer<ModeConditionParserInterface> modeConditionParserInterface(new ModeConditionParserInterface(componentValidatorFinder_));
 
-        ComponentValidator componentValidator(QSharedPointer<ExpressionParser>(
-            new IPXactSystemVerilogParser(componentValidatorFinder_)), modeConditionParserInterface, library_, currentComponent->getRevision());
+        QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefParameterFinder_));
+
+        ComponentValidator componentValidator(
+            QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
+            absDefParser, absDefParameterFinder_,
+            modeConditionParserInterface, library_, currentComponent->getRevision());
 
         return componentValidator.validate(currentComponent);
     }
@@ -164,8 +168,13 @@ void DocumentValidator::findErrorsInComponent(QSharedPointer<Component> componen
 {
     changeComponentValidatorParameterFinder(component);
     QSharedPointer<ModeConditionParserInterface> parserFactory(new ModeConditionParserInterface(componentValidatorFinder_));
+
+	QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefParameterFinder_));
+
     ComponentValidator componentValidator(QSharedPointer<ExpressionParser>(
-        new IPXactSystemVerilogParser(componentValidatorFinder_)), parserFactory, library_, component->getRevision());
+        new IPXactSystemVerilogParser(componentValidatorFinder_)),
+        absDefParser, absDefParameterFinder_,
+        parserFactory, library_, component->getRevision());
     componentValidator.findErrorsIn(errorList, component);
 }
 
