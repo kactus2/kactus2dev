@@ -50,6 +50,8 @@ designRef_(other.designRef_)
     Copy::copyList(other.interconnectionConfigurations_, interconnectionConfigurations_);
 
     Copy::copyList(other.viewConfigurations_, viewConfigurations_);
+
+    Copy::copyList(other.choices_, choices_);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,7 +72,9 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
        
         viewConfigurations_->clear();
         Copy::copyList(other.viewConfigurations_, viewConfigurations_);
-       
+
+        choices_->clear();
+        Copy::copyList(other.choices_, choices_);
 	}
 	return *this;
 }
@@ -244,6 +248,16 @@ QSharedPointer<ViewConfiguration> DesignConfiguration::getViewConfiguration(QStr
     }
 
     return configuration;
+}
+
+void DesignConfiguration::setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices)
+{
+    choices_ = choices;
+}
+
+QSharedPointer<QList<QSharedPointer<Choice> > > DesignConfiguration::getChoices() const
+{
+    return choices_;
 }
 
 //-----------------------------------------------------------------------------

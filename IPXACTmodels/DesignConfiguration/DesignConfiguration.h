@@ -15,6 +15,7 @@
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <IPXACTmodels/DesignConfiguration/InterconnectionConfiguration.h>
 #include <IPXACTmodels/DesignConfiguration/ViewConfiguration.h>
@@ -169,7 +170,19 @@ public:
      *
      *    @return The active view configuration.
 	 */
-	QSharedPointer<ViewConfiguration> getViewConfiguration(QString const& instanceName) const;
+    QSharedPointer<ViewConfiguration> getViewConfiguration(QString const& instanceName) const;
+
+    /*! Sets the choices.
+     *
+	 *    @param [in] choices The choices to set.
+	 */
+	void setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+	
+	/*! Gets the choices.
+	 *
+	 *    @return A list of the design config choices
+	 */
+	QSharedPointer<QList<QSharedPointer<Choice> > > getChoices() const;
 
     /*!
 	 *  Get the active view name for the given component instance.
@@ -247,6 +260,9 @@ private:
     QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > viewConfigurations_ =
         QSharedPointer<QList<QSharedPointer<ViewConfiguration> > >(new QList<QSharedPointer<ViewConfiguration> >);
 
+    //! The choices of the bus definition
+	QSharedPointer<QList<QSharedPointer<Choice> > > choices_ = 
+		QSharedPointer<QList<QSharedPointer<Choice> > >(new QList<QSharedPointer<Choice > >);
 };
 
 #endif // DESIGNCONFIGURATION_H

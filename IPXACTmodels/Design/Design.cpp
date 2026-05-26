@@ -52,6 +52,7 @@ Design& Design::operator=( const Design& other )
         interconnections_->clear();
         monitorInterconnections_->clear();
         adHocConnections_->clear();
+        choices_->clear();
 
         copySharedLists(other);
 	}
@@ -106,6 +107,11 @@ QSharedPointer<QList<QSharedPointer<Interconnection> > > Design::getInterconnect
 QSharedPointer<QList<QSharedPointer<AdHocConnection> > > Design::getAdHocConnections() const
 {
     return adHocConnections_;
+}
+
+void Design::setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices)
+{
+    choices_ = choices;
 }
 
 //-----------------------------------------------------------------------------
@@ -304,6 +310,11 @@ void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newCom
 
         getVendorExtensions()->append(newComConnectionGroup);
     }
+}
+
+QSharedPointer<QList<QSharedPointer<Choice> > > Design::getChoices() const
+{
+    return choices_;
 }
 
 //-----------------------------------------------------------------------------
@@ -522,6 +533,8 @@ void Design::copySharedLists(Design const& other)
     Copy::copyList(other.monitorInterconnections_, monitorInterconnections_);
 
     Copy::copyList(other.adHocConnections_, adHocConnections_);
+
+    Copy::copyList(other.choices_, choices_);
 }
 
 //-----------------------------------------------------------------------------

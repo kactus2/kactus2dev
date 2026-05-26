@@ -48,6 +48,8 @@ QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfi
 
     Details::parseDesignConfigurationExtensions(designConfigurationNode, newDesignConfiguration);
 
+    Details::parseChoices(designConfigurationNode, newDesignConfiguration);
+
     return newDesignConfiguration;
 }
 
@@ -358,4 +360,12 @@ void DesignConfigurationReader::Details::parseViewOverrides(QDomElement const& v
     }
 
     newDesignConfiguration->setKactus2ViewOverrides(newViewOverrides);
+}
+
+void DesignConfigurationReader::Details::parseChoices(QDomNode const& designConfigNode, QSharedPointer<DesignConfiguration> designConfig)
+{
+    if (designConfig->getRevision() == Document::Revision::Std22)
+    {
+        designConfig->setChoices(CommonItemsReader::parseChoices(designConfigNode));
+    }
 }

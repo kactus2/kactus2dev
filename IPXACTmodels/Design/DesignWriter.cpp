@@ -37,6 +37,10 @@ void DesignWriter::writeDesign(QXmlStreamWriter& writer, QSharedPointer<Design> 
     {
         CommonItemsWriter::writeDescription(writer, design->getDescription());
     }
+    else
+    {
+        CommonItemsWriter::writeChoices(writer, design->getChoices());
+    }
 
     DocumentWriter::writeParameters(writer, design);
 

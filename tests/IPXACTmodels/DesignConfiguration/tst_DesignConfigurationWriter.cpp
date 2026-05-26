@@ -15,6 +15,8 @@
 #include <IPXACTmodels/DesignConfiguration/DesignConfigurationWriter.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
+#include <IPXACTmodels/common/Choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
 #include <QDomElement>
@@ -49,6 +51,8 @@ private slots:
     void testParameters();
     void testAssertion();
     void testVendorExtensions();
+
+    void testWriteChoices();
 
     void testWriteViewOverrides();
 
@@ -841,6 +845,55 @@ void tst_DesignConfigurationWriter::compareOutputToExpected(QString const& outpu
         QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output.count(expectedOutput)) +
             " times in output.").toLocal8Bit());
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationWriter::testWriteChoices()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationWriter::testWriteChoices()
+{
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std22));
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<Enumeration> configEnumeration(new Enumeration());
+    configEnumeration->setValue("option1");
+
+    QSharedPointer<Choice> testChoice(new Choice());
+    testChoice->setName("chosenConfig");
+    testChoice->enumerations()->append(configEnumeration);
+
+    designConfiguration_->getChoices()->append(testChoice);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:choices>\n"
+                "\t\t<ipxact:choice>\n"
+                    "\t\t\t<ipxact:name>chosenConfig</ipxact:name>\n"
+                    "\t\t\t<ipxact:enumeration>option1</ipxact:enumeration>\n"
+                "\t\t</ipxact:choice>\n"
+            "\t</ipxact:choices>\n"
+        "</ipxact:designConfiguration>\n"
+        );
+
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+
+    QCOMPARE(output, expectedOutput);
 }
 
 QTEST_APPLESS_MAIN(tst_DesignConfigurationWriter)

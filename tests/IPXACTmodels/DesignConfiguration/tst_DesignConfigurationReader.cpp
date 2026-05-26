@@ -11,6 +11,8 @@
 
 #include <IPXACTmodels/DesignConfiguration/DesignConfigurationReader.h>
 
+#include <IPXACTmodels/common/Choice.h>
+
 #include <QtTest>
 #include <QDomNode>
 
@@ -41,6 +43,8 @@ private slots:
     void testReadParameters();
     void testReadAssertions();
     void testReadVendorExtensions();
+
+    void testReadChoices();
 
     void testReadViewOverrides();
 };
@@ -755,6 +759,47 @@ void tst_DesignConfigurationReader::testReadViewOverrides()
     QCOMPARE(testDesignConfiguration->getKactus2ViewOverrides().first(), QString("testView"));
     QCOMPARE(testDesignConfiguration->getKactus2ViewOverrides().lastKey(), QString("otherId"));
     QCOMPARE(testDesignConfiguration->getKactus2ViewOverrides().last(), QString("otherView"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationReader::testReadChoices()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationReader::testReadChoices()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesignConfiguration</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:choices>"
+                "<ipxact:choice>"
+                    "<ipxact:name>chosenConfig</ipxact:name>"
+                    "<ipxact:enumeration>option1</ipxact:enumeration>"
+                "</ipxact:choice>"
+            "</ipxact:choices>"
+        "</ipxact:designConfiguration>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QSharedPointer<DesignConfiguration> testDesignConfiguration =
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
+
+    QCOMPARE(testDesignConfiguration->getVlnv().getName(), QString("TestDesignConfiguration"));
+    QCOMPARE(testDesignConfiguration->getChoices()->size(), 1);
+
+    QSharedPointer<Choice> testChoice = testDesignConfiguration->getChoices()->first();
+    QCOMPARE(testChoice->name(), QString("chosenConfig"));
+    QCOMPARE(testChoice->getEnumerationValues().size(), 1);
+    QCOMPARE(testChoice->getEnumerationValues().first(), QString("option1"));
 }
 
 QTEST_APPLESS_MAIN(tst_DesignConfigurationReader)

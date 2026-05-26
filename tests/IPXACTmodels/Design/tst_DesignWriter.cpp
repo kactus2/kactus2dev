@@ -12,6 +12,8 @@
 #include <IPXACTmodels/Design/DesignWriter.h>
 #include <IPXACTmodels/Design/Design.h>
 
+#include <IPXACTmodels/common/Choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
@@ -52,6 +54,8 @@ private slots:
     void testWriteParameters();
     void testWriteAssertions();
     void testWriteVendorExtensions();
+
+    void testWriteChoices();
 
     void testWriteColumns();
     void testWritePortAdHocVisibilitiesAndPositions();
@@ -1828,6 +1832,55 @@ void tst_DesignWriter::compareOutputToExpected(QString const& output, QString co
         QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output.count(expectedOutput)) +
             " times in output.").toLocal8Bit());
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteChoices()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteChoices()
+{
+    VLNV designVLNV(VLNV::DESIGN, "tuni.fi", "TestLibrary", "TestDesign", "0.1");
+    auto testDesign = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std22));
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<Enumeration> choiceEnumeration(new Enumeration());
+    choiceEnumeration->setValue("14");
+
+    QSharedPointer<Choice> testChoice(new Choice());
+    testChoice->setName("chosenOne");
+    testChoice->enumerations()->append(choiceEnumeration);
+
+    testDesign->getChoices()->append(testChoice);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+            "\t<ipxact:choices>\n"
+                "\t\t<ipxact:choice>\n"
+                    "\t\t\t<ipxact:name>chosenOne</ipxact:name>\n"
+                    "\t\t\t<ipxact:enumeration>14</ipxact:enumeration>\n"
+                "\t\t</ipxact:choice>\n"
+            "\t</ipxact:choices>\n"
+        "</ipxact:design>\n"
+        );
+
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
+
+    QCOMPARE(output, expectedOutput);
 }
 
 QTEST_APPLESS_MAIN(tst_DesignWriter)

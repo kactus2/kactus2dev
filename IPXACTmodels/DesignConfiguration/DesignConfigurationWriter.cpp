@@ -49,6 +49,10 @@ void DesignConfigurationWriter::writeDesignConfiguration(QXmlStreamWriter& write
     {
         CommonItemsWriter::writeDescription(writer, designConfiguration->getDescription());
     }
+    else
+    {
+        CommonItemsWriter::writeChoices(writer, designConfiguration->getChoices());
+    }
 
     DocumentWriter::writeParameters(writer, designConfiguration);
 

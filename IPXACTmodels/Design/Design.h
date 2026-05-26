@@ -22,6 +22,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
@@ -130,6 +131,18 @@ public:
      *    @return Pointer to a list of ad-hoc connections.
      */
     QSharedPointer<QList<QSharedPointer<AdHocConnection> > > getAdHocConnections() const;
+
+    /*! Sets the choices.
+     *
+	 *    @param [in] choices The choices to set.
+	 */
+	void setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+	
+	/*! Gets the choices.
+	 *
+	 *    @return A list of the design choices
+	 */
+	QSharedPointer<QList<QSharedPointer<Choice> > > getChoices() const;
 
     /*!
      *  Returns the list of API dependencies.
@@ -354,8 +367,11 @@ private:
 
     //! Ad-hoc connections
     QSharedPointer<QList<QSharedPointer<AdHocConnection> > > adHocConnections_ =
-         QSharedPointer<QList<QSharedPointer<AdHocConnection> > >(new QList<QSharedPointer<AdHocConnection> >());
+        QSharedPointer<QList<QSharedPointer<AdHocConnection> > >(new QList<QSharedPointer<AdHocConnection> >());
 
+    //! The choices of the design
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_ =
+		QSharedPointer<QList<QSharedPointer<Choice> > >(new QList<QSharedPointer<Choice > >);
 };
 
 #endif // DESIGN_H

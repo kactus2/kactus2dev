@@ -273,6 +273,14 @@ namespace DesignReader
          *    @param [in] design          The new design item.
          */
         void parseNotes(QDomElement const& extensionNode, QSharedPointer<Design> design);
+
+        /*!
+         *  Reads the choices of the design.
+         *
+         *    @param [in] extensionNode   The XML description of the design vendor extensions.
+         *    @param [in] design          The new design item.
+         */
+        void parseChoices(QDomNode const& extensionNode, QSharedPointer<Design> design);
     }
 };
 

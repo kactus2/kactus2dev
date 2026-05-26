@@ -56,6 +56,8 @@ QSharedPointer<Design> DesignReader::createDesignFrom(QDomDocument const& docume
 
     Details::parseDesignExtensions(designNode, newDesign);
 
+    Details::parseChoices(designNode, newDesign);
+
     return newDesign;
 }
 
@@ -835,5 +837,13 @@ void DesignReader::Details::parseNotes(QDomElement const& extensionNode, QShared
         }
 
         design->getVendorExtensions()->append(note);
+    }
+}
+
+void DesignReader::Details::parseChoices(QDomNode const& designNode, QSharedPointer<Design> design)
+{
+    if (design->getRevision() == Document::Revision::Std22)
+    {
+        design->setChoices(CommonItemsReader::parseChoices(designNode));
     }
 }
