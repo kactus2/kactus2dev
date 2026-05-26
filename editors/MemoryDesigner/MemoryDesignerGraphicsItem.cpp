@@ -11,7 +11,11 @@
 
 #include "MemoryDesignerGraphicsItem.h"
 
+#include <common/KactusUtils.h>
+
 #include <editors/common/diagramgrid.h>
+
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/MemoryDesigner/MemoryColumn.h>
 #include <editors/MemoryDesigner/MemoryConnectionItem.h>
@@ -69,6 +73,10 @@ identifierChain_(identifierChain)
 
     QFont labelFont = nameLabel_->font();
     labelFont.setWeight(QFont::Bold);
+    
+    startRangeLabel_->setDefaultTextColor(KactusColors::MEMORY_DESIGNER_TEXT);
+    endRangeLabel_->setDefaultTextColor(KactusColors::MEMORY_DESIGNER_TEXT);
+    nameLabel_->setDefaultTextColor(KactusColors::MEMORY_DESIGNER_TEXT);
 
     nameLabel_->setFont(labelFont);
 }
@@ -97,6 +105,10 @@ identifierChain_(other.identifierChain_)
 {
     connect(openComponentAction_, SIGNAL(triggered()), this, SLOT(openContainingComponent()), Qt::UniqueConnection);
     connect(openItemEditorAction_, SIGNAL(triggered()), this, SLOT(openItemEditor()), Qt::UniqueConnection);
+
+    startRangeLabel_->setDefaultTextColor(KactusColors::MEMORY_DESIGNER_TEXT);
+    endRangeLabel_->setDefaultTextColor(KactusColors::MEMORY_DESIGNER_TEXT);
+    nameLabel_->setDefaultTextColor(KactusColors::MEMORY_DESIGNER_TEXT);
 
     nameLabel_->setFont(other.nameLabel_->font());
 

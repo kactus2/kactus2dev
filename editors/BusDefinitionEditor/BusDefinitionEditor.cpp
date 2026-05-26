@@ -67,7 +67,10 @@ busDefGroup_(libHandler, expressionFormatter_, busDefParameterFinder_, this)
         setProtection(true);
     }    
 
-    busDefParameterFinder_->setParameterList(busDef_->getParameters());
+    if (busDef_)
+    {
+        busDefParameterFinder_->setParameterList(busDef_->getParameters());
+    }
 
     setupLayout();
 
@@ -104,6 +107,7 @@ void BusDefinitionEditor::refresh()
     if (busDef_)
     {
         busDef_ = getLibHandler()->getModel(busDef_->getVlnv()).dynamicCast<BusDefinition>();
+        busDefParameterFinder_->setParameterList(busDef_->getParameters());
         busDefGroup_.setBusDef(busDef_);
     } 
 

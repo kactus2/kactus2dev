@@ -15,16 +15,27 @@ TARGET = tst_CPUValidator
 
 QT += core gui xml testlib
 
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
-linux-g++ | linux-g++-64 | linux-g++-32 {
- LIBS += -L../../../executable \
-     -lIPXACTmodels -lKactusAPI
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../../executable -lIPXACTmodelsd \
+        -L../../../executable -lKactusAPId
 
-}
-win64 | win32 {
- LIBS += -L../../../executable \
-     -lIPXACTmodelsd -lKactusAPId
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_CPUValidatord
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../../executable -lIPXACTmodels \
+        -L../../../executable -lKactusAPI
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_CPUValidator
 }
 
 INCLUDEPATH += $$DESTDIR
@@ -35,7 +46,4 @@ DEPENDPATH += ../../../
 
 OBJECTS_DIR += $$DESTDIR
 
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_CPUValidator.pri)

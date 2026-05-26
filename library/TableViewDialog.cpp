@@ -77,10 +77,6 @@ void TableViewDialog::setupLayout()
     QLabel* errorIcon = new QLabel(this);
     errorIcon->setPixmap(QPixmap(":/icons/common/graphics/checkIntegrity.png"));
     introLayout->addWidget(errorIcon, 1, Qt::AlignRight);    
-
-    QPalette introPalette = introWidget->palette();
-    introPalette.setColor(QPalette::Window, Qt::white);
-    introWidget->setPalette(introPalette);
     introWidget->setAutoFillBackground(true);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);

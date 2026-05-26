@@ -12,7 +12,7 @@
 #include "bridgesmodel.h"
 #include "BridgeColumns.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/TransparentBridgeInterface.h>
 
@@ -128,7 +128,7 @@ QVariant BridgesModel::data(QModelIndex const& index, int role) const
     {
         if (masterReference.isEmpty())
         {
-			return KactusColors::ERROR;
+			return KactusColors::ERROR_COLOR;
 		}
 		else
         {

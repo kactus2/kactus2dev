@@ -14,7 +14,7 @@
 
 #include <common/expressions/utilities.h>
 
-#include <KactusAPI/include//ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <wizards/ComponentWizard/InstanceData.h>
 
@@ -156,8 +156,8 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
 void VerilogInstanceParser::highlightInstance(QString const& input, QString const& /*moduleDeclaration*/,
     QRegularExpressionMatch const& instanceMatch, QRegularExpressionMatchIterator const& multilineCommentIterator)
 {
-    QString instanceModuleName = instanceMatch.captured(1);
-    QString instanceName = instanceMatch.captured(3);
+    QString instanceModuleName = instanceMatch.captured(2);
+    QString instanceName = instanceMatch.captured(4);
 
     QRegularExpression inputInstanceExpression("\\b(" + instanceModuleName +
         "\\s+(?:[^;])*?" +
@@ -179,9 +179,9 @@ void VerilogInstanceParser::highlightInstance(QString const& input, QString cons
             int instanceNameEndIndex = instanceNameBeginIndex + instanceName.length();
 
             highlighter_->applyHighlight(
-                instanceModuleBeginIndex, instanceModuleEndIndex, ImportColors::INSTANCECOLOR);
+                instanceModuleBeginIndex, instanceModuleEndIndex, KactusColors::Importer::INSTANCECOLOR);
             highlighter_->applyHighlight(
-                instanceNameBeginIndex, instanceNameEndIndex, ImportColors::INSTANCECOLOR);
+                instanceNameBeginIndex, instanceNameEndIndex, KactusColors::Importer::INSTANCECOLOR);
         }
     }
 }

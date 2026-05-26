@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QBrush>
 #include <QStringBuilder>

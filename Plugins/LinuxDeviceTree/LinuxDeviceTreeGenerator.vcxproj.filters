@@ -106,6 +106,9 @@
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp">
       <Filter>Source Files\MemoryDesigner</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\KactusUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinuxDeviceTreeGenerator_global.h">
@@ -161,6 +164,9 @@
     </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\KactusUtils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

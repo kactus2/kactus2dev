@@ -61,8 +61,8 @@ CONFIG(debug, debug|release) {
 # Install target
 target.path = $$lib_path
 CONFIG(debug, debug|release) {
-    target.files = _pythonAPId.so pythonAPI.py
+    target.files += _pythonAPId.so pythonAPI.py
 } else {
-    target.files = _pythonAPI.so pythonAPI.py
+    target.files += _pythonAPI.so pythonAPI.py
 }
 INSTALLS += target

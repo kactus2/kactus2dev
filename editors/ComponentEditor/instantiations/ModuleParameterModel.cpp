@@ -17,7 +17,7 @@
 
 #include <KactusAPI/include/ParametersInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QPersistentModelIndex>
 
@@ -80,7 +80,7 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
     {
         if (!validateIndex(index))
         {
-             return KactusColors::ERROR;
+             return KactusColors::ERROR_COLOR;
         }
         else if (editingDisabled_)
         {

@@ -11,6 +11,7 @@
 
 #include "ImportEditor.h"
 
+#include <common/KactusUtils.h>
 #include <common/widgets/FileSelector/fileselector.h>
 
 #include <KactusAPI/include/LibraryHandler.h>
@@ -53,7 +54,7 @@ importComponent_(new Component(*component_)),
 selectedSourceFile_(),
 portEditor_(0),
 fileSelector_(new FileSelector(component, this)),
-editButton_(new QPushButton(QIcon(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
+editButton_(new QPushButton(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
 refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this)),
 browseButton_(new QPushButton(this)),
 componentSelector_(new QComboBox(this)),
@@ -64,7 +65,7 @@ componentViews_(component->getViews())
 {
     componentSelector_->setDisabled(true);
 
-    browseButton_->setIcon(QIcon(":icons/common/graphics/opened-folder.png"));
+    browseButton_->setIcon(KactusUtils::getIconStyledToTheme(":icons/common/graphics/opened-folder.png"));
     browseButton_->setToolTip(tr("Browse"));
 
     QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));

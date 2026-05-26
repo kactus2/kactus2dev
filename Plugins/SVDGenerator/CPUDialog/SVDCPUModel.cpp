@@ -13,7 +13,7 @@
 
 #include "SVDCPUColumns.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <Plugins/common/ConnectivityGraphUtilities.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDCpuRoutesContainer.h>

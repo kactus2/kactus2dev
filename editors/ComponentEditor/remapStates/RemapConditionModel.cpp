@@ -14,7 +14,7 @@
 
 
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: RemapConditionModel::RemapConditionModel()
@@ -110,29 +110,7 @@ QVariant RemapConditionModel::data(QModelIndex const& index, int role) const
         }
     }
 
-    else if (role == Qt::ForegroundRole)
-    {
-        if (index.column() == RemapConditionColumns::LEFT_COLUMN ||
-            index.column() == RemapConditionColumns::RIGHT_COLUMN)
-        {
-            return QColor(KactusColors::DISABLED_TEXT);
-        }
-        else
-        {
-            return blackForValidOrRedForInvalidIndex(index);
-        }
-    }
-
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == RemapConditionColumns::NAME_COLUMN ||
-            index.column() == RemapConditionColumns::VALUE_COLUMN)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-    }
-
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -535,6 +513,18 @@ QStringList RemapConditionModel::getAvailablePorts()
     }
 
     return availablePorts;
+}
+
+bool RemapConditionModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == RemapConditionColumns::NAME_COLUMN ||
+        index.column() == RemapConditionColumns::VALUE_COLUMN;
+}
+
+bool RemapConditionModel::indexIsGreyedOut(QModelIndex const& index) const
+{
+    return index.column() == RemapConditionColumns::LEFT_COLUMN ||
+        index.column() == RemapConditionColumns::RIGHT_COLUMN;
 }
 
 //-----------------------------------------------------------------------------

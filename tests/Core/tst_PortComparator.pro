@@ -11,22 +11,26 @@
 
 TEMPLATE = app
 
-TARGET = tst_PortComparator
-
 QT += core xml gui testlib
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../executable -lIPXACTmodelsd
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_PortComparatord
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../executable -lIPXACTmodels
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_PortComparator
 }
 
 INCLUDEPATH += $$PWD/../../
@@ -37,8 +41,4 @@ DEPENDPATH += $$PWD/../../
 DEPENDPATH += $$PWD/../../executable
 
 OBJECTS_DIR += $$DESTDIR
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_PortComparator.pri)

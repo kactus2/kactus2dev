@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./KactusAPI.h \
+HEADERS += ./include/KactusColors.h \
+    ./KactusAPI.h \
     ./KactusAPIGlobal.h \
     ./include/AbstractionTypeInterface.h \
     ./include/AbstractParameterInterface.h \
@@ -97,12 +98,12 @@ HEADERS += ./KactusAPI.h \
     ./include/VersionHelper.h \
     ./include/ComponentInstanceParameterFinder.h \
     ./include/hierarchyitem.h \
-    ./include/hierarchymodel.h \
+    ./include/HierarchyModelBase.h \
     ./include/ImportHighlighter.h \
     ./include/ImportRunner.h \
     ./include/LibraryHandler.h \
     ./include/LibraryItem.h \
-    ./include/LibraryTreeModel.h \
+    ./include/LibraryModel.h \
     ./include/ParameterCache.h \
     ./include/ListFinder.h
 SOURCES += ./KactusAPI.cpp \
@@ -169,15 +170,16 @@ SOURCES += ./KactusAPI.cpp \
     ./plugins/InterconnectGenerator/InterconnectRTLWriter.cpp \
     ./utilities/ConsoleMediator.cpp \
     ./utilities/FileHandler.cpp \
+    ./utilities/KactusColors.cpp \
     ./utilities/NullChannel.cpp \
     ./utilities/utils.cpp \
     ./utilities/VersionHelper.cpp \
     ./library/DocumentFileAccess.cpp \
     ./library/DocumentValidator.cpp \
     ./library/hierarchyitem.cpp \
-    ./library/hierarchymodel.cpp \
+    ./library/HierarchyModelBase.cpp \
     ./library/LibraryHandler.cpp \
     ./library/LibraryItem.cpp \
     ./library/LibraryLoader.cpp \
-    ./library/LibraryTreeModel.cpp \
+    ./library/LibraryModel.cpp \
     ./library/TagManager.cpp

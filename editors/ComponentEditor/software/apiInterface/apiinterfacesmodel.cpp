@@ -17,7 +17,7 @@
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/DocumentUtils.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -161,7 +161,7 @@ QVariant ApiInterfacesModel::data(QModelIndex const& index, int role) const
 			return KactusColors::REGULAR_TEXT;
 		}
 		else {
-			return KactusColors::ERROR;
+			return KactusColors::ERROR_COLOR;
 		}
 	}
 

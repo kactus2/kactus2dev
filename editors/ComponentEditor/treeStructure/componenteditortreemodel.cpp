@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QIcon>
 
@@ -133,7 +133,7 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
     {
         if (item->parent() != rootItem_ && !item->isValid())
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
         else
         {

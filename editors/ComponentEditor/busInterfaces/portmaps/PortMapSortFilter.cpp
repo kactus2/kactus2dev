@@ -15,7 +15,7 @@
 
 #include <KactusAPI/include/PortMapInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapSortFilter::PortMapSortFilter()
@@ -34,7 +34,7 @@ QVariant PortMapSortFilter::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::BackgroundRole)
     {
-        return getBackgroundColorForIndex(index);
+        return getBackgroundColorForIndex(index, role);
     }
     else
     {
@@ -45,7 +45,7 @@ QVariant PortMapSortFilter::data(const QModelIndex &index, int role) const
 //-----------------------------------------------------------------------------
 // Function: PortMapSortFilter::getBackgroundColorForIndex()
 //-----------------------------------------------------------------------------
-QColor PortMapSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
+QVariant PortMapSortFilter::getBackgroundColorForIndex(QModelIndex const& index, int role) const
 {
     QModelIndex sourceIndex = mapToSource(index);
 
@@ -56,7 +56,7 @@ QColor PortMapSortFilter::getBackgroundColorForIndex(QModelIndex const& index) c
         (index.column() == PortMapsColumns::PHYSICAL_PORT && logicalTieOff.empty()) ||
         (index.column() == PortMapsColumns::TIEOFF && !physicalPortExists))
     {
-        return KactusColors::MANDATORY_FIELD;
+        return QSortFilterProxyModel::data(index, role);
     }
 
 
@@ -83,7 +83,7 @@ QColor PortMapSortFilter::getBackgroundColorForIndex(QModelIndex const& index) c
     }
     else if (previousColor == KactusColors::REGULAR_FIELD)
     {
-        return KactusColors::FIELD_COLOR;
+        return KactusColors::PORTMAP_ALT_ROW;
     }
 
     return KactusColors::REGULAR_FIELD;

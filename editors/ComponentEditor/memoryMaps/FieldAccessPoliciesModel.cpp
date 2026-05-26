@@ -12,7 +12,7 @@
 #include "FieldAccessPoliciesModel.h"
 #include "FieldAccessPolicyColumns.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 using ModeRefList = std::vector<std::pair<unsigned int, std::string> >;
 
@@ -159,6 +159,11 @@ QVariant FieldAccessPoliciesModel::headerData(int section, Qt::Orientation orien
 //-----------------------------------------------------------------------------
 QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole*/) const
 {
+    if (!index.isValid() || index.row() < 0)
+    {
+        return QVariant();
+    }
+
     if (role == Qt::DisplayRole)
     {
         if (isValidExpressionColumn(index))
@@ -169,24 +174,9 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
         return valueForIndex(index);
     }
 
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
-        {
-            return KactusColors::DISABLED_FIELD;
-        }
-
-        return KactusColors::REGULAR_FIELD;
-    }
-
     else if (role == Qt::ToolTipRole)
     {
         return valueForIndex(index);
-    }
-
-    else if (role == Qt::ForegroundRole)
-    {
-        return blackForValidOrRedForInvalidIndex(index);
     }
 
     else if (role == Qt::EditRole)
@@ -223,7 +213,7 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
         return italicForEvaluatedValue(index);
     }
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------

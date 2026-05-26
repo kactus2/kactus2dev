@@ -127,11 +127,6 @@ public:
     void resetModel();
 
     /*!
-     *  Sets the edited model and locks all current ports.
-     */
-    void resetModelAndLockCurrentPorts();
-
-    /*!
      *  Handle port creation from abstraction definition signals.
      *
      *    @param [in] abstraction     The selected abstraction definition.
@@ -222,15 +217,6 @@ protected:
      *    @return Number of references made to the selected id from the selected row.
      */
     virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const&  valueID) const override;
-
-    /*!
-     *   Checks if given index is locked.
-     *
-     *    @param [in] index   The index to check.
-     *
-     *    @return True if the index is locked, otherwise false.
-     */
-    bool isLocked(QModelIndex const& index) const;
 
     /*!
      *  Get the icon path of the selected index.
@@ -372,15 +358,6 @@ private:
     virtual bool indexedItemIsDisabled(QModelIndex const& index) const = 0;
 
     /*!
-     *  Check if the selected item is mandatory.
-     *
-     *    @param [in] index   Index of the selected item.
-     *
-     *    @return True, if the indexed item is mandatory, false otherwise.
-     */
-    virtual bool indexedItemIsMandatory(QModelIndex const& index) const = 0;
-
-    /*!
      *  Check if the selected item is locked.
      *
      *    @param [in] index   Index of the selected item.
@@ -404,43 +381,6 @@ private:
      *    @param [in] port    The selected port.
      */
     virtual void addNewPort() = 0;
-
-    /*!
-     *   Locks the name, direction  and type columns of a port.
-     *
-     *    @param [in] portName    Name of the selected port.
-     */
-    void lockPort(QString const& portName);
-
-    /*!
-     *   Unlocks the name, direction and type columns of a port.
-     *
-     *    @param [in] portName    Name of the selected port.
-     */
-    void unlockPort(QString const& portName);
-
-    /*!
-     *   Locks the given index disabling editing.
-     *
-     *    @param [in] index   The index to lock.
-     */
-    void lockIndex(QModelIndex const& index);
-    
-    /*!
-     *   Unlocks the given index disabling editing.
-     *
-     *    @param [in] index   The index to unlock.
-     */
-    void unlockIndex(QModelIndex const& index);
-
-    /*!
-     *   Checks if given row is locked.
-     *
-     *    @param [in] row   The row to check.
-	 *
-	 *    @return True if the row is locked, otherwise false.
-     */
-    bool rowIsLocked(int row) const;
 
     /*!
      *  Check if the selected interface modes match.

@@ -13,7 +13,7 @@
 
 #include "VHDLSyntax.h"
 
-#include <KactusAPI/include/ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
@@ -75,7 +75,7 @@ void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targ
         createPortFromDeclaration(portDeclaration, targetComponent);
         if (highlighter_)
         {
-            highlighter_->applyHighlight(portDeclaration, ImportColors::PORT, input);
+            highlighter_->applyHighlight(portDeclaration, KactusColors::Importer::PORT, input);
         }
     }
 }

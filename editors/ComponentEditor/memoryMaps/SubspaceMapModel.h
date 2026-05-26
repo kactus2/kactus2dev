@@ -112,7 +112,15 @@ public:
     virtual QStringList mimeTypes() const override final;
 
 protected:
-    
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;    
     /*!
      *  validates the data in the selected index.
      *

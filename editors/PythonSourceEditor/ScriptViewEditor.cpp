@@ -19,6 +19,8 @@
 #include <QVariant>
 #include <QTextStream>
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <PythonAPI/WriteChannel.h>
 
 //-----------------------------------------------------------------------------
@@ -35,8 +37,6 @@ ScriptViewEditor::ScriptViewEditor(QWidget* parent):
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::printInput(QString const& input)
 {
-    printWithColor(input, QColor(Qt::blue));
-
     if (input.endsWith(QChar('\n')) == false)
     {
         QTextCursor cursor = textCursor();
@@ -49,7 +49,7 @@ void ScriptViewEditor::printInput(QString const& input)
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::print(QString const& input)
 {
-    printWithColor(input, QColor(Qt::black));
+    printWithColor(input, QColor(KactusColors::REGULAR_TEXT));
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ void ScriptViewEditor::print(QString const& input)
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::printError(QString const& input)
 {
-    printWithColor(input, QColor(Qt::red));
+    printWithColor(input, KactusColors::ERROR_COLOR);
 }
 
 //-----------------------------------------------------------------------------

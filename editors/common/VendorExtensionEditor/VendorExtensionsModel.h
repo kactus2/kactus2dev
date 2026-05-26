@@ -14,7 +14,8 @@
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
-#include <QAbstractItemModel>
+#include <common/models/TableModelBase.h>
+
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
@@ -24,7 +25,7 @@ class VendorExtension;
 //-----------------------------------------------------------------------------
 //! Model class to manage the vendor extension values being edited.
 //-----------------------------------------------------------------------------
-class VendorExtensionsModel : public QAbstractItemModel
+class VendorExtensionsModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -248,7 +249,9 @@ private:
      *
      *    @return True, if the column is mandatory, false otherwise.
      */
-    bool mandatoryColumn(QModelIndex const& index) const;
+    bool indexIsMandatory(QModelIndex const& index) const override;
+
+    bool validateIndex(QModelIndex const& index) const override;
 
     //-----------------------------------------------------------------------------
     // Data.

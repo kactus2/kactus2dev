@@ -11,7 +11,7 @@
 
 #include "SingleIndirectInterfaceEditor.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
@@ -249,7 +249,7 @@ void SingleIndirectInterfaceEditor::setAddressReferenceColorByValidity()
     }
     else
     {
-        addressSelector_->setTextColor(KactusColors::ERROR);
+        addressSelector_->setTextColor(KactusColors::ERROR_COLOR);
     }
 }
 
@@ -264,7 +264,7 @@ void SingleIndirectInterfaceEditor::setDataReferenceColorByValidity()
     }
     else
     {
-        dataSelector_->setTextColor(KactusColors::ERROR);
+        dataSelector_->setTextColor(KactusColors::ERROR_COLOR);
     }
 }
 
@@ -279,7 +279,7 @@ void SingleIndirectInterfaceEditor::setMemoryMapColorByValidity()
     }
     else
     {
-        memoryMapSelector_->setTextColor(KactusColors::ERROR);
+        memoryMapSelector_->setTextColor(KactusColors::ERROR_COLOR);
     }
 }
 

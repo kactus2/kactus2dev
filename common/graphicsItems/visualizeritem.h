@@ -158,6 +158,10 @@ protected:
      */
     QBrush defaultBrush() const;
 
+    QGraphicsSimpleTextItem* getNameLabel() { return &nameItem_; };
+    QGraphicsSimpleTextItem* getBottomLabel() { return &bottomTextItem_; };
+    QGraphicsSimpleTextItem* getTopLabel() { return &topTextItem_; };
+
 private:
     void setLabelPositions();
 

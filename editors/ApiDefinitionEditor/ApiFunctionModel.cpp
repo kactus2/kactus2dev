@@ -16,7 +16,7 @@
 
 #include <QVariant>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionModel::ApiFunctionModel()

@@ -17,7 +17,7 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QCompleter>
 #include <QFormLayout>
@@ -101,7 +101,7 @@ void BusIfGeneralDetails::updateBitSteeringControls(General::InterfaceMode mode)
     {
         if (!busInterface_->getBitSteering(busName_).empty())
         {
-            colour = KactusColors::ERROR;
+            colour = KactusColors::ERROR_COLOR;
         }
         else
         {

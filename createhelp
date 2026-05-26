@@ -16,11 +16,15 @@ if [ -z "${QTBIN_PATH}" ]; then
     fi
 fi
 
+# Generate compressed help files.
+echo "Generating compressed help files..."
 if [ ! -f Help/Kactus2Help.qch ] || [ ! -f Help/Kactus2Help.qhc ]; then
     if command -v ${QTBIN_PATH}qhelpgenerator >/dev/null 2>&1; then
+        "${QTBIN_PATH}qhelpgenerator" Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
         "${QTBIN_PATH}qhelpgenerator" Help/kactus2help.qhp -o Help/Kactus2Help.qch
     elif command -v ${QTLIBEXEC_PATH}qhelpgenerator >/dev/null 2>&1; then
         # QT6 put qhelpgenerator at QTLIBEXEC_PATH
+        "${QTLIBEXEC_PATH}qhelpgenerator" Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
         "${QTLIBEXEC_PATH}qhelpgenerator" Help/kactus2help.qhp -o Help/Kactus2Help.qch
     else
         echo "Qhelpgenerator not found. Please set variable QTBIN_PATH to Qt binary files."

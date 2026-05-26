@@ -62,10 +62,10 @@ ModelSimGenerator.subdir = Plugins/ModelSimGenerator
 ModelSimGenerator.depends = IPXACTmodels KactusAPI
 
 AlteraBSPGenerator.subdir = Plugins/AlteraBSPGenerator
-AlteraBSPGenerator.depends = IPXACTmodels
+AlteraBSPGenerator.depends = IPXACTmodels KactusAPI
 
 QuartusPinImportPlugin.subdir = Plugins/QuartusPinImportPlugin
-QuartusPinImportPlugin.depends = IPXACTmodels
+QuartusPinImportPlugin.depends = IPXACTmodels KactusAPI
 
 PadsPartGenerator.subdir = Plugins/PadsPartGenerator
 PadsPartGenerator.depends = IPXACTmodels KactusAPI
@@ -80,13 +80,13 @@ VHDLGenerator.subdir = Plugins/VHDLGenerator
 VHDLGenerator.depends = IPXACTmodels KactusAPI
 
 VHDLimport.subdir = Plugins/VHDLimport
-VHDLimport.depends = IPXACTmodels
+VHDLimport.depends = IPXACTmodels KactusAPI
 
 VerilogImport.subdir = Plugins/VerilogImport
 VerilogImport.depends = IPXACTmodels KactusAPI
 
 VerilogIncludeImport.subdir = Plugins/VerilogIncludeImport
-VerilogIncludeImport.depends = IPXACTmodels
+VerilogIncludeImport.depends = IPXACTmodels KactusAPI
 
 VerilogSourceAnalyzer.subdir = Plugins/VerilogSourceAnalyzer
 VerilogSourceAnalyzer.depends = IPXACTmodels

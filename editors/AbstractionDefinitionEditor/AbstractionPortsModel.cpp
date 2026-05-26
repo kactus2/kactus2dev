@@ -26,7 +26,7 @@
 
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/PortAbstractionInterface.h>
 
@@ -271,11 +271,6 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
         return valueForIndex(index);
     }
 
-    else if (role == Qt::ForegroundRole)
-    {
-        return blackForValidOrRedForInvalidIndex(index);
-    }
-
     else if (role == Qt::FontRole)
     {
         return italicForEvaluatedValue(index);
@@ -290,7 +285,7 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
         }
     }
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -961,6 +956,11 @@ void AbstractionPortsModel::onRemoveItem(QModelIndex const& index)
         emit contentChanged();
         emit portRemoved(removedName, removedMode);      
     }
+}
+
+bool AbstractionPortsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == LogicalPortColumns::NAME;
 }
 
 //-----------------------------------------------------------------------------

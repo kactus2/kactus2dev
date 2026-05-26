@@ -210,6 +210,15 @@ private:
     bool indexIsNotValid(QModelIndex const& index) const;
 
     /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
+
+    /*!
      *  Gets the value of the array in the given index.
      *
      *    @param [in] index   The index of the value.

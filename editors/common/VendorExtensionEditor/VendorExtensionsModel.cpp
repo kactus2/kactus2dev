@@ -11,7 +11,7 @@
 
 #include "VendorExtensionsModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/common/VendorExtensionEditor/VendorExtensionsGeneral.h>
 #include <editors/common/VendorExtensionEditor/VendorExtensionColumns.h>
@@ -23,7 +23,7 @@
 // Function: VendorExtensionsModel::VendorExtensionsModel()
 //-----------------------------------------------------------------------------
 VendorExtensionsModel::VendorExtensionsModel(QObject *parent) :
-QAbstractItemModel(parent),
+TableModelBase(parent),
 vendorExtensions_(nullptr),
 emptyExtension_()
 {
@@ -101,11 +101,7 @@ QVariant VendorExtensionsModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::ForegroundRole)
     {
-        if (indexIsEditable(index))
-        {
-            return KactusColors::REGULAR_TEXT;
-        }        
-        else
+        if (!indexIsEditable(index))
         {
             return KactusColors::DISABLED_TEXT;
         }
@@ -114,19 +110,8 @@ QVariant VendorExtensionsModel::data(QModelIndex const& index, int role) const
     {
         return valueForIndex(index);
 	}
-    else if (role == Qt::BackgroundRole)
-    {
-        if (mandatoryColumn(index))
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -192,11 +177,16 @@ QVariant VendorExtensionsModel::valueForIndex(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VendorExtensionsModel::mandatoryColumn()
+// Function: VendorExtensionsModel::indexIsMandatory()
 //-----------------------------------------------------------------------------
-bool VendorExtensionsModel::mandatoryColumn(QModelIndex const& index) const
+bool VendorExtensionsModel::indexIsMandatory(QModelIndex const& index) const
 {
     return index.column() == VendorExtensionColumns::NAMESPACE || index.column() == VendorExtensionColumns::NAME;
+}
+
+bool VendorExtensionsModel::validateIndex(QModelIndex const& index) const
+{
+    return true;
 }
 
 //-----------------------------------------------------------------------------

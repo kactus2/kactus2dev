@@ -12,7 +12,7 @@
 #include "VerilogIncludeImport.h"
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
-#include <KactusAPI/include/ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/Parameter.h>
@@ -199,7 +199,7 @@ void VerilogIncludeImport::highlightDefinition(QString const& definition)
     if (highlighter_)
     {     
         highlighter_->applyFontColor(definition, Qt::black);
-        highlighter_->applyHighlight(definition, ImportColors::MODELPARAMETER);
+        highlighter_->applyHighlight(definition, KactusColors::Importer::MODELPARAMETER);
     }
 }
 

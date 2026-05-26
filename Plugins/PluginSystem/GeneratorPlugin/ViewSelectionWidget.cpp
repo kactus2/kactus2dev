@@ -12,7 +12,7 @@
 #include "ViewSelectionWidget.h"
 #include "ViewSelection.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QFormLayout>
 #include <QVBoxLayout>

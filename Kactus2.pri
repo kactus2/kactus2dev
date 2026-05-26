@@ -9,10 +9,11 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/NameGenerationPolicy.h \
-    ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/IEditProvider.h \
     ./common/GenericEditProvider.h \
+    ./common/KactusUtils.h \
+    ./common/KactusProxyStyle.h \
     ./common/widgets/listManager/dirlistmanagermodel.h \
     ./common/widgets/listManager/listmanagermodel.h \
     ./common/widgets/listManager/listmanager.h \
@@ -107,6 +108,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/graphicsItems/ComponentItem.h \
     ./common/delegates/ComboDelegate/combodelegate.h \
     ./common/delegates/LineEditDelegate/lineeditdelegate.h \
+    ./common/models/TableModelBase.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
     ./common/views/EditableTreeView/EditableTreeView.h \
@@ -133,7 +135,6 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/mainwindow.h \
     ./mainwindow/MessageConsole/messageconsole.h \
-    ./mainwindow/Ribbon/RibbonTheme.h \
     ./mainwindow/Ribbon/Ribbon.h \
     ./mainwindow/Ribbon/RibbonGroup.h \
     ./mainwindow/NewPages/NewCatalogPage.h \
@@ -214,7 +215,6 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
     ./Plugins/PluginSystem/GeneratorPlugin/AddToFilesetWidget.h \
-    ./library/LibraryInterface.h \
     ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryUtils.h \
     ./library/ObjectSelectionListItem.h \
@@ -223,9 +223,11 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./library/LibraryErrorModel.h \
     ./library/ItemExporter.h \
     ./library/LibraryTreeFilter.h \
+    ./library/LibraryTreeModel.h \
     ./library/LibraryTreeWidget.h \
     ./library/LibraryTreeView.h \
     ./library/LibraryWidget.h \
+    ./library/HierarchyModel.h \
     ./library/objectremovedialog.h \
     ./library/ObjectSelectionDialog.h \
     ./library/ObjectExportDialog.h \
@@ -668,7 +670,6 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./editors/CatalogEditor/CatalogFileDelegate.h \
     ./editors/CatalogEditor/CatalogFileFilter.h \
     ./editors/CatalogEditor/CatalogFileView.h \
-    ./editors/BusDefinitionEditor/LogicalPortColumns.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
     ./editors/BusDefinitionEditor/BusDefinitionParameterReferenceTree.h \
@@ -914,6 +915,8 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./editors/ComponentEditor/ports/PortsImportSummaryEditor.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
+    ./common/KactusUtils.cpp \
+    ./common/KactusProxyStyle.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -926,6 +929,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
+    ./common/models/TableModelBase.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
@@ -1099,10 +1103,12 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./library/LibraryFilter.cpp \
     ./library/LibraryItemSelectionFactory.cpp \
     ./library/LibraryTreeFilter.cpp \
+    ./library/LibraryTreeModel.cpp \
     ./library/LibraryTreeView.cpp \
     ./library/LibraryTreeWidget.cpp \
     ./library/LibraryUtils.cpp \
     ./library/LibraryWidget.cpp \
+    ./library/HierarchyModel.cpp \
     ./library/ObjectExportDialog.cpp \
     ./library/objectremovedialog.cpp \
     ./library/TableViewDialog.cpp \

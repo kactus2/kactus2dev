@@ -11,7 +11,7 @@
 
 #include "ParameterReferenceTree.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 

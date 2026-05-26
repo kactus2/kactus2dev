@@ -92,8 +92,6 @@ void AdHocVisibilityDelegate::paint(QPainter *painter, QStyleOptionViewItem cons
 
     if (index.column() == AdHocVisibilityColumns::ADHOC_COL_VISIBILITY)
     {
-        painter->fillRect(option.rect, Qt::white);
-
         const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
 
         QRect newRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
@@ -142,39 +140,27 @@ bool AdHocVisibilityDelegate::editorEvent(QEvent* event, QAbstractItemModel* mod
     // Handle the mouse button events.
     if (event->type() == QEvent::MouseButtonPress)
     {
-        const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
-
-        QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
-            option.decorationSize,
-            QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
-            option.rect.width() - (2 * textMargin),
-            option.rect.height()));
-
-        if (!checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
+        // Click anywhere inside cell to check/uncheck
+        if (!option.rect.contains(static_cast<QMouseEvent*>(event)->pos()))
         {
             return false;
         }
 
         newState = (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+
+        // set flag indicating mouse button is being pressed
         adhocGroupModify_ = true;
         adhocGroupState_ = newState;
     }
     else if (event->type() == QEvent::MouseMove)
     {
+        // Check if mouse is already pressed and moving to check/uncheck several items at once
         if (!adhocGroupModify_ || static_cast<Qt::CheckState>(value.toInt()) == adhocGroupState_)
         {
             return false;
         }
 
-        const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
-
-        QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
-            option.decorationSize,
-            QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
-            option.rect.width() - (2 * textMargin),
-            option.rect.height()));
-
-        if (!checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
+        if (!option.rect.contains(static_cast<QMouseEvent*>(event)->pos()))
         {
             return false;
         }

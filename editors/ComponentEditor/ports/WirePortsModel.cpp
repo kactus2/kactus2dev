@@ -115,7 +115,7 @@ bool WirePortsModel::setData(QModelIndex const& index, QVariant const& value, in
 
 	if (role == Qt::EditRole)
     {
-        if (isLocked(index))
+        if (indexedItemIsLocked(index))
         {
             return false;
         }
@@ -397,7 +397,7 @@ bool WirePortsModel::indexedItemIsDisabled(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: WirePortsModel::indexedItemIsMandatory()
 //-----------------------------------------------------------------------------
-bool WirePortsModel::indexedItemIsMandatory(QModelIndex const& index) const
+bool WirePortsModel::indexIsMandatory(QModelIndex const& index) const
 {
     return index.column() == WirePortColumns::NAME || index.column() == WirePortColumns::DIRECTION ||
         index.column() == WirePortColumns::WIDTH;

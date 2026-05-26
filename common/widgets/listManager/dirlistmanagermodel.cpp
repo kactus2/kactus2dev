@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/FileHandler.h>
 
@@ -62,7 +62,7 @@ QVariant DirListManagerModel::data(QModelIndex const& index, int role) const
         }
         else
         {
-            return KactusColors::ERROR;
+            return KactusColors::ERROR_COLOR;
         }
     }
 

@@ -1013,6 +1013,12 @@
     <Filter Include="Source Files\common\widgets\instanceWidgets">
       <UniqueIdentifier>{b0a2d456-f4eb-4af6-91e7-2ef4f1d68d6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\models">
+      <UniqueIdentifier>{a10d637b-7268-42c8-bf7a-2e6c7c08cb75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\models">
+      <UniqueIdentifier>{967b596d-95ce-4a8c-a1d2-029b9792fffd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3427,6 +3433,21 @@
     <ClCompile Include="Plugins\PluginSystem\GeneratorPlugin\AddToFilesetWidget.cpp">
       <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
+    <ClCompile Include="library\LibraryTreeModel.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="common\KactusUtils.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\models\TableModelBase.cpp">
+      <Filter>Source Files\common\models</Filter>
+    </ClCompile>
+    <ClCompile Include="library\HierarchyModel.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="common\KactusProxyStyle.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5185,9 +5206,6 @@
     <ClInclude Include="common\widgets\vlnvEditor\VLNVDataTree.h">
       <Filter>Header Files\common\widgets\vlnvEditor</Filter>
     </ClInclude>
-    <ClInclude Include="common\KactusColors.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="common\TextEditProvider.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -5247,9 +5265,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\parameters\ParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h">
-      <Filter>Header Files\mainwindow\Ribbon</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
@@ -5391,9 +5406,6 @@
     </ClInclude>
     <ClInclude Include="settings\FileTypeColumns.h">
       <Filter>Header Files\settings</Filter>
-    </ClInclude>
-    <ClInclude Include="library\LibraryInterface.h">
-      <Filter>Header Files\library</Filter>
     </ClInclude>
     <ClInclude Include="library\LibraryUtils.h">
       <Filter>Header Files\library</Filter>
@@ -5878,6 +5890,12 @@
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h">
       <Filter>Header Files\common\layouts</Filter>
     </ClInclude>
+    <ClInclude Include="common\KactusUtils.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\KactusProxyStyle.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -6193,6 +6211,15 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\parameters\LockableParametersModel.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </QtMoc>
+    <QtMoc Include="library\LibraryTreeModel.h">
+      <Filter>Header Files\library</Filter>
+    </QtMoc>
+    <QtMoc Include="common\models\TableModelBase.h">
+      <Filter>Header Files\common\models</Filter>
+    </QtMoc>
+    <QtMoc Include="library\HierarchyModel.h">
+      <Filter>Header Files\library</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

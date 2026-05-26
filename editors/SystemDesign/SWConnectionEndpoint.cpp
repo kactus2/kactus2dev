@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/common/diagramgrid.h>
 #include <editors/HWDesign/OffPageConnectorItem.h>

@@ -26,9 +26,6 @@ currentPath_(QString())
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
-    setStyleSheet(styleSheet);
-
     disableOkButton();
     setupLayout();
     connectSignals();

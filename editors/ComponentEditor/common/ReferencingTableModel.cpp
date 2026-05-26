@@ -11,11 +11,13 @@
 
 #include "ReferencingTableModel.h"
 
+#include <KactusAPI/include/KactusColors.h>
+
 //-----------------------------------------------------------------------------
 // Function: ReferencingTableModel::ReferencingTableModel()
 //-----------------------------------------------------------------------------
 ReferencingTableModel::ReferencingTableModel(QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-QAbstractTableModel(parent),
+TableModelBase(parent),
 parameterFinder_(parameterFinder)
 {
 

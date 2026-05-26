@@ -131,6 +131,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\common\KactusUtils.cpp" />
     <ClCompile Include="..\..\common\views\EditableTableView\editabletableview.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp" />
@@ -184,6 +185,7 @@
     <QtRcc Include="RenodeGenerator.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\common\KactusUtils.h" />
     <ClInclude Include="CPUDialog\TemplateEditor\PeripheralTemplateConfigurer.h" />
     <ClInclude Include="RenodeSettingsModel.h" />
     <QtMoc Include="RenodeSettingsWidget.h" />

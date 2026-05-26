@@ -11,7 +11,7 @@
 
 #include "ComponentInstanceConfigurableElementsModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsModel.h>

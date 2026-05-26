@@ -13,6 +13,8 @@
 #include "ViewConfigurerColumns.h"
 #include "ViewConfigurerDelegate.h"
 
+#include <common/KactusUtils.h>
+
 #include <KactusAPI/include/LibraryHandler.h>
 
 #include <IPXACTmodels/common/VLNV.h>
@@ -65,14 +67,14 @@ clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("C
         topComponentItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 
         topComponentItem->setIcon(ViewConfigurerColumns::ITEM_VLNV,
-            QIcon(":/icons/common/graphics/hw-component.png"));
+            KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hw-component.png"));
     }
     else
     {
         usedHierarchicalComponentVLNVS_.append(selectedComponent->getVlnv().toString(":"));
 
         topComponentItem->setIcon(ViewConfigurerColumns::ITEM_VLNV,
-            QIcon(":/icons/common/graphics/hier-hw-component.png"));
+            KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hier-hw-component.png"));
     }
 
     topComponentItem->setText(ViewConfigurerColumns::ITEM_VLNV, selectedComponent->getVlnv().toString(":"));
@@ -177,7 +179,7 @@ void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDe
 
             instanceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 
-            instanceItem->setIcon(ViewConfigurerColumns::ITEM_VLNV, QIcon(":/icons/common/graphics/hw-component.png"));
+            instanceItem->setIcon(ViewConfigurerColumns::ITEM_VLNV, KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hw-component.png"));
 
             if (usedHierarchicalComponentVLNVS_.contains(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV)))
             {
@@ -229,7 +231,7 @@ void ViewConfigurer::checkInstanceDesign(QSharedPointer<Component> component, QS
                 if (viewDesign)
                 {
                     currentTreeItem->setIcon(ViewConfigurerColumns::ITEM_VLNV,
-                        QIcon(":/icons/common/graphics/hier-hw-component.png"));
+                        KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hier-hw-component.png"));
 
                     createChildTreeWidgetItems(viewDesign, viewDesignConfiguration, currentTreeItem);
 
@@ -290,7 +292,7 @@ void ViewConfigurer::onInstanceViewChanged(QTreeWidgetItem* changedItem, int col
     {
         changedItem->takeChildren();
 
-        changedItem->setIcon(ViewConfigurerColumns::ITEM_VLNV, QIcon(":/icons/common/graphics/hw-component.png"));
+        changedItem->setIcon(ViewConfigurerColumns::ITEM_VLNV, KactusUtils::getIconStyledToTheme(":/icons/common/graphics/hw-component.png"));
 
         QString itemVLNV = changedItem->text(ViewConfigurerColumns::ITEM_VLNV);
         VLNV componentVLNV (VLNV::COMPONENT, itemVLNV, ":");

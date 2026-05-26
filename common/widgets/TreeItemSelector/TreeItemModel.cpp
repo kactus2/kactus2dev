@@ -13,7 +13,7 @@
 
 #include "TreeItem.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: TreeItemModel::TreeItemModel()

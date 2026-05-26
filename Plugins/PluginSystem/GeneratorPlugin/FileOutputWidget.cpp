@@ -11,7 +11,7 @@
 
 #include "FileOutputWidget.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QFileDialog>
 #include <QVBoxLayout>

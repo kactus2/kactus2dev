@@ -261,13 +261,13 @@ protected:
     virtual int usageCountColumn() const = 0;
 
     /*!
-     *  Checks if the given column is mandatory.
+     *  Checks if the given index is mandatory.
      *
-     *    @param [in] column   The column to check.
+     *    @param [in] index   The index to check.
      *
-     *    @return True, if the column is mandatory, otherwise false.
+     *    @return True, if the index is mandatory, otherwise false.
      */
-    virtual bool isMandatoryColumn(int column) const;
+    bool indexIsMandatory(QModelIndex const& index) const override;
 
     /*!
      *  Validates the data in a parameter corresponding to a given column.

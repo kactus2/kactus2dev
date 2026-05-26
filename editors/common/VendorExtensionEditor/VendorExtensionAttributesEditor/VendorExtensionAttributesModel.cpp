@@ -11,7 +11,7 @@
 
 #include "VendorExtensionAttributesModel.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesColumns.h>
 
@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 VendorExtensionAttributesModel::VendorExtensionAttributesModel(GenericVendorExtension* genericExtension,
     QObject* parent) :
-QAbstractTableModel(parent),
+TableModelBase(parent),
 attributes_(genericExtension->getAttributes())
 {
 
@@ -96,19 +96,8 @@ QVariant VendorExtensionAttributesModel::data(const QModelIndex &index, int role
     {
         return valueForIndex(index);
     }
-    else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == VendorExtensionAttributesColumns::TYPE)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
 
-    return QVariant();
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -248,6 +237,16 @@ bool VendorExtensionAttributesModel::nameExistsInAttributes(QString const& attri
     }
 
     return false;
+}
+
+bool VendorExtensionAttributesModel::validateIndex(QModelIndex const& index) const
+{
+    return true;
+}
+
+bool VendorExtensionAttributesModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == VendorExtensionAttributesColumns::TYPE;
 }
 
 //-----------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 #include <QClipboard>
 #include <QMimeData>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: RegionsModel::RegionsModel()
@@ -136,22 +136,6 @@ QVariant RegionsModel::data( QModelIndex const& index, int role) const
     {
         return expressionOrValueForIndex(index);
     }
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == RegionColumns::NAME || index.column() ==  RegionColumns::OFFSET ||
-            index.column() == RegionColumns::RANGE)
-        {            
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-	else if (role == Qt::ForegroundRole)
-    {
-        return blackForValidOrRedForInvalidIndex(index);
-    }
     else if (role == Qt::ToolTipRole)
     {
         if (isValidExpressionColumn(index))
@@ -161,10 +145,8 @@ QVariant RegionsModel::data( QModelIndex const& index, int role) const
 
         return expressionOrValueForIndex(index);
     }
-	else // if unsupported role
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -463,6 +445,12 @@ void RegionsModel::onPasteRows()
             emit contentChanged();
         }
     }
+}
+
+bool RegionsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == RegionColumns::NAME || index.column() == RegionColumns::OFFSET ||
+        index.column() == RegionColumns::RANGE;
 }
 
 //-----------------------------------------------------------------------------

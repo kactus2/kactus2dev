@@ -65,7 +65,7 @@ the user's file is missing a requested value.
 Modifying the settings files manually is not recommended and should be done only by advanced 
 users. Most of the time all required changes can be applied in the Kactus2 GUI.
 
-In addition, Kactus2 uses the file **configure.cfg**for updating the users' settings when
+In addition, Kactus2 uses the file **upgrade.cfg** for updating the users' settings when
 new setting options are introduced in the tool. Please do not modify this file as it will
 break the compatibility with earlier versions.
 

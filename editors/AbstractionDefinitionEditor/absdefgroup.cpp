@@ -286,7 +286,6 @@ void AbsDefGroup::setupLayout()
     line->setFrameShadow(QFrame::Sunken);
     handleLayout->addWidget(line);
     
-    splitter->setStyleSheet(QStringLiteral("QSplitter::handle { background: white }"));
     splitter->setHandleWidth(18);
 
     topLayout->addWidget(splitter, 2, 0, 1, 2);

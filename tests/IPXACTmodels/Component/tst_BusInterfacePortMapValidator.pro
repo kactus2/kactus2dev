@@ -14,19 +14,28 @@ TEMPLATE = app
 TARGET = tst_BusInterfacePortMapValidator
 
 QT += core xml gui testlib
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
-linux-g++ | linux-g++-64 | linux-g++-32 {
- LIBS += -L../../../executable \
-     -lIPXACTmodels -lKactusAPI
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../../executable -lIPXACTmodelsd \
+        -L../../../executable -lKactusAPId
 
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_BusInterfacePortMapValidatord
+
+} else {
+    # release mode
+    LIBS += \
+        -L../../../executable -lIPXACTmodels \
+        -L../../../executable -lKactusAPI
+
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_BusInterfacePortMapValidator
 }
-win64 | win32 {
- LIBS += -L../../../executable \
-     -lIPXACTmodelsd -lKactusAPId
-}
-
-DESTDIR = ./release
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../
@@ -34,8 +43,4 @@ INCLUDEPATH += ../../../
 DEPENDPATH += .
 DEPENDPATH += ../../../
 
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_BusInterfacePortMapValidator.pri)

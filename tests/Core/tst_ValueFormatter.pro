@@ -11,20 +11,21 @@
 
 TEMPLATE = app
 
-TARGET = tst_ValueFormatter
-
 QT += core xml gui testlib
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 DEFINES += IPXACTMODELS_LIB
 
-win32:CONFIG(release, debug|release) {
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    DESTDIR = ./debug
-}
-else:unix {
-    DESTDIR = ./release
+CONFIG(debug, debug|release) {
+    # debug mode
+    MOC_DIR += ./GeneratedFiles/Debug
+    DESTDIR += Debug
+    TARGET = tst_ValueFormatterd
+
+} else {
+    # release mode
+    MOC_DIR += ./GeneratedFiles/Release
+    DESTDIR += Release
+    TARGET = tst_ValueFormatter
 }
 
 INCLUDEPATH += $$DESTDIR
@@ -34,8 +35,4 @@ DEPENDPATH += .
 DEPENDPATH += ../../
 
 OBJECTS_DIR += $$DESTDIR
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_ValueFormatter.pri)

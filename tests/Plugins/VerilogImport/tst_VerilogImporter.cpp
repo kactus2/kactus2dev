@@ -19,7 +19,7 @@
 
 #include <Plugins/VerilogImport/VerilogImporter.h>
 #include <Plugins/VerilogImport/VerilogSyntax.h>
-#include <ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 #include <common/NameGenerationPolicy.h>
 
 #include <IPXactSystemVerilogParser.h>
@@ -232,9 +232,9 @@ void tst_VerilogImporter::testPortIsHighlighted()
 
     int begin = fileContent.indexOf(portDeclaration);
     
-    verifyNotHighlightedBeforeDeclaration(begin, ImportColors::PORT);
-    verifyDeclarationIsHighlighted(begin, portDeclaration.length(), ImportColors::PORT);
-    verifyNotHighlightedAfterDeclartion(begin, portDeclaration.length(), ImportColors::PORT);
+    verifyNotHighlightedBeforeDeclaration(begin, KactusColors::Importer::PORT);
+    verifyDeclarationIsHighlighted(begin, portDeclaration.length(), KactusColors::Importer::PORT);
+    verifyNotHighlightedAfterDeclartion(begin, portDeclaration.length(), KactusColors::Importer::PORT);
 }
 
 //-----------------------------------------------------------------------------
@@ -435,9 +435,9 @@ void tst_VerilogImporter::testParameterIsHighlighted()
 
     int begin = fileContent.indexOf(parameterDeclaration);
 
-    verifyNotHighlightedBeforeDeclaration(begin, ImportColors::MODELPARAMETER);
-    verifyDeclarationIsHighlighted(begin, parameterDeclaration.length(), ImportColors::MODELPARAMETER);
-    verifyNotHighlightedAfterDeclartion(begin, parameterDeclaration.length(), ImportColors::MODELPARAMETER);
+    verifyNotHighlightedBeforeDeclaration(begin, KactusColors::Importer::MODELPARAMETER);
+    verifyDeclarationIsHighlighted(begin, parameterDeclaration.length(), KactusColors::Importer::MODELPARAMETER);
+    verifyNotHighlightedAfterDeclartion(begin, parameterDeclaration.length(), KactusColors::Importer::MODELPARAMETER);
 }
 
 //-----------------------------------------------------------------------------

@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QHeaderView>
 #include <QContextMenuEvent>
@@ -141,8 +141,8 @@ void AutoConnectorConnectionTable::checkDuplicateOrInvalidConnections()
         }
         else
         {
-            firstColItem->setForeground(KactusColors::ERROR);
-            secondColItem->setForeground(KactusColors::ERROR);
+            firstColItem->setForeground(KactusColors::ERROR_COLOR);
+            secondColItem->setForeground(KactusColors::ERROR_COLOR);
             containsInvalidRows_ = true;
         }
 
@@ -168,8 +168,8 @@ void AutoConnectorConnectionTable::checkDuplicateOrInvalidConnections()
 
         if (duplicateRows.contains({ firstColItem->text(), secondColItem->text() }))
         {
-            firstColItem->setForeground(KactusColors::ERROR);
-            secondColItem->setForeground(KactusColors::ERROR);
+            firstColItem->setForeground(KactusColors::ERROR_COLOR);
+            secondColItem->setForeground(KactusColors::ERROR_COLOR);
         }
     }
 }

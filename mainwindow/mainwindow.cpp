@@ -31,6 +31,8 @@
 #include <mainwindow/SaveHierarchy/DocumentTreeBuilder.h>
 #include <mainwindow/SaveHierarchy/SaveHierarchyDialog.h>
 
+#include <KactusAPI/include/KactusColors.h>
+#include <common/KactusUtils.h>
 #include <common/NameGenerationPolicy.h>
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
@@ -117,6 +119,7 @@
 #include <QPainter>
 #include <QDateTime>
 #include <QStatusBar>
+#include <QStyleHints>
 
 //-----------------------------------------------------------------------------
 // Function: MainWindow::MainWindow()
@@ -197,18 +200,8 @@ messageChannel_(messageChannel)
     resize(1024, 768);
     setWindowState(Qt::WindowMaximized);
 
-    QString defaultStyleSheet(
-        "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
-        "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
-        "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
-        "QGroupBox::title { subcontrol-origin: margin; margin: 0 8px; }"
-        "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"        
-        "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
-        "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
-        "QTableView::indicator:unchecked {image: none;}"
-        "QDockWidget::title {background-color: #89B6E2; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
-        "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
-    setStyleSheet(defaultStyleSheet);
+    // Set the main window theme
+    applyThemeToMainWindow();
 
     setupToolbars();
     setContextMenuPolicy(Qt::NoContextMenu);
@@ -797,13 +790,10 @@ void MainWindow::setupMenus()
 //-----------------------------------------------------------------------------
 void MainWindow::setupToolbars()
 {
-    QString toolbarStyle = "background-color: #DAE1E9";
-
     leftToolbar_->setObjectName("leftToolBar");
     leftToolbar_->setOrientation(Qt::Vertical);
     leftToolbar_->setMovable(false);
     leftToolbar_->setIconSize(QSize(32, 32));
-    leftToolbar_->setStyleSheet(toolbarStyle);
 
     addToolBar(Qt::LeftToolBarArea, leftToolbar_);
 
@@ -811,7 +801,6 @@ void MainWindow::setupToolbars()
     rightToolbar_->setOrientation(Qt::Vertical);
     rightToolbar_->setMovable(false);
     rightToolbar_->setIconSize(QSize(32, 32));
-    rightToolbar_->setStyleSheet(toolbarStyle);
 
     addToolBar(Qt::RightToolBarArea, rightToolbar_);
 }
@@ -1420,12 +1409,12 @@ void MainWindow::createNew()
     NewBusDefinitionPage* busPage = new NewBusDefinitionPage(libraryHandler_, &dialog);
     connect(busPage, SIGNAL(createBus(VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createBus(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/bus-def.png"), tr("Bus Definition"), busPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/bus-def.png"), tr("Bus Definition"), busPage);
 
     NewCatalogPage* catalogPage = new NewCatalogPage(libraryHandler_, &dialog);
     connect(catalogPage, SIGNAL(createCatalog(VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createCatalog(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/catalog.png"), tr("Catalog"), catalogPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/catalog.png"), tr("Catalog"), catalogPage);
 
     // Add pages to the dialog.
     NewComponentPage* compPage = new NewComponentPage(libraryHandler_, &dialog);
@@ -1433,39 +1422,39 @@ void MainWindow::createNew()
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)));
-    dialog.addPage(QIcon(":icons/common/graphics/hw-component.png"), tr("HW Component"), compPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/hw-component.png"), tr("HW Component"), compPage);
 
     NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
     connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
             QVector<TagData>, VLNV const&, Document::Revision, QString const&)));
-    dialog.addPage(QIcon(":icons/common/graphics/hw-design.png"), tr("HW Design"), designPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/hw-design.png"), tr("HW Design"), designPage);
 
     NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
     connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createSWComponent(VLNV const&, Document::Revision, QString const&)));
-    dialog.addPage(QIcon(":icons/common/graphics/sw-component48x48.png"), tr("SW Component"), swCompPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/sw-component48x48.png"), tr("SW Component"), swCompPage);
 
     NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
     connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, Document::Revision, QString const&)),
             this, SLOT(createSWDesign(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/sw-design48x48.png"), tr("SW Design"), swDesignPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/sw-design48x48.png"), tr("SW Design"), swDesignPage);
 
     NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
     connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, Document::Revision, QString const&)));
-    dialog.addPage(QIcon(":icons/common/graphics/system-component.png"), tr("System"), sysPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/system-component.png"), tr("System"), sysPage);
 
     NewApiDefinitionPage* apiDefPage = new NewApiDefinitionPage(libraryHandler_, &dialog);
     connect(apiDefPage, SIGNAL(createApiDefinition(VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createApiDefinition(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
 
     NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);
     connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, Document::Revision, QString const&)),
             this, SLOT(createComDefinition(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
+    dialog.addPage(KactusUtils::getIconStyledToTheme(":icons/common/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
 
     dialog.finalizePages();
 
@@ -2657,6 +2646,14 @@ void MainWindow::onInterconnectGenerate()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MainWindow::onPaletteChanged()
+//-----------------------------------------------------------------------------
+void MainWindow::onPaletteChanged()
+{
+    // TODO handle theme change (dark => light / light => dark)
+}
+
+//-----------------------------------------------------------------------------
 // Function: mainwindow::onOpenComponentItem()
 //-----------------------------------------------------------------------------
 void MainWindow::onOpenComponentItem(const VLNV& componentVLNV, QVector<QString> identifierChain)
@@ -3629,9 +3626,6 @@ void MainWindow::runComponentWizard(QSharedPointer<Component> component, QString
     // Open the component wizard.
     ComponentWizard wizard(component, directory, libraryHandler_, this);
 
-    QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
-    wizard.setStyleSheet(styleSheet);
-
     if (wizard.exec() == QDialog::Accepted)
     {
         // Save wizard changes.
@@ -3732,6 +3726,58 @@ void MainWindow::setPluginVisibilities()
     }
 
     generationAction_->setVisible(isGenerationGroupVisible && doc);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::applyThemeToMainWindow()
+//-----------------------------------------------------------------------------
+void MainWindow::applyThemeToMainWindow()
+{
+    // Get current theme
+    auto appStyle = QApplication::style()->name();
+    QString appStyleSheet;
+
+    auto dockWidgetTitleColorRGB = KactusUtils::colorToRgbString(KactusColors::DOCK_WIDGET_TITLE_BG);
+    auto tableGridlineColorRGB = KactusUtils::colorToRgbString(KactusColors::TABLE_GRIDLINE);
+    auto mandatoryFieldColorRGB = KactusUtils::colorToRgbString(KactusColors::MANDATORY_FIELD);
+
+    // Dark mode is not enabled for windows vista style
+    if (KactusUtils::darkThemeEnabled() && appStyle.compare("windowsvista") != 0)
+    {
+        auto textEditBorderColorRGB = tableGridlineColorRGB;
+        appStyleSheet =
+            "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
+            "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
+            "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
+            "QGroupBox::title { subcontrol-origin: margin; margin: 0 8px; }"
+            "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"
+            "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
+            "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
+            "QTableView::indicator:unchecked {image: none;}"
+            "QDockWidget::title {background-color: " % dockWidgetTitleColorRGB % "; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
+            "*[mandatoryField=\"true\"] { background-color: " % mandatoryFieldColorRGB % "; color: Black }" // force mandatory field text color to black for visibility
+            "QTableView { gridline-color: " % tableGridlineColorRGB % " }"
+            "QPlainTextEdit { border: 1px solid " % textEditBorderColorRGB % "; }"
+            "QLineEdit { border: 1px solid " % textEditBorderColorRGB % "; border-radius: 3px }"
+            "QTextEdit { border: 1px solid " % textEditBorderColorRGB % "; border-radius: 3px }";
+    }
+    else
+    {
+        // Light theme. Classic Kactus2 look
+        appStyleSheet =
+            "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
+            "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
+            "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
+            "QGroupBox::title { subcontrol-origin: margin; margin: 0 8px; }"
+            "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"
+            "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
+            "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
+            "QTableView::indicator:unchecked {image: none;}"
+            "QDockWidget::title {background-color: "% dockWidgetTitleColorRGB %"; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
+            "*[mandatoryField=\"true\"] { background-color: "% mandatoryFieldColorRGB %"; }";
+    }
+
+    setStyleSheet(appStyleSheet);
 }
 
 //-----------------------------------------------------------------------------

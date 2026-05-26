@@ -220,6 +220,9 @@
     <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateConfigurer.cpp">
       <Filter>Source Files\CPUDialog\TemplateEditor</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\KactusUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
@@ -372,6 +375,9 @@
     </ClInclude>
     <ClInclude Include="CPUDialog\TemplateEditor\PeripheralTemplateConfigurer.h">
       <Filter>Header Files\CPUDialog\TemplateEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\KactusUtils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

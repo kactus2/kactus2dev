@@ -13,7 +13,7 @@
 #include "QuartusPinImportPlugin.h"
 #include "QuartusPinSyntax.h"
 
-#include <KactusAPI/include/ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
@@ -172,7 +172,7 @@ void QuartusPinImportPlugin::createPort(QString const& line, QSharedPointer<Comp
     if (highlighter_)
     {
         highlighter_->applyFontColor(line, Qt::black);
-        highlighter_->applyHighlight(line, ImportColors::PORT);
+        highlighter_->applyHighlight(line, KactusColors::Importer::PORT);
     }
 
     QRegularExpressionMatch lineMatch = QuartusPinSyntax::pinDefinition.match(line);

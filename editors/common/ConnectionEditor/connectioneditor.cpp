@@ -14,6 +14,7 @@
 #include "AdHocBoundColumns.h"
 
 #include <common/IEditProvider.h>
+#include <common/KactusUtils.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/ComponentItem.h>
 
@@ -28,6 +29,7 @@
 #include <KactusAPI/include/LibraryInterface.h>
 #include <KactusAPI/include/ListParameterFinder.h>
 #include <KactusAPI/include/ParameterConfigurableElementFinder.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/Vector.h>
@@ -52,6 +54,7 @@
 #include <QList>
 #include <QStringList>
 #include <QSortFilterProxyModel>
+#include <QStringBuilder>
 
 //-----------------------------------------------------------------------------
 // Function: ConnectionEditor::ConnectionEditor()
@@ -98,9 +101,10 @@ connectionTypeTable_(new QStackedWidget())
 	portWidget_.horizontalHeader()->setStretchLastSection(true);
 	portWidget_.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	portWidget_.verticalHeader()->hide();
-	portWidget_.setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-	descriptionEdit_.setMaximumHeight(50);
+    portWidget_.setEditTriggers(QAbstractItemView::NoEditTriggers);
+    portWidget_.setStyleSheet("QTableWidget::item { color: " % KactusUtils::colorToRgbString(KactusColors::REGULAR_TEXT) % "};");
+    
+    descriptionEdit_.setMaximumHeight(50);
 
     // Set settings for the table view.
     adHocBoundsTable_.setSortingEnabled(true);
@@ -170,7 +174,7 @@ void ConnectionEditor::clear()
 void ConnectionEditor::refresh()
 {
 	Q_ASSERT(connection_);
-	setConnection(connection_, diagram_);
+    setConnection(connection_, diagram_);
 }
 
 //-----------------------------------------------------------------------------

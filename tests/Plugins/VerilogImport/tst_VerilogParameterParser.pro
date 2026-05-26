@@ -11,34 +11,38 @@
 
 TEMPLATE = app
 
-TARGET = tst_VerilogParameterParser
-
 QT += core xml gui testlib
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
-win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
-}
-else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
-    DESTDIR = ./debug
-}
-else:unix {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
-    DESTDIR = ./release
+INCLUDEPATH += ../../../ \
+    ./GeneratedFiles \
+    .
+
+CONFIG(debug, debug|release) {
+    # debug mode
+    LIBS += \
+        -L../../../executable -lIPXACTmodelsd \
+        -L../../../executable -lKactusAPId
+
+    MOC_DIR += ./GeneratedFiles/Debug
+    OBJECTS_DIR += Debug
+    TARGET = tst_VerilogParameterParserd
+
+} else {
+    # release mode 
+    LIBS += \
+        -L../../../executable -lIPXACTmodels \
+        -L../../../executable -lKactusAPI
+    
+    MOC_DIR += ./GeneratedFiles/Release
+    OBJECTS_DIR += Release
+    TARGET = tst_VerilogParameterParser
 }
 
 INCLUDEPATH += $$DESTDIR
-INCLUDEPATH += ../../..
-INCLUDEPATH += $$PWD/../../../KactusAPI/include
+INCLUDEPATH += ../../../KactusAPI/include
 
 DEPENDPATH += .
 DEPENDPATH += ../../../
 
-OBJECTS_DIR += $$DESTDIR
-
-MOC_DIR += ./generatedFiles
-UI_DIR += ./generatedFiles
-RCC_DIR += ./generatedFiles
 include(tst_VerilogParameterParser.pri)

@@ -12,7 +12,7 @@
 #include "AddressableItem.h"
 #include "memorygapitem.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 

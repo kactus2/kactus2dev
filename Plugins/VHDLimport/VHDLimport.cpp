@@ -15,7 +15,7 @@
 #include <QRegularExpression>
 #include <QList>
 
-#include <KactusAPI/include/ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/ModuleParameter.h>
@@ -226,7 +226,7 @@ void VHDLimport::highlightEntity(QString const& fileContent) const
     if (highlighter_)
     {
         QRegularExpressionMatch match = ENTITY_EXP.match(fileContent);
-        highlighter_->applyFontColor(match.captured(), Qt::black);
+        highlighter_->applyFontColor(match.captured(), KactusColors::REGULAR_TEXT);
     }
 }
 
@@ -274,8 +274,8 @@ void VHDLimport::highlightArchitecture(QRegularExpressionMatch const& architectu
 {
     if (highlighter_)
     {
-        highlighter_->applyFontColor(architectureExp.captured(0), Qt::black);
-        highlighter_->applyHighlight(architectureExp.captured(1), ImportColors::VIEWNAME);
+        highlighter_->applyFontColor(architectureExp.captured(0), KactusColors::REGULAR_TEXT);
+        highlighter_->applyHighlight(architectureExp.captured(1), KactusColors::Importer::VIEWNAME);
     }
 }
 
@@ -287,7 +287,7 @@ void VHDLimport::highlightConfiguration(QRegularExpressionMatch const& configura
     if (highlighter_)
     {
         highlighter_->applyFontColor(configurationExp.captured(0), Qt::black);
-        highlighter_->applyHighlight(configurationExp.captured(2), ImportColors::VIEWNAME);
+        highlighter_->applyHighlight(configurationExp.captured(2), KactusColors::Importer::VIEWNAME);
     }
 }
 

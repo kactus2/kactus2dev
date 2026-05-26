@@ -18,7 +18,7 @@
 
 #include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QHeaderView>
 #include <QPainter>
@@ -741,7 +741,7 @@ void FileDependencyGraphView::drawDependencyGraph(QPainter& painter, QRect const
                         }
                         else if (dep.dependency->getStatus() == FileDependency::STATUS_REMOVED)
                         {
-                            color = KactusColors::ERROR;
+                            color = KactusColors::ERROR_COLOR;
                         }
                     }
 

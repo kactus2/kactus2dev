@@ -15,7 +15,7 @@
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 
 #include <QApplication>
@@ -28,7 +28,7 @@
 EnumeratedValueModel::EnumeratedValueModel(
     QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumeratedValues,
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator, QObject *parent):
-QAbstractTableModel(parent),
+TableModelBase(parent),
     enumValues_(enumeratedValues),
     enumeratedValueValidator_(enumeratedValueValidator)
 {
@@ -135,34 +135,7 @@ QVariant EnumeratedValueModel::data( const QModelIndex& index, int role /*= Qt::
         return valueForIndex(index);
 	}
 
-	else if (Qt::ForegroundRole == role)
-    {
-        if (enumeratedValueValidator_->validate(enumValues_->at(index.row())))
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-        else
-        {
-            return KactusColors::ERROR;
-        }
-	}
-
-	else if (Qt::BackgroundRole == role)
-    {
-        if (index.column() == EnumeratedValueColumns::NAME_COLUMN ||
-            index.column() == EnumeratedValueColumns::VALUE_COLUMN)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-	}
-	else
-    {
-		return QVariant();
-	}
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -267,6 +240,17 @@ void EnumeratedValueModel::onRemoveItem( const QModelIndex& index )
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool EnumeratedValueModel::validateIndex(QModelIndex const& index) const
+{
+    return enumeratedValueValidator_->validate(enumValues_->at(index.row()));
+}
+
+bool EnumeratedValueModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == EnumeratedValueColumns::NAME_COLUMN ||
+        index.column() == EnumeratedValueColumns::VALUE_COLUMN;
 }
 
 //-----------------------------------------------------------------------------

@@ -15,7 +15,7 @@
 
 #include <common/expressions/utilities.h>
 
-#include <KactusAPI/include//ImportColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 #include <KactusAPI/include/NullParser.h>
@@ -367,7 +367,7 @@ void VerilogPortParser::highlight(QString const& portDeclaration, QString const&
 {
     if (highlighter_)
     {
-        highlighter_->applyHighlight(portDeclaration, ImportColors::PORT, componentDeclaration);
+        highlighter_->applyHighlight(portDeclaration, KactusColors::Importer::PORT, componentDeclaration);
     }
 }
 

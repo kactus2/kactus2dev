@@ -14,7 +14,7 @@
 #include <QStyle>
 #include <QPalette>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: LineEditEx::LineEditEx()

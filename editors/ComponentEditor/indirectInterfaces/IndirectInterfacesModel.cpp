@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QCoreApplication>
 #include <QMap>
@@ -34,7 +34,7 @@
 IndirectInterfacesModel::IndirectInterfacesModel(QSharedPointer<Component> component,
     QSharedPointer<IndirectInterfaceValidator> validator,
     QObject *parent):
-QAbstractTableModel(parent),
+TableModelBase(parent),
     component_(component),
     indirectInterfaces_(component->getIndirectInterfaces()),
     validator_(validator)
@@ -195,61 +195,14 @@ QVariant IndirectInterfacesModel::data(QModelIndex const& index, int role) const
     }
 	else if (role == Qt::ForegroundRole)
     {
-        if (index.column() == IndirectInterfaceColumns::NAME &&
-            validator_->hasValidName(indirectInterface))
+        if (index.column() == IndirectInterfaceColumns::TRANSPARENT_BRIDGES &&
+            validator_->hasValidTransparentBridges(indirectInterface->getTransparentBridges()) == false)
         {
-            return KactusColors::REGULAR_TEXT;     
-        }
-        else if (index.column() == IndirectInterfaceColumns::DISPLAY_NAME)
-        {
-            return KactusColors::REGULAR_TEXT;   
-        }
-        else if (index.column() == IndirectInterfaceColumns::INDIRECT_ADDRESS_REF && 
-            validator_->hasValidAddressReference(indirectInterface))
-        {
-            return KactusColors::REGULAR_TEXT;  
-        }
-        else if (index.column() == IndirectInterfaceColumns::INDIRECT_DATA_REF && 
-            validator_->hasValidDataReference(indirectInterface))
-        {
-            return KactusColors::REGULAR_TEXT;  
-        }
-        else if (index.column() == IndirectInterfaceColumns::MEMORY_MAP_REF && 
-            validator_->hasValidMemoryMapReference(indirectInterface))
-        {
-            return KactusColors::REGULAR_TEXT;  
-        }
-        else if (index.column() == IndirectInterfaceColumns::TRANSPARENT_BRIDGES &&
-            validator_->hasValidTransparentBridges(indirectInterface->getTransparentBridges()))
-        {
-            return KactusColors::DISABLED_TEXT;  
-        }
-        else if (index.column() == IndirectInterfaceColumns::DESCRIPTION)
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-        else
-        {
-            return KactusColors::ERROR;
+            return KactusColors::DISABLED_TEXT;
         }
 	}
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == IndirectInterfaceColumns::NAME ||
-            index.column() == IndirectInterfaceColumns::INDIRECT_ADDRESS_REF ||
-            index.column() == IndirectInterfaceColumns::INDIRECT_DATA_REF)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-	}
-	else 
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -349,4 +302,35 @@ void IndirectInterfacesModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool IndirectInterfacesModel::validateIndex(QModelIndex const& index) const
+{
+    auto indirectInterface = indirectInterfaces_->at(index.row());
+
+    if (index.column() == IndirectInterfaceColumns::NAME)
+    {
+        return validator_->hasValidName(indirectInterface);     
+    }
+    else if (index.column() == IndirectInterfaceColumns::INDIRECT_ADDRESS_REF)
+    {
+        return validator_->hasValidAddressReference(indirectInterface);  
+    }
+    else if (index.column() == IndirectInterfaceColumns::INDIRECT_DATA_REF)
+    {
+        return validator_->hasValidDataReference(indirectInterface);  
+    }
+    else if (index.column() == IndirectInterfaceColumns::MEMORY_MAP_REF)
+    {
+        return validator_->hasValidMemoryMapReference(indirectInterface);  
+    }
+
+    return true;
+}
+
+bool IndirectInterfacesModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == IndirectInterfaceColumns::NAME ||
+        index.column() == IndirectInterfaceColumns::INDIRECT_ADDRESS_REF ||
+        index.column() == IndirectInterfaceColumns::INDIRECT_DATA_REF;
 }

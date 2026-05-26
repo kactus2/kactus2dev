@@ -172,6 +172,9 @@
     <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\KactusUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="SVDGeneratorPlugin.h">
@@ -282,6 +285,9 @@
     </ClInclude>
     <ClInclude Include="..\common\SingleCpuRoutesContainer.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\KactusUtils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

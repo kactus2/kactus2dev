@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 #include <KactusAPI/include/ComponentInstantiationInterface.h>
@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 ComponentInstantiationsModel::ComponentInstantiationsModel(QSharedPointer<ParameterFinder> finder,
     ComponentInstantiationInterface* instantiationInterface, QObject* parent):
-QAbstractTableModel(parent),
+TableModelBase(parent),
 parameterFinder_(finder),
 instantiationInterface_(instantiationInterface)
 {
@@ -169,33 +169,8 @@ QVariant ComponentInstantiationsModel::data(QModelIndex const& index, int role) 
             return QVariant();
         }
 	}
-	else if (role == Qt::ForegroundRole)
-    {
-        if (index.column() == ComponentInstantiationsColumns::NAME &&
-            !instantiationInterface_->itemHasValidName(instantiationName))
-        {
-            return KactusColors::ERROR;
-        }
-        else
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-	}
-	else if (role == Qt::BackgroundRole)
-    {
-        if (index.column() == ComponentInstantiationsColumns::NAME)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-        else
-        {
-            return KactusColors::REGULAR_FIELD;
-        }
-    }
-    else 
-    {
-		return QVariant();
-	}
+
+    return TableModelBase::data(index, role);
 }
 
 //-----------------------------------------------------------------------------
@@ -291,6 +266,24 @@ void ComponentInstantiationsModel::onRemoveItem(QModelIndex const& index)
 
 	emit componentInstantiationRemoved(index.row());
 	emit contentChanged();
+}
+
+bool ComponentInstantiationsModel::validateIndex(QModelIndex const& index) const
+{
+    std::string instantiationName = instantiationInterface_->getIndexedItemName(index.row());
+
+    if (index.column() == ComponentInstantiationsColumns::NAME &&
+        !instantiationInterface_->itemHasValidName(instantiationName))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool ComponentInstantiationsModel::indexIsMandatory(QModelIndex const& index) const
+{
+    return index.column() == ComponentInstantiationsColumns::NAME;
 }
 
 //-----------------------------------------------------------------------------

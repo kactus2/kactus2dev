@@ -14,8 +14,9 @@
 
 #include "LibraryInterface.h"
 #include "LibraryLoader.h"
-#include "LibraryTreeModel.h"
-#include "hierarchymodel.h"
+#include "LibraryModel.h"
+
+#include "HierarchyModelBase.h"
 
 #include "NullChannel.h"
 #include "utils.h"
@@ -61,6 +62,23 @@ public:
     ~LibraryHandler() final = default;
 
     void setOutputChannel(MessageMediator* messageChannel);
+
+    /*!
+     *  Replace the library model.
+     *  Kactus2 initializes library as non-gui library by default. This method can be called
+     *  to replace base LibraryModel with LibraryTreeModel if Kactus is started in GUI mode.
+     *
+     *    @param[in] model   The replacing model
+     */
+    void replaceModel(LibraryModel* model);
+
+    /*!
+     *  Replace the library hierarchy model.
+     *  E.g. replace base HierarchyModelBase with HierarchyModel if using Kactus in GUI mode.
+     *
+     *    @param[in] model   The replacing model
+     */
+    void replaceHierarchyModel(HierarchyModelBase* model);
 
     /*! Get a model that matches given VLNV.
      *
@@ -249,9 +267,9 @@ public:
     */
     bool isValid(VLNV const& vlnv) final;
 
-    HierarchyModel* getHierarchyModel();
+    HierarchyModelBase* getHierarchyModel();
 
-    LibraryTreeModel* getTreeModel();
+    LibraryModel* getTreeModel();
 
     /*!
      *  Find errors in the given document.
@@ -569,10 +587,11 @@ private:
     DocumentValidator validator_{ this };
 
     //! The model for the tree view
-    LibraryTreeModel treeModel_{ this, this };
+    //! Use non-gui model by default.
+    QScopedPointer<LibraryModel> treeModel_ = QScopedPointer<LibraryModel>{ new LibraryModel(this) };
 
     //! The model for the hierarchy view
-    HierarchyModel hierarchyModel_{ this, this };
+    QScopedPointer<HierarchyModelBase> hierarchyModel_ = QScopedPointer<HierarchyModelBase>(new HierarchyModelBase{ this, this });
 
     //! If true then items are being saved and library is not refreshed
     bool saveInProgress_{ false };

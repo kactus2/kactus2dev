@@ -10,24 +10,25 @@
 //-----------------------------------------------------------------------------
 
 #include "hierarchywidget.h"
-#include "hierarchymodel.h"
 #include "hierarchyitem.h"
+
+#include <library/HierarchyModel.h>
 
 #include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyWidget::HierarchyWidget()
 //-----------------------------------------------------------------------------
-HierarchyWidget::HierarchyWidget(LibraryInterface* handler, HierarchyModel* dataModel, QWidget *parent):
+HierarchyWidget::HierarchyWidget(LibraryInterface* handler, HierarchyModelBase* dataModel, QWidget *parent):
 QWidget(parent), 
 filter_(new HierarchyFilter(handler, this)),
 view_(this, handler, filter_),
 model_(dataModel)
 {
 	Q_ASSERT_X(handler, "HierarchyWidget constructor", "Null LibraryInterface pointer given as parameter");
-	Q_ASSERT_X(dataModel, "HierarchyWidget constructor", "Null HierarchyModel pointer given as parameter");
-
-	QHBoxLayout* layout = new QHBoxLayout(this);
+	Q_ASSERT_X(dataModel, "HierarchyWidget constructor", "Null HierarchyModelBase pointer given as parameter");
+    
+    QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
@@ -99,7 +100,7 @@ void HierarchyWidget::onSearchTextChanged(QString const& text)
 //-----------------------------------------------------------------------------
 // Function: HierarchyWidget::setupConnections()
 //-----------------------------------------------------------------------------
-void HierarchyWidget::setupConnections(HierarchyModel* dataModel)
+void HierarchyWidget::setupConnections(HierarchyModelBase* dataModel)
 {
     connect(&view_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);

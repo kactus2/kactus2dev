@@ -10,8 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "Ribbon.h"
-#include "RibbonTheme.h"
 #include "RibbonGroup.h"
+
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QPainter>
 #include <QResizeEvent>
@@ -51,6 +52,6 @@ void Ribbon::paintEvent(QPaintEvent* /*event*/)
 {
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing);
-    painter.fillRect(rect(), RibbonTheme::GRADIENTBOTTOM);
+    painter.fillRect(rect(), KactusColors::RIBBON_GRADIENT_BOTTOM);
 }
 

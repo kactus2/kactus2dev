@@ -11,7 +11,8 @@ HEADERS += ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryB
     ../../editors/ComponentEditor/visualization/memorygapitem.h \
     ../../editors/ComponentEditor/visualization/memoryvisualizationitem.h \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
-    ../../common/graphicsItems/visualizeritem.h
+    ../../common/graphicsItems/visualizeritem.h \
+    ../../common/KactusUtils.h
 SOURCES += ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.cpp \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ../../common/graphicsItems/expandableitem.cpp \
@@ -22,4 +23,5 @@ SOURCES += ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryB
     ../../editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
     ../../common/graphicsItems/visualizeritem.cpp \
+    ../../common/KactusUtils.cpp \
     ./tst_AddressBlockGraphItem.cpp

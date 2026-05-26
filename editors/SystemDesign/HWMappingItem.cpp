@@ -20,7 +20,7 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>

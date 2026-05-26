@@ -12,7 +12,8 @@
 #ifndef COMPROPERTYMODEL_H
 #define COMPROPERTYMODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
+
 #include <QMap>
 #include <QList>
 #include <QString>
@@ -23,7 +24,7 @@ class ComProperty;
 //-----------------------------------------------------------------------------
 //! ComPropertyModel class.
 //-----------------------------------------------------------------------------
-class ComPropertyModel : public QAbstractTableModel
+class ComPropertyModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -142,8 +143,26 @@ private:
     // Disable copying.
     ComPropertyModel(ComPropertyModel const& rhs);
     ComPropertyModel& operator=(ComPropertyModel const& rhs);
-    
-    //! IP address regular expression string.
+
+	/*!
+     *  Validates the data in an index.
+     *
+     *    @param [in] index   The index whose data to validate
+     *
+     *    @return True, if the data in the index is valid, otherwise false.
+     */
+    bool validateIndex(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
+	
+	//! IP address regular expression string.
 	static QString const IP_ADDRESS_REGEX;
 
 	//! Time unit regular expression string.

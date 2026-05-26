@@ -173,7 +173,16 @@ private:
     //! No copying. No assignment.
     ResetsModel(const ResetsModel& other);
     ResetsModel& operator=(const ResetsModel& other);
-    
+
+    /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const final;
+
     /*!
      *  Get the formatted value of an expression in the selected index.
      *

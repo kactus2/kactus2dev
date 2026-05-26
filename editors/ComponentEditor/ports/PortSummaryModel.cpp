@@ -87,7 +87,7 @@ bool PortSummaryModel::setData(QModelIndex const& index, QVariant const& value, 
 
 	if (role == Qt::EditRole)
     {
-        if (isLocked(index))
+        if (indexedItemIsLocked(index))
         {
             return false;
         }
@@ -281,9 +281,9 @@ bool PortSummaryModel::indexedItemIsDisabled(QModelIndex const& index) const
  }
 
 //-----------------------------------------------------------------------------
-// Function: PortSummaryModel::indexedItemIsMandatory()
+// Function: PortSummaryModel::indexIsMandatory()
 //-----------------------------------------------------------------------------
-bool PortSummaryModel::indexedItemIsMandatory(QModelIndex const& index) const
+bool PortSummaryModel::indexIsMandatory(QModelIndex const& index) const
 {
     return index.column() == PortSummaryColumns::NAME;
 }

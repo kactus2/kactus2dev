@@ -15,6 +15,8 @@
 
 #include <common/IEditProvider.h>
 
+#include <KactusAPI/include/KactusColors.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
@@ -296,6 +298,9 @@ void DesignDiagram::onBeginAssociation(Associable* startingPoint)
 
     QPointF start = startingPoint->connectionPoint();
     associationLine_ = new QGraphicsLineItem(QLineF(start, start));
+    auto pen = associationLine_->pen();
+    pen.setColor(KactusColors::ASSOCIATION_LINE);
+    associationLine_->setPen(pen);
     addItem(associationLine_);
 }
 
@@ -327,7 +332,7 @@ QStringList DesignDiagram::getUsedInstanceNames() const
 void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 {
     painter->setWorldMatrixEnabled(true);
-    painter->setPen(QPen(Qt::gray, 0));
+    painter->setPen(QPen(KactusColors::DIAGRAM_GRID, 0));
 
     qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
     qreal top = int(rect.top()) - (int(rect.top()) % GridSize );

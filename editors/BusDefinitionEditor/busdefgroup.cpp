@@ -290,7 +290,6 @@ void BusDefGroup::setupLayout()
     line->setFrameShadow(QFrame::Sunken);
     handleLayout->addWidget(line);
 
-    splitter->setStyleSheet(QStringLiteral("QSplitter::handle { background: white }"));
     splitter->setHandleWidth(18);
 
     rootLayout->addWidget(splitter);

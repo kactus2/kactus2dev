@@ -315,6 +315,8 @@
     <ClInclude Include="include\InterconnectRTLWriter.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\KactusColors.h">
+    </ClInclude>
     <ClInclude Include="include\ParameterConfigurableElementFinder.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
@@ -506,13 +508,7 @@
     <ClCompile Include="utilities\utils.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="library\hierarchymodel.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
     <ClCompile Include="library\LibraryItem.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\LibraryTreeModel.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
     <ClCompile Include="library\hierarchyitem.cpp">
@@ -548,8 +544,17 @@
     <ClCompile Include="plugins\InterconnectGenerator\InterconnectRTLWriter.cpp">
       <Filter>Source Files\plugins\InterconnectGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="utilities\KactusColors.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
     <ClCompile Include="expressions\ParameterConfigurableElementFinder.cpp">
       <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryModel.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\HierarchyModelBase.cpp">
+      <Filter>Source Files\library</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -576,16 +581,16 @@
     <QtMoc Include="include\hierarchyitem.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
-    <QtMoc Include="include\hierarchymodel.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
-    <QtMoc Include="include\LibraryTreeModel.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
     <QtMoc Include="include\LibraryItem.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\ComponentInstanceParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\LibraryModel.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\HierarchyModelBase.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
   </ItemGroup>

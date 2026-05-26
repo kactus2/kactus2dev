@@ -16,10 +16,10 @@
 #include <IPXACTmodels/common/TagData.h>
 
 #include <QGroupBox>
-#include <QComboBox>
 #include <QLabel>
 
 class TagContainer;
+class QComboBox;
 
 //-----------------------------------------------------------------------------
 //! KactusAttributeEditor class.

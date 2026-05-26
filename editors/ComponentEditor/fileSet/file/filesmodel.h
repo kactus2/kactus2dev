@@ -12,7 +12,8 @@
 #ifndef FILESMODEL_H
 #define FILESMODEL_H
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
+
 #include <QList>
 #include <QSharedPointer>
 
@@ -25,7 +26,7 @@ class FileInterface;
 //-----------------------------------------------------------------------------
 //! The model that contains the files to edit in files summary editor.
 //-----------------------------------------------------------------------------
-class FilesModel : public QAbstractTableModel
+class FilesModel : public TableModelBase
 {
 	Q_OBJECT
 
@@ -192,9 +193,28 @@ signals:
     void fileRenamed(std::string const& oldName, std::string const& newName);
 
 private:
+
 	//! No copying
 	FilesModel(const FilesModel& other);
 	FilesModel& operator=(const FilesModel& other);
+
+	/*!
+	*  Checks if the given index is marked mandatory.
+	*
+	*    @param[in] index   Model index to check.
+	*
+	*    @return True, if the index is a mandatory item, otherwise false.
+	*/
+	bool indexIsMandatory(QModelIndex const& index) const override;
+
+	/*!
+	*  Validates the data in an index.
+	*
+	*    @param [in] index   The index whose data to validate
+	*
+	*    @return True, if the data in the index is valid, otherwise false.
+	*/
+	bool validateIndex(QModelIndex const& index) const override;
 
     /*!
      *  Get the file types of the selected file as a combined string.

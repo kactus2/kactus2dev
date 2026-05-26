@@ -13,7 +13,7 @@
 #include "AdHocVisibilityColumns.h"
 
 #include <common/IEditProvider.h>
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/HWDesign/HWComponentItem.h>
 #include <editors/HWDesign/AdHocEnabled.h>

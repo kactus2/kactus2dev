@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/Cpu.h>
 
 #include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
+#include <common/KactusUtils.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -129,7 +130,7 @@ void CPUSelectionDialog::setupLayout()
     filesetLayout->addWidget(fileSetSelection_);
     fileSetBox_->setLayout(filesetLayout);
 
-	auto openFolderButton(new QPushButton(QIcon(":/icons/common/graphics/opened-folder.png"), QString(), this));
+	auto openFolderButton(new QPushButton(KactusUtils::getIconStyledToTheme(":/icons/common/graphics/opened-folder.png"), QString(), this));
 
     connect(openFolderButton, SIGNAL(clicked()), this, SLOT(onChangeTargetFolder()), Qt::UniqueConnection);
 

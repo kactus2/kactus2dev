@@ -45,7 +45,7 @@
     <ClInclude Include="include\FileInterface.h" />
     <ClInclude Include="include\FileSetInterface.h" />
     <QtMoc Include="include\hierarchyitem.h" />
-    <QtMoc Include="include\hierarchymodel.h" />
+    <QtMoc Include="include\HierarchyModelBase.h" />
     <ClInclude Include="include\Highlighter.h" />
     <ClInclude Include="include\HighlightSource.h" />
     <ClInclude Include="include\IGeneratorPlugin.h" />
@@ -61,10 +61,11 @@
     <ClInclude Include="include\IPluginUtility.h" />
     <ClInclude Include="include\IPXactSystemVerilogParser.h" />
     <QtMoc Include="include\LibraryHandler.h" />
+    <ClInclude Include="include\KactusColors.h" />
     <ClInclude Include="include\LibraryInterface.h" />
     <QtMoc Include="include\LibraryItem.h" />
     <ClInclude Include="include\LibraryLoader.h" />
-    <QtMoc Include="include\LibraryTreeModel.h" />
+    <QtMoc Include="include\LibraryModel.h" />
     <ClInclude Include="include\ListFinder.h" />
     <ClInclude Include="include\ListHelper.h" />
     <ClInclude Include="include\ListParameterFinder.h" />
@@ -169,11 +170,11 @@
     <ClCompile Include="library\DocumentFileAccess.cpp" />
     <ClCompile Include="library\DocumentValidator.cpp" />
     <ClCompile Include="library\hierarchyitem.cpp" />
-    <ClCompile Include="library\hierarchymodel.cpp" />
+    <ClCompile Include="library\HierarchyModelBase.cpp" />
     <ClCompile Include="library\LibraryHandler.cpp" />
     <ClCompile Include="library\LibraryItem.cpp" />
     <ClCompile Include="library\LibraryLoader.cpp" />
-    <ClCompile Include="library\LibraryTreeModel.cpp" />
+    <ClCompile Include="library\LibraryModel.cpp" />
     <ClCompile Include="library\TagManager.cpp" />
     <ClCompile Include="plugins\ImportHighlighter.cpp" />
     <ClCompile Include="plugins\ImportRunner.cpp" />
@@ -184,6 +185,7 @@
     <ClCompile Include="plugins\PluginUtilityAdapter.cpp" />
     <ClCompile Include="utilities\ConsoleMediator.cpp" />
     <ClCompile Include="utilities\FileHandler.cpp" />
+    <ClCompile Include="utilities\KactusColors.cpp" />
     <ClCompile Include="utilities\NullChannel.cpp" />
     <ClCompile Include="utilities\utils.cpp" />
     <ClCompile Include="utilities\VersionHelper.cpp" />

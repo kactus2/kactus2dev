@@ -14,7 +14,7 @@
 #include <QMenu>
 #include <QPainter>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: EditableListView::EditableListView()

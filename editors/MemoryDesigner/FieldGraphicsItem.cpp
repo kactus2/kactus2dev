@@ -11,7 +11,7 @@
 
 #include "FieldGraphicsItem.h"
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <editors/MemoryDesigner/MemoryItem.h>
 #include <editors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
@@ -80,6 +80,7 @@ void FieldGraphicsItem::setupFieldItem(QFont const& labelFont)
 
     getNameLabel()->setFont(labelFont);
     combinedRangeLabel_->setFont(labelFont);
+    combinedRangeLabel_->setDefaultTextColor(KactusColors::MEMORY_DESIGNER_TEXT);
 
     setupGraphicsItem(fieldOffset_, fieldLastBit_, QStringLiteral("Field"));
     setLabelPositions();

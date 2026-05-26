@@ -17,7 +17,8 @@
 
 #include <IPXACTmodels/common/Document.h>
 
-#include <QAbstractTableModel>
+#include <common/models/TableModelBase.h>
+
 #include <QSharedPointer>
 
 class BusInterface;
@@ -30,7 +31,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! Table model for bus interface abstraction types.
 //-----------------------------------------------------------------------------
-class AbstractionTypesModel : public QAbstractTableModel
+class AbstractionTypesModel : public TableModelBase
 {
     Q_OBJECT
 
@@ -200,13 +201,13 @@ private:
     AbstractionTypesModel& operator=(const AbstractionTypesModel& other);
 
     /*!
-     *  Get the color for the indexed abstraction type.
+     *  Checks if the given index is marked mandatory.
      *
-     *    @param [in] index           The selected index.
+     *    @param[in] index   Model index to check.
      *
-     *    @return Black for valid index, red for invalid index.
+     *    @return True, if the index is a mandatory item, otherwise false.
      */
-    QVariant blackForValidRedForInvalid(QModelIndex const& index) const;
+    bool indexIsMandatory(QModelIndex const& index) const override;
 
     /*!
      *  Validate the indexed abstraction type.

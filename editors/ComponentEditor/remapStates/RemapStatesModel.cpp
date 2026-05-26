@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 
 

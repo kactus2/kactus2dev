@@ -232,6 +232,24 @@ private:
     PortMapModel& operator=(PortMapModel const& rhs);
 
     /*!
+     *  Checks if the given index is marked mandatory.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is a mandatory item, otherwise false.
+     */
+    bool indexIsMandatory(QModelIndex const& index) const override;
+
+    /*!
+     *  Checks if the given index corresponds to a table cell whose text should be grayed out.
+     *
+     *    @param[in] index   Model index to check.
+     *
+     *    @return True, if the index is supposed to be greyed out, otherwise false.
+     */
+    bool indexIsGreyedOut(QModelIndex const& index) const override;
+
+    /*!
      *  Get the formatted value of an expression in the selected index.
      *
      *    @param [in] index   The selected index.

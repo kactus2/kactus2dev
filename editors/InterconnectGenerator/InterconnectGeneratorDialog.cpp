@@ -19,7 +19,7 @@
 
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 
-#include <common/KactusColors.h>
+#include <KactusAPI/include/KactusColors.h>
 
 #include <QMessageBox>
 #include <QApplication>
@@ -762,7 +762,7 @@ QWidget* Dialog::createRtlOutputSection()
     {
         QLabel* verilogNotFoundLabel = new QLabel("Verilog generator not loaded");
         auto labelPalette = verilogNotFoundLabel->palette();
-        labelPalette.setColor(QPalette::ColorRole::Text, KactusColors::ERROR);
+        labelPalette.setColor(QPalette::ColorRole::Text, KactusColors::ERROR_COLOR);
         verilogNotFoundLabel->setPalette(labelPalette);
 
         layout->addWidget(verilogNotFoundLabel);

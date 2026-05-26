@@ -16,9 +16,13 @@
 #include <QTextBlock>
 #include <QSettings>
 
-#include <common/KactusColors.h>
+#include <common/KactusUtils.h>
+
+#include <KactusAPI/include/KactusColors.h>
 
 #include <PythonAPI/WriteChannel.h>
+
+#include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: ScriptInputEditor::ScriptInputEditor()
@@ -133,7 +137,17 @@ void ScriptInputEditor::sideAreaPaintEvent(QPaintEvent* event)
     QPainter painter(editorSideArea_);
 
     //! Draw background.
-    QColor backgroundColor = QColor(Qt::lightGray).lighter(120);
+    QColor backgroundColor;
+    if (KactusUtils::darkThemeEnabled())
+    {
+        auto windowBg = QApplication::palette().color(QPalette::Window);
+        backgroundColor = windowBg.lighter(150);
+    }
+    else
+    {
+        backgroundColor = QColor(Qt::lightGray).lighter(120);
+    }
+
     painter.setPen(backgroundColor);
     painter.setBrush(backgroundColor);
     painter.drawRect(event->rect());
@@ -152,11 +166,18 @@ void ScriptInputEditor::sideAreaPaintEvent(QPaintEvent* event)
         {
             if (blockNumber == cursorBlock)
             {
-                painter.setPen(Qt::black);
+                painter.setPen(KactusColors::REGULAR_TEXT);
             }
             else
             {
-                painter.setPen(Qt::darkGray);
+                if (KactusUtils::darkThemeEnabled())
+                {
+                    painter.setPen(KactusColors::REGULAR_TEXT.darker(150));
+                }
+                else
+                {
+                    painter.setPen(KactusColors::REGULAR_TEXT.lighter(150));
+                }   
             }
 
             painter.drawText(0, top, editorSideArea_->width()-4, fontMetrics().height(),
