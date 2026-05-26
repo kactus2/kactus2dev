@@ -96,8 +96,7 @@ HEADERS += ./KactusAPI.h \
     ./include/ImportRunner.h \
     ./include/LibraryHandler.h \
     ./include/LibraryItem.h \
-    ./include/LibraryTreeModel.h \
-    ./include/ArrayableMemoryInterface.h
+    ./include/ArrayableMemoryInterface.h \
     ./include/LibraryModel.h \
     ./include/ParameterCache.h \
     ./include/KactusColors.h
@@ -175,8 +174,7 @@ SOURCES += ./KactusAPI.cpp \
     ./library/LibraryHandler.cpp \
     ./library/LibraryItem.cpp \
     ./library/LibraryLoader.cpp \
-    ./library/LibraryTreeModel.cpp \
-    ./interfaces/component/ArrayableMemoryInterface.cpp
+    ./interfaces/component/ArrayableMemoryInterface.cpp \
     ./library/LibraryModel.cpp \
     ./library/TagManager.cpp \
     ./utilities/KactusColors.cpp

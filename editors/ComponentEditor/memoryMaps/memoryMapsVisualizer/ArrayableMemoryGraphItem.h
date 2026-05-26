@@ -72,6 +72,7 @@ private:
 	qint64 replicaIndex_ = -1;
 	
 	//! The item offset in either bits or address units.
+	//! Is the offset of this graph item, not necessarily the same as the corresponding memory model element offset (e.g. register offset)
 	quint64 offset_ = 0;
 
 };

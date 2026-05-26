@@ -76,7 +76,9 @@ void tst_FieldGraphItem::testExpressions()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
-    FieldGraphItem* FieldItem = new FieldGraphItem(testField, parser, 0);    
+    FieldGraphItem* FieldItem = new FieldGraphItem(testField, parser, 0);
+    FieldItem->setOffset(2);
+    FieldItem->updateDisplay();
 
     QCOMPARE(FieldItem->getBitWidth(), 4);
     QCOMPARE(FieldItem->getOffset(), quint64(2));

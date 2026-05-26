@@ -274,6 +274,10 @@ void RegisterGraphItem::fillGapsBetweenChildren()
         auto currentChild = i.value();
         auto currentOffset = currentChild->getOffset();
 
+        // Exclude non-present items from calculations
+        if (currentChild->isPresent() == false)
+            continue;
+
         if (highestBitHandled < currentOffset)
         {
             // Add normal gap if inside register

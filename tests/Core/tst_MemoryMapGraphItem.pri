@@ -10,7 +10,8 @@ HEADERS += ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/address
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
     ../../editors/ComponentEditor/visualization/memoryvisualizationitem.h \
     ../../common/graphicsItems/visualizeritem.h \
-    ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.h
+    ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.h \
+    ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/ArrayableMemoryGraphItem.h \
     ../../common/KactusUtils.h
 SOURCES += ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.cpp \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
@@ -20,6 +21,7 @@ SOURCES += ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryB
     ../../editors/ComponentEditor/visualization/memorygapitem.cpp \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.cpp \
     ../../editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
+    ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/ArrayableMemoryGraphItem.cpp \
     ../../common/graphicsItems/visualizeritem.cpp \
     ../../common/KactusUtils.cpp \
     ./tst_MemoryMapGraphItem.cpp
