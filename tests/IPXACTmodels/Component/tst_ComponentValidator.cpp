@@ -12,6 +12,8 @@
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
 #include <KactusAPI/include/ModeConditionParserInterface.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
@@ -1639,11 +1641,14 @@ QSharedPointer<ComponentValidator> tst_ComponentValidator::createComponentValida
 {
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
 
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
     QSharedPointer<ComponentParameterFinder> componentParameterFinder(new ComponentParameterFinder(nullptr));
 
     QSharedPointer<ModeConditionParserInterface> modeConditionParserIf(new ModeConditionParserInterface(componentParameterFinder));
 
-    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(parser, modeConditionParserIf, mockLibrary, Document::Revision::Std14));
+    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(parser, absDefParser, absDefFinder, modeConditionParserIf, mockLibrary, Document::Revision::Std14));
 
     return componentValidator;
 }

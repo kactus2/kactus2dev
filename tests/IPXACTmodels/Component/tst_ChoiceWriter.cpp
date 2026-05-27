@@ -73,8 +73,8 @@ void tst_ChoiceWriter::testWriteChoiceName()
 		"<ipxact:name>Mikko</ipxact:name>"
 		"</ipxact:choice>"
 		);
-
-	 ChoiceWriter::writeChoice(xmlStreamWriter, testChoice_);
+    
+    ChoiceWriter::writeChoice(xmlStreamWriter, testChoice_);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -121,7 +121,7 @@ void tst_ChoiceWriter::testWriteEnum2()
 	QSharedPointer<Enumeration> enumr2(new Enumeration());
 	enumr2->setValue("32");
 	enumr2->setText("32 bits");
-	enumr2->setHelp("ei auteta vieläkään");
+	enumr2->setHelp("ei auteta vieläkäan");
 
 	QSharedPointer<QList<QSharedPointer<Enumeration> > > enumrs = testChoice_->enumerations();
 	enumrs->append(enumr);
@@ -131,7 +131,7 @@ void tst_ChoiceWriter::testWriteEnum2()
 		"<ipxact:choice>"
 		"<ipxact:name>testChoice</ipxact:name>"
 		"<ipxact:enumeration text=\"64 bits\" help=\"ei auteta\">64</ipxact:enumeration>"
-		"<ipxact:enumeration text=\"32 bits\" help=\"ei auteta vieläkään\">32</ipxact:enumeration>"
+		"<ipxact:enumeration text=\"32 bits\" help=\"ei auteta vieläkäan\">32</ipxact:enumeration>"
 		"</ipxact:choice>"
 		);
 

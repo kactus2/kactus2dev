@@ -10,6 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
@@ -99,6 +101,8 @@ private:
 
     QSharedPointer<BusInterfaceValidator> createBusInterfaceValidator(
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionParser> absDefParser,
+        QSharedPointer<ListFinder> absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<QList<QSharedPointer<View> > > views, QSharedPointer<QList<QSharedPointer<Port> > > ports,
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces,
@@ -129,7 +133,11 @@ void tst_BusInterfaceValidator::testHasValidName()
     testBus->setName(name);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -183,7 +191,10 @@ void tst_BusInterfaceValidator::testHasValidIsPresent()
     testBus->setIsPresent(isPresent);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -237,7 +248,10 @@ void tst_BusInterfaceValidator::testHasValidBusType()
 
     LibraryMock* mockLibrary (new LibraryMock(this));
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -309,7 +323,10 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeAbstractionRef()
 
     LibraryMock* mockLibrary (new LibraryMock(this));
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -397,7 +414,10 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeViewRef()
     testBus->getAbstractionTypes()->append(testAbstraction);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator  = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (), testViews,
         QSharedPointer<QList<QSharedPointer<Port> > > (), QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -541,7 +561,10 @@ void tst_BusInterfaceValidator::testMultiplePortMapLogicalPortsAreValid()
     componentPorts->append(newPortTwo);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), componentPorts,
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -632,7 +655,10 @@ void tst_BusInterfaceValidator::testHasValidMasterInterface()
     testBus->setInterfaceMode(General::MASTER);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > >(),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         componentSpaces, QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -797,7 +823,10 @@ void tst_BusInterfaceValidator::testHasValidSlaveInterface()
     busInterfaces->append(testBus);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (), memoryMaps, busInterfaces, fileSets,
@@ -928,7 +957,10 @@ void tst_BusInterfaceValidator::testHasValidSystemInterface()
     testBus->setBusType(testType);
     
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (),
         QSharedPointer<QList<QSharedPointer<Port> > > (),
@@ -1016,7 +1048,10 @@ void tst_BusInterfaceValidator::testHasValidMirroredSlaveInterface()
     testBus->setMirroredSlave(testMirrorSlave);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -1130,7 +1165,10 @@ void tst_BusInterfaceValidator::testHasValidMonitorInterface()
     testBus->setBusType(testType);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (),
         QSharedPointer<QList<QSharedPointer<Port> > > (),
@@ -1238,7 +1276,10 @@ void tst_BusInterfaceValidator::testHasValidInitiatorInterface2022()
     }
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > >(),
         QSharedPointer<QList<QSharedPointer<View> > >(), QSharedPointer<QList<QSharedPointer<Port> > >(),
         componentSpaces, QSharedPointer<QList<QSharedPointer<MemoryMap> > >(),
@@ -1384,7 +1425,10 @@ void tst_BusInterfaceValidator::testHasValidTargetInterface2022()
     componentModes->append(testMode);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > >(),
         QSharedPointer<QList<QSharedPointer<View> > >(), QSharedPointer<QList<QSharedPointer<Port> > >(),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > >(), memoryMaps, busInterfaces, fileSets,
@@ -1464,7 +1508,10 @@ void tst_BusInterfaceValidator::testHasValidBitsInLau()
     testBus->setBitsInLau(bitsInLAU);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (),
         QSharedPointer<QList<QSharedPointer<Port> > > (),
@@ -1528,7 +1575,10 @@ void tst_BusInterfaceValidator::testHasValidBitSteering()
     testBus->setBitSteering(bitSteering);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > >(),
         QSharedPointer<QList<QSharedPointer<View> > >(),
         QSharedPointer<QList<QSharedPointer<Port> > >(),
@@ -1613,7 +1663,10 @@ void tst_BusInterfaceValidator::testHasValidBitSteeringForInterfaceMode()
     
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (),
         QSharedPointer<QList<QSharedPointer<Port> > > (),
@@ -1715,7 +1768,10 @@ void tst_BusInterfaceValidator::testHasValidParameters()
     testBus->getParameters()->append(testParameter);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser, absDefParser, absDefFinder,
         QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -1782,6 +1838,8 @@ bool tst_BusInterfaceValidator::errorIsNotFoundInErrorList(QString const& expect
 //-----------------------------------------------------------------------------
 QSharedPointer<BusInterfaceValidator> tst_BusInterfaceValidator::createBusInterfaceValidator(
     QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionParser> absDefParser,
+    QSharedPointer<ListFinder> absDefFinder,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
     QSharedPointer<QList<QSharedPointer<View> > > views,
     QSharedPointer<QList<QSharedPointer<Port> > > ports,
@@ -1797,7 +1855,7 @@ QSharedPointer<BusInterfaceValidator> tst_BusInterfaceValidator::createBusInterf
         new ParameterValidator(expressionParser, choices, Document::Revision::Std14));
 
     QSharedPointer<PortMapValidator> newPortMapValidator (new PortMapValidator(
-        expressionParser, ports, libraryHandler));
+        expressionParser, absDefParser, absDefFinder, ports, libraryHandler));
 
     QSharedPointer<BusInterfaceValidator> newValidator(new BusInterfaceValidator(expressionParser, choices, views,
         ports, addressSpaces, memoryMaps, busInterfaces, fileSets, remapStates, modes,

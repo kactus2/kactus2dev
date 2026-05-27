@@ -95,7 +95,7 @@ void tst_ChoiceReader::testReadEnumeration2()
 		"<ipxact:choice>"
 		"<ipxact:name>Choice</ipxact:name>"
 		"<ipxact:enumeration text=\"64 bits\" help=\"ei auteta\">64</ipxact:enumeration>"
-		"<ipxact:enumeration text=\"32 bits\" help=\"ei auteta vieläkään\">32</ipxact:enumeration>"
+		"<ipxact:enumeration text=\"32 bits\" help=\"ei auteta vieläkäan\">32</ipxact:enumeration>"
 		"</ipxact:choice>"
 		);
 
@@ -115,7 +115,7 @@ void tst_ChoiceReader::testReadEnumeration2()
 	QCOMPARE(testChoice->enumerations()->first()->getHelp(), QString("ei auteta"));
 	QCOMPARE(testChoice->enumerations()->last()->getValue(), QString("32"));
 	QCOMPARE(testChoice->enumerations()->last()->getText(), QString("32 bits"));
-	QCOMPARE(testChoice->enumerations()->last()->getHelp(), QString("ei auteta vieläkään"));
+	QCOMPARE(testChoice->enumerations()->last()->getHelp(), QString("ei auteta vieläkäan"));
 }
 
 QTEST_APPLESS_MAIN(tst_ChoiceReader)

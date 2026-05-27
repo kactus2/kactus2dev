@@ -15,6 +15,8 @@
 #include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
 
@@ -27,7 +29,7 @@ namespace ChoiceWriter
      *    @param [in] writer    The XML writer.
      *    @param [in] choice    The choice to be written.
      */
-    void writeChoice(QXmlStreamWriter& writer, QSharedPointer<Choice> choice);
+    IPXACTMODELS_EXPORT void writeChoice(QXmlStreamWriter& writer, QSharedPointer<Choice> choice);
 
     namespace Details
     {
@@ -37,7 +39,7 @@ namespace ChoiceWriter
          *    @param [in] writer    The XML writer.
          *    @param [in] choice    The enumeration to be written.
          */
-        void writeEnumeration(QXmlStreamWriter& writer, QSharedPointer<Enumeration> enumeration);
+        IPXACTMODELS_EXPORT void writeEnumeration(QXmlStreamWriter& writer, QSharedPointer<Enumeration> enumeration);
     }
 }
 

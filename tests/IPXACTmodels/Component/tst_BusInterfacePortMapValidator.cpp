@@ -27,6 +27,8 @@
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -65,8 +67,12 @@ private:
 
     QSharedPointer<Port> createTransactionalPort(QString const& portName);
 
-    QSharedPointer<PortMapValidator> createPortMapValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<QList<QSharedPointer<Port> > > ports, LibraryInterface* libraryHandler);
+    QSharedPointer<PortMapValidator> createPortMapValidator(
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionParser> absDefParser,
+        QSharedPointer<ListFinder> absDefFinder,
+        QSharedPointer<QList<QSharedPointer<Port> > > ports,
+        LibraryInterface* libraryHandler);
 };
 
 tst_BusInterfacePortMapValidator::tst_BusInterfacePortMapValidator()
@@ -145,6 +151,9 @@ void tst_BusInterfacePortMapValidator::testPortMapLogicalPortIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
     QSharedPointer<Port> newPort;
     if (isWire)
     {
@@ -166,7 +175,7 @@ void tst_BusInterfacePortMapValidator::testPortMapLogicalPortIsValid()
     QSharedPointer<QList<QSharedPointer<Port> > > componentPorts (new QList<QSharedPointer<Port> > ());
     componentPorts->append(newPort);
 
-    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, componentPorts, mockLibrary);
+    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, absDefParser, absDefFinder, componentPorts, mockLibrary);
     validator->busInterfaceChanged(abstractionReference, General::MASTER, QString(""));
 
     QCOMPARE(validator->hasValidLogicalPort(testPortMap->getLogicalPort()), isValid);
@@ -354,6 +363,9 @@ void tst_BusInterfacePortMapValidator::testPortMapPhysicalPortIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
     QSharedPointer<QList<QSharedPointer<Port> > > componentPorts (new QList<QSharedPointer<Port> > ());
     if (createPort)
     {
@@ -384,7 +396,7 @@ void tst_BusInterfacePortMapValidator::testPortMapPhysicalPortIsValid()
         componentPorts->append(newPort);
     }
 
-    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, componentPorts, mockLibrary);
+    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, absDefParser, absDefFinder, componentPorts, mockLibrary);
     validator->busInterfaceChanged(abstractionReference, General::MASTER, QLatin1String(""));
 
     QCOMPARE(validator->hasValidPhysicalPort(testPhysical), isValid);
@@ -578,7 +590,10 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortDirectionsAreVali
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
 
-    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, componentPorts, mockLibrary);
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, absDefParser, absDefFinder, componentPorts, mockLibrary);
     validator->abstractionDefinitionChanged(abstractionDefinition, busMode);
     validator->busInterfaceChanged(abstractionReference, busMode, QString(""));
 
@@ -697,7 +712,11 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortInitiativesAreVal
     General::InterfaceMode busMode = General::MASTER;
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, componentPorts, mockLibrary);
+
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, absDefParser, absDefFinder, componentPorts, mockLibrary);
     validator->abstractionDefinitionChanged(abstractionDefinition, busMode);
     validator->busInterfaceChanged(abstractionReference, busMode, QString(""));
 
@@ -816,7 +835,10 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortsHaveValidType()
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
 
-    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, componentPorts, mockLibrary);
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
+    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, absDefParser, absDefFinder, componentPorts, mockLibrary);
     validator->busInterfaceChanged(abstractionReference, General::MASTER, QString(""));
 
     QCOMPARE(validator->connectedPortsHaveValidPortTypes(testLogicalAbstraction, newPort), isValid);
@@ -908,6 +930,9 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortsHaveSameRange()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 
+    QSharedPointer<ListFinder> absDefFinder(new ListParameterFinder());
+    QSharedPointer<ExpressionParser> absDefParser(new IPXactSystemVerilogParser(absDefFinder));
+
     QSharedPointer<QList<QSharedPointer<Port> > > componentPorts (new QList<QSharedPointer<Port> > ());
     QSharedPointer<Port> newPort;
     if (isWire)
@@ -933,7 +958,7 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortsHaveSameRange()
     testPortMap->setLogicalPort(testLogical);
     testPortMap->setPhysicalPort(testPhysical);
 
-    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, componentPorts, mockLibrary);
+    QSharedPointer<PortMapValidator> validator = createPortMapValidator(parser, absDefParser, absDefFinder, componentPorts, mockLibrary);
     validator->busInterfaceChanged(abstractionReference, General::MASTER, QString(""));
 
     QCOMPARE(validator->connectedPortsHaveSameRange(logicalRange, physicalPart), isValid);
@@ -991,11 +1016,14 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortsHaveSameRange_da
 // Function: tst_BusInterfacePortMapValidator::createPortMapValidator()
 //-----------------------------------------------------------------------------
 QSharedPointer<PortMapValidator> tst_BusInterfacePortMapValidator::createPortMapValidator(
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<QList<QSharedPointer<Port> > > ports,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionParser> absDefParser,
+    QSharedPointer<ListFinder> absDefFinder,
+    QSharedPointer<QList<QSharedPointer<Port>>> ports,
     LibraryInterface* libraryHandler)
 {
     QSharedPointer<PortMapValidator> newPortMapValidator(new PortMapValidator(
-        expressionParser, ports, libraryHandler));
+        expressionParser, absDefParser, absDefFinder, ports, libraryHandler));
 
     return newPortMapValidator;
 }
