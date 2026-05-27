@@ -141,6 +141,8 @@ HEADERS += ./generaldeclarations.h \
     ./Component/AccessPolicyWriter.h \
     ./Component/Driver.h \
     ./Component/ExecutableImage.h \
+    ./Component/ExecutableImagesReader.h \
+    ./Component/ExecutableImagesWriter.h \
     ./Component/FieldAccessPolicy.h \
     ./Component/FieldAccessPolicyReader.h \
     ./Component/FieldAccessPolicyWriter.h \
@@ -474,6 +476,8 @@ SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./Component/EnumeratedValueReader.cpp \
     ./Component/EnumeratedValueWriter.cpp \
     ./Component/ExecutableImage.cpp \
+    ./Component/ExecutableImagesReader.cpp \
+    ./Component/ExecutableImagesWriter.cpp \
     ./Component/Field.cpp \
     ./Component/FieldAccessPolicy.cpp \
     ./Component/FieldAccessPolicyReader.cpp \

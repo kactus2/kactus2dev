@@ -239,6 +239,8 @@
     <ClCompile Include="Component\EnumeratedValueReader.cpp" />
     <ClCompile Include="Component\EnumeratedValueWriter.cpp" />
     <ClCompile Include="Component\ExecutableImage.cpp" />
+    <ClCompile Include="Component\ExecutableImagesReader.cpp" />
+    <ClCompile Include="Component\ExecutableImagesWriter.cpp" />
     <ClCompile Include="Component\Field.cpp" />
     <ClCompile Include="Component\FieldAccessPolicy.cpp" />
     <ClCompile Include="Component\FieldAccessPolicyReader.cpp" />
@@ -445,6 +447,8 @@
     <ClInclude Include="Component\AccessPolicyWriter.h" />
     <ClInclude Include="Component\Driver.h" />
     <ClInclude Include="Component\ExecutableImage.h" />
+    <ClInclude Include="Component\ExecutableImagesReader.h" />
+    <ClInclude Include="Component\ExecutableImagesWriter.h" />
     <ClInclude Include="Component\FieldAccessPolicy.h" />
     <ClInclude Include="Component\FieldAccessPolicyReader.h" />
     <ClInclude Include="Component\FieldAccessPolicyWriter.h" />

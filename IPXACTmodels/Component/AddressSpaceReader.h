@@ -104,6 +104,14 @@ namespace AddressSpaceReader
          */
         void readParameters(QDomNode const& addressSpaceNode, QSharedPointer<AddressSpace> newAddressSpace,
             Document::Revision docRevision);
+
+        /*!
+         *  Parse the executable images.
+         *
+         *    @param [in] addressSpaceNode    XML description of the address space.
+         *    @param [in] newAddressSpace     The new address space.
+         */
+        void readExecutableImages(QDomNode const& addressSpaceNode, QSharedPointer<AddressSpace> newAddressSpace);
     }
 };
 

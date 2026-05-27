@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/AddressSpaceWriter.h>
+#include <IPXACTmodels/Component/ExecutableImagesWriter.h>
 #include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/GenericVendorExtension.h>
@@ -38,6 +39,7 @@ public:
 		void testWriteVendorExtension();
 		void testWriteBlockSize();
 		void testWriteAddressUnitBits();
+		void testWriteExecutableImage();
 		void testWriteSegments();
 		void writeAddressBlocks();
 		void writeNewStd();
@@ -247,6 +249,94 @@ void tst_AddressSpaceWriter::testWriteAddressUnitBits()
 		);
 
     AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
+
+	QCOMPARE(output, expectedOutput);
+}
+
+void tst_AddressSpaceWriter::testWriteExecutableImage()
+{
+	QString output;
+	QXmlStreamWriter xmlStreamWriter(&output);
+
+	QSharedPointer<ExecutableImage> firstImage(new ExecutableImage);
+    firstImage->setName("image1");
+    firstImage->setDisplayName("d1");
+    firstImage->setShortDescription("brief");
+    firstImage->setDescription("description text");
+    firstImage->setImageId("id1");
+    firstImage->setImageType("binary");
+
+	testAddressSpace_->getExecutableImages()->append(firstImage);
+
+	QSharedPointer<Parameter> parameter(new Parameter());
+	parameter->setName("param1");
+	parameter->setValueId("id1");
+	parameter->setValueResolve("user");
+	parameter->setValue("1");
+
+    firstImage->getParameters()->append(parameter);
+
+
+	QSharedPointer<FileBuilder> fileBuilder(new FileBuilder);
+    fileBuilder->setFileType("cSource");
+    fileBuilder->setCommand("gcc");
+    fileBuilder->setFlags("-O2");
+    fileBuilder->setReplaceDefaultFlags("1");
+
+    QSharedPointer<LanguageTools> languageTools(new LanguageTools);
+    languageTools->getFileBuilders()->append(fileBuilder);
+	languageTools->setLinker("ld");
+	languageTools->setLinkerFlags("-flag");
+
+    auto linkerCommandFile = languageTools->getLinkerCommandFile();
+    linkerCommandFile->name_ = "./link.cmd";
+    linkerCommandFile->commandLineSwitch_ = "-f";
+    linkerCommandFile->enable_ = "1";
+    linkerCommandFile->generatorRefs_.append("gen1");
+    linkerCommandFile->generatorRefs_.append("gen2");
+	linkerCommandFile->getVendorExtensions()->append(
+		QSharedPointer<VendorExtension>(new Kactus2Value("testExtension", "testValue")));
+
+    firstImage->setLanguageTools(languageTools);
+
+	QString expectedOutput(
+		"<ipxact:addressSpace>"
+            "<ipxact:name>testAddressSpace</ipxact:name>"
+            "<ipxact:executableImage imageId=\"id1\" imageType=\"binary\">"
+                "<ipxact:name>image1</ipxact:name>"
+                "<ipxact:displayName>d1</ipxact:displayName>"
+                "<ipxact:shortDescription>brief</ipxact:shortDescription>"
+                "<ipxact:description>description text</ipxact:description>"
+                "<ipxact:parameters>"
+                    "<ipxact:parameter parameterId=\"id1\" resolve=\"user\">"
+                        "<ipxact:name>param1</ipxact:name>"
+                        "<ipxact:value>1</ipxact:value>"
+                    "</ipxact:parameter>"
+                "</ipxact:parameters>"
+                "<ipxact:languageTools>"
+                   "<ipxact:fileBuilder>"
+                        "<ipxact:fileType>cSource</ipxact:fileType>"
+                        "<ipxact:command>gcc</ipxact:command>"
+                        "<ipxact:flags>-O2</ipxact:flags>"
+                        "<ipxact:replaceDefaultFlags>1</ipxact:replaceDefaultFlags>"
+                    "</ipxact:fileBuilder>"
+                    "<ipxact:linker>ld</ipxact:linker>"
+                    "<ipxact:linkerFlags>-flag</ipxact:linkerFlags>"
+                    "<ipxact:linkerCommandFile>"
+                        "<ipxact:name>./link.cmd</ipxact:name>"
+                        "<ipxact:commandLineSwitch>-f</ipxact:commandLineSwitch>"
+                        "<ipxact:enable>1</ipxact:enable>"
+                        "<ipxact:generatorRef>gen1</ipxact:generatorRef>"
+                        "<ipxact:generatorRef>gen2</ipxact:generatorRef>"
+                        "<ipxact:vendorExtensions>"
+                            "<testExtension>testValue</testExtension>"
+                        "</ipxact:vendorExtensions>"
+                    "</ipxact:linkerCommandFile>"
+                "</ipxact:languageTools>"
+            "</ipxact:executableImage>"
+        "</ipxact:addressSpace>");
+
+	AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }

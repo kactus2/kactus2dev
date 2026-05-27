@@ -16,6 +16,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/ExecutableImage.h>
 
 #include <QtTest>
 
@@ -33,6 +34,7 @@ private slots:
 	void testReadParameters();
 	void testReadBlockSize();
 	void testReadAddressUnitBits();
+	void testReadExecutableImage();
 	void testReadVendorExtensions();
 	void testReadSegments();
 	void readAddressBlocks();
@@ -194,6 +196,85 @@ void tst_AddressSpaceReader::testReadAddressUnitBits()
 
     QCOMPARE(testAddressSpaceNoAUB->getAddressUnitBits(), QString("8"));
 
+}
+
+void tst_AddressSpaceReader::testReadExecutableImage()
+{
+	QString documentContent(
+		"<ipxact:addressSpace>"
+            "<ipxact:executableImage imageId=\"id1\" imageType=\"binary\" >"
+                "<ipxact:name>image1</ipxact:name>"
+                "<ipxact:displayName>d1</ipxact:displayName>"
+                "<ipxact:shortDescription>brief</ipxact:shortDescription>"
+                "<ipxact:description>description text</ipxact:description>"
+                "<ipxact:parameters>"
+                    "<ipxact:parameter parameterId=\"id1\" resolve=\"user\">"
+                        "<ipxact:name>param1</ipxact:name>"
+                        "<ipxact:value>1</ipxact:value>"
+                    "</ipxact:parameter>"
+                "</ipxact:parameters>"
+                "<ipxact:languageTools>"
+                   "<ipxact:fileBuilder>"
+                        "<ipxact:fileType>cSource</ipxact:fileType>"
+                        "<ipxact:command>gcc</ipxact:command>"
+                        "<ipxact:flags>-O2</ipxact:flags>"
+                        "<ipxact:replaceDefaultFlags>1</ipxact:replaceDefaultFlags>"
+                    "</ipxact:fileBuilder>"
+                    "<ipxact:linker>ld</ipxact:linker>"
+                    "<ipxact:linkerFlags>-flag</ipxact:linkerFlags>"
+                    "<ipxact:linkerCommandFile>"
+                        "<ipxact:name>./link.cmd</ipxact:name>"
+                        "<ipxact:commandLineSwitch>-f</ipxact:commandLineSwitch>"
+                        "<ipxact:enable>1</ipxact:enable>"
+                        "<ipxact:generatorRef>gen1</ipxact:generatorRef>"
+                        "<ipxact:generatorRef>gen2</ipxact:generatorRef>"
+                        "<ipxact:vendorExtensions>"
+                            "<testExtension>testValue</testExtension>"
+                        "</ipxact:vendorExtensions>"
+                    "</ipxact:linkerCommandFile>"
+                "</ipxact:languageTools>"
+            "</ipxact:executableImage>"
+		"</ipxact:addressSpace>"
+	);
+
+	QDomDocument document;
+	document.setContent(documentContent);
+
+	QDomNode AddressSpaceNode = document.firstChildElement("ipxact:addressSpace");
+
+    QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(AddressSpaceNode, Document::Revision::Std14);
+
+	QCOMPARE(testAddressSpace->getExecutableImages()->size(), 1);
+	QSharedPointer<ExecutableImage> firstImage = testAddressSpace->getExecutableImages()->first();
+
+    QCOMPARE(firstImage->name(), QString("image1"));
+    QCOMPARE(firstImage->displayName(), QString("d1"));
+    QCOMPARE(firstImage->shortDescription(), QString("brief"));
+    QCOMPARE(firstImage->description(), QString("description text"));
+    QCOMPARE(firstImage->getImageId(), QString("id1"));
+    QCOMPARE(firstImage->getImageType(), QString("binary"));
+
+    QCOMPARE(firstImage->getParameters()->count(), 1);
+
+    auto languageTools = firstImage->getLanguageTools();
+    QCOMPARE(languageTools->getFileBuilders()->count(), 1);
+    auto fileBuilder = languageTools->getFileBuilders()->first();
+    QCOMPARE(fileBuilder->getFileType().type_, QString("cSource"));
+    QCOMPARE(fileBuilder->getCommand(), QString("gcc"));
+    QCOMPARE(fileBuilder->getFlags(), QString("-O2"));
+    QCOMPARE(fileBuilder->getReplaceDefaultFlags(), QString("1"));
+
+    QCOMPARE(languageTools->getLinker(), QString("ld"));
+    QCOMPARE(languageTools->getLinkerFlags(), QString("-flag"));
+
+    auto linkerCommandFile = languageTools->getLinkerCommandFile();
+    QCOMPARE(linkerCommandFile->name_, QString("./link.cmd"));
+    QCOMPARE(linkerCommandFile->commandLineSwitch_, QString("-f"));
+    QCOMPARE(linkerCommandFile->enable_, QString("1"));
+    QCOMPARE(linkerCommandFile->generatorRefs_.count(), 2);
+    QCOMPARE(linkerCommandFile->generatorRefs_.first(), QString("gen1"));
+    QCOMPARE(linkerCommandFile->generatorRefs_.last(), QString("gen2"));
+    QCOMPARE(linkerCommandFile->getVendorExtensions()->count(), 1);
 }
 
 //-----------------------------------------------------------------------------

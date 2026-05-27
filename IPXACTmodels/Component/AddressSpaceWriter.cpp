@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "AddressSpaceWriter.h"
+#include "ExecutableImagesWriter.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
@@ -40,6 +41,11 @@ void AddressSpaceWriter::writeAddressSpace(QXmlStreamWriter& writer, QSharedPoin
     Details::writeLocalMemoryMap(writer, addressSpace, docRevision);
 
     CommonItemsWriter::writeParameters(writer, addressSpace->getParameters(), docRevision);
+
+    if (docRevision == Document::Revision::Std14)
+    {
+        ExecutableImagesWriter::writeExecutableImages(writer, addressSpace->getExecutableImages(), Document::Revision::Std22);
+    }
 
     CommonItemsWriter::writeVendorExtensions( writer, addressSpace );
 

@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "CPUWriter.h"
+#include "ExecutableImagesWriter.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
@@ -39,7 +40,7 @@ void CPUWriter::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu, Docu
 
         Details::writeAddressUnitBits(writer, cpu);
 
-        Details::writeExecutableImages(writer, cpu);
+        ExecutableImagesWriter::writeExecutableImages(writer, cpu->getExecutableImages(), docRevision);
 
         Details::writeMemoryMapRef(writer, cpu);
     }
@@ -111,66 +112,7 @@ void CPUWriter::Details::writeRegions(QXmlStreamWriter& writer, QSharedPointer<C
 //-----------------------------------------------------------------------------
 void CPUWriter::Details::writeExecutableImages(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu)
 {
-    for (auto const& image : *cpu->getExecutableImages())
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:executableImage"));
-        writer.writeAttribute(QStringLiteral("imageId"), image->getImageId());
-        CommonItemsWriter::writeNonEmptyAttribute(writer, QStringLiteral("imageType"), image->getImageType());
-
-        NameGroupWriter::writeNameGroup(writer, image, Document::Revision::Std22);
-
-        CommonItemsWriter::writeParameters(writer, image->getParameters());
-
-        Details::writeLanguageTools(writer, image->getLanguageTools());
-
-        writer.writeEndElement(); // ipxact:executableImage
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUWriter::Details::writeLanguageTools()
-//-----------------------------------------------------------------------------
-void CPUWriter::Details::writeLanguageTools(QXmlStreamWriter& writer, QSharedPointer<LanguageTools> languageTools)
-{
-    if (languageTools.isNull())
-    {
-        return;
-    }
-
-    writer.writeStartElement(QStringLiteral("ipxact:languageTools"));
-
-    for (auto const& fileBuilder : *languageTools->getFileBuilders())
-    {
-        FileBuilderWriter::writeFileBuilder(writer, fileBuilder, Document::Revision::Std22);
-    }
-
-    writer.writeTextElement(QStringLiteral("ipxact:linker"), languageTools->getLinker());
-
-    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:linkerFlags"),
-        languageTools->getLinkerFlags());
-
-    auto linkerCommandFile = languageTools->getLinkerCommandFile();
-    if (linkerCommandFile->name_.isEmpty() == false)
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:linkerCommandFile"));
-
-        writer.writeTextElement(QStringLiteral("ipxact:name"), linkerCommandFile->name_);
-
-        writer.writeTextElement(QStringLiteral("ipxact:commandLineSwitch"), linkerCommandFile->commandLineSwitch_);
-
-        writer.writeTextElement(QStringLiteral("ipxact:enable"), linkerCommandFile->enable_);
-
-        for (auto const& generatorRef : linkerCommandFile->generatorRefs_)
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:generatorRef"), generatorRef);
-        }
-
-        CommonItemsWriter::writeVendorExtensions(writer, linkerCommandFile);
-
-        writer.writeEndElement(); // ipxact:linkerCommandFile
-    }
-
-    writer.writeEndElement(); // ipxact:languageTools"
+    ExecutableImagesWriter::writeExecutableImages(writer, cpu->getExecutableImages(), Document::Revision::Std22);
 }
 
 //-----------------------------------------------------------------------------

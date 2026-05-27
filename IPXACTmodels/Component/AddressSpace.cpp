@@ -24,7 +24,8 @@ width_(width),
 segments_(new QList<QSharedPointer<Segment> > ()),
 addressUnitBits_(),
 localMemoryMap_(nullptr),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+parameters_(new QList<QSharedPointer<Parameter> > ()),
+executableImages_(new QList<QSharedPointer<ExecutableImage> > ())
 {
 
 }
@@ -41,11 +42,13 @@ width_(other.width_),
 segments_(new QList<QSharedPointer<Segment> > ()),
 addressUnitBits_(other.addressUnitBits_),
 localMemoryMap_(),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+parameters_(new QList<QSharedPointer<Parameter> > ()),
+executableImages_(new QList<QSharedPointer<ExecutableImage> > ())
 {
     copyLocalMemoryMap(other);
     copySegments(other);
     copyParameters(other);
+    copyExecutableImages(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -69,6 +72,9 @@ AddressSpace & AddressSpace::operator=( const AddressSpace &other )
 
         parameters_->clear();
         copyParameters(other);
+
+        executableImages_->clear();
+        copyExecutableImages(other);
 	}
 	return *this;
 }
@@ -213,6 +219,22 @@ void AddressSpace::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> 
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressSpace::getExecutableImages()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ExecutableImage> > > AddressSpace::getExecutableImages() const
+{
+	return executableImages_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::setExecutableImages()
+//-----------------------------------------------------------------------------
+void AddressSpace::setExecutableImages(QSharedPointer<QList<QSharedPointer<ExecutableImage> > > executableImages)
+{
+	executableImages_ = executableImages;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressSpace::copyLocalMemoryMap()
 //-----------------------------------------------------------------------------
 void AddressSpace::copyLocalMemoryMap(const AddressSpace& other)
@@ -249,6 +271,21 @@ void AddressSpace::copyParameters(const AddressSpace& other)
         {
             auto copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
             parameters_->append(copy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpace::copyExecutableImages()
+//-----------------------------------------------------------------------------
+void AddressSpace::copyExecutableImages(const AddressSpace& other)
+{
+    for (auto const& image : *other.executableImages_)
+    {
+        if (image)
+        {
+            auto copy = QSharedPointer<ExecutableImage>(new ExecutableImage(*image.data()));
+            executableImages_->append(copy);
         }
     }
 }

@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "CPUReader.h"
+#include "ExecutableImagesReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/ParameterReader.h>
@@ -136,89 +137,7 @@ void CPUReader::Details::parseAddressUnitBits(QDomNode const& cpuNode, QSharedPo
 //-----------------------------------------------------------------------------
 void CPUReader::Details::parseExecutableImages(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu)
 {
-    QDomNodeList imageNodes = cpuNode.toElement().elementsByTagName(QStringLiteral("ipxact:executableImage"));
-
-    const int IMAGE_COUNT = imageNodes.count();
-    for (int i = 0; i < IMAGE_COUNT; ++i)
-    {
-        QDomElement imageElement = imageNodes.at(i).toElement();
-        QSharedPointer<ExecutableImage> image(new ExecutableImage);
-
-        NameGroupReader::parseNameGroup(imageElement, image);
-
-        QString id = imageElement.attribute(QStringLiteral("imageId"));
-        image->setImageId(id);
-
-        QString type = imageElement.attribute(QStringLiteral("imageType"));
-        image->setImageType(type);
-
-        image->setParameters(CommonItemsReader::parseAndCreateParameters(imageElement, Document::Revision::Std22));
-
-        auto languageToolsElement = imageElement.firstChildElement(QStringLiteral("ipxact:languageTools"));
-        Details::parseLanguageTools(languageToolsElement, image);
-
-        newCpu->getExecutableImages()->append(image);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUReader::Details::parseLanguageTools()
-//-----------------------------------------------------------------------------
-void CPUReader::Details::parseLanguageTools(QDomElement const& languageToolsElement,
-    QSharedPointer<ExecutableImage> image)
-{
-    QDomNodeList fileBuilderNodes = languageToolsElement.elementsByTagName(QStringLiteral("ipxact:fileBuilder"));
-
-    QSharedPointer<LanguageTools> languageTools(new LanguageTools);
-    
-    const int BUILDER_COUNT = fileBuilderNodes.count();
-    for (int i = 0; i < BUILDER_COUNT; ++i)
-    {
-        QDomNode builderElement = fileBuilderNodes.at(i);
-
-        auto fileBuilder = FileBuilderReader::createFileBuilderFrom(builderElement, Document::Revision::Std22);
-        languageTools->getFileBuilders()->append(fileBuilder);
-    }
-
-    auto linkerElement = languageToolsElement.firstChildElement(QStringLiteral("ipxact:linker"));
-    languageTools->setLinker(linkerElement.firstChild().nodeValue());
-
-    auto linkerFlagsElement = languageToolsElement.firstChildElement(QStringLiteral("ipxact:linkerFlags"));
-    languageTools->setLinkerFlags(linkerFlagsElement.firstChild().nodeValue());
-
-    auto linkerCommandFileElement = languageToolsElement.firstChildElement(QStringLiteral("ipxact:linkerCommandFile"));
-
-    parseLinkerCommandFile(linkerCommandFileElement, languageTools);
-
-    image->setLanguageTools(languageTools);
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUReader::Details::parseLinkerCommandFile()
-//-----------------------------------------------------------------------------
-void CPUReader::Details::parseLinkerCommandFile(QDomElement const& linkerCommandFileElement,
-    QSharedPointer<LanguageTools> languageTools)
-{
-    auto linkerCommandFile = languageTools->getLinkerCommandFile();
-
-    auto nameElement = linkerCommandFileElement.firstChildElement(QStringLiteral("ipxact:name"));
-    linkerCommandFile->name_ = nameElement.firstChild().nodeValue();
-
-    auto switchElement = linkerCommandFileElement.firstChildElement(QStringLiteral("ipxact:commandLineSwitch"));
-    linkerCommandFile->commandLineSwitch_ = switchElement.firstChild().nodeValue();
-
-    auto enableElement = linkerCommandFileElement.firstChildElement(QStringLiteral("ipxact:enable"));
-    linkerCommandFile->enable_ = enableElement.firstChild().nodeValue();
-
-    auto generatorRefs = linkerCommandFileElement.elementsByTagName(QStringLiteral("ipxact:generatorRef"));
-    const int GENERATOR_COUNT = generatorRefs.count();
-    for (int i = 0; i < GENERATOR_COUNT; ++i)
-    {
-        QDomNode generatorNode = generatorRefs.at(i);
-        linkerCommandFile->generatorRefs_.append(generatorNode.firstChild().nodeValue());
-    }
-
-    CommonItemsReader::parseVendorExtensions(linkerCommandFileElement, linkerCommandFile);
+    newCpu->getExecutableImages()->append(*ExecutableImagesReader::parseAndCreateExecutableImages(cpuNode, Document::Revision::Std22));
 }
 
 //-----------------------------------------------------------------------------

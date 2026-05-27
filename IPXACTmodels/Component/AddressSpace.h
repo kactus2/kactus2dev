@@ -15,6 +15,7 @@
 #include "MemoryMapBase.h"
 
 #include <IPXACTmodels/Component/Segment.h>
+#include <IPXACTmodels/Component/ExecutableImage.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/Extendable.h>
@@ -159,6 +160,20 @@ public:
 	 */
     void setSegments(QSharedPointer<QList<QSharedPointer<Segment> > > segments);
 
+    /*!
+     *  Get the executable images of the address space.
+     *
+     *    @return Pointer to a list containing pointers to the executable images.
+     */
+    QSharedPointer<QList<QSharedPointer<ExecutableImage> > > getExecutableImages() const;
+
+    /*!
+     *  Set the executable images for this address space.
+     *
+     *    @param [in] executableImages    Pointer to a list containing the new executable images.
+     */
+    void setExecutableImages(QSharedPointer<QList<QSharedPointer<ExecutableImage> > > executableImages);
+
 private:
 
     /*!
@@ -181,6 +196,13 @@ private:
      *    @param [in] other   The address space being copied.
      */
     void copyParameters(const AddressSpace& other);
+
+    /*!
+     *  Copy the executable images.
+     *
+     *    @param [in] other   The address space being copied.
+     */
+    void copyExecutableImages(const AddressSpace& other);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -206,6 +228,9 @@ private:
 
 	//! Contains the parameters for the addressSpace.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+
+	//! Contains the executable images for the addressSpace (IPXACT 2014).
+    QSharedPointer<QList<QSharedPointer<ExecutableImage> > > executableImages_;
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<AddressSpace>);

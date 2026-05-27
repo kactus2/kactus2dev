@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "AddressSpaceReader.h"
+#include "ExecutableImagesReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/ParameterReader.h>
@@ -40,6 +41,11 @@ QSharedPointer<AddressSpace> AddressSpaceReader::createAddressSpaceFrom(QDomNode
 
     Details::readParameters(addressSpaceNode, newAddressSpace, docRevision);
 
+    if (docRevision == Document::Revision::Std14)
+    {
+        Details::readExecutableImages(addressSpaceNode, newAddressSpace);
+    }
+    
     CommonItemsReader::parseVendorExtensions(addressSpaceNode, newAddressSpace);
 
     return newAddressSpace;
@@ -193,4 +199,13 @@ void AddressSpaceReader::Details::readParameters(QDomNode const& addressSpaceNod
     {
         newAddressSpace->setParameters(newParameters);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceReader::Details::readExecutableImages()
+//-----------------------------------------------------------------------------
+void AddressSpaceReader::Details::readExecutableImages(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace)
+{
+    newAddressSpace->setExecutableImages(ExecutableImagesReader::parseAndCreateExecutableImages(addressSpaceNode, Document::Revision::Std22));
 }

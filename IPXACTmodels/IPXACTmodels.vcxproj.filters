@@ -1040,6 +1040,12 @@
     <ClCompile Include="AbstractionDefinition\validators\PortAbstractionValidator.cpp">
       <Filter>Source Files\AbstractionDefinition\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\ExecutableImagesReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ExecutableImagesWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1803,6 +1809,12 @@
     </ClInclude>
     <ClInclude Include="AbstractionDefinition\validators\PortAbstractionValidator.h">
       <Filter>Header Files\AbstractionDefinition\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ExecutableImagesReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ExecutableImagesWriter.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
