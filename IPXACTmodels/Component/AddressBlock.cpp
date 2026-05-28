@@ -20,8 +20,9 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlock::AddressBlock()
 //-----------------------------------------------------------------------------
-AddressBlock::AddressBlock(QString const& name /* = QString() */, QString const& baseAddress /* = QString() */):
+AddressBlock::AddressBlock(QString const& name /* = QString() */, QString const& baseAddress /* = QString() */) :
 MemoryBlockBase(name, baseAddress),
+ArrayableMemory(),
 typeIdentifier_(),
 range_(),
 rangeAttributes_(),
@@ -39,6 +40,7 @@ access_(AccessTypes::ACCESS_COUNT)
 //-----------------------------------------------------------------------------
 AddressBlock::AddressBlock(const AddressBlock &other):
 MemoryBlockBase(other),
+ArrayableMemory(other),
 misalignmentAllowed_(other.misalignmentAllowed_),
 addressBlockDefinitionRef_(other.addressBlockDefinitionRef_),
 typeDefinitionsRef_(other.typeDefinitionsRef_),
@@ -53,11 +55,6 @@ access_(other.access_)
 {
     copyRegisterData(other);
     Copy::copyList(other.accessPolicies_, accessPolicies_);
-
-    if (other.memoryArray_)
-    {
-        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -68,6 +65,7 @@ AddressBlock& AddressBlock::operator=( const AddressBlock& other )
     if (this != &other)
     {
         MemoryBlockBase::operator=(other);
+        ArrayableMemory::operator=(other);
         misalignmentAllowed_ = other.misalignmentAllowed_;
         addressBlockDefinitionRef_ = other.addressBlockDefinitionRef_;
         typeDefinitionsRef_ = other.typeDefinitionsRef_;
@@ -85,12 +83,6 @@ AddressBlock& AddressBlock::operator=( const AddressBlock& other )
 
         accessPolicies_->clear();
         Copy::copyList(other.accessPolicies_, accessPolicies_);
-
-        memoryArray_.clear();
-        if (other.memoryArray_)
-        {
-            memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
-        }
     }
 
     return *this;
@@ -277,22 +269,6 @@ QStringList AddressBlock::getAllRegisterOffsets() const
     }
 
     return registerOffsets;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::getMemoryArray()
-//-----------------------------------------------------------------------------
-QSharedPointer<MemoryArray> AddressBlock::getMemoryArray() const
-{
-    return memoryArray_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::setMemoryArray()
-//-----------------------------------------------------------------------------
-void AddressBlock::setMemoryArray(QSharedPointer<MemoryArray> newMemoryArray)
-{
-    memoryArray_ = newMemoryArray;
 }
 
 //-----------------------------------------------------------------------------

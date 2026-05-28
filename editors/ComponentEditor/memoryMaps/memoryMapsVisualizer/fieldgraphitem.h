@@ -12,7 +12,7 @@
 #ifndef FIELDGRAPHITEM_H
 #define FIELDGRAPHITEM_H
 
-#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include "ArrayableMemoryGraphItem.h"
 
 #include <IPXACTmodels/Component/Field.h>
 
@@ -22,7 +22,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The graphical item that represents a bit field within a register.
 //-----------------------------------------------------------------------------
-class FieldGraphItem : public MemoryVisualizationItem
+class FieldGraphItem : public ArrayableMemoryGraphItem
 {
 	Q_OBJECT
 
@@ -47,13 +47,6 @@ public:
 
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override final;
-
-	/*!
-     *  Get the offset of the item. 
-	 *
-	 *    @return int The offset of the item from the parent item's base address.
-	 */
-	virtual quint64 getOffset() const override final;
 
 	/*!
      *  Get the last bit contained in the field.

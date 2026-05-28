@@ -60,6 +60,7 @@ mapInterface_(mapInterface)
 
     childItems_.append(defaultRemapItem);
 
+    // Create all other remaps except for default remap
     const int childCount = memoryMap_->getMemoryRemaps()->count();
     for (int i = 0; i < childCount; ++i)
     {

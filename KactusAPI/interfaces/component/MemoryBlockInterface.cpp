@@ -32,8 +32,7 @@
 MemoryBlockInterface::MemoryBlockInterface(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ExpressionFormatter> expressionFormatter, BusInterfaceInterface* busInterface,
     ParametersInterface* parameterInterface):
-ParameterizableInterface(expressionParser, expressionFormatter),
-NameGroupInterface(),
+ArrayableMemoryInterface(expressionParser, expressionFormatter),
 busInterfaceInterface_(busInterface),
 parameterInterface_(parameterInterface)
 {

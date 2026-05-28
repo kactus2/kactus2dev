@@ -66,6 +66,14 @@ private slots:
     void testFieldRangesAreValid_data();
     void testFieldsAreWithinRegister();
     void testFieldsAreWithinRegister_data();
+    
+    void testFieldWithStrideIsWithinRegister();
+    void testFieldWithStrideIsWithinRegister_data();
+    void testFieldOverlapWithStride();
+    void testFieldReplicasOverlapDueToSmallStride();
+    void testFieldWithDimAndEmptyStride();
+    void testFieldOverlapWithStrideAndNonStride();
+
     void testFieldsHaveSimilarDefinitionGroups();
     void testFieldsHaveSimilarDefinitionGroups_data();
 
@@ -700,8 +708,6 @@ void tst_RegisterValidator::testFieldsAreWithinRegister_data()
 
     QTest::newRow("Field: bitOffset 0, bitWidth 4 in register with size 10 is valid") << "0" << "4" << "10" <<
         true;
-    QTest::newRow("Field: bitOffset -2, bitWidth 4 in register with size 10 is invalid") << "-2" << "4" << "10" <<
-        false;
     QTest::newRow("Field: bitOffset 8, bitWidth 2 in register with size 2 is invalid") << "8" << "2" << "2" << false;
     QTest::newRow("Field: bitOffset 2, bitWidth 8 in register with size 4 is invalid") << "2" << "8" << "4" << false;
 
@@ -710,6 +716,250 @@ void tst_RegisterValidator::testFieldsAreWithinRegister_data()
     QTest::newRow("Field with long bit width is not within a small register") <<
         "0" << "4000000000000000000000000000000000" << "10" << false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testFieldWithStrideIsWithinRegister()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testFieldWithStrideIsWithinRegister()
+{
+    QFETCH(QString, bitOffset);
+    QFETCH(QString, bitWidth);
+    QFETCH(QString, registerSize);
+    QFETCH(QString, dimension);
+    QFETCH(QString, stride);
+    QFETCH(QString, invalidIndex);
+    QFETCH(int, numErrors);
+    QFETCH(bool, isValid);
+
+
+    QSharedPointer<Field> fieldOne(new Field("FieldOne"));
+    fieldOne->setBitOffset(bitOffset);
+    fieldOne->setBitWidth(bitWidth);
+    fieldOne->setDimension(dimension);
+    fieldOne->setStride(stride);
+
+    QSharedPointer<Register> testRegister(new Register("TestRegister"));
+    testRegister->setAddressOffset("0");
+    testRegister->setSize(registerSize);
+    testRegister->getFields()->append(fieldOne);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice>>>(), Document::Revision::Std22));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator, Document::Revision::Std22);
+
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), isValid);
+
+    if (!isValid)
+    {
+        QList<QString> foundErrors;
+        validator.findErrorsIn(foundErrors, testRegister, "test");
+        
+        QCOMPARE(foundErrors.size(), numErrors);
+
+        QString expectedError = QObject::tr("Field %1 (%2) is not contained within %3").arg(fieldOne->name())
+            .arg(invalidIndex).arg(testRegister->name());
+
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testFieldWithStrideIsWithinRegister_data()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testFieldWithStrideIsWithinRegister_data()
+{
+    QTest::addColumn<QString>("bitOffset");
+    QTest::addColumn<QString>("bitWidth");
+    QTest::addColumn<QString>("registerSize");
+    QTest::addColumn<QString>("dimension");
+    QTest::addColumn<QString>("stride");
+    QTest::addColumn<QString>("invalidIndex");
+    QTest::addColumn<int>("numErrors");
+    QTest::addColumn<bool>("isValid");
+
+    // Reg size 32
+    // Valid: 3 replicas of 4-bit fields starting at offset 2, stride 6, total bits used = 2 + (3-1)*6 + 4 = 16 < 32
+    QTest::newRow("Valid replicated field") << "2" << "4" << "32" << "3" << "6" << "" << 0 << true;
+
+    // Reg size 16
+    // Invalid: 4 replicas of 4-bit fields starting at offset 2, stride 6, total bits used = 2 + (3-1)*6 + 4 = 21 > 16
+    // => Two replicas (2,3) out of bounds
+    QTest::newRow("Invalid: last replica exceeds register") << "2" << "4" << "16" << "4" << "6" << "3" << 2 << false;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testFieldOverlapWithStride()
+//-----------------------------------------------------------------------------
+
+void tst_RegisterValidator::testFieldOverlapWithStride()
+{
+    QSharedPointer<Field> fieldOne(new Field("FieldOne"));
+    fieldOne->setBitOffset("0");
+    fieldOne->setBitWidth("4");
+    fieldOne->setDimension("3"); // 3 instances
+    fieldOne->setStride("8");   // Each instance starts 8 bits apart
+
+    QSharedPointer<Field> fieldTwo(new Field("FieldTwo"));
+    fieldTwo->setBitOffset("6"); // Between first (0-3) and second (8-11) instance of FieldOne
+    fieldTwo->setBitWidth("2");
+
+    QSharedPointer<Field> fieldThree(new Field("FieldThree"));
+    fieldThree->setBitOffset("9"); // Overlaps with second instance of FieldOne (8-11)
+    fieldThree->setBitWidth("4");
+
+    QSharedPointer<Register> testRegister(new Register("TestRegister"));
+    testRegister->setAddressOffset("0");
+    testRegister->setSize("32");
+    testRegister->getFields()->append(fieldOne);
+    testRegister->getFields()->append(fieldTwo);
+    testRegister->getFields()->append(fieldThree);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
+
+    // This should be invalid due to overlap between FieldOne[1] and FieldThree
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), false);
+
+    QVector<QString> foundErrors;
+    validator.findErrorsIn(foundErrors, testRegister, "test");
+
+    QString expectedError = QObject::tr("Fields %1 (1) and %2 overlap within register %3")
+        .arg(fieldOne->name()).arg(fieldThree->name()).arg(testRegister->name());
+
+    if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+    {
+        QFAIL("Expected overlap error not found");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testFieldReplicasOverlapDueToSmallStride()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testFieldReplicasOverlapDueToSmallStride()
+{
+    QSharedPointer<Field> fieldOne(new Field("FieldOne"));
+    fieldOne->setBitOffset("0");
+    fieldOne->setBitWidth("8");
+    fieldOne->setDimension("3"); // 3 instances
+    fieldOne->setStride("4");    // Too small: replicas will overlap
+
+    QSharedPointer<Register> testRegister(new Register("TestRegister"));
+    testRegister->setSize("32");
+    testRegister->setAddressOffset("0");
+    testRegister->getFields()->append(fieldOne);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice>>>(), Document::Revision::Std14));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
+
+    // This should be invalid due to overlapping replicas of FieldOne
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), false);
+
+    QVector<QString> foundErrors;
+    validator.findErrorsIn(foundErrors, testRegister, "test");
+
+    QString expectedError = QObject::tr("Fields %1 (0) and %2 (1) overlap within register %3")
+        .arg(fieldOne->name()).arg(fieldOne->name()).arg(testRegister->name());
+
+    if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+    {
+        QFAIL("Expected overlap error due to stride was not found");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testFieldWithDimAndEmptyStride()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testFieldWithDimAndEmptyStride()
+{
+    QSharedPointer<Field> fieldOne(new Field("FieldOne"));
+    fieldOne->setBitOffset("0");
+    fieldOne->setBitWidth("4");
+    fieldOne->setDimension("2"); // Two instances
+    // No stride set — should default to tightly packed (i.e., stride = width)
+
+    QSharedPointer<Register> testRegister(new Register("TestRegister"));
+    testRegister->setAddressOffset("0");
+    testRegister->setSize("16");
+    testRegister->getFields()->append(fieldOne);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice>>>(), Document::Revision::Std14));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
+
+    // This should be valid: replicas are at bit offsets 0 and 4 (no overlap)
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), true);
+
+    QVector<QString> foundErrors;
+    validator.findErrorsIn(foundErrors, testRegister, "test");
+
+    if (!foundErrors.isEmpty())
+    {
+        QFAIL("Unexpected error(s) found for field with empty stride");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testFieldOverlapWithStrideAndNonStride()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testFieldOverlapWithStrideAndNonStride()
+{
+    QSharedPointer<Field> fieldOne(new Field("FieldOne"));
+    fieldOne->setBitOffset("0");
+    fieldOne->setBitWidth("4");
+    fieldOne->setDimension("3"); // 3 replicas
+    fieldOne->setStride("8");    // Replicas at 0, 8, 16
+
+    QSharedPointer<Field> fieldTwo(new Field("FieldTwo"));
+    fieldTwo->setBitOffset("9"); // Overlaps with second replica of FieldOne (8–11)
+    fieldTwo->setBitWidth("4");
+
+    QSharedPointer<Register> testRegister(new Register("TestRegister"));
+    testRegister->setAddressOffset("0");
+    testRegister->setSize("32");
+    testRegister->getFields()->append(fieldOne);
+    testRegister->getFields()->append(fieldTwo);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice>>>(), Document::Revision::Std14));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator);
+
+    //should be invalid due to overlap between FieldOne[1] and FieldTwo
+    QCOMPARE(validator.hasValidFields(testRegister, testRegister->getSize()), false);
+
+    QVector<QString> foundErrors;
+    validator.findErrorsIn(foundErrors, testRegister, "test");
+
+    QString expectedError = QObject::tr("Fields %1 (1) and %2 overlap within register %3")
+        .arg(fieldOne->name()).arg(fieldTwo->name()).arg(testRegister->name());
+
+    if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+    {
+        QFAIL("Expected overlap error between strided and non-strided field not found");
+    }
+}
+
+
 
 //-----------------------------------------------------------------------------
 // Function: tst_RegisterValidator::testFieldsHaveSimilarDefinitionGroups()

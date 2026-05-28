@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/common/Extendable.h>
+#include <IPXACTmodels/Component/ArrayableMemory.h>
 
 #include <QList>
 #include <QString>
@@ -27,7 +28,7 @@ class MemoryArray;
 //-----------------------------------------------------------------------------
 //! Describes the base class for ipxact:register, ipxact:registerFile and ipxact:alternateRegister.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT RegisterBase : public NameGroup, public Extendable
+class IPXACTMODELS_EXPORT RegisterBase : public NameGroup, public Extendable, public ArrayableMemory
 {
 
 public:
@@ -37,7 +38,7 @@ public:
      *
      *    @param [in] name    The register name.
      */
-    RegisterBase(QString const& name = QString());
+    explicit RegisterBase(QString const& name = QString());
     RegisterBase(QString const& name, QString const& addressOffset);
 
     //! The copy constructor.
@@ -69,33 +70,6 @@ public:
      *    @param [in] newIsPresent    The new value for is present.
      */
     void setIsPresent(QString const& newIsPresent);
-    /*!
-     *  Get the dimension of the register.
-     *
-     *    @return The first dimension defined for the register.
-     */
-    QString getDimension() const;
-
-    /*!
-     *  Set the first dimension of the register base.
-     *
-     *    @param [in] newDimension    The new value for the first dim-element.
-     */
-    void setDimension(QString const& newDimension);
-
-    /*!
-     *	Get the register's memory array.
-     *
-     * 	    @return Pointer to the memory array of the register.
-     */
-    QSharedPointer<MemoryArray> getMemoryArray() const;
-
-    /*!
-     *	Set the memory array of the register.
-     *
-     *    @param [in] newMemArray     Pointer to the memory array to set.
-     */
-    void setMemoryArray(QSharedPointer<MemoryArray> newMemArray);
 
     /*!
      *  Get the address offset of the registerFile.
@@ -183,9 +157,6 @@ private:
 
     //! The type identifier.
     QString typeIdentifier_;
-
-    //! The memory array.
-    QSharedPointer<MemoryArray> memoryArray_;
 
 	//! Contains the parameters.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ = 

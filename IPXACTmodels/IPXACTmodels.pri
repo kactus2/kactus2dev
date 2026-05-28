@@ -118,6 +118,7 @@ HEADERS += ./generaldeclarations.h \
     ./AbstractionDefinition/AbstractionDefinitionReader.h \
     ./AbstractionDefinition/AbstractionDefinitionWriter.h \
     ./AbstractionDefinition/validators/PacketValidator.h \
+    ./AbstractionDefinition/validators/PortAbstractionValidator.h \
     ./AbstractionDefinition/validators/AbstractionDefinitionValidator.h \
     ./Design/ActiveInterface.h \
     ./Design/AdHocConnection.h \
@@ -309,7 +310,7 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
     ./DesignConfiguration/validators/ViewConfigurationValidator.h \
-    ./AbstractionDefinition/validators/PortAbstractionValidator.h
+    ./Component/ArrayableMemory.h
 SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -423,6 +424,7 @@ SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./AbstractionDefinition/WirePort.cpp \
     ./AbstractionDefinition/validators/AbstractionDefinitionValidator.cpp \
     ./AbstractionDefinition/validators/PacketValidator.cpp \
+    ./AbstractionDefinition/validators/PortAbstractionValidator.cpp \
     ./Design/ActiveInterface.cpp \
     ./Design/AdHocConnection.cpp \
     ./Design/ComponentInstance.cpp \
@@ -612,4 +614,4 @@ SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
     ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./AbstractionDefinition/validators/PortAbstractionValidator.cpp
+    ./Component/ArrayableMemory.cpp

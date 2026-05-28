@@ -137,6 +137,11 @@ private slots:
      *  Save the edited dimension to the register.
      */
     void onDimensionEdited();
+
+    /*!
+     *  Save the edited stride to the register.
+     */
+    void onStrideEdited();
     
     /*!
      *  Save the edited is present to the register.
@@ -206,6 +211,9 @@ private:
 
     //! The dimension editor.
     ExpressionEditor* dimensionEditor_;
+
+    //! The register stride editor.
+    ExpressionEditor* strideEditor_;
 
     //! The is present editor, accepts expressions.
     ExpressionEditor* isPresentEditor_;

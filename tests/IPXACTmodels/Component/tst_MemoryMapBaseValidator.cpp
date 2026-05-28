@@ -43,6 +43,7 @@ private slots:
     void testAddressBlocksAreValid();
     void testAddressBlocksOverlap();
     void testAddressBlocksOverlap_data();
+    void testBlocksWithDimAndStrideOverlap();
 
 private:
 
@@ -195,7 +196,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
     QVector<QString> foundErrors;
     validator.findErrorsIn(foundErrors, testMap, "8", "test");
 
-    QString expectedError = QObject::tr("Invalid baseAddress set for address block %1 within memory map %2").
+    QString expectedError = QObject::tr("Invalid baseAddress set for address block %1 within memory map %2 in test").
         arg(testBlock->name()).arg(testMap->name());
     if (errorIsNotFoundInErrorList(expectedError, foundErrors))
     {
@@ -214,7 +215,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
 
     foundErrors.clear();
     validator.findErrorsIn(foundErrors, testMap, "8", "test");
-    expectedError = QObject::tr("Name %1 of memory blocks in memory map %2 is not unique")
+    expectedError = QObject::tr("Name %1 of memory blocks within memory map %2 in test is not unique")
         .arg(testBlock->name()).arg(testMap->name());
 
     if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -235,6 +236,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksOverlap()
     QFETCH(QString, rangeOne);
     QFETCH(QString, baseAddressTwo);
     QFETCH(QString, rangeTwo);
+    QFETCH(bool, oneFirst);
     QFETCH(bool, isValid);
 
     QSharedPointer<AddressBlock> blockOne (new AddressBlock("One", baseAddressOne));
@@ -267,8 +269,20 @@ void tst_MemoryMapBaseValidator::testAddressBlocksOverlap()
     {
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testMap, "8", "test");
-        QString expectedError = QObject::tr("Memory blocks %1 and %2 overlap in memory map %3")
-            .arg(blockOne->name()).arg(blockTwo->name()).arg(testMap->name());
+        
+        QString expectedError;
+
+        if (oneFirst)
+        {
+            expectedError = QObject::tr("Memory blocks %1 and %2 overlap within memory map %3 in test")
+                .arg(blockOne->name()).arg(blockTwo->name()).arg(testMap->name());
+        }
+        else
+        {
+            expectedError = QObject::tr("Memory blocks %1 and %2 overlap within memory map %3 in test")
+                .arg(blockTwo->name()).arg(blockOne->name()).arg(testMap->name());
+        }
+        
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -286,22 +300,144 @@ void tst_MemoryMapBaseValidator::testAddressBlocksOverlap_data()
     QTest::addColumn<QString>("rangeOne");
     QTest::addColumn<QString>("baseAddressTwo");
     QTest::addColumn<QString>("rangeTwo");
+    QTest::addColumn<bool>("oneFirst");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Block1: baseAddress = 0, range = 2, Block2: baseAddress = 2, range = 2 is valid") << "0" <<
-        "2" << "2" << "2" << true;
+        "2" << "2" << "2" << true << true;
     QTest::newRow("Block1: baseAddress = 5, range = 10, Block2: baseAddress = 2, range = 4 is invalid") << "5" <<
-        "10" << "2" << "4" << false;
+        "10" << "2" << "4" << false << false;
     QTest::newRow("Block1: baseAddress = 5, range = 10, Block2: baseAddress = 6, range = 2 is invalid") << "5" <<
-        "10" << "6" << "2" << false;
+        "10" << "6" << "2" << true << false;
     QTest::newRow("Block1: baseAddress = 5, range = 10, Block2: baseAddress = 8, range = 10 is invalid") << "5" <<
-        "10" << "8" << "10" << false;
+        "10" << "8" << "10" << true << false;
     QTest::newRow("Block1: baseAddress = 5, range = 10, Block2: baseAddress = 15, range = 10 is valid") << "5" <<
-        "10" << "15" << "10" << true;
+        "10" << "15" << "10" << true << true;
     QTest::newRow("Block1: baseAddress = 8, range = 10, Block2: baseAddress = 5, range = 10 is invalid") << "8" <<
-        "10" << "5" << "10" << false;
+        "10" << "5" << "10" << false << false;
     QTest::newRow("Block1: baseAddress = 15, range = 10, Block2: baseAddress = 5, range = 10 is valid") << "15" <<
-        "10" << "5" << "10" << true;
+        "10" << "5" << "10" << false << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapBaseValidator::testBlocksWithStrideOverlap()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapBaseValidator::testBlocksWithDimAndStrideOverlap()
+{
+    // Block two overlaps with block one
+    const QString baseAddressOne = "0";
+    const QString rangeOne = "1";
+    const QString dimOne = "3";
+    const QString strideOne = "2";
+    const QString baseAddressTwo = "2";
+    const QString rangeTwo = "1";
+    const QString dimTwo = "2";
+    const QString strideTwo = "2";
+
+    // Overlaps are (blockOne (1), blockTwo (0)) and (blockOne (2), blockTwo(1))
+    QSharedPointer<AddressBlock> blockOne(new AddressBlock("One", baseAddressOne));
+    blockOne->setRange(rangeOne);
+    blockOne->setWidth("8");
+    blockOne->setDimension(dimOne);
+    blockOne->setStride(strideOne);
+
+    QSharedPointer<AddressBlock> blockTwo(new AddressBlock("Two", baseAddressTwo));
+    blockTwo->setRange(rangeTwo);
+    blockTwo->setWidth("8");
+    blockTwo->setDimension(dimTwo);
+    blockTwo->setStride(strideTwo);
+
+    // Block with too small stride -> replicas overlap
+    QSharedPointer<AddressBlock> blockThree(new AddressBlock("Three", "50"));
+    blockThree->setRange("2");
+    blockThree->setWidth("8");
+    blockThree->setDimension("3");
+    blockThree->setStride("1");
+    // Overlaps are replicas (0,1) and (1,2)
+    
+    QSharedPointer<MemoryMapBase> testMap(new MemoryMapBase("testMap"));
+    testMap->getMemoryBlocks()->append(blockOne);
+    testMap->getMemoryBlocks()->append(blockTwo);
+    testMap->getMemoryBlocks()->append(blockThree);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator(
+        new RegisterValidator(parser, fieldValidator, parameterValidator));
+    QSharedPointer<RegisterFileValidator> registerFileValidator(
+        new RegisterFileValidator(parser, registerValidator, parameterValidator, Document::Revision::Std22));
+    QSharedPointer<AddressBlockValidator> addressBlockValidator(
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, Document::Revision::Std22));
+    MemoryMapBaseValidator validator(parser, addressBlockValidator, nullptr, Document::Revision::Std22);
+    QCOMPARE(validator.hasValidMemoryBlocks(testMap, "8"), false);
+
+    QStringList actualErrors;
+
+    validator.findErrorsIn(actualErrors, testMap, "8", "test");
+
+    // Alternatives for each expected overlap
+    QStringList overlap1 = {
+        "Memory blocks One (1) and Two (0) overlap within memory map testMap in test",
+        "Memory blocks Two (0) and One (1) overlap within memory map testMap in test"
+    };
+
+    QStringList overlap2 = {
+        "Memory blocks One (2) and Two (1) overlap within memory map testMap in test",
+        "Memory blocks Two (1) and One (2) overlap within memory map testMap in test"
+    };
+
+    QStringList overlap3 = {
+        "Memory blocks Three (0) and Three (1) overlap within memory map testMap in test",
+        "Memory blocks Three (1) and Three (0) overlap within memory map testMap in test"
+    };
+
+    QStringList overlap4 = {
+        "Memory blocks Three (1) and Three (2) overlap within memory map testMap in test",
+        "Memory blocks Three (2) and Three (1) overlap within memory map testMap in test"
+    };
+
+    // Track which overlaps were found
+    bool foundOverlap1 = false;
+    bool foundOverlap2 = false;
+    bool foundOverlap3 = false;
+    bool foundOverlap4 = false;
+
+    for (auto const& error : actualErrors)
+    {
+        if (overlap1.contains(error))
+        {
+            QVERIFY2(!foundOverlap1, "Duplicate overlap1 error found");
+            foundOverlap1 = true;
+        }
+        else if (overlap2.contains(error))
+        {
+            QVERIFY2(!foundOverlap2, "Duplicate overlap2 error found");
+            foundOverlap2 = true;
+        }
+        else if (overlap3.contains(error))
+        {
+            QVERIFY2(!foundOverlap3, "Duplicate overlap3 error found");
+            foundOverlap3 = true;
+        }
+        else if (overlap4.contains(error))
+        {
+            QVERIFY2(!foundOverlap4, "Duplicate overlap4 error found");
+            foundOverlap4 = true;
+        }
+        else
+        {
+            QFAIL(qPrintable(QString("Unexpected error: %1").arg(error)));
+        }
+    }
+
+    // Ensure all expected overlaps were found
+    QVERIFY(foundOverlap1);
+    QVERIFY(foundOverlap2);
+    QVERIFY(foundOverlap3);
+    QVERIFY(foundOverlap4);
 }
 
 //-----------------------------------------------------------------------------

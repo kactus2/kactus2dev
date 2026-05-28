@@ -49,6 +49,7 @@ fieldsEditor_(new RegisterEditor(selectedRegister->getFields(), component, handl
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 sizeEditor_(new ExpressionEditor(parameterFinder, this)),
 dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
+strideEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 volatileEditor_(new BooleanComboBox(this)),
 accessEditor_(new AccessComboBox(this)),
@@ -63,6 +64,7 @@ accessPoliciesEditor_(new AccessPoliciesEditor(selectedRegister->getAccessPolici
     offsetEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
     sizeEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
     dimensionEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    strideEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
     isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
@@ -77,12 +79,16 @@ accessPoliciesEditor_(new AccessPoliciesEditor(selectedRegister->getAccessPolici
     auto dimensionParameterCompleter = new QCompleter(this);
     dimensionParameterCompleter->setModel(componentParametersModel);
 
+    auto strideParameterCompleter = new QCompleter(this);
+    strideParameterCompleter->setModel(componentParametersModel);
+
     auto isPresentCompleter = new QCompleter(this);
     isPresentCompleter->setModel(componentParametersModel);
 
     offsetEditor_->setAppendingCompleter(offsetParameterCompleter);
     sizeEditor_->setAppendingCompleter(sizeParameterCompleter);
     dimensionEditor_->setAppendingCompleter(dimensionParameterCompleter);
+    strideEditor_->setAppendingCompleter(strideParameterCompleter);
     isPresentEditor_->setAppendingCompleter(isPresentCompleter);
 
     setupLayout();
@@ -130,6 +136,7 @@ void SingleRegisterEditor::setupLayout()
     }
     else if (component()->getRevision() == Document::Revision::Std22)
     {
+        registerDefinitionLayout->addRow(tr("Stride, f(x):"), strideEditor_);
         registerDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
 
         QGridLayout* layout = new QGridLayout();
@@ -198,6 +205,21 @@ void SingleRegisterEditor::refresh()
     dimensionEditor_->setToolTip(
         QString::fromStdString(registerInterface_->getDimensionValue(registerName_)));
 
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        // Enable stride editing if dimension > 1
+        if (QString::fromStdString(registerInterface_->getDimensionValue(registerName_)).toULongLong() > 1)
+        {
+            strideEditor_->setEnabled(true);
+            strideEditor_->setExpression(QString::fromStdString(registerInterface_->getStrideExpression(registerName_)));
+            strideEditor_->setToolTip(QString::fromStdString(registerInterface_->getStrideValue(registerName_)));
+        }
+        else
+        {
+            strideEditor_->setEnabled(false);
+        }
+    }
+
     isPresentEditor_->setExpression(
         QString::fromStdString(registerInterface_->getIsPresentExpression(registerName_)));
     isPresentEditor_->setToolTip(
@@ -235,6 +257,10 @@ void SingleRegisterEditor::connectSignals()
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(decreaseReference(QString const&)),
         this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(increaseReference(QString const&)),
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(decreaseReference(QString const&)),
@@ -243,12 +269,14 @@ void SingleRegisterEditor::connectSignals()
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SLOT(onOffsetEdited()), Qt::UniqueConnection);
     connect(sizeEditor_, SIGNAL(editingFinished()), this, SLOT(onSizeEdited()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SLOT(onDimensionEdited()), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(editingFinished()), this, SLOT(onStrideEdited()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(sizeEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(fieldsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -261,6 +289,9 @@ void SingleRegisterEditor::connectSignals()
 
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+
+    connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(strideEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
     //connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
@@ -294,6 +325,7 @@ void SingleRegisterEditor::changeExpressionEditorsSignalBlockStatus(bool blockSt
     offsetEditor_->blockSignals(blockStatus);
     sizeEditor_->blockSignals(blockStatus);
     dimensionEditor_->blockSignals(blockStatus);
+    strideEditor_->blockSignals(blockStatus);
     isPresentEditor_->blockSignals(blockStatus);
 }
 
@@ -327,10 +359,34 @@ void SingleRegisterEditor::onSizeEdited()
 void SingleRegisterEditor::onDimensionEdited()
 {
     dimensionEditor_->finishEditingCurrentWord();
-    QString newDimension = dimensionEditor_->getExpression();
+    auto newDimension = dimensionEditor_->getExpression();
+    auto formattedDimension = formattedValueFor(newDimension);
 
     registerInterface_->setDimension(registerName_, newDimension.toStdString());
-    dimensionEditor_->setToolTip(formattedValueFor(newDimension));
+    dimensionEditor_->setToolTip(formattedDimension);
+
+    if (formattedDimension.compare(QStringLiteral("n/a")) != 0 && formattedDimension.toULongLong() > 1)
+    {
+        strideEditor_->setEnabled(true);
+    }
+    else
+    {
+        strideEditor_->setExpression(QString());
+        strideEditor_->setToolTip(QString());
+        strideEditor_->setEnabled(false);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleRegisterEditor::onStrideEdited()
+//-----------------------------------------------------------------------------
+void SingleRegisterEditor::onStrideEdited()
+{
+    strideEditor_->finishEditingCurrentWord();
+    auto newStride = strideEditor_->getExpression();
+
+    registerInterface_->setStride(registerName_, newStride.toStdString());
+    strideEditor_->setToolTip(formattedValueFor(newStride));
 }
 
 //-----------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Generated Files">
@@ -306,6 +306,9 @@
     <ClInclude Include="include\ModeConditionParserInterface.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\ArrayableMemoryInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
     <ClInclude Include="include\InterconnectGenerator.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
@@ -534,6 +537,9 @@
     </ClCompile>
     <ClCompile Include="expressions\ModeConditionParserInterface.cpp">
       <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\ArrayableMemoryInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
     </ClCompile>
     <ClCompile Include="plugins\InterconnectGenerator\ConfigJsonParser.cpp">
       <Filter>Source Files\plugins\InterconnectGenerator</Filter>

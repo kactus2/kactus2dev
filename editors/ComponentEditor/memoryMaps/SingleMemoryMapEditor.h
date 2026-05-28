@@ -170,7 +170,7 @@ signals:
      *
      *    @param [in]
      */
-    void childAddressingChanged(int);
+    void childAddressingChanged(int, bool);
 
     /*!
      *  Informs change in child graphics.

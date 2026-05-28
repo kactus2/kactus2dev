@@ -119,7 +119,7 @@ signals:
      */
     void registerNameChanged(QString const& oldName, QString const& newName);
 
-    void addressingChanged();
+    void addressingChanged(bool needRedraw);
 
     void childAddressingChanged(int index);
 
@@ -153,6 +153,12 @@ private slots:
 
     //! Called when isPresent is changed.
     void onIsPresentEdited();
+
+    //! Called when dimension is changed.
+    void onDimensionChanged();
+
+    //! Called when stride is changed.
+    void onStrideChanged();
 
     /*!
      *  Sets the value in the usage editor.
@@ -224,6 +230,12 @@ private:
 
     //! Editor for the is present of the address block-
     ExpressionEditor* isPresentEditor_;
+
+    //! Editor for memory array dimension.
+    ExpressionEditor* dimensionEditor_;
+
+    //! The address block stride editor.
+    ExpressionEditor* strideEditor_;
 
     //! Editor for selecting the access of the address block.
     AccessComboBox* accessEditor_;

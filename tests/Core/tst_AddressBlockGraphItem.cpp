@@ -136,20 +136,26 @@ void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
     addressBlock->setRange("2");
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
+    QSharedPointer<SystemVerilogExpressionParser> parser(new SystemVerilogExpressionParser());
 
-    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
+    AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, parser, 0);
     addressBlockItem->setAddressableUnitBits(8);
+    addressBlockItem->setOffset(0); // In this case same as address block base address
+    addressBlockItem->updateDisplay();
 
     QList<QSharedPointer<RegisterBase> > registers;
     QSharedPointer<Register> reg(new Register());
+    reg->setName("reg");
     reg->setAddressOffset("1");
     reg->setSize("8");
     registers.append(reg);
     addressBlock->getRegisterData()->append(registers);
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
+    RegisterGraphItem* registerItem = new RegisterGraphItem(reg, parser, addressBlockItem);
+    registerItem->setOffset(1); // same as address offset in this case
+    registerItem->updateDisplay();
     addressBlockItem->addChild(registerItem);
-    
+
     addressBlockItem->redoChildLayout();
     expandItem(addressBlockItem);
 
@@ -237,6 +243,8 @@ void tst_AddressBlockGraphItem::testExpressions()
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
 
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, expressionParser, 0);
+    addressBlockItem->setOffset(2);
+    addressBlockItem->updateDisplay();
     addressBlockItem->setAddressableUnitBits(8);
 
 

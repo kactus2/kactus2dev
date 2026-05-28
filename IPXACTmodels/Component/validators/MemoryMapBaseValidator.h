@@ -32,6 +32,7 @@ class SubSpaceMap;
 class BusInterface;
 class AddressSpace;
 class Segment;
+class MemoryReserve;
 
 //-----------------------------------------------------------------------------
 //! Validator for the base ipxact:memoryMap.
@@ -145,25 +146,6 @@ protected:
 
 private:
 
-
-    /*!
-     *	Mark address blocks and subspace maps as invalid if they have duplicate names.
-     *
-     *    @param [in] foundNames     The found names and associated memory blocks.
-     *
-     * 	    @return True, if duplicate names were found, otherwise false.
-     */
-    bool markBlocksWithDuplicateNames(QMultiHash<QString, QSharedPointer<NameGroup>> const& foundNames);
-
-    /*!
-     *  Check if two memory blocks overlap.
-     *
-     *    @param [in] memoryBlock     The selected memory block.
-     *    @param [in] comparedBlock   The compared memory block.
-     */
-    bool twoMemoryBlocksOverlap(QSharedPointer<MemoryBlockBase> memoryBlock,
-        QSharedPointer<MemoryBlockBase> comparedBlock) const;
-
     /*!
      *  Get the range of the selected memory block
      *
@@ -225,14 +207,14 @@ private:
         QString const& context) const;
 
     /*!
-     *  Find errors within address blocks.
+     *  Find errors within memory blocks.
      *
      *    @param [in] errors              List of found errors.
      *    @param [in] memoryMapBase       The selected memory map base.
      *    @param [in] addressUnitBits     The address unit bits used by the memory map.
      *    @param [in] context             Context to help locate the error.
      */
-    void findErrorsInAddressBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
+    void findErrorsInMemoryBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
         QString const& addressUnitBits, QString const& context);
 
     /*!
@@ -246,6 +228,14 @@ private:
      */
     void findErrorsInOverlappingBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
         QSharedPointer<MemoryBlockBase> memoryBlock, int blockIndex, QString const& context) const;
+
+    /*!
+     *	Create memory areas for memory block overlap check.
+     *
+     *    @param [in] memMap              The memory map containing memory blocks of which memory areas are created.
+     *    @param [in] reserve             The memory reserve to add created areas to.
+     */
+    void setupMemoryAreas(QSharedPointer<MemoryMapBase> memMap, MemoryReserve& memReserve);
 
     //-----------------------------------------------------------------------------
     // Data.

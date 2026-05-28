@@ -122,23 +122,31 @@ public:
 	 */
 	virtual ItemVisualizer* visualizer() override final;
 
-	/*! Set the visualizer for this item.
+	/*! Set the visualizer for this item and child items.
 	 *
 	 *    @param [in] visualizer Pointer to the visualizer.
 	 */
     void setVisualizer(MemoryMapsVisualizer* visualizer);
 
-	/*! Get the visualizer graphics item for the register.
-	 *
-	 *    @return QGraphicsItem* Pointer to the graphics item.
-	 */
-	virtual QGraphicsItem* getGraphicsItem() override final;
-
     //! Update the graphics item of the register.
     virtual void updateGraphics() override final;
 
-	//! Remove the graphics item of the register.
-	virtual void removeGraphicsItem() override final;
+	/*!
+	 *	Remove the graph items of this item.
+	 */
+	void removeGraphicsItems();
+	
+	/*!
+	 *	Create graph item for this item or multiple items in case of dimensions.
+	 *
+	 *    @param [in] parentItem     The parent item for created item(s).
+	 */
+	void createGraphicsItems(QGraphicsItem* parentItem);
+
+	/*!
+	 *	Create graph items for all child items.
+	 */
+	void createGraphicsItemsForChildren();
 
 signals:
 
@@ -161,15 +169,23 @@ signals:
     //! Signals a change in the item's address data.
     void addressingChanged();
 
-
-
 public slots:
 
     //! Handle the change in item's addressing data.
     void onAddressingChanged();
 
-    //! Handle the change in child item's addressing data.
-    void onChildAddressingChanged();
+	/*!
+	 *	Handle the change in child item's addressing data. Used when signal origin is child component editor item.
+	 */
+	void onChildAddressingChanged();
+
+	/*!
+	 *	Handle the change in child item's addressing data. Used when signal origin is fields table editor.
+	 *  Index corresponds to indexes of child field items.
+	 *
+	 *    @param [in] childIndex     The index of the field that changed.
+	 */
+	void onChildAddressingChangedLocally(int childIndex);
 
 protected slots:
 
@@ -180,9 +196,15 @@ protected slots:
 
     //! Handle the change in child item's graphics.
     void onChildGraphicsChanged(int index);
-   
+
 private:
-	
+
+	/*!
+	 *	Create the graph items for given child item. Creates child graph items for each register graph item replica.
+	 *
+	 *    @param [in] childEditor     The child to create items for.
+	 */
+	void createGraphicsItemsForChild(ComponentEditorItem* childEditor);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -193,9 +215,6 @@ private:
 
 	//! The visualizer of memory maps.
 	MemoryMapsVisualizer* visualizer_ = nullptr;
-
-	//! The graph item that visualizes the register and possible dimensions.
-	RegisterGraphItem* registerItem_ = nullptr;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

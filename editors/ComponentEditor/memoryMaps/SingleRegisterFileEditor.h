@@ -103,6 +103,9 @@ private slots:
     //! Called when dimension is changed.
     void onDimensionEdited();
 
+    //! Called when stride is changed.
+    void onStrideEdited();
+
     //! Called when isPresent is changed.
     void onIsPresentEdited();
 
@@ -158,6 +161,9 @@ private:
 
     //! The editor for register file dimension.
     ExpressionEditor* dimensionEditor_;
+
+    //! The register file stride editor.
+    ExpressionEditor* strideEditor_;
 
     //! The editor for register file isPresent property.
     ExpressionEditor* isPresentEditor_;

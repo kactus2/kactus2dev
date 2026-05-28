@@ -23,6 +23,7 @@
 #include <IPXACTmodels/Component/FieldReset.h>
 #include <IPXACTmodels/Component/FieldReference.h>
 #include <IPXACTmodels/Component/FieldAccessPolicy.h>
+#include <IPXACTmodels/Component/ArrayableMemory.h>
 
 #include <QString>
 #include <QMap>
@@ -32,12 +33,11 @@
 class Parameter;
 class EnumeratedValue;
 class WriteValueConstraint;
-class MemoryArray;
 
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:field element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT Field : public NameGroup, public Extendable
+class IPXACTMODELS_EXPORT Field : public NameGroup, public Extendable, public ArrayableMemory
 {
 
 public:
@@ -93,20 +93,6 @@ public:
 	 *    @param [in] newIsPresent    The new is present value.
 	 */
 	void setIsPresent(QString const& newIsPresent);
-
-	/*!
-	 *	Get the memory array of the field.
-	 *	    
-	 * 	    @return The field's memory array.
-	 */
-	QSharedPointer<MemoryArray> getMemoryArray() const;
-
-	/*!
-	 *	Set the field's memory array.
-	 *  
-	 *    @param [in] memArray     Description
-	 */
-	void setMemoryArray(QSharedPointer<MemoryArray> memArray);
 
 	/*!
 	 *  Get the bit offset.
@@ -408,8 +394,6 @@ private:
 	 */
 	void copyWriteValueConstraint(const Field& other);
 
-	void copyMemoryArray(Field const& other);
-
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
@@ -419,9 +403,6 @@ private:
 
 	//! The presence of the field.
 	QString isPresent_;
-
-    //! The field's memory array.
-    QSharedPointer<MemoryArray> memoryArray_;
 
 	//! Describes the offset where this bit field starts.
 	QString bitOffset_;

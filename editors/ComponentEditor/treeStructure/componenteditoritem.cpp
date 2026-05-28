@@ -395,6 +395,14 @@ QGraphicsItem* ComponentEditorItem::getGraphicsItem()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditorItem::getGraphicsItems()
+//-----------------------------------------------------------------------------
+QMultiHash<QGraphicsItem*, QGraphicsItem* > const& ComponentEditorItem::getGraphicsItems() const
+{
+	return graphItems_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: componenteditoritem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::updateGraphics()

@@ -10,6 +10,7 @@ HEADERS += ../../common/graphicsItems/expandableitem.h \
     ../../editors/ComponentEditor/visualization/memorygapitem.h \
     ../../editors/ComponentEditor/visualization/memoryvisualizationitem.h \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
+    ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/ArrayableMemoryGraphItem.h \
     ../../common/graphicsItems/visualizeritem.h \
     ../../common/KactusUtils.h
 SOURCES += ../../common/graphicsItems/expandableitem.cpp \
@@ -20,6 +21,7 @@ SOURCES += ../../common/graphicsItems/expandableitem.cpp \
     ../../editors/ComponentEditor/visualization/memorygapitem.cpp \
     ../../editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
+    ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/ArrayableMemoryGraphItem.cpp \
     ../../common/graphicsItems/visualizeritem.cpp \
     ../../common/KactusUtils.cpp \
     ./tst_FieldGraphItem.cpp

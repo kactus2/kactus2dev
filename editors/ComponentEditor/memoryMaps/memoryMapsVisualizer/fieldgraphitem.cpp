@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field, QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem* parent):
-MemoryVisualizationItem(expressionParser, parent),
+ArrayableMemoryGraphItem(expressionParser, parent),
 field_(field)
 {
 	Q_ASSERT(field_);
@@ -46,22 +46,16 @@ field_(field)
 //-----------------------------------------------------------------------------
 void FieldGraphItem::updateDisplay()
 {
-    setName(field_->name());
+    // Get name with replica index
+    QString formattedName = getReplicaName(field_->name());
 
     quint64 leftBound = getLastAddress();
     quint64 rightBound = getOffset();
 
+    setName(formattedName);
     setDisplayOffset(leftBound);
     setDisplayLastAddress(rightBound);
-    setToolTip("<b>" % name() % "</b> [" % QString::number(leftBound) % ".." % QString::number(rightBound) % "]");
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGraphItem::getOffset()
-//-----------------------------------------------------------------------------
-quint64 FieldGraphItem::getOffset() const
-{
-    return parseExpression(field_->getBitOffset());
+    setToolTip("<b>" % formattedName % "</b> [" % QString::number(leftBound) % ".." % QString::number(rightBound) % "]");
 }
 
 //-----------------------------------------------------------------------------
@@ -69,7 +63,8 @@ quint64 FieldGraphItem::getOffset() const
 //-----------------------------------------------------------------------------
 int FieldGraphItem::getBitWidth() const
 {
-    return parseExpression(field_->getBitWidth());
+    // Force field minimum width to 1 bit in visualizer
+    return qMax(quint64(1), parseExpression(field_->getBitWidth()));
 }
 
 //-----------------------------------------------------------------------------
@@ -125,7 +120,7 @@ void FieldGraphItem::setConflicted(bool conflicted)
     MemoryVisualizationItem::setConflicted(conflicted);
     if (conflicted)
     {
-        setOpacity(0.5);
+        setOpacity(0.7);
     }
     else
     {

@@ -147,7 +147,7 @@ signals:
      *
      *    @param [in] index   Index of the item whose addressing is changed.
      */
-    void childAddressingChanged(int index);
+    void childAddressingChanged(int index, bool needRedraw);
 
 private:
 	

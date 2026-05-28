@@ -14,7 +14,6 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
-#include <IPXACTmodels/Component/MemoryArray.h>
 #include <IPXACTmodels/Component/FieldReference.h>
 
 #include <IPXACTmodels/utilities/Copy.h>
@@ -25,6 +24,7 @@
 Field::Field(QString const& name) :
 NameGroup(name),
 Extendable(),
+ArrayableMemory(),
 id_(),
 isPresent_(),
 bitOffset_(),
@@ -53,6 +53,7 @@ parameters_(new QList<QSharedPointer<Parameter> > ())
 Field::Field(const Field& other) :
 NameGroup(other),
 Extendable(other),
+ArrayableMemory(other),
 id_(other.id_),
 isPresent_(other.isPresent_),
 bitOffset_(other.bitOffset_),
@@ -78,7 +79,6 @@ parameters_(new QList<QSharedPointer<Parameter> > ())
     Copy::copyList(other.resets_, resets_);
     Copy::copyList(other.fieldAccessPolicies_, fieldAccessPolicies_);
     copyWriteValueConstraint(other);
-    copyMemoryArray(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,6 +90,7 @@ Field& Field::operator=( const Field& other )
     {
         NameGroup::operator=(other);
         Extendable::operator=(other);
+        ArrayableMemory::operator=(other);
         id_ = other.id_;
         isPresent_ = other.isPresent_;
         bitOffset_ = other.bitOffset_;
@@ -119,7 +120,6 @@ Field& Field::operator=( const Field& other )
         fieldAccessPolicies_->clear();
         Copy::copyList(other.fieldAccessPolicies_, fieldAccessPolicies_);
         copyWriteValueConstraint(other);
-        copyMemoryArray(other);
     }
 
     return *this;
@@ -163,22 +163,6 @@ QString Field::getIsPresent() const
 void Field::setIsPresent(QString const& newIsPresent)
 {
     isPresent_ = newIsPresent;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Field::getMemoryArray()
-//-----------------------------------------------------------------------------
-QSharedPointer<MemoryArray> Field::getMemoryArray() const
-{
-    return memoryArray_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Field::setMemoryArray()
-//-----------------------------------------------------------------------------
-void Field::setMemoryArray(QSharedPointer<MemoryArray> memArray)
-{
-    memoryArray_ = memArray;
 }
 
 //-----------------------------------------------------------------------------
@@ -529,17 +513,5 @@ void Field::copyWriteValueConstraint(const Field& other)
     {
         writeValueConstraint_ =
             QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(*other.writeValueConstraint_));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Field::copyMemoryArray()
-//-----------------------------------------------------------------------------
-void Field::copyMemoryArray(Field const& other)
-{
-    memoryArray_.clear();
-    if (other.memoryArray_)
-    {
-        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
     }
 }

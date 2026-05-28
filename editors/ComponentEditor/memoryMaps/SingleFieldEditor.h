@@ -185,17 +185,24 @@ private slots:
 
     /*!
      *  Sets the edited write constraint minimum value for the field.
-     *
-     *    @param [in] newWriteConstraintMin   The edited write constraint minimum value.
      */
     void onWriteConstraintMinimumEdited();
 
     /*!
      *  Sets the edited write constraint maximum value for the field.
-     *
-     *    @param [in] newWriteConstraintMax   The edited write constraint maximum value.
      */
     void onWriteConstraintMaximumEdited();
+
+    /*!
+     *	Sets the edited dimension value for the field.
+     */
+    void onDimensionEdited();
+
+    /*!
+     *	Sets the edited bit stride value for the field.
+     */
+    void onBitStrideEdited();
+
 
 private:
 	
@@ -293,6 +300,12 @@ private:
 
     //! The write constraint maximum value editor.
     ExpressionEditor* writeConstraintMaxLimit_;
+    
+    //! The dimension editor.
+    ExpressionEditor* dimensionEditor_;
+
+    //! The bit stride editor.
+    ExpressionEditor* bitStrideEditor_;
 
     //! Name of the edited field.
     std::string fieldName_;

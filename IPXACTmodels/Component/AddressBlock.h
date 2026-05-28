@@ -18,6 +18,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/AccessTypes.h>
+#include <IPXACTmodels/Component/ArrayableMemory.h>
 
 #include <QString>
 #include <QMap>
@@ -29,7 +30,7 @@ class AccessPolicy;
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:addressBlock element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT AddressBlock: public MemoryBlockBase
+class IPXACTMODELS_EXPORT AddressBlock: public MemoryBlockBase, public ArrayableMemory
 {
 
 public:
@@ -197,20 +198,6 @@ public:
     QStringList getAllRegisterOffsets() const;
 
     /*!
-     *	Get the address block memory array.
-     *  
-     * 	    @return Pointer to the memory array of the address block.
-     */
-    QSharedPointer<MemoryArray> getMemoryArray() const;
-
-    /*!
-     *	Set the memory array of the address block.
-     *  
-     *    @param [in] newMemoryArray     The memory array to set.
-     */
-    void setMemoryArray(QSharedPointer<MemoryArray> newMemoryArray);
-
-    /*!
      *	Get the misalignment allowed attribute.
      *	    
      * 	    @return The misalignment attribute.
@@ -281,9 +268,6 @@ private:
 
     //! The attribute allowing or disallowing register address offset misalignment in the address block.
     BooleanValue misalignmentAllowed_;
-
-    //! Contains the memory array of the address block.
-    QSharedPointer<MemoryArray> memoryArray_;
 
     //! The address block definition reference.
     QString addressBlockDefinitionRef_;

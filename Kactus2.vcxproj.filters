@@ -3406,6 +3406,9 @@
     <ClCompile Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.cpp">
       <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\ArrayableMemoryGraphItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
+    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\ports\PortsImportSummaryEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
@@ -5889,6 +5892,9 @@
     </ClInclude>
     <ClInclude Include="common\layouts\VNoCollisionNoMovementLayout.h">
       <Filter>Header Files\common\layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\ArrayableMemoryGraphItem.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClInclude>
     <ClInclude Include="common\KactusUtils.h">
       <Filter>Header Files\common</Filter>

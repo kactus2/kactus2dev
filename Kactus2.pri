@@ -625,6 +625,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluedelegate.h \
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluemodel.h \
     ./editors/ComponentEditor/memoryMaps/fieldeditor.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/ArrayableMemoryGraphItem.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.h \
@@ -1339,6 +1340,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/ArrayableMemoryGraphItem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.cpp \

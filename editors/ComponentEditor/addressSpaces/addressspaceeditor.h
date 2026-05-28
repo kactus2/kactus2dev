@@ -84,7 +84,7 @@ signals:
 
     void addressingChanged();
 
-    void childAddressingChanged(int index);
+    void childAddressingChanged(int index, bool needRedraw);
 
     void childGraphicsChanged(int index);
 

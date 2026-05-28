@@ -79,7 +79,7 @@ signals:
      */
     void graphicsChanged(int);
 
-    void childAddressingChanged(int);
+    void childAddressingChanged(int, bool);
 
     /*!
      *  Emits an error message for the user.

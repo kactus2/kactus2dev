@@ -67,6 +67,12 @@ private slots:
     void testRegisterDataUniqueNames();
     void testRegisterDataUniqueNames_data();
 
+    void testBasicOutOfRange();
+
+    void testOverlappingRegisterData();
+    void testTightlyPackedRegisters();
+    void testChildRegisterStride();
+
 private:
 
     bool errorIsNotFoundInErrorList(QString const& expectedError, QStringList const& errorList);
@@ -667,6 +673,265 @@ void tst_RegisterFileValidator::testRegisterDataUniqueNames_data()
     QTest::addRow("Unique register and non-unique register file names is invalid") << "reg1" << "reg2" << "regFile" << "regFile" << false;
     QTest::addRow("Non-unique register and non-unique register file names is invalid") << "reg" << "reg" << "regFile" << "regFile" << false;
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterFileValidator::testBasicOutOfRange()
+//-----------------------------------------------------------------------------
+void tst_RegisterFileValidator::testBasicOutOfRange()
+{
+    const QString addressUnitBits("8");
+
+    QSharedPointer<RegisterFile> nestedFile(new RegisterFile("NestedFile"));
+    nestedFile->setAddressOffset("0");
+    nestedFile->setRange("2");
+
+    QSharedPointer<Field> testField(new Field("testField"));
+    testField->setBitOffset("0");
+    testField->setBitWidth("8");
+
+    QSharedPointer<Register> registerA(new Register("RegisterA"));
+    registerA->setAddressOffset("5");
+    registerA->setSize("32");
+    registerA->getFields()->append(testField);
+    // should be out of range
+
+    // top-level register file
+    QSharedPointer<RegisterFile> topLevelFile(new RegisterFile("TopLevelFile"));
+    topLevelFile->setAddressOffset("0");
+    topLevelFile->setRange("8");
+    topLevelFile->getRegisterData()->append(nestedFile);
+    topLevelFile->getRegisterData()->append(registerA);
+
+    // Set up validators
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice>>>(), Document::Revision::Std14));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
+
+    RegisterFileValidator validator(parser, registerValidator, parameterValidator, Document::Revision::Std14);
+
+    QList<QString> foundErrors;
+
+    QCOMPARE(validator.hasValidRegisterData(topLevelFile, addressUnitBits, "32"), false);
+    validator.findErrorsIn(foundErrors, topLevelFile, "test", addressUnitBits, "32");
+
+    QString expectedError = tr("Register %1 is not contained within register file '%2' within test")
+        .arg(registerA->name()).arg(topLevelFile->name());
+
+    if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+    {
+        QFAIL("No error message found");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterFileValidator::testOneDimensionOverlap()
+//-----------------------------------------------------------------------------
+void tst_RegisterFileValidator::testOverlappingRegisterData()
+{
+    const QString addressUnitBits = "8"; // 1 address unit = 8 bits
+
+    // Sample register with field
+    QSharedPointer<Field> testField(new Field("testField"));
+    testField->setBitOffset("0");
+    testField->setBitWidth("8");
+
+    QSharedPointer<Register> registerA(new Register("RegisterA"));
+    registerA->setAddressOffset("0");
+    registerA->setSize("32");
+    registerA->getFields()->append(testField);
+
+    // empty nested register file
+    QSharedPointer<RegisterFile> nestedFile(new RegisterFile("NestedFile"));
+    nestedFile->setAddressOffset("2");
+    nestedFile->setRange("2");
+    // should overlap with register
+
+    // top-level register file
+    QSharedPointer<RegisterFile> topLevelFile(new RegisterFile("TopLevelFile"));
+    topLevelFile->setAddressOffset("0");
+    topLevelFile->setRange("8"); // Enough space
+    topLevelFile->getRegisterData()->append(registerA);
+    topLevelFile->getRegisterData()->append(nestedFile);
+
+    // Set up validators
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice>>>(), Document::Revision::Std14));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
+
+    RegisterFileValidator validator(parser, registerValidator, parameterValidator, Document::Revision::Std14);
+
+    QCOMPARE(validator.hasValidRegisterData(topLevelFile, addressUnitBits, "32"), false);
+
+    QVector<QString> foundErrors;
+    validator.findErrorsIn(foundErrors, topLevelFile, "test", addressUnitBits, "32");
+
+    QString expectedError = tr("Register data %1 and %2 overlap within register file '%3' within test")
+        .arg(registerA->name()).arg(nestedFile->name()).arg(topLevelFile->name());
+
+    if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+    {
+        QFAIL("No error message found");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterFileValidator::testTightlyPackedRegisters()
+//-----------------------------------------------------------------------------
+void tst_RegisterFileValidator::testTightlyPackedRegisters()
+{
+    const QString addressUnitBits = "8";
+
+    // Sample register with field
+    QSharedPointer<Field> testField(new Field("testField"));
+    testField->setBitOffset("0");
+    testField->setBitWidth("8");
+
+    QSharedPointer<Register> registerA(new Register("RegisterA"));
+    registerA->setAddressOffset("0");
+    registerA->setSize("32");       // 32 bits = 4 address units
+    registerA->setDimension("4");   // 4 tightly packed instances
+    registerA->getFields()->append(testField);
+
+    // Top-level register file
+    QSharedPointer<RegisterFile> topLevelFile(new RegisterFile("TopLevelFile"));
+    topLevelFile->setAddressOffset("0");
+    topLevelFile->setRange("16"); // 16 address units = 128 bits, enough for 4 * 32-bit registers
+    topLevelFile->getRegisterData()->append(registerA);
+
+    // Set up validators
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice>>>(), Document::Revision::Std14));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
+
+    RegisterFileValidator validator(parser, registerValidator, parameterValidator, Document::Revision::Std14);
+
+    // This should be valid: tightly packed register array fits within the register file
+    QCOMPARE(validator.hasValidRegisterData(topLevelFile, addressUnitBits, "32"), true);
+
+    QVector<QString> foundErrors;
+    validator.findErrorsIn(foundErrors, topLevelFile, "test", addressUnitBits, "32");
+
+    if (!foundErrors.isEmpty())
+    {
+        QFAIL("Unexpected error(s) found for tightly packed register array in register file");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterFileValidator::testChildRegisterStride()
+//-----------------------------------------------------------------------------
+void tst_RegisterFileValidator::testChildRegisterStride()
+{
+    const QString addressUnitBits = "8";
+
+    // Create a register with a size of 32 bits (4 address units)
+    QSharedPointer<Field> testField(new Field("testField"));
+    testField->setBitOffset("0");
+    testField->setBitWidth("8");
+
+    // Valid stride: 4 address units
+    QSharedPointer<Register> validStrideRegister(new Register("ValidStrideRegister"));
+    validStrideRegister->setAddressOffset("0");
+    validStrideRegister->setSize("32");
+    validStrideRegister->setDimension("4");
+    validStrideRegister->setStride("4");
+    validStrideRegister->getFields()->append(testField);
+
+    // Too-small stride: 2 address units (overlap)
+    QSharedPointer<Register> overlappingRegister(new Register("OverlappingRegister"));
+    overlappingRegister->setAddressOffset("0");
+    overlappingRegister->setSize("32");
+    overlappingRegister->setDimension("4");
+    overlappingRegister->setStride("2"); // Too small: causes overlap
+    overlappingRegister->getFields()->append(testField);
+
+    // Register file with enough space for valid stride
+    QSharedPointer<RegisterFile> validFile(new RegisterFile("ValidStrideFile"));
+    validFile->setAddressOffset("0");
+    validFile->setRange("16"); // 4 * 4 = 16 address units
+    validFile->getRegisterData()->append(validStrideRegister);
+
+    // Register file with insufficient range
+    QSharedPointer<RegisterFile> smallRangeFile(new RegisterFile("SmallRangeFile"));
+    smallRangeFile->setAddressOffset("0");
+    smallRangeFile->setRange("12"); // Not enough for 4 * 4 stride
+    smallRangeFile->getRegisterData()->append(validStrideRegister);
+
+    // Register file with registers with overlapping stride
+    QSharedPointer<RegisterFile> overlappingFile(new RegisterFile("OverlappingStrideFile"));
+    overlappingFile->setAddressOffset("0");
+    overlappingFile->setRange("16"); // Enough range, but stride is too small
+    overlappingFile->getRegisterData()->append(overlappingRegister);
+
+    // Set up validators
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice>>>(), Document::Revision::Std22));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
+
+    RegisterFileValidator validator(parser, registerValidator, parameterValidator, Document::Revision::Std22);
+
+    // Valid case
+    QList<QString> foundErrors;
+    QCOMPARE(validator.hasValidRegisterData(validFile, addressUnitBits, "32"), true);
+    
+    validator.findErrorsIn(foundErrors, validFile, "test", addressUnitBits, "32");
+    QVERIFY(foundErrors.isEmpty());
+
+    foundErrors.clear();
+
+    // Small range case
+    QCOMPARE(validator.hasValidRegisterData(smallRangeFile, addressUnitBits, "32"), false);
+    validator.findErrorsIn(foundErrors, smallRangeFile, "test", addressUnitBits, "32");
+    
+    // Fourth replica is outside range
+    QString expectedError = tr("Register %1 (3) is not contained within register file '%2' within test")
+        .arg(validStrideRegister->name()).arg(smallRangeFile->name());
+
+    if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+    {
+        QFAIL("No error message found");
+    }
+
+    foundErrors.clear();
+    
+    // Overlapping stride case
+    QCOMPARE(validator.hasValidRegisterData(overlappingFile, addressUnitBits, "32"), false);
+    validator.findErrorsIn(foundErrors, overlappingFile, "test", addressUnitBits, "32");
+    
+    QVERIFY(foundErrors.size() == 3);
+
+    // Overlapping register replicas are (0,1), (1,2) and (2,3)
+    QStringList overlapErrors = {
+        tr("Register data %1 (0) and %1 (1) overlap within register file '%2' within test")
+            .arg(overlappingRegister->name()).arg(overlappingFile->name()),
+
+        tr("Register data %1 (1) and %1 (2) overlap within register file '%2' within test")
+            .arg(overlappingRegister->name()).arg(overlappingFile->name()),
+
+        tr("Register data %1 (2) and %1 (3) overlap within register file '%2' within test")
+            .arg(overlappingRegister->name()).arg(overlappingFile->name()),
+    };
+
+    for (auto const& error : overlapErrors)
+    {
+        if (errorIsNotFoundInErrorList(error, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

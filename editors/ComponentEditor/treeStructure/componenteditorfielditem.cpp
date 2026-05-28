@@ -16,6 +16,7 @@
 #include <editors/ComponentEditor/memoryMaps/SingleFieldEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
 #include <KactusAPI/include/ResetInterface.h>
 #include <KactusAPI/include/FieldInterface.h>
 
@@ -112,33 +113,36 @@ ItemVisualizer* ComponentEditorFieldItem::visualizer()
 void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 {
 	visualizer_ = visualizer;
-
-	graphItem_ = new FieldGraphItem(field_, expressionParser_, nullptr);
-
-	connect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorFieldItem::getGraphicsItem()
+// Function: ComponentEditorFieldItem::removeGraphicsItems()
 //-----------------------------------------------------------------------------
-QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem()
+void ComponentEditorFieldItem::removeGraphicsItems()
 {
-	return graphItem_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorFieldItem::removeGraphicsItem()
-//-----------------------------------------------------------------------------
-void ComponentEditorFieldItem::removeGraphicsItem()
-{
-	if (graphItem_)
+    for (auto item : graphItems_)
     {
-		disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+        auto graphItem = static_cast<FieldGraphItem*>(item);
+        Q_ASSERT(graphItem);
 
-		// delete the graph item
-		delete graphItem_;
-		graphItem_ = NULL;
-	}
+        if (!graphItem)
+        {
+            continue;
+        }
+        
+        Q_ASSERT(graphItem->parentItem());
+        auto parentItem = static_cast<RegisterGraphItem*>(graphItem->parentItem());
+        parentItem->removeChild(graphItem);
+        
+        graphItem->setParent(nullptr);
+        disconnect(graphItem, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+
+        // delete the graph item
+        delete graphItem;
+        graphItem = nullptr;
+    }
+
+    graphItems_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -162,8 +166,57 @@ void ComponentEditorFieldItem::onEditorChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorFieldItem::onGraphicsChanged()
 {
-    if (graphItem_)
+    for (auto const& graphItem : graphItems_)
     {
-        graphItem_->updateDisplay();
+        static_cast<FieldGraphItem*>(graphItem)->updateDisplay();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFieldItem::createGraphicsItems()
+//-----------------------------------------------------------------------------
+void ComponentEditorFieldItem::createGraphicsItems(QGraphicsItem* parentItem)
+{
+    auto fieldOffset = expressionParser_->parseExpression(field_->getBitOffset()).toULongLong();
+
+    bool hasDim = field_->getDimension().isEmpty() == false;
+    auto fieldDim = expressionParser_->parseExpression(field_->getDimension()).toULongLong();
+
+    bool hasStride = field_->getStride().isEmpty() == false;
+    auto fieldStride = expressionParser_->parseExpression(field_->getStride()).toULongLong();
+
+    if (!hasDim || fieldDim == 0)
+    {
+        fieldDim = 1;
+    }
+
+    // Create field replicas
+    for (quint64 i = 0; i < fieldDim; ++i)
+    {
+        quint64 realOffset = fieldOffset;
+
+        // Separate replicas by stride
+        if (hasStride)
+        {
+            realOffset += i * fieldStride;
+        }
+        else
+        {
+            // Separate by minimum stride
+            realOffset += i * expressionParser_->parseExpression(field_->getBitWidth()).toULongLong();
+        }
+
+        auto newItem = new FieldGraphItem(field_, expressionParser_, parentItem);
+        newItem->setOffset(realOffset);
+
+        // Mark fields with index per replica for identification
+        if (hasDim)
+        {
+            newItem->setReplicaIndex(i);
+        }
+
+        graphItems_.insert(parentItem, newItem);
+        newItem->updateDisplay();
+        connect(newItem, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
     }
 }

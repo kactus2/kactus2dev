@@ -75,6 +75,8 @@ expressionParser_(expressionParser),
 writeConstraintEditor_(new QComboBox(this)),
 writeConstraintMinLimit_(new ExpressionEditor(parameterFinder, this)),
 writeConstraintMaxLimit_(new ExpressionEditor(parameterFinder, this)),
+dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
+bitStrideEditor_(new ExpressionEditor(parameterFinder, this)),
 fieldName_(fieldItem->name().toStdString()),
 fieldValidator_(fieldValidator),
 fieldInterface_(fieldInterface),
@@ -88,7 +90,9 @@ containingRegister_(containingRegister)
     reservedEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
     writeConstraintMinLimit_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
     writeConstraintMaxLimit_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
-
+    dimensionEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    bitStrideEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
 
@@ -110,6 +114,12 @@ containingRegister_(containingRegister)
     auto writeValueMaxCompleter = new QCompleter(this);
     writeValueMaxCompleter->setModel(componentParametersModel);
 
+    auto dimensionCompleter = new QCompleter(this);
+    dimensionCompleter->setModel(componentParametersModel);
+
+    auto bitStrideCompleter = new QCompleter(this);
+    bitStrideCompleter->setModel(componentParametersModel);
+
     auto resetValueCompleter = new QCompleter(this);
     resetValueCompleter->setModel(componentParametersModel);
 
@@ -122,6 +132,8 @@ containingRegister_(containingRegister)
     reservedEditor_->setAppendingCompleter(reservedCompleter);
     writeConstraintMinLimit_->setAppendingCompleter(writeValueMinCompleter);
     writeConstraintMaxLimit_->setAppendingCompleter(writeValueMaxCompleter);
+    dimensionEditor_->setAppendingCompleter(dimensionCompleter);
+    bitStrideEditor_->setAppendingCompleter(bitStrideCompleter);
 
     writeConstraintEditor_->setEditable(false);
     writeConstraintEditor_->addItems(WriteValueConversions::getConstraintTypes());
@@ -210,6 +222,8 @@ void SingleFieldEditor::refresh()
 
 
     volatileEditor_->setCurrentValue(QString::fromStdString(fieldInterface_->getVolatile(fieldName_)));
+    dimensionEditor_->setExpression(QString::fromStdString(fieldInterface_->getDimensionExpression(fieldName_)));
+    dimensionEditor_->setToolTip(QString::fromStdString(fieldInterface_->getDimensionValue(fieldName_)));
     
     if (component()->getRevision() == Document::Revision::Std14)
     {
@@ -218,6 +232,20 @@ void SingleFieldEditor::refresh()
         readActionEditor_->setCurrentValue(fieldInterface_->getReadAction(fieldName_));
         testableEditor_->setCurrentValue(QString::fromStdString(fieldInterface_->getTestableValue(fieldName_)));
         testConstrainedEditor_->setCurrentValue(fieldInterface_->getTestConstraint(fieldName_));
+    }
+    else if (component()->getRevision() == Document::Revision::Std22)
+    {
+        // Enable stride editing if dimension > 1
+        if (QString::fromStdString(fieldInterface_->getDimensionValue(fieldName_)).toULongLong() > 1)
+        {
+            bitStrideEditor_->setEnabled(true);
+            bitStrideEditor_->setExpression(QString::fromStdString(fieldInterface_->getStrideExpression(fieldName_)));
+            bitStrideEditor_->setToolTip(QString::fromStdString(fieldInterface_->getStrideValue(fieldName_)));
+        }
+        else
+        {
+            bitStrideEditor_->setEnabled(false);
+        }
     }
 
     if (fieldInterface_->hasWriteConstraint(fieldName_))
@@ -437,6 +465,42 @@ void SingleFieldEditor::onWriteConstraintMaximumEdited()
 }
 
 //-----------------------------------------------------------------------------
+// Function: SingleFieldEditor::onDimensionEdited()
+//-----------------------------------------------------------------------------
+void SingleFieldEditor::onDimensionEdited()
+{
+    dimensionEditor_->finishEditingCurrentWord();
+    auto newDimension = dimensionEditor_->getExpression();
+    auto formattedDimension = formattedValueFor(newDimension);
+
+    fieldInterface_->setDimension(fieldName_, newDimension.toStdString());
+    dimensionEditor_->setToolTip(formattedDimension);
+
+    if (formattedDimension.compare(QStringLiteral("n/a")) != 0 && formattedDimension.toULongLong() > 1)
+    {
+        bitStrideEditor_->setEnabled(true);
+    }
+    else
+    {
+        bitStrideEditor_->setExpression(QString());
+        bitStrideEditor_->setToolTip(QString());
+        bitStrideEditor_->setEnabled(false);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleFieldEditor::onBitStrideEdited()
+//-----------------------------------------------------------------------------
+void SingleFieldEditor::onBitStrideEdited()
+{
+    bitStrideEditor_->finishEditingCurrentWord();
+    auto newStride = bitStrideEditor_->getExpression();
+
+    fieldInterface_->setStride(fieldName_, newStride.toStdString());
+    bitStrideEditor_->setToolTip(formattedValueFor(newStride));
+}
+
+//-----------------------------------------------------------------------------
 // Function: SingleFieldEditor::connectSignals()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::connectSignals()
@@ -465,6 +529,14 @@ void SingleFieldEditor::connectSignals()
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(writeConstraintMaxLimit_, SIGNAL(decreaseReference(QString const&)),
         this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(dimensionEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(dimensionEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(bitStrideEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(bitStrideEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
     connect(resetsEditor_, SIGNAL(increaseReferences(QString const&)),
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(resetsEditor_, SIGNAL(decreaseReferences(QString const&)),
@@ -477,6 +549,8 @@ void SingleFieldEditor::connectSignals()
     connect(fieldIdEditor_, SIGNAL(editingFinished()), this, SLOT(onFieldIdChanged()), Qt::UniqueConnection);
     connect(writeConstraintMinLimit_, SIGNAL(editingFinished()), this, SLOT(onWriteConstraintMinimumEdited()), Qt::UniqueConnection);
     connect(writeConstraintMaxLimit_, SIGNAL(editingFinished()), this, SLOT(onWriteConstraintMaximumEdited()), Qt::UniqueConnection);
+    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SLOT(onDimensionEdited()), Qt::UniqueConnection);
+    connect(bitStrideEditor_, SIGNAL(editingFinished()), this, SLOT(onBitStrideEdited()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(resetsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -486,6 +560,8 @@ void SingleFieldEditor::connectSignals()
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(reservedEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(fieldIdEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(bitStrideEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(writeConstraintMinLimit_, SIGNAL(editingFinished()),this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(writeConstraintMaxLimit_, SIGNAL(editingFinished()),this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -501,6 +577,11 @@ void SingleFieldEditor::connectSignals()
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
+    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(dimensionEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+
+    connect(bitStrideEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(bitStrideEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
     connect(writeConstraintEditor_, SIGNAL(activated(int)),this, SLOT(onWriteConstraintSelected(int)), Qt::UniqueConnection);
 
@@ -582,15 +663,18 @@ void SingleFieldEditor::setupLayout()
         fieldConstraintLayout->addRow(tr("Write constraint maximum, f(x):"), writeConstraintMaxLimit_);
 
         topOfPageLayout->addWidget(fieldConstraintGroup, 0, 1);
-        topOfPageLayout->addWidget(resetsEditor_, 1, 1);
-        topOfPageLayout->addWidget(fieldDefinitionGroup, 1, 0);
+        topOfPageLayout->addWidget(resetsEditor_, 1, 0);
+        topOfPageLayout->addWidget(fieldDefinitionGroup, 1, 1);
     }
     else
     {
-        fieldConstraintGroup->setVisible(showStd14);
+        fieldConstraintGroup->setVisible(false);
 
         volatileEditor_ = new BooleanComboBox(fieldConstraintGroup);
         fieldDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
+        fieldDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
+        fieldDefinitionLayout->addRow(tr("Bit stride, f(x):"), bitStrideEditor_);
+
         connect(volatileEditor_, SIGNAL(currentTextChanged(QString const&)),
             this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
 

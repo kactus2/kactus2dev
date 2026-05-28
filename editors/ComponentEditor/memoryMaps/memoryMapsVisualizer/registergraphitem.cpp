@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
     QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
-MemoryVisualizationItem(expressionParser, parent),
+ArrayableMemoryGraphItem(expressionParser, parent),
 register_(reg)
 {
 	Q_ASSERT(register_);
@@ -44,24 +44,19 @@ register_(reg)
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::updateDisplay()
 {
-    QString name = register_->name();
-
-    int dimension = parseExpression(register_->getDimension());
-    if (dimension > 0)
-    {
-        name.append("[" % QString::number(dimension - 1) % ":0]");
-    }
+    // Get name with replica index
+    QString formattedName = getReplicaName(register_->name());
 
     quint64 offset = getOffset();
     quint64 lastAddress = getLastAddress();
 
-    setName(name);
+    setName(formattedName);
     setDisplayOffset(offset);
     setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
     const int BIT_WIDTH = getBitWidth();
-    setToolTip("<b>Name: </b>" % register_->name() % "<br>" %
+    setToolTip("<b>Name: </b>" % formattedName % "<br>" %
         "<b>First address: </b>" % toHexString(offset, BIT_WIDTH) % "<br>" %
         "<b>Last address: </b>" % toHexString(lastAddress, BIT_WIDTH) % "<br>" %
         "<b>Size [bits]: </b>" % QString::number(getBitWidth()));
@@ -87,21 +82,6 @@ void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
 
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::getOffset()
-//-----------------------------------------------------------------------------
-quint64 RegisterGraphItem::getOffset() const
-{	
-	MemoryVisualizationItem const* blockItem = static_cast<MemoryVisualizationItem const*>(parentItem());
-	Q_ASSERT(blockItem);
-	quint64 blockOffset = blockItem->getOffset();
-
-    quint64 regOffset = parseExpression(register_->getAddressOffset());
-
-	// the total offset is the address block's offset added with register's offset
-	return blockOffset + regOffset;
 }
 
 //-----------------------------------------------------------------------------
@@ -211,9 +191,7 @@ quint64 RegisterGraphItem::getSizeInAUB() const
         ++size; //Round truncated number upwards
     }
 
-    quint64 dimension = qMax(quint64(1), parseExpression(register_->getDimension()));
-
-    return dimension * size;
+    return size;
 }
 
 //-----------------------------------------------------------------------------
@@ -288,25 +266,45 @@ void RegisterGraphItem::fillGapsBetweenChildren()
     auto parentMSB = getRegisterMSB();
     quint64 highestBitHandled = 0;
 
+    bool registerEndGapAdded = false;
+
     // QMap sorts children by ascending offsets.
     for (auto i = childItems_.begin(); i != childItems_.end(); ++i)
     {
         auto currentChild = i.value();
         auto currentOffset = currentChild->getOffset();
 
-        if (currentChild->isPresent())
+        // Exclude non-present items from calculations
+        if (currentChild->isPresent() == false)
+            continue;
+
+        if (highestBitHandled < currentOffset)
         {
-            // Insert gap between fields only if they are not overlapping with a third field.
-            if (highestBitHandled < currentOffset)
-            {        
-                i = addMemoryGap(highestBitHandled, currentOffset - 1);
-                highestBitHandled = currentOffset;
-            }
-            else
+            // Add normal gap if inside register
+            if (currentOffset <= parentMSB)
             {
-                highestBitHandled = qMax(highestBitHandled, currentChild->getLastAddress() + 1);
+                i = addMemoryGap(highestBitHandled, currentOffset - 1);
+            }
+            // Add "out of bounds" gap if outside register
+            else if (currentOffset > parentMSB)
+            {
+                // Add gap between last field and end of register, if needed
+                if (!registerEndGapAdded && highestBitHandled <= parentMSB)
+                {
+                    i = addMemoryGap(highestBitHandled, parentMSB);
+                    highestBitHandled = parentMSB + 1;
+                    registerEndGapAdded = true;
+                }
+
+                // Insert out of bounds gap if field is not directly outside register
+                if (currentOffset > parentMSB + 1)
+                {
+                    i = addOutOfBoundsMemoryGap(highestBitHandled, currentOffset - 1);
+                }
             }
         }
+
+        highestBitHandled = qMax(currentChild->getLastAddress() + 1, highestBitHandled);
     }
 
     // Insert gap between the MSB of the register and the left-most item if needed.
@@ -332,6 +330,21 @@ QMultiMap<quint64, MemoryVisualizationItem*>::iterator RegisterGraphItem::addMem
     quint64 endAddress)
 {
     FieldGapItem* gap = new FieldGapItem(tr("Reserved"), getExpressionParser(), this);
+    gap->setDisplayOffset(startAddress);
+    gap->setDisplayLastAddress(endAddress);
+    gap->updateDisplay();
+
+    return childItems_.insert(gap->getLastAddress(), gap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphItem::addMemoryGapOutOfRange()
+//-----------------------------------------------------------------------------
+QMultiMap<quint64, MemoryVisualizationItem*>::iterator RegisterGraphItem::addOutOfBoundsMemoryGap(quint64 startAddress, quint64 endAddress)
+{
+    FieldGapItem* gap = new FieldGapItem(tr("Out of bounds"), getExpressionParser(), this);
+    gap->setBrush(KactusColors::MISSING_COMPONENT);
+    gap->setOpacity(0.5);
     gap->setDisplayOffset(startAddress);
     gap->setDisplayLastAddress(endAddress);
     gap->updateDisplay();

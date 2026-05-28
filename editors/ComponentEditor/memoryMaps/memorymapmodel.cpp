@@ -148,6 +148,8 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
         {
             std::string oldValue = localBlockInterface_->getRangeExpression(blockName);
+            std::string newValue = value.toString().toStdString();
+
             if (localBlockInterface_->setRange(blockName, value.toString().toStdString()))
             {
                 removeReferencesFromSingleExpression(QString::fromStdString(oldValue));
@@ -156,17 +158,32 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
             {
                 return false;
             }
+
+            if (oldValue.compare(newValue) != 0)
+            {
+                // Redraw, because offset of visualization item replicas might change if item has dimensions 
+                // and range is changed
+                emit childAddressingChanged(index.row(), true);
+            }
         }
         else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
         {
             std::string oldValue = localBlockInterface_->getWidthExpression(blockName);
-            if (localBlockInterface_->setWidth(blockName, value.toString().toStdString()))
+            std::string newValue = value.toString().toStdString();
+
+            if (localBlockInterface_->setWidth(blockName, newValue))
             {
                 removeReferencesFromSingleExpression(QString::fromStdString(oldValue));
             }
             else
             {
                 return false;
+            }
+
+            if (oldValue.compare(newValue) != 0)
+            {
+                // Don't redraw visualizer items when width is changed, only graphics need to be updated
+                emit childAddressingChanged(index.row(), false);
             }
         }
         else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
@@ -207,11 +224,6 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         if (index.column() == MemoryMapColumns::RANGE_COLUMN || index.column() == MemoryMapColumns::WIDTH_COLUMN)
         {
             emit graphicsChanged(index.row());
-        }
-
-        if (index.column() == MemoryMapColumns::RANGE_COLUMN)
-        {
-            emit childAddressingChanged(index.row());
         }
 
         emit dataChanged(index, index);

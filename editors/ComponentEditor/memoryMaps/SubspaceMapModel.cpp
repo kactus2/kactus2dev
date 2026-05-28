@@ -150,7 +150,7 @@ bool SubspaceMapModel::setData(QModelIndex const& index, QVariant const& value, 
         if (index.column() == SubspaceMapColumns::INITIATORREFERENCE ||
             index.column() == SubspaceMapColumns::SEGMENTREFERENCE)
         {
-            emit childAddressingChanged(index.row());
+            emit childAddressingChanged(index.row(), false);
         }
 
         emit dataChanged(index, index);

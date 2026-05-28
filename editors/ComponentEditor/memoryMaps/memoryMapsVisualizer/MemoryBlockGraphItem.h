@@ -12,7 +12,7 @@
 #ifndef MEMORYBLOCKGRAPHITEM_H
 #define MEMORYBLOCKGRAPHITEM_H
 
-#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include "ArrayableMemoryGraphItem.h"
 
 #include <QColor>
 
@@ -21,7 +21,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The graphical item that represents one memory block.
 //-----------------------------------------------------------------------------
-class MemoryBlockGraphItem : public MemoryVisualizationItem
+class MemoryBlockGraphItem : public ArrayableMemoryGraphItem
 {
 	Q_OBJECT
 
@@ -48,7 +48,7 @@ public:
     /*!
      *  Updates the labels and tooltip for the item.
      */
-    virtual void updateDisplay() override final;
+    virtual void updateDisplay() override;
 
 	/*!
      *  Get the last address contained in the item.
