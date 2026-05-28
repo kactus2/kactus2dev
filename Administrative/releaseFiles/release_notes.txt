@@ -8,6 +8,20 @@
               * Changed or Information
 ===============================================================================
 
+28/05/2026 3.14.1
+----------------------------------------------------
++ Updated target Qt version to 6.6.2 or newer
+  * Should still compile with 6.2.4, but new features might not work correctly
++ Added dark theme support
+  * Requires at least Qt 6.5
+  * Changes Kactus2 colors according to system theme when dark mode is enabled
+  * Look may vary from system to system depending on distro, desktop environment and theme
+  * Added setting for forcing the Qt Fusion style, enables dark theme support on Windows
++ Added ability to edit and visualize stride of address blocks, registers etc.
+  * Memory items with dimension are now replicated in the visualizer
++ Linux build improvements
+- Bug fixes for portmap and address block validation
+
 08/01/2026 3.14.0
 ----------------------------------------------------
 + Added first version of interconnect generator (for HW designs)
