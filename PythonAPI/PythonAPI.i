@@ -21,6 +21,7 @@
 #include "../KactusAPI/include/CommonInterface.h"
 #include "../KactusAPI/include/NameGroupInterface.h"
 #include "../KactusAPI/include/ParameterizableInterface.h"
+#include "../KactusAPI/include/ArrayableMemoryInterface.h"
 #include "../KactusAPI/include/MasterPortInterface.h"
 #include "../KactusAPI/include/PortsInterface.h"
 #include "../KactusAPI/include/AbstractParameterInterface.h"
@@ -56,6 +57,7 @@ namespace std {
 %include "../KactusAPI/include/CommonInterface.h"
 %include "../KactusAPI/include/NameGroupInterface.h"
 %include "../KactusAPI/include/ParameterizableInterface.h"
+%include "../KactusAPI/include/ArrayableMemoryInterface.h"
 %include "../KactusAPI/include/MasterPortInterface.h"
 %include "../KactusAPI/include/PortsInterface.h"
 %include "../KactusAPI/include/AbstractParameterInterface.h"
@@ -74,7 +76,6 @@ namespace std {
 %include "../KactusAPI/include/PortAbstractionInterface.h"
 %include "../KactusAPI/include/PortMapInterface.h"
 %include "../KactusAPI/include/BusInterfaceInterface.h"
-#include "../KactusAPI/include/InterconnectGenerator.h"
 
 // Workaround fix for calling AddressBlockInterface/SubspaceMapInterface::addBlock(std::string const&) from python
 %extend AddressBlockInterface {
