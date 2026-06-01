@@ -255,6 +255,14 @@ HEADERS += ./generaldeclarations.h \
     ./Component/RegisterReader.h \
     ./Component/RegisterWriter.h \
     ./Component/OtherClockDriverWriter.h \
+    ./Component/AccessHandle.h \
+    ./Component/AccessHandleReader.h \
+    ./Component/AccessHandleWriter.h \
+    ./Component/Slice.h \
+    ./Component/SliceReader.h \
+    ./Component/SliceWriter.h \
+    ./Component/PathSegmentReader.h \
+    ./Component/PathSegmentWriter.h \
     ./Component/validators/CollectionValidators.h \
     ./Component/validators/FieldAccessPolicyValidator.h \
     ./Component/validators/FieldReferenceValidator.h \
@@ -561,6 +569,13 @@ SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./Component/Wire.cpp \
     ./Component/WireTypeDef.cpp \
     ./Component/WriteValueConstraint.cpp \
+    ./Component/AccessHandle.cpp \
+    ./Component/AccessHandleReader.cpp \
+    ./Component/AccessHandleWriter.cpp \
+    ./Component/SliceReader.cpp \
+    ./Component/SliceWriter.cpp \
+    ./Component/PathSegmentReader.cpp \
+    ./Component/PathSegmentWriter.cpp \
     ./common/validators/HierarchicalValidator.cpp \
     ./Component/validators/AbstractionTypeValidator.cpp \
     ./Component/validators/AddressBlockValidator.cpp \
