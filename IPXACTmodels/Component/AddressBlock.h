@@ -16,8 +16,6 @@
 
 #include <IPXACTmodels/common/BooleanValue.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/common/AccessTypes.h>
 
 #include <QString>
 #include <QMap>
@@ -129,53 +127,6 @@ public:
     void setWidthAttributes(QMap<QString, QString> const& newWidthAttributes);
 
 	/*!
-     *  Get the type of usage for the address block.
-	 *
-	 *    @return Usage.
-	 */
-	General::Usage getUsage() const;
-
-	/*!
-     *  Set the type of usage for the address block.
-	 *
-	 *    @param [in] newUsage    The new usage type.
-	 */
-	void setUsage(General::Usage newUsage);
-
-	/*!
-     *  Get the volatile information.
-	 *
-	 *      return Volatile information. Empty string means unspecified volatile state.
-	 */
-    QString getVolatile() const;
-
-	/*!
-     *  Set the volatile setting.
-	 *
-	 *    @param [in] newVolatileSetting  True for volatile address block, false otherwise.
-	 */
-    void setVolatile(bool newVolatileValue);
-
-    /*!
-     *  Set the volatile value to unspecified.
-     */
-    void clearVolatile();
-
-	/*!
-     *  Get the access information.
-	 *
-	 *    @return Accessibility of the address block data.
-	 */
-    AccessTypes::Access getAccess() const;
-
-	/*!
-     *  Set the accessibility of the address block.
-	 *
-	 *    @param [in] newAccess   The new access type of the address block.
-	 */
-    void setAccess(AccessTypes::Access newAccess);
-
-	/*!
      *  Get the list containing the register elements of address block.
 	 *
 	 *    @return Pointer to a list containing the register elements.
@@ -252,20 +203,6 @@ public:
      */
     void setTypeDefinitionsRef(QString const& newTypeDefinitionsRef);
 
-    /*!
-     *	Get the access policies of the address block.
-     *	    
-     * 	    @return Pointer to a list of access policies contained within the address block.
-     */
-    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > getAccessPolicies() const;
-
-    /*!
-     *	Set the access policies of the address block.
-     *  
-     *    @param [in] newAccessPolicies     The access policies to set.
-     */
-    void setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies);
-
 private:
 
     /*!
@@ -305,19 +242,6 @@ private:
 
 	//! The attributes linked to the range element in IP-Xact document.
 	QMap<QString, QString> widthAttributes_;
-
-    //! Specified the type of usage.
-    General::Usage usage_;
-
-    //! Indicates the volatility of the address block.
-    BooleanValue volatile_;
-
-    //! Specifies the accessibility of the address block data.
-    AccessTypes::Access access_;
-
-    //! The access poclicies of the address block.
-    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies_ = 
-        QSharedPointer<QList<QSharedPointer<AccessPolicy> > >(new QList<QSharedPointer<AccessPolicy> >());
 
 	//! Contains information about the grouping of bits into registers and fields.
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_ = 

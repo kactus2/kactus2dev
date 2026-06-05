@@ -1,40 +1,40 @@
 #-----------------------------------------------------------------------------
-# File: tst_BusInterfacePortMapValidator.pro
+# File: tst_BankReader.pro
 #-----------------------------------------------------------------------------
-# Project: Kactus2
-# Author: Esko Pekkarinen
-# Date: 28.03.2018
+# Project: Kactus 2
+# Author: Anton Hagqvist
+# Date: 04.06.2026
 #
 # Description:
-# Qt project file template for running unit tests for a single module.
+# Qt project file template for running unit tests for BankReader.
 #-----------------------------------------------------------------------------
 
 TEMPLATE = app
 
-TARGET = tst_BusInterfacePortMapValidator
+TARGET = tst_BankReader
 
-QT += core xml gui testlib
+QT += core xml testlib
+QT -= gui
+
 CONFIG += c++17 testcase console
 
 CONFIG(debug, debug|release) {
     # debug mode
     LIBS += \
-        -L../../../executable -lIPXACTmodelsd \
-        -L../../../executable -lKactusAPId
+        -L../../../executable -lIPXACTmodelsd
 
     MOC_DIR += ./GeneratedFiles/Debug
     DESTDIR += Debug
-    TARGET = tst_BusInterfacePortMapValidatord
+    TARGET = tst_BankReaderd
 
 } else {
     # release mode
     LIBS += \
-        -L../../../executable -lIPXACTmodels \
-        -L../../../executable -lKactusAPI
+        -L../../../executable -lIPXACTmodels
 
     MOC_DIR += ./GeneratedFiles/Release
     DESTDIR += Release
-    TARGET = tst_BusInterfacePortMapValidator
+    TARGET = tst_BankReader
 }
 
 INCLUDEPATH += $$DESTDIR
@@ -45,4 +45,4 @@ DEPENDPATH += ../../../
 
 OBJECTS_DIR += $$DESTDIR
 
-include(tst_BusInterfacePortMapValidator.pri)
+include(tst_BankReader.pri)

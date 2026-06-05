@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -43,6 +44,47 @@ namespace MemoryBlockBaseReader
     IPXACTMODELS_EXPORT void parsePresence(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock);
 
     /*!
+     *  Reads the access handles.
+     *
+     *    @param [in] memoryBlockNode     XML description of the memory block.
+     *    @param [in] newMemoryBlock      The new memory block.
+     *    @param [in] docRevision         The document revision.
+     */
+    IPXACTMODELS_EXPORT void parseAccessHandles(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock, Document::Revision docRevision);
+
+    /*!
+     *  Reads the usage.
+     *
+     *    @param [in] memoryBlockNode    XML description of the memory block.
+     *    @param [in] newMemoryBlock     The new memory block.
+     */
+    IPXACTMODELS_EXPORT void parseUsage(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock);
+
+    /*!
+     *  Reads the volatile value.
+     *
+     *    @param [in] memoryBlockNode    XML description of the memory block.
+     *    @param [in] newMemoryBlock     The new memory block.
+     */
+    IPXACTMODELS_EXPORT void parseVolatile(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock);
+
+    /*!
+     *  Reads the access value.
+     *
+     *    @param [in] memoryBlockNode    XML description of the memory block.
+     *    @param [in] newMemoryBlock     The new memory block.
+     */
+    IPXACTMODELS_EXPORT void parseAccess(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock);
+
+    /*!
+     *	Reads the access policies of the memory block.
+     *  
+     *    @param [in] memoryBlockNode    XML description of the memory block.
+     *    @param [in] newMemoryBlock     The new memory block.
+     */
+    IPXACTMODELS_EXPORT void parseAccessPolicies(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock);
+
+    /*!
      *  Reads the base address.
      *
      *    @param [in] memoryBlockNode     XML description of the memory block.
@@ -56,7 +98,7 @@ namespace MemoryBlockBaseReader
      *    @param [in] memoryBlockNode     XML description of the memory block.
      *    @param [in] newMemoryBlock      The new memory block.
      */
-    IPXACTMODELS_EXPORT void parseParameters(QDomNode const& addressBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock, Document::Revision docRevision);
+    IPXACTMODELS_EXPORT void parseParameters(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock, Document::Revision docRevision);
 }
 
 #endif // MEMORYBLOCKBASEREADER_H

@@ -62,31 +62,6 @@ namespace AddressBlockReader
          *    @param [in] newAddressBlock     The new address block.
          */
         void parseWidth(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock);
-
-        /*!
-         *  Reads the usage.
-         *
-         *    @param [in] addressBlockNode    XML description of the address block.
-         *    @param [in] newAddressBlock     The new address block.
-         */
-        void parseUsage(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock);
-
-        /*!
-         *  Reads the volatile value.
-         *
-         *    @param [in] addressBlockNode    XML description of the address block.
-         *    @param [in] newAddressBlock     The new address block.
-         */
-        void parseVolatile(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock);
-
-        /*!
-         *  Reads the access value.
-         *
-         *    @param [in] addressBlockNode    XML description of the address block.
-         *    @param [in] newAddressBlock     The new address block.
-         */
-        void parseAccess(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock);
-
         /*!
          *  Reads the register data.
          *
@@ -118,14 +93,6 @@ namespace AddressBlockReader
          *    @param [in] newAddressBlock     The new address block.
          */
         void parseAddressBlockDefinitionRef(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock);
-
-        /*!
-         *	Reads the access policies of the address block.
-         *  
-         *    @param [in] addressBlockNode    XML description of the address block.
-         *    @param [in] newAddressBlock     The new address block.
-         */
-        void parseAccessPolicies(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock);
     }
 }
 

@@ -2,9 +2,10 @@
 tests/**/*.vcxproj
 tests/**/*.vcxproj.filters
 tests/**/*.vcxproj.user
-tests/**/debug/
+tests/**/Debug/
 tests/**/.vs
-tests/**/release
+tests/**/Release
+tests/**/target_wrapper.sh
 
 Plugins/**/Debug
 Plugins/**/Release
@@ -16,6 +17,9 @@ KactusAPI/x64/
 IPXACTmodels/x64/
 IPXACTmodels/GeneratedFiles
 PythonAPI/x64/
+PythonAPI/PythonAPI_wrap.cxx
+PythonAPI/pythonAPI.py
+
 GeneratedFiles/
 .vs
 .qtc_clangd
@@ -25,3 +29,7 @@ moc_*
 *.obj
 *.tlog
 *.o
+Makefile
+Makefile.*
+*.so
+*.so.*

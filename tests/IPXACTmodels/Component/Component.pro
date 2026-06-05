@@ -12,9 +12,13 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += tst_AddressSpaceReader.pro \
+SUBDIRS += tst_AccessHandleReader.pro \
+		   tst_AccessHandleWriter.pro \
+           tst_AddressSpaceReader.pro \
 		   tst_AddressSpaceWriter.pro \
 		   tst_AddressSpaceValidator.pro \
+		   tst_BankReader.pro \
+		   tst_BankWriter.pro \
 		   tst_BusInterfacePortMapValidator.pro \
 		   tst_BusInterfaceReader.pro \
 		   tst_BusInterfaceWriter.pro \

@@ -36,4 +36,6 @@ INCLUDEPATH += ../../../
 DEPENDPATH += .
 DEPENDPATH += ../../../
 
+OBJECTS_DIR += $$DESTDIR
+
 include(tst_AccessHandleWriter.pri)

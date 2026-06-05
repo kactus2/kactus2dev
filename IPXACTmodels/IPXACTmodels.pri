@@ -139,6 +139,9 @@ HEADERS += ./generaldeclarations.h \
     ./Component/AccessPolicy.h \
     ./Component/AccessPolicyReader.h \
     ./Component/AccessPolicyWriter.h \
+    ./Component/Bank.h \
+    ./Component/BankReader.h \
+    ./Component/BankWriter.h \
     ./Component/Driver.h \
     ./Component/ExecutableImage.h \
     ./Component/ExecutableImagesReader.h \
@@ -460,6 +463,9 @@ SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./Component/AddressSpaceReader.cpp \
     ./Component/AddressSpaceWriter.cpp \
     ./Component/AlternateRegister.cpp \
+    ./Component/Bank.cpp \
+    ./Component/BankReader.cpp \
+    ./Component/BankWriter.cpp \
     ./Component/BuildCommand.cpp \
     ./Component/BusInterface.cpp \
     ./Component/BusInterfaceReader.cpp \

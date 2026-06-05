@@ -26,10 +26,7 @@ typeIdentifier_(),
 range_(),
 rangeAttributes_(),
 width_(),
-widthAttributes_(),
-usage_(General::USAGE_COUNT),
-volatile_(),
-access_(AccessTypes::ACCESS_COUNT)
+widthAttributes_()
 {
 
 }
@@ -46,13 +43,9 @@ typeIdentifier_(other.typeIdentifier_),
 range_(other.range_),
 rangeAttributes_(other.rangeAttributes_),
 width_(other.width_),
-widthAttributes_(other.widthAttributes_),
-usage_(other.usage_),
-volatile_(other.volatile_),
-access_(other.access_)
+widthAttributes_(other.widthAttributes_)
 {
     copyRegisterData(other);
-    Copy::copyList(other.accessPolicies_, accessPolicies_);
 
     if (other.memoryArray_)
     {
@@ -76,15 +69,10 @@ AddressBlock& AddressBlock::operator=( const AddressBlock& other )
         rangeAttributes_ = other.rangeAttributes_;
         width_ = other.width_;
         widthAttributes_ = other.widthAttributes_;
-        usage_ = other.usage_;
-        volatile_ = other.volatile_;
-        access_ = other.access_;
 
         registerData_->clear();
         copyRegisterData(other);
 
-        accessPolicies_->clear();
-        Copy::copyList(other.accessPolicies_, accessPolicies_);
 
         memoryArray_.clear();
         if (other.memoryArray_)
@@ -193,62 +181,6 @@ void AddressBlock::setWidthAttributes(QMap<QString, QString> const& newWidthAttr
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlock::getUsage()
-//-----------------------------------------------------------------------------
-General::Usage AddressBlock::getUsage() const
-{
-    return usage_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::setUsage()
-//-----------------------------------------------------------------------------
-void AddressBlock::setUsage(General::Usage newUsage)
-{
-    usage_ = newUsage;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::getVolatile()
-//-----------------------------------------------------------------------------
-QString AddressBlock::getVolatile() const
-{
-    return volatile_.toString();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::setVolatile()
-//-----------------------------------------------------------------------------
-void AddressBlock::setVolatile(bool newVolatileValue)
-{
-    volatile_.setValue(newVolatileValue);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::clearVolatile()
-//-----------------------------------------------------------------------------
-void AddressBlock::clearVolatile()
-{
-    volatile_.setUnspecified();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::getAccess()
-//-----------------------------------------------------------------------------
-AccessTypes::Access AddressBlock::getAccess() const
-{
-    return access_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::setAccess()
-//-----------------------------------------------------------------------------
-void AddressBlock::setAccess(AccessTypes::Access newAccess)
-{
-    access_ = newAccess;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressBlock::getRegisterData()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<RegisterBase> > > AddressBlock::getRegisterData() const
@@ -341,22 +273,6 @@ QString AddressBlock::getTypeDefinitionsRef() const
 void AddressBlock::setTypeDefinitionsRef(QString const& newTypeDefinitionsRef)
 {
     typeDefinitionsRef_ = newTypeDefinitionsRef;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::getAccessPolicies()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<AccessPolicy> > > AddressBlock::getAccessPolicies() const
-{
-    return accessPolicies_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlock::setAccessPolicies()
-//-----------------------------------------------------------------------------
-void AddressBlock::setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies)
-{
-    accessPolicies_ = newAccessPolicies;
 }
 
 //-----------------------------------------------------------------------------

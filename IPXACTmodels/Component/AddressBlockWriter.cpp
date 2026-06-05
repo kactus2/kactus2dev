@@ -33,6 +33,8 @@ void AddressBlockWriter::writeAddressBlock(QXmlStreamWriter& writer, QSharedPoin
 
     MemoryBlockBaseWriter::writeNameGroup(writer, addressBlock, docRevision);
 
+    MemoryBlockBaseWriter::writeAccessHandles(writer, addressBlock, docRevision);
+
     if (docRevision == Document::Revision::Std14)
     {
         CommonItemsWriter::writeIsPresent(writer, addressBlock->getIsPresent());
@@ -54,17 +56,17 @@ void AddressBlockWriter::writeAddressBlock(QXmlStreamWriter& writer, QSharedPoin
     CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:range"), addressBlock->getRange());
     CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:width"), addressBlock->getWidth());
 
-    Details::writeUsage(writer, addressBlock);
+    MemoryBlockBaseWriter::writeUsage(writer, addressBlock);
 
-    Details::writeVolatile(writer, addressBlock);
+    MemoryBlockBaseWriter::writeVolatile(writer, addressBlock);
 
     if (docRevision == Document::Revision::Std14)
     {
-        Details::writeAccess(writer, addressBlock);
+        MemoryBlockBaseWriter::writeAccess(writer, addressBlock);
     }
     else if (docRevision == Document::Revision::Std22)
     {
-        Details::writeAccessPolicies(writer, addressBlock);
+        MemoryBlockBaseWriter::writeAccessPolicies(writer, addressBlock);
     }
 
     CommonItemsWriter::writeParameters(writer, addressBlock->getParameters(), docRevision);
@@ -84,41 +86,6 @@ void AddressBlockWriter::Details::writeTypeIdentifier(QXmlStreamWriter& writer, 
     if (!addressBlock->getTypeIdentifier().isEmpty())
     {
         writer.writeTextElement(QStringLiteral("ipxact:typeIdentifier"), addressBlock->getTypeIdentifier());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockWriter::Details::writeUsage()
-//-----------------------------------------------------------------------------
-void AddressBlockWriter::Details::writeUsage(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock)
-{
-    if (addressBlock->getUsage() != General::USAGE_COUNT)
-    {
-        QString usageString = General::usage2Str(addressBlock->getUsage());
-        writer.writeTextElement(QStringLiteral("ipxact:usage"), usageString);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockWriter::Details::writeVolatile()
-//-----------------------------------------------------------------------------
-void AddressBlockWriter::Details::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock)
-{
-    if (!addressBlock->getVolatile().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:volatile"), addressBlock->getVolatile());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockWriter::Details::writeAccess()
-//-----------------------------------------------------------------------------
-void AddressBlockWriter::Details::writeAccess(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock)
-{
-    if (addressBlock->getAccess() != AccessTypes::ACCESS_COUNT)
-    {
-        QString accessString = AccessTypes::access2Str(addressBlock->getAccess());
-        writer.writeTextElement(QStringLiteral("ipxact:access"), accessString);
     }
 }
 
@@ -154,24 +121,5 @@ void AddressBlockWriter::Details::writeDefinitionReference(QXmlStreamWriter& wri
 
         writer.writeCharacters(definitionReference);
         writer.writeEndElement();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockWriter::Details::writeAccessPolicies()
-//-----------------------------------------------------------------------------
-void AddressBlockWriter::Details::writeAccessPolicies(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock)
-{
-    if (auto accessPolicies = addressBlock->getAccessPolicies();
-        accessPolicies->isEmpty() == false)
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:accessPolicies"));
-
-        for (auto const& accessPolicy : *addressBlock->getAccessPolicies())
-        {
-            AccessPolicyWriter::writeAccessPolicy(writer, accessPolicy);
-        }
-
-        writer.writeEndElement(); // ipxact:accessPolicies
     }
 }

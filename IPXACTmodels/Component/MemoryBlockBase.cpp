@@ -12,6 +12,9 @@
 #include "MemoryBlockBase.h"
 
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
+#include <IPXACTmodels/Component/AccessPolicy.h>
+#include <utilities/Copy.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockBase::MemoryBlockBase()
@@ -20,8 +23,10 @@ MemoryBlockBase::MemoryBlockBase(QString const& name, QString const& baseAddress
 NameGroup(name),
 Extendable(),
 isPresent_(),
-baseAddress_(baseAddress),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+usage_(General::USAGE_COUNT),
+volatile_(),
+access_(AccessTypes::ACCESS_COUNT),
+baseAddress_(baseAddress)
 {
 
 }
@@ -33,10 +38,14 @@ MemoryBlockBase::MemoryBlockBase(const MemoryBlockBase& other):
 NameGroup(other),
 Extendable(other),
 isPresent_(other.isPresent_),
-baseAddress_(other.baseAddress_),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+usage_(other.usage_),
+volatile_(other.volatile_),
+access_(other.access_),
+baseAddress_(other.baseAddress_)
 {
-    copyParameters(other);
+    Copy::copyList(other.accessHandles_, accessHandles_);
+    Copy::copyList(other.accessPolicies_, accessPolicies_);
+    Copy::copyList(other.parameters_, parameters_);
 }
 
 //-----------------------------------------------------------------------------
@@ -50,9 +59,18 @@ MemoryBlockBase& MemoryBlockBase::operator=(const MemoryBlockBase& other)
         Extendable::operator=(other);
         isPresent_ = other.isPresent_;
         baseAddress_ = other.baseAddress_;
+        usage_ = other.usage_;
+        volatile_ = other.volatile_;
+        access_ = other.access_;
+
+        accessHandles_->clear();
+        Copy::copyList(other.accessHandles_, accessHandles_);
+
+        accessPolicies_->clear();
+        Copy::copyList(other.accessPolicies_, accessPolicies_);
         
         parameters_->clear();
-        copyParameters(other);
+        Copy::copyList(other.parameters_, parameters_);
     }
 
     return *this;
@@ -83,6 +101,22 @@ void MemoryBlockBase::setIsPresent(QString const& newIsPresent)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::getAccessHandles()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<AccessHandle> > > MemoryBlockBase::getAccessHandles() const
+{
+    return accessHandles_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::setAccessHandles()
+//-----------------------------------------------------------------------------
+void MemoryBlockBase::setAccessHandles(QSharedPointer<QList<QSharedPointer<AccessHandle> > > accessHandles)
+{
+    accessHandles_ = accessHandles;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryBlockBase::getBaseAddress()
 //-----------------------------------------------------------------------------
 QString MemoryBlockBase::getBaseAddress() const
@@ -100,6 +134,78 @@ void MemoryBlockBase::setBaseAddress(QString const& baseAddress)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::getUsage()
+//-----------------------------------------------------------------------------
+General::Usage MemoryBlockBase::getUsage() const
+{
+    return usage_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::setUsage()
+//-----------------------------------------------------------------------------
+void MemoryBlockBase::setUsage(General::Usage newUsage)
+{
+    usage_ = newUsage;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::getVolatile()
+//-----------------------------------------------------------------------------
+QString MemoryBlockBase::getVolatile() const
+{
+    return volatile_.toString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::setVolatile()
+//-----------------------------------------------------------------------------
+void MemoryBlockBase::setVolatile(bool newVolatileValue)
+{
+    volatile_.setValue(newVolatileValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::clearVolatile()
+//-----------------------------------------------------------------------------
+void MemoryBlockBase::clearVolatile()
+{
+    volatile_.setUnspecified();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::getAccess()
+//-----------------------------------------------------------------------------
+AccessTypes::Access MemoryBlockBase::getAccess() const
+{
+    return access_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::setAccess()
+//-----------------------------------------------------------------------------
+void MemoryBlockBase::setAccess(AccessTypes::Access newAccess)
+{
+    access_ = newAccess;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::getAccessPolicies()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<AccessPolicy> > > MemoryBlockBase::getAccessPolicies() const
+{
+    return accessPolicies_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockBase::setAccessPolicies()
+//-----------------------------------------------------------------------------
+void MemoryBlockBase::setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies)
+{
+    accessPolicies_ = newAccessPolicies;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryBlockBase::getParametesrs()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Parameter> > > MemoryBlockBase::getParameters() const
@@ -113,19 +219,4 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > MemoryBlockBase::getParameter
 void MemoryBlockBase::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters)
 {
     parameters_ = newParameters;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryBlockBase::copyParameters()
-//-----------------------------------------------------------------------------
-void MemoryBlockBase::copyParameters(const MemoryBlockBase& other)
-{
-    foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
-    {
-        if (parameter)
-        {
-            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
-            parameters_->append(copy);
-        }
-    }
 }

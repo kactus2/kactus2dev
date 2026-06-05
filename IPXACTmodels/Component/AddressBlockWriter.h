@@ -47,29 +47,6 @@ namespace AddressBlockWriter
          */
         void writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock);
 
-        /*!
-         *  Write the usage.
-         *
-         *    @param [in] writer          Used XML writer.
-         *    @param [in] addressBlock    Selected address block.
-         */
-        void writeUsage(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock);
-
-        /*!
-         *  Write the volatile status.
-         *
-         *    @param [in] writer          Used XML writer.
-         *    @param [in] addressBlock    Selected address block.
-         */
-        void writeVolatile(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock);
-
-        /*!
-         *  Write the access value.
-         *
-         *    @param [in] writer          Used XML writer.
-         *    @param [in] addressBlock    Selected address block.
-         */
-        void writeAccess(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock);
 
         /*!
          *  Write register data.
@@ -86,14 +63,6 @@ namespace AddressBlockWriter
          *    @param [in] addressBlock    Selected address block.
          */
         void writeDefinitionReference(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock);
-
-        /*!
-         *	Write the access policies of the address block.
-         *  
-         *    @param [in] writer          Used XML writer.
-         *    @param [in] addressBlock    Selected address block.
-         */
-        void writeAccessPolicies(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock);
     }
 }
 
