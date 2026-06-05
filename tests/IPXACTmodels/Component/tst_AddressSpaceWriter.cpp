@@ -302,6 +302,8 @@ void tst_AddressSpaceWriter::testWriteExecutableImage()
 	QString expectedOutput(
 		"<ipxact:addressSpace>"
             "<ipxact:name>testAddressSpace</ipxact:name>"
+			"<ipxact:range></ipxact:range>"
+        	"<ipxact:width></ipxact:width>"
             "<ipxact:executableImage imageId=\"id1\" imageType=\"binary\">"
                 "<ipxact:name>image1</ipxact:name>"
                 "<ipxact:displayName>d1</ipxact:displayName>"

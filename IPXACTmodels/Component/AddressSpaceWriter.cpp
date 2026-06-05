@@ -38,14 +38,14 @@ void AddressSpaceWriter::writeAddressSpace(QXmlStreamWriter& writer, QSharedPoin
 
     Details::writeAddressUnitBits(writer, addressSpace);
 
-    Details::writeLocalMemoryMap(writer, addressSpace, docRevision);
-
-    CommonItemsWriter::writeParameters(writer, addressSpace->getParameters(), docRevision);
-
     if (docRevision == Document::Revision::Std14)
     {
         ExecutableImagesWriter::writeExecutableImages(writer, addressSpace->getExecutableImages(), Document::Revision::Std22);
     }
+
+    Details::writeLocalMemoryMap(writer, addressSpace, docRevision);
+
+    CommonItemsWriter::writeParameters(writer, addressSpace->getParameters(), docRevision);
 
     CommonItemsWriter::writeVendorExtensions( writer, addressSpace );
 
