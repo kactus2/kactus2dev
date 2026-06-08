@@ -22,6 +22,7 @@
 #include <IPXACTmodels/Component/Structured.h>
 #include <IPXACTmodels/Component/Transactional.h>
 #include <IPXACTmodels/Component/Wire.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
 
 #include <QString>
 #include <QList>
@@ -39,7 +40,62 @@ public:
 
     using List = QSharedPointer<QList<QSharedPointer<Port> > >;
 
-	/*!
+    //! Port access
+    struct Access
+    {
+        enum Type
+        {
+            Ref = 0,
+            Ptr,
+            Unknown // or empty, no type is written, treated as ref
+        };
+
+        Access* clone()
+        {
+            Access* newAccess = new Access();
+            Copy::copyList(accessHandles_, newAccess->accessHandles_);
+            return newAccess;
+        }
+
+        static QString typeToString(Type type)
+        {
+            switch (type)
+            {
+            case Ref:
+                return QStringLiteral("ref");
+            case Ptr:
+                return QStringLiteral("ptr");
+            default:
+                return QString();
+            }
+        }
+
+        static Type stringToType(QString const& typeStr)
+        {
+            auto lower = typeStr.toLower();
+            if (lower.compare(QStringLiteral("ref")) == 0)
+            {
+                return Type::Ref;
+            }
+            else if (lower.compare(QStringLiteral("ptr")) == 0)
+            {
+                return Type::Ptr;
+            }
+
+            return Type::Unknown;
+        }
+
+        //! Members
+
+        //! Port access type
+        Type type_ = Unknown;
+
+        //! Port access handles
+        QSharedPointer<QList<QSharedPointer<AccessHandle> > > accessHandles_ =
+            QSharedPointer<QList<QSharedPointer<AccessHandle> > >(new QList<QSharedPointer<AccessHandle> >());
+    };
+    
+    /*!
 	 *  The constructor.
 	 *
 	 *    @param [in] portName    Name of the port.
@@ -337,6 +393,10 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getTransactionalTypes() const;
 
+    QSharedPointer<Access> getAccess() const;
+
+    void setAccess(QSharedPointer<Access> newAccess);
+
 private:
 
     //-----------------------------------------------------------------------------
@@ -357,6 +417,9 @@ private:
 
     //! The list of arrays.
     QSharedPointer<QList<Array > > configurableArrays_{ new QList<Array>() };
+
+    //! Port access
+    QSharedPointer<Access> portAccess_{ nullptr };
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<Port>)

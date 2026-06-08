@@ -17,6 +17,7 @@
 #include "MemoryArrayReader.h"
 #include "FieldReferenceReader.h"
 #include "FieldAccessPolicyReader.h"
+#include "AccessHandleReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 
@@ -30,6 +31,8 @@ QSharedPointer<Field> FieldReader::createFieldFrom(QDomNode const& fieldNode, Do
     QSharedPointer<Field> newField (new Field());
 
     NameGroupReader::parseNameGroup(fieldNode, newField);
+
+    Details::parseAccessHandles(fieldElement, newField, docRevision);
     
     if (docRevision == Document::Revision::Std14)
     {
@@ -435,6 +438,26 @@ void FieldReader::Details::parseFieldAccessPolicies(QDomElement const& fieldElem
             auto newFieldAccessPolicy = FieldAccessPolicyReader::createFieldAccessPolicyFrom(fieldAccessPolicyNode);
 
             newField->getFieldAccessPolicies()->append(newFieldAccessPolicy);
+        }
+    }
+}
+
+void FieldReader::Details::parseAccessHandles(QDomElement const& fieldElement, QSharedPointer<Field> newField, Document::Revision docRevision)
+{
+    auto accessHandlesElement = fieldElement.firstChildElement(QStringLiteral("ipxact:accessHandles"));
+
+    if (accessHandlesElement.isNull()) return;
+
+    auto accessHandles = accessHandlesElement.childNodes();
+    for (int i = 0; i < accessHandles.size(); ++i)
+    {
+        auto accessHandleNode = accessHandles.at(i);
+
+        if (accessHandleNode.nodeName() == QStringLiteral("ipxact:accessHandle"))
+        {
+            auto newAccessHandle = AccessHandleReader::createAccessHandleFrom(accessHandleNode, AccessHandle::ElementType::Field, docRevision);
+
+            newField->getAccessHandles()->append(newAccessHandle);
         }
     }
 }

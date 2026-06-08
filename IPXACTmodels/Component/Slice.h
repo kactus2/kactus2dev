@@ -43,5 +43,6 @@ struct IPXACTMODELS_EXPORT Slice : public Range
         return *this;
     }
 
-    QSharedPointer<QList<QSharedPointer<PathSegment> > > pathSegments_;
+    QSharedPointer<QList<QSharedPointer<PathSegment> > > pathSegments_ =
+        QSharedPointer<QList<QSharedPointer<PathSegment> > >(new QList<QSharedPointer<PathSegment> >);
 };

@@ -30,7 +30,7 @@ QSharedPointer<Bank> BankReader::createBankFrom(QDomNode const& bankNode, Docume
 
     Details::parseBankAlignment(bankNode, newBank);
 
-    MemoryBlockBaseReader::parseAccessHandles(bankNode, newBank, docRevision);
+    MemoryBlockBaseReader::parseAccessHandles(bankNode, newBank, AccessHandle::ElementType::Bank, docRevision);
 
     MemoryBlockBaseReader::parseBaseAddress(bankNode, newBank);
 

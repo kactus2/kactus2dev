@@ -168,6 +168,14 @@ namespace FieldWriter
          *    @param [in] field   The selected field item.
          */
         void writeFieldReference(QXmlStreamWriter& writer, QSharedPointer<Field> field);
+
+        /*!
+         *	Write the field access handles.
+         *  
+         *    @param [in] writer  Used XML writer.
+         *    @param [in] field   The selected field item.
+         */
+        void writeAccessHandles(QXmlStreamWriter& writer, QSharedPointer<Field> field, Document::Revision docRevis);
     }
 };
 

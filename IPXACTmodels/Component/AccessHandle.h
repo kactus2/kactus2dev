@@ -13,15 +13,50 @@
 
 #include <IPXACTmodels/common/Extendable.h>
 #include <IPXACTmodels/common/BooleanValue.h>
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/Component/Slice.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-class PathSegment;
+struct PathSegment;
 
 class IPXACTMODELS_EXPORT AccessHandle : public Extendable
 {
 public:
+
+    //! The different types of access handles, by standard revision
+    enum Type
+    {
+        Simple14 = 0,       // banks (std14)
+        Simple22,           // banks, register files, registers and alternate registers (std22)
+        NonIndexedLeaf14,   // address blocks and fields (std14)
+        Indexed14,          // alternate register, register and register files (std14)
+        Leaf14,             // ports (std14)
+        Sliced22,           // address blocks and fields (std22)
+        Port22,             // ports (std22)
+        Unknown
+    };
+
+    //! The different elements that can contain access handles
+    enum class ElementType
+    {
+        AddressBlock = 0,
+        Bank,
+        Register,           // Includes register file and alternate register
+        Field,
+        Port,
+        Unknown
+    };
+
+    /*!
+     *  Computes the correct access handle type based on containing element type and standard revision.
+     *
+     *    @param [in] element           The containing element type (e.g. address block).
+     *    @param [in] docRevision       The standard revision in use.
+     *
+     *    @return The computed access handle type.
+     */
+    static Type typeFromElementAndRevision(ElementType element, Document::Revision docRevision);
 
     /*!
      *  The constructor.

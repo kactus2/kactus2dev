@@ -74,9 +74,7 @@ void tst_AccessHandleWriter::writeForce()
     accessHandle_->setForce(true);
 
     QString expectedOutput(
-        "<ipxact:accessHandle>"
-            "<ipxact:force>true</ipxact:force>"
-        "</ipxact:accessHandle>"
+        "<ipxact:accessHandle force=\"true\"/>"
     );
 
     QString output;
@@ -89,9 +87,7 @@ void tst_AccessHandleWriter::writeForce()
     accessHandle_->setForce(false);
 
     QString expectedOutput2(
-        "<ipxact:accessHandle>"
-            "<ipxact:force>false</ipxact:force>"
-        "</ipxact:accessHandle>"
+        "<ipxact:accessHandle force=\"false\"/>"
     );
 
     output.clear();
@@ -155,44 +151,23 @@ void tst_AccessHandleWriter::writeViewReferences()
 {
     QStringList viewRefs;
     viewRefs.append("view1");
-    accessHandle_->setViewReferences(viewRefs);
-
-    QString expectedOutput(
-        "<ipxact:accessHandle>"
-            "<ipxact:viewRefs>"
-                "<ipxact:viewRef>view1</ipxact:viewRef>"
-            "</ipxact:viewRefs>"
-        "</ipxact:accessHandle>"
-    );
-
-    QString output;
-    QXmlStreamWriter writer(&output);
-
-    AccessHandleWriter::writeAccessHandle(writer, accessHandle_, Document::Revision::Std22);
-    QCOMPARE(output, expectedOutput);
-
-    // Test with multiple view references
-    viewRefs.clear();
-    viewRefs.append("view1");
     viewRefs.append("view2");
     viewRefs.append("view3");
     accessHandle_->setViewReferences(viewRefs);
 
-    QString expectedOutput2(
+    QString expectedOutput(
         "<ipxact:accessHandle>"
-            "<ipxact:viewRefs>"
-                "<ipxact:viewRef>view1</ipxact:viewRef>"
-                "<ipxact:viewRef>view2</ipxact:viewRef>"
-                "<ipxact:viewRef>view3</ipxact:viewRef>"
-            "</ipxact:viewRefs>"
+            "<ipxact:viewRef>view1</ipxact:viewRef>"
+            "<ipxact:viewRef>view2</ipxact:viewRef>"
+            "<ipxact:viewRef>view3</ipxact:viewRef>"
         "</ipxact:accessHandle>"
     );
 
-    output.clear();
-    QXmlStreamWriter writer2(&output);
+    QString output;
+    QXmlStreamWriter writer(&output);;
 
-    AccessHandleWriter::writeAccessHandle(writer2, accessHandle_, Document::Revision::Std22);
-    QCOMPARE(output, expectedOutput2);
+    AccessHandleWriter::writeAccessHandle(writer, accessHandle_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------

@@ -30,7 +30,7 @@ QSharedPointer<AddressBlock> AddressBlockReader::createAddressBlockFrom(QDomNode
 
     MemoryBlockBaseReader::parseNameGroup(addressBlockNode, newAddressBlock);
 
-    MemoryBlockBaseReader::parseAccessHandles(addressBlockNode, newAddressBlock, docRevision);
+    MemoryBlockBaseReader::parseAccessHandles(addressBlockNode, newAddressBlock, AccessHandle::ElementType::AddressBlock, docRevision);
 
     if (docRevision == Document::Revision::Std14)
     {

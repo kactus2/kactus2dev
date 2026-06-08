@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/AlternateRegister.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/MemoryArray.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
 
@@ -57,6 +58,10 @@ private slots:
     void readRegisterFileDefinitionRef2022();
     void readRegisterfileMemoryarray2022();
     void readRegisterFileAccessPolicies2022();
+
+    void readAccessHandles();
+    void readAccessHandlesRegisterFile();
+    void readAccessHandlesAlternateRegister();
 
     void readRegisterFileParameters();
     void readRegisterFileVendorExtensions();
@@ -978,6 +983,111 @@ void tst_RegisterReader::readRegisterFileAccessPolicies2022()
     QCOMPARE(accessPolicy2->getModeReferences()->first()->getReference(), QString("testMode2"));
     QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getPriority(), 2);
     QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getReference(), QString("testMode3"));
+}
+
+void tst_RegisterReader::readAccessHandles()
+{
+    QString documentContent(
+        "<ipxact:register>"
+            "<ipxact:name>testRegister</ipxact:name>"
+            "<ipxact:accessHandles>"
+                "<ipxact:accessHandle>"
+                    "<ipxact:pathSegments>"
+                        "<ipxact:pathSegment>"
+                            "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                            "<ipxact:indices>"
+                               "<ipxact:index>0</ipxact:index>"
+                            "</ipxact:indices>"
+                        "</ipxact:pathSegment>"
+                    "</ipxact:pathSegments>"
+                "</ipxact:accessHandle>"
+            "</ipxact:accessHandles>"
+        "</ipxact:register>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+    QDomNode registerNode = document.firstChildElement("ipxact:register");
+
+    QSharedPointer<Register> testRegister = RegisterReader::createRegisterfrom(registerNode, Document::Revision::Std14);
+
+    auto accessHandles = testRegister->getAccessHandles();
+    QVERIFY(accessHandles->size() == 1);
+    QVERIFY(accessHandles->first()->getPathSegments()->size() == 1);
+    QCOMPARE(accessHandles->first()->getPathSegments()->first()->name_, QString("segment1"));
+}
+
+void tst_RegisterReader::readAccessHandlesRegisterFile()
+{
+    QString documentContent(
+        "<ipxact:registerFile>"
+            "<ipxact:name>testRegisterFile</ipxact:name>"
+            "<ipxact:accessHandles>"
+                "<ipxact:accessHandle>"
+                    "<ipxact:pathSegments>"
+                        "<ipxact:pathSegment>"
+                            "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                            "<ipxact:indices>"
+                                "<ipxact:index>0</ipxact:index>"
+                            "</ipxact:indices>"
+                        "</ipxact:pathSegment>"
+                    "</ipxact:pathSegments>"
+                "</ipxact:accessHandle>"
+            "</ipxact:accessHandles>"
+        "</ipxact:registerFile>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+    QDomNode registerNode = document.firstChildElement("ipxact:registerFile");
+
+    QSharedPointer<RegisterFile> testRegisterFile = RegisterReader::createRegisterFileFrom(registerNode, Document::Revision::Std14);
+
+    auto accessHandles = testRegisterFile->getAccessHandles();
+    QVERIFY(accessHandles->size() == 1);
+    QVERIFY(accessHandles->first()->getPathSegments()->size() == 1);
+    QCOMPARE(accessHandles->first()->getPathSegments()->first()->name_, QString("segment1"));
+}
+
+void tst_RegisterReader::readAccessHandlesAlternateRegister()
+{
+    QString documentContent(
+        "<ipxact:register>"
+            "<ipxact:name>testRegister</ipxact:name>"
+            "<ipxact:alternateRegisters>"
+                "<ipxact:alternateRegister>"
+                    "<ipxact:name>testAlternate</ipxact:name>"
+                    "<ipxact:accessHandles>"
+                        "<ipxact:accessHandle>"
+                            "<ipxact:pathSegments>"
+                                "<ipxact:pathSegment>"
+                                    "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                                    "<ipxact:indices>"
+                                        "<ipxact:index>0</ipxact:index>"
+                                    "</ipxact:indices>"
+                                "</ipxact:pathSegment>"
+                            "</ipxact:pathSegments>"
+                        "</ipxact:accessHandle>"
+                    "</ipxact:accessHandles>"
+                "</ipxact:alternateRegister>"
+            "</ipxact:alternateRegisters>"
+        "</ipxact:register>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+    QDomNode registerNode = document.firstChildElement("ipxact:register");
+
+    QSharedPointer<Register> testRegister = RegisterReader::createRegisterfrom(registerNode, Document::Revision::Std14);
+
+    QVERIFY(testRegister->getAlternateRegisters()->size() == 1);
+
+    auto alternate = testRegister->getAlternateRegisters()->first();
+
+    auto accessHandles = alternate->getAccessHandles();
+    QVERIFY(accessHandles->size() == 1);
+    QVERIFY(accessHandles->first()->getPathSegments()->size() == 1);
+    QCOMPARE(accessHandles->first()->getPathSegments()->first()->name_, QString("segment1"));
 }
 
 //-----------------------------------------------------------------------------

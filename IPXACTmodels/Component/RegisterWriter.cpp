@@ -18,6 +18,7 @@
 #include "AccessPolicyWriter.h"
 #include "MemoryArrayWriter.h"
 #include "MemoryArray.h"
+#include "AccessHandleWriter.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
@@ -47,7 +48,9 @@ void RegisterWriter::Details::writeRegister(QXmlStreamWriter& writer, QSharedPoi
     writer.writeStartElement(QStringLiteral("ipxact:register"));
 
     NameGroupWriter::writeNameGroup(writer, targetRegister, docRevision);
-    
+
+    Details::writeAccessHandles(writer, targetRegister, docRevision);
+
     if (docRevision == Document::Revision::Std14)
     {
         CommonItemsWriter::writeIsPresent(writer, targetRegister->getIsPresent());
@@ -74,7 +77,6 @@ void RegisterWriter::Details::writeRegister(QXmlStreamWriter& writer, QSharedPoi
         writeRegisterDefinitionReference(writer, targetRegister);
 
         writeTypeIdentifier(writer, targetRegister);
-
 
         if (auto const& regSize = targetRegister->getSize(); regSize.isEmpty() == false)
         {
@@ -181,6 +183,8 @@ void RegisterWriter::Details::writeSingleAlternateRegister(QXmlStreamWriter& wri
 
     NameGroupWriter::writeNameGroup(writer, alternateRegister, docRevision);
 
+    Details::writeAccessHandles(writer, alternateRegister, docRevision);
+
     if (docRevision == Document::Revision::Std14)
     {
         CommonItemsWriter::writeIsPresent(writer, alternateRegister->getIsPresent());
@@ -239,6 +243,9 @@ void RegisterWriter::Details::writeRegisterFile(QXmlStreamWriter& writer, QShare
     writer.writeStartElement(QStringLiteral("ipxact:registerFile"));
 
     NameGroupWriter::writeNameGroup(writer, registerFile, docRevision);
+
+    Details::writeAccessHandles(writer, registerFile, docRevision);
+
     if (docRevision == Document::Revision::Std14)
     {
         CommonItemsWriter::writeIsPresent(writer, registerFile->getIsPresent());
@@ -351,4 +358,21 @@ void RegisterWriter::Details::writeRegisterFileDefinitionReference(QXmlStreamWri
         writer.writeCharacters(definitionReference);
         writer.writeEndElement();
     }
+}
+
+void RegisterWriter::Details::writeAccessHandles(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerBase, Document::Revision docRevision)
+{
+    if (registerBase->getAccessHandles()->isEmpty())
+    {
+        return;
+    }
+
+    writer.writeStartElement(QStringLiteral("ipxact:accessHandles"));
+
+    for (auto const& accessHandle : *registerBase->getAccessHandles())
+    {
+        AccessHandleWriter::writeAccessHandle(writer, accessHandle, docRevision);
+    }
+
+    writer.writeEndElement(); // ipxact:accessHandles
 }

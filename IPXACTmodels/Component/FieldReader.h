@@ -218,6 +218,14 @@ namespace FieldReader
          *    @param [in] newField        The new field item.
          */
         void parseFieldAccessPolicies(QDomElement const& fieldElement, QSharedPointer<Field> newField);
+
+        /*!
+         *	Parse access handles.
+         *  
+         *    @param [in] fieldElement    XML description of the field.
+         *    @param [in] newField        The new field item.
+         */
+        void parseAccessHandles(QDomElement const& fieldElement, QSharedPointer<Field> newField, Document::Revision docRevision);
     }
 };
 

@@ -518,6 +518,22 @@ void Field::setFieldAccessPolicies(QSharedPointer<QList<QSharedPointer<FieldAcce
 {
     fieldAccessPolicies_ = newFieldAccessPolicies;
 }
+//-----------------------------------------------------------------------------
+
+// Function: Field::getAccessHandles()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<AccessHandle> > > Field::getAccessHandles() const
+{
+    return accessHandles_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setAccessHandles()
+//-----------------------------------------------------------------------------
+void Field::setAccessHandles(QSharedPointer<QList<QSharedPointer<AccessHandle> > > accessHandles)
+{
+    accessHandles_ = accessHandles;
+}
 
 //-----------------------------------------------------------------------------
 // Function: Field::copyWriteValueConstraint()

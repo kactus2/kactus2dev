@@ -44,8 +44,13 @@ void MemoryBlockBaseReader::parsePresence(QDomNode const& memoryBlockNode,
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockBaseReader::parseAccessHandles()
 //-----------------------------------------------------------------------------
-void MemoryBlockBaseReader::parseAccessHandles(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock, Document::Revision docRevision)
+void MemoryBlockBaseReader::parseAccessHandles(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock, AccessHandle::ElementType elementType, Document::Revision docRevision)
 {
+    if (elementType != AccessHandle::ElementType::AddressBlock && elementType != AccessHandle::ElementType::Bank)
+    {
+        return;
+    }
+
     QDomElement accessHandlesElement = memoryBlockNode.firstChildElement(QStringLiteral("ipxact:accessHandles"));
     if (!accessHandlesElement.isNull())
     {
@@ -55,7 +60,7 @@ void MemoryBlockBaseReader::parseAccessHandles(QDomNode const& memoryBlockNode, 
         for (int i = 0; i < accessHandleNodes.size(); ++i)
         {
             auto accessHandleNode = accessHandleNodes.at(i);
-            auto newAccessHandle = AccessHandleReader::createAccessHandleFrom(accessHandleNode, docRevision);
+            auto newAccessHandle = AccessHandleReader::createAccessHandleFrom(accessHandleNode, elementType, docRevision);
             accessHandles->append(newAccessHandle);
         }
 

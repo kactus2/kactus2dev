@@ -321,14 +321,12 @@ void ComponentWriter::writePorts(QXmlStreamWriter& writer, QSharedPointer<Compon
 {
     if (!component->getPorts()->isEmpty())
     {
-        PortWriter portWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:ports"));
 
         const auto revision = component->getRevision();
         for (QSharedPointer<Port> port : *component->getPorts())
         {
-            portWriter.writePort(writer, port, revision);
+            PortWriter::writePort(writer, port, revision);
         }
 
         writer.writeEndElement(); // ipxact:ports

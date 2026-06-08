@@ -12,6 +12,7 @@
 #include "RegisterBase.h"
 
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
 #include <IPXACTmodels/Component/AccessPolicy.h>
 #include <IPXACTmodels/Component/MemoryArray.h>
 
@@ -221,6 +222,22 @@ QSharedPointer<QList<QSharedPointer<AccessPolicy> > > RegisterBase::getAccessPol
 void RegisterBase::setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies)
 {
     accessPolicies_ = newAccessPolicies;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::getAccessHandles()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<AccessHandle> > > RegisterBase::getAccessHandles() const
+{
+    return accessHandles_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::setAccessHandles()
+//-----------------------------------------------------------------------------
+void RegisterBase::setAccessHandles(QSharedPointer<QList<QSharedPointer<AccessHandle> > > accessHandles)
+{
+    accessHandles_ = accessHandles;
 }
 
 //-----------------------------------------------------------------------------

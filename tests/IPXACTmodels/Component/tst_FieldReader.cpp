@@ -49,6 +49,7 @@ private slots:
     void readReadAction();
     void readTestable();
     void readReserved();
+    void readAccessHandles();
 
     void readParameters();
 
@@ -694,6 +695,40 @@ void tst_FieldReader::readReserved()
     QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getReserved(), QString("reserveWarning"));
+}
+
+void tst_FieldReader::readAccessHandles()
+{
+    QString documentContent(
+        "<ipxact:field>"
+            "<ipxact:name>testField</ipxact:name>"
+            "<ipxact:accessHandles>"
+                "<ipxact:accessHandle>"
+                    "<ipxact:slices>"
+                        "<ipxact:slice>"
+                            "<ipxact:pathSegments>"
+                                "<ipxact:pathSegment>"
+                                    "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                                "</ipxact:pathSegment>"
+                            "</ipxact:pathSegments>"
+                        "</ipxact:slice>"
+                    "</ipxact:slices>"
+                "</ipxact:accessHandle>"
+            "</ipxact:accessHandles>"
+        "</ipxact:field>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fieldNode = document.firstChildElement("ipxact:field");
+
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
+
+    auto accessHandles = testField->getAccessHandles();
+    QVERIFY(accessHandles->size() == 1);
+    QVERIFY(accessHandles->first()->getSlices()->size() == 1);
+    QCOMPARE(accessHandles->first()->getSlices()->first()->pathSegments_->first()->name_, QString("segment1"));
 }
 
 //-----------------------------------------------------------------------------

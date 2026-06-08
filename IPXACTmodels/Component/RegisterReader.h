@@ -231,6 +231,14 @@ namespace RegisterReader
          *    @param [in] newAlternateRegister        Selected alternate register.
          */
         void parseAlternateRegisterModeRefs(QDomNode const& alternateRegisterNode, QSharedPointer<AlternateRegister> newAlternateRegister);
+        
+        /*!
+         *	Reads the mode references of a RegisterBase.
+         *  
+         *    @param [in] registerBaseNode       XML description of the register.
+         *    @param [in] newRegisterBase        Selected register.
+         */
+        void parseAccessHandles(QDomNode const& registerBaseNode, QSharedPointer<RegisterBase> newRegisterBase, Document::Revision docRevision);
     }
 }
 

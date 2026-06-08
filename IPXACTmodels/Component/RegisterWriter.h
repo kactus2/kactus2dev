@@ -153,6 +153,14 @@ namespace RegisterWriter
          *    @param [in] registerFile    The register file to be written.
          */
         void writeRegisterFileDefinitionReference(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile);
+    
+        /*!
+         *	Write the register base access handles.
+         *  
+         *    @param [in] writer          XML writer to use.
+         *    @param [in] registerBase    The register to be written.
+         */
+        void writeAccessHandles(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerBase, Document::Revision docRevision);
     }
 }
 

@@ -52,6 +52,8 @@ private slots:
     void writeAddressBlockDefinitionRef2022();
     void writeAccessPolicies2022();
 
+    void writeAccessHandles();
+
     void writeVendorExtensions();
 
 private:
@@ -466,6 +468,53 @@ void tst_AddressBlockWriter::writeAccessPolicies2022()
         );
 
     AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+void tst_AddressBlockWriter::writeAccessHandles()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QString testIndex("0");
+    QSharedPointer<PathSegment> ps(new PathSegment());
+    ps->indices_.append(testIndex);
+    ps->name_ = QStringLiteral("segment1");
+
+    QSharedPointer<Slice> slice(new Slice());
+    slice->pathSegments_->append(ps);
+
+    QSharedPointer<AccessHandle> ah(new AccessHandle());
+    ah->getSlices()->append(slice);
+
+    testAddressBlock_->getAccessHandles()->append(ah);
+
+    QString expectedOutput(
+        "<ipxact:addressBlock>"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:accessHandles>"
+                "<ipxact:accessHandle>"
+                    "<ipxact:slices>"
+                        "<ipxact:slice>"
+                            "<ipxact:pathSegments>"
+                                "<ipxact:pathSegment>"
+                                    "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                                    "<ipxact:indices>"
+                                        "<ipxact:index>0</ipxact:index>"
+                                    "</ipxact:indices>"
+                                "</ipxact:pathSegment>"
+                            "</ipxact:pathSegments>"
+                        "</ipxact:slice>"
+                    "</ipxact:slices>"
+                "</ipxact:accessHandle>"
+            "</ipxact:accessHandles>"
+            "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+            "<ipxact:range>Kzer-Za</ipxact:range>"
+            "<ipxact:width>Kohr-Ah</ipxact:width>"
+        "</ipxact:addressBlock>"
+    );
+
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

@@ -19,6 +19,7 @@
 #include <IPXACTmodels/Component/FieldReset.h>
 #include <IPXACTmodels/Component/MemoryArray.h>
 #include <IPXACTmodels/Component/FieldReference.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
 
 #include <QtTest>
 
@@ -55,6 +56,7 @@ private slots:
     void writeReserved();
 
     void writeFieldAccessPolicies();
+    void writeAccessHandles();
 
     void writeParameters();
 
@@ -707,6 +709,51 @@ void tst_FieldWriter::writeFieldAccessPolicies()
     );
 
     FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+void tst_FieldWriter::writeAccessHandles()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<PathSegment> ps(new PathSegment());
+    ps->name_ = QString("segment1");
+    ps->indices_.append("0");
+
+    QSharedPointer<Slice> slice(new Slice());
+    slice->pathSegments_->append(ps);
+
+    QSharedPointer<AccessHandle> ah(new AccessHandle());
+    ah->getSlices()->append(slice);
+
+    testField_->getAccessHandles()->append(ah);
+
+    QString expectedOutput(
+        "<ipxact:field>"
+            "<ipxact:name>testField</ipxact:name>"
+            "<ipxact:accessHandles>"
+                "<ipxact:accessHandle>"
+                    "<ipxact:slices>"
+                        "<ipxact:slice>"
+                            "<ipxact:pathSegments>"
+                                "<ipxact:pathSegment>"
+                                    "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                                    "<ipxact:indices>"
+                                        "<ipxact:index>0</ipxact:index>"
+                                    "</ipxact:indices>"
+                                "</ipxact:pathSegment>"
+                            "</ipxact:pathSegments>"
+                        "</ipxact:slice>"
+                    "</ipxact:slices>"
+                "</ipxact:accessHandle>"
+            "</ipxact:accessHandles>"
+            "<ipxact:bitOffset>Baldur's</ipxact:bitOffset>"
+            "<ipxact:bitWidth>Gate</ipxact:bitWidth>"
+        "</ipxact:field>"
+        );
+
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

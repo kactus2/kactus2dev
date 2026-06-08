@@ -206,7 +206,16 @@ namespace  PortReader
          *    @param [in] positionElement     XML description of the port position.
          *    @param [in] newPort             The contianing port item.
          */
-        void parsePosition(QDomElement const& positionElement, QSharedPointer<Port> newPort) ;
+        void parsePosition(QDomElement const& positionElement, QSharedPointer<Port> newPort);
+
+        /*!
+         *  Parse the port access.
+         *
+         *    @param [in] portNode            XML description of the port.
+         *    @param [in] newPort             The contianing port item.
+         *    @param [in] docRevision         The std revision in use.
+         */
+        void parsePortAccess(QDomNode const& portNode, QSharedPointer<Port> newPort, Document::Revision docRevision);
     }
 };
 

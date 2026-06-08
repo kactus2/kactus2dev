@@ -54,6 +54,8 @@ private slots:
     void readStructuredSubPortWire_2022();
     void readNestedStructuredSubPort_2022();
     void readSubPortArrays_2022();
+
+    void readPortAccess();
 };
 
 //-----------------------------------------------------------------------------
@@ -1136,6 +1138,50 @@ void tst_ComponentPortReader::readSubPortArrays_2022()
     QCOMPARE(lastArray.getLeft(), "1");
     QCOMPARE(lastArray.getRight(), "0");
 
+}
+
+void tst_ComponentPortReader::readPortAccess()
+{
+    QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:access>"
+                "<ipxact:portAccessType>ptr</ipxact:portAccessType>"
+                "<ipxact:accessHandles>"
+                    "<ipxact:accessHandle>"
+                        "<ipxact:slices>"
+                            "<ipxact:slice>"
+                                "<ipxact:pathSegments>"
+                                    "<ipxact:pathSegment>"
+                                        "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                                        "<ipxact:indices>"
+                                            "<ipxact:index>0</ipxact:index>"
+                                        "</ipxact:indices>"
+                                    "</ipxact:pathSegment>"
+                                "</ipxact:pathSegments>"
+                            "</ipxact:slice>"
+                        "</ipxact:slices>"
+                    "</ipxact:accessHandle>"
+                "</ipxact:accessHandles>"
+            "</ipxact:access>"
+        "</ipxact:port>"
+    );
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
+
+    QCOMPARE(testPort->name(), QString("testPort"));
+    QCOMPARE(testPort->getAccess()->type_, Port::Access::Type::Ptr);
+    QCOMPARE(testPort->getAccess()->accessHandles_->size(), 1);
+    QCOMPARE(testPort->getAccess()->accessHandles_->first()->getSlices()->size(), 1);
+    QCOMPARE(testPort->getAccess()->accessHandles_->first()->getSlices()->first()->pathSegments_->first()->name_, QString("segment1"));
+    QCOMPARE(testPort->getAccess()->accessHandles_->first()->getSlices()->first()->pathSegments_->first()->indices_.size(), 1);
+    QCOMPARE(testPort->getAccess()->accessHandles_->first()->getSlices()->first()->pathSegments_->first()->indices_.first(), QString("0"));
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentPortReader)

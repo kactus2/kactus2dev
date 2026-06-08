@@ -17,6 +17,7 @@
 #include "MemoryArrayWriter.h"
 #include "EnumeratedValueWriter.h"
 #include "FieldReset.h"
+#include "AccessHandleWriter.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
@@ -30,6 +31,8 @@ void FieldWriter::writeField(QXmlStreamWriter& writer, QSharedPointer<Field> fie
     Details::writeID(writer, field->getId(), docRevision);
 
     NameGroupWriter::writeNameGroup(writer, field, docRevision);
+
+    Details::writeAccessHandles(writer, field, docRevision);
 
     if (docRevision == Document::Revision::Std14)
     {
@@ -370,4 +373,18 @@ void FieldWriter::Details::writeFieldReference(QXmlStreamWriter& writer, QShared
     FieldReferenceWriter::writeFieldReference(writer, fieldReference);
 
     writer.writeEndElement(); // ipxact:aliasOf
+}
+
+void FieldWriter::Details::writeAccessHandles(QXmlStreamWriter& writer, QSharedPointer<Field> field, Document::Revision docRevision)
+{
+    if (field->getAccessHandles()->isEmpty()) return;
+
+    writer.writeStartElement(QStringLiteral("ipxact:accessHandles"));
+
+    for (auto const& accessHandle : *field->getAccessHandles())
+    {
+        AccessHandleWriter::writeAccessHandle(writer, accessHandle, docRevision);
+    }
+
+    writer.writeEndElement(); // ipxact:accessHandles
 }

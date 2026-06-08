@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -48,9 +49,10 @@ namespace MemoryBlockBaseReader
      *
      *    @param [in] memoryBlockNode     XML description of the memory block.
      *    @param [in] newMemoryBlock      The new memory block.
+     *    @param [in] elementType         The type of element containing the accesshandle (should be bank or address block)
      *    @param [in] docRevision         The document revision.
      */
-    IPXACTMODELS_EXPORT void parseAccessHandles(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock, Document::Revision docRevision);
+    IPXACTMODELS_EXPORT void parseAccessHandles(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock, AccessHandle::ElementType elementType, Document::Revision docRevision);
 
     /*!
      *  Reads the usage.

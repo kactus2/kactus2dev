@@ -19,6 +19,7 @@
 #include "MemoryArrayReader.h"
 #include "MemoryArray.h"
 #include "AccessPolicyReader.h"
+#include "AccessHandleReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 
@@ -32,6 +33,8 @@ QSharedPointer<Register> RegisterReader::createRegisterfrom(QDomNode const& regi
     QSharedPointer<Register> newRegister(new Register());
 
     NameGroupReader::parseNameGroup(registerNode, newRegister);
+
+    Details::parseAccessHandles(registerNode, newRegister, docRevision);
 
     if (docRevision == Document::Revision::Std14)
     {
@@ -77,6 +80,8 @@ QSharedPointer<RegisterFile> RegisterReader::createRegisterFileFrom(QDomNode con
     QSharedPointer<RegisterFile> newRegisterFile (new RegisterFile());
 
     NameGroupReader::parseNameGroup(registerFileNode, newRegisterFile);
+
+    Details::parseAccessHandles(registerFileNode, newRegisterFile, docRevision);
 
     if (docRevision == Document::Revision::Std14)
     {
@@ -261,6 +266,8 @@ void RegisterReader::Details::parseSingleAlternateRegister(QDomElement const& al
     Document::Revision docRevision)
 {
     NameGroupReader::parseNameGroup(alternateRegisterElement, newAlternateRegister);
+
+    Details::parseAccessHandles(alternateRegisterElement, newAlternateRegister, docRevision);
 
     if (docRevision == Document::Revision::Std14)
     {
@@ -470,4 +477,25 @@ void RegisterReader::Details::parseAccessPolicies(QDomNode const& registerBaseNo
 void RegisterReader::Details::parseAlternateRegisterModeRefs(QDomNode const& alternateRegisterNode, QSharedPointer<AlternateRegister> newAlternateRegister)
 {
     newAlternateRegister->setModeReferences(CommonItemsReader::parseModeReferences(alternateRegisterNode));
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterReader::Details::parseAlternateRegisterModeRefs()
+//-----------------------------------------------------------------------------
+void RegisterReader::Details::parseAccessHandles(QDomNode const& registerBaseNode, QSharedPointer<RegisterBase> newRegisterBase, Document::Revision docRevision)
+{
+    auto accessHandlesElement = registerBaseNode.firstChildElement(QStringLiteral("ipxact:accessHandles"));
+
+    if (accessHandlesElement.isNull()) return;
+
+    auto accessHandles = accessHandlesElement.childNodes();
+    for (int i = 0; i < accessHandles.size(); ++i)
+    {
+        if (accessHandles.at(i).nodeName() == QStringLiteral("ipxact:accessHandle"))
+        {
+            auto newAccessHandle = AccessHandleReader::createAccessHandleFrom(accessHandles.at(i), AccessHandle::ElementType::Register, docRevision);
+
+            newRegisterBase->getAccessHandles()->append(newAccessHandle);
+        }
+    }
 }

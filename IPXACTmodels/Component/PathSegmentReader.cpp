@@ -22,7 +22,7 @@ QSharedPointer<PathSegment> PathSegmentReader::createPathSegmentFrom(QDomNode co
     if (docRevision == Document::Revision::Std22)
     {
         // 22 standard has path segment name as value and apparently no indices
-        newPathSegment->name_ = pathSegmentNode.nodeValue();
+        newPathSegment->name_ = pathSegmentNode.firstChild().nodeValue();
     }
     else
     {

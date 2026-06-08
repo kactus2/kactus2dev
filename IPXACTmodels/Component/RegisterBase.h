@@ -21,6 +21,7 @@
 #include <QSharedPointer>
 
 class Parameter;
+class AccessHandle;
 class AccessPolicy;
 class MemoryArray;
 
@@ -153,6 +154,21 @@ public:
      */
     void setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies);
 
+    /*! 
+     *  Get the access handles associated with the register.
+     *
+     *    @return Pointer to the list of access handles.
+     */
+    QSharedPointer<QList<QSharedPointer<AccessHandle> > > getAccessHandles() const;
+
+    /*! 
+     *  Set the access handles associated with the register.
+     *
+     *    @param [in] accessHandles  Pointer to the access handle list.
+     */
+    void setAccessHandles(QSharedPointer<QList<QSharedPointer<AccessHandle> > > accessHandles);
+
+
 protected:
 
     //! Offset from the base address.
@@ -194,6 +210,11 @@ private:
     //! The access policies.
     QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies_ =
         QSharedPointer<QList<QSharedPointer<AccessPolicy> > >(new QList<QSharedPointer<AccessPolicy> >());;
+
+    //! The access handles.
+    QSharedPointer<QList<QSharedPointer<AccessHandle> > > accessHandles_ =
+        QSharedPointer<QList<QSharedPointer<AccessHandle> > >(new QList<QSharedPointer<AccessHandle> >());;
+
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<RegisterBase>);

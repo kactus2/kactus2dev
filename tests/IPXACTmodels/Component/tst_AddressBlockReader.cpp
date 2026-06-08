@@ -11,6 +11,7 @@
 
 #include <IPXACTmodels/Component/AddressBlockReader.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
@@ -45,6 +46,8 @@ private slots:
     void readMemoryArray2022();
     void readAddressBlockDefinitionRef2022();
     void readAccessPolicies2022();
+
+    void readAccessHandles();
 
     void readVendorExtensions();
 };
@@ -450,6 +453,39 @@ void tst_AddressBlockReader::readAccessPolicies2022()
     QCOMPARE(testAddressBlock->getAccessPolicies()->size(), 2);
     QCOMPARE(testAddressBlock->getAccessPolicies()->first()->getModeReferences()->first()->getReference(), QString("testMode"));
     QCOMPARE(testAddressBlock->getAccessPolicies()->first()->getAccess(), AccessTypes::READ_ONLY);
+}
+
+void tst_AddressBlockReader::readAccessHandles()
+{
+    QString documentContent(
+        "<ipxact:addressBlock>"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:accessHandles>"
+                "<ipxact:accessHandle>"
+                    "<ipxact:slices>"
+                        "<ipxact:slice>"
+                            "<ipxact:pathSegments>"
+                                "<ipxact:pathSegment>"
+                                    "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                                "</ipxact:pathSegment>"
+                            "</ipxact:pathSegments>"
+                        "</ipxact:slice>"
+                    "</ipxact:slices>"
+                "</ipxact:accessHandle>"
+            "</ipxact:accessHandles>"
+        "</ipxact:addressBlock>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+    QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
+
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
+
+    auto accessHandles = testAddressBlock->getAccessHandles();
+    QVERIFY(accessHandles->size() == 1);
+    QVERIFY(accessHandles->first()->getSlices()->size() == 1);
+    QCOMPARE(accessHandles->first()->getSlices()->first()->pathSegments_->first()->name_, QString("segment1"));
 }
 
 //-----------------------------------------------------------------------------

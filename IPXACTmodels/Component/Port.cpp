@@ -53,6 +53,11 @@ isPresent_(other.isPresent_)
     }
 
     Copy::copyList(other.configurableArrays_, configurableArrays_);
+
+    if (other.portAccess_)
+    {
+        portAccess_ = QSharedPointer<Port::Access>(other.portAccess_->clone());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -647,4 +652,14 @@ QSharedPointer<QList<QSharedPointer<WireTypeDef> > > Port::getTransactionalTypes
     }
 
     return nullptr;
+}
+
+QSharedPointer<Port::Access> Port::getAccess() const
+{
+    return portAccess_;
+}
+
+void Port::setAccess(QSharedPointer<Port::Access> newAccess)
+{
+    portAccess_ = newAccess;
 }

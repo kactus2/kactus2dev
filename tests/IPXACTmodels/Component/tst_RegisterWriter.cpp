@@ -13,6 +13,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/AlternateRegister.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
 
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/MemoryArray.h>
@@ -58,6 +59,10 @@ private slots:
     void writeRegisterFileDefinitionReference2022();
     void writeRegisterFileMemoryArray2022();
     void writeRegisterFileAccessPolicies2022();
+
+    void writeAccessHandles();
+    void writeAccessHandlesRegisterFile();
+    void writeAccessHandlesAlternateRegister();
 
     void writeRegisterFileParameters();
     void writeRegisterFileVendorExtensions();
@@ -1038,6 +1043,133 @@ void tst_RegisterWriter::writeRegisterFileAccessPolicies2022()
     );
 
     RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+void tst_RegisterWriter::writeAccessHandles()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<PathSegment> ps(new PathSegment());
+    ps->name_ = QString("segment1");
+    ps->indices_.append("0");
+    
+    QSharedPointer<AccessHandle> ah(new AccessHandle());
+    ah->getPathSegments()->append(ps);
+
+    QSharedPointer<Register> testRegister(new Register("testRegister", "0", "8"));
+    testRegister->getAccessHandles()->append(ah);
+
+    QString expectedOutput(
+        "<ipxact:register>"
+            "<ipxact:name>testRegister</ipxact:name>"
+            "<ipxact:accessHandles>"
+                "<ipxact:accessHandle>"
+                    "<ipxact:pathSegments>"
+                        "<ipxact:pathSegment>"
+                            "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                            "<ipxact:indices>"
+                               "<ipxact:index>0</ipxact:index>"
+                            "</ipxact:indices>"
+                        "</ipxact:pathSegment>"
+                    "</ipxact:pathSegments>"
+                "</ipxact:accessHandle>"
+            "</ipxact:accessHandles>"
+            "<ipxact:addressOffset>0</ipxact:addressOffset>"
+            "<ipxact:size>8</ipxact:size>"
+        "</ipxact:register>"
+    );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+void tst_RegisterWriter::writeAccessHandlesRegisterFile()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<PathSegment> ps(new PathSegment());
+    ps->name_ = QString("segment1");
+    ps->indices_.append("0");
+    
+    QSharedPointer<AccessHandle> ah(new AccessHandle());
+    ah->getPathSegments()->append(ps);
+
+    QSharedPointer<RegisterFile> testRegisterFile(new RegisterFile("testRegisterFile", "0", "8"));
+    testRegisterFile->getAccessHandles()->append(ah);
+
+    QString expectedOutput(
+        "<ipxact:registerFile>"
+            "<ipxact:name>testRegisterFile</ipxact:name>"
+            "<ipxact:accessHandles>"
+                "<ipxact:accessHandle>"
+                    "<ipxact:pathSegments>"
+                        "<ipxact:pathSegment>"
+                            "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                            "<ipxact:indices>"
+                               "<ipxact:index>0</ipxact:index>"
+                            "</ipxact:indices>"
+                        "</ipxact:pathSegment>"
+                    "</ipxact:pathSegments>"
+                "</ipxact:accessHandle>"
+            "</ipxact:accessHandles>"
+            "<ipxact:addressOffset>0</ipxact:addressOffset>"
+            "<ipxact:range>8</ipxact:range>"
+        "</ipxact:registerFile>"
+    );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+void tst_RegisterWriter::writeAccessHandlesAlternateRegister()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<PathSegment> ps(new PathSegment());
+    ps->name_ = QString("segment1");
+    ps->indices_.append("0");
+    
+    QSharedPointer<AccessHandle> ah(new AccessHandle());
+    ah->getPathSegments()->append(ps);
+
+
+    QSharedPointer<AlternateRegister> alternate(new AlternateRegister("testAlternate"));
+    alternate->getAccessHandles()->append(ah);
+
+    QSharedPointer<Register> testRegister(new Register("testRegister", "0", "8"));
+    testRegister->getAlternateRegisters()->append(alternate);
+
+    QString expectedOutput(
+        "<ipxact:register>"
+            "<ipxact:name>testRegister</ipxact:name>"
+            "<ipxact:addressOffset>0</ipxact:addressOffset>"
+            "<ipxact:size>8</ipxact:size>"
+            "<ipxact:alternateRegisters>"
+                "<ipxact:alternateRegister>"
+                    "<ipxact:name>testAlternate</ipxact:name>"
+                    "<ipxact:accessHandles>"
+                        "<ipxact:accessHandle>"
+                            "<ipxact:pathSegments>"
+                                "<ipxact:pathSegment>"
+                                    "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                                    "<ipxact:indices>"
+                                    "<ipxact:index>0</ipxact:index>"
+                                    "</ipxact:indices>"
+                                "</ipxact:pathSegment>"
+                            "</ipxact:pathSegments>"
+                        "</ipxact:accessHandle>"
+                    "</ipxact:accessHandles>"
+                    "<ipxact:alternateGroups/>"
+                "</ipxact:alternateRegister>"
+            "</ipxact:alternateRegisters>"
+        "</ipxact:register>"
+    );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

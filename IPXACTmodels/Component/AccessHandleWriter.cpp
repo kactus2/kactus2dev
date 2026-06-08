@@ -48,10 +48,7 @@ void AccessHandleWriter::writeAccessHandle(
 //-----------------------------------------------------------------------------
 void AccessHandleWriter::Details::writeForce(QXmlStreamWriter& writer, QSharedPointer<AccessHandle> accessHandle)
 {
-    if (!accessHandle->getForce().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:force"), accessHandle->getForce());
-    }
+    CommonItemsWriter::writeNonEmptyAttribute(writer, QStringLiteral("force"), accessHandle->getForce());
 }
 
 //-----------------------------------------------------------------------------
@@ -93,15 +90,9 @@ void AccessHandleWriter::Details::writeSlices(QXmlStreamWriter& writer, QSharedP
 //-----------------------------------------------------------------------------
 void AccessHandleWriter::Details::writeViewReferences(QXmlStreamWriter& writer, QSharedPointer<AccessHandle> accessHandle)
 {
-    QStringList viewRefs = accessHandle->getViewReferences();
-    if (!viewRefs.isEmpty())
+    for (auto const& viewRef : accessHandle->getViewReferences())
     {
-        writer.writeStartElement(QStringLiteral("ipxact:viewRefs"));
-        for (auto const& viewRef : viewRefs)
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:viewRef"), viewRef);
-        }
-        writer.writeEndElement(); // ipxact:viewRefs
+        writer.writeTextElement(QStringLiteral("ipxact:viewRef"), viewRef);
     }
 }
 

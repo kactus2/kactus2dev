@@ -12,6 +12,47 @@
 #include "AccessHandle.h"
 
 #include <IPXACTmodels/utilities/Copy.h>
+#include <IPXACTmodels/common/Document.h>
+
+AccessHandle::Type AccessHandle::typeFromElementAndRevision(ElementType element, Document::Revision docRevision)
+{
+    if (docRevision == Document::Revision::Std22)
+    {
+        switch (element)
+        {
+        case ElementType::AddressBlock:
+            return AccessHandle::Type::Sliced22;
+        case ElementType::Bank:
+            return AccessHandle::Type::Simple22;
+        case ElementType::Register:
+            return AccessHandle::Type::Simple22;
+        case ElementType::Field:
+            return AccessHandle::Type::Sliced22;
+        case ElementType::Port:
+            return AccessHandle::Type::Port22;
+        default:
+            return AccessHandle::Type::Unknown;
+        }
+    }
+    else
+    {
+        switch (element)
+        {
+        case ElementType::AddressBlock:
+            return AccessHandle::Type::NonIndexedLeaf14;
+        case ElementType::Bank:
+            return AccessHandle::Type::Simple14;
+        case ElementType::Register:
+            return AccessHandle::Type::Indexed14;
+        case ElementType::Field:
+            return AccessHandle::Type::NonIndexedLeaf14;
+        case ElementType::Port:
+            return AccessHandle::Type::Leaf14;
+        default:
+            return AccessHandle::Type::Unknown;
+        }
+    }
+}
 
 //-----------------------------------------------------------------------------
 // Function: AccessHandle::AccessHandle()

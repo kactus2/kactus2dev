@@ -14,6 +14,7 @@
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/ProtocolReader.h>
 #include <IPXACTmodels/common/QualifierReader.h>
+#include <IPXACTmodels/Component/AccessHandleReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortReader::createPortFrom()
@@ -48,6 +49,8 @@ QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode, Docume
     }
 
     newPort->getArrays()->append(Details::createArrays(portNode));
+
+    Details::parsePortAccess(portNode, newPort, docRevision);
 
     Details::parsePortExtensions(portNode, newPort);
 
@@ -477,4 +480,30 @@ void PortReader::Details::parsePosition(QDomElement const& positionElement, QSha
     int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
     int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
     newPort->setDefaultPos(QPointF(positionX, positionY));
+}
+
+void PortReader::Details::parsePortAccess(QDomNode const& portNode, QSharedPointer<Port> newPort, Document::Revision docRevision)
+{
+    auto accessNode = portNode.firstChildElement(QStringLiteral("ipxact:access"));
+
+    if (accessNode.isNull()) return;
+
+    QSharedPointer<Port::Access> newAccess(new Port::Access());
+
+    auto typeNode = accessNode.firstChildElement(QStringLiteral("ipxact:portAccessType"));
+    newAccess->type_ = Port::Access::stringToType(typeNode.firstChild().nodeValue());
+
+    auto accessHandlesNode = accessNode.firstChildElement(QStringLiteral("ipxact:accessHandles"));
+    auto accessHandleNodes = accessHandlesNode.childNodes();
+
+    for (int i = 0; i < accessHandleNodes.size(); ++i)
+    {
+        if (accessHandleNodes.at(i).nodeName().compare(QStringLiteral("ipxact:accessHandle")) == 0)
+        {
+            auto newAccessHandle = AccessHandleReader::createAccessHandleFrom(accessHandleNodes.at(i), AccessHandle::ElementType::Port, docRevision);
+            newAccess->accessHandles_->append(newAccessHandle);
+        }
+    }
+
+    newPort->setAccess(newAccess);
 }

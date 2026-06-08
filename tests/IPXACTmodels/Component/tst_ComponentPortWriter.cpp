@@ -13,6 +13,7 @@
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/common/Qualifier.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
 
 #include <QtTest>
 #include <QDomDocument>
@@ -54,6 +55,8 @@ private slots:
     void writeStructuredType_2022_data();
     void writeStructuredVectors_2022();
     void writeStructuredWirePort_2022();
+
+    void writePortAccess();
 };
 
 //-----------------------------------------------------------------------------
@@ -88,8 +91,7 @@ void tst_ComponentPortWriter::writeSimplePort()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -121,8 +123,7 @@ void tst_ComponentPortWriter::writeSimpleTransactionalPort()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -148,8 +149,7 @@ void tst_ComponentPortWriter::writePortPresence()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -184,8 +184,7 @@ void tst_ComponentPortWriter::writePortArrays()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -220,8 +219,7 @@ void tst_ComponentPortWriter::writePortExtensions()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -249,8 +247,7 @@ void tst_ComponentPortWriter::writePortAdHocVisible()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -279,8 +276,7 @@ void tst_ComponentPortWriter::writePortDefaultPosition()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -308,8 +304,7 @@ void tst_ComponentPortWriter::writePortTags()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -334,8 +329,7 @@ void tst_ComponentPortWriter::writeWirePortAllLogicalDirectionsAllowed()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -367,8 +361,7 @@ void tst_ComponentPortWriter::writeWirePortVectors()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -401,8 +394,7 @@ void tst_ComponentPortWriter::writeWirePortVectors_2022()
         "</ipxact:port>"
     );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -442,8 +434,7 @@ void tst_ComponentPortWriter::writeWireTypeDefinitions()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -483,8 +474,7 @@ void tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -505,7 +495,7 @@ void tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
             "</ipxact:wire>"
         "</ipxact:port>";
 
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -541,8 +531,7 @@ void tst_ComponentPortWriter::writeWireDefaultDriver()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -577,8 +566,7 @@ void tst_ComponentPortWriter::writeWireQualifiers_2022()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -606,8 +594,7 @@ void tst_ComponentPortWriter::writeTransactionalAllLogicalInitiativesAllowed()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -636,8 +623,7 @@ void tst_ComponentPortWriter::writeTransactionalKind()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -655,7 +641,7 @@ void tst_ComponentPortWriter::writeTransactionalKind()
         "</ipxact:port>"
         ;
 
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -685,8 +671,7 @@ void tst_ComponentPortWriter::writeTransactionalBusWidth()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -720,8 +705,7 @@ void tst_ComponentPortWriter::writeTransactionalQualifier_2022()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -773,8 +757,7 @@ void tst_ComponentPortWriter::writeTransactionalProtocol()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -801,7 +784,7 @@ void tst_ComponentPortWriter::writeTransactionalProtocol()
         "</ipxact:port>"
         ;
 
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -843,8 +826,7 @@ void tst_ComponentPortWriter::writeTransactionalTypeDefinitions()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -877,8 +859,7 @@ void tst_ComponentPortWriter::writeTransactionalConnectionMinMax()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -911,8 +892,7 @@ void tst_ComponentPortWriter::writeStructuredType_2022()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -987,8 +967,7 @@ void tst_ComponentPortWriter::writeStructuredVectors_2022()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -1032,8 +1011,58 @@ void tst_ComponentPortWriter::writeStructuredWirePort_2022()
         "</ipxact:port>"
         );
 
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+void tst_ComponentPortWriter::writePortAccess()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<PathSegment> ps(new PathSegment());
+    ps->name_ = QString("segment1");
+    ps->indices_.append("0");
+    
+    QSharedPointer<Slice> slice(new Slice());
+    slice->pathSegments_->append(ps);
+
+    QSharedPointer<AccessHandle> ah(new AccessHandle());
+    ah->getSlices()->append(slice);
+
+    QSharedPointer<Port::Access> access(new Port::Access());
+    access->type_ = Port::Access::Type::Ref;
+    access->accessHandles_->append(ah);
+
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setAccess(access);
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:access>"
+                "<ipxact:portAccessType>ref</ipxact:portAccessType>"
+                "<ipxact:accessHandles>"
+                    "<ipxact:accessHandle>"
+                        "<ipxact:slices>"
+                            "<ipxact:slice>"
+                                "<ipxact:pathSegments>"
+                                    "<ipxact:pathSegment>"
+                                        "<ipxact:pathSegmentName>segment1</ipxact:pathSegmentName>"
+                                        "<ipxact:indices>"
+                                            "<ipxact:index>0</ipxact:index>"
+                                        "</ipxact:indices>"
+                                    "</ipxact:pathSegment>"
+                                "</ipxact:pathSegments>"
+                            "</ipxact:slice>"
+                        "</ipxact:slices>"
+                    "</ipxact:accessHandle>"
+                "</ipxact:accessHandles>"
+            "</ipxact:access>"
+        "</ipxact:port>"
+        );
+
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

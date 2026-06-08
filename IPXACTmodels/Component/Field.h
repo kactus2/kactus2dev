@@ -23,6 +23,7 @@
 #include <IPXACTmodels/Component/FieldReset.h>
 #include <IPXACTmodels/Component/FieldReference.h>
 #include <IPXACTmodels/Component/FieldAccessPolicy.h>
+#include <IPXACTmodels/Component/AccessHandle.h>
 
 #include <QString>
 #include <QMap>
@@ -399,6 +400,20 @@ public:
 	 */
 	void setFieldAccessPolicies(QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > newFieldAccessPolicies);
 
+	/*! 
+     *  Get the access handles associated with the field.
+     *
+     *    @return Pointer to the list of access handles.
+     */
+    QSharedPointer<QList<QSharedPointer<AccessHandle> > > getAccessHandles() const;
+
+    /*! 
+     *  Set the access handles associated with the field.
+     *
+     *    @param [in] accessHandles  Pointer to the access handle list.
+     */
+    void setAccessHandles(QSharedPointer<QList<QSharedPointer<AccessHandle> > > accessHandles);
+
 private:
 
 	/*!
@@ -482,7 +497,11 @@ private:
 	
 	//! The field access policies of the field, for standard revision 2022.
 	QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > fieldAccessPolicies_ = 
-		QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > >(new QList<QSharedPointer<FieldAccessPolicy> > ());
+		QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > >(new QList<QSharedPointer<FieldAccessPolicy> >());
+
+	//! The access handles of the field
+	QSharedPointer<QList<QSharedPointer<AccessHandle> > > accessHandles_ =
+		QSharedPointer<QList<QSharedPointer<AccessHandle> > >(new QList<QSharedPointer<AccessHandle> >());
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<Field>);
