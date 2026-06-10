@@ -57,7 +57,11 @@ AccessHandle::Type AccessHandle::typeFromElementAndRevision(ElementType element,
 //-----------------------------------------------------------------------------
 // Function: AccessHandle::AccessHandle()
 //-----------------------------------------------------------------------------
-AccessHandle::AccessHandle()
+AccessHandle::AccessHandle() :
+    Extendable(),
+    force_(),
+    indices_(),
+    viewRefs_()
 {
 }
 

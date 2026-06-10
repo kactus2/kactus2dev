@@ -14,11 +14,13 @@
 
 #include "AddressBlock.h"
 #include "MemoryBlockBase.h"
+#include "Bank.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/Component/AddressBlockReader.h>
 #include <IPXACTmodels/Component/SubspaceMapReader.h>
+#include <IPXACTmodels/Component/BankReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseReader::createMemoryMapBaseFrom()
@@ -74,16 +76,22 @@ void MemoryMapBaseReader::Details::parseMemoryBlocks(QDomNode const& memoryMapBa
         QDomNode blockBaseNode = childNodes.at(childIndex);
         if (blockBaseNode.nodeName() == QLatin1String("ipxact:addressBlock"))
         {
-            QSharedPointer<AddressBlock> newAddressBlock =
+            auto newAddressBlock =
                 AddressBlockReader::createAddressBlockFrom(blockBaseNode, docRevision);
 
             newMemoryMapBase->getMemoryBlocks()->append(newAddressBlock);
         }
         else if (blockBaseNode.nodeName() == QLatin1String("ipxact:subspaceMap"))
         {
-            QSharedPointer<SubSpaceMap> newSubSpaceMap = SubspaceMapReader::createSubspaceMapFrom(blockBaseNode, docRevision);
+            auto newSubSpaceMap = SubspaceMapReader::createSubspaceMapFrom(blockBaseNode, docRevision);
 
             newMemoryMapBase->getMemoryBlocks()->append(newSubSpaceMap);
+        }
+        else if (blockBaseNode.nodeName() == QLatin1String("ipxact:bank"))
+        {
+            auto newBank = BankReader::createBankFrom(blockBaseNode, docRevision);
+
+            newMemoryMapBase->getMemoryBlocks()->append(newBank);
         }
     }
 }

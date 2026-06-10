@@ -12,12 +12,14 @@
 #include "MemoryMapBaseWriter.h"
 #include "MemoryMapBase.h"
 #include "AddressBlock.h"
+#include "Bank.h"
 
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/Component/SubSpaceMap.h>
 #include <IPXACTmodels/Component/AddressBlockWriter.h>
 #include <IPXACTmodels/Component/SubSpaceMapWriter.h>
+#include <IPXACTmodels/Component/BankWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseWriter::writeMemoryMapBase()
@@ -50,15 +52,19 @@ void MemoryMapBaseWriter::Details::writeMemoryBlocks(QXmlStreamWriter& writer, Q
     {
         for (auto const& memoryBlock : *MemoryMapBase->getMemoryBlocks())
         {
-            QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
-            if (addressBlock)
+            if (auto addressBlock = memoryBlock.dynamicCast<AddressBlock>())
             {
                 AddressBlockWriter::writeAddressBlock(writer, addressBlock, docRevision);
             }
 
-            else if (QSharedPointer<SubSpaceMap> subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>())
+            else if (auto subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>())
             {
                 SubSpaceMapWriter::writeSubSpaceMap(writer, subspaceMap, docRevision);
+            }
+
+            else if (auto bank = memoryBlock.dynamicCast<Bank>())
+            {
+                BankWriter::writeBank(writer, bank, docRevision);
             }
         }
     }

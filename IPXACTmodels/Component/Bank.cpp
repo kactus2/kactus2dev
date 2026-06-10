@@ -14,12 +14,16 @@
 #include <IPXACTmodels/utilities/Copy.h>
 
 Bank::Bank(QString const& name) :
-    MemoryBlockBase(name)
+    MemoryBlockBase(name),
+    bankDefinitionRef_(),
+    typeDefinitionsRef_()
 {
 }
 
 Bank::Bank(Bank const& other) :
     MemoryBlockBase(other),
+    bankDefinitionRef_(other.bankDefinitionRef_),
+    typeDefinitionsRef_(other.typeDefinitionsRef_),
     alignment_(other.alignment_)
 {
     Copy::copyList(other.addressBlocks_, addressBlocks_);
@@ -27,7 +31,7 @@ Bank::Bank(Bank const& other) :
     Copy::copyList(other.subspaceMaps_, subspaceMaps_);
 }
 
-Bank & Bank::operator=(Bank const& other)
+Bank& Bank::operator=(Bank const& other)
 {
     if (this != &other)
     {

@@ -14,6 +14,7 @@
 #include <IPXACTmodels/Component/MemoryRemap.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Bank.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
@@ -37,6 +38,7 @@ private slots:
     void readIsPresent();
     void readAddressBlocks();
     void readSubspaceMap();
+    void readBank();
 
     void readSimpleMemoryRemap();
     void readMemoryRemapAddressBlocks();
@@ -242,6 +244,38 @@ void tst_MemoryMapReader::readSubspaceMap()
 
     QCOMPARE(parsedSubSpace->getInitiatorReference(), QString("testInitiator"));
     QCOMPARE(parsedSubSpace->getBaseAddress(), QString("'h01"));
+}
+
+void tst_MemoryMapReader::readBank()
+{
+    QString documentContent(
+        "<ipxact:memoryMap>"
+            "<ipxact:name>testMemoryMap</ipxact:name>"
+            "<ipxact:bank bankAlignment=\"serial\">"
+                "<ipxact:name>testBank</ipxact:name>"
+                "<ipxact:baseAddress>'h01</ipxact:baseAddress>"
+                "<ipxact:isPresent>false</ipxact:isPresent>"
+            "</ipxact:bank>"
+        "</ipxact:memoryMap>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
+
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, 
+        Document::Revision::Std14);
+
+    QSharedPointer<Bank> parsedBank;
+
+    QCOMPARE(testMemoryMap->getMemoryBlocks()->size(), 1);
+    QVERIFY(parsedBank = testMemoryMap->getMemoryBlocks()->first().dynamicCast<Bank>());
+
+    QCOMPARE(parsedBank->getAlignment(), Bank::Alignment::SERIAL);
+    QCOMPARE(parsedBank->name(), QString("testBank"));
+    QCOMPARE(parsedBank->getBaseAddress(), QString("'h01"));
+    QCOMPARE(parsedBank->getIsPresent(), QString("false"));
 }
 
 //-----------------------------------------------------------------------------

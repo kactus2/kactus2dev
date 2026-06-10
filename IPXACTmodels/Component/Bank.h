@@ -31,7 +31,7 @@ public:
     };
 
     //! The constructor.
-    Bank(QString const& name = QString());
+    explicit Bank(QString const& name = QString());
 
     //! The copy constructor.
     Bank(Bank const& other);

@@ -14,6 +14,7 @@
 #include <IPXACTmodels/Component/MemoryRemap.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Bank.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
@@ -41,6 +42,7 @@ private slots:
     void writeSimpleMemoryMap();
     void writeIsPresent();
     void writeAddressBlocks();
+    void writeBanks();
 
     void write2022MemoryMap();
 
@@ -203,6 +205,56 @@ void tst_MemoryMapWriter::writeAddressBlocks()
         );
 
     MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+void tst_MemoryMapWriter::writeBanks()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Bank> testBank(new Bank("testBank"));
+    testBank->setBaseAddress("StarControl");
+    testBank->setAlignment(Bank::Alignment::PARALLEL);
+
+    QSharedPointer<RegisterFile> containedRegisterFile
+        (new RegisterFile("contained", "containedOffset", "containedRange"));
+
+    QSharedPointer<AddressBlock> testAddressBlock =
+        QSharedPointer<AddressBlock>(new AddressBlock("testBlock", "StarControl+1"));
+    testAddressBlock->setRange("Kzer-Za");
+    testAddressBlock->setWidth("Kohr-Ah");
+    testAddressBlock->getRegisterData()->append(containedRegisterFile);
+
+    testBank->getAddressBlocks()->append(testAddressBlock);
+    testMemoryMap_->getMemoryBlocks()->append(testBank);
+
+    QString expectedOutput(
+        "<ipxact:memoryMap>"
+            "<ipxact:name>testMemoryMap</ipxact:name>"
+            "<ipxact:bank bankAlignment=\"parallel\">"
+                "<ipxact:name>testBank</ipxact:name>"
+                "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+                "<ipxact:addressBlock>"
+                    "<ipxact:name>testBlock</ipxact:name>"
+                    "<ipxact:baseAddress>StarControl+1</ipxact:baseAddress>"
+                    "<ipxact:range>Kzer-Za</ipxact:range>"
+                    "<ipxact:width>Kohr-Ah</ipxact:width>"
+                    "<ipxact:registerFile>"
+                        "<ipxact:name>contained</ipxact:name>"
+                        "<ipxact:addressOffset>containedOffset</ipxact:addressOffset>"
+                        "<ipxact:range>containedRange</ipxact:range>"
+                    "</ipxact:registerFile>"
+                "</ipxact:addressBlock>"
+            "</ipxact:bank>"
+        "</ipxact:memoryMap>"
+        );
+
+    MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
+    QFile file("output.txt");
+    file.open(QIODevice::ReadWrite | QIODevice::Text);
+    file.write(output.toUtf8());
+    file.close();
     QCOMPARE(output, expectedOutput);
 }
 
