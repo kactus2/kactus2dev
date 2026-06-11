@@ -25,6 +25,7 @@
 #include <IPXACTmodels/Component/PortReader.h>
 #include <IPXACTmodels/Component/PowerDomainReader.h>
 #include <IPXACTmodels/Component/ComponentGeneratorReader.h>
+#include <IPXACTmodels/Component/ClearboxElementReader.h>
 #include <IPXACTmodels/Component/FileSetReader.h>
 #include <IPXACTmodels/Component/CPUReader.h>
 #include <IPXACTmodels/Component/OtherClockDriverReader.h>
@@ -99,6 +100,8 @@ QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument cons
     parseChoices(componentNode, newComponent);
 
     parseFileSets(componentNode, newComponent);
+
+    parseClearboxElements(componentNode, newComponent);
 
     parseCPUs(componentNode, newComponent);
 
@@ -471,6 +474,37 @@ void ComponentReader::parseFileSets(QDomNode const& componentNode, QSharedPointe
             QSharedPointer<FileSet> newFileSet = FileSetReader::createFileSetFrom(fileSetNode, newComponent->getRevision());
 
             newComponent->getFileSets()->append(newFileSet);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentReader::parseClearboxElements()
+//-----------------------------------------------------------------------------
+void ComponentReader::parseClearboxElements(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
+{
+    if (newComponent->getRevision() == Document::Revision::Std22)
+    {
+        auto clearboxElements = componentNode.firstChildElement(QStringLiteral("ipxact:clearboxElements"));
+        if (clearboxElements.isNull()) return;
+
+        auto elementsNodeList = clearboxElements.elementsByTagName(QStringLiteral("ipxact:clearboxElement"));
+        for (int i = 0; i < elementsNodeList.size(); ++i)
+        {
+            auto newClearboxElement = ClearboxElementReader::createClearboxElementFrom(elementsNodeList.at(i), Document::Revision::Std22);
+            newComponent->getClearboxElements()->append(newClearboxElement);
+        }
+    }
+    else
+    {
+        auto whiteboxElements = componentNode.firstChildElement(QStringLiteral("ipxact:whiteboxElements"));
+        if (whiteboxElements.isNull()) return;
+
+        auto elementsNodeList = whiteboxElements.elementsByTagName(QStringLiteral("ipxact:whiteboxElement"));
+        for (int i = 0; i < elementsNodeList.size(); ++i)
+        {
+            auto newWhiteboxElement = ClearboxElementReader::createClearboxElementFrom(elementsNodeList.at(i), Document::Revision::Std14);
+            newComponent->getClearboxElements()->append(newWhiteboxElement);
         }
     }
 }

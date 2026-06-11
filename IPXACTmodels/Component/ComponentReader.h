@@ -192,6 +192,14 @@ private:
     void parseFileSets(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const;
 
     /*!
+     *  Reads the white/clearbox elements.
+     *
+     *    @param [in] componentNode   XML description of the component.
+     *    @param [in] newComponent    The new component.
+     */
+    void parseClearboxElements(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const;
+
+    /*!
      *  Reads the cpus.
      *
      *    @param [in] componentNode   XML description of the component.

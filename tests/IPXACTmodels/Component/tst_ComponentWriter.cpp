@@ -29,6 +29,7 @@
 #include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/ClearboxElement.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 #include <IPXACTmodels/Component/ResetType.h>
@@ -89,6 +90,9 @@ private slots:
     void writeOtherClockDrivers();
     void writeResetTypes();
     void writeResetTypes2022();
+
+    void writeWhiteboxElements();
+    void writeClearboxElements();
 
     void writeParameters();
     void writeAssertions();
@@ -1163,6 +1167,90 @@ void tst_ComponentWriter::writeResetTypes2022()
     ComponentWriter componentWriter;
     componentWriter.writeComponent(xmlStreamWriter, testComponent_);
 
+    QCOMPARE(output, expectedOutput);
+}
+
+void tst_ComponentWriter::writeWhiteboxElements()
+{
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<ClearboxElement> element(new ClearboxElement("element"));
+    element->setType(ClearboxElement::Type::INTERFACE);
+
+    testComponent_->getClearboxElements()->append(element);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:whiteboxElements>\n"
+                "\t\t<ipxact:whiteboxElement>\n"
+                    "\t\t\t<ipxact:name>element</ipxact:name>\n"
+                    "\t\t\t<ipxact:whiteboxType>interface</ipxact:whiteboxType>\n"
+                "\t\t</ipxact:whiteboxElement>\n"
+            "\t</ipxact:whiteboxElements>\n"
+        "</ipxact:component>\n"
+    );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+    QCOMPARE(output, expectedOutput);
+}
+
+void tst_ComponentWriter::writeClearboxElements()
+{
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std22));
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<ClearboxElement> element(new ClearboxElement("element"));
+    element->setType(ClearboxElement::Type::INTERFACE);
+
+    testComponent_->getClearboxElements()->append(element);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:clearboxElements>\n"
+                "\t\t<ipxact:clearboxElement>\n"
+                    "\t\t\t<ipxact:name>element</ipxact:name>\n"
+                    "\t\t\t<ipxact:clearboxType>interface</ipxact:clearboxType>\n"
+                "\t\t</ipxact:clearboxElement>\n"
+            "\t</ipxact:clearboxElements>\n"
+        "</ipxact:component>\n"
+    );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
     QCOMPARE(output, expectedOutput);
 }
 

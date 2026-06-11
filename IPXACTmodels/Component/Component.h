@@ -34,6 +34,7 @@ class Choice;
 class ComponentGenerator;
 class ComponentInstantiation;
 class Cpu;
+class ClearboxElement;
 class DesignInstantiation;
 class DesignConfigurationInstantiation;
 class FileSet;
@@ -363,7 +364,10 @@ public:
 	 *    @param [in] newFileSets     A list containing the file sets to be set.
 	 */
     void setFileSets(QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets);
-    
+
+	QSharedPointer<QList<QSharedPointer<ClearboxElement> > > getClearboxElements() const;
+	void setClearboxElements(QSharedPointer<QList<QSharedPointer<ClearboxElement> > > newElements);
+
 	/*!
      *  Get this component's cpus.
 	 *
@@ -943,7 +947,11 @@ private:
 	//! Contains the fileSets.
 	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_ =
         QSharedPointer<QList<QSharedPointer<FileSet> > >(new QList<QSharedPointer<FileSet> >());
-    
+
+	//! Contains the white/clearboxElements.
+	QSharedPointer<QList<QSharedPointer<ClearboxElement> > > clearboxElements_ =
+        QSharedPointer<QList<QSharedPointer<ClearboxElement> > >(new QList<QSharedPointer<ClearboxElement> >());
+	
 	//! Contains the cpus.
 	QSharedPointer<QList<QSharedPointer<Cpu> > > cpus_ =
         QSharedPointer<QList<QSharedPointer<Cpu> > >(new QList<QSharedPointer<Cpu> >());

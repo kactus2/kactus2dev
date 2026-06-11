@@ -23,6 +23,8 @@ SUBDIRS += tst_AccessHandleReader.pro \
 		   tst_BusInterfaceReader.pro \
 		   tst_BusInterfaceWriter.pro \
 		   tst_BusInterfaceValidator.pro \
+		   tst_ClearboxElementReader.pro \
+		   tst_ClearboxElementWriter.pro \
 		   tst_ChannelReader.pro \
 		   tst_ChannelWriter.pro \
 		   tst_ChannelValidator.pro \

@@ -142,6 +142,9 @@ HEADERS += ./generaldeclarations.h \
     ./Component/Bank.h \
     ./Component/BankReader.h \
     ./Component/BankWriter.h \
+    ./Component/ClearboxElement.h \
+    ./Component/ClearboxElementReader.h \
+    ./Component/ClearboxElementWriter.h \
     ./Component/Driver.h \
     ./Component/ExecutableImage.h \
     ./Component/ExecutableImagesReader.h \
@@ -470,6 +473,9 @@ SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./Component/BusInterface.cpp \
     ./Component/BusInterfaceReader.cpp \
     ./Component/BusInterfaceWriter.cpp \
+    ./Component/ClearboxElement.cpp \
+    ./Component/ClearboxElementReader.cpp \
+    ./Component/ClearboxElementWriter.cpp \
     ./Component/Channel.cpp \
     ./Component/ChannelReader.cpp \
     ./Component/ChannelWriter.cpp \

@@ -28,6 +28,7 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/ClearboxElement.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
@@ -79,6 +80,9 @@ private slots:
     void readOtherClockDrivers();
     void readResetTypes();
     void readResetTypes2022();
+
+    void readWhiteboxElements();
+    void readClearboxElements();
 
     void readParameters();
     void readAssertions();
@@ -1046,6 +1050,70 @@ void tst_ComponentReader::readResetTypes2022()
     QCOMPARE(testReset->displayName(), QString("Soft Reset"));
     QCOMPARE(testReset->shortDescription(), QString("brief"));
     QCOMPARE(testReset->description(), QString("Not hard reset"));
+}
+
+void tst_ComponentReader::readWhiteboxElements()
+{
+    QString documentContent = 
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+            "<ipxact:whiteboxElements>"
+                "<ipxact:whiteboxElement>"
+                    "<ipxact:name>element</ipxact:name>"
+                    "<ipxact:whiteboxType>signal</ixpact:whiteboxType>"
+                "</ipxact:whiteboxElement>"
+            "</ipxact:whiteboxElements>"
+        "</ipxact:component>";
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+    QCOMPARE(testComponent->getClearboxElements()->size(), 1);
+    QCOMPARE(testComponent->getClearboxElements()->first()->name(), QString("element"));
+    QCOMPARE(testComponent->getClearboxElements()->first()->getType(), ClearboxElement::Type::SIGNAL);
+}
+
+void tst_ComponentReader::readClearboxElements()
+{
+        QString documentContent = 
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+            "<ipxact:clearboxElements>"
+                "<ipxact:clearboxElement>"
+                    "<ipxact:name>element</ipxact:name>"
+                    "<ipxact:clearboxType>signal</ixpact:clearboxType>"
+                "</ipxact:clearboxElement>"
+            "</ipxact:clearboxElements>"
+        "</ipxact:component>";
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+    QCOMPARE(testComponent->getClearboxElements()->size(), 1);
+    QCOMPARE(testComponent->getClearboxElements()->first()->name(), QString("element"));
+    QCOMPARE(testComponent->getClearboxElements()->first()->getType(), ClearboxElement::Type::SIGNAL);
 }
 
 //-----------------------------------------------------------------------------

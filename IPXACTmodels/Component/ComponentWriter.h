@@ -158,6 +158,14 @@ private:
     void writeFileSets(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
 
     /*!
+     *  Write the white/clearbox elements.
+     *
+     *    @param [in] writer      The used XML writer.
+     *    @param [in] component   The component being written.
+     */
+    void writeClearboxElements(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
+    
+    /*!
      *  Write the cpus.
      *
      *    @param [in] writer      The used XML writer.

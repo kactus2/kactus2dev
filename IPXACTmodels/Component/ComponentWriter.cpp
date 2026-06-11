@@ -26,6 +26,7 @@
 #include "PowerDomainWriter.h"
 #include "ComponentGeneratorWriter.h"
 #include "FileSetWriter.h"
+#include "ClearboxElementWriter.h"
 #include "CPUWriter.h"
 #include "OtherClockDriverWriter.h"
 #include "ResetType.h"
@@ -82,6 +83,8 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
     writeChoices(writer, component);
 
     writeFileSets(writer, component);
+
+    writeClearboxElements(writer, component);
 
     writeCPUs(writer, component);
 
@@ -385,6 +388,30 @@ void ComponentWriter::writeFileSets(QXmlStreamWriter& writer, QSharedPointer<Com
 
         writer.writeEndElement(); // ipxact:fileSets
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentWriter::writeClearboxElements()
+//-----------------------------------------------------------------------------
+void ComponentWriter::writeClearboxElements(QXmlStreamWriter& writer, QSharedPointer<Component> component) const
+{
+    if (component->getClearboxElements()->isEmpty()) return;
+
+    if (component->getRevision() == Document::Revision::Std22)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:clearboxElements"));
+    }
+    else
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:whiteboxElements"));
+    }
+
+    for (auto const& element : *component->getClearboxElements())
+    {
+        ClearboxElementWriter::writeClearboxElement(writer, element, component->getRevision());
+    }
+
+    writer.writeEndElement(); // ipxact:white/clearboxElements
 }
 
 //-----------------------------------------------------------------------------

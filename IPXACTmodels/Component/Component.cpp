@@ -502,6 +502,22 @@ void Component::setFileSets(QSharedPointer<QList<QSharedPointer<FileSet> > > new
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::getClearboxElements()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ClearboxElement> > > Component::getClearboxElements() const
+{
+    return clearboxElements_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::setClearboxElements()
+//-----------------------------------------------------------------------------
+void Component::setClearboxElements(QSharedPointer<QList<QSharedPointer<ClearboxElement> > > newElements)
+{
+    clearboxElements_ = newElements;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Component::getCpus()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Cpu> > >Component::getCpus() const
