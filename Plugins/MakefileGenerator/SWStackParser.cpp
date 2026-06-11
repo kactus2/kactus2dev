@@ -120,6 +120,10 @@ void SWStackParser::parse(QString const& sysViewName)
 		// Get the component of the hardware instance.
 		QSharedPointer<VLNV> hardwareVLNV = hardInstance->getComponentRef();
 		QSharedPointer<Component> hardComponent = library_->getModel(*hardwareVLNV).dynamicCast<Component>();
+        if (!hardComponent)
+        {
+            continue;
+        }
 
 		// Find the view corresponding the active view name
 		QString hardViewName = designConf_->getActiveView(hardInstance->getInstanceName());
