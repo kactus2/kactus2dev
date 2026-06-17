@@ -12,6 +12,7 @@
 #include "Wire.h"
 
 #include <IPXACTmodels/common/Vector.h>
+#include <IPXACTmodels/Component/ConstraintSet.h>
 
 #include <IPXACTmodels/utilities/Copy.h>
 
@@ -31,6 +32,8 @@ qualifier_(other.qualifier_->clone())
     Copy::copyList(other.vectors_, vectors_);
 
     Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
+
+    Copy::copyList(other.constraintSets_, constraintSets_);
 
     if (other.driver_)
     {
@@ -54,6 +57,9 @@ Wire& Wire::operator=( const Wire &other )
 
         wireTypeDefs_->clear();
         Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
+
+        constraintSets_->clear();
+        Copy::copyList(other.constraintSets_, constraintSets_);
 
         driver_.clear();
         if (other.driver_)
@@ -355,6 +361,16 @@ void Wire::setTypeDefinition(QString const& typeName, QString const& typeDefinit
     typeDefinitions->append(typeDefinition);
     newWireTypeDefinition->setTypeDefinitions(typeDefinitions);
     wireTypeDefs_->append(newWireTypeDefinition);
+}
+
+QSharedPointer<QList<QSharedPointer<ConstraintSet> > > Wire::getConstraintSets() const
+{
+    return constraintSets_;
+}
+
+void Wire::setConstraintSets(QSharedPointer<QList<QSharedPointer<ConstraintSet> > > constraintSets)
+{
+    constraintSets_ = constraintSets;
 }
 
 //-----------------------------------------------------------------------------

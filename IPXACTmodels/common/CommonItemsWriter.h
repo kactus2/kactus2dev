@@ -28,6 +28,7 @@ class NameGroup;
 class PartSelect;
 class ModeReference;
 class FileSetRef;
+class CellSpecification;
 
 //-----------------------------------------------------------------------------
 //! Writer class for common IP-XACT elements: VLNV, parameters, assertions, vendor extensions and presence.
@@ -184,6 +185,10 @@ public:
     static void writeFileSetReferences(QXmlStreamWriter& writer,
         QSharedPointer<QList<QSharedPointer<FileSetRef> > > fileSetRefs,
         Document::Revision docRevision);
+
+    static void writeVector(QXmlStreamWriter& writer, Vector const& vector, Document::Revision docRevision);
+
+    static void writeCellSpecification(QXmlStreamWriter& writer, QSharedPointer<CellSpecification> cellSpecification);
 };
 
 #endif // DOCUMENTWRITER_H

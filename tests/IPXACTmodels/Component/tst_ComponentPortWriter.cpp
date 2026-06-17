@@ -14,6 +14,7 @@
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/common/Qualifier.h>
 #include <IPXACTmodels/Component/AccessHandle.h>
+#include <IPXACTmodels/Component/ConstraintSet.h>
 
 #include <QtTest>
 #include <QDomDocument>
@@ -42,6 +43,7 @@ private slots:
     void emptyWireTypeDefinitionIsNotWritten();
     void writeWireDefaultDriver();
     void writeWireQualifiers_2022();
+    void writeWireConstraintSets();
 
     void writeTransactionalAllLogicalInitiativesAllowed();
     void writeTransactionalKind();
@@ -562,6 +564,49 @@ void tst_ComponentPortWriter::writeWireQualifiers_2022()
                     "<ipxact:isReset level=\"low\">true</ipxact:isReset>"
                     "<ipxact:isFlowControl>true</ipxact:isFlowControl>"
                 "</ipxact:qualifier>"
+            "</ipxact:wire>"
+        "</ipxact:port>"
+        );
+
+    PortWriter::writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeWireConstraintSets()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeWireConstraintSets()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setWire(QSharedPointer<Wire>(new Wire()));
+    testPort->setDirection(DirectionTypes::OUT);
+
+    auto constraintSet = QSharedPointer<ConstraintSet>(new ConstraintSet("testSet"));
+    constraintSet->setConstraintSetId("an-id");
+    
+    auto timingConstraint = QSharedPointer<ConstraintSet::TimingConstraint>(new ConstraintSet::TimingConstraint());
+    timingConstraint->clockEdge_ = "rise";
+    timingConstraint->delayType_ = "min";
+    timingConstraint->clockName_ = "a_clock";
+
+    constraintSet->getTimingConstraints()->append(timingConstraint);
+
+    testPort->getWire()->getConstraintSets()->append(constraintSet);
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"
+                "<ipxact:constraintSets>"
+                    "<ipxact:constraintSet constraintSetId=\"an-id\">"
+                        "<ipxact:name>testSet</ipxact:name>"
+                        "<ipxact:timingConstraint clockEdge=\"rise\" delayType=\"min\" clockName=\"a_clock\"/>"
+                    "</ipxact:constraintSet>"
+                "</ipxact:constraintSets>"
             "</ipxact:wire>"
         "</ipxact:port>"
         );

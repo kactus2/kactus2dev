@@ -21,6 +21,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/PartSelect.h>
 #include <IPXACTmodels/common/Qualifier.h>
+#include <IPXACTmodels/common/CellSpecification.h>
 
 #include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/Component/ModeReference.h>
@@ -160,6 +161,10 @@ public:
      */
     static QSharedPointer<QList<QSharedPointer<FileSetRef> > > parseFileSetReferences(QDomElement const& itemNode,
         Document::Revision docRevision);
+
+    static Vector parseVector(QDomNode const& itemNode, Document::Revision docRevision);
+
+    static QSharedPointer<CellSpecification> parseCellSpecification(QDomNode const& itemNode);
 };
 
 #endif // DOCUMENTREADER_H

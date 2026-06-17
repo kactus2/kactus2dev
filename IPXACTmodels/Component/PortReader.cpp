@@ -15,6 +15,7 @@
 #include <IPXACTmodels/common/ProtocolReader.h>
 #include <IPXACTmodels/common/QualifierReader.h>
 #include <IPXACTmodels/Component/AccessHandleReader.h>
+#include <IPXACTmodels/Component/ConstraintSetReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortReader::createPortFrom()
@@ -90,6 +91,8 @@ QSharedPointer<Wire> PortReader::Details::createWireFrom(QDomElement const& wire
             QStringLiteral("constrained")));
     }
 
+    parseConstraintSets(wireElement, newWire, docRevision);
+
     parseWireDefaultValue(wireElement, newWire);
 
     return newWire;
@@ -128,17 +131,7 @@ QList<Vector> PortReader::Details::parseVectors(QDomElement const& parentElement
 //-----------------------------------------------------------------------------
 Vector PortReader::Details::parseVector(QDomNode const& vectorNode, Document::Revision docRevision)
 {
-    auto readVector = Vector();
-
-    readVector.setLeft(vectorNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue());
-    readVector.setRight(vectorNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue());
-
-    if (docRevision == Document::Revision::Std22)
-    {
-        readVector.setId(vectorNode.toElement().attribute(QStringLiteral("vectorId")));
-    }
-
-    return readVector;
+    return CommonItemsReader::parseVector(vectorNode, docRevision);
 }
 
 //-----------------------------------------------------------------------------
@@ -506,4 +499,16 @@ void PortReader::Details::parsePortAccess(QDomNode const& portNode, QSharedPoint
     }
 
     newPort->setAccess(newAccess);
+}
+
+void PortReader::Details::parseConstraintSets(QDomNode const& wireNode, QSharedPointer<Wire> newWire, Document::Revision docRevision)
+{
+    auto constraintSetsNode = wireNode.firstChildElement(QStringLiteral("ipxact:constraintSets"));
+    auto constraintSets = constraintSetsNode.elementsByTagName(QStringLiteral("ipxact:constraintSet"));
+
+    for (int i = 0; i < constraintSets.size(); ++i)
+    {
+        auto newConstraintSet = ConstraintSetReader::createConstraintSetFrom(constraintSets.at(i), docRevision);
+        newWire->getConstraintSets()->append(newConstraintSet);
+    }
 }

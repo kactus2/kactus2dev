@@ -216,6 +216,8 @@ namespace  PortReader
          *    @param [in] docRevision         The std revision in use.
          */
         void parsePortAccess(QDomNode const& portNode, QSharedPointer<Port> newPort, Document::Revision docRevision);
+
+        void parseConstraintSets(QDomNode const& wireNode, QSharedPointer<Wire> newWire, Document::Revision docRevision);
     }
 };
 

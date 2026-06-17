@@ -27,6 +27,7 @@
 #include <QMap>
 
 class Vector;
+class ConstraintSet;
 
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:wire element.
@@ -219,6 +220,9 @@ public:
 	 */
 	void setTypeDefinition(const QString& typeName, const QString& typeDefinition);
 
+	QSharedPointer<QList<QSharedPointer<ConstraintSet> > > getConstraintSets() const;
+	void setConstraintSets(QSharedPointer<QList<QSharedPointer<ConstraintSet> > > constraintSets);
+
 private:
 
     //! The direction of the port.
@@ -237,15 +241,17 @@ private:
 	//! Multiple drivers not supported.
 	QSharedPointer<Driver> driver_{ nullptr };
 
-    //! Describes the ports type as defined bu the implementation.
-    WireTypeDef::List wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
+    //! Describes the ports type as defined by the implementation.
+	WireTypeDef::List wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
+
+	//! Constraint sets
+	QSharedPointer<QList<QSharedPointer<ConstraintSet> > > constraintSets_ =
+		QSharedPointer<QList<QSharedPointer<ConstraintSet> > >(new QList<QSharedPointer<ConstraintSet> >());
 
     //! DomainTypeDefs not supported.
 
     //! SignalTypeDefs not supported.
 	 
-    //! ConstraintSets not supported.
-
     //! PowerConstraints not supported.
 };
 

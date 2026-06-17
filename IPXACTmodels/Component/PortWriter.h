@@ -176,6 +176,8 @@ namespace PortWriter
          *    @param [in] docRevision   The std revision in use.
          */
         void writePortAccess(QXmlStreamWriter& writer, QSharedPointer<Port> port, Document::Revision docRevision);
+
+        void writeConstraintSets(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, Document::Revision docRevision);
     }
 }
 

@@ -213,52 +213,7 @@ void WireAbstractionWriter::Details::writeLoadConstraint(QXmlStreamWriter& write
 void WireAbstractionWriter::Details::writeCellSpecification(QXmlStreamWriter& writer,
     QSharedPointer<CellSpecification> specification)
 {
-    writer.writeStartElement(QStringLiteral("ipxact:cellSpecification"));
-
-    if (specification->getCellStrength() == CellSpecification::LOW)
-    {
-        writer.writeAttribute(QStringLiteral("cellStrength"), QStringLiteral("low"));
-    }
-    else if (specification->getCellStrength() == CellSpecification::HIGH)
-    {
-        writer.writeAttribute(QStringLiteral("cellStrength"), QStringLiteral("high"));
-    }
-    else if (specification->getCellStrength() == CellSpecification::MEDIAN)
-    {
-        writer.writeAttribute(QStringLiteral("cellStrength"), QStringLiteral("median"));
-    }
-
-    if (specification->getCellClass() == CellSpecification::SEQUENTIAL)
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:cellClass"), QStringLiteral("sequential"));
-    }
-    else if (specification->getCellClass() == CellSpecification::COMBINATORIAL)
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:cellClass"), QStringLiteral("combinatorial"));
-    }
-
-    QString cellFunction = specification->getCellFunction();
-    if (!cellFunction.isEmpty())
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:cellFunction"));
-        
-        QStringList standardFunctions;
-        standardFunctions << QStringLiteral("nd2") << QStringLiteral("buf") << QStringLiteral("inv") <<
-            QStringLiteral("mux21") << QStringLiteral("dff") << QStringLiteral("latch") << QStringLiteral("xor2");
-        if (standardFunctions.contains(cellFunction))
-        {
-            writer.writeCharacters(specification->getCellFunction());
-        }
-        else
-        {
-            writer.writeAttribute(QStringLiteral("other"), cellFunction);
-            writer.writeCharacters(QStringLiteral("other"));
-        }
-
-        writer.writeEndElement();
-    }
-
-    writer.writeEndElement();
+    CommonItemsWriter::writeCellSpecification(writer, specification);
 }
 
 //-----------------------------------------------------------------------------

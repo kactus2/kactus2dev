@@ -185,44 +185,7 @@ QSharedPointer<TimingConstraint> WireAbstractionReader::Details::parseTimingCons
 //-----------------------------------------------------------------------------
 QSharedPointer<CellSpecification> WireAbstractionReader::Details::parseCellSpecification(QDomElement const& cellNode)
 {
-    QSharedPointer<CellSpecification> cellSpecification(new CellSpecification());
-
-    QString cellStrength = cellNode.attribute(QStringLiteral("cellStrength"));
-    if (cellStrength == QLatin1String("low"))
-    {
-        cellSpecification->setCellStrength(CellSpecification::LOW);
-    }
-    else if (cellStrength == QLatin1String("median"))
-    {
-        cellSpecification->setCellStrength(CellSpecification::MEDIAN);
-    }
-    else if (cellStrength == QLatin1String("high"))
-    {
-        cellSpecification->setCellStrength(CellSpecification::HIGH);
-    }
-
-    QString cellFunction = cellNode.firstChildElement(QStringLiteral("ipxact:cellFunction")).firstChild().nodeValue();
-    if (cellFunction == QLatin1String("other"))
-    {
-        cellSpecification->setCellFunction(
-            cellNode.firstChildElement(QStringLiteral("ipxact:cellFunction")).attribute(QStringLiteral("other")));
-    }
-    else
-    {
-        cellSpecification->setCellFunction(cellFunction);
-    }
-
-    QString cellClass = cellNode.firstChildElement(QStringLiteral("ipxact:cellClass")).firstChild().nodeValue();
-    if (cellClass == QLatin1String("sequential"))
-    {
-        cellSpecification->setCellClass(CellSpecification::SEQUENTIAL);
-    }
-    else if (cellClass == QLatin1String("combinatorial"))
-    {
-        cellSpecification->setCellClass(CellSpecification::COMBINATORIAL);
-    }
-
-    return cellSpecification;
+    return CommonItemsReader::parseCellSpecification(cellNode);
 }
 
 //-----------------------------------------------------------------------------

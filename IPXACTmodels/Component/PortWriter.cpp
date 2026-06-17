@@ -18,6 +18,7 @@
 #include <IPXACTmodels/common/QualifierWriter.h>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 #include <IPXACTmodels/Component/AccessHandleWriter.h>
+#include <IPXACTmodels/Component/ConstraintSetWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortWriter::writePort()
@@ -80,6 +81,8 @@ void PortWriter::Details::writeWire(QXmlStreamWriter& writer, QSharedPointer<Wir
 
     writeWireDriver(writer, wire->getDriver());
 
+    writeConstraintSets(writer, wire, docRevision);
+
     writer.writeEndElement(); // ipxact:wire
 }
 
@@ -98,17 +101,7 @@ void PortWriter::Details::writeVectors(QXmlStreamWriter& writer, QSharedPointer<
 
     for (auto const& vector : *vectors)
     {
-        writer.writeStartElement(QStringLiteral("ipxact:vector"));
-
-        if (docRevision == Document::Revision::Std22 && vector.getId().isEmpty() == false)
-        {
-            writer.writeAttribute(QStringLiteral("vectorId"), vector.getId());
-        }
-
-        writer.writeTextElement(QStringLiteral("ipxact:left"), vector.getLeft());
-        writer.writeTextElement(QStringLiteral("ipxact:right"), vector.getRight());
-
-        writer.writeEndElement(); // ipxact:vector
+        CommonItemsWriter::writeVector(writer, vector, docRevision);
     }
 
     writer.writeEndElement(); // ipxact:vectors
@@ -446,5 +439,19 @@ void PortWriter::Details::writePortAccess(QXmlStreamWriter& writer, QSharedPoint
     }
 
     writer.writeEndElement(); // ipxact:access
+}
+
+void PortWriter::Details::writeConstraintSets(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, Document::Revision docRevision)
+{
+    if (wire->getConstraintSets()->isEmpty()) return;
+
+    writer.writeStartElement(QStringLiteral("ipxact:constraintSets"));
+
+    for (auto const& constraintSet : *wire->getConstraintSets())
+    {
+        ConstraintSetWriter::writeConstraintSet(writer, constraintSet, docRevision);
+    }
+
+    writer.writeEndElement(); // ipxact:constraintSets
 }
 

@@ -37,6 +37,8 @@ SUBDIRS += tst_AccessHandleReader.pro \
 		   tst_ComponentPortWriter.pro \
 		   tst_ComponentPortReader.pro \
 		   tst_ComponentPortValidator.pro \
+		   tst_ConstraintSetReader.pro \
+		   tst_ConstraintSetWriter.pro \
 		   tst_CPUReader.pro \
 		   tst_CPUWriter.pro \
 		   tst_CPUValidator.pro \

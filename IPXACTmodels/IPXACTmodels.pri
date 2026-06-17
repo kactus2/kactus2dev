@@ -142,6 +142,9 @@ HEADERS += ./generaldeclarations.h \
     ./Component/Bank.h \
     ./Component/BankReader.h \
     ./Component/BankWriter.h \
+    ./Component/ConstraintSet.h \
+    ./Component/ConstraintSetReader.h \
+    ./Component/ConstraintSetWriter.h \
     ./Component/ClearboxElement.h \
     ./Component/ClearboxElementReader.h \
     ./Component/ClearboxElementWriter.h \
@@ -479,6 +482,9 @@ SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./Component/Channel.cpp \
     ./Component/ChannelReader.cpp \
     ./Component/ChannelWriter.cpp \
+    ./Component/ConstraintSet.cpp \
+    ./Component/ConstraintSetReader.cpp \
+    ./Component/ConstraintSetWriter.cpp \
     ./Component/Component.cpp \
     ./Component/ComponentGenerator.cpp \
     ./Component/ComponentGeneratorReader.cpp \

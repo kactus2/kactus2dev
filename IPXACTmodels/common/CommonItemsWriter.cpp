@@ -25,6 +25,7 @@
 #include <IPXACTmodels/common/ParameterWriter.h>
 #include <IPXACTmodels/common/PartSelect.h>
 #include <IPXACTmodels/common/Qualifier.h>
+#include <IPXACTmodels/common/CellSpecification.h>
 
 
 //-----------------------------------------------------------------------------
@@ -311,4 +312,71 @@ void CommonItemsWriter::writeFileSetReferences(QXmlStreamWriter& writer,
 
         writer.writeEndElement(); // ipxact:fileSetRef
     }
+}
+
+void CommonItemsWriter::writeVector(QXmlStreamWriter& writer, Vector const& vector, Document::Revision docRevision)
+{
+    if (vector.getLeft().isEmpty() && vector.getRight().isEmpty()) return;
+
+    writer.writeStartElement(QStringLiteral("ipxact:vector"));
+
+    if (docRevision == Document::Revision::Std22 && vector.getId().isEmpty() == false)
+    {
+        writer.writeAttribute(QStringLiteral("vectorId"), vector.getId());
+    }
+
+    writer.writeTextElement(QStringLiteral("ipxact:left"), vector.getLeft());
+    writer.writeTextElement(QStringLiteral("ipxact:right"), vector.getRight());
+
+    writer.writeEndElement(); // ipxact:vector
+}
+
+void CommonItemsWriter::writeCellSpecification(QXmlStreamWriter& writer, QSharedPointer<CellSpecification> cellSpecification)
+{
+    writer.writeStartElement(QStringLiteral("ipxact:cellSpecification"));
+
+    if (cellSpecification->getCellStrength() == CellSpecification::LOW)
+    {
+        writer.writeAttribute(QStringLiteral("cellStrength"), QStringLiteral("low"));
+    }
+    else if (cellSpecification->getCellStrength() == CellSpecification::HIGH)
+    {
+        writer.writeAttribute(QStringLiteral("cellStrength"), QStringLiteral("high"));
+    }
+    else if (cellSpecification->getCellStrength() == CellSpecification::MEDIAN)
+    {
+        writer.writeAttribute(QStringLiteral("cellStrength"), QStringLiteral("median"));
+    }
+
+    if (cellSpecification->getCellClass() == CellSpecification::SEQUENTIAL)
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:cellClass"), QStringLiteral("sequential"));
+    }
+    else if (cellSpecification->getCellClass() == CellSpecification::COMBINATORIAL)
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:cellClass"), QStringLiteral("combinatorial"));
+    }
+
+    QString cellFunction = cellSpecification->getCellFunction();
+    if (!cellFunction.isEmpty())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:cellFunction"));
+        
+        QStringList standardFunctions;
+        standardFunctions << QStringLiteral("nd2") << QStringLiteral("buf") << QStringLiteral("inv") <<
+            QStringLiteral("mux21") << QStringLiteral("dff") << QStringLiteral("latch") << QStringLiteral("xor2");
+        if (standardFunctions.contains(cellFunction))
+        {
+            writer.writeCharacters(cellSpecification->getCellFunction());
+        }
+        else
+        {
+            writer.writeAttribute(QStringLiteral("other"), cellFunction);
+            writer.writeCharacters(QStringLiteral("other"));
+        }
+
+        writer.writeEndElement();
+    }
+
+    writer.writeEndElement();
 }

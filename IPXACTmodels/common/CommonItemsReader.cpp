@@ -318,3 +318,61 @@ QSharedPointer<QList<QSharedPointer<FileSetRef> > > CommonItemsReader::parseFile
 
     return newFileSetRefList;
 }
+
+Vector CommonItemsReader::parseVector(QDomNode const& itemNode, Document::Revision docRevision)
+{
+    QString left = itemNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
+    QString right = itemNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
+
+    Vector parsedVector(left, right);
+    
+    if (docRevision == Document::Revision::Std22)
+    {
+        auto vectorId = itemNode.attributes().namedItem(QStringLiteral("vectorId")).nodeValue();
+        parsedVector.setId(vectorId);
+    }
+
+    return parsedVector;
+}
+
+QSharedPointer<CellSpecification> CommonItemsReader::parseCellSpecification(QDomNode const& itemNode)
+{
+    QSharedPointer<CellSpecification> cellSpecification(new CellSpecification());
+
+    QString cellStrength = itemNode.toElement().attribute(QStringLiteral("cellStrength"));
+    if (cellStrength == QLatin1String("low"))
+    {
+        cellSpecification->setCellStrength(CellSpecification::LOW);
+    }
+    else if (cellStrength == QLatin1String("median"))
+    {
+        cellSpecification->setCellStrength(CellSpecification::MEDIAN);
+    }
+    else if (cellStrength == QLatin1String("high"))
+    {
+        cellSpecification->setCellStrength(CellSpecification::HIGH);
+    }
+
+    QString cellFunction = itemNode.toElement().firstChildElement(QStringLiteral("ipxact:cellFunction")).firstChild().nodeValue();
+    if (cellFunction == QLatin1String("other"))
+    {
+        cellSpecification->setCellFunction(
+            itemNode.toElement().firstChildElement(QStringLiteral("ipxact:cellFunction")).attribute(QStringLiteral("other")));
+    }
+    else
+    {
+        cellSpecification->setCellFunction(cellFunction);
+    }
+
+    QString cellClass = itemNode.toElement().firstChildElement(QStringLiteral("ipxact:cellClass")).firstChild().nodeValue();
+    if (cellClass == QLatin1String("sequential"))
+    {
+        cellSpecification->setCellClass(CellSpecification::SEQUENTIAL);
+    }
+    else if (cellClass == QLatin1String("combinatorial"))
+    {
+        cellSpecification->setCellClass(CellSpecification::COMBINATORIAL);
+    }
+
+    return cellSpecification;
+}

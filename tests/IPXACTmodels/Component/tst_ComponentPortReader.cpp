@@ -11,6 +11,7 @@
 
 #include <IPXACTmodels/Component/PortReader.h>
 #include <IPXACTmodels/Component/Structured.h>
+#include <IPXACTmodels/Component/ConstraintSet.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
 
@@ -40,6 +41,7 @@ private slots:
     void readWireDriver();
     void readWireDefaultDriver();
     void readWireQualifiers_2022();
+    void readWireConstraintSets();
 
     void readTransactionalAllLogicalInitiativesAllowed();
     void readTransactionalKind();
@@ -563,7 +565,7 @@ void tst_ComponentPortReader::readWireDefaultDriver()
 //-----------------------------------------------------------------------------
 void tst_ComponentPortReader::readWireQualifiers_2022()
 {
-     QString documentContent(
+    QString documentContent(
         "<ipxact:port>"
             "<ipxact:name>testPort</ipxact:name>"
             "<ipxact:wire>"
@@ -595,6 +597,45 @@ void tst_ComponentPortReader::readWireQualifiers_2022()
     QCOMPARE(wire->getQualifier()->hasType(Qualifier::Type::Interrupt), false);
     QCOMPARE(wire->getQualifier()->hasType(Qualifier::Type::ClockEnable), true);
     QCOMPARE(wire->getQualifier()->getAttribute(Qualifier::Attribute::ClockEnableLevel), QString("high"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readWireConstraintSets()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readWireConstraintSets()
+{
+    QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"
+                "<ipxact:constraintSets>"
+                    "<ipxact:constraintSet constraintSetId=\"an-id\">"
+                        "<ipxact:name>testSet</ipxact:name>"
+                        "<ipxact:timingConstraint clockEdge=\"rise\" delayType=\"min\" clockName=\"a_clock\"/>"
+                    "</ipxact:constraintSet>"
+                "</ipxact:constraintSets>"
+            "</ipxact:wire>"
+        "</ipxact:port>"
+        );
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std22);
+
+    QCOMPARE(testPort->getTransactional().isNull(), true);
+    
+    auto wire = testPort->getWire();
+    QCOMPARE(wire.isNull(), false);
+    QCOMPARE(wire->getConstraintSets()->size(), 1);
+    QCOMPARE(wire->getConstraintSets()->first()->name(), QString("testSet"));
+    QCOMPARE(wire->getConstraintSets()->first()->getConstraintSetId(), QString("an-id"));
+    QCOMPARE(wire->getConstraintSets()->first()->getTimingConstraints()->size(), 1);
+    QCOMPARE(wire->getConstraintSets()->first()->getTimingConstraints()->first()->clockName_, QString("a_clock"));
 }
 
 
