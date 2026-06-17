@@ -497,7 +497,9 @@ void MasterExpressionEditor::replaceSelectionInExpression(QKeyEvent* keyEvent)
 
     int firstTermPos = indexOfNthWord(firstWord, expression_);
     expression_.remove(expression_.indexOf(selectedText, firstTermPos), selectedText.length());
-    expression_.insert(getSelectionStartIndex(), keyEvent->text()); // Don't just remove selection, also insert whatever was typed.
+
+    // Replace selected text at correct position in raw expression with whatever was typed.
+    expression_.insert(indexOfNthWord(firstWord, expression_), keyEvent->text());
 }
 
 //-----------------------------------------------------------------------------
