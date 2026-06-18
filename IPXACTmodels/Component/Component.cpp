@@ -853,6 +853,7 @@ void Component::setAuthor(QString const& author)
         if (extension->type() == QLatin1String("kactus2:author"))
         {
             getVendorExtensions()->removeAll(extension);
+            break;
         }
     }
 
