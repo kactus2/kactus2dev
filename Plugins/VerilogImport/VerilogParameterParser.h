@@ -31,6 +31,13 @@ class VerilogParameterParser : public HighlightSource
 {
 public:
 
+    //! Describes a single (system)verilog module parameter declaration found in module
+    struct ParameterDeclaration
+    {
+        QString type_; // parameter or localparam
+        QString value_;
+    };
+
     //! The constructor.
     VerilogParameterParser();
 
@@ -65,7 +72,7 @@ public:
      *
      *    @return   The resulting list of parameter declarations.
      */
-    QStringList findDeclarations(QString const& input);
+    QList<ParameterDeclaration> findDeclarations(QString const& input);
 
     /*!
      *  Parses parameters out of declaration.
@@ -95,7 +102,8 @@ private:
      *
      *    @return   The resulting list of declarations.
      */
-     QStringList findParameterDeclarations(QString const& componentDeclaration, QString const& parameterArea);
+    //  QStringList findParameterDeclarations(QString const& componentDeclaration, QString const& parameterArea);
+     QList<ParameterDeclaration> findParameterDeclarations(QString const& componentDeclaration, QString const& parameterArea);
 
     /*!
      *  Create an IP-XACT type for the parameter according to the given data type.
@@ -166,7 +174,7 @@ private:
       *    @param [in] parsedParameters   The parsed model parameters.
       *    @param [in] targetComponent    The component to import to.
       */
-     void copyIdsFromOldModelParameters(QList<QSharedPointer<ModuleParameter> > parsedParameters,
+     void copyIdsFromOldModelParameters(QList<QPair<QSharedPointer<ModuleParameter>, QString> > parsedParameters,
          QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
      /*!
@@ -174,7 +182,7 @@ private:
       *
       *    @param [in] targetComponent   The component whose model parameter values to replace.
       */
-     void replaceNamesReferencesWithIds(QList<QSharedPointer<ModuleParameter> > parsedParameters,
+     void replaceNamesReferencesWithIds(QList<QPair<QSharedPointer<ModuleParameter>, QString> > const& parsedParameters,
          QSharedPointer<Component> targetComponent,
          QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
