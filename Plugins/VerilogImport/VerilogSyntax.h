@@ -57,7 +57,10 @@ namespace VerilogSyntax
 
     //! An expression that may contain an operator or an alphanumeric symbol.
     const QString OPERATION_OR_ALPHANUMERIC("({[^}]*})|([$<>+*\\(\\)\\{\\}/-])|([']?[{(])|(`?\\w+)|((\\w+)?'\\w+)|\"\\w+\"");
-    
+
+    //! Expression for parameter value, accepts systemverilog style types with class scope (operator ::) and struct accessor (operator ., e.g. mystruct.var)
+    const QString PARAMETER_VALUE("({[^}]*})|([$<>+*\\(\\)\\{\\}/-])|([']?[{(])|((\\w+)?'\\w+)|\"\\w+\"|(`?(?:\\d+|[A-Za-z_]\\w*(?:(?:::|.)[A-Za-z_]\\w*)*))");
+
     //! Name + value pair, e.g. name=value.
     const QString NAME_VALUE = "\\w+\\s*=(\\s*(" + OPERATION_OR_ALPHANUMERIC + "))+";  
 
