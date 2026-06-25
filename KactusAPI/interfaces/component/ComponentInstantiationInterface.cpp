@@ -594,7 +594,7 @@ bool ComponentInstantiationInterface::setFileSetReferences(std::string const& in
         existingReferencesStr.append(reference->getReference());
     }
     
-    std::vector<int> indexesToDelete;
+    QList<QSharedPointer<FileSetRef> > referencesToRemove;
 
     // Check for removed references.
     for (int i = 0; i < existingReferencesStr.size(); ++i)
@@ -613,15 +613,15 @@ bool ComponentInstantiationInterface::setFileSetReferences(std::string const& in
 
         if (!currentItemStillExists)
         {
-            indexesToDelete.push_back(i);
+            referencesToRemove.append(existingFileSetRefs->at(i));
         }
     }
 
     // Remove deleted file set refs.
-    for (auto index : indexesToDelete)
+    for (auto const& existingRef : referencesToRemove)
     {
-        existingFileSetRefs->removeAt(index);
-        existingReferencesStr.removeAt(index);
+        existingFileSetRefs->removeOne(existingRef);
+        existingReferencesStr.removeAll(existingRef->getReference());
     }
 
     // Check for new refs.

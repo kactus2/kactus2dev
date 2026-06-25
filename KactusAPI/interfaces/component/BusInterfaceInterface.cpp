@@ -977,7 +977,7 @@ bool BusInterfaceInterface::setFileSetReferences(std::string const& busName,
         }
     }
 
-    std::vector<int> indexesToDelete;
+    QList<QSharedPointer<FileSetRef> > referencesToRemove;
 
     // Check for removed references.
     for (int i = 0; i < allExistingReferencesStr.size(); ++i)
@@ -996,15 +996,15 @@ bool BusInterfaceInterface::setFileSetReferences(std::string const& busName,
 
         if (!currentItemStillExists)
         {
-            indexesToDelete.push_back(i);
+            referencesToRemove.append(allExistingFileSetRefs->at(i));
         }
     }
 
     // Remove deleted file set refs.
-    for (auto index : indexesToDelete)
+    for (auto const& existingRef : referencesToRemove)
     {
-        allExistingFileSetRefs->removeAt(index);
-        allExistingReferencesStr.removeAt(index);
+        allExistingFileSetRefs->removeOne(existingRef);
+        allExistingReferencesStr.removeAll(existingRef->getReference());
     }
     
     // Check for new refs.
