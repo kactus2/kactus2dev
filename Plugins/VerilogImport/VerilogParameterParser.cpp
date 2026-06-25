@@ -28,6 +28,7 @@
 #include <QList>
 #include <QString>
 #include <QRegularExpression>
+#include <QStringBuilder>
 
 namespace
 {
