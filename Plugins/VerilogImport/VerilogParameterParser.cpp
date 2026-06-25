@@ -31,7 +31,7 @@
 
 namespace
 {
-    const QRegularExpression TYPE_RULE("(\\w+)\\s+(?:(" + VerilogSyntax::RANGE + ")?\\s*(" + 
+    const QRegularExpression TYPE_RULE("(?:localparam|parameter)?\\s*((?:\\w|:)+\\s+)?((?:\\w|:)+)?\\s*(?:(" + VerilogSyntax::RANGE + ")?\\s*(" + 
         VerilogSyntax::RANGE + "))?\\s*" + VerilogSyntax::NAME_VALUE, QRegularExpression::CaseInsensitiveOption);
 }
 
@@ -63,12 +63,19 @@ void VerilogParameterParser::setHighlighter(Highlighter* highlighter)
 void VerilogParameterParser::import(QString const& componentDeclaration, QSharedPointer<Component> targetComponent,
     QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-    QStringList declarations = findDeclarations(componentDeclaration);
+    auto declarations = findDeclarations(componentDeclaration);
 
-    QList<QSharedPointer<ModuleParameter> > parsedParameters;
-    for (QString const& declaration : declarations)
+    QList<QPair<QSharedPointer<ModuleParameter>, QString> > parsedParameters; // For mapping parameter type (localparam/parameter) to parsed parameter
+    for (auto const& declaration : declarations)
     {
-        parsedParameters.append(parseParameters(declaration));
+        auto params = parseParameters(declaration.value_);
+
+        // In most cases size of params should be 1
+        std::for_each(params.begin(), params.end(),
+            [&declaration, &parsedParameters](QSharedPointer<ModuleParameter> moduleParam)
+            {
+                parsedParameters.append(std::make_pair(moduleParam, declaration.type_));
+            });
     }
 
     if (targetComponentInstantiation.isNull() == false)
@@ -90,7 +97,11 @@ void VerilogParameterParser::import(QString const& componentDeclaration, QShared
             }
         }
 
-        targetComponentInstantiation->getModuleParameters()->append(parsedParameters);
+        std::for_each(parsedParameters.cbegin(), parsedParameters.cend(),
+            [&targetComponentInstantiation](auto const& pair)
+            {
+                targetComponentInstantiation->getModuleParameters()->append(pair.first);
+            });
     }
 
     replaceNamesReferencesWithIds(parsedParameters, targetComponent, targetComponentInstantiation);
@@ -99,7 +110,8 @@ void VerilogParameterParser::import(QString const& componentDeclaration, QShared
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findDeclarations()
 //-----------------------------------------------------------------------------
-QStringList VerilogParameterParser::findDeclarations(QString const& input)
+// QStringList VerilogParameterParser::findDeclarations(QString const& input)
+QList<VerilogParameterParser::ParameterDeclaration> VerilogParameterParser::findDeclarations(QString const& input)
 {    
     return findParameterDeclarations(input, findParameterSection(input));
 }
@@ -146,6 +158,15 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
 
     // Find the type and the declaration. Only one per declaration is supported.
     QString type = parseType(input);
+    QString typeWithModifier = type;
+    QString signingModifier = TYPE_RULE.match(input).captured(2);
+
+    // Create complete type if there is a sign modifier
+    if (QRegularExpression("(signed|unsigned)").match(signingModifier.toLower()).hasMatch())
+    {
+        typeWithModifier.append(QStringLiteral(" ") % signingModifier); // e.g. int unsigned
+    }
+
     QString bitWidthLeft = parseBitWidthLeft(input);
     QString bitWidthRight = parseBitWidthRight(input);
     QString arrayLeft = parseArrayLeft(input);
@@ -156,7 +177,7 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
     inputWithoutComments.remove(QRegularExpression(VerilogSyntax::COMMENT));
 
     QString parameterDefinition =  "(" + VerilogSyntax::NAMES + ")\\s*=((\\s*(" + 
-        VerilogSyntax::OPERATION_OR_ALPHANUMERIC + ")+\\s*)+)";
+        VerilogSyntax::PARAMETER_VALUE + ")+\\s*)+)";
 
     QRegularExpression parameterRule(parameterDefinition + "(\\s*,\\s*" + parameterDefinition + ")*", 
         QRegularExpression::CaseInsensitiveOption);    
@@ -177,7 +198,7 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
         // Each name value pair produces a new module parameter, but the type and the description is recycled.
         QSharedPointer<ModuleParameter> moduleParameter =  QSharedPointer<ModuleParameter>(new ModuleParameter());      
         moduleParameter->setName(name);
-        moduleParameter->setDataType(type);
+        moduleParameter->setDataType(typeWithModifier);
         moduleParameter->setType(createTypeFromDataType(type));
         moduleParameter->setValue(value);
         moduleParameter->setUsageType("nontyped");
@@ -211,20 +232,21 @@ QString VerilogParameterParser::createTypeFromDataType(QString const& dataType)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findDeclarations()
 //-----------------------------------------------------------------------------
-QStringList VerilogParameterParser::findParameterDeclarations(QString const& componentDeclaration,
+// QStringList VerilogParameterParser::findParameterDeclarations(QString const& componentDeclaration,
+QList<VerilogParameterParser::ParameterDeclaration > VerilogParameterParser::findParameterDeclarations(QString const& componentDeclaration,
     QString const& parameterArea)
 {
     // List of detected parameter declarations.
-    QStringList declarations;
+    QList<ParameterDeclaration> declarations;
 
     // Rule used to detect parameter declarations.
-    QRegularExpression declarationRule("\\bparameter\\s+.*(?:"
+    QRegularExpression declarationRule("\\b(localparam|parameter)\\s+.*(?:"
         "(;[ \\t]*" + VerilogSyntax::COMMENT + ")|"
         "(;|$)|"
-        "(,([ \\t]*" + VerilogSyntax::COMMENT +")?(?=\\s*\\bparameter\\b)))",
+        "(,([ \\t]*" + VerilogSyntax::COMMENT +")?(?=\\s*\\b(?:localparam|parameter)\\b)))",
         QRegularExpression::CaseInsensitiveOption | QRegularExpression::InvertedGreedinessOption |
         QRegularExpression::DotMatchesEverythingOption);
-
+    
     QRegularExpression commentBegin(QStringLiteral("//"));
     QRegularExpression lineBegin(QStringLiteral("^|\\r?\\n"));
 
@@ -232,7 +254,8 @@ QStringList VerilogParameterParser::findParameterDeclarations(QString const& com
     while (iter.hasNext())
     {        
         QRegularExpressionMatch match = iter.next();
-        QString declaration = match.captured();
+        auto fullDeclaration = match.captured();
+        auto paramType = match.captured(1); // get the param type: localparam or parameter
         int declarationBegin = match.capturedStart();
 
         // Check keyword parameter is not inside a comment.
@@ -240,10 +263,10 @@ QStringList VerilogParameterParser::findParameterDeclarations(QString const& com
         {
             if (highlighter_)
             {
-                highlighter_->applyHighlight(declaration, KactusColors::Importer::MODELPARAMETER, componentDeclaration);
+                highlighter_->applyHighlight(fullDeclaration, KactusColors::Importer::MODELPARAMETER, componentDeclaration);
             }
 
-            declarations.append(declaration);
+            declarations.append(ParameterDeclaration{paramType, fullDeclaration});
         }
     }
 
@@ -270,7 +293,7 @@ QString VerilogParameterParser::parseType(QString const& input)
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::parseBitWidthLeft(QString const& declaration)
 {
-    QString bitRange = TYPE_RULE.match(declaration).captured(3);
+    QString bitRange = TYPE_RULE.match(declaration).captured(4);
 
     QRegularExpressionMatch rangeMatch = VerilogSyntax::CAPTURING_RANGE.match(bitRange);
     QString left = rangeMatch.captured(1);
@@ -283,7 +306,7 @@ QString VerilogParameterParser::parseBitWidthLeft(QString const& declaration)
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::parseBitWidthRight(QString const& declaration)
 {
-    QString bitRange = TYPE_RULE.match(declaration).captured(3);
+    QString bitRange = TYPE_RULE.match(declaration).captured(4);
 
     QRegularExpressionMatch rangeMatch = VerilogSyntax::CAPTURING_RANGE.match(bitRange);
     QString right = rangeMatch.captured(2);
@@ -296,7 +319,7 @@ QString VerilogParameterParser::parseBitWidthRight(QString const& declaration)
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::parseArrayLeft(QString const& declaration)
 {
-    QString bitRange = TYPE_RULE.match(declaration).captured(2);
+    QString bitRange = TYPE_RULE.match(declaration).captured(3);
 
     return VerilogSyntax::CAPTURING_RANGE.match(bitRange).captured(1);
 }
@@ -306,7 +329,7 @@ QString VerilogParameterParser::parseArrayLeft(QString const& declaration)
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::parseArrayRight(QString const& declaration)
 {
-    QString bitRange = TYPE_RULE.match(declaration).captured(2);
+    QString bitRange = TYPE_RULE.match(declaration).captured(3);
 
     return VerilogSyntax::CAPTURING_RANGE.match(bitRange).captured(2);
 }
@@ -345,10 +368,10 @@ QString VerilogParameterParser::parseDescription(QString const& input)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::copyIdsFromOldModelParameters()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<ModuleParameter> > parsedParameters,
+void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QPair<QSharedPointer<ModuleParameter>, QString> > parsedParameters,
     QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-    for (QSharedPointer<ModuleParameter> parameter : parsedParameters)
+    for (auto const& [parameter, type] : parsedParameters)
     {
 		for (QSharedPointer<ModuleParameter> existingParameter :
             *targetComponentInstantiation->getModuleParameters())
@@ -366,14 +389,14 @@ void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<
 // Function: VerilogParameterParser::replaceReferenceNamesWithIds()
 //-----------------------------------------------------------------------------
 void VerilogParameterParser::replaceNamesReferencesWithIds(
-    QList<QSharedPointer<ModuleParameter> > parsedParameters,
+    QList<QPair<QSharedPointer<ModuleParameter>, QString> > const& parsedParameters,
     QSharedPointer<Component> targetComponent,
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-    for (QSharedPointer<ModuleParameter> moduleParameter : parsedParameters)
+    for (auto const& [moduleParameter, type] : parsedParameters)
     {
         QSharedPointer<Parameter> targetParameter = 
-            Search::findByName(moduleParameter->name(), *targetComponent->getParameters()); 
+            Search::findByName(moduleParameter->name(), *targetComponent->getParameters());
 
         if (targetParameter.isNull())
         {
@@ -390,6 +413,12 @@ void VerilogParameterParser::replaceNamesReferencesWithIds(
         targetParameter->setVectorRight(moduleParameter->getVectorRight());
         targetParameter->setDescription(moduleParameter->description());
         targetParameter->increaseUsageCount();
+
+        if (type.compare(QStringLiteral("localparam")) == 0)
+        {
+            targetParameter->setValueResolve(QStringLiteral("immediate"));
+            moduleParameter->setValueResolve(QStringLiteral("immediate"));
+        }
 
         moduleParameter->setValue(targetParameter->getValueId());
     }
@@ -416,7 +445,7 @@ void VerilogParameterParser::replaceNameReferencesWithParameterIds(QSharedPointe
 {
     foreach (QSharedPointer<Parameter> define, *targetComponent->getParameters())
     {
-        QRegularExpression macroUsage("`?" + define->name() + "\\b");
+        QRegularExpression macroUsage("`?" + define->name() + "(?![\\._])"); // don't match systemverilog struct field accesses, e.g MyStruct.field, and other things that can cause partial match
 
         QString parameterValue = replaceNameWithId(parameter->getValue(), macroUsage, define);
         parameter->setValue(parameterValue);

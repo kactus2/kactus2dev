@@ -74,7 +74,9 @@ private slots:
 
 private:
 	void verifyParameter( QSharedPointer<Parameter> parameter,
-		QString name, QString value, QString description );
+        QString name, QString value, QString description);
+
+    QStringList getDeclarationsList(QList<VerilogParameterParser::ParameterDeclaration> const& declarations);
 
 };
 
@@ -84,6 +86,18 @@ void tst_VerilogParameterParser::verifyParameter( QSharedPointer<Parameter> para
 	QCOMPARE(parameter->name(), name);
 	QCOMPARE(parameter->getValue(), value);
 	QCOMPARE(parameter->description(), description);
+}
+
+QStringList tst_VerilogParameterParser::getDeclarationsList(QList<VerilogParameterParser::ParameterDeclaration> const& declarations)
+{
+    QStringList declarationsStrings;
+    std::for_each(declarations.cbegin(), declarations.cend(),
+        [&declarationsStrings](VerilogParameterParser::ParameterDeclaration const& declaration)
+        {
+            declarationsStrings.append(declaration.value_);
+        });
+
+    return declarationsStrings;
 }
 
 tst_VerilogParameterParser::tst_VerilogParameterParser()
@@ -96,7 +110,7 @@ void tst_VerilogParameterParser::noParameters()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE( declarations.size(), 0 );
 }
 
@@ -106,7 +120,7 @@ void tst_VerilogParameterParser::noPorts()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE( declarations[0], QString( "parameter ok joku=12") );
 }
 
@@ -120,13 +134,13 @@ void tst_VerilogParameterParser::singleLineHeader()
         "output reg [width-1:0] parallel_data //parallel data out\n"
         ");\n"
         "always @ (posedge clk, negedge reset_n)\n"
-        "if(!reset_n) parallel_data <= ’0; //could not do \"width’d0\"\n"
+        "if(!reset_n) parallel_data <= ï¿½0; //could not do \"widthï¿½d0\"\n"
         "else if (data_ena)\n"
         "parallel_data <= {serial_data, parallel_data[width-1:1]};\n"
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE( declarations.size(), 1 );
     QCOMPARE( declarations[0], QString( "parameter ok joku=12") );
 }
@@ -143,13 +157,13 @@ void tst_VerilogParameterParser::multiLineHeader()
         "output reg [width-1:0] parallel_data //parallel data out\n"
         ");\n"
         "always @ (posedge clk, negedge reset_n)\n"
-        "if(!reset_n) parallel_data <= ’0; //could not do \"width’d0\"\n"
+        "if(!reset_n) parallel_data <= ï¿½0; //could not do \"widthï¿½d0\"\n"
         "else if (data_ena)\n"
         "parallel_data <= {serial_data, parallel_data[width-1:1]};\n"
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE( declarations.size(), 1 );
     QCOMPARE(declarations[0], QString("parameter ok width=8, count=6") );
 }
@@ -175,13 +189,13 @@ void tst_VerilogParameterParser::multiLineComments()
         "output reg [width-1:0] parallel_data //parallel data out \n"
         ");\n"
         "always @ (posedge clk, negedge reset_n)\n"
-        "if(!reset_n) parallel_data <= ’0; //could not do \"width’d0\"\n"
+        "if(!reset_n) parallel_data <= ï¿½0; //could not do \"widthï¿½d0\"\n"
         "else if (data_ena)\n"
         "parallel_data <= {serial_data, parallel_data[width-1:1]};\n"
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE( declarations.size(), 2 );
     QCOMPARE(declarations[0], QString("parameter ok joku=8,\n\nesa=6,") );
     QCOMPARE(declarations[1], QString("parameter joku=22,\n\njaa joku=1234"));
@@ -202,7 +216,7 @@ void tst_VerilogParameterParser::evilMultiLineComment()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE( declarations.size(), 2 );
     QCOMPARE(declarations[0], QString("parameter uus,") );
     QCOMPARE(declarations[1], QString("parameter x"));
@@ -229,13 +243,13 @@ void tst_VerilogParameterParser::commentLines()
         "output reg [width-1:0] parallel_data //parallel data out \n"
         ");\n"
         "always @ (posedge clk, negedge reset_n)\n"
-        "if(!reset_n) parallel_data <= ’0; //could not do \"width’d0\"\n"
+        "if(!reset_n) parallel_data <= ï¿½0; //could not do \"widthï¿½d0\"\n"
         "else if (data_ena)\n"
         "parallel_data <= {serial_data, parallel_data[width-1:1]};\n"
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE( declarations.size(), 2 );
     QCOMPARE(declarations[0], QString("parameter ok joku=8, //herpaderp\nesa=6,") );
     QCOMPARE(declarations[1], QString("parameter joku=22,\njaa joku=1234"));
@@ -246,7 +260,7 @@ void tst_VerilogParameterParser::multiDeclaration()
     QString input = "module shifter #(parameter ok joku=12, esa = 3, jari = 123);\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE(declarations.size(), 1);
     QCOMPARE(declarations[0], QString( "parameter ok joku=12, esa = 3, jari = 123"));
 }
@@ -259,7 +273,7 @@ void tst_VerilogParameterParser::multiLineDeclarations()
         "parameter singed def[1:4] jees=1234, horspo = 567);\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE(declarations.size(), 2);
     QCOMPARE( declarations[0], QString( "parameter ok joku=12,\nesa = 3,\njari = 123,") );
     QCOMPARE( declarations[1], QString( "parameter singed def[1:4] jees=1234, horspo = 567") );
@@ -275,7 +289,7 @@ void tst_VerilogParameterParser::oneParameter()
     VerilogParameterParser parser;
     QString description;
     QString type;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE(declarations.size(), 1);
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
@@ -293,7 +307,7 @@ void tst_VerilogParameterParser::threeParameter()
         "); endmodule\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE(declarations.size(), 3);
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
@@ -314,7 +328,7 @@ void tst_VerilogParameterParser::spacedParameters()
         "); endmodule\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE(declarations.size(), 3);
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
@@ -336,7 +350,7 @@ void tst_VerilogParameterParser::describedParameters()
         "); endmodule\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE(declarations.size(), 4);
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
@@ -359,7 +373,7 @@ void tst_VerilogParameterParser::oneUnDescribed()
         "); endmodule\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8", "joku");
@@ -378,7 +392,7 @@ void tst_VerilogParameterParser::multiLineDescribed()
         "); endmodule\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8", "epeli");
@@ -395,7 +409,7 @@ void tst_VerilogParameterParser::describedParentheses()
         "); endmodule\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "esa", "6", "epeli");
@@ -412,7 +426,7 @@ void tst_VerilogParameterParser::evilDescription()
         "); endmodule\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "DATAWIDTH", "32", "module declaration ends here );");
@@ -432,7 +446,7 @@ void tst_VerilogParameterParser::testStringValue()
 		"); endmodule\n";
 
 	VerilogParameterParser parser;
-	QStringList declarations = parser.findDeclarations(input);
+	QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
 	QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
 	verifyParameter(parameters[0], "type", "\"barrel\"", "\"barrel\" or \"arithmetic\"");
@@ -475,7 +489,7 @@ void tst_VerilogParameterParser::testAnsiArrayValue()
     QFETCH(QString, expectedValue);
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter(parameters[0], "bits", expectedValue, "Array of bit vectors.");
@@ -531,7 +545,7 @@ void tst_VerilogParameterParser::oldParameter()
     "parameter evo joku=9; // ulina\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "9", "ulina");
@@ -547,7 +561,7 @@ void tst_VerilogParameterParser::multipleOldParameters()
         "parameter juuuuu = 22;//hapatus";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8", "");
@@ -567,7 +581,7 @@ void tst_VerilogParameterParser::variantOldParameters()
         "parameter horspo juuuuu = 22//hapatus";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8", "");
@@ -588,7 +602,7 @@ void tst_VerilogParameterParser::multiOldParameters()
         "juuuuu = 22;//hapatus";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
 
     verifyParameter( parameters[0], "joku", "8", "hapatus");
@@ -608,7 +622,7 @@ void tst_VerilogParameterParser::oldWithEndModule()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
 
     verifyParameter( parameters[0], "joku", "8", "hapatus");
@@ -630,7 +644,7 @@ void tst_VerilogParameterParser::doubleMultiOldParameters()
         "jorma = 7";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8", "hapatus");
@@ -652,7 +666,7 @@ void tst_VerilogParameterParser::testOldArrayValue()
     QFETCH(QString, expectedValue);
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter(parameters[0], "bits", expectedValue, "Array of bit vectors.");
@@ -772,7 +786,7 @@ void tst_VerilogParameterParser::operations()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE( declarations.size(), 4 );
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
@@ -795,7 +809,7 @@ void tst_VerilogParameterParser::oldOperations()
         "endmodule\n";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8 + 9", "seli");
@@ -818,7 +832,7 @@ void tst_VerilogParameterParser::bases()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8'0009", "seli");
@@ -840,7 +854,7 @@ void tst_VerilogParameterParser::braces()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "{8'0009}", "seli");
@@ -862,7 +876,7 @@ void tst_VerilogParameterParser::twoDimensional()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
 
@@ -890,7 +904,7 @@ void tst_VerilogParameterParser::closerOnLine()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
     QCOMPARE( declarations.size(), 2 );
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
@@ -918,7 +932,7 @@ void tst_VerilogParameterParser::closerOnLineDescribedparentheses()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "esa", "6", "epeli");
@@ -935,7 +949,7 @@ void tst_VerilogParameterParser::closerOnLineDescribedparentheses2()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "esa", "6", "epeli");
@@ -954,7 +968,7 @@ void tst_VerilogParameterParser::parenthesesInPorts()
         "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "esa", "6", "epeli");
@@ -981,7 +995,7 @@ void tst_VerilogParameterParser::customCase()
     "endmodule";
 
     VerilogParameterParser parser;
-    QStringList declarations = parser.findDeclarations(input);
+    QStringList declarations = getDeclarationsList(parser.findDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "PARAMETER_C", "32", "");

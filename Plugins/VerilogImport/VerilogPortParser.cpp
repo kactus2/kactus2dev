@@ -63,7 +63,7 @@ namespace
         "(" + VerilogSyntax::NAMES + ")\\s*[;](?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?");
 
 	//! Declaration for verilog parameters.
-	const QString MODULE_PARAMETER_DECLARATION("\\s*#\\((\\s*parameter.*)+\\s*\\)");
+    const QString MODULE_PARAMETER_DECLARATION("\\s*#\\(([\\s\\S]*?)\\)"); // just match the parameter list section, not the stuff inside (allow e.g. system verilog localparams)
 
     //! Port declaration for Verilog-1995 style.
     const QString PORT_DECLARATION_1995("\\((\\s*\\w*,)*\\s*\\w+\\s*\\);");
@@ -75,13 +75,13 @@ namespace
     const QString DECLARATION_1995(MODULE_AND_PARAMETERS_DECLARATION + PORT_DECLARATION_1995);
 
     //! Modified module declaration for use in checking ports
-    const QString NEW_MODULE_DECLARATION("(?:^|\\r?\\n)[ \t]*(?:macro)?module\\s*\\w*");
+    const QString NEW_MODULE_DECLARATION("(?:^|\\r?\\n)[ \t]*(?:macro)?module\\s+\\w+");
 
     //! Everything after module and parameter declaration.
     const QString MODULE_DECLARATION_REST("\\s*\\([^;]*");
 
     //! Full declaration of a verilog module.
-    const QString FULL_MODULE_DECLARATION(NEW_MODULE_DECLARATION + "(" + MODULE_PARAMETER_DECLARATION + ")?" + MODULE_DECLARATION_REST);
+    const QString FULL_MODULE_DECLARATION(NEW_MODULE_DECLARATION + "(" + MODULE_PARAMETER_DECLARATION  + ")?" + MODULE_DECLARATION_REST);
 }
 
 //-----------------------------------------------------------------------------
