@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 InterfaceModeSelector::InterfaceModeSelector(Document::Revision docRevision, General::InterfaceMode mode, 
 	bool showMonitor, QWidget* parent):
-QComboBox(parent),
+MandatoryComboBox(parent),
 showMonitor_(showMonitor)
 {
 	initialize(docRevision);
@@ -57,9 +57,6 @@ void InterfaceModeSelector::initialize(Document::Revision docRevision)
 
 	connect(this, SIGNAL(currentTextChanged(const QString&)),
 		this, SLOT(setMode(const QString&)), Qt::UniqueConnection);
-
-	// the interface mode is mandatory by default
-	setProperty("mandatoryField", true);
 }
 
 //-----------------------------------------------------------------------------

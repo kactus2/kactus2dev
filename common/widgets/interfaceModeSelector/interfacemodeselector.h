@@ -12,17 +12,18 @@
 #ifndef INTERFACEMODESELECTOR_H
 #define INTERFACEMODESELECTOR_H
 
+#include <common/widgets/MandatoryComboBox/MandatoryComboBox.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <IPXACTmodels/common/Document.h>
 
-#include <QComboBox>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
 //! The editor to select an interface mode for bus interface within a component.
 //-----------------------------------------------------------------------------
-class InterfaceModeSelector : public QComboBox
+class InterfaceModeSelector : public MandatoryComboBox
 {
 	Q_OBJECT
 
@@ -82,7 +83,6 @@ signals:
 	void modeSelected(General::InterfaceMode mode);
 
 private:
-
 
 	//! Set up the editor.
 	void initialize(Document::Revision docRevision);

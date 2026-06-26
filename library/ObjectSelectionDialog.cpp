@@ -13,6 +13,8 @@
 
 #include "ObjectSelectionListItem.h"
 
+#include <common/KactusUtils.h>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QIcon>
@@ -29,16 +31,16 @@ okButton_(okButtonText, this),
 cancelButton_(tr("Cancel"), this),
 checkAllBox_(tr("Select/deselect all"), this),
 itemList_(this),
-busDefinitionIcon_(":icons/common/graphics/bus-def.png"),
-abstractionDefinition_(":icons/common/graphics/abs-def.png"),
-componentIcon_(":icons/common/graphics/hw-component.png"),
-designIcon_(":icons/common/graphics/hw-design.png"),
-designConfigurationIcon_(":icons/common/graphics/configuration.png"),
-generatorChainIcon_(":icons/common/graphics/generatorChain.png"),
-abstractorIcon_(":icons/common/graphics/connect.png"),
-catalogIcon_(":icons/common/graphics/catalog.png"),
-comDefinitionIcon_(":icons/common/graphics/new-com_definition.png"),
-apiDefinitionIcon_(":icons/common/graphics/new-api_definition.png"),
+busDefinitionIcon_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/bus-def.png")),
+abstractionDefinition_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/abs-def.png")),
+componentIcon_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/hw-component.png")),
+designIcon_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/hw-design.png")),
+designConfigurationIcon_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/configuration.png")),
+generatorChainIcon_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/generatorChain.png")),
+abstractorIcon_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/connect.png")),
+catalogIcon_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/catalog.png")),
+comDefinitionIcon_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/new-com_definition.png")),
+apiDefinitionIcon_(KactusUtils::getIconStyledToTheme(":icons/common/graphics/new-api_definition.png")),
 fileIcon_(":icons/common/graphics/file.png")
 {
     okButton_.setIcon(QIcon(okIconPath));
@@ -260,7 +262,6 @@ QWidget* ObjectSelectionDialog::setupIntroWidget(QString const& introName, QStri
     mainIntroLayout->addWidget(iconLabel);
 
     QWidget* introWidget = new QWidget();
-    introWidget->setStyleSheet("background-color: white");
     introWidget->setLayout(mainIntroLayout);
 
     return introWidget;

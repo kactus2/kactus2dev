@@ -15,6 +15,7 @@
 #include "ModeEditorBase.h"
 
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <common/widgets/MandatoryComboBox/MandatoryComboBox.h>
 
 #include <QComboBox>
 #include <QSharedPointer>
@@ -100,7 +101,7 @@ private:
 	LibraryInterface* libHandler_;
 
 	//! Select the group this interface belongs to.
-	QComboBox groupEditor_;
+	MandatoryComboBox groupEditor_;
 };
 
 #endif // SYSTEM_MODE_EDITOR_H

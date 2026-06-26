@@ -3774,7 +3774,7 @@ void MainWindow::applyThemeToMainWindow()
             "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
             "QTableView::indicator:unchecked {image: none;}"
             "QDockWidget::title {background-color: "% dockWidgetTitleColorRGB %"; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
-            "*[mandatoryField=\"true\"] { background-color: "% mandatoryFieldColorRGB %"; }";
+            "*[mandatoryField=\"true\"] { background-color: "% mandatoryFieldColorRGB %"; color: Black; }";
     }
 
     setStyleSheet(appStyleSheet);

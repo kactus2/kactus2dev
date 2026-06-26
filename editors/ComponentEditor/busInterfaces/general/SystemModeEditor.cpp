@@ -38,8 +38,6 @@ groupEditor_(this)
         setTitle(tr("Mirrored system"));
     }
 
-	groupEditor_.setProperty("mandatoryField", true);
-
 	connect(&groupEditor_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onGroupChange(QString const&)), Qt::UniqueConnection);
 

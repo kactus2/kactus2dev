@@ -292,6 +292,7 @@ CreateHelp
     <ClCompile Include="common\widgets\listManager\listeditor.cpp" />
     <ClCompile Include="common\widgets\listManager\listmanager.cpp" />
     <ClCompile Include="common\widgets\listManager\listmanagermodel.cpp" />
+    <ClCompile Include="common\widgets\MandatoryComboBox\MandatoryComboBox.cpp" />
     <ClCompile Include="common\widgets\nameGroupBox\namegroupbox.cpp" />
     <ClCompile Include="common\widgets\ParameterGroupBox\parametergroupbox.cpp" />
     <ClCompile Include="common\widgets\segmentComboBox\SegmentComboBox.cpp" />
@@ -1320,6 +1321,7 @@ CreateHelp
     <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h" />
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h" />
     <QtMoc Include="common\widgets\instanceWidgets\InstanceWidgets.h" />
+    <QtMoc Include="common\widgets\MandatoryComboBox\MandatoryComboBox.h" />
     <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.h" />

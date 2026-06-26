@@ -1019,6 +1019,12 @@
     <Filter Include="Source Files\common\models">
       <UniqueIdentifier>{967b596d-95ce-4a8c-a1d2-029b9792fffd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\MandatoryComboBox">
+      <UniqueIdentifier>{0ad2fc3a-f385-41b2-8931-90a8f2c7cf80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\MandatoryComboBox">
+      <UniqueIdentifier>{c80b2f13-600b-4d31-8867-c3dfe9008c98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3450,6 +3456,9 @@
     </ClCompile>
     <ClCompile Include="common\KactusProxyStyle.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\MandatoryComboBox\MandatoryComboBox.cpp">
+      <Filter>Source Files\common\widgets\MandatoryComboBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6226,6 +6235,9 @@
     </QtMoc>
     <QtMoc Include="library\HierarchyModel.h">
       <Filter>Header Files\library</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\MandatoryComboBox\MandatoryComboBox.h">
+      <Filter>Header Files\common\widgets\MandatoryComboBox</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

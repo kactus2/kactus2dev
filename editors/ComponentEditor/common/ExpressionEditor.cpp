@@ -82,7 +82,15 @@ void ExpressionEditor::setExpression(QString const& expression)
         insertWord(term, cursor);
 
         QString operation = delimiter.match(expression, delimiterIndex).captured();
-        cursor.insertText(operation, colorFormat(KactusColors::REGULAR_TEXT));
+
+        if (property("mandatoryField") == true)
+        {
+            cursor.insertText(operation, colorFormat(Qt::black));
+        }
+        else
+        {
+            cursor.insertText(operation, colorFormat(KactusColors::REGULAR_TEXT));
+        }
 
         delimiterIndex = wordEndIndex + operation.length();
     }
@@ -199,7 +207,14 @@ void ExpressionEditor::colorCurrentWordBlack()
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-    cursor.setCharFormat(colorFormat(KactusColors::REGULAR_TEXT));
+    if (property("mandatoryField") == true)
+    {
+        cursor.setCharFormat(colorFormat(Qt::black));
+    }
+    else
+    {
+        cursor.setCharFormat(colorFormat(KactusColors::REGULAR_TEXT));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -248,7 +263,14 @@ void ExpressionEditor::handleParentKeyPressEvent(QKeyEvent* keyEvent)
     if (keyEvent->text().isEmpty() == false)
     {
         auto cursor = textCursor();
-        cursor.setCharFormat(colorFormat(KactusColors::REGULAR_TEXT));
+        if (property("mandatoryField") == true)
+        {
+            cursor.setCharFormat(colorFormat(Qt::black));
+        }
+        else
+        {
+            cursor.setCharFormat(colorFormat(KactusColors::REGULAR_TEXT));
+        }
         setTextCursor(cursor);
     }
 

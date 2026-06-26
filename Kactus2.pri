@@ -49,6 +49,7 @@ HEADERS += ./common/widgets/instanceWidgets/InstanceWidgets.h \
     ./common/widgets/usageComboBox/usagecombobox.h \
     ./common/widgets/accessComboBox/accesscombobox.h \
     ./common/widgets/modWriteComboBox/modwritecombobox.h \
+    ./common/widgets/MandatoryComboBox/MandatoryComboBox.h \
     ./common/widgets/readActionComboBox/readactioncombobox.h \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
     ./common/widgets/viewSelector/viewselector.h \
@@ -963,6 +964,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/usageComboBox/usagecombobox.cpp \
     ./common/widgets/accessComboBox/accesscombobox.cpp \
     ./common/widgets/modWriteComboBox/modwritecombobox.cpp \
+    ./common/widgets/MandatoryComboBox/MandatoryComboBox.cpp \
     ./common/widgets/readActionComboBox/readactioncombobox.cpp \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.cpp \
     ./common/widgets/viewSelector/viewselector.cpp \
