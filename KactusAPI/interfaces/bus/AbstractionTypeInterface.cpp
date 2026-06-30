@@ -162,7 +162,11 @@ std::string AbstractionTypeInterface::getAbstractionReferenceString() const
     int count = itemCount();
     if (count == 1)
     {
-        referenceString = abstractions_->first()->getAbstractionRef()->toString().toStdString();
+        auto abstractionRef = abstractions_->first()->getAbstractionRef();
+        if (abstractionRef != nullptr)
+        {
+            referenceString = abstractions_->first()->getAbstractionRef()->toString().toStdString();
+        }
     }
     else if (count > 1)
     {
