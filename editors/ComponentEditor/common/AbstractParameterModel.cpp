@@ -129,6 +129,10 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
         {
             return tr("Type");   
         }
+        else if (section == signColumn())
+        {
+            return tr("Sign");
+        }
         else if (section == bitWidthLeftColumn())
         {
             QString bitWidthLeft = tr("Bit vector\nleft") + getExpressionSymbol();
@@ -222,6 +226,10 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         else if (index.column() == typeColumn())
         {
             parameterInterface_->setType(parameterName, value.toString().toStdString());
+        }
+        else if (index.column() == signColumn())
+        {
+            parameterInterface_->setSign(parameterName, value.toString().toStdString());
         }
         else if (index.column() == bitWidthLeftColumn())
         {
@@ -525,6 +533,10 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     {
         return QString::fromStdString(parameterInterface_->getType(parameterName));
     }
+    else if (index.column() == signColumn())
+    {
+        return QString::fromStdString(parameterInterface_->getSign(parameterName));
+    }
     else if (index.column() == bitWidthLeftColumn())
     {
         return QString::fromStdString(parameterInterface_->getBitWidthLeftValue(parameterName));
@@ -597,7 +609,8 @@ QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& in
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::canRemoveRow()
 //-----------------------------------------------------------------------------
-bool AbstractParameterModel::canRemoveRow(int const& row) const
+bool
+AbstractParameterModel::canRemoveRow(int const& row) const
 {
     std::string parameterName = parameterInterface_->getIndexedItemName(row);
     int parameterUsageCount = parameterInterface_->getUsageCount(parameterName);

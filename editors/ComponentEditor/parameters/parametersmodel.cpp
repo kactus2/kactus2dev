@@ -147,11 +147,19 @@ int ParametersModel::choiceColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::formatColumn()
+// Function: ParameterDelegate::typeColumn()
 //-----------------------------------------------------------------------------
 int ParametersModel::typeColumn() const
 {
     return ParameterColumns::TYPE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::signColumn()
+//-----------------------------------------------------------------------------
+int ParametersModel::signColumn() const
+{
+    return ParameterColumns::SIGN;
 }
 
 //-----------------------------------------------------------------------------

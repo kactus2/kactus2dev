@@ -136,6 +136,25 @@ public:
     bool setType(std::string const& parameterName, std::string const& newType);
 
     /*!
+     *  Get the sign of the selected parameter.
+     *
+     *    @param [in] parameterName   Name of the selected parameter.
+     *
+     *    @return Sign of the selected parameter.
+     */
+    std::string getSign(std::string const& parameterName) const;
+
+    /*!
+     *  Set the sign of the selected parameter.
+     *
+     *    @param [in] parameterName   Name of the selected parameter.
+     *    @param [in] newSign         New sign for the parameter.
+     *
+     *    @return True, if successful, false otherwise.
+     */
+    bool setSign(std::string const& parameterName, std::string const& newSign);
+
+    /*!
      *  Get the calculated bit width left value of the selected parameter.
      *
      *    @param [in] parameterName   Name of the selected parameter.

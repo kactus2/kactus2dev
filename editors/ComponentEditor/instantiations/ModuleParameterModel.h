@@ -156,6 +156,13 @@ protected:
     virtual int typeColumn() const;
 
     /*!
+     *  Gets the column for sign format.
+     *
+     *    @return The column for editing format selection.
+     */
+    virtual int signColumn() const;
+
+    /*!
      *  Gets the column for the left value of bit width vector.
      *
      *    @return The column for editing the left value of the bit width vector.

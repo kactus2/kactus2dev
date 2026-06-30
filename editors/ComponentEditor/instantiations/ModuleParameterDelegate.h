@@ -77,11 +77,18 @@ protected:
     virtual int choiceColumn() const;
     
     /*!
-     *  Gets the column for value format.
+     *  Gets the column for type.
      *
-     *    @return The column for editing format selection.
+     *    @return The column for editing type selection.
      */
-    virtual int formatColumn() const;
+    virtual int typeColumn() const;
+    
+    /*!
+     *  Gets the column for sign.
+     *
+     *    @return The column for editing sign selection.
+     */
+    virtual int signColumn() const;
 
     /*!
     *  Gets the column for the left value of bit width vector.

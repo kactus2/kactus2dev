@@ -21,6 +21,7 @@ namespace ParameterColumns
         DISPLAY_NAME,
         DESCRIPTION,
         TYPE,
+        SIGN,
         VALUE,
         CHOICE,
         MINIMUM,

@@ -131,6 +131,11 @@
 		<li><b>string</b> indicates that the value shall contain text.</li>
     </ul>
     <p>
+      <b>Sign</b> optionally defines the signed-ness of the parameter. It can be either
+      <b>signed</b> or <b>unsigned</b>. The sign value applies only for parameters of
+      type bit, byte, shortint, int and longint.
+    </p>
+    <p>
         <b>Value</b> contains the mandatory default value of the module parameter. This value can be overridden in 
         a design that instantiates this component. The value is given in SystemVerilog format and may be given as 
         an expression. Any other text must be enclosed within quotes e.g. "Any text".

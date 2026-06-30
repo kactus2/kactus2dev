@@ -158,14 +158,18 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
     QList<QSharedPointer<ModuleParameter> > parameters;
 
     // Find the type and the declaration. Only one per declaration is supported.
-    QString type = parseType(input);
-    QString typeWithModifier = type;
-    QString signingModifier = TYPE_RULE.match(input).captured(2);
+    QString type = parseType(input).trimmed();
+    QString typeWithSign = type;
+    QString signModifier = TYPE_RULE.match(input).captured(2);
 
     // Create complete type if there is a sign modifier
-    if (QRegularExpression("(signed|unsigned)").match(signingModifier.toLower()).hasMatch())
+    if (QRegularExpression("(signed|unsigned)").match(signModifier.toLower()).hasMatch())
     {
-        typeWithModifier.append(QStringLiteral(" ") % signingModifier); // e.g. int unsigned
+        typeWithSign.append(QStringLiteral(" ") % signModifier); // e.g. int unsigned
+    }
+    else
+    {
+        signModifier.clear();
     }
 
     QString bitWidthLeft = parseBitWidthLeft(input);
@@ -199,8 +203,9 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
         // Each name value pair produces a new module parameter, but the type and the description is recycled.
         QSharedPointer<ModuleParameter> moduleParameter =  QSharedPointer<ModuleParameter>(new ModuleParameter());      
         moduleParameter->setName(name);
-        moduleParameter->setDataType(typeWithModifier);
+        moduleParameter->setDataType(typeWithSign);
         moduleParameter->setType(createTypeFromDataType(type));
+        moduleParameter->setSign(signModifier);
         moduleParameter->setValue(value);
         moduleParameter->setUsageType("nontyped");
         moduleParameter->setVectorLeft(bitWidthLeft);
@@ -408,6 +413,7 @@ void VerilogParameterParser::replaceNamesReferencesWithIds(
         
         targetParameter->setValue(moduleParameter->getValue());
         targetParameter->setType(moduleParameter->getType());
+        targetParameter->setSign(moduleParameter->getSign());
         targetParameter->setArrayLeft(moduleParameter->getArrayLeft());
         targetParameter->setArrayRight(moduleParameter->getArrayRight());
         targetParameter->setVectorLeft(moduleParameter->getVectorLeft());

@@ -250,11 +250,19 @@ int ModuleParameterModel::displayNameColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameterModel::formatColumn()
+// Function: ModuleParameterModel::typeColumn()
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::typeColumn() const
 {
     return ModuleParameterColumns::TYPE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameterModel::signColumn()
+//-----------------------------------------------------------------------------
+int ModuleParameterModel::signColumn() const
+{
+    return ModuleParameterColumns::SIGN;
 }
 
 //-----------------------------------------------------------------------------

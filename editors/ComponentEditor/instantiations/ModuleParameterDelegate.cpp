@@ -76,11 +76,19 @@ int ModuleParameterDelegate::choiceColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameterDelegate::formatColumn()
+// Function: ModuleParameterDelegate::typeColumn()
 //-----------------------------------------------------------------------------
-int ModuleParameterDelegate::formatColumn() const
+int ModuleParameterDelegate::typeColumn() const
 {
     return ModuleParameterColumns::TYPE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameterDelegate::signColumn()
+//-----------------------------------------------------------------------------
+int ModuleParameterDelegate::signColumn() const
+{
+    return ModuleParameterColumns::SIGN;
 }
 
 //-----------------------------------------------------------------------------

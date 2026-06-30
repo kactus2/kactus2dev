@@ -20,6 +20,7 @@ namespace ModuleParameterColumns
         ID,
         DATA_TYPE,
         TYPE,
+        SIGN,
         VALUE,
         CHOICE,
         MINIMUM,

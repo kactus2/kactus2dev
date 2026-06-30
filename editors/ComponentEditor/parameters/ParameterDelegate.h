@@ -125,12 +125,19 @@ protected:
     virtual int choiceColumn() const;
 
     /*!
-     *  Gets the column for value format.
+     *  Gets the column for type.
      *
-     *    @return The column for editing format selection.
+     *    @return The column for editing type selection.
      */
-    virtual int formatColumn() const;
-    
+    virtual int typeColumn() const;
+
+    /*!
+     *  Gets the column for type.
+     *
+     *    @return The column for editing sign selection.
+     */
+    virtual int signColumn() const;
+
     /*!
     *  Gets the column for the left value of bit width vector.
     *
@@ -236,14 +243,23 @@ protected:
     QWidget* createChoiceSelector(QWidget* parent) const;
     
     /*!
-     *  Creates an editor for selecting a format for parameter value.
+     *  Creates an editor for selecting a type for parameter value.
      *
      *    @param [in] parent   The parent widget for the editor.
      *
-     *    @return An editor for selecting a format.
+     *    @return An editor for selecting a type.
      */
-    QWidget* createFormatSelector(QWidget* parent) const;
-        
+    QWidget* createTypeSelector(QWidget* parent) const;
+    
+    /*!
+     *  Creates an editor for selecting the sign for parameter value.
+     *
+     *    @param [in] parent   The parent widget for the editor.
+     *
+     *    @return An editor for selecting sign.
+     */
+    QWidget* createSignSelector(QWidget* parent) const;
+    
     /*!
      *  Creates an editor for selecting resolve attribute of a parameter.
      *

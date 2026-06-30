@@ -175,7 +175,14 @@ protected:
      *    @return The column for editing type selection.
      */
     virtual int typeColumn() const = 0;
-        
+
+     /*!
+     *  Gets the column for sign type.
+     *
+     *    @return The column for editing sign selection.
+     */
+    virtual int signColumn() const = 0;
+
     /*!
      *  Gets the column for the left value of bit width vector.
      *

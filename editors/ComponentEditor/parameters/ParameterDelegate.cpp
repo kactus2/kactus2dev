@@ -80,9 +80,13 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     {
         return createChoiceSelector(parent);
     }
-    else if (index.column() == formatColumn()) 
+    else if (index.column() == typeColumn()) 
     {
-        return createFormatSelector(parent);
+        return createTypeSelector(parent);
+    }
+    else if (index.column() == signColumn())
+    {
+        return createSignSelector(parent);
     }
     else if (index.column() == resolveColumn())
     {
@@ -171,7 +175,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         QString parameterValue = valueIndex.data(Qt::EditRole).toString();
         model->setArrayData(parameterValue);
 
-        QModelIndex typeIndex = index.sibling(index.row(), formatColumn());
+        QModelIndex typeIndex = index.sibling(index.row(), typeColumn());
         QString parameterType = typeIndex.data(Qt::EditRole).toString();
         model->setParameterType(parameterType);
 
@@ -339,11 +343,19 @@ int ParameterDelegate::choiceColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::formatColumn()
+// Function: ParameterDelegate::typeColumn()
 //-----------------------------------------------------------------------------
-int ParameterDelegate::formatColumn() const
+int ParameterDelegate::typeColumn() const
 {
     return ParameterColumns::TYPE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::typeColumn()
+//-----------------------------------------------------------------------------
+int ParameterDelegate::signColumn() const
+{
+    return ParameterColumns::SIGN;
 }
 
 //-----------------------------------------------------------------------------
@@ -452,9 +464,9 @@ QString ParameterDelegate::choiceNameOnRow(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterDelegate::createFormatEditor()
+// Function: ParameterDelegate::createTypeSelector()
 //-----------------------------------------------------------------------------
-QWidget* ParameterDelegate::createFormatSelector(QWidget* parent) const
+QWidget* ParameterDelegate::createTypeSelector(QWidget* parent) const
 {
     QComboBox* combo = new QComboBox(parent);
     combo->addItem(QString(""));
@@ -466,6 +478,18 @@ QWidget* ParameterDelegate::createFormatSelector(QWidget* parent) const
     combo->addItem(QString("shortreal"));
     combo->addItem(QString("real"));
     combo->addItem(QString("string"));
+    return combo;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::createSignSelector()
+//-----------------------------------------------------------------------------
+QWidget* ParameterDelegate::createSignSelector(QWidget* parent) const
+{
+    QComboBox* combo = new QComboBox(parent);
+    combo->addItem(QString(""));
+    combo->addItem(QString("signed"));
+    combo->addItem(QString("unsigned"));
     return combo;
 }
 

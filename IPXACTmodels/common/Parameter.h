@@ -78,16 +78,28 @@ public:
     void setChoiceRef(QString const& choiceRef);
 
     /*!
-     *  Gets the IP-Xact format type.
+     *  Gets the IP-Xact value type.
      */
     QString getType() const;
 
     /*!
-     *  Sets the IP-Xact format type.
+     *  Sets the IP-Xact value type.
      *
-     *    @param [in] type   The format type.
+     *    @param [in] type   The value type.
      */
     void setType(QString const& type);
+
+    /*!
+     *  Gets the IP-Xact value sign.
+     */
+    QString getSign() const;
+
+    /*!
+     *  Sets the IP-Xact value sign.
+     *
+     *    @param [in] newSign   The value sign.
+     */
+    void setSign(QString const& newSign);
 
     /*!
      *  Gets the minimum value for the parameter value.

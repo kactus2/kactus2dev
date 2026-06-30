@@ -121,6 +121,31 @@ bool AbstractParameterInterface::setType(std::string const& parameterName, std::
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractParameterInterface::getSign()
+//-----------------------------------------------------------------------------
+std::string AbstractParameterInterface::getSign(std::string const& parameterName) const
+{
+    if (auto editedParameter = getParameter(parameterName))
+    {
+        return editedParameter->getSign().toStdString();
+    }
+
+    return std::string();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractParameterInterface::setSign()
+//-----------------------------------------------------------------------------
+bool AbstractParameterInterface::setSign(std::string const& parameterName, std::string const& newSign)
+{
+    auto editedParameter = getParameter(parameterName);
+    if (!editedParameter) return false;
+
+    editedParameter->setSign(QString::fromStdString(newSign));
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractParameterInterface::getBitWidthLeftValue()
 //-----------------------------------------------------------------------------
 std::string AbstractParameterInterface::getBitWidthLeftValue(std::string const& parameterName,

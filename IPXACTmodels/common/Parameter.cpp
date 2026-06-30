@@ -132,6 +132,22 @@ void Parameter::setType(QString const& type)
 }
 
 //-----------------------------------------------------------------------------
+// Function: parameter::getSign()
+//-----------------------------------------------------------------------------
+QString Parameter::getSign() const
+{
+    return getAttribute(QStringLiteral("sign"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: parameter::setSign()
+//-----------------------------------------------------------------------------
+void Parameter::setSign(QString const& newSign)
+{
+    setAttribute(QStringLiteral("sign"), newSign);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::getMinimumValue()
 //-----------------------------------------------------------------------------
 QString Parameter::getMinimumValue() const

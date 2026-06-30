@@ -103,11 +103,18 @@ protected:
     virtual int displayNameColumn() const;
 
     /*!
-     *  Gets the column for value format.
+     *  Gets the column for value type.
      *
-     *    @return The column for editing format selection.
+     *    @return The column for editing type selection.
      */
     virtual int typeColumn() const;
+
+    /*!
+     *  Gets the column for value sign.
+     *
+     *    @return The column for editing sign selection.
+     */
+    virtual int signColumn() const;
 
     /*!
     *  Gets the column for the left value of bit width vector.
