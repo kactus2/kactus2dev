@@ -343,6 +343,16 @@ void KactusAPI::runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV
         design = library_->getModel<Design>(designVLNV);
     }
 
+    if (configVLNV.isEmpty())
+    {   
+        messageChannel_->showMessage(QObject::tr("Generation: No design config found for view %1. Check view name if needed.").arg(viewName));
+    }
+
+    if (designVLNV.isEmpty())
+    {   
+        messageChannel_->showMessage(QObject::tr("Generation: No design found for view %1. Check view name if needed.").arg(viewName));
+    }
+
     PluginUtilityAdapter adapter(library_, messageChannel_, VersionHelper::createVersionString(), parentWidget);
 
     CLIGenerator* cliRunnable = dynamic_cast<CLIGenerator*>(plugin);
